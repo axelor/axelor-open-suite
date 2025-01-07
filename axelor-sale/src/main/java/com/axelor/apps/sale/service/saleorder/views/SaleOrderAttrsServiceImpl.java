@@ -99,8 +99,8 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
     if (currency == null) {
       return;
     }
-    this.addAttr("$discountCurrency", "value", "%", attrsMap);
-    this.addAttr("$discountScale", "value", 2, attrsMap);
+    this.addAttr("discountCurrency", "value", "%", attrsMap);
+    this.addAttr("discountScale", "value", 2, attrsMap);
   }
 
   protected void setSaleOrderFixedGlobalDiscountDummies(
@@ -109,7 +109,7 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
     if (currency == null) {
       return;
     }
-    this.addAttr("$discountCurrency", "value", currency.getSymbol(), attrsMap);
-    this.addAttr("$discountScale", "value", currency.getNumberOfDecimals(), attrsMap);
+    this.addAttr("discountCurrency", "value", currency.getSymbol(), attrsMap);
+    this.addAttr("discountScale", "value", currency.getNumberOfDecimals(), attrsMap);
   }
 }

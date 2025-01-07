@@ -787,7 +787,7 @@
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
         <viewer
-          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,$discountCurrency,$discountScale">
+          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,discountCurrency,discountScale">
           <![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -817,10 +817,12 @@
       sidebar="true">
       <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
-        x-currency="$discountCurrency" x-scale="$discountScale"
+        x-currency="discountCurrency" x-scale="discountScale"
         onChange="action-sale-order-method-on-line-change"/>
       <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals" hidden="true"/>
+      <field name="discountCurrency" hidden="true" x-dirty="false"/>
+      <field name="discountScale" hidden="true" x-dirty="false"/>
     </panel>
     <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null"
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
