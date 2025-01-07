@@ -139,7 +139,7 @@
     <bind to="reportExportTypeSelect" column="reportExportTypeSelect"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" search="self.id = :_companyId"/>
-    <bind to="comparison" eval="'0'"/>
+    <bind to="comparison" eval="typeSelect == '3000' ? '1' : '0'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"
