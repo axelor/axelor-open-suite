@@ -1,0 +1,3 @@
+---
+title: "Invoice: removed incoherent mention of refund line in printing when it's not originated from actual invoice."
+module: axelor-account
