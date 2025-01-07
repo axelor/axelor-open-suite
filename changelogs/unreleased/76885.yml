@@ -1,0 +1,3 @@
+---
+title: "Move / Moveline : added additional control to avoid unbalancing input of entries on general / special accounts at validation"
+module: axelor-account
