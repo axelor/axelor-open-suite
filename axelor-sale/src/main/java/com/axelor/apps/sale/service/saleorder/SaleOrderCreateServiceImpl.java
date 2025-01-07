@@ -84,21 +84,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   }
 
   @Override
-  public SaleOrder createSaleOrder(Company company) throws AxelorException {
-    SaleOrder saleOrder = new SaleOrder();
-    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
-    if (company != null) {
-      saleOrder.setCompany(company);
-      saleOrder.setCurrency(company.getCurrency());
-    }
-    saleOrder.setSalespersonUser(AuthUtils.getUser());
-    saleOrder.setTeam(saleOrder.getSalespersonUser().getActiveTeam());
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
-    saleOrderService.computeEndOfValidityDate(saleOrder);
-    return saleOrder;
-  }
-
-  @Override
   public SaleOrder createSaleOrder(
       User salespersonUser,
       Company company,
