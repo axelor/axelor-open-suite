@@ -209,4 +209,6 @@ public interface MoveToolService {
   boolean isMultiCurrency(Move move);
 
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
+
+  boolean isOpenOrClosureMove(Move move);
 }

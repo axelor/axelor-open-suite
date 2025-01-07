@@ -100,6 +100,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     this.checkPartnerMassEntryMove(move, temporaryMoveNumber);
     this.checkWellBalancedMove(move, temporaryMoveNumber);
     this.checkCutOffMassEntryMove(move, temporaryMoveNumber, manageCutOff);
+    this.checkSpecialAccountAmount(move, temporaryMoveNumber);
   }
 
   @Override
@@ -518,5 +519,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
 
     move.setCompanyBankDetails(newCompanyBankDetails);
+  }
+
+  protected void checkSpecialAccountAmount(Move move, int temporaryMoveNumber) {
+    try {
+      moveValidateService.checkSpecialAccountAmount(move, Long.valueOf(temporaryMoveNumber));
+    } catch (AxelorException e) {
+      this.setErrorMassEntryMoveLines(move, temporaryMoveNumber, "balance", e.getMessage());
+    }
   }
 }
