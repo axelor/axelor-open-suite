@@ -167,6 +167,7 @@
   </action-record>
 
   <action-group name="action-group-logistical-form-add-stock-move">
+    <action name="save"/>
     <action name="action-logistical-form-method-add-stock-move"/>
     <action name="save"/>
   </action-group>
