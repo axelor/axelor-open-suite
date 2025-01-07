@@ -225,4 +225,6 @@ public interface MoveToolService {
 
   List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
       throws AxelorException;
+
+  boolean isOpenOrClosureMove(Move move);
 }
