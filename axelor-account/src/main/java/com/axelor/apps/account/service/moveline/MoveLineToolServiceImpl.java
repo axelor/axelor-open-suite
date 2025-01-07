@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -51,6 +52,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.persistence.Query;
 
 @RequestScoped
@@ -439,5 +441,25 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     bindings.put("invoiceId", invoiceId);
 
     return moveLineRepository.all().filter(filter).bind(bindings).fetch();
+  }
+
+  @Override
+  public boolean isMoveLineSpecialAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_SPECIAL.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
+
+  @Override
+  public boolean isMoveLineCommitmentAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_COMMITMENT.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
   }
 }

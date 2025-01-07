@@ -71,4 +71,8 @@ public interface MoveLineToolService {
 
   List<MoveLine> getMoveExcessDueList(
       boolean excessPayment, Company company, Partner partner, Long invoiceId);
+
+  boolean isMoveLineSpecialAccount(MoveLine moveLine);
+
+  boolean isMoveLineCommitmentAccount(MoveLine moveLine);
 }

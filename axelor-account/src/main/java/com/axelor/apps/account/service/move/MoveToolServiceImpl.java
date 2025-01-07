@@ -734,4 +734,10 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     return statusList;
   }
+
+  @Override
+  public boolean isOpenOrClosureMove(Move move) {
+    return move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
+        || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE;
+  }
 }
