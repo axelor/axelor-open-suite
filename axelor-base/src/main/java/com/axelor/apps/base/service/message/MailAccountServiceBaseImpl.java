@@ -21,6 +21,7 @@ package com.axelor.apps.base.service.message;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.repo.EmailAccountRepository;
@@ -57,7 +58,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
     AppBase appBase = appBaseService.getAppBase();
     if (appBase.getEmailAccountByUser() || appBase.getEmailAccountByCompany()) {
       String query = this.mailAccountQuery(mailAccount);
-      if (!query.isEmpty()) {
+      if (!StringUtils.isEmpty(query)) {
         if (appBase.getEmailAccountByUser()) {
           query +=
               " AND self.user"
