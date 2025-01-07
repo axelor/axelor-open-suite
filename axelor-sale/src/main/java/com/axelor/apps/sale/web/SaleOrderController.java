@@ -45,28 +45,30 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.sale.service.SaleOrderDomainService;
-import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderContextHelper;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDummyService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineFiscalPositionService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderViewService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderContextHelper;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderGroupService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -101,7 +103,12 @@ public class SaleOrderController {
 
   public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
     SaleOrder saleOrder = SaleOrderContextHelper.getSaleOrder(request.getContext());
-    boolean isTemplate = (boolean) request.getContext().get("_template");
+    boolean isTemplate = false;
+
+    if (request.getContext().get("_template") != null) {
+      isTemplate = (boolean) request.getContext().get("_template");
+    }
+
     SaleOrderInitValueService saleOrderInitValueService =
         Beans.get(SaleOrderInitValueService.class);
     Map<String, Object> saleOrderMap = new HashMap<>();
@@ -300,6 +307,7 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  @ErrorException
   public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
@@ -314,10 +322,15 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-      Beans.get(SaleOrderWorkflowService.class)
-          .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+      String message =
+          Beans.get(SaleOrderConfirmService.class)
+              .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
       response.setReload(true);
+
+      if (StringUtils.notEmpty(message)) {
+        response.setNotify(message);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -625,7 +638,8 @@ public class SaleOrderController {
 
     try {
       List<SaleOrderLine> saleOrderLineList =
-          Beans.get(SaleOrderOnLineChangeService.class).handleComplementaryProducts(saleOrder);
+          Beans.get(SaleOrderComplementaryProductService.class)
+              .handleComplementaryProducts(saleOrder);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

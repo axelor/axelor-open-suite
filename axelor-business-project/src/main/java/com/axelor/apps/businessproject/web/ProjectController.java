@@ -34,6 +34,7 @@ import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectHistoryService;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -111,7 +112,6 @@ public class ProjectController {
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
             .param("forceEdit", "true")
-            .param("show-toolbar", "false")
             .context("_project", project)
             .map());
   }
@@ -128,15 +128,30 @@ public class ProjectController {
       response.setValue("analyticDistributionTemplate", project.getAnalyticDistributionTemplate());
       response.setValue("currency", project.getCurrency());
       response.setValue("priceList", project.getPriceList());
+
+      response.setValue(
+          "contactPartner",
+          partner.getContactPartnerSet().size() == 1
+              ? partner.getContactPartnerSet().iterator().next()
+              : null);
     }
   }
 
   public void computeProjectTotals(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Project project = request.getContext().asType(Project.class);
+    ProjectBusinessService projectBusinessService = Beans.get(ProjectBusinessService.class);
+    projectBusinessService.computeProjectTotals(project);
 
-    Beans.get(ProjectBusinessService.class).computeProjectTotals(project);
-    response.setNotify(I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    List<String> projectTaskList = projectBusinessService.checkPercentagesOver1000OnTasks(project);
+    if (projectTaskList.isEmpty()) {
+      response.setNotify(I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    } else {
+      response.setAlert(
+          String.format(
+                  I18n.get(ITranslation.PROJECT_TASK_FOLLOW_UP_VALUES_TOO_HIGH), projectTaskList)
+              + I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    }
     response.setReload(true);
   }
 

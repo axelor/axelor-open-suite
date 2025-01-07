@@ -19,13 +19,13 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.service.MetaFileService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
-import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class PartnerBaseRepository extends PartnerRepository {
@@ -49,17 +49,17 @@ public class PartnerBaseRepository extends PartnerRepository {
     copy.setPartnerSeq(null);
     copy.setEmailAddress(null);
 
-    PartnerAddressRepository partnerAddressRepository = Beans.get(PartnerAddressRepository.class);
-
-    List<PartnerAddress> partnerAddressList = Lists.newArrayList();
-
-    if (deep && copy.getPartnerAddressList() != null) {
-      for (PartnerAddress partnerAddress : copy.getPartnerAddressList()) {
-
-        partnerAddressList.add(partnerAddressRepository.copy(partnerAddress, deep));
+    try {
+      MetaFile picture = copy.getPicture();
+      if (picture != null) {
+        MetaFile pictureCopy = Beans.get(MetaFileService.class).copyMetaFile(picture);
+        copy.setPicture(pictureCopy);
       }
+    } catch (Exception e) {
+      throw new PersistenceException(e);
     }
-    copy.setPartnerAddressList(partnerAddressList);
+
+    copy.setPartnerAddressList(Lists.newArrayList());
     copy.setBlockingList(null);
     copy.setBankDetailsList(null);
 

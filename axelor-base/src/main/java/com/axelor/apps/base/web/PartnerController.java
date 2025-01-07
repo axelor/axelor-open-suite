@@ -57,10 +57,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -73,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
@@ -320,26 +319,31 @@ public class PartnerController {
       }
     }
     if (!ibanInError.isEmpty()) {
-
-      Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
-
       response.setError(
           String.format(
               I18n.get(BaseExceptionMessage.BANK_DETAILS_2),
-              "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
+              StringHtmlListBuilder.formatMessage(ibanInError)));
     }
   }
 
   public void convertToIndividualPartner(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
-    if (partner.getId() == null) {
+    Long id = partner.getId();
+    if (id == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.PARTNER_3));
     }
-    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    partner = Beans.get(PartnerRepository.class).find(id);
     Beans.get(PartnerService.class).convertToIndividualPartner(partner);
+    response.setView(
+        ActionView.define(I18n.get("Partner"))
+            .model(Partner.class.getName())
+            .add("form", "partner-form")
+            .add("grid", "partner-grid")
+            .context("_showRecord", id)
+            .map());
   }
 
   /**
@@ -456,5 +460,21 @@ public class PartnerController {
     response.setValue(
         "$positiveBalanceBtn",
         Beans.get(CurrencyScaleService.class).getCompanyScaledValue(company, balance.abs()));
+  }
+
+  public void setParentPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    List<Partner> parentPartnerList = Beans.get(PartnerService.class).getParentPartnerList(partner);
+    if (ObjectUtils.notEmpty(parentPartnerList)) {
+      response.setAttr(
+          "parentPartner",
+          "domain",
+          String.format(
+              "self.id IN (%s)",
+              parentPartnerList.stream()
+                  .map(Partner::getId)
+                  .map(String::valueOf)
+                  .collect(Collectors.joining(","))));
+    }
   }
 }

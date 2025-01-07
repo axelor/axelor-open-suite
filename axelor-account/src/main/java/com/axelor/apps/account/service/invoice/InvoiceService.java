@@ -37,6 +37,7 @@ import com.axelor.meta.CallMethod;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -57,7 +58,7 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  public Invoice compute(final Invoice invoice) throws AxelorException;
+  public Map<String, Object> compute(final Invoice invoice) throws AxelorException;
 
   /**
    * Validate an invoice.
@@ -93,6 +94,14 @@ public interface InvoiceService {
    * @throws AxelorException
    */
   public void cancel(Invoice invoice) throws AxelorException;
+
+  /**
+   * Return to draft status.
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  void backToDraft(Invoice invoice) throws AxelorException;
 
   /**
    * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de

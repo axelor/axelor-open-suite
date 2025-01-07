@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
@@ -41,8 +41,7 @@
         <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
         <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="3"/>
         <field name="draftPrefix" colSpan="3"/>
-
-
+        <field name="defaultBatchFetchLimit" colSpan="3"/>
         <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
@@ -73,7 +72,7 @@
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
         <field name="enableTaxNumbers" widget="boolean-switch"/>
-        <spacer/>
+        <field name="defaultAddressTemplate"/>
         <panel-related field="companySpecificProductFieldsSet"
           domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'
            AND self.name IN ('sellable','purchasable','procurementMethodSelect','salePrice','saleCurrency','purchasePrice','purchaseCurrency','costPrice','costTypeSelect','managPriceCoef','avgPrice','autoUpdateSalePrice','lastPurchasePrice','defaultBillOfMaterial','controlOnReceipt','customsCodeNomenclature', 'trackingNumberConfiguration')"

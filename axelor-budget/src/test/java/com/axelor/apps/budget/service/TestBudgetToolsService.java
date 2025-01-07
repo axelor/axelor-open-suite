@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.AccountConfig;
@@ -24,7 +42,6 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -203,14 +220,14 @@ public class TestBudgetToolsService extends BudgetTest {
     givenGetAvailableAmount(
         1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE);
     Assertions.assertEquals(
-        200, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+        200, budgetToolsService.getAvailableAmountOnBudget(budget, budget.getToDate()).intValue());
   }
 
   @Test
   void testGetAvailableAmountOnBudgetBudget() {
     givenGetAvailableAmount(1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET);
     Assertions.assertEquals(
-        400, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+        400, budgetToolsService.getAvailableAmountOnBudget(budget, budget.getToDate()).intValue());
   }
 
   @Test
@@ -218,7 +235,7 @@ public class TestBudgetToolsService extends BudgetTest {
     givenGetAvailableAmount(
         1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
     Assertions.assertEquals(
-        4300, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+        4300, budgetToolsService.getAvailableAmountOnBudget(budget, budget.getToDate()).intValue());
   }
 
   @Test

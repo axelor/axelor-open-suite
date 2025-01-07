@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
@@ -11,11 +11,17 @@
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="treeIconButton" showIf="hasTree" onClick="refresh" readonlyIf="true"
-      icon="list-ul" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+      icon="list-ul"
+      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="addToCartBtn" title="Add to cart"
+      onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
+      if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+      readonlyIf="!product || typeSelect != 0"/>
+    <field name="product" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
     <field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
@@ -58,24 +64,31 @@
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="addToCartBtn" title="Add to cart"
+      onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
+      if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+      readonlyIf="!product || typeSelect != 0"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
-    <field name="product" canEdit="false"
-      onChange="action-group-sale-saleorderline-product-onchange"
+    <field name="product" canEdit="false" x-image-field="picture"
+      onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
       grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
     <field name="product" canEdit="false"
-      onChange="action-group-sale-saleorderline-product-onchange"
+      onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
       grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
       validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || subSaleOrderLineList.length &gt; 0"
       onChange="action-sale-order-line-method-onchange-price" hidden="true"
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="inTaxPrice" readonlyIf="$isReadOnly !== false || deliveryState == 3"
+      onChange="action-sale-order-line-method-onchange-intaxprice"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
       onChange="action-sale-order-line-method-discount-type-onchange"/>
     <field name="discountAmount" colSpan="3"
@@ -83,12 +96,12 @@
       validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
       onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
     <field name="taxLineSet" canEdit="false" colSpan="6"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
       onChange="action-sale-order-line-method-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="TagSelect"/>
-    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="description"/>
@@ -142,7 +155,7 @@
   </grid>
 
   <form name="sale-order-line-project-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
     readonlyIf="true" canEdit="false">
     <panel name="mainPanel" title="Sale order">
       <field name="saleOrder.saleOrderSeq" title="Reference" colSpan="4"/>
@@ -153,8 +166,8 @@
   </form>
 
   <form name="sale-order-line-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="productPanel" showIf="typeSelect > 0">
       <field name="productName" colSpan="9" title="Title"/>
       <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3"
@@ -232,12 +245,12 @@
             </field>
 
           </panel>
-          <field name="product" canEdit="false"
-            onChange="action-group-sale-saleorderline-product-onchange"
+          <field name="product" canEdit="false" x-image-field="picture"
+            onChange="action-sale-order-line-method-get-product-information"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
-          <field name="product" canEdit="false"
-            onChange="action-group-sale-saleorderline-product-onchange"
+          <field name="product" canEdit="false" x-image-field="picture"
+            onChange="action-sale-order-line-method-get-product-information"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
           <field name="enableFreezeFields" colSpan="2"/>
@@ -253,10 +266,10 @@
             validIf="$qtyValid != false"/>
           <field name="unit" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
-            onChange="action-group-sale-saleorderline-unit-onchange" requiredIf="typeSelect == 0"
+            onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
+            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || subSaleOrderLineList.length &gt; 0"
             onChange="action-sale-order-line-method-onchange-price" hidden="true"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
@@ -433,6 +446,7 @@
       <field name="product.isUnrenewed"/>
       <field name="product.isPrototype"/>
       <field name="saleOrder"/>
+      <field name="subSaleOrderLineList"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>
@@ -441,8 +455,8 @@
 
   <form name="sale-order-line-template-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine"
-    onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-template-attrs-hidden-fields-for-client"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    onLoad="action-sale-order-line-method-onload,action-sale-order-line-template-attrs-hidden-fields-for-client"
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="product1Panel" showIf="typeSelect == 1">
       <field name="productName" colSpan="9" title="Title"/>
       <panel name="typeSelect1Panel" colSpan="3">
@@ -451,8 +465,8 @@
       </panel>
     </panel>
     <panel name="product2Panel" hideIf="typeSelect == 1">
-      <field name="product" canEdit="false"
-        onChange="action-group-sale-saleorderline-product-onchange"
+      <field name="product" canEdit="false" x-image-field="picture"
+        onChange="action-sale-order-line-method-get-product-information"
         onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
         grid-view="product-grid"/>
       <panel name="typeSelect2Panel" colSpan="3">
@@ -525,8 +539,8 @@
   </form>
 
   <form name="sale-order-line-menu-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="mainPanel">
       <field name="saleOrder.clientPartner"/>
       <field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
@@ -537,8 +551,8 @@
   </form>
 
   <form name="sale-order-line-invoice-form" title="SO line"
-    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload"
-    onNew="action-group-sale-saleorderline-onnew" width="large">
+    model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-sale-order-line-method-onload"
+    onNew="action-sale-order-line-method-onnew" width="large">
     <panel name="mainPanel">
       <field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
     </panel>
@@ -571,8 +585,8 @@
 
   <action-view name="action-sale-order-line-view-project-tasks" title="Related tasks"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="project-task-grid"/>
-    <view type="form" name="project-task-form"/>
+    <view type="grid" name="business-project-task-grid"/>
+    <view type="form" name="business-project-task-form"/>
     <domain>self.saleOrderLine = :id</domain>
   </action-view>
 
@@ -591,45 +605,9 @@
 
   <!-- ACTION GROUPs -->
 
-  <action-group name="action-group-sale-saleorderline-onnew">
-    <action name="action-sale-order-line-method-onnew"/>
-    <action name="action-sale-order-line-record-new"/>
-    <action name="action-sale-order-line-record-project"/>
-    <action name="action-sale-order-line-attrs-fill-estimated-date"/>
-    <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
-  </action-group>
-
-  <action-group name="action-group-sale-saleorderline-onload">
-    <action name="action-sale-order-line-method-onload"/>
-    <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
-  </action-group>
-
-  <action-group name="action-group-sale-saleorderline-product-onchange">
-    <action name="action-sale-order-line-method-get-product-information"/>
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
-    <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
-  </action-group>
-
   <action-group name="action-group-sale-saleorderline-qty-onchange">
     <action name="action-sale-order-line-method-compute-pricing-scale"/> <!-- Exclude pricing method because we can't include it in a map -->
     <action name="action-sale-order-line-method-qty-onchange"/>
-    <action name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty"
-      if="__config__.app.isApp('supplychain') &amp;&amp; saleOrder?.statusSelect == 3"/> <!-- check -->
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/> <!-- check -->
-    <action name="action-sale-order-line-method-check-qty"
-      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/> <!-- check -->
-    <!-- name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain')
-      &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/ --> <!-- to be removed -->
-  </action-group>
-
-  <action-group name="action-group-sale-saleorderline-unit-onchange">
-    <action name="action-sale-order-line-method-check-stock"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
   </action-group>
 
   <action-group name="action-sale-order-line-group-deliv-estimated-date-onchange">
@@ -639,17 +617,6 @@
   </action-group>
 
   <!-- ACTION RECORD -->
-
-  <action-record name="action-sale-order-line-record-new"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="qty" expr="eval: 1"/>
-  </action-record>
-
-  <action-record name="action-sale-order-line-record-project"
-    model="com.axelor.apps.sale.db.SaleOrderLine" if-module="axelor-business-project">
-    <field name="project" expr="eval: __parent__?.project"
-      if="__config__.app.isApp('business-project')"/>
-  </action-record>
 
   <action-record name="action-sale-order-line-record-reset-is-hide-unit-amounts"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -661,11 +628,6 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="discountAmount"
       expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
-  </action-record>
-
-  <action-record name="action-sale-order-line-record-set-business-project"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="project" expr="eval: __parent__.project"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -683,10 +645,6 @@
       method="getProductInformation"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-check-qty">
-    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="checkQty"/>
-  </action-method>
-
   <action-method name="action-sale-order-line-method-onchange-price">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="updateInTaxPrice"/>
   </action-method>
@@ -702,11 +660,6 @@
 
   <action-method name="action-sale-order-line-method-type-select-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="typeSelectOnChange"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-method-check-stock"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-qty-onchange">
@@ -750,26 +703,15 @@
       method="setScaleForPriceAndQty"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-unit-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="unitOnChange"/>
+  </action-method>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
     <attribute name="hidden" for="allPanelTab" if="eval: __user__.group?.isClient"
       expr="true"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-line-attrs-fill-estimated-date">
-    <attribute name="value" expr="eval: __parent__?.estimatedShippingDate"
-      for="estimatedShippingDate"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; deliveryState &lt; 2"/>
-  </action-attrs>
-
-  <action-group name="action-sale-order-line-group-editable-onnew">
-    <action name="action-sale-order-line-method-onnew-editable"/>
-    <action name="action-sale-order-line-record-set-business-project"/>
-  </action-group>
-
-  <action-attrs name="action-sale-order-line-attrs-onnew-focus">
-    <attribute for="product" name="focus" expr="true"/>
   </action-attrs>
 
   <action-validate name="action-sale-order-line-validate-check-coefficient-config">
@@ -793,5 +735,9 @@
     <action name="action-sale-order-line-validate-check-coefficient-config"/>
     <action name="action-sale-order-line-attrs-to-invoice"/>
   </action-group>
+
+  <action-method name="action-sale-order-line-method-add-to-cart">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="addToCart"/>
+  </action-method>
 
 </object-views>

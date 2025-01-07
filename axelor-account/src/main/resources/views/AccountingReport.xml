@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <!-- ACCOUNTING REPORT -->
 
@@ -181,11 +181,11 @@
             showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports &amp;&amp; companySet.length &lt;= 1"/>
         </panel>
         <panel name="tagsPanel" title="Tags"
-          showIf="$contains([1,2,7,11], reportType.typeSelect)" colSpan="12">
-          <field name="partnerTagSet" widget="TagSelect" x-color-field="colorSelect"
+          showIf="$contains([1,2,3,4,5,6,7,10,11,13,14,17,18], reportType.typeSelect)" colSpan="12">
+          <field name="partnerTagSet" widget="TagSelect" x-color-field="color"
             grid-view="tag-simplified-grid" form-view="tag-form"
             onSelect="action-accounting-report-attrs-set-partner-tag-domain"/>
-          <field name="accountTagSet" widget="TagSelect" x-color-field="colorSelect"
+          <field name="accountTagSet" widget="TagSelect" x-color-field="color"
             grid-view="tag-simplified-grid" form-view="tag-form"
             onSelect="action-account-attrs-set-account-tag-domain"/>
         </panel>
@@ -423,7 +423,7 @@
 
   <action-attrs name="action-accounting-report-attrs-set-partner-tag-domain">
     <attribute name="domain" for="partnerTagSet"
-      expr="eval: &quot; ${__repo__(MetaModel).findByName('Partner')?.id} member of self.concernedModelSet AND (:company IS NULL OR :company member of self.companySet OR self.companySet IS EMPTY) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->

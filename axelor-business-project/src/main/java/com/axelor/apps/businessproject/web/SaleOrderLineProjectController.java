@@ -28,7 +28,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineContextHelper;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -136,7 +136,8 @@ public class SaleOrderLineProjectController {
   public void setProjectDomain(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttr(
         "project",
         "domain",

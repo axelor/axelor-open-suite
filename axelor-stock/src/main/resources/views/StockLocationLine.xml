@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="stock-location-line-grid" title="Stock Locations content"
     model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
@@ -21,6 +21,14 @@
     <field name="rack"/>
     <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
+  </grid>
+
+  <grid name="stock-location-line-mass-stock-move-cart-grid" title="Stock Locations content"
+    model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product, trackingNumber"
+    x-selector="none">
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="currentQty" aggregate="sum" x-scale="2"/>
+    <field name="trackingNumber" domain="self.product = :product"/>
   </grid>
 
   <form name="stock-location-line-form" title="Stock Location content"

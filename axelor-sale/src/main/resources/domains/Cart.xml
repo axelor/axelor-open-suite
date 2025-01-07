@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="Cart">
+
+    <many-to-one name="user" column="user_id" title="User" ref="com.axelor.auth.db.User"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="true"/>
+    <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <one-to-many name="cartLineList" title="Cart line list"
+      ref="com.axelor.apps.sale.db.CartLine" mappedBy="cart"/>
+
+  </entity>
+
+</domain-models>

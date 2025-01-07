@@ -46,6 +46,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -89,6 +90,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -559,7 +561,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           false,
           BigDecimal.ZERO,
           virtualStockLocation,
-          wasteStockLocation);
+          wasteStockLocation,
+          prodProduct.getWasteProductTrackingNumber());
     }
 
     stockMoveService.validate(wasteStockMove);
@@ -983,13 +986,27 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
 
-    Optional<LocalDateTime> minDate =
-        manufOrderList.stream()
-            .filter(mo -> mo.getPlannedStartDateT() != null)
-            .map(ManufOrder::getPlannedStartDateT)
-            .min(LocalDateTime::compareTo);
+    ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+    ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
+    int scheduling = productionConfig.getScheduling();
 
-    minDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
+    if (scheduling == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
+      Optional<LocalDateTime> minStartDate =
+          manufOrderList.stream()
+              .map(ManufOrder::getPlannedStartDateT)
+              .filter(Objects::nonNull)
+              .min(LocalDateTime::compareTo);
+
+      minStartDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
+    } else {
+      Optional<LocalDateTime> minEndDate =
+          manufOrderList.stream()
+              .map(ManufOrder::getPlannedEndDateT)
+              .filter(Objects::nonNull)
+              .min(LocalDateTime::compareTo);
+
+      minEndDate.ifPresent(mergedManufOrder::setPlannedEndDateT);
+    }
 
     /* Update the created manuf order */
     mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
@@ -1142,7 +1159,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             generateManufOrder(
                 product,
                 manufOrder.getQty().multiply(billOfMaterial.getQty()),
-                billOfMaterialService.getPriority(billOfMaterial),
+                manufOrder.getPrioritySelect(),
                 IS_TO_INVOICE,
                 billOfMaterial,
                 manufOrder.getPlannedStartDateT(),
@@ -1181,7 +1198,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           createDraftManufOrder(
               childBom.getProduct(),
               qtyRequested,
-              billOfMaterialService.getPriority(childBom),
+              parentMO.getPrioritySelect(),
               childBom,
               null,
               parentMO.getPlannedStartDateT());
@@ -1308,18 +1325,22 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     BigDecimal bomQty = billOfMaterial.getQty();
     BigDecimal qty = manufOrder.getQty();
 
-    Map<Product, BigDecimal> bomLineMap =
+    Map<Product, Pair<BigDecimal, Unit>> bomLineMap =
         billOfMaterial.getBillOfMaterialLineList().stream()
             .collect(
-                Collectors.groupingBy(
+                Collectors.toMap(
                     BillOfMaterialLine::getProduct,
-                    Collectors.reducing(
-                        BigDecimal.ZERO, BillOfMaterialLine::getQty, BigDecimal::add)));
+                    line -> Pair.of(line.getQty(), line.getUnit()),
+                    (x, y) -> Pair.of(x.getLeft().add(y.getLeft()), x.getRight())));
 
-    for (Entry<Product, BigDecimal> billOfMaterialLine : bomLineMap.entrySet()) {
+    for (Entry<Product, Pair<BigDecimal, Unit>> billOfMaterialLine : bomLineMap.entrySet()) {
       Product product = billOfMaterialLine.getKey();
-      BigDecimal bomLineQty = billOfMaterialLine.getValue();
+      BigDecimal bomLineQty = billOfMaterialLine.getValue().getLeft();
+      Unit bomLineUnit = billOfMaterialLine.getValue().getRight();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
+      availableQty =
+          unitConversionService.convert(
+              product.getUnit(), bomLineUnit, availableQty, availableQty.scale(), product);
       BigDecimal qtyNeeded =
           qty.multiply(bomLineQty)
               .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);

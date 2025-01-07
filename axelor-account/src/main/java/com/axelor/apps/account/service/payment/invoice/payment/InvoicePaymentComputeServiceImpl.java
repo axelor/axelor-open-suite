@@ -58,7 +58,9 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
       invoiceTermIdList =
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
 
-      if (!invoicePayment.getApplyFinancialDiscount()) {
+      if (!invoicePayment.getApplyFinancialDiscount()
+          && invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())
+          && invoicePayment.getTotalAmountWithFinancialDiscount().signum() > 0) {
         invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
       }
       invoicePayment.clearInvoiceTermPaymentList();
@@ -69,16 +71,13 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
               invoicePayment.getCompanyCurrency(),
               invoicePayment.getPaymentDate());
       invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-          invoicePayment, invoiceTerms, companyAvailableAmount, companyAvailableAmount);
+          invoicePayment,
+          invoiceTerms,
+          companyAvailableAmount,
+          invoicePayment.getAmount(),
+          companyAvailableAmount);
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
-
-      if (invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
-
-        invoicePayment.setAmount(
-            invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
-      }
     }
     return invoiceTermIdList;
   }

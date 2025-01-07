@@ -1076,6 +1076,15 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
 
+  public static final String INVOICE_VALIDATE_WRONG_STATUS = /*$$(*/
+      "You can only validate a drafted invoice." /*)*/;
+  public static final String INVOICE_VENTILATE_WRONG_STATUS = /*$$(*/
+      "You can only ventilate a validated invoice" /*)*/;
+  public static final String INVOICE_CANCEL_WRONG_STATUS = /*$$(*/
+      "You can only cancel a drafted or validated invoice." /*)*/;
+  public static final String INVOICE_DRAFT_WRONG_STATUS = /*$$(*/
+      "You can only return to the draft status from a cancelled invoice." /*)*/;
+
   public static final String NO_CUT_OFF_TO_APPLY = /*$$(*/
       "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line." /*)*/;
 
@@ -1223,6 +1232,9 @@ public final class AccountExceptionMessage {
   /* MOVE REVERSE*/
   public static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
       "There is no reverse date select value of value %d" /*)*/;
+
+  public static final String REVERSE_DATE_CAN_NOT_BE_BEFORE_MOVE_DATE = /*$$(*/
+      "The chosen date for the reverse entry can't be lower than the entry to be reversed." /*)*/;
 
   /*Check not lettered advance move lines*/
   public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
@@ -1758,6 +1770,42 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange gain account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange loss account config for company %s." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_INVOICE_NO_LATE = /*$$(*/
+      "None of the payment due dates have been exceeded." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_FLAT_FEE_NO_PRODUCT = /*$$(*/
+      "There is no product configured for flat fee." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PRODUCT = /*$$(*/
+      "There is no product configured for late payment interest." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_BELOW_THRESHOLD = /*$$(*/
+      "The amount remaining is below the threshold defined in configuration." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE = /*$$(*/
+      "There is no interest rate defined in invoice term payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_INTEREST_RATE = /*$$(*/
+      "There is no interest rate defined in payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_DATES_INCONSISTENCY = /*$$(*/
+      "Inconsistency in begin and ending dates." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_CONTINUITY = /*$$(*/
+      "The periods must be continuous." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_OVERLAP = /*$$(*/
+      "2 interest rate history line periods can not overlap." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_END_DATE_IN_FUTURE = /*$$(*/
+      "The end date must be in the past." /*)*/;
 
   public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
       "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special or commitment should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;

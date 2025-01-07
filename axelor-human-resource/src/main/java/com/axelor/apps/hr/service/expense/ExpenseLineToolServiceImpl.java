@@ -59,7 +59,8 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
     }
 
     expenseLine.setDistance(distance);
-    if (appHumanResourceService.getAppExpense().getComputeDistanceWithWebService()) {
+    if (appHumanResourceService.getAppExpense().getComputeDistanceWithWebService()
+        && distance == null) {
       expenseLine.setDistance(kilometricService.computeDistance(expenseLine));
     }
   }

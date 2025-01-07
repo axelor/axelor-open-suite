@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -15,7 +15,7 @@
     <integer name="gravityTypeSelect" title="Gravity"
       selection="quality.qi.gravity.type.select"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
-      required="true" readonly="true"/>
+      required="true"/>
     <many-to-one name="qiDetection" title="Detection"
       ref="com.axelor.apps.quality.db.QIDetection" required="true"/>
     <many-to-one name="qiStatus" title="Status"

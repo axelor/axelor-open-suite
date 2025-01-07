@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -75,6 +75,11 @@
     <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
       selection="account.account.chart.code.nbr.char.select"/>
 
+    <!-- Foreign exchange gains/losses -->
+    <many-to-one name="foreignExchangeGainsAccount"
+      ref="com.axelor.apps.account.db.Account" title="Gains account"/>
+    <many-to-one name="foreignExchangeLossesAccount"
+      ref="com.axelor.apps.account.db.Account" title="Losses account"/>
 
     <!-- Automatic account creation for partners -->
     <integer name="partnerAccountGenerationModeSelect"

@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-
-  <selection name="sale.batch.action.select">
-    <option value="1">Invoicing</option>
-  </selection>
 
   <selection name="sale.order.status.select">
     <option value="1">Draft quotation</option>
@@ -101,6 +97,19 @@
 
   <selection name="base.pricing.type.select" id="sale.base.pricing.type.select">
     <option value="Pricing">Sale.Pricing</option>
+  </selection>
+
+  <selection name="cart.order.creation.mode.select">
+    <option value="0">Create order with missing products</option>
+    <option value="1">Ignore missing products</option>
+    <option value="2">Block order creation</option>
+  </selection>
+
+  <selection name="sale.app.sale.line.display.type.select">
+    <option value="0">Standard</option>
+    <option value="1">Editable</option>
+    <option value="2">Editable tree</option>
+    <option value="3">Tree line</option>
   </selection>
 
 </object-views>

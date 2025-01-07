@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="InterestRateHistoryLine">
+
+    <decimal name="interestRate" title="Interest rate" precision="5" scale="2"/>
+    <date name="fromDate" title="From date"/>
+    <date name="endDate" title="End date"/>
+    <many-to-one name="paymentMode" title="Payment mode"
+      ref="com.axelor.apps.account.db.PaymentMode"/>
+
+  </entity>
+
+</domain-models>

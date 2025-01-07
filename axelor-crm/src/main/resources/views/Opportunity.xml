@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="opportunity-grid" title="Opportunities"
     model="com.axelor.apps.crm.db.Opportunity"
@@ -151,7 +151,7 @@
       </field>
       <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false"
         form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
-      <field name="opportunityRating" widget="ImageSelect" x-labels="false" colSpan="2"/>
+      <field name="opportunityRating" widget="Rating" colSpan="2"/>
       <field name="source" colSpan="4" canEdit="false" form-view="source-form"
         grid-view="source-grid"/>
       <field name="expectedCloseDate" colSpan="4"
@@ -223,7 +223,7 @@
         <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
           canEdit="false" form-view="team-form" grid-view="team-grid"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
-          name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet"
+          name="tradingName" canEdit="false" domain="self.company = :company"
           form-view="trading-name-form" grid-view="trading-name-grid"/>
         <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
           if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox"
@@ -241,11 +241,13 @@
         <field name="partner" canEdit="false" requiredIf="contact == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = false AND :company member of self.companySet"
-          form-view="partner-form" grid-view="partner-grid"/>
+          form-view="partner-form" grid-view="partner-grid"
+          onChange="action-opportunity-record-set-contact"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
-          domain="self.isContact = true AND :company member of self.companySet"
-          form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+          form-view="partner-contact-form" grid-view="partner-contact-grid"
+          onSelect="action-opportunity-attrs-set-contact-domain"
+          onChange="action-opportunity-record-set-partner"/>
       </panel>
       <panel name="postitPanel" title="Memo" canCollapse="true">
         <field name="memo" showTitle="false" colSpan="12"/>
@@ -707,5 +709,26 @@
     <call class="com.axelor.apps.crm.web.OpportunityController"
       method="kanbanOpportunityOnMove"/>
   </action-method>
+
+  <action-attrs name="action-opportunity-attrs-set-contact-domain">
+    <attribute for="contact" if="partner &amp;&amp; !partner?.contactPartnerSet?.empty"
+      name="domain"
+      expr="eval: &quot; self.id IN (${partner?.contactPartnerSet?.collect{it.id}.join(',')}) &quot;"/>
+    <attribute for="contact" if="partner &amp;&amp; partner?.contactPartnerSet?.empty"
+      name="domain" expr="eval: &quot; self.id IN (0) &quot;"/>
+    <attribute for="contact" if="!partner" name="domain"
+      expr="eval: &quot; self.isContact = true AND :company member of self.companySet &quot;"/>
+  </action-attrs>
+
+  <action-record name="action-opportunity-record-set-contact"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="contact"
+      expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null"/>
+  </action-record>
+
+  <action-record name="action-opportunity-record-set-partner"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="partner" expr="eval: contact?.mainPartner" if="!partner"/>
+  </action-record>
 
 </object-views>

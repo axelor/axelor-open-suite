@@ -603,19 +603,17 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Move> findDaybookAndAccountingByYear(Set<Year> yearList) {
+  public List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList) {
     List<Long> idList = new ArrayList<>();
     yearList.forEach(y -> idList.add(y.getId()));
-    if (!CollectionUtils.isEmpty(idList)) {
-      List<Integer> status =
-          Arrays.asList(MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
+    if (!CollectionUtils.isEmpty(idList) && !CollectionUtils.isEmpty(statusList)) {
       return Query.of(Move.class)
           .filter("self.period.year.id in :years AND self.statusSelect IN :statusSelect")
           .bind("years", idList)
-          .bind("statusSelect", status)
+          .bind("statusSelect", statusList)
           .fetch();
     }
-    return new ArrayList<Move>();
+    return new ArrayList<>();
   }
 
   @Override

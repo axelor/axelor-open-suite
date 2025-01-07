@@ -1,22 +1,92 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="mass-stock-move-grid" title="Mass stock moves"
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
+    <field name="sequence"/>
     <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
-    <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"/>
+    <field name="statusSelect" required="true"/>
+    <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"
+      onChange="action-mass-stock-move-attrs-refresh-cart-content"/>
+    <field name="commonFromStockLocation"
+      omain="self.company = :company AND self.typeSelect != 3"/>
+    <field name="commonToStockLocation"
+      omain="self.company = :company AND self.typeSelect != 3"/>
   </grid>
 
   <form title="Mass stock move" name="mass-stock-move-form"
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
-    <panel name="identificationPanel">
+    <panel name="stepPanel" hideIf="!cartStockLocation">
+      <field name="stepSelect" widget="Stepper" x-stepper-show-description="true"
+        x-stepper-completed="false" showTitle="false" colSpan="12" onChange="save"/>
+    </panel>
+    <panel name="identificationPanel" hidden="true" showIf="stepSelect == 1"
+      readonlyIf="statusSelect > 1">
+      <field name="statusSelect" widget="SwitchSelect" required="true" readonly="true"
+        showTitle="false" colSpan="12"/>
       <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
       <field name="cartStockLocation"
+        onChange="action-mass-stock-move-attrs-refresh-cart-content"
         domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <field name="commonFromStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <field name="commonToStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <panel-dashlet name="cartStockLocationContentPanel"
+        action="action-mass-stock-move-view-show-cart-stock-location-lines" colSpan="12"
+        showTitle="false" canSearch="true"/>
     </panel>
-    <panel name="pickedProductPanel">
+    <panel hideIf="!cartStockLocation" name="btnPanel" sidebar="true" itemSpan="4">
+      <button name="prepareBtn" title="Prepare"
+        onClick="action-mass-stock-move-record-set-prepare-step,save"/>
+      <button name="pickBtn" title="Pick"
+        onClick="action-mass-stock-move-record-set-pick-step,save"/>
+      <button name="storeBtn" title="Store"
+        onClick="action-mass-stock-move-record-set-store-step,save"/>
+    </panel>
+    <panel name="identificationPanel" hidden="true" showIf="stepSelect != 1"
+      readonlyIf="statusSelect > 1" sidebar="true" canCollapse="true" title="Header">
+      <field name="statusSelect" widget="SwitchSelect" required="true" readonly="true"
+        showTitle="false" colSpan="12"/>
+      <field name="sequence"/>
+      <field name="company"
+        onChange="action-mass-stock-move-record-company-on-change,action-mass-stock-move-attrs-refresh-cart-content"/>
+      <field name="cartStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <field name="commonFromStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+      <field name="commonToStockLocation"
+        domain="self.company = :company AND self.typeSelect != 3" readonlyIf="company == null"/>
+
+    </panel>
+    <panel name="cartContentPanel" sidebar="true" title="Cart contents" hidden="true"
+      canCollapse="true" showIf="stepSelect != 1">
+      <panel-dashlet name="cartStockLocationContentPanel"
+        action="action-mass-stock-move-view-show-cart-stock-location-lines" colSpan="12"
+        showTitle="false" canSearch="true"/>
+    </panel>
+    <panel name="productNeedPanel" hidden="true" showIf="stepSelect == 2">
+      <button name="fillProductsToMoveMvtBtn" title="Fill in products from movements"
+        onClick="save,action-mass-stock-move-method-fetch-stock-move-lines"
+        readonlyIf="statusSelect == 3"/>
+      <panel-related field="massStockMoveNeedList"
+        grid-view="mass-stock-move-need-grid" form-view="mass-stock-move-need-form" colSpan="12"
+        canNew="company != null"/>
+      <button name="generatePickedLinesBtn" title="Generate picked products"
+        onClick="save,action-mass-stock-move-method-generate-picked-lines"
+        readonlyIf="statusSelect == 3"/>
+
+      <panel-dashlet action="action-mass-stock-move-view-to-pick-product-list"
+        name="toPickProductPanel" colSpan="12" canSearch="true"/>
+    </panel>
+    <panel name="pickedProductPanel" hidden="true" showIf="stepSelect == 3">
+      <button name="selectPickedProductFromStockLocationBtn"
+        title="Select products from location"
+        onClick="save,action-mass-stock-move-method-select-picked-product-from-stock-location"
+        help="Allows to add every product from the common stock location"
+        readonlyIf="statusSelect == 3"/>
       <panel-related field="pickedProductList" grid-view="picked-product-grid"
         form-view="picked-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizePickingBtn" title="Pick all / the rest"
@@ -24,7 +94,7 @@
       <button name="cancelPickingBtn" title="Cancel picking"
         onClick="action-mass-stock-move-method-cancel-picking" icon="fa-undo"/>
     </panel>
-    <panel name="storedProductPanel">
+    <panel name="storedProductPanel" hidden="true" showIf="stepSelect == 4">
       <panel-related field="storedProductList" grid-view="stored-product-grid"
         form-view="stored-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizeStoringBtn" title="Store all / the rest"
@@ -58,5 +128,61 @@
   <action-method name="action-mass-stock-move-method-cancel-storing">
     <call class="com.axelor.apps.stock.web.MassStockMoveController" method="cancelAllStoring"/>
   </action-method>
+
+  <action-method name="action-mass-stock-move-method-fetch-stock-move-lines">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController"
+      method="fetchStockMoveLines"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-fill-product-need">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="fillProductNeed"/>
+  </action-method>
+
+  <action-method name="action-mass-stock-move-method-generate-picked-lines">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController"
+      method="generatePickedLines"/>
+  </action-method>
+
+  <action-method
+    name="action-mass-stock-move-method-select-picked-product-from-stock-location">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController"
+      method="selectPickedProductFromStockLocation"/>
+  </action-method>
+
+  <action-view name="action-mass-stock-move-view-show-cart-stock-location-lines"
+    title="Cart stock location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    <view type="grid" name="stock-location-line-mass-stock-move-cart-grid"/>
+    <view type="form" name="stock-location-line-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <domain>self.currentQty > 0 and (self.stockLocation = :cartStockLocation OR
+      self.detailsStockLocation = :cartStockLocation)</domain>
+    <context name="cartStockLocation" expr="eval: __this__?.cartStockLocation"/>
+  </action-view>
+
+  <action-attrs name="action-mass-stock-move-attrs-refresh-cart-content">
+    <attribute for="cartStockLocationContentPanel" name="refresh" expr="eval: true"/>
+  </action-attrs>
+
+  <action-record name="action-mass-stock-move-record-set-prepare-step"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <field name="stepSelect" expr="eval: 2"/>
+  </action-record>
+  <action-record name="action-mass-stock-move-record-set-pick-step"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <field name="stepSelect" expr="eval: 3"/>
+  </action-record>
+  <action-record name="action-mass-stock-move-record-set-store-step"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <field name="stepSelect" expr="eval: 4"/>
+  </action-record>
+
+  <action-view name="action-mass-stock-move-view-to-pick-product-list"
+    title="Product to pick" model="com.axelor.apps.stock.db.PickedProduct">
+    <view type="grid" name="picked-product-to-pick-grid"/>
+    <view type="form" name="picked-product-form"/>
+    <domain>self.stockMoveLine is null and self.massStockMove = :massStockMove</domain>
+    <context name="massStockMove" expr="eval: __this__"/>
+  </action-view>
+
 
 </object-views>

@@ -44,7 +44,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -59,6 +60,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -96,8 +98,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected PartnerSupplychainService partnerSupplychainService;
   protected FixedAssetRepository fixedAssetRepository;
   protected PfpService pfpService;
-
-  @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+  protected SaleOrderConfirmService saleOrderConfirmService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
@@ -111,6 +113,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
+      ProductCompanyService productCompanyService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -119,9 +122,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       ReservedQtyService reservedQtyService,
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PfpService pfpService,
-      ProductCompanyService productCompanyService) {
+      SaleOrderConfirmService saleOrderConfirmService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -142,8 +145,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.reservedQtyService = reservedQtyService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.fixedAssetRepository = fixedAssetRepository;
-    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.pfpService = pfpService;
+    this.saleOrderConfirmService = saleOrderConfirmService;
+    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
   }
 
   @Override
@@ -332,7 +336,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
     } else if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      saleOrderWorkflowService.confirmSaleOrder(saleOrder);
+      saleOrderConfirmService.confirmSaleOrder(saleOrder);
     }
   }
 
@@ -477,11 +481,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public boolean splitStockMoveLines(
+  public void splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
       throws AxelorException {
     checkAssociatedInvoiceLine(stockMoveLines);
-    return super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
+    super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
   }
 
   /**

@@ -1,12 +1,22 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="ProjectTaskCategory">
     <string name="name" title="Name" required="true"/>
+    <many-to-many name="projectTaskStatusSet"
+      ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
+    <many-to-one name="completedTaskStatus" title="Completed task status"
+      ref="com.axelor.apps.project.db.TaskStatus"
+      help="This task status will be used to define which status is flagged as completed for tasks."/>
+    <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
+      title="Task fields" mappedBy="projectTaskCategory"/>
+    <one-to-many name="taskStatusProgressByCategoryList"
+      ref="com.axelor.apps.project.db.TaskStatusProgressByCategory" title="Progress by task status"
+      mappedBy="projectTaskCategory"/>
   </entity>
 
 </domain-models>

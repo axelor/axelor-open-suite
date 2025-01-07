@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
@@ -37,6 +38,7 @@ import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
@@ -207,6 +209,11 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
             .map(s -> JPA.find(Site.class, s.getId()))
             .orElse(null);
 
+    Unit timeUnit =
+        Optional.ofNullable((Unit) datas.get("timeUnit"))
+            .map(u -> JPA.find(Unit.class, u.getId()))
+            .orElse(null);
+
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
     while (fromDate.isBefore(toDate)) {
@@ -234,7 +241,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
                 activity,
                 dailyWorkHrs,
                 taskEndDateTime,
-                site);
+                site,
+                timeUnit);
         planningTimeRepo.save(planningTime);
       }
 
@@ -251,7 +259,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       Product activity,
       BigDecimal dailyWorkHrs,
       LocalDateTime taskEndDateTime,
-      Site site)
+      Site site,
+      Unit defaultTimeUnit)
       throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
 
@@ -263,6 +272,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     planningTime.setEndDateTime(taskEndDateTime);
     planningTime.setProject(project);
     planningTime.setSite(site);
+    planningTime.setTimeUnit(defaultTimeUnit);
 
     BigDecimal totalHours = BigDecimal.ZERO;
     if (timePercent > 0) {
@@ -415,9 +425,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Override
   public BigDecimal computePlannedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
-    if (projectConfigService
-        .getProjectConfig(projectPlanningTime.getProject().getCompany())
-        .getIsSelectionOnDisplayPlannedTime()) {
+    ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);
+    if (projectConfig != null && projectConfig.getIsSelectionOnDisplayPlannedTime()) {
       return computePlannedTimeFromDisplayRestricted(projectPlanningTime);
     }
     return computePlannedTimeFromDisplay(projectPlanningTime);
@@ -440,17 +449,20 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   protected BigDecimal computePlannedTimeFromDisplayRestricted(
       ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    Optional<BigDecimal> plannedTime =
+        Optional.of(projectPlanningTime)
+            .map(ProjectPlanningTime::getDisplayPlannedTimeRestricted)
+            .map(PlannedTimeValue::getPlannedTime);
     if (projectPlanningTime.getDisplayTimeUnit() == null
         || projectPlanningTime.getTimeUnit() == null
-        || projectPlanningTime.getDisplayPlannedTimeRestricted() == null
-        || projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime() == null) {
+        || plannedTime.isEmpty()) {
       return BigDecimal.ZERO;
     }
     return unitConversionForProjectService.convert(
         projectPlanningTime.getDisplayTimeUnit(),
         projectPlanningTime.getTimeUnit(),
-        projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime(),
-        projectPlanningTime.getDisplayPlannedTimeRestricted().getPlannedTime().scale(),
+        plannedTime.get(),
+        plannedTime.get().scale(),
         projectPlanningTime.getProject());
   }
 
@@ -471,6 +483,9 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
   protected List<Unit> computeAvailableDisplayTimeUnits(Unit unit) {
     List<Unit> units = new ArrayList<>();
+    if (unit == null) {
+      return units;
+    }
     units.add(unit);
     units.addAll(
         unitConversionRepository
@@ -498,26 +513,46 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Override
   public String computeDisplayPlannedTimeRestrictedDomain(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
-    return "self.id IN ("
-        + StringHelper.getIdListString(
-            projectConfigService
-                .getProjectConfig(projectPlanningTime.getProject().getCompany())
-                .getPlannedTimeValueList())
-        + ")";
+    ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);
+    String idListStr = "";
+    if (projectConfig != null) {
+      idListStr = StringHelper.getIdListString(projectConfig.getPlannedTimeValueList());
+    }
+    if (StringUtils.isEmpty(idListStr)) {
+      idListStr = "0";
+    }
+
+    return String.format("self.id IN (%s)", idListStr);
   }
 
   public BigDecimal getDefaultPlanningTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
-    return projectConfigService
-        .getProjectConfig(projectPlanningTime.getProject().getCompany())
-        .getValueByDefaultOnDisplayPlannedTime();
+    ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);
+    if (projectConfig != null) {
+      projectConfig.getValueByDefaultOnDisplayPlannedTime();
+    }
+    return BigDecimal.ZERO;
   }
 
   public PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
-    return plannedTimeValueService.createPlannedTimeValue(
-        projectConfigService
-            .getProjectConfig(projectPlanningTime.getProject().getCompany())
-            .getValueByDefaultOnDisplayPlannedTime());
+    ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);
+    if (projectConfig != null) {
+      return plannedTimeValueService.createPlannedTimeValue(
+          projectConfig.getValueByDefaultOnDisplayPlannedTime());
+    }
+    return null;
+  }
+
+  protected ProjectConfig getProjectConfig(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    Optional<Company> optCompany =
+        Optional.ofNullable(projectPlanningTime)
+            .map(ProjectPlanningTime::getProject)
+            .map(Project::getCompany);
+    if (optCompany.isPresent()) {
+      return projectConfigService.getProjectConfig(optCompany.get());
+    }
+    return null;
   }
 }

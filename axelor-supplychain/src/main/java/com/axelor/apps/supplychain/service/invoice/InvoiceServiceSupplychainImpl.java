@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
@@ -130,6 +131,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       intercoService.generateIntercoInvoice(invoice);
     }
 
+    updateTimetable(invoice);
+  }
+
+  protected void updateTimetable(Invoice invoice) {
     TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
 
     List<Timetable> timetableList =
@@ -139,6 +144,24 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       timetable.setInvoiced(true);
       timeTableRepo.save(timetable);
     }
+
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      Invoice originalInvoice = invoice.getOriginalInvoice();
+      if (originalInvoice != null) {
+        Timetable timetable =
+            timeTableRepo
+                .all()
+                .filter("self.invoice = :invoice")
+                .bind("invoice", originalInvoice)
+                .fetchOne();
+        if (timetable != null) {
+          timetable.setInvoiced(false);
+          timetable.setInvoice(null);
+        }
+      }
+    }
   }
 
   @Override
@@ -147,22 +170,46 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
-
+    Set<Long> saleOrderIds = new HashSet<>();
+    Set<Long> purchaseOrderIds = new HashSet<>();
     SaleOrder saleOrder = invoice.getSaleOrder();
     PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
+    Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
     Company company = invoice.getCompany();
     Currency currency = invoice.getCurrency();
-    if (company == null || (saleOrder == null && purchaseOrder == null)) {
+    if (company == null
+        || (saleOrder == null && purchaseOrder == null && CollectionUtils.isEmpty(stockMoveSet))) {
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
     boolean generateMoveForInvoicePayment =
         accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment();
 
-    String filter = writeGeneralFilterForAdvancePayment();
+    if (CollectionUtils.isNotEmpty(stockMoveSet)) {
+      saleOrderIds.addAll(
+          stockMoveSet.stream()
+              .flatMap(move -> move.getSaleOrderSet().stream().map(SaleOrder::getId))
+              .collect(Collectors.toList()));
+      purchaseOrderIds.addAll(
+          stockMoveSet.stream()
+              .flatMap(move -> move.getPurchaseOrderSet().stream().map(PurchaseOrder::getId))
+              .collect(Collectors.toList()));
+    }
+
     if (saleOrder != null) {
-      filter += " AND self.saleOrder = :_saleOrder";
-    } else if (purchaseOrder != null) {
-      filter += " AND self.purchaseOrder = :_purchaseOrder";
+      saleOrderIds.add(saleOrder.getId());
+    }
+
+    if (purchaseOrder != null) {
+      purchaseOrderIds.add(purchaseOrder.getId());
+    }
+
+    String filter = writeGeneralFilterForAdvancePayment();
+    if (CollectionUtils.isNotEmpty(saleOrderIds)) {
+      filter += " AND self.saleOrder.id IN :_saleOrderList";
+    }
+
+    if (CollectionUtils.isNotEmpty(purchaseOrderIds)) {
+      filter += " AND self.purchaseOrder.id IN :_purchaseOrderList";
     }
 
     if (!generateMoveForInvoicePayment) {
@@ -179,10 +226,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
                 InvoiceToolService.isPurchase(invoice)
                     ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                     : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
-    if (saleOrder != null) {
-      query.bind("_saleOrder", saleOrder);
-    } else if (purchaseOrder != null) {
-      query.bind("_purchaseOrder", purchaseOrder);
+    if (CollectionUtils.isNotEmpty(saleOrderIds)) {
+      query.bind("_saleOrderList", saleOrderIds);
+    }
+
+    if (CollectionUtils.isNotEmpty(purchaseOrderIds)) {
+      query.bind("_purchaseOrder", purchaseOrderIds);
     }
     if (!generateMoveForInvoicePayment) {
       if (currency == null) {

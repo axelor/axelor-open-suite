@@ -37,9 +37,9 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -310,9 +310,6 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
             .map(InvoiceTermPayment::getCompanyPaidAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
-    if (maxAmount != null) {
-      companyPaymentAmount = companyPaymentAmount.min(maxAmount);
-    }
 
     companyPaymentAmount =
         companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());

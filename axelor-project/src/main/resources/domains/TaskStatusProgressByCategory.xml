@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="TaskStatusProgressByCategory">
+    <many-to-one name="projectTaskCategory"
+      ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Category"/>
+    <many-to-one name="taskStatus" ref="com.axelor.apps.project.db.TaskStatus"
+      title="Task status"/>
+    <decimal name="progress" title="Progress" min="0" max="100"/>
+    <boolean name="isCustomized" title="Customized"/>
+
+    <finder-method name="findByCategoryAndStatus"
+      using="projectTaskCategory,taskStatus"/>
+  </entity>
+
+</domain-models>

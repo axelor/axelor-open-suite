@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -160,11 +160,13 @@
     <field name="amountRemaining" hidden="true" width="80" x-scale="companyCurrencyDecimals"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-      requiredIf="(account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80" widget="TagSelect"/>
     <field name="vatSystemSelect"
-      readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect))"
+      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine"
+      requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
       width="80"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
@@ -223,6 +225,7 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="currencyDecimals" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
+    <field name="move.functionalOriginSelect" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"

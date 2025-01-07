@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="timesheet-line-project-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date">
+    <toolbar>
+      <button name="newLineBtn" title="New line" icon="fa-plus"
+        onClick="action-timesheet-line-method-log-time"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-timesheet-line-method-remove-timesheet-lines"/>
+    </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" onChange="action-timesheet-line-method-set-product"
       form-view="project-task-form" grid-view="project-task-grid"/>
@@ -32,6 +38,12 @@
   <grid name="timesheet-line-project-task-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date">
+    <toolbar>
+      <button name="newLineBtn" title="New line" icon="fa-plus"
+        onClick="action-timesheet-line-method-log-time"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-timesheet-line-method-remove-timesheet-lines"/>
+    </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
@@ -96,7 +108,7 @@
     model="com.axelor.apps.hr.db.TimesheetLine" canNew="false">
     <toolbar>
       <button name="logTime" title="Log time" onClick="action-timesheet-line-log-time"
-        showIf="_showLogTime" if="__user__.contextProject"/>
+        showIf="_showLogTime" if="__user__.activeProject"/>
     </toolbar>
     <field name="timesheet.company"/>
     <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
@@ -276,7 +288,8 @@
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
-      <field name="duration" width="62%" colSpan="2" min="0.01"/>
+      <field name="duration" width="62%" colSpan="2" min="0.01"
+        onChange="action-timesheet-line-method-set-stored-duration"/>
       <label name="durationLabel" colSpan="4"/>
       <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
@@ -293,6 +306,39 @@
       <field name="hoursDuration" hidden="true"/>
       <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"
         canNew="false" canEdit="false" canView="false"/>
+    </panel>
+  </form>
+
+  <form name="timesheet-line-timesheet-project-task-form" title="Timesheet Line"
+    model="com.axelor.apps.hr.db.TimesheetLine"
+    onNew="action-timesheet-line-group-project-task-form-on-new"
+    onSave="action-timesheet-line-group-project-task-form-on-save"
+    onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task">
+    <panel name="overviewPanel" title="Overview">
+      <field name="project" form-view="project-form" grid-view="project-grid"
+        onChange="action-timesheet-line-record-set-project-task"
+        onSelect="action-timesheet-line-attrs-domain-project" readonlyIf="_project" required="true"/>
+      <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"
+        domain="(:project IS NULL OR self.project = :project) AND self.project.manageTimeSpent = true"
+        readonlyIf="_projectTask"
+        onChange="action-timesheet-line-method-set-product,action-timesheet-line-record-set-project"/>
+      <field name="date" onChange="action-timesheet-line-method-set-timesheet"/>
+      <field name="duration" width="62%" colSpan="4"
+        onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
+      <label name="durationLabel" colSpan="2"/>
+      <field name="comments" colSpan="12"/>
+    </panel>
+    <panel name="informationPanel" title="Information" canCollapse="true" collapseIf="true">
+      <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
+        canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
+        form-view="product-activity-form" grid-view="product-activity-grid"/>
+      <field name="employee" readonly="false"
+        onSelect="action-timesheet-line-attrs-domain-employee" form-view="employee-form"
+        grid-view="employee-grid" canNew="false" canEdit="false" canView="false"/>
+      <field name="timesheet" form-view="timesheet-form" readonly="false"
+        onSelect="action-timesheet-line-method-set-timesheet-domain"/>
+      <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
+      <field name="hoursDuration" hidden="true"/>
     </panel>
   </form>
 
@@ -314,14 +360,26 @@
     <action name="action-timesheet-line-atts-overview-readonly"/>
   </action-group>
 
+  <action-group name="action-timesheet-line-group-project-task-form-on-new">
+    <action name="action-project-task-attrs-default-timesheet-line"/>
+    <action name="action-timesheet-line-method-set-timesheet"/>
+    <action name="action-timesheet-line-attrs-set-duration-label"/>
+    <action name="action-timesheet-line-method-set-product"/>
+  </action-group>
+
+  <action-group name="action-timesheet-line-group-project-task-form-on-save">
+    <action name="action-project-task-validate-check-timesheet-line-date"/>
+    <action name="action-timesheet-line-attrs-set-duration-label"/>
+  </action-group>
+
   <action-attrs name="action-project-task-attrs-default-timesheet-line">
     <attribute name="value" expr="#{__config__.date}" for="date"/>
     <attribute name="value" for="projectTask" expr="eval: _projectTask"
       if="_projectTask != null"/>
     <attribute name="value" for="project" expr="eval: _project" if="_project != null"/>
+    <attribute name="value" for="project" expr="eval: _projectTask.project"
+      if="_project == null &amp;&amp; _projectTask != null"/>
     <attribute name="value" for="employee" expr="eval: _employee"/>
-    <attribute name="value" expr="eval: _invoicingType == 1 ? true : false"
-      for="toInvoice"/>
     <attribute name="value" for="enableEditor" expr="eval: true"
       if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
   </action-attrs>
@@ -338,7 +396,7 @@
 
   <action-attrs name="action-timesheet-line-attrs-domain-project">
     <attribute name="domain" for="project"
-      expr="eval: &quot; (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) AND self.isShowTimeSpent = true &quot;"/>
+      expr="eval: &quot; self.manageTimeSpent = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-domain-employee">
@@ -349,7 +407,7 @@
 
   <action-attrs name="action-timesheet-line-attrs-domain-project-task">
     <attribute name="domain" for="projectTask"
-      expr="eval: &quot; self.project.id = ${project?.id} AND self.project.isShowTimeSpent = true &quot;"/>
+      expr="eval: &quot; self.project.id = ${project?.id} AND self.project.manageTimeSpent = true &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-title-project">
@@ -365,10 +423,14 @@
       expr="eval: timesheet?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timesheet?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
   </action-attrs>
 
+  <action-attrs name="action-timesheet-line-attrs-overview-readonly-for-project-task">
+    <attribute name="readonly" for="overviewPanel" expr="_projectTaskId != null"
+      if="__user__.employee != employee || timesheet.statusSelect == 3"/>
+  </action-attrs>
+
   <action-record name="action-hr-default-timesheet-line-project"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="employee" expr="eval:__user__.employee"/>
-    <field name="product" expr="eval:__user__.employee?.product"/>
     <field name="enableEditor" expr="eval: true"
       if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
   </action-record>
@@ -376,9 +438,6 @@
   <action-record name="action-hr-default-timesheet-line-timesheet"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="employee" expr="eval:__parent__.employee"/>
-    <field name="product"
-      expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(__repo__(Employee).find(__parent__.employee.id))"
-      if="__parent__.employee != null"/>
     <field name="enableEditor" expr="eval: true"
       if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
   </action-record>
@@ -398,8 +457,19 @@
   <action-record name="action-timesheet-line-editor-record-get-default"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="product"
-      expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(employee)"
+      expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(employee, null)"
       if="employee != null"/>
+  </action-record>
+
+  <action-record name="action-timesheet-line-record-set-project"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="project" expr="eval: projectTask?.project" if="projectTask != null"/>
+  </action-record>
+
+  <action-record name="action-timesheet-line-record-set-project-task"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="projectTask" expr="eval: null"
+      if="project == null || projectTask?.project != project"/>
   </action-record>
 
   <action-validate name="action-timesheet-line-validate-date">
@@ -445,6 +515,25 @@
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setDuration"/>
   </action-method>
 
+  <action-method name="action-timesheet-line-method-set-timesheet">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
+      method="setTimesheet"/>
+  </action-method>
+
+  <action-method name="action-timesheet-line-method-set-timesheet-domain">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
+      method="setTimesheetDomain"/>
+  </action-method>
+
+  <action-method name="action-timesheet-line-method-log-time">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="logTime"/>
+  </action-method>
+
+  <action-method name="action-timesheet-line-method-remove-timesheet-lines">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
+      method="removeProjectTimeSheetLines"/>
+  </action-method>
+
   <action-validate name="action-project-task-validate-check-employee">
     <error message="Please create an employee for the user ${assignedTo.name}"
       if="assignedTo.employee == null"/>
@@ -462,7 +551,8 @@
     <context name="_employee" expr="eval: assignedTo.employee"/>
     <context name="_company" expr="eval: project.company"
       if="__config__.app.isApp('business-project')"/>
-    <context name="_invoicingType" expr="eval: invoicingType"/>
+    <context name="_invoicingType" expr="eval: invoicingType"
+      if="__config__.app.isApp('business-project')"/>
   </action-view>
 
   <action-view name="action-project-dashlet-validated-timesheet-lines"
@@ -534,15 +624,19 @@
   <action-view name="action-timesheet-line-log-time"
     model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line Form">
     <view name="timesheet-line-timesheet-project-task-form" type="form"/>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project"
+      expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_user" expr="eval: __user__"/>
+    <context name="_employee" expr="eval: __user__.employee"/>
+
   </action-view>
 
   <action-attrs name="action-timesheet-line-attrs-set-site-domain">
     <attribute for="site" name="domain"
-      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}?.join(',')}) AND self.isUsableOnTimesheet = true&quot;"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}?.join(',')}) AND self.isUsableOnTimesheet = true AND self.company = ${__parent__?.company?.id}&quot;"
       if="project"/>
-    <attribute for="site" name="domain" expr="self.isUsableOnTimesheet = true"
+    <attribute for="site" name="domain"
+      expr="eval: &quot;self.isUsableOnTimesheet = true AND self.company = ${__parent__?.company?.id}&quot;"
       if="!project"/>
   </action-attrs>
 

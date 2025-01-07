@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="ProjectCheckListTemplate">
+    <string name="title" title="Title" namecolumn="true"/>
+    <string name="typeSelect" selection="check.list.template.type.select" title="Type"
+      default="project"/>
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" mappedBy="projectCheckListTemplate"/>
+
+    <extra-code><![CDATA[
+      	// TYPE SELECT
+      	public static final String TYPE_SELECT_PROJECT = "project";
+      	public static final String TYPE_SELECT_PROJECT_TASK = "task";
+    ]]></extra-code>
+  </entity>
+
+</domain-models>

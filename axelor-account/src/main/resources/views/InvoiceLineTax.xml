@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="invoice-line-tax-grid" title="Tax Lines"
     model="com.axelor.apps.account.db.InvoiceLineTax">
@@ -19,16 +19,24 @@
     onNew="action-invoice-line-tax-group-onnew-onload">
     <panel name="mainPanel">
       <field name="taxLine" canEdit="false" grid-view="tax-line-grid"
-        form-view="tax-line-form"/>
-      <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
+        form-view="tax-line-form" readonly="true"/>
+      <field name="taxType" readonly="true" grid-view="tax-type-grid"
+        form-view="tax-type-form"/>
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
-      <field name="exTaxBase"/>
-      <field name="taxTotal"/>
-      <field name="inTaxTotal"/>
-      <field name="imputedAccount"/>
+      <field name="exTaxBase" readonly="true"/>
+      <field name="taxTotal" readonlyIf="!taxLine.tax.manageByAmount"
+        onChange="action-invoice-line-tax-method-recompute-amounts"/>
+      <field name="inTaxTotal" readonly="true"/>
+      <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount" readonly="true"/>
+      <field name="imputedAccount" readonly="true"/>
       <field name="vatSystemSelect" readonly="true"/>
+      <field name="taxLine.tax.manageByAmount" hidden="true"/>
+      <field name="invoice.statusSelect" hidden="true"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-group name="action-invoice-line-tax-group-onnew-onload">
@@ -39,5 +47,10 @@
   <action-method name="action-invoice-line-tax-method-set-tax-line-scale">
     <call class="com.axelor.apps.account.web.InvoiceLineTaxController"
       method="setInvoiceLineTaxScale"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-tax-method-recompute-amounts">
+    <call class="com.axelor.apps.account.web.InvoiceLineTaxController"
+      method="recomputeAmounts"/>
   </action-method>
 </object-views>

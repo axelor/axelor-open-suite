@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="invoicing-project-grid" title="Invoicing business projects"
     model="com.axelor.apps.businessproject.db.InvoicingProject">
@@ -81,7 +81,7 @@
           name="manufOrderSetPanel"/>
 
         <panel-related field="projectTaskSet" colSpan="12" canNew="false"
-          canEdit="false" canSelect="false" form-view="project-task-form"
+          canEdit="false" canSelect="false" form-view="business-project-task-form"
           grid-view="project-task-invoicing-project-grid"
           showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" readonlyIf="invoice"
           name="ProjectTaskSetPanel"/>
