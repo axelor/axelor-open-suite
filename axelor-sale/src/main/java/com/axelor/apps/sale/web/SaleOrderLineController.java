@@ -91,6 +91,11 @@ public class SaleOrderLineController {
 
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+      SaleOrderLine parentSol = parentContext.asType(SaleOrderLine.class);
+      Beans.get(SaleOrderLineCheckService.class).checkParentLineType(parentSol);
+    }
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());

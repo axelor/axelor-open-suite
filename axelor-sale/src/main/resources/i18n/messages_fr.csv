@@ -663,6 +663,7 @@
 "This script returned value is of type %s, it should return a value of type %s instead.","Ce script a renvoyé une valeur de type %s alors qu'il doit renvoyer une valeur de type %s.",,
 "Timetable","Echéancier",,
 "Title","Titre",,
+"Title type line can not have sublines.","Une ligne de type titre ne peut pas avoir de sous-lignes.",,
 "To Date","Date de fin",,
 "Tools","Outils",,
 "Total A.T.I.","Total TTC",,

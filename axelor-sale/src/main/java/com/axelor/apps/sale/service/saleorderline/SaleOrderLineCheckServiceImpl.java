@@ -19,8 +19,12 @@
 package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.i18n.I18n;
 
 public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService {
   @Override
@@ -34,4 +38,13 @@ public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService 
   @Override
   public void unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {}
+
+  @Override
+  public void checkParentLineType(SaleOrderLine parentSaleOrderLine) throws AxelorException {
+    if (parentSaleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_LINE_PARENT_WRONG_TYPE));
+    }
+  }
 }
