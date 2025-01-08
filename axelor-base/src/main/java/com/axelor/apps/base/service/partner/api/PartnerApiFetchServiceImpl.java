@@ -21,7 +21,7 @@ import wslite.json.JSONObject;
 public class PartnerApiFetchServiceImpl implements PartnerApiFetchService {
 
   @Override
-  public String fetchData(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
+  public String fetch(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
       throws AxelorException {
     if (partnerApiConfiguration == null || StringUtils.isEmpty(siretNumber)) {
       return StringUtil.EMPTY_STRING;

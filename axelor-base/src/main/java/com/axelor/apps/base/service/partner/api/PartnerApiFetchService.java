@@ -4,6 +4,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PartnerApiConfiguration;
 
 public interface PartnerApiFetchService {
-  String fetchData(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
+  String fetch(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
       throws AxelorException;
 }

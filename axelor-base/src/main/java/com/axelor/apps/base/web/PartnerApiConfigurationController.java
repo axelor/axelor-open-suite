@@ -27,7 +27,7 @@ public class PartnerApiConfigurationController {
         Beans.get(PartnerApiConfigurationRepository.class).find(apiConfigId);
 
     String result =
-        Beans.get(PartnerApiFetchService.class).fetchData(partnerApiConfiguration, siret);
+        Beans.get(PartnerApiFetchService.class).fetch(partnerApiConfiguration, siret);
 
     if (!StringUtils.isEmpty(result)) {
       response.setInfo(result);
