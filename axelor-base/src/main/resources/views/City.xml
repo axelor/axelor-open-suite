@@ -14,13 +14,15 @@
     <field name="zip"/>
   </grid>
 
-  <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large">
+  <form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large"
+    onNew="action-city-record-new">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="artmin" colSpan="2"/>
       <field name="zip" colSpan="4"/>
       <field name="inseeCode"/>
       <field name="hasZipOnRight"/>
+      <field name="fullName" hidden="true"/>
     </panel>
     <panel name="localizationPanel" title="Localization">
       <field name="country" form-view="country-form" grid-view="country-grid"/>
@@ -31,6 +33,10 @@
       <field name="nbInhCommune"/>
     </panel>
   </form>
+
+  <action-record name="action-city-record-new" model="com.axelor.apps.base.db.City">
+    <field name="country" expr="eval: __parent__?.country"/>
+  </action-record>
 
   <action-view name="action-base-view-import-city-popup" title="Import city"
     model="com.axelor.utils.db.Wizard">
