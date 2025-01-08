@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -86,6 +87,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected TaxService taxService;
 
   @Inject protected CurrencyScaleService currencyScaleService;
+
+  @Inject protected FiscalPositionService fiscalPositionService;
 
   @Deprecated private int sequence = 0;
 
@@ -240,7 +243,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       line.setProductCode(product.getCode());
     }
 
-    line.setUnit(getPurchaseUnit(line));
+    line.setUnit(supplierCatalogService.getUnit(product, supplierPartner, company));
 
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(product.getDescription());
@@ -552,15 +555,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine) {
-    Unit unit = purchaseOrderLine.getProduct().getPurchasesUnit();
-    if (unit == null) {
-      unit = purchaseOrderLine.getProduct().getUnit();
-    }
-    return unit;
-  }
-
-  @Override
   public void checkMultipleQty(
       Company company,
       Partner supplierPartner,
@@ -679,5 +673,27 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               false, taxLineSet, purchasePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return purchaseOrderLineList;
+  }
+
+  @Override
+  public Map<String, Object> recomputeTax(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
+    TaxEquiv taxEquiv = null;
+    FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
+
+    Map<String, Object> valuesMap = new HashMap<>();
+    if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
+      valuesMap.put("taxEquiv", taxEquiv);
+      return valuesMap;
+    }
+    taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
+    if (taxEquiv != null) {
+      taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), purchaseOrder.getOrderDate());
+    }
+
+    valuesMap.put("taxLineSet", taxLineSet);
+    valuesMap.put("taxEquiv", taxEquiv);
+    return valuesMap;
   }
 }

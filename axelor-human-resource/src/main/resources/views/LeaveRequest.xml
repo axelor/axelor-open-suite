@@ -8,6 +8,8 @@
     <toolbar>
       <button onClick="action-leave-request-method-export-all" name="exportLRBtn"
         title="Export all leave requests"/>
+      <button name="multiRequestBtn" title="Multi-leave assistant"
+        onClick="leave.request.wizard"/>
     </toolbar>
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
@@ -177,18 +179,13 @@
   </calendar>
 
   <action-group name="action-leave-request-group-send">
-    <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-sent-leave-request"/>
   </action-group>
 
   <action-group name="action-leave-request-group-validate">
-    <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-validate-leave-request"/>
-    <action name="action-leave-request-attrs-buttons"/>
-    <action name="action-leave-request-attrs-valid-refuse"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-leave-request-group-refuse">

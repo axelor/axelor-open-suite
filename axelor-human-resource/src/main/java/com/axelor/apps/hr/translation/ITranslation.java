@@ -96,4 +96,9 @@ public interface ITranslation {
   public static final String TIMESHEET_CONVERTED_PERIOD_TOTAL = /*$$(*/
       "Timesheet converted period total." /*)*/;
   public static final String TIMER_UPDATED = /*$$(*/ "Timer successfully updated." /*)*/;
+
+  String API_LEAVE_REQUEST_UPDATED = /*$$(*/ "Leave request successfully updated." /*)*/;
+
+  String API_LEAVE_REQUEST_UPDATED_NO_MAIL = /*$$(*/
+      "Leave request successfully updated. An error occurred while sending the mail." /*)*/;
 }

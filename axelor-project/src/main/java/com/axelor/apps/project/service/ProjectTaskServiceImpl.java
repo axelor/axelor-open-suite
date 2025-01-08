@@ -284,10 +284,10 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     ProjectTask parentTask = projectTaskRepo.find(projectTask.getParentTask().getId());
     projectTask.setParentTask(parentTask);
     projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
-    projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
     projectTask.setPriority(parentTask.getPriority());
     projectTask.setTagSet(parentTask.getTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
+    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 
   @Override

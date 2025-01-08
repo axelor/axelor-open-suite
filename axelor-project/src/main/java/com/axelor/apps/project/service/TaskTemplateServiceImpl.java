@@ -18,6 +18,10 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskTemplate;
 import java.util.Set;
 
@@ -47,5 +51,21 @@ public class TaskTemplateServiceImpl implements TaskTemplateService {
     }
     return isParentTaskTemplateCreatedLoop(
         taskTemplate, parentTaskTemplate.getParentTaskTemplate());
+  }
+
+  @Override
+  public void manageTemplateFields(ProjectTask task, TaskTemplate taskTemplate, Project project)
+      throws AxelorException {
+    task.setDescription(taskTemplate.getDescription());
+    task.setTaskDuration(taskTemplate.getDuration().intValue());
+
+    task.setProduct(taskTemplate.getProduct());
+    task.setQuantity(taskTemplate.getQty());
+
+    ProjectTaskCategory projectTaskCategory = taskTemplate.getProjectTaskCategory();
+    if (projectTaskCategory != null) {
+      task.setProjectTaskCategory(projectTaskCategory);
+      project.addProjectTaskCategorySetItem(projectTaskCategory);
+    }
   }
 }

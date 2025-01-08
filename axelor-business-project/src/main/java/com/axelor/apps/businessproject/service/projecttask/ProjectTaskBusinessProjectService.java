@@ -79,7 +79,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
   Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
 
-  boolean isTimeUnitValid(Unit unit);
+  boolean isTimeUnitValid(Unit unit) throws AxelorException;
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
 }

@@ -85,12 +85,12 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
 
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
-    LocalDateTime beginDate = leaveRequest.getFromDateT();
+    LocalDateTime endDate = leaveRequest.getToDateT();
 
     LeaveReason leaveReason = leaveRequest.getLeaveReason();
     int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
 
-    int interval = getInterval(leaveReasonTypeSelect, beginDate, todayDate);
+    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
@@ -118,18 +118,18 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   }
 
   protected int getInterval(
-      int leaveReasonTypeSelect, LocalDateTime beginDate, LocalDateTime todayDate) {
+      int leaveReasonTypeSelect, LocalDateTime endDate, LocalDateTime todayDate) {
     int interval = 0;
 
     if (leaveReasonTypeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH) {
       interval =
-          (beginDate.getYear() - todayDate.getYear()) * 12
-              + beginDate.getMonthValue()
+          (endDate.getYear() - todayDate.getYear()) * 12
+              + endDate.getMonthValue()
               - todayDate.getMonthValue();
     }
 
     if (leaveReasonTypeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR) {
-      interval = beginDate.getYear() - todayDate.getYear();
+      interval = endDate.getYear() - todayDate.getYear();
     }
     return interval;
   }

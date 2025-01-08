@@ -80,14 +80,6 @@
     <view-param name="search-filters" value="project-task-category-filters"/>
   </action-view>
 
-  <menuitem name="project-task-section" parent="project-configurations" title="Section"
-    action="project.task.section" order="200"/>
-  <action-view name="project.task.section" title="Project Task Section"
-    model="com.axelor.apps.project.db.ProjectTaskSection">
-    <view type="grid" name="project-task-section-grid"/>
-    <view type="form" name="project-task-section-form"/>
-  </action-view>
-
   <menuitem name="project-topic" title="Topics" parent="project-configurations"
     action="project.topic" order="300"/>
   <action-view name="project.topic" title="Topics"
@@ -230,6 +222,16 @@
     title="Check list templates" model="com.axelor.apps.project.db.ProjectCheckListTemplate">
     <view type="grid" name="project-check-list-template-grid"/>
     <view type="form" name="project-check-list-template-form"/>
+  </action-view>
+
+
+  <menuitem title="Project.versions" name="project-versions"
+    parent="project-configurations" action="action.project.version.view.all.versions" order="1100"/>
+
+  <action-view name="action.project.version.view.all.versions" title="Project.versions"
+    model="com.axelor.apps.project.db.ProjectVersion">
+    <view type="grid" name="project-version-grid"/>
+    <view type="form" name="project-version-form"/>
   </action-view>
 
 </object-views>

@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -61,7 +60,7 @@ public interface InvoiceLineService {
 
   int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
-  Unit getUnit(Product product, boolean isPurchase);
+  Unit getUnit(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException;
 
   Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
@@ -121,4 +120,6 @@ public interface InvoiceLineService {
   BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
 
   Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice);
+
+  Map<String, Object> recomputeTax(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 }

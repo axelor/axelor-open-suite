@@ -60,7 +60,6 @@ import com.axelor.apps.businessproject.service.ProjectHistoryServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectHoldBackLineService;
 import com.axelor.apps.businessproject.service.ProjectHoldBackLineServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectMenuBusinessServiceImpl;
-import com.axelor.apps.businessproject.service.ProjectPlanningTimeBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectPurchaseServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectRestService;
 import com.axelor.apps.businessproject.service.ProjectRestServiceImpl;
@@ -114,6 +113,7 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUp
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessProjectServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
@@ -123,7 +123,7 @@ import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
-import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
@@ -196,8 +196,6 @@ public class BusinessProjectModule extends AxelorModule {
         .to(InvoiceMergingServiceBusinessProjectImpl.class);
     bind(ProjectTaskReportingValuesComputingService.class)
         .to(ProjectTaskReportingValuesComputingServiceImpl.class);
-    bind(ProjectPlanningTimeServiceImpl.class)
-        .to(ProjectPlanningTimeBusinessProjectServiceImpl.class);
     bind(ProjectHistoryService.class).to(ProjectHistoryServiceImpl.class);
     bind(PurchaseOrderProjectService.class).to(PurchaseOrderServiceProjectImpl.class);
     bind(ExpenseLineCreateServiceImpl.class).to(ExpenseLineCreateServiceProjectImpl.class);
@@ -234,5 +232,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
 
     bind(ProjectToolServiceImpl.class).to(ProjectToolBusinessProjectServiceImpl.class);
+    bind(TaskTemplateHrServiceImpl.class).to(TaskTemplateBusinessProjectServiceImpl.class);
   }
 }

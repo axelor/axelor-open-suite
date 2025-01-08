@@ -20,23 +20,34 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.service.EmployeeComputeDaysLeaveBonusService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 
 /**
  * @author axelor
  */
 public class TimesheetServiceImpl implements TimesheetService {
-  protected TimesheetLineService timesheetLineService;
+  protected EmployeeComputeDaysLeaveBonusService employeeComputeDaysLeaveService;
+  protected PublicHolidayService publicHolidayService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public TimesheetServiceImpl(TimesheetLineService timesheetLineService) {
-    this.timesheetLineService = timesheetLineService;
+  public TimesheetServiceImpl(
+      EmployeeComputeDaysLeaveBonusService employeeComputeDaysLeaveService,
+      PublicHolidayService publicHolidayService,
+      AppBaseService appBaseService) {
+    this.employeeComputeDaysLeaveService = employeeComputeDaysLeaveService;
+    this.publicHolidayService = publicHolidayService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -60,22 +71,48 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  public void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException {
-    String timeLoggingPref;
-    if (timesheet.getEmployee() == null) {
-      timeLoggingPref = EmployeeRepository.TIME_PREFERENCE_HOURS;
-    } else {
-      Employee employee = timesheet.getEmployee();
-      timeLoggingPref = employee.getTimeLoggingPreferenceSelect();
-    }
-    timesheet.setTimeLoggingPreferenceSelect(timeLoggingPref);
+  public BigDecimal computePeriodTotalLeavesAndHolidays(
+      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
+      throws AxelorException {
 
-    if (timesheet.getTimesheetLineList() != null) {
-      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, timesheetLine.getHoursDuration(), false));
-      }
+    BigDecimal leaveDays =
+        employeeComputeDaysLeaveService.computeDaysLeave(employee, fromDate, toDate);
+
+    BigDecimal publicHolidays =
+        publicHolidayService.computePublicHolidayDays(
+            fromDate,
+            toDate,
+            employee.getWeeklyPlanning(),
+            employee.getPublicHolidayEventsPlanning());
+
+    return convertDayDurationForTimeUnit(employee, leaveDays.add(publicHolidays), timeUnit);
+  }
+
+  @Override
+  public BigDecimal computePeriodTotalWorkDurtion(
+      Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)
+      throws AxelorException {
+
+    return convertDayDurationForTimeUnit(
+        employee,
+        employeeComputeDaysLeaveService.getDaysWorkedInPeriod(employee, fromDate, toDate),
+        timeUnit);
+  }
+
+  protected BigDecimal convertDayDurationForTimeUnit(
+      Employee employee, BigDecimal duration, String timeUnit) {
+
+    BigDecimal dailyWorkHours = employee.getDailyWorkHours();
+
+    switch (timeUnit) {
+      case EmployeeRepository.TIME_PREFERENCE_HOURS:
+        duration = duration.multiply(dailyWorkHours);
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_MINUTES:
+        duration = duration.multiply(dailyWorkHours).multiply(BigDecimal.valueOf(60));
+        break;
     }
+
+    return duration.setScale(2, RoundingMode.HALF_UP);
   }
 }

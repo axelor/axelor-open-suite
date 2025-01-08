@@ -88,6 +88,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   @Override
   public BigDecimal computeCurrentRate(
       BigDecimal currencyRate,
+      Company company,
       List<MoveLineMassEntry> moveLineList,
       Currency currency,
       Currency companyCurrency,
@@ -100,7 +101,9 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
           currencyRate =
               currencyService.getCurrencyConversionRate(currency, companyCurrency, originDate);
         } else {
-          currencyRate = currencyService.getCurrencyConversionRate(currency, companyCurrency);
+          currencyRate =
+              currencyService.getCurrencyConversionRate(
+                  currency, companyCurrency, appBaseService.getTodayDate(company));
         }
       } else {
         if (moveLineList.stream()

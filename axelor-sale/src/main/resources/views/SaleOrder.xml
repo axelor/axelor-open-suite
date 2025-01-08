@@ -786,9 +786,15 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
+        <viewer
+          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,discountCurrency,discountScale">
+          <![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+                             {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T. before discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{$fmt('priceBeforeGlobalDiscount')}</Box>}
+                             {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{'-' + $fmt('discountAmount')}</Box>}
 	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
@@ -801,8 +807,22 @@
 	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
 	                     </Box>
 	                  </>
-	              ]]></viewer>
+                    ]]>
+        </viewer>
       </field>
+    </panel>
+    <panel name="globalDiscountPanel" title="Global discount"
+      if="__config__.app.getApp('sale')?.getIsGlobalDiscountEnabledOnSaleOrder()"
+      showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
+      sidebar="true">
+      <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
+      <field name="discountAmount" showIf="discountTypeSelect != 0"
+        x-currency="discountCurrency" x-scale="discountScale"
+        onChange="action-sale-order-method-on-line-change"/>
+      <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals" hidden="true"/>
+      <field name="discountCurrency" hidden="true" x-dirty="false"/>
+      <field name="discountScale" hidden="true" x-dirty="false"/>
     </panel>
     <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null"
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">

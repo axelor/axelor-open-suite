@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint"
+    orderBy="sequence" canMove="true" editable="true" onNew="action-sprint-group-onnew">
+    <field name="name" required="true"/>
+    <field name="description"/>
+    <field name="project" readonly="true"/>
+    <field name="targetVersion" readonly="true"/>
+    <field name="sequence" hidden="true"/>
+    <field name="sprintManagementSelect" hidden="true"/>
+  </grid>
+
+  <form name="sprint-form" title="Sprint" model="com.axelor.apps.project.db.Sprint"
+    width="large" onNew="action-sprint-group-onnew"
+    onLoad="action-sprint-attrs-manage-hide-project-version">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <panel itemSpan="12">
+        <field name="project" readonly="true"/>
+        <field name="targetVersion" readonly="true"/>
+      </panel>
+      <field name="description" colSpan="12"/>
+      <field name="projectTaskList" canSelect="true" canNew="false" canEdit="false"
+        domain="self.project = :project" showIf="id" colSpan="12"
+        readonlyIf="!project || project.sprintManagementSelect != 'project'"/>
+      <field name="project.sprintManagementSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-group name="action-sprint-group-onnew">
+    <action name="action-sprint-record-init-version"/>
+    <action name="action-sprint-attrs-manage-hide-project-version"/>
+  </action-group>
+
+  <action-record name="action-sprint-record-init-version"
+    model="com.axelor.apps.project.db.Sprint">
+    <field name="targetVersion"
+      expr="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectVersion' ? __parent__ : null"/>
+    <field name="project"
+      expr="eval: __parent__?._model == 'com.axelor.apps.project.db.Project' ? __parent__ : null"/>
+  </action-record>
+
+  <action-attrs name="action-sprint-attrs-manage-hide-project-version">
+    <attribute for="targetVersion" name="hidden"
+      expr="eval: __parent__?._model != 'com.axelor.apps.project.db.ProjectVersion'"/>
+    <attribute for="project" name="hidden"
+      expr="eval: __parent__?._model != 'com.axelor.apps.project.db.Project'"/>
+  </action-attrs>
+
+</object-views>

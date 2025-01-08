@@ -5,6 +5,8 @@
 
   <grid name="connector-mapper-grid" title="Connector mappers"
     model="com.axelor.apps.base.db.ConnectorMapper" groupBy="connectorSelect,metaModel">
+    <field name="company"/>
+    <field name="tradingName" if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="connectorSelect"/>
     <field name="metaModel"/>
     <field name="modelId"/>
@@ -15,6 +17,8 @@
 
   <grid name="connector-mapper-base-grid" title="Connector mappers"
     model="com.axelor.apps.base.db.ConnectorMapper" groupBy="connectorSelect">
+    <field name="company"/>
+    <field name="tradingName" if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="connectorSelect"/>
     <field name="externalReference"/>
   </grid>
@@ -25,7 +29,10 @@
       <button name="showRecordBtn" title="Show record"
         onClick="save,action-connector-mapper-method-show-aos-record"/>
     </toolbar>
-    <panel name="mainPanel" itemSpan="3">
+    <panel name="mainPanel">
+      <field name="company" form-view="company-form" grid-view="company-grid"/>
+      <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
       <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
       <field name="modelId"/>
       <field name="connectorSelect"/>
