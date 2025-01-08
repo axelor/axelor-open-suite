@@ -4,7 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.db.repo.PartnerApiConfigurationRepository;
 import com.axelor.apps.base.service.exception.ErrorException;
-import com.axelor.apps.base.service.partner.api.PartnerApiConfigurationService;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -27,7 +27,7 @@ public class PartnerApiConfigurationController {
         Beans.get(PartnerApiConfigurationRepository.class).find(apiConfigId);
 
     String result =
-        Beans.get(PartnerApiConfigurationService.class).fetchData(partnerApiConfiguration, siret);
+        Beans.get(PartnerApiFetchService.class).fetchData(partnerApiConfiguration, siret);
 
     if (!StringUtils.isEmpty(result)) {
       response.setInfo(result);

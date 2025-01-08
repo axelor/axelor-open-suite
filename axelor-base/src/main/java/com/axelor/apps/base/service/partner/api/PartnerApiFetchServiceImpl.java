@@ -18,7 +18,7 @@ import org.eclipse.birt.report.model.api.util.StringUtil;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
-public class PartnerApiConfigurationServiceImpl implements PartnerApiConfigurationService {
+public class PartnerApiFetchServiceImpl implements PartnerApiFetchService {
 
   @Override
   public String fetchData(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
