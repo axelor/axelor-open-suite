@@ -519,7 +519,7 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(PartnerApiConfigurationService.class).to(PartnerApiConfigurationServiceImpl.class);
     bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
-    bind(ApiConfigurationService.class).to(ApiConfigurationServiceImpl.class);
   }
 }

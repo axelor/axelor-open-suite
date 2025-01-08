@@ -1,7 +1,7 @@
-package com.axelor.apps.base.service.apiconfiguration;
+package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.ApiConfiguration;
+import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.StringUtils;
@@ -18,19 +18,19 @@ import org.eclipse.birt.report.model.api.util.StringUtil;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
-public class ApiConfigurationServiceImpl implements ApiConfigurationService {
+public class PartnerApiConfigurationServiceImpl implements PartnerApiConfigurationService {
 
   @Override
-  public String fetchData(ApiConfiguration apiConfiguration, String siretNumber)
+  public String fetchData(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
       throws AxelorException {
-    if (apiConfiguration == null || StringUtils.isEmpty(siretNumber)) {
+    if (partnerApiConfiguration == null || StringUtils.isEmpty(siretNumber)) {
       return StringUtil.EMPTY_STRING;
     }
     siretNumber = cleanAndValidateSiret(siretNumber);
     if (siretNumber == null) {
       return I18n.get(BaseExceptionMessage.API_INVALID_SIRET_NUMBER);
     }
-    return getData(apiConfiguration, siretNumber);
+    return getData(partnerApiConfiguration, siretNumber);
   }
 
   protected String cleanAndValidateSiret(String siretNumber) {
@@ -43,7 +43,7 @@ public class ApiConfigurationServiceImpl implements ApiConfigurationService {
     return siretNumber;
   }
 
-  public String getData(ApiConfiguration apiConfiguration, String siretNumber)
+  public String getData(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
       throws AxelorException {
     try {
 
@@ -51,10 +51,10 @@ public class ApiConfigurationServiceImpl implements ApiConfigurationService {
 
       HttpRequest request =
           HttpRequest.newBuilder()
-              .uri(new URI(getUrl(apiConfiguration, siretNumber)))
+              .uri(new URI(getUrl(partnerApiConfiguration, siretNumber)))
               .headers(
                   HttpHeaders.AUTHORIZATION,
-                  "Bearer " + apiConfiguration.getApiKey(),
+                  "Bearer " + partnerApiConfiguration.getApiKey(),
                   HttpHeaders.ACCEPT,
                   MediaType.APPLICATION_JSON)
               .GET()
@@ -71,8 +71,8 @@ public class ApiConfigurationServiceImpl implements ApiConfigurationService {
     }
   }
 
-  protected String getUrl(ApiConfiguration apiConfiguration, String siretNumber) {
-    return apiConfiguration.getApiUrl() + "/siret/" + siretNumber;
+  protected String getUrl(PartnerApiConfiguration partnerApiConfiguration, String siretNumber) {
+    return partnerApiConfiguration.getApiUrl() + "/siret/" + siretNumber;
   }
 
   protected String treatResponse(HttpResponse<String> response, String siretNumber)

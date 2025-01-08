@@ -471,7 +471,7 @@
     title="API Configuration" action="referential.conf.api.configuration" order="1700"/>
 
   <action-view name="referential.conf.api.configuration" title="API Configuration"
-    model="com.axelor.apps.base.db.ApiConfiguration">
+    model="com.axelor.apps.base.db.PartnerApiConfiguration">
     <view type="grid" name="api-configuration-grid"/>
     <view type="form" name="api-configuration-form"/>
   </action-view>
