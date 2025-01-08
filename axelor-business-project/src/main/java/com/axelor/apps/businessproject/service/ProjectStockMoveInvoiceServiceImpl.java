@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -41,7 +43,6 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -62,10 +63,11 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService,
+      AppBaseService appBaseService,
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
-      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
+      UnitConversionService unitConversionService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -76,10 +78,11 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         stockMoveLineRepository,
         invoiceLineRepository,
         supplyChainConfigService,
-        appSupplychainService,
+        appBaseService,
         appStockService,
         saleOrderMergingServiceSupplyChain,
-        purchaseOrderMergingSupplychainService);
+        purchaseOrderMergingSupplychainService,
+        unitConversionService);
   }
 
   @Override
