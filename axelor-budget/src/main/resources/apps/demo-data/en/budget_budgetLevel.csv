@@ -3,10 +3,8 @@
 13;"PURCHASE";"PURCHASE";11;;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
 14;"CAMPAIGNS AND ADVERTISING";"CAMPAIGNS AND ADVERTISING";;12;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
 15;"EQUIPMENT";"EQUIPMENT";;13;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
-32;"EVENTS";"EVENTS";31;;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
-33;"INVESTMENT";"INVESTMENT";31;;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
-34;"CAMPAIGNS AND ADVERTISING";"CAMPAIGNS AND ADVERTISING";;32;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
-35;"EQUIPMENT";"EQUIPMENT";;33;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
+34;"BRANDING AND SOFTWARES";"BRANDING AND SOFTWARES";31;;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
+35;"EQUIPMENT";"EQUIPMENT";31;;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
 200;"Business Customers";"Business Customers";21;;58900;58900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
 201;"Individual customers";"Individual customers";21;;15700;15700;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
 202;"Grants & Subsidies";"Grants & Subsidies";21;;1200;1200;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";"budget";"draft";1
