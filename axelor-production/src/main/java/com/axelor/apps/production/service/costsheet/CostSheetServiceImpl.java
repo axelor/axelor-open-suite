@@ -115,9 +115,14 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     billOfMaterial.addCostSheetListItem(costSheet);
 
+    BigDecimal qty =
+        billOfMaterial.getProdProcess() != null
+            ? billOfMaterial.getProdProcess().getLaunchQty()
+            : billOfMaterial.getQty();
+
     CostSheetLine producedCostSheetLine =
         costSheetLineService.createProducedProductCostSheetLine(
-            billOfMaterial.getProduct(), billOfMaterial.getUnit(), billOfMaterial.getQty());
+            billOfMaterial.getProduct(), billOfMaterial.getUnit(), qty);
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
@@ -214,13 +219,16 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     if (this.manageResidualProductOnBom && billOfMaterial.getProdResidualProductList() != null) {
 
+      BigDecimal qtyRatio = getQtyRatio(billOfMaterial);
       for (ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList()) {
+
+        BigDecimal qty = prodResidualProduct.getQty().multiply(qtyRatio);
 
         CostSheetLine costSheetLine =
             costSheetLineService.createResidualProductCostSheetLine(
                 prodResidualProduct.getProduct(),
                 prodResidualProduct.getUnit(),
-                prodResidualProduct.getQty(),
+                qty,
                 billOfMaterial.getCompany());
 
         costSheet.addCostSheetLineListItem(costSheetLine);
@@ -288,7 +296,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     // Cout des operations
     this._computeProcess(
         billOfMaterial.getProdProcess(),
-        billOfMaterial.getQty(),
+        billOfMaterial.getProdProcess().getLaunchQty(),
         billOfMaterial.getProduct().getUnit(),
         bomLevel,
         parentCostSheetLine);
@@ -305,9 +313,12 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
+      BigDecimal qytRatio = getQtyRatio(billOfMaterial);
       for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
         Product product = billOfMaterialLine.getProduct();
+
+        BigDecimal qty = billOfMaterialLine.getQty().multiply(qytRatio);
 
         if (product != null) {
 
@@ -318,7 +329,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   billOfMaterialLine.getUnit(),
                   bomLevel,
                   parentCostSheetLine,
-                  billOfMaterialLine.getQty(),
+                  qty,
                   origin,
                   unitCostCalculation);
 
@@ -331,7 +342,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 billOfMaterialLine.getUnit(),
                 bomLevel,
                 parentCostSheetLine,
-                billOfMaterialLine.getQty(),
+                qty,
                 wasteRate,
                 origin,
                 unitCostCalculation);
@@ -349,6 +360,19 @@ public class CostSheetServiceImpl implements CostSheetService {
         }
       }
     }
+  }
+
+  protected BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) {
+
+    BigDecimal prodProcessQty =
+        billOfMaterial.getProdProcess() != null
+            ? billOfMaterial.getProdProcess().getLaunchQty()
+            : BigDecimal.ZERO;
+    BigDecimal bomQty = billOfMaterial.getQty();
+    BigDecimal qtyRatio =
+        bomQty.compareTo(BigDecimal.ZERO) != 0 ? prodProcessQty.divide(bomQty) : BigDecimal.ZERO;
+
+    return qtyRatio;
   }
 
   protected void _computeProcess(
