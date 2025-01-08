@@ -25,9 +25,11 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.meta.CallMethod;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface BillOfMaterialService {
@@ -94,4 +96,6 @@ public interface BillOfMaterialService {
   int getPriority(BillOfMaterial billOfMaterial);
 
   List<BillOfMaterial> getSubBillOfMaterial(BillOfMaterial billOfMaterial);
+
+  Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(BillOfMaterial billOfMaterial);
 }
