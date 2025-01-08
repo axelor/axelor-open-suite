@@ -28,7 +28,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -64,27 +63,26 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
     this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
-  public String canMerge(List<StockMove> stockMoveList) {
-    StringHtmlListBuilder errors = new StringHtmlListBuilder();
+  public List<String> canMerge(List<StockMove> stockMoveList) {
+    List<String> errors = new ArrayList<>();
     checkErrors(stockMoveList, errors);
-    return errors.toString();
+    return errors;
   }
 
-  protected void checkErrors(List<StockMove> stockMoveList, StringHtmlListBuilder errors) {
+  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
     if (!checkAllSame(stockMoveList, StockMove::getCompany)) {
-      errors.append(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_COMPANY));
+      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_COMPANY));
     }
     boolean enableTradingNames = appBaseService.getAppBase().getEnableTradingNamesManagement();
     if (enableTradingNames && !checkAllSame(stockMoveList, StockMove::getTradingName)) {
-      errors.append(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_TRADING_NAME));
+      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_TRADING_NAME));
     }
     if (!checkAllSame(stockMoveList, StockMove::getPartner)) {
-      errors.append(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_PARTNER));
+      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_PARTNER));
     }
     if (!checkAllSame(stockMoveList, StockMove::getFromStockLocation)
         || !checkAllSame(stockMoveList, StockMove::getToStockLocation)) {
-      errors.append(
-          I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION));
+      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION));
     }
     if (!stockMoveList.stream()
         .map(StockMove::getStatusSelect)
@@ -92,7 +90,7 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
             value ->
                 value.equals(StockMoveRepository.STATUS_DRAFT)
                     || value.equals(StockMoveRepository.STATUS_PLANNED))) {
-      errors.append(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_STATUS));
+      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_STATUS));
     }
   }
 

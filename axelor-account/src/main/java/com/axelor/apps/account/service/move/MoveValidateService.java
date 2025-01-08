@@ -79,4 +79,6 @@ public interface MoveValidateService {
   void checkTaxAmount(Move move) throws AxelorException;
 
   void checkJournalPermissions(Move move) throws AxelorException;
+
+  void checkSpecialAccountAmount(Move move, Long moveId) throws AxelorException;
 }
