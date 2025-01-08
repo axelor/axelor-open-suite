@@ -1,0 +1,15 @@
+---
+title: "Stock move: fixed the stock move merge process to work when there are no errors."
+module: axelor-stock
+developer: |
+  Method signature have changed in StockMoveMergingService.class :
+
+  ```java
+  public String canMerge(List<StockMove> stockMoveList);
+  ```
+
+  became
+
+  ```java
+  public List<String> canMerge(List<StockMove> stockMoveList);
+  ```
