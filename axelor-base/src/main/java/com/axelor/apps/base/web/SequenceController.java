@@ -66,6 +66,22 @@ public class SequenceController {
     Beans.get(SequenceService.class).verifyPattern(sequence);
   }
 
+  public void updateSequenceVersionsDaily(ActionRequest request, ActionResponse response) {
+    try {
+      Sequence sequence = request.getContext().asType(Sequence.class);
+      SequenceService sequenceService = Beans.get(SequenceService.class);
+      LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(sequence.getCompany());
+      LocalDate endOfDate = todayDate;
+      if (sequence.getDailyResetOk()) {
+        response.setValue(
+                "sequenceVersionList",
+                sequenceService.updateSequenceVersions(sequence, todayDate, endOfDate));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void updateSequenceVersionsMonthly(ActionRequest request, ActionResponse response) {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);

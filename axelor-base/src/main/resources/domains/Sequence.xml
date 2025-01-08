@@ -28,6 +28,7 @@
 
     <boolean name="yearlyResetOk" title="Yearly reset"/>
     <boolean name="monthlyResetOk" title="Monthly reset"/>
+    <boolean name="dailyResetOk" title="Daily reset"/>
 
     <one-to-many name="sequenceVersionList"
       ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
@@ -57,6 +58,7 @@
       <field name="suffixe"/>
       <field name="yearlyResetOk"/>
       <field name="monthlyResetOk"/>
+      <field name="dailyResetOk"/>
     </track>
 
   </entity>

@@ -310,7 +310,7 @@ public class VentilateState extends WorkflowInvoice {
 
     Sequence sequence = this.getSequence();
 
-    if (!InvoiceToolService.isPurchase(invoice)) {
+    if (!InvoiceToolService.isPurchase(invoice) && !sequence.getDailyResetOk()) {
       this.checkInvoiceDate(sequence);
     }
 

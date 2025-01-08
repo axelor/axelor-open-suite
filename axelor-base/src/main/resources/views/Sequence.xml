@@ -97,6 +97,7 @@
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
         onChange="action-sequence-group-yearly-reset-on-change"/>
       <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
+      <field name="dailyResetOk" onChange="action-sequence-group-daily-reset-on-change"/>
     </panel>
     <panel-related name="sequenceVersionListPanel" field="sequenceVersionList"
       grid-view="sequence-version-grid" form-view="sequence-version-form"/>
@@ -161,6 +162,11 @@
     <field if="monthlyResetOk" name="yearlyResetOk" expr="eval: true"/>
   </action-record>
 
+  <action-record name="action-sequence-daily-reset"
+                 model="com.axelor.apps.base.db.Sequence">
+    <field if="dailyResetOk" name="dailyResetOk" expr="eval: true"/>
+  </action-record>
+
   <action-attrs name="action-sequence-attrs">
     <attribute name="hidden" for="company"
       expr="eval: codeSelect in ['partner','productTrackingNumber','product']"/>
@@ -198,6 +204,11 @@
     <call class="com.axelor.apps.base.web.SequenceController" method="isLengthValid"/>
   </action-method>
 
+  <action-method name="action-sequence-method-update-sequence-version-daily">
+    <call class="com.axelor.apps.base.web.SequenceController"
+          method="updateSequenceVersionsDaily"/>
+  </action-method>
+
   <action-method name="action-sequence-method-update-sequence-version-monthly">
     <call class="com.axelor.apps.base.web.SequenceController"
       method="updateSequenceVersionsMonthly"/>
@@ -215,6 +226,11 @@
   <action-group name="action-sequence-group-monthly-reset-on-change">
     <action name="action-sequence-method-update-sequence-version-monthly"/>
     <action name="action-sequence-monthly-reset"/>
+  </action-group>
+
+  <action-group name="action-sequence-group-daily-reset-on-change">
+    <action name="action-sequence-method-update-sequence-version-daily"/>
+    <action name="action-sequence-daily-reset"/>
   </action-group>
 
   <action-validate name="action-sequence-version-end-date-onchange-info">
