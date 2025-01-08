@@ -918,6 +918,7 @@
 "Unit cannot be null for prod product to generate. Please correct on prod product configurator id : %s.","L'unité ne peut pas être null pour le produit à consommer à générer. Merci de corriger sur le configurateur de produit à consommer avec l'id : %s",,
 "Unit cost price","Unité coût unitaire",,
 "Unit price","Prix unitaire",,
+"Unitary cost price","Prix de revient unitaire",,
 "Unknown parent context class.","La classe du contexte parent est inconnue.",,
 "Unrecognized capacity for company %s production configuration","Capacité non reconnue pour la configuration de production de l'entreprise %s",,
 "Update costs","Mettre à jour les coûts",,

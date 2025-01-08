@@ -918,6 +918,7 @@
 "Unit cannot be null for prod product to generate. Please correct on prod product configurator id : %s.",,,
 "Unit cost price",,,
 "Unit price",,,
+"Unitary cost price",,,
 "Unknown parent context class.",,,
 "Unrecognized capacity for company %s production configuration",,,
 "Update costs",,,

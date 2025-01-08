@@ -142,7 +142,7 @@
         <field name="costPrice" readonly="true"/>
         <button name="updateProductCostPriceBtn" title="Update product cost price"
           onClick="save,action-bill-of-material-method-update-product-cost-price"/>
-        <field name="product.costPrice" title="Unit cost price"/>
+        <field name="product.costPrice" title="Unitary cost price"/>
         <panel-related name="costSheetListsPanel" field="costSheetList" colSpan="12"
           readonly="false" form-view="cost-sheet-bill-of-material-form"
           grid-view="cost-sheet-bill-of-material-grid"/>
