@@ -78,6 +78,8 @@ public class MoveCancelService {
           I18n.get(AccountExceptionMessage.MOVE_CANCEL_2));
     }
 
+    //Todo commentout to fix cancel if validated
+    /*
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
         || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       throw new AxelorException(
@@ -85,6 +87,8 @@ public class MoveCancelService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_CANCEL_5));
     }
+
+     */
 
     if (move.getStatusSelect() == MoveRepository.STATUS_CANCELED) {
       throw new AxelorException(

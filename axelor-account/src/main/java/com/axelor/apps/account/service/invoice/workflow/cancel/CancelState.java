@@ -55,6 +55,11 @@ public class CancelState extends WorkflowInvoice {
 
     workflowService.beforeCancel(invoice);
 
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+            && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+      cancelMove();
+    }
+
     updateInvoiceFromCancellation(invoice);
 
     workflowService.afterCancel(invoice);

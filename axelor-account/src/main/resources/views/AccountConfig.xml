@@ -272,6 +272,7 @@
       </panel>
 
       <panel title="Invoicing" name="invoicingPanel">
+        <field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
         <field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
         <field name="invoiceInAtiSelect"/>
         <field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>

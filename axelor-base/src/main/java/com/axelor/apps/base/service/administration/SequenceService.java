@@ -585,6 +585,7 @@ public class SequenceService {
             .replace(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
             .replace(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
             .replace(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
+            .replace(PATTERN_FULL_DAY, refDate.format(DateTimeFormatter.ofPattern("dd")))
             .replace(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
             .replace(
                 PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
