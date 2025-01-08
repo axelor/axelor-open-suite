@@ -101,4 +101,6 @@ public interface ITranslation {
 
   String API_LEAVE_REQUEST_UPDATED_NO_MAIL = /*$$(*/
       "Leave request successfully updated. An error occurred while sending the mail." /*)*/;
+
+  String API_LEAVE_REQUEST_COMPUTE_DURATION = /*$$(*/ "Duration computed." /*)*/;
 }
