@@ -320,6 +320,11 @@
     <action name="action-sale-order-line-method-set-sol-list-to-invoice"/>
   </action-group>
 
+  <action-group name="supplychain-action-sale-order-line-group-editable-onnew">
+    <action name="action-sale-order-line-group-editable-onnew"/>
+    <action name="action-record-sale-order-line-fill-request-qty"/>
+  </action-group>
+
   <!-- ACTION RECORD -->
 
   <action-record

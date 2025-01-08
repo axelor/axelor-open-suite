@@ -20,6 +20,19 @@
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
     </extend>
+    <extend target="//panel-related[@name='editableDetailLinesPanel']">
+      <replace>
+        <panel-related name="editableDetailLinesPanel" title="Details Lines"
+          readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"
+          colSpan="12" height="30" field="saleOrderLineList" form-view="sale-order-line-form"
+          grid-view="sale-order-line-editable-grid" orderBy="sequence"
+          onChange="action-sale-order-method-on-line-change"
+          onNew="supplychain-action-sale-order-line-group-editable-onnew"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canMove="true" if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
+      </replace>
+    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
