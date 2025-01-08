@@ -28,8 +28,10 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -76,6 +78,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected InvoiceLineRepository invoiceLineRepository;
   protected SupplyChainConfigService supplyChainConfigService;
   protected AppBaseService appBaseService;
+  protected UnitConversionService unitConversionService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -88,7 +91,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      UnitConversionService unitConversionService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -99,6 +103,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
     this.appBaseService = appBaseService;
+    this.unitConversionService = unitConversionService;
   }
 
   @Override
@@ -634,13 +639,31 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             .fetch();
     BigDecimal nonCanceledInvoiceQty = BigDecimal.ZERO;
     for (InvoiceLine invoiceLine : nonCanceledInvoiceLineList) {
+      BigDecimal qty = getQtyToInvoice(stockMoveLine, invoiceLine);
       if (isInvoiceRefundingStockMove(stockMoveLine.getStockMove(), invoiceLine.getInvoice())) {
-        nonCanceledInvoiceQty = nonCanceledInvoiceQty.subtract(invoiceLine.getQty());
+        nonCanceledInvoiceQty = nonCanceledInvoiceQty.subtract(qty);
       } else {
-        nonCanceledInvoiceQty = nonCanceledInvoiceQty.add(invoiceLine.getQty());
+        nonCanceledInvoiceQty = nonCanceledInvoiceQty.add(qty);
       }
     }
     return nonCanceledInvoiceQty;
+  }
+
+  protected BigDecimal getQtyToInvoice(StockMoveLine stockMoveLine, InvoiceLine invoiceLine)
+      throws AxelorException {
+    BigDecimal qty = invoiceLine.getQty();
+    Unit invoiceLineUnit = invoiceLine.getUnit();
+    Unit stockMoveLineUnit = stockMoveLine.getUnit();
+    if (!invoiceLineUnit.equals(stockMoveLineUnit)) {
+      qty =
+          unitConversionService.convert(
+              invoiceLineUnit,
+              stockMoveLineUnit,
+              qty,
+              appBaseService.getNbDecimalDigitForQty(),
+              stockMoveLine.getProduct());
+    }
+    return qty;
   }
 
   @Override

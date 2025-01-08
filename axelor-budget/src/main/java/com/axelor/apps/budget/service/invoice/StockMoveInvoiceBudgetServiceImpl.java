@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -33,7 +35,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -56,7 +57,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService,
+      AppBaseService appBaseService,
+      UnitConversionService unitConversionService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService) {
     super(
@@ -69,7 +71,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
         stockMoveLineRepository,
         invoiceLineRepository,
         supplyChainConfigService,
-        appSupplychainService);
+        appBaseService,
+        unitConversionService);
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
   }
