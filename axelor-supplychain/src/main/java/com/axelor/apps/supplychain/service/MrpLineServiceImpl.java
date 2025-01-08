@@ -190,8 +190,7 @@ public class MrpLineServiceImpl implements MrpLineService {
                   Beans.get(PartnerPriceListService.class)
                       .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
                   supplierPartner,
-                  null,
-                  supplierPartner.getFiscalPosition()));
+                  null));
       if (isProposalsPerSupplier) {
         if (purchaseOrdersPerSupplier != null) {
           purchaseOrdersPerSupplier.put(supplierPartner, purchaseOrder);
