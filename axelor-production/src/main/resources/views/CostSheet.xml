@@ -37,6 +37,7 @@
         domain="self.dtype = 'Product'"/>
       <field name="billOfMaterial.qty"/>
       <field name="costPrice"/>
+      <field name="billOfMaterial.product.costPrice" title="Unit cost price"/>
       <field name="calculationTypeSelect"/>
       <field name="calculationDate"/>
       <field name="currency" readonly="true" grid-view="currency-grid"
@@ -52,6 +53,7 @@
       <field name="createdOn" readonly="true"/>
       <field name="createdBy" readonly="true"/>
       <field name="costPrice" readonly="true"/>
+      <field name="billOfMaterial.product.costPrice" title="Unit cost price"/>
       <field name="calculationTypeSelect" readonly="true"/>
       <field name="calculationDate" readonly="true"/>
       <field name="manufOrderProducedRatio" readonly="true"/>

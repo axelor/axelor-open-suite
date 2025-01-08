@@ -34,6 +34,7 @@ import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -53,14 +54,16 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
       BillOfMaterialLineService billOfMaterialLineService,
       BillOfMaterialService billOfMaterialService,
       ProductionConfigService productionConfigService,
-      PrintingTemplatePrintService printingTemplatePrintService) {
+      PrintingTemplatePrintService printingTemplatePrintService,
+      CostSheetService costSheetService) {
     super(
         billOfMaterialRepo,
         tempBomTreeRepo,
         productRepo,
         productCompanyService,
         billOfMaterialLineService,
-        billOfMaterialService);
+        billOfMaterialService,
+        costSheetService);
     this.productionConfigService = productionConfigService;
     this.printingTemplatePrintService = printingTemplatePrintService;
   }

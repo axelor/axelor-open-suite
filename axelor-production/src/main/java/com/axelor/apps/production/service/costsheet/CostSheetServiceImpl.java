@@ -362,7 +362,8 @@ public class CostSheetServiceImpl implements CostSheetService {
     }
   }
 
-  protected BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) {
+  @Override
+  public BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) {
 
     BigDecimal prodProcessQty =
         billOfMaterial.getProdProcess() != null
