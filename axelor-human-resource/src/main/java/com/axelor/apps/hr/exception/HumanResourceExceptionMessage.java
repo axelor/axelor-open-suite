@@ -407,5 +407,5 @@ public final class HumanResourceExceptionMessage {
       "startOnSelect should be 1 for morning or 2 for afternoon." /*)*/;
 
   public static final String API_LEAVE_REQUEST_NONE_CREATED = /*$$(*/
-      "No leave request were created." /*)*/;
+      "No leave requests were created." /*)*/;
 }
