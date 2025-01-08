@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -30,6 +31,7 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
@@ -44,9 +46,11 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class ProductRestServiceImpl implements ProductRestService {
 
@@ -58,8 +62,10 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected UserService userService;
   protected ProductRestService productRestService;
   protected AppBaseService appBaseService;
-  protected ProductPriceService productPriceService;
+  protected ProductPriceListService productPriceListService;
   protected UnitConversionService unitConversionService;
+  protected ProductPriceService productPriceService;
+  protected AccountManagementService accountManagementService;
 
   @Inject
   public ProductRestServiceImpl(
@@ -69,16 +75,22 @@ public class ProductRestServiceImpl implements ProductRestService {
       UserService userService,
       ProductRestService productRestService,
       AppBaseService appBaseService,
+      ProductPriceListService productPriceListService,
+      UnitConversionService unitConversionService,
       ProductPriceService productPriceService,
-      UnitConversionService unitConversionService) {
+      AccountManagementService accountManagementService,
+      TaxService taxService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
     this.partnerRepository = partnerRepository;
     this.productRestService = productRestService;
     this.appBaseService = appBaseService;
-    this.productPriceService = productPriceService;
+    this.productPriceListService = productPriceListService;
     this.unitConversionService = unitConversionService;
+    this.productPriceService = productPriceService;
+    this.accountManagementService = accountManagementService;
+    this.taxService = taxService;
   }
 
   protected List<PriceResponse> fetchProductPrice(
@@ -86,10 +98,17 @@ public class ProductRestServiceImpl implements ProductRestService {
       throws AxelorException {
     List<PriceResponse> priceList = new ArrayList<>();
 
-    BigDecimal priceWT =
-        productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
-    BigDecimal priceATI =
-        productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
+    BigDecimal priceWT;
+    BigDecimal priceATI;
+
+    if (partner == null) {
+      priceWT = productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
+      priceATI = productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
+    } else {
+      priceWT = productPriceListService.applyPriceList(product, partner, company, currency, false);
+      priceATI = getInTaxPrice(product, company, partner, priceWT);
+    }
+
     if (product.getSalesUnit() == null && product.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -153,5 +172,20 @@ public class ProductRestServiceImpl implements ProductRestService {
           new ProductResponse(product.getId(), prices, currencyResponse, unitResponse));
     }
     return productResponses;
+  }
+
+  BigDecimal getInTaxPrice(Product product, Company company, Partner partner, BigDecimal exTaxPrice)
+      throws AxelorException {
+    Set<TaxLine> taxLineSet =
+        accountManagementService.getTaxLineSet(
+            appSaleService.getTodayDate(company),
+            product,
+            company,
+            partner.getFiscalPosition(),
+            false);
+    BigDecimal taxRate = taxService.getTotalTaxRate(taxLineSet);
+    return exTaxPrice
+        .add(exTaxPrice.multiply(taxRate))
+        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 }
