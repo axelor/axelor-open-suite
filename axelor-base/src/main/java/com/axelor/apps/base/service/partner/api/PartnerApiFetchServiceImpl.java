@@ -2,23 +2,20 @@ package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PartnerApiConfiguration;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.eclipse.birt.report.model.api.util.StringUtil;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
-public class PartnerApiFetchServiceImpl implements PartnerApiFetchService {
+public class PartnerApiFetchServiceImpl extends GenericApiFetchService
+    implements PartnerApiFetchService {
 
   @Override
   public String fetch(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
@@ -43,32 +40,11 @@ public class PartnerApiFetchServiceImpl implements PartnerApiFetchService {
     return siretNumber;
   }
 
-  public String getData(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
-      throws AxelorException {
-    try {
-
-      HttpClient client = HttpClient.newBuilder().build();
-
-      HttpRequest request =
-          HttpRequest.newBuilder()
-              .uri(new URI(getUrl(partnerApiConfiguration, siretNumber)))
-              .headers(
-                  HttpHeaders.AUTHORIZATION,
-                  "Bearer " + partnerApiConfiguration.getApiKey(),
-                  HttpHeaders.ACCEPT,
-                  MediaType.APPLICATION_JSON)
-              .GET()
-              .build();
-
-      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-      return treatResponse(response, siretNumber);
-
-    } catch (URISyntaxException | IOException | JSONException e) {
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
-    }
+  protected Map<String, String> getHeaders(PartnerApiConfiguration configuration) {
+    Map<String, String> headers = new HashMap<>();
+    headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+    headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getApiKey());
+    return headers;
   }
 
   protected String getUrl(PartnerApiConfiguration partnerApiConfiguration, String siretNumber) {
