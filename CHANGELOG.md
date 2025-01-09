@@ -1,3 +1,11 @@
+## [6.5.49] (2025-01-09)
+
+### Fixes
+#### Account
+
+* Bank reconciliation: fixed the filter to display move lines with no function origin selected and hide it when already reconciled in different currency than move in 'Bank reconciliation statement' report.
+* Accounting report type: fixed comparison in custom report types demo data.
+
 ## [6.5.48] (2024-12-19)
 
 ### Fixes
@@ -1613,6 +1621,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.49]: https://github.com/axelor/axelor-open-suite/compare/v6.5.48...v6.5.49
 [6.5.48]: https://github.com/axelor/axelor-open-suite/compare/v6.5.47...v6.5.48
 [6.5.47]: https://github.com/axelor/axelor-open-suite/compare/v6.5.46...v6.5.47
 [6.5.46]: https://github.com/axelor/axelor-open-suite/compare/v6.5.45...v6.5.46
