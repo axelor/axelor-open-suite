@@ -50,10 +50,6 @@
   <action-record name="action-purchase-request-line-record-default"
     model="com.axelor.apps.purchase.db.PurchaseRequestLine">
     <field name="quantity" expr="eval:1"/>
-    <field name="product" expr="eval:__parent__?._product"/>
-    <field name="unit"
-      expr="eval: __repo__(Product).find(__parent__?._product?.id)?.getPurchasesUnit() ?: __repo__(Product).find(__parent__?._product?.id)?.getUnit()"
-      if="__parent__?._product"/>
   </action-record>
 
 </object-views>
