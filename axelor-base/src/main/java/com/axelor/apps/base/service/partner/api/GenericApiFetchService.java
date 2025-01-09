@@ -35,8 +35,8 @@ public abstract class GenericApiFetchService {
       case 200:
         return new JSONObject(response.body()).toString();
       case 400:
-      case 404:
-        return I18n.get(BaseExceptionMessage.API_BAD_REQUEST);
+        case 404:
+          return I18n.get(BaseExceptionMessage.API_BAD_REQUEST);
       case 401:
         return I18n.get(BaseExceptionMessage.API_WRONG_CREDENTIALS);
       default:

@@ -853,6 +853,7 @@
 "Error : incorrect request for the indicatior generator %s",,,
 "Error : no code has been set",,,
 "Error : no export path has been set",,,
+"Error during the request with identifier: %s.",,,
 "Error file",,,
 "Error happened during batch execution",,,
 "Error in Connection",,,
