@@ -78,13 +78,6 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
           companyAvailableAmount);
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
-
-      if (invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
-
-        invoicePayment.setAmount(
-            invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
-      }
     }
     return invoiceTermIdList;
   }

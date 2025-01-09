@@ -44,8 +44,10 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -584,5 +586,19 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     return new ArrayList<>();
+  }
+
+  @Override
+  public Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(
+      BillOfMaterial billOfMaterial) {
+
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
+      return billOfMaterial.getBillOfMaterialLineList().stream()
+          .filter(boml -> boml.getBillOfMaterial() != null)
+          .collect(
+              Collectors.toMap(BillOfMaterialLine::getBillOfMaterial, BillOfMaterialLine::getQty));
+    }
+
+    return new HashMap<>();
   }
 }

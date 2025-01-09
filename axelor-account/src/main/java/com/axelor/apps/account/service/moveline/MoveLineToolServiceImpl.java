@@ -474,4 +474,24 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
           : currencyAmount.negate();
     }
   }
+
+  @Override
+  public boolean isMoveLineSpecialAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_SPECIAL.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
+
+  @Override
+  public boolean isMoveLineCommitmentAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_COMMITMENT.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
 }

@@ -690,6 +690,7 @@ Account.id as accountId
 from account_accounting_report as AccountingReport
 left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
+left outer join bankpayment_bank_reconciliation as BankReconciliation on BankReconciliationLine.bank_reconciliation = BankReconciliation.id
 left outer join account_move as Move on MoveLine.move = Move.id
 left outer join account_account as Account on MoveLine.account  = Account.id
 left outer join account_account_type as AccountType on Account.account_type = AccountType.id
@@ -712,9 +713,11 @@ AND (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner =
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
-AND MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
+AND (CASE WHEN Move.currency = BankReconciliation.currency THEN MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
+	ELSE (MoveLine.bank_reconciled_amount != (MoveLine.credit + MoveLine.debit))
+	END )
 AND Move.ignore_in_accounting_ok in (false,null)
-AND Move.functional_origin_select not in (1,2)
+AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select not in (1,2))
 
 
 UNION
@@ -757,9 +760,11 @@ AND (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner =
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select not in (1,4,5)
 AND AccountType.technical_type_select like 'cash'
-AND MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
+AND (CASE WHEN Move.currency = BankReconciliation.currency THEN MoveLine.bank_reconciled_amount != abs(MoveLine.currency_amount)
+ 	ELSE (MoveLine.bank_reconciled_amount != (MoveLine.credit + MoveLine.debit))
+	END )
 AND Move.ignore_in_accounting_ok in (false,null)
-AND Move.functional_origin_select not in (1,2)
+AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select not in (1,2))
 group by MoveLine.id,
 MoveLine.name,
 MoveLine.description,

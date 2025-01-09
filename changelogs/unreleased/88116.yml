@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed error when there is no product on the invoice line while budget computation."
-module: axelor-budget
