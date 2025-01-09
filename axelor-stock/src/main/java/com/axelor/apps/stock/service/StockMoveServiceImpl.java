@@ -1056,6 +1056,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMove stockMove, BigDecimal splitQty, StockMoveLine moveLine, BigDecimal totalQty) {
     moveLine.setQty(splitQty);
     moveLine.setRealQty(splitQty);
+    moveLine.setTotalNetMass(moveLine.getNetMass().multiply(splitQty));
 
     int limit = totalQty.divide(splitQty).intValue();
     for (int counter = 1; counter < limit; counter++) {
@@ -1067,6 +1068,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
     newLine.setQty(remainder);
     newLine.setRealQty(remainder);
+    moveLine.setTotalNetMass(moveLine.getNetMass().multiply(remainder));
     stockMove.addStockMoveLineListItem(newLine);
   }
 
