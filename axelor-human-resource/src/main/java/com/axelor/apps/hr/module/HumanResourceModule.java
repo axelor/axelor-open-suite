@@ -57,6 +57,8 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
+import com.axelor.apps.hr.rest.LeaveRequestCreateRestService;
+import com.axelor.apps.hr.rest.LeaveRequestCreateRestServiceImpl;
 import com.axelor.apps.hr.service.BankCardService;
 import com.axelor.apps.hr.service.BankCardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
@@ -77,6 +79,8 @@ import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.UnitConversionForProjectServiceImpl;
+import com.axelor.apps.hr.service.WorkingDayService;
+import com.axelor.apps.hr.service.WorkingDayServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -160,8 +164,18 @@ import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDateService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDateServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDurationServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCreateServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventService;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestInitValueService;
+import com.axelor.apps.hr.service.leave.LeaveRequestInitValueServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestManagementService;
@@ -420,5 +434,14 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExtraHoursDomainService.class).to(ExtraHoursDomainServiceImpl.class);
     bind(TaskTemplateServiceImpl.class).to(TaskTemplateHrServiceImpl.class);
     bind(TimesheetAttrsService.class).to(TimesheetAttrsServiceImpl.class);
+    bind(LeaveRequestCreateHelperService.class).to(LeaveRequestCreateHelperServiceImpl.class);
+    bind(LeaveRequestCreateHelperDurationService.class)
+        .to(LeaveRequestCreateHelperDurationServiceImpl.class);
+    bind(LeaveRequestCreateHelperDateService.class)
+        .to(LeaveRequestCreateHelperDateServiceImpl.class);
+    bind(LeaveRequestCreateService.class).to(LeaveRequestCreateServiceImpl.class);
+    bind(LeaveRequestInitValueService.class).to(LeaveRequestInitValueServiceImpl.class);
+    bind(WorkingDayService.class).to(WorkingDayServiceImpl.class);
+    bind(LeaveRequestCreateRestService.class).to(LeaveRequestCreateRestServiceImpl.class);
   }
 }

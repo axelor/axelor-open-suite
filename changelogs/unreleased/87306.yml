@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue with amount remaining being reinitialized from ventilated invoice."
-module: axelor-account

@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.service.leave.compute;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -59,6 +60,43 @@ public class LeaveRequestComputeDayDurationServiceImpl
     WeeklyPlanning weeklyPlanning = leaveRequestPlanningService.getWeeklyPlanning(leave, employee);
     EventsPlanning holidayPlanning =
         leaveRequestPlanningService.getPublicHolidayEventsPlanning(leave, employee);
+
+    return computeDurationInDays(
+        fromDate, toDate, startOn, endOn, duration, weeklyPlanning, holidayPlanning);
+  }
+
+  @Override
+  public BigDecimal computeDurationInDays(
+      Company company,
+      Employee employee,
+      LocalDate fromDate,
+      LocalDate toDate,
+      int startOn,
+      int endOn)
+      throws AxelorException {
+
+    BigDecimal duration = BigDecimal.ZERO;
+    WeeklyPlanning weeklyPlanning =
+        leaveRequestPlanningService.getWeeklyPlanning(employee, company);
+    EventsPlanning holidayPlanning =
+        leaveRequestPlanningService.getPublicHolidayEventsPlanning(employee, company);
+
+    return computeDurationInDays(
+        fromDate, toDate, startOn, endOn, duration, weeklyPlanning, holidayPlanning);
+  }
+
+  protected BigDecimal computeDurationInDays(
+      LocalDate fromDate,
+      LocalDate toDate,
+      int startOn,
+      int endOn,
+      BigDecimal duration,
+      WeeklyPlanning weeklyPlanning,
+      EventsPlanning holidayPlanning) {
+
+    if (fromDate == null || toDate == null || startOn == 0 || endOn == 0) {
+      return BigDecimal.ZERO;
+    }
 
     // If the leave request is only for 1 day
     if (fromDate.isEqual(toDate)) {

@@ -79,8 +79,8 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
           && appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
         saleOrderLine.setPrice(
             subSaleOrderLineComputeService.computeSumSubLineList(subSaleOrderLineList, saleOrder));
-        saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
       }
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
 
     return saleOrder;
