@@ -1,0 +1,3 @@
+---
+title: "AccountingBatch : Result move computation query takes into account accounted entries."
+module: axelor-account
