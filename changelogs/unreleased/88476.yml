@@ -1,3 +1,0 @@
----
-title: "Manufacturing Order: fixed a issue where a infinite loop could occur on planification if operation had no duration with finite capacity (now displays an error)."
-module: axelor-production

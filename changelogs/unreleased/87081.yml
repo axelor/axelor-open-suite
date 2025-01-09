@@ -1,5 +1,0 @@
----
-title: "Stock move: fixed invoiced and remaining quantity in wizard when partially invoicing"
-module: axelor-supplychain
-developer: |
-  `UnitConversionService` has been added to the constructor of `StockMoveInvoiceServiceImpl`.
