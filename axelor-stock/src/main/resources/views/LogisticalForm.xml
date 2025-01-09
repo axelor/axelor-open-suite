@@ -182,6 +182,7 @@
   </action-group>
 
   <action-group name="action-group-logistical-form-add-concerned-stock-move">
+    <action name="save"/>
     <action name="action-logistical-form-method-add-concerned-stock-move"/>
     <action name="save"/>
   </action-group>
