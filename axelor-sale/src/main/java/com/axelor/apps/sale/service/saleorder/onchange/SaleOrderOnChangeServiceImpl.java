@@ -129,7 +129,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       values.put("currency", saleOrder.getCurrency());
       saleOrder.setDeliveryComments(clientPartner.getDeliveryComments());
       values.put("deliveryComments", saleOrder.getDeliveryComments());
-      saleOrder.setDescription(clientPartner.getDescription());
+      saleOrder.setDescription(clientPartner.getSaleOrderComments());
       values.put("description", saleOrder.getDescription());
       saleOrder.setPickingOrderComments(clientPartner.getPickingOrderComments());
       values.put("pickingOrderComments", saleOrder.getPickingOrderComments());
