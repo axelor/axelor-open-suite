@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
@@ -27,14 +28,17 @@ import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
 
   protected AppSupplychainService appSupplychainService;
+  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
 
   @Inject
   public PurchaseRequestServiceSupplychainImpl(
@@ -43,14 +47,18 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
       AppBaseService appBaseService,
-      AppSupplychainService appSupplychainService) {
+      PurchaseRequestWorkflowService purchaseRequestWorkflowService,
+      AppSupplychainService appSupplychainService,
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
     super(
         purchaseOrderService,
         purchaseOrderCreateService,
         purchaseOrderLineService,
         purchaseOrderRepo,
-        appBaseService);
+        appBaseService,
+        purchaseRequestWorkflowService);
     this.appSupplychainService = appSupplychainService;
+    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
   }
 
   @Override
@@ -78,5 +86,18 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
       key = key + "_" + stockLocation.getId().toString();
     }
     return key;
+  }
+
+  @Override
+  public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
+      throws AxelorException {
+    Map<String, Object> values = super.getDefaultValues(purchaseRequest, company);
+    if (appSupplychainService.isApp("supplychain")) {
+      purchaseRequest.setStockLocation(
+          purchaseOrderSupplychainService.getStockLocation(
+              purchaseRequest.getSupplierPartner(), purchaseRequest.getCompany()));
+      values.put("stockLocation", purchaseRequest.getStockLocation());
+    }
+    return values;
   }
 }

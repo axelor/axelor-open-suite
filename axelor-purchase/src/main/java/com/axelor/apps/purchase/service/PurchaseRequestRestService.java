@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,20 +19,11 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.purchase.rest.dto.PurchaseRequestPostRequest;
 
-public interface PurchaseRequestService {
-  public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
+public interface PurchaseRequestRestService {
+
+  public PurchaseRequest createPurchaseRequest(PurchaseRequestPostRequest requestBody)
       throws AxelorException;
-
-  public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
-      throws AxelorException;
-
-  public PurchaseRequest createPurchaseRequest(
-      Company fetchCompany, Integer status, String description) throws AxelorException;
 }
