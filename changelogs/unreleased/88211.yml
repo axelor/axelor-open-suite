@@ -1,3 +1,0 @@
----
-title: "Payment voucher: fixed error when the invoice term has no related invoices."
-module: axelor-account

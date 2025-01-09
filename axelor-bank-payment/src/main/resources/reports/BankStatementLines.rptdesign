@@ -699,7 +699,7 @@ left join account_account as Account
 on BankDetails.bank_account = Account.id
 left join base_company as Company
 on Account.company = Company.id
-left join public.meta_file as MetaFile
+left join meta_file as MetaFile
 on MetaFile.id = Company.logo
 left join base_printing_settings as PrintingSettings 
 on Company.printing_settings = PrintingSettings.id
