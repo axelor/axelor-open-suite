@@ -499,13 +499,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
 
-      BigDecimal qty =
-          new BigDecimal(prodProcessLine.getDurationPerCycle())
-              .divide(
-                  new BigDecimal(3600),
-                  appProductionService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_UP)
-              .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
+      BigDecimal qty = computeQtyFromDuration(prodProcessLine, producedQty);
+
       BigDecimal costPrice = costAmount.multiply(qty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
@@ -529,6 +524,31 @@ public class CostSheetServiceImpl implements CostSheetService {
           costPrice,
           pieceUnit);
     }
+  }
+
+  private BigDecimal computeQtyFromDuration(
+      ProdProcessLine prodProcessLine, BigDecimal producedQty) {
+
+    BigDecimal nbCycle = this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle());
+    BigDecimal qty =
+        getHoursDuration(prodProcessLine.getDurationPerCycle())
+            .multiply(nbCycle)
+            .add(getHoursDuration(prodProcessLine.getStartingDuration()))
+            .add(getHoursDuration(prodProcessLine.getEndingDuration()))
+            .add(
+                nbCycle
+                    .subtract(BigDecimal.ONE)
+                    .multiply(getHoursDuration(prodProcessLine.getSetupDuration())));
+    return qty;
+  }
+
+  private BigDecimal getHoursDuration(Long duration) {
+
+    return new BigDecimal(duration)
+        .divide(
+            new BigDecimal(3600),
+            appProductionService.getNbDecimalDigitForUnitPrice(),
+            RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getNbCycle(BigDecimal producedQty, BigDecimal capacityPerCycle) {
