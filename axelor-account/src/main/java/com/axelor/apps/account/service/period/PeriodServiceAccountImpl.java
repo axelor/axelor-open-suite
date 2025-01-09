@@ -30,15 +30,12 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import javax.inject.Singleton;
-import javax.persistence.PersistenceException;
 
 @Singleton
 public class PeriodServiceAccountImpl extends PeriodServiceImpl implements PeriodServiceAccount {
@@ -67,26 +64,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   @Override
-  public void close(Period period) {
-    try {
-      this.processClosePeriod(period);
-    } catch (Exception e) {
-      resetStatus(period);
-      TraceBackService.trace(e);
-      throw new PersistenceException(e.getMessage(), e);
-    }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void resetStatus(Period period) {
-
-    Period periodBDD = periodRepo.find(period.getId());
-    super.resetStatusSelect(periodBDD);
-    periodRepo.save(periodBDD);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void processClosePeriod(Period period) throws AxelorException {
+  public void close(Period period) throws AxelorException {
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
       moveValidateService.accountingMultiple(
           getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_DAYBOOK));
