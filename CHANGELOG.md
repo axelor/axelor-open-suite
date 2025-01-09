@@ -1,3 +1,52 @@
+## [7.2.30] (2025-01-09)
+
+### Fixes
+#### Base
+
+* Email account: fixed NPE that occurred when setting 'Default account' to false.
+* City: fixed issue where country was not filled when adding a new city from address form.
+
+#### Account
+
+* Accounting batch: result move computation query takes into account accounted entries.
+* Move / Moveline: added additional control to avoid unbalancing input of entries on general / special accounts at validation.
+* Account: fixed hard coded db schema in native queries.
+* Payment voucher: fixed unexpected pop-up mentioning no record selected while there is at least one.
+* Invoice: removed incoherent mention of refund line in printing when it's not originated from actual invoice.
+* Bank reconciliation: fixed the filter to display move lines with no function origin selected and hide it when already reconciled in different currency than move in 'Bank reconciliation statement' report.
+* Accounting report type: fixed comparison in custom report types demo data.
+
+#### Human Resource
+
+* TimesheetLine/Project: fixed computation of durations.
+
+#### Purchase
+
+* Purchase request line: fixed domain for product.
+
+#### Quality
+
+* Quality improvement: fixed readonly condition for company.
+
+#### Sale
+
+* Sale configurator: fixed issue where formula was not added when verifying the groovy script then directly exiting the pop-up.
+
+#### Stock
+
+* Logistical form: fixed unique constraint violation error.
+
+#### Supply Chain
+
+* Stock move: fixed invoiced and remaining quantity in wizard when partially invoicing
+
+
+### Developer
+
+#### Supply Chain
+
+`UnitConversionService` has been added to the constructor of `StockMoveInvoiceServiceImpl`.
+
 ## [7.2.29] (2024-12-20)
 
 ### Fixes
@@ -1421,6 +1470,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.30]: https://github.com/axelor/axelor-open-suite/compare/v7.2.29...v7.2.30
 [7.2.29]: https://github.com/axelor/axelor-open-suite/compare/v7.2.28...v7.2.29
 [7.2.28]: https://github.com/axelor/axelor-open-suite/compare/v7.2.27...v7.2.28
 [7.2.27]: https://github.com/axelor/axelor-open-suite/compare/v7.2.26...v7.2.27
