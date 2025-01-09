@@ -358,4 +358,9 @@ public final class ProductionExceptionMessage {
 
   public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
       "Max loop call reached when trying to compute end date." /*)*/;
+
+  public static final String TOO_MANY_CALL_GETTING_TIME_SLOT = /*$$(*/
+      "Max call reached when trying to find a time slot for operation %s." /*)*/;
+  public static final String MANUF_ORDER_CANT_COMPUTE_NEXT_SLOT_WITH_CURRENT_CONFIG = /*$$(*/
+      "Current production configuration does not permit to have operation orders with no duration nor interoperation time on the same machine and at the same time. (Operation: %s)" /*)*/;
 }
