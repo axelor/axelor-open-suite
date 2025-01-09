@@ -79,6 +79,8 @@ import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveServiceImpl;
+import com.axelor.apps.project.service.roadmap.ProjectVersionService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeService;
@@ -123,5 +125,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectCheckListTemplateService.class).to(ProjectCheckListTemplateServiceImpl.class);
     bind(ProjectTimeUnitService.class).to(ProjectTimeUnitServiceImpl.class);
     bind(ProjectVersionRemoveService.class).to(ProjectVersionRemoveServiceImpl.class);
+    bind(ProjectVersionService.class).to(ProjectVersionServiceImpl.class);
   }
 }

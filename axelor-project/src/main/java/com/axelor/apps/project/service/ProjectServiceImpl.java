@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -36,6 +37,7 @@ import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -55,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -66,6 +69,7 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectCreateTaskService projectCreateTaskService;
   protected WikiRepository wikiRepo;
   protected ResourceBookingService resourceBookingService;
+  protected ProjectVersionService projectVersionService;
 
   @Inject
   public ProjectServiceImpl(
@@ -74,13 +78,15 @@ public class ProjectServiceImpl implements ProjectService {
       AppProjectService appProjectService,
       ProjectCreateTaskService projectCreateTaskService,
       WikiRepository wikiRepo,
-      ResourceBookingService resourceBookingService) {
+      ResourceBookingService resourceBookingService,
+      ProjectVersionService projectVersionService) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
     this.projectCreateTaskService = projectCreateTaskService;
     this.wikiRepo = wikiRepo;
     this.resourceBookingService = resourceBookingService;
+    this.projectVersionService = projectVersionService;
   }
 
   @Override
@@ -352,5 +358,48 @@ public class ProjectServiceImpl implements ProjectService {
     if (!ObjectUtils.isEmpty(taskStatusSet)) {
       project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
     }
+  }
+
+  @Override
+  public String checkIfProjectOrVersionConflicts(Project project) {
+    Set<ProjectVersion> projectVersionSet = project.getRoadmapSet();
+    if (CollectionUtils.isEmpty(projectVersionSet)) {
+      return null;
+    }
+    for (ProjectVersion projectVersion : projectVersionSet) {
+      List<ProjectVersion> projectVersionList =
+          projectVersionService.getProjectVersionList(projectVersion);
+      if (CollectionUtils.isEmpty(projectVersionList)) {
+        continue;
+      }
+      Project conflictingProject =
+          findConflictingProject(project, projectVersion, projectVersionList);
+      if (conflictingProject != null) {
+        return String.format(
+            I18n.get(ProjectExceptionMessage.PROJECT_VERSION_WITH_SAME_PROJECT_ALREADY_EXISTS),
+            projectVersion.getTitle(),
+            conflictingProject.getName());
+      }
+    }
+    return null;
+  }
+
+  protected Project findConflictingProject(
+      Project project, ProjectVersion projectVersion, List<ProjectVersion> projectVersionList) {
+    Project conflictingProject = null;
+    for (ProjectVersion version : projectVersionList) {
+      if (version.getId().equals(projectVersion.getId())) {
+        continue;
+      }
+      Set<Project> projectSet = version.getProjectSet();
+      if ((!CollectionUtils.isEmpty(projectSet) && projectSet.contains(project))
+          || project.getRoadmapSet().contains(version)) {
+        conflictingProject = project;
+      }
+      if (conflictingProject != null) {
+        break;
+      }
+    }
+    return conflictingProject;
   }
 }

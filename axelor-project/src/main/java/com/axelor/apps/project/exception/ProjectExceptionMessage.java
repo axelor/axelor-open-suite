@@ -87,4 +87,7 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
       "Please set the default number of hours per day in the project configuration." /*)*/;
+
+  public static final String PROJECT_VERSION_WITH_SAME_PROJECT_ALREADY_EXISTS = /*$$(*/
+      "Warning, at least 2 versions with the title %s are used on the project %s." /*)*/;
 }

@@ -185,4 +185,12 @@ public class ProjectController {
         .generateCheckListItemsFromTemplate(project, template);
     response.setValue("projectCheckListItemList", project.getProjectCheckListItemList());
   }
+
+  public void checkIfProjectOrVersionConflicts(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    String error = Beans.get(ProjectService.class).checkIfProjectOrVersionConflicts(project);
+    if (error != null) {
+      response.setError(error);
+    }
+  }
 }
