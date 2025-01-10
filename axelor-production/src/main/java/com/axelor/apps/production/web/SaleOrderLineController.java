@@ -25,6 +25,7 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -127,8 +128,20 @@ public class SaleOrderLineController {
         response.setValue(
             "saleOrderLineDetailsList",
             Beans.get(SaleOrderLineDetailsBomService.class)
-                .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder));
+                .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine));
       }
+    }
+  }
+
+  public void prodProcessOnChange(ActionRequest request, ActionResponse response) {
+    var saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    ProdProcess prodProcess = saleOrderLine.getProdProcess();
+
+    if (prodProcess != null) {
+      response.setValue(
+          "saleOrderLineDetailsList",
+          Beans.get(SaleOrderLineDetailsProdProcessService.class)
+              .createSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrderLine));
     }
   }
 }

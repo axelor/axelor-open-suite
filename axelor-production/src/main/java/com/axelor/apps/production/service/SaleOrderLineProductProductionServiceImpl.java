@@ -168,7 +168,8 @@ public class SaleOrderLineProductProductionServiceImpl
             .forEach(saleOrderLine::addSubSaleOrderLineListItem);
       }
       saleOrderLineDetailsBomService
-          .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+          .createSaleOrderLineDetailsFromBom(
+              saleOrderLine.getBillOfMaterial(), saleOrder, saleOrderLine)
           .stream()
           .filter(Objects::nonNull)
           .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
