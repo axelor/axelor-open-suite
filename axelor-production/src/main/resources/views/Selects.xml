@@ -195,7 +195,7 @@
 
   <selection name="purchase.purchase.order.type.select"
     id="production.purchase.purchase.order.type.select">
-    <option value="2">Subcontracting</option>
+    <option value="2" color="yellow">Subcontracting</option>
   </selection>
 
 </object-views>

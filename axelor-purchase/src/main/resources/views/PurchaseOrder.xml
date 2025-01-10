@@ -166,6 +166,7 @@
 	          </>
 	        ]]></viewer>
         </field>
+        <field name="typeSelect" showTitle="false" colSpan="2" widget="SingleSelect"/>
         <field name="company.tradingNameList" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox"
           onChange="action-group-purchase-order-company-change-actions" form-view="company-form"

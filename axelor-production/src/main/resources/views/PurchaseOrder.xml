@@ -10,13 +10,6 @@
     <extend target="//field[@name='receiptState']">
 
       <insert position="after">
-        <field name="typeSelect" showTitle="false" colSpan="2" readonly="true">
-          <viewer><![CDATA[
-	          <>
-	             {typeSelect == 2 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Subcontracted')}</Badge>}
-	          </>
-	        ]]></viewer>
-        </field>
         <field name="outsourcingOrderReceiptState" readonly="true" showTitle="false"
           colSpan="2">
           <viewer>

@@ -44,7 +44,7 @@
   </selection>
 
   <selection name="purchase.purchase.order.type.select">
-    <option value="1">Standard</option>
+    <option value="1" color="blue">Standard</option>
   </selection>
 
 </object-views>
