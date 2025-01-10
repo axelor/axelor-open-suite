@@ -166,7 +166,8 @@
 	          </>
 	        ]]></viewer>
         </field>
-        <field name="typeSelect" showTitle="false" colSpan="2" widget="SingleSelect"/>
+        <field name="typeSelect" showTitle="false" colSpan="2" widget="SingleSelect"
+          hidden="true"/>
         <field name="company.tradingNameList" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox"
           onChange="action-group-purchase-order-company-change-actions" form-view="company-form"
@@ -984,6 +985,9 @@
     <filter name="purchase-order-filters-my-sales" title="My Sales">
       <domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id =
         :_internalUser</domain>
+    </filter>
+    <filter name="purchase-order-filters-standard-purchases" title="Standard purchases">
+      <domain>self.typeSelect = 1</domain>
     </filter>
   </search-filters>
 
