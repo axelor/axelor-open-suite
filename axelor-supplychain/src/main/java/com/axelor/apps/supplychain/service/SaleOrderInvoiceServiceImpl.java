@@ -908,9 +908,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .filter(
                 " self.saleOrder.id = :saleOrderId "
                     + "AND self.statusSelect != :invoiceStatus "
+                    + "AND self.operationSubTypeSelect != :advanceOperationSubTypeSelect "
                     + "AND (self.operationTypeSelect = :saleOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .bind("advanceOperationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
             .bind("saleOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             .fetch();
