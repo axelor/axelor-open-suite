@@ -24,6 +24,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class PurchaseRequestLineRequest extends RequestStructure {
 
@@ -36,6 +37,7 @@ public class PurchaseRequestLineRequest extends RequestStructure {
   private Long unitId;
 
   @Min(0)
+  @NotNull
   private BigDecimal quantity;
 
   public Long getProductId() {
