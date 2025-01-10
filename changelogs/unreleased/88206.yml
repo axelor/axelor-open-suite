@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed impossible to invoice the remainder of an order when a deposit has already been paid and charged to a partial invoice."
+module: axelor-sale
