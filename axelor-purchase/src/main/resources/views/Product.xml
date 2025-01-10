@@ -28,7 +28,7 @@
     title="Order history" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <view type="grid" name="purchase-order-line-history-grid"/>
     <view type="form" name="purchase-order-line-form"/>
-    <domain>self.product.id = :id AND self.purchaseOrder.orderDate &lt; :__date__ AND
+    <domain>self.product.id = :id AND self.purchaseOrder.orderDate &lt;= :__date__ AND
       self.purchaseOrder.statusSelect IN (3,4)</domain>
   </action-view>
 
