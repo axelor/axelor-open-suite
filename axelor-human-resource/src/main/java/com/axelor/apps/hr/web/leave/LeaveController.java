@@ -459,7 +459,6 @@ public class LeaveController {
     response.setAttr(
         "leaveReason",
         "domain",
-        Beans.get(LeaveReasonDomainService.class)
-            .getLeaveReasonDomain(leave.getLeaveReason(), leave.getEmployee()));
+        Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(leave.getEmployee()));
   }
 }

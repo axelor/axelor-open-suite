@@ -3,9 +3,7 @@ package com.axelor.apps.hr.web.leave;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
@@ -17,12 +15,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -108,17 +104,11 @@ public class LeaveRequestCreateController {
   }
 
   public void getLeaveReasonDomain(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
     Employee employee =
         Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
-    Long leaveReasonId =
-        context.get("leaveReason") != null
-            ? Long.valueOf(((Map<String, Object>) context.get("leaveReason")).get("id").toString())
-            : 0L;
-    LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leaveReasonId);
     response.setAttr(
         "leaveReason",
         "domain",
-        Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(leaveReason, employee));
+        Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(employee));
   }
 }
