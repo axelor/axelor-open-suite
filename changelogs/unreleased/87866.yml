@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed the partner domain condition to be based on form values instead of context values."
+module: axelor-contract
