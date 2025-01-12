@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -91,4 +91,12 @@ public final class ProjectExceptionMessage {
 
   public static final String BATCH_TASK_STATUS_UPDATE_DONE = /*$$(*/
       "* %s project task updated" /*)*/;
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
+
+  public static final String PROJECT_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the project %s." /*)*/;
+
+  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
+      "Please set the default number of hours per day in the project configuration." /*)*/;
 }

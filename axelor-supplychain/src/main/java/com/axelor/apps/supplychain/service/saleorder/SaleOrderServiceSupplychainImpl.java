@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -65,6 +65,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -148,6 +149,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
     if (!appSupplychainService.isApp("supplychain")) {
       return checkAvailabiltyRequest;
+    }
+
+    List<Timetable> timetableList = saleOrder.getTimetableList();
+    if (CollectionUtils.isNotEmpty(timetableList)
+        && timetableList.stream().anyMatch(Timetable::getInvoiced)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED));
     }
 
     List<StockMove> allStockMoves =

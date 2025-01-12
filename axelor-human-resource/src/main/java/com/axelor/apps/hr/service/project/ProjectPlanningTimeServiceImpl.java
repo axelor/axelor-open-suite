@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -44,6 +45,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.auth.db.User;
@@ -57,6 +59,7 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -87,6 +90,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected PlannedTimeValueService plannedTimeValueService;
   protected ICalendarService iCalendarService;
   protected ICalendarEventRepository iCalendarEventRepository;
+  protected AppBaseService appBaseService;
+  protected ProjectTimeUnitService projectTimeUnitService;
 
   @Inject
   public ProjectPlanningTimeServiceImpl(
@@ -104,7 +109,9 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       ICalendarService iCalendarService,
       ICalendarEventRepository iCalendarEventRepository,
       UnitConversionForProjectService unitConversionForProjectService,
-      UnitConversionRepository unitConversionRepository) {
+      UnitConversionRepository unitConversionRepository,
+      AppBaseService appBaseService,
+      ProjectTimeUnitService projectTimeUnitService) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -121,6 +128,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.unitConversionRepository = unitConversionRepository;
+    this.appBaseService = appBaseService;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
@@ -278,7 +287,21 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     if (timePercent > 0) {
       totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
     }
-    planningTime.setPlannedTime(totalHours);
+
+    if (defaultTimeUnit != null) {
+      planningTime.setTimeUnit(defaultTimeUnit);
+    } else {
+      planningTime.setTimeUnit(projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask));
+    }
+
+    if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
+      BigDecimal numberHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);
+
+      planningTime.setPlannedTime(totalHours.divide(numberHoursADay, 2, RoundingMode.HALF_UP));
+    } else {
+      planningTime.setPlannedTime(totalHours);
+    }
+
     return planningTime;
   }
 
@@ -467,10 +490,22 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
-  public String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime) {
+  public String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    Unit unit = projectPlanningTime.getTimeUnit();
+    if (unit == null) {
+      if (projectPlanningTime.getProjectTask() != null) {
+        unit =
+            projectTimeUnitService.getTaskDefaultHoursTimeUnit(
+                projectPlanningTime.getProjectTask());
+      } else if (projectPlanningTime.getProject() != null) {
+        unit =
+            projectTimeUnitService.getProjectDefaultHoursTimeUnit(projectPlanningTime.getProject());
+      }
+    }
+
     return "self.id IN ("
-        + StringHelper.getIdListString(
-            computeAvailableDisplayTimeUnits(projectPlanningTime.getTimeUnit()))
+        + StringHelper.getIdListString(computeAvailableDisplayTimeUnits(unit))
         + ")";
   }
 

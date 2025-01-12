@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -430,7 +430,7 @@ public class SaleOrderLineController {
   public void getAnalyticDistributionTemplateDomain(
       ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttr(
         "analyticDistributionTemplate",
@@ -441,7 +441,7 @@ public class SaleOrderLineController {
 
   public void setDistributionLineReadonly(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttrs(
         Beans.get(SaleOrderLineViewSupplychainService.class)

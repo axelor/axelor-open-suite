@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,4 +28,7 @@ public interface SaleOrderAttrsService {
   void setSaleOrderLineTaxScale(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 
   void addIncotermRequired(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
+
+  void setSaleOrderGlobalDiscountDummies(
+      SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 }

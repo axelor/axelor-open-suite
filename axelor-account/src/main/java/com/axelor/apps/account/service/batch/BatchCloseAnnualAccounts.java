@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,8 +49,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -488,12 +486,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
       query =
           query.concat(
-              "self.move.statusSelect IN ("
-                  + Joiner.on(',')
-                      .join(
-                          Lists.newArrayList(
-                              MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK))
-                  + ") AND self.move.period.year = "
+              "self.move.statusSelect = "
+                  + MoveRepository.STATUS_ACCOUNTED
+                  + " AND self.move.period.year = "
                   + accountingBatch.getYear().getId());
       Query qIncome =
           JPA.em()

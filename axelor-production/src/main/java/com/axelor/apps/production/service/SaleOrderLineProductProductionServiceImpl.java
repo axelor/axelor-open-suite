@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,6 +40,9 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
+import com.axelor.studio.db.AppProduction;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +56,7 @@ public class SaleOrderLineProductProductionServiceImpl
   protected AppProductionService appProductionService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SolBomUpdateService solBomUpdateService;
 
   @Inject
   public SaleOrderLineProductProductionServiceImpl(
@@ -72,7 +76,8 @@ public class SaleOrderLineProductProductionServiceImpl
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       AppProductionService appProductionService,
       SaleOrderLineBomService saleOrderLineBomService,
-      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolBomUpdateService solBomUpdateService) {
     super(
         appSaleService,
         appBaseService,
@@ -91,6 +96,7 @@ public class SaleOrderLineProductProductionServiceImpl
     this.appProductionService = appProductionService;
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.solBomUpdateService = solBomUpdateService;
   }
 
   @Override
@@ -149,8 +155,12 @@ public class SaleOrderLineProductProductionServiceImpl
 
   protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    if (saleOrderLine.getIsToProduce()) {
-      if (!saleOrderLineBomService.isUpdated(saleOrderLine)) {
+    AppProduction appProduction = appProductionService.getAppProduction();
+    AppSale appSale = appSaleService.getAppSale();
+    if (saleOrderLine.getIsToProduce()
+        && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+        && !appProduction.getIsBomLineGenerationInSODisabled()) {
+      if (!solBomUpdateService.isUpdated(saleOrderLine)) {
         saleOrderLineBomService
             .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
             .stream()
