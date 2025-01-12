@@ -20,6 +20,7 @@ package com.axelor.apps.project.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
@@ -35,11 +36,11 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -72,220 +73,95 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
   @Override
   protected void process() {
     findBatch();
-    Set<TaskStatus> taskStatusSet =
-        Optional.ofNullable(batch)
-            .map(Batch::getProjectBatch)
-            .map(ProjectBatch::getTaskStatusSet)
-            .orElse(new HashSet<>());
-    if (ObjectUtils.isEmpty(taskStatusSet)) {
+    if (ObjectUtils.isEmpty(getTaskStatusIds())) {
       return;
     }
 
-    Set<Project> updatedProjectSet = getUpdatedProjectSet(taskStatusSet);
-    Set<ProjectTaskCategory> updatedTaskCategorySet = getUpdatedTaskCategorySet(taskStatusSet);
-    List<ProjectTask> projectTaskList =
-        getProjectTaskListToUpdate(updatedProjectSet, updatedTaskCategorySet, taskStatusSet);
+    removeTaskStatusFromProject();
+    removeTaskStatusFromCategory();
+    Query<ProjectTask> projectTaskQuery = getProjectTasksToUpdate();
 
-    removeTaskStatus(projectTaskList);
+    removeTaskStatus(projectTaskQuery);
   }
 
-  protected List<ProjectTask> getProjectTaskListToUpdate(
-      Set<Project> updatedProjectSet,
-      Set<ProjectTaskCategory> updatedTaskCategorySet,
-      Set<TaskStatus> taskStatusSet) {
-    List<ProjectTask> projectTaskList = new ArrayList<>();
-    if (ObjectUtils.isEmpty(taskStatusSet)) {
-      return projectTaskList;
-    }
-
-    if (!ObjectUtils.isEmpty(updatedProjectSet)) {
-      projectTaskList.addAll(
-          updatedProjectSet.stream()
-              .map(Project::getProjectTaskList)
-              .flatMap(Collection::stream)
-              .filter(projectTask -> taskStatusSet.contains(projectTask.getStatus()))
-              .collect(Collectors.toList()));
-    }
-    if (!ObjectUtils.isEmpty(updatedTaskCategorySet)) {
-      String categoryIdsStr =
-          updatedTaskCategorySet.stream()
-              .map(ProjectTaskCategory::getId)
-              .map(String::valueOf)
-              .collect(Collectors.joining(","));
-      String statusIdsStr =
-          taskStatusSet.stream()
-              .map(TaskStatus::getId)
-              .map(String::valueOf)
-              .collect(Collectors.joining(","));
-      projectTaskList.addAll(
-          projectTaskRepo
-              .all()
-              .filter(
-                  String.format(
-                      "self.projectTaskCategory.id IN (%s) AND self.status.id IN (%s)",
-                      categoryIdsStr, statusIdsStr))
-              .fetch());
-    }
-
-    return projectTaskList;
+  protected Query<ProjectTask> getProjectTasksToUpdate() {
+    return projectTaskRepo
+        .all()
+        .filter(
+            "self.status.id IN (:taskStatusIds) AND "
+                + "((self.project.taskStatusManagementSelect = :statusProject AND self.project.id IN (:projectIds)) "
+                + "OR (self.project.taskStatusManagementSelect = :statusCategory AND self.projectTaskCategory.id IN (:categoryIds)))")
+        .bind("taskStatusIds", getTaskStatusIds())
+        .bind("statusProject", ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT)
+        .bind("statusCategory", ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY)
+        .bind("projectIds", getProjectIds())
+        .bind("categoryIds", getCategoryIds())
+        .order("id");
   }
 
-  protected void removeTaskStatus(List<ProjectTask> projectTaskList) {
+  protected void removeTaskStatus(Query<ProjectTask> projectTaskQuery) {
     int offset = 0;
+    List<ProjectTask> projectTaskList;
 
-    for (ProjectTask projectTask : projectTaskList) {
-      offset++;
+    while (!(projectTaskList = projectTaskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      for (ProjectTask projectTask : projectTaskList) {
+        offset++;
 
-      try {
-        this.resetProjectTaskStatus(projectTask);
-        incrementDone();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            e,
-            String.format(
-                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_TASK), projectTask),
-            batch.getId());
-      }
-
-      if (offset % FETCH_LIMIT == 0) {
-        JPA.clear();
-        findBatch();
-      }
-    }
-  }
-
-  protected Set<Project> getUpdatedProjectSet(Set<TaskStatus> taskStatusSet) {
-    int offset = 0;
-    Set<Project> projectSet =
-        Optional.ofNullable(batch)
-            .map(Batch::getProjectBatch)
-            .map(ProjectBatch::getProjectSet)
-            .orElse(new HashSet<>());
-    Set<Project> updatedProjectSet = new HashSet<>();
-
-    if (ObjectUtils.isEmpty(projectSet) || ObjectUtils.isEmpty(taskStatusSet)) {
-      return updatedProjectSet;
-    }
-
-    for (Project project : projectSet) {
-      offset++;
-
-      try {
-        if (isProjectUpdated(project, taskStatusSet)) {
-          updatedProjectSet.add(project);
+        try {
+          this.resetProjectTaskStatus(projectTask);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              e,
+              String.format(
+                  I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_TASK), projectTask),
+              batch.getId());
         }
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            e,
-            String.format(
-                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_PROJECT), project),
-            batch.getId());
       }
-
-      if (offset % FETCH_LIMIT == 0) {
-        JPA.clear();
-        findBatch();
-      }
+      JPA.clear();
+      findBatch();
     }
-
-    return updatedProjectSet;
-  }
-
-  protected Set<ProjectTaskCategory> getUpdatedTaskCategorySet(Set<TaskStatus> taskStatusSet) {
-    int offset = 0;
-    Set<ProjectTaskCategory> projectTaskCategorySet =
-        Optional.ofNullable(batch)
-            .map(Batch::getProjectBatch)
-            .map(ProjectBatch::getTaskCategorySet)
-            .orElse(new HashSet<>());
-    Set<ProjectTaskCategory> updatedProjectTaskCategorySet = new HashSet<>();
-
-    if (ObjectUtils.isEmpty(projectTaskCategorySet) || ObjectUtils.isEmpty(taskStatusSet)) {
-      return updatedProjectTaskCategorySet;
-    }
-
-    for (ProjectTaskCategory taskCategory : projectTaskCategorySet) {
-      offset++;
-
-      try {
-        if (isProjectTaskCategoryUpdated(taskCategory, taskStatusSet)) {
-          updatedProjectTaskCategorySet.add(taskCategory);
-        }
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            e,
-            String.format(
-                I18n.get(ProjectExceptionMessage.BATCH_TASK_STATUS_UPDATE_PROJECT_TASK_CATEGORY),
-                taskCategory),
-            batch.getId());
-      }
-
-      if (offset % FETCH_LIMIT == 0) {
-        JPA.clear();
-        findBatch();
-      }
-    }
-
-    return updatedProjectTaskCategorySet;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected boolean isProjectUpdated(Project project, Set<TaskStatus> taskStatusSet) {
-    project = projectRepository.find(project.getId());
-    boolean needSave = false;
-    if (project.getTaskStatusManagementSelect()
-        == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
-      for (TaskStatus taskStatus : taskStatusSet) {
-        if (project.getProjectTaskStatusSet().contains(taskStatus)) {
-          project.removeProjectTaskStatusSetItem(taskStatus);
-          if (taskStatus.equals(project.getCompletedTaskStatus())) {
-            project.setCompletedTaskStatus(null);
-          }
-          needSave = true;
-        }
-      }
-    }
-    if (needSave) {
-      if (ObjectUtils.isEmpty(project.getProjectTaskStatusSet())) {
-        project.setTaskStatusManagementSelect(ProjectRepository.TASK_STATUS_MANAGEMENT_NONE);
-      }
-      projectRepository.save(project);
+  protected void removeTaskStatusFromProject() {
+    List<Long> projectIds = getProjectIds();
+    List<Long> taskStatusIds = getTaskStatusIds();
+    if (ObjectUtils.isEmpty(projectIds) || ObjectUtils.isEmpty(taskStatusIds)) {
+      return;
     }
 
-    return needSave;
+    javax.persistence.Query updateQuery =
+        JPA.em()
+            .createNativeQuery(
+                "DELETE FROM project_project_project_task_status_set WHERE project_project IN (:projectIds) AND project_task_status_set IN (:taskStatusIds)")
+            .setParameter("projectIds", projectIds)
+            .setParameter("taskStatusIds", taskStatusIds);
+    updateQuery.executeUpdate();
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected boolean isProjectTaskCategoryUpdated(
-      ProjectTaskCategory taskCategory, Set<TaskStatus> taskStatusSet) {
-    taskCategory = projectTaskCategoryRepository.find(taskCategory.getId());
-    boolean needSave = false;
-    for (TaskStatus taskStatus : taskStatusSet) {
-      if (taskCategory.getProjectTaskStatusSet().contains(taskStatus)) {
-        taskCategory.removeProjectTaskStatusSetItem(taskStatus);
-        if (taskStatus.equals(taskCategory.getCompletedTaskStatus())) {
-          taskCategory.setCompletedTaskStatus(null);
-        }
-        needSave = true;
-      }
-    }
-    if (needSave) {
-      projectTaskCategoryRepository.save(taskCategory);
+  protected void removeTaskStatusFromCategory() {
+    List<Long> categoryIds = getCategoryIds();
+    List<Long> taskStatusIds = getTaskStatusIds();
+    if (ObjectUtils.isEmpty(categoryIds) || ObjectUtils.isEmpty(taskStatusIds)) {
+      return;
     }
 
-    return needSave;
+    javax.persistence.Query updateQuery =
+        JPA.em()
+            .createNativeQuery(
+                "DELETE FROM project_project_task_category_project_task_status_set WHERE project_project_task_category IN (:categoryIds) AND project_task_status_set IN (:taskStatusIds)")
+            .setParameter("categoryIds", categoryIds)
+            .setParameter("taskStatusIds", taskStatusIds);
+    updateQuery.executeUpdate();
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void resetProjectTaskStatus(ProjectTask projectTask) {
-    projectTask = projectTaskRepo.find(projectTask.getId());
     TaskStatus taskStatus = getPreviousTaskStatus(projectTask);
-    if (taskStatus != null) {
-      taskStatus = taskStatusRepository.find(taskStatus.getId());
-    }
     projectTask.setStatus(taskStatus);
     projectTask.addBatchSetItem(batch);
     projectTaskRepo.save(projectTask);
@@ -321,6 +197,42 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
       }
     }
     return previousTaskStatus;
+  }
+
+  protected List<Long> getTaskStatusIds() {
+    Set<TaskStatus> taskStatusSet =
+        Optional.ofNullable(batch)
+            .map(Batch::getProjectBatch)
+            .map(ProjectBatch::getTaskStatusSet)
+            .orElse(new HashSet<>());
+    if (ObjectUtils.isEmpty(taskStatusSet)) {
+      return new ArrayList<>();
+    }
+    return taskStatusSet.stream().map(TaskStatus::getId).collect(Collectors.toList());
+  }
+
+  protected List<Long> getProjectIds() {
+    Set<Project> projectSet =
+        Optional.ofNullable(batch)
+            .map(Batch::getProjectBatch)
+            .map(ProjectBatch::getProjectSet)
+            .orElse(new HashSet<>());
+    if (ObjectUtils.isEmpty(projectSet)) {
+      return new ArrayList<>();
+    }
+    return projectSet.stream().map(Project::getId).collect(Collectors.toList());
+  }
+
+  protected List<Long> getCategoryIds() {
+    Set<ProjectTaskCategory> categorySet =
+        Optional.ofNullable(batch)
+            .map(Batch::getProjectBatch)
+            .map(ProjectBatch::getTaskCategorySet)
+            .orElse(new HashSet<>());
+    if (ObjectUtils.isEmpty(categorySet)) {
+      return new ArrayList<>();
+    }
+    return categorySet.stream().map(ProjectTaskCategory::getId).collect(Collectors.toList());
   }
 
   @Override
