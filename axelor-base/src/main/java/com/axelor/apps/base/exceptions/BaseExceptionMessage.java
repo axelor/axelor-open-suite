@@ -708,9 +708,6 @@ public final class BaseExceptionMessage {
   public static final String API_BAD_REQUEST = /*$$(*/
       "Bad request please check api configuration information." /*)*/;
 
-  public static final String API_ERROR_IN_REQUEST_FOR_IDENTIFIER = /*$$(*/
-      "Error during the request with identifier: %s." /*)*/;
-
   public static final String API_WRONG_CREDENTIALS = /*$$(*/
       "Bad request please check credentials." /*)*/;
 

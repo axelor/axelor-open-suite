@@ -853,7 +853,6 @@
 "Error : incorrect request for the indicatior generator %s","Erreur : Requête incorrect pour le générateur d'indicateur %s",,
 "Error : no code has been set","Erreur : Aucun code n’a été défini.",,
 "Error : no export path has been set","Erreur : Aucun chemin d’export n’a été défini.",,
-"Error during the request with identifier: %s.","Erreur lors de la demande avec la valeur: %s.",,
 "Error file","Fichier d'erreur",,
 "Error happened during batch execution","Erreur pendant l'exécution du batch",,
 "Error in Connection","Erreur de connexion",,
