@@ -6,7 +6,7 @@
   <grid name="sale-order-line-details-grid" title="Sale order lines details"
     model="com.axelor.apps.production.db.SaleOrderLineDetails">
     <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
-      widget="ImageSelect"/>
+      widget="ImageSelect" title=""/>
     <field name="product" form-view="product-form" grid-view="product-grid"
       onChange="action-sale-order-line-details-method-product-onchange" showIf="!$readonly()"
       readonlyIf="typeSelect != 1"/>
