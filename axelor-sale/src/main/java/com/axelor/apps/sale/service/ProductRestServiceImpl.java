@@ -126,7 +126,8 @@ public class ProductRestServiceImpl implements ProductRestService {
     if (product.getSaleCurrency() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(SaleExceptionMessage.PRODUCT_CURRENCY_IS_NULL));
+          I18n.get(SaleExceptionMessage.PRODUCT_CURRENCY_IS_NULL),
+          product.getId());
     }
     return new CurrencyResponse(product.getSaleCurrency());
   }
@@ -137,20 +138,32 @@ public class ProductRestServiceImpl implements ProductRestService {
       throws AxelorException {
     List<ProductResponse> productResponses = new ArrayList<>();
     for (ProductResquest productAndUnit : unitsProducts) {
-      Unit unit = productAndUnit.fetchUnit();
-      Product product = productAndUnit.fetchProduct();
-      CurrencyResponse currencyResponse =
-          createCurrencyResponse(product, partner, company, currency);
-      if (company == null) {
-        company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+      Product product = null;
+      try {
+        product = productAndUnit.fetchProduct();
+        Unit unit = productAndUnit.fetchUnit();
+        CurrencyResponse currencyResponse =
+            createCurrencyResponse(product, partner, company, currency);
+        if (company == null) {
+          company =
+              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+        }
+        List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
+        if (unit == null) {
+          unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
+        }
+        UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
+        productResponses.add(
+            new ProductResponse(product.getId(), prices, currencyResponse, unitResponse));
+      } catch (Exception e) {
+        long productId;
+        if (product == null) {
+          productId = productAndUnit.getProductId();
+        } else {
+          productId = product.getId();
+        }
+        productResponses.add(new ProductResponse(productId, e.getMessage()));
       }
-      List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
-      if (unit == null) {
-        unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
-      }
-      UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
-      productResponses.add(
-          new ProductResponse(product.getId(), prices, currencyResponse, unitResponse));
     }
     return productResponses;
   }
