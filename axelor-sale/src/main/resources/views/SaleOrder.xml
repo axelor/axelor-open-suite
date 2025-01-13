@@ -1277,6 +1277,14 @@
     </panel>
   </form>
 
+  <form name="sale-order-incoterm-wizard-form" title="Fill incoterm"
+    model="com.axelor.apps.sale.db.SaleOrder" onSave="action-sale-group-confirmed">
+    <panel name="mainPanel" colSpan="12">
+      <field name="incoterm" required="true" grid-view="incoterm-grid"
+        form-view="incoterm-form"/>
+    </panel>
+  </form>
+
   <action-group name="action-group-sale-order-onsave">
     <action name="save"/>
     <action name="action-sale-order-method-compute"/>
@@ -1505,6 +1513,8 @@
 
   <action-group name="action-sale-group-confirmed">
     <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
     <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
@@ -2229,5 +2239,9 @@
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
   </action-attrs>
+
+  <action-method name="action-sale-order-method-fill-incoterm-if-required">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="fillIncoterm"/>
+  </action-method>
 
 </object-views>
