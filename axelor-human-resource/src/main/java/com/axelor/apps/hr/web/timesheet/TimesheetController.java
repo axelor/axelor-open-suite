@@ -692,4 +692,18 @@ public class TimesheetController {
       response.setNotify(I18n.get(HumanResourceExceptionMessage.INVALID_DATES));
     }
   }
+
+  @SuppressWarnings("unchecked")
+  public void clearProjectPlanningTimesDuration(ActionRequest request, ActionResponse response) {
+    if (request.getContext().get("projectPlanningTimeList") == null) {
+      return;
+    }
+    List<Map<String, Object>> projectPlanningTimeList =
+        (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeList");
+    projectPlanningTimeList.forEach(
+        it -> {
+          it.put("$duration", BigDecimal.ZERO);
+        });
+    response.setValue("$projectPlanningTimeList", projectPlanningTimeList);
+  }
 }

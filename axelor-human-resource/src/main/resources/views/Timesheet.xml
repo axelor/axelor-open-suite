@@ -189,11 +189,14 @@
         target="com.axelor.apps.project.db.ProjectPlanningTime" type="one-to-many" canRemove="false"
         canNew="false" canView="false" grid-view="project-planning-timesheet-grid"
         form-view="resume-project-task-form" height="200%" colSpan="12"/>
-      <spacer colSpan="6"/>
+      <spacer colSpan="3"/>
       <field name="$generationDate" type="date" title="Date" colSpan="3"
         onChange="action-timesheet-validate-generation-date-onchange"/>
       <button name="generateLinesBtn" title="Generate timesheet lines"
         onClick="action-timesheet-group-generate-lines-using-project-task" colSpan="3"/>
+      <button name="clearProjectPlanningTimesDurationBtn"
+        title="Clear project planning times duration"
+        onClick="action-timesheet-method-clear-project-planning-times-duration" colSpan="3"/>
     </panel>
     <panel name="linesPanel">
       <panel-dashlet name="timesheetLineEditorPanel" colSpan="12"
@@ -636,6 +639,11 @@
     model="com.axelor.apps.hr.db.Timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="validateGenerationDate"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-clear-project-planning-times-duration">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="clearProjectPlanningTimesDuration"/>
   </action-method>
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">
