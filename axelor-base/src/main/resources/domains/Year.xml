@@ -36,6 +36,7 @@
 		public static final int TYPE_FISCAL = 1;
 		public static final int TYPE_PAYROLL = 2;
 		public static final int TYPE_MANUFACTURING = 3;
+		public static final int TYPE_ALLOCATION = 4;
 
 	]]></extra-code>
 

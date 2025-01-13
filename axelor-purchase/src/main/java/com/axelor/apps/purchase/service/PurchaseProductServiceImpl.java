@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,9 +29,17 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class PurchaseProductServiceImpl implements PurchaseProductService {
+
+  protected final SupplierCatalogService supplierCatalogService;
+
+  @Inject
+  public PurchaseProductServiceImpl(SupplierCatalogService supplierCatalogService) {
+    this.supplierCatalogService = supplierCatalogService;
+  }
 
   @Override
   public BigDecimal getLastShippingCoef(Product product) throws AxelorException {
@@ -50,8 +58,7 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
     if (lastPurchaseOrderLine != null) {
       Partner partner = lastPurchaseOrderLine.getPurchaseOrder().getSupplierPartner();
       Company company = lastPurchaseOrderLine.getPurchaseOrder().getCompany();
-      Unit productUnit =
-          Beans.get(PurchaseOrderLineService.class).getPurchaseUnit(lastPurchaseOrderLine);
+      Unit productUnit = supplierCatalogService.getUnit(product, partner, company);
       BigDecimal qty =
           Beans.get(UnitConversionService.class)
               .convert(

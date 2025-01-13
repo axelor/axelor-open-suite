@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -77,6 +77,8 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
+import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveServiceImpl;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
@@ -122,6 +124,7 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskAttrsService.class).to(ProjectTaskAttrsServiceImpl.class);
     bind(ProjectCheckListTemplateService.class).to(ProjectCheckListTemplateServiceImpl.class);
     bind(ProjectTimeUnitService.class).to(ProjectTimeUnitServiceImpl.class);
+    bind(ProjectVersionRemoveService.class).to(ProjectVersionRemoveServiceImpl.class);
 
     bind(SprintGeneratorService.class).to(SprintGeneratorServiceImpl.class);
   }

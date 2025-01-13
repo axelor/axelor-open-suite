@@ -598,7 +598,7 @@ ON Company.id = Report.Company
 LEFT JOIN base_currency as Currency 
 ON Report.currency = Currency.id
 
-LEFT JOIN public.account_journal as Journal 
+LEFT JOIN account_journal as Journal 
 ON Report.journal = Journal.id
 
 LEFT JOIN account_payment_mode as PaymentMode
