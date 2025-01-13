@@ -40,6 +40,7 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
     return siretNumber;
   }
 
+  @Override
   protected Map<String, String> getHeaders(PartnerApiConfiguration configuration) {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
@@ -47,10 +48,12 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
     return headers;
   }
 
+  @Override
   protected String getUrl(PartnerApiConfiguration partnerApiConfiguration, String siretNumber) {
     return partnerApiConfiguration.getApiUrl() + "/siret/" + siretNumber;
   }
 
+  @Override
   protected String treatResponse(HttpResponse<String> response, String siretNumber)
       throws JSONException {
     int statusCode = response.statusCode();
