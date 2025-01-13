@@ -22,6 +22,10 @@
       <field name="projectSet" grid-view="project-grid" form-view="project-form"
         onSelect="action-version-attrs-project-domain" colSpan="12"
         onChange="action-project-version-method-show-sprints"/>
+      <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+        onClick="save,action-project-version-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+      <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+        showIf="backlogSprint" readonly="true"/>
       <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
         canSelect="false"/>
     </panel>
@@ -51,5 +55,10 @@
     <view-param name="popup" value="true"/>
     <domain>self.targetVersion.id = :id</domain>
   </action-view>
+
+  <action-method name="action-project-version-method-generate-backlog-sprint">
+    <call class="com.axelor.apps.project.web.ProjectVersionController"
+      method="generateBacklogSprint"/>
+  </action-method>
 
 </object-views>
