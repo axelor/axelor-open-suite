@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.stock.rest.dto;
 
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
@@ -30,6 +32,9 @@ public class InventoryLinePutRequest extends RequestStructure {
   private BigDecimal realQty;
 
   private String description;
+
+  @Min(0)
+  private Long stockLocationId;
 
   public BigDecimal getRealQty() {
     return realQty;
@@ -45,5 +50,21 @@ public class InventoryLinePutRequest extends RequestStructure {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public Long getStockLocationId() {
+    return stockLocationId;
+  }
+
+  public void setStockLocationId(Long stockLocationId) {
+    this.stockLocationId = stockLocationId;
+  }
+
+  public StockLocation fetchStockLocation() {
+    if (this.stockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, stockLocationId, ObjectFinder.NO_VERSION);
+    } else {
+      return null;
+    }
   }
 }
