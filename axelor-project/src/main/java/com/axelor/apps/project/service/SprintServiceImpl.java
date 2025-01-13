@@ -38,7 +38,6 @@ public class SprintServiceImpl implements SprintService {
   @Transactional
   public void generateBacklogSprint(Project project) {
     Sprint sprint = new Sprint("Backlog - " + project.getName());
-    sprint.setProject(project);
     project.setBacklogSprint(sprint);
     sprintRepository.save(sprint);
   }
@@ -47,7 +46,6 @@ public class SprintServiceImpl implements SprintService {
   @Transactional
   public void generateBacklogSprint(ProjectVersion projectVersion) {
     Sprint sprint = new Sprint("Backlog - " + projectVersion.getTitle());
-    sprint.setTargetVersion(projectVersion);
     projectVersion.setBacklogSprint(sprint);
     sprintRepository.save(sprint);
   }

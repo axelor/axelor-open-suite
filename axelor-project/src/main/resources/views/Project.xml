@@ -385,10 +385,12 @@
         form-view="project-version-form" grid-view="project-version-grid"/>
       <panel name="sprintPanel" title="Sprints" showIf="sprintManagementSelect == 'project'"
         colSpan="12">
-        <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
-          onClick="save,action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
-        <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
-          showIf="backlogSprint" readonly="true"/>
+        <panel colSpan="6">
+          <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+            onClick="save,action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+          <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+            showIf="backlogSprint" readonly="true"/>
+        </panel>
         <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
           canNew="true" canRemove="true"/>
         <field name="sprintManagementSelect" hidden="true"/>
