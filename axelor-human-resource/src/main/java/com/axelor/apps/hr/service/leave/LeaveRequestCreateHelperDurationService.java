@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LeaveRequestCreateHelperDurationService {
 
-  void checkDuration(BigDecimal duration, BigDecimal totalDuration) throws AxelorException;
+  boolean durationIsExceeded(BigDecimal duration, BigDecimal totalDuration) throws AxelorException;
 
   BigDecimal getTotalDuration(List<HashMap<String, Object>> leaveReasonList);
 }

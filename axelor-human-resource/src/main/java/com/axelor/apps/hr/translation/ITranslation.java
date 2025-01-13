@@ -109,4 +109,7 @@ public interface ITranslation {
       "Leave request(s) have been correctly created. Some requests were ignored as they were not correctly configured." /*)*/;
 
   String API_LEAVE_REQUEST_COMPUTE_DURATION = /*$$(*/ "Duration computed." /*)*/;
+
+  String LEAVE_REQUEST_CREATE_DURATION_ALERT = /*$$(*/
+      "You exceeded the available/asked duration. Do you wish to proceed ?" /*)*/;
 }
