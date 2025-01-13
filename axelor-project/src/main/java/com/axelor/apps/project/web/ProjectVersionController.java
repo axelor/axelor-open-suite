@@ -58,6 +58,7 @@ public class ProjectVersionController {
       }
     }
 
+    response.setAttr("generateSprintsBtn", "hidden", isHidden);
     response.setAttr("sprintList", "hidden", isHidden);
     response.setAttr("sprintList.project", "hidden", true);
   }

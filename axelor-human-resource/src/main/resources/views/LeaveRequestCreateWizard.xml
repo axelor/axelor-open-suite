@@ -33,7 +33,7 @@
   <grid title="Leave reason" name="leave-reason-duration-grid"
     model="com.axelor.utils.db.Wizard">
     <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
-      domain="self.unitSelect = 1 AND self.leaveReasonTypeSelect = 2"/>
+      onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"/>
     <field name="duration" type="decimal" min="0" x-scale="1"/>
     <field name="comment" type="string"/>
   </grid>
@@ -41,7 +41,8 @@
   <form title="Leave reason" name="leave-reason-duration-form"
     model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
-      <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"/>
+      <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
+        onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"/>
       <field name="duration" type="decimal" min="0" x-scale="1"/>
       <field name="comment" type="string"/>
     </panel>
@@ -65,6 +66,13 @@
     <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
       method="computeDuration"/>
   </action-method>
+
+  <action-method
+    name="action-leave-request-create-wizard-method-get-leave-reason-domain">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="getLeaveReasonDomain"/>
+  </action-method>
+
 
   <action-view name="leave.request.wizard" model="com.axelor.utils.db.Wizard"
     title="Leave Request Assistant">

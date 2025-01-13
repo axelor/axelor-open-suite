@@ -22,10 +22,15 @@
       <field name="projectSet" grid-view="project-grid" form-view="project-form"
         onSelect="action-version-attrs-project-domain" colSpan="12"
         onChange="action-project-version-method-show-sprints"/>
-      <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
-        onClick="save,action-project-version-method-generate-backlog-sprint" showIf="!backlogSprint"/>
-      <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
-        showIf="backlogSprint" readonly="true"/>
+      <panel itemSpan="12">
+        <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+          onClick="save,action-project-version-method-generate-backlog-sprint"
+          showIf="!backlogSprint"/>
+        <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+          showIf="backlogSprint" readonly="true"/>
+      </panel>
+      <button name="generateSprintsBtn" title="Generate sprints"
+        onClick="save,action-sprint-generator-version-view-wizard-mass-generate"/>
       <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
         canSelect="false"/>
     </panel>
