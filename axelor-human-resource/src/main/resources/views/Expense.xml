@@ -120,7 +120,7 @@
             hidden="true"/>
           <button name="cancelBtn" onClick="action-expense-group-cancel" hidden="true"
             title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-          <button name="draftBtn" onClick="action-expense-group-draft"
+          <button name="draftBtn" onClick="action-expense-method-draft"
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"
             onClick="save,action-expense-add-payment-form"
@@ -288,13 +288,6 @@
   <action-group name="action-expense-group-cancel">
     <action name="save"/>
     <action name="action-expense-method-cancel"/>
-    <action name="action-expense-attrs-hide-button-readonly-field"/>
-    <action name="save"/>
-  </action-group>
-
-  <action-group name="action-expense-group-draft">
-    <action name="action-expense-method-draft"/>
-    <action name="action-expense-attrs-hide-button-readonly-field"/>
   </action-group>
 
   <action-group name="action-expense-group-expense-line-on-change">

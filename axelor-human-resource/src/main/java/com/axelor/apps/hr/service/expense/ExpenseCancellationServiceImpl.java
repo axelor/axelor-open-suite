@@ -114,7 +114,7 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
             expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
       }
     } catch (IOException | ClassNotFoundException e) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
 
     return null;
