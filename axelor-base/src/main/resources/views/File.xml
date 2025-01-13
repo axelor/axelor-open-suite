@@ -69,7 +69,7 @@
 
   <action-group name="action-base-file-group-file-onload">
     <action name="action-base-file-method-set-dms-file"
-      if="metaFile &amp;&amp; dmsFile == null"/>
+      if="metaFile &amp;&amp; dmsFile == null &amp;&amp; id"/>
     <action name="action-base-file-method-set-inline-url"/>
   </action-group>
 
