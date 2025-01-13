@@ -1,0 +1,3 @@
+---
+title: "Product: Displayed the product prices, and for products with missing configurations or other errors, attached the corresponding error messages"
+module: axelor-sale

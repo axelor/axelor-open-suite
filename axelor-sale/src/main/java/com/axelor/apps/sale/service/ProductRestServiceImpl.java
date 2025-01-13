@@ -126,8 +126,7 @@ public class ProductRestServiceImpl implements ProductRestService {
     if (product.getSaleCurrency() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(SaleExceptionMessage.PRODUCT_CURRENCY_IS_NULL),
-          product.getId());
+          I18n.get(SaleExceptionMessage.PRODUCT_CURRENCY_IS_NULL));
     }
     return new CurrencyResponse(product.getSaleCurrency());
   }
