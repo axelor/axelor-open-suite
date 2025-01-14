@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -243,7 +243,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       line.setProductCode(product.getCode());
     }
 
-    line.setUnit(getPurchaseUnit(line));
+    line.setUnit(supplierCatalogService.getUnit(product, supplierPartner, company));
 
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(product.getDescription());
@@ -552,15 +552,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       return priceListLine.getTypeSelect();
     }
     return 0;
-  }
-
-  @Override
-  public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine) {
-    Unit unit = purchaseOrderLine.getProduct().getPurchasesUnit();
-    if (unit == null) {
-      unit = purchaseOrderLine.getProduct().getUnit();
-    }
-    return unit;
   }
 
   @Override

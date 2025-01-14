@@ -154,8 +154,7 @@
       <bind to="isDeliveryAddr" eval="true"/>
       <bind to="isDefaultAddr" eval="true"/>
     </bind>
-    <bind to="mainAddress" search="self.importId = :address"
-      if="address != null &amp;&amp; isContact == 'true'" update="true"/>
+    <bind to="mainAddress" search="self.importId = :address" if="address != null" update="true"/>
     <bind to="inPaymentMode" column="inPaymentMode.importId" if="false"/>
     <bind to="outPaymentMode" column="outPaymentMode.importId" if="false"/>
     <bind to="paymentCondition" column="paymentCondition.importId" if="false"/>

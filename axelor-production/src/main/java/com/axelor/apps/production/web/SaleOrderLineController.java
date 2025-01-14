@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
+import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.i18n.I18n;
@@ -116,13 +117,10 @@ public class SaleOrderLineController {
       saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
     }
     SaleOrderLineBomService saleOrderLineBomService = Beans.get(SaleOrderLineBomService.class);
-    if (saleOrderLine.getBillOfMaterial() != null
-        && saleOrder != null
-        && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 
-      BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-
-      if (billOfMaterial != null && saleOrder != null) {
+    if (billOfMaterial != null && saleOrder != null) {
+      if (!Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)) {
         response.setValue(
             "subSaleOrderLineList",
             saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder));

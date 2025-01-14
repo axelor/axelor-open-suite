@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -320,8 +320,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public Unit getUnit(Product product, boolean isPurchase) {
-    return product.getUnit();
+  public Unit getUnit(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
+      throws AxelorException {
+    return invoiceLine.getProduct().getUnit();
   }
 
   @Override
@@ -436,7 +437,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("productName", product.getName());
       productInformation.put("productCode", product.getCode());
     }
-    productInformation.put("unit", this.getUnit(product, isPurchase));
+    productInformation.put("unit", this.getUnit(invoice, invoiceLine, isPurchase));
 
     AppInvoice appInvoice = appAccountService.getAppInvoice();
     Boolean isEnabledProductDescriptionCopy =

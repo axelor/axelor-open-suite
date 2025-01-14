@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
@@ -54,6 +55,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppAccount;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -86,6 +88,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
   protected TaxService taxService;
   protected ProductCompanyService productCompanyService;
   protected ContractVersionService versionService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public ContractInvoicingServiceImpl(
@@ -101,7 +104,8 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       ProductCompanyService productCompanyService,
-      ContractVersionService versionService) {
+      ContractVersionService versionService,
+      AppAccountService appAccountService) {
     this.appBaseService = appBaseService;
     this.contractLineService = contractLineService;
     this.invoiceRepository = invoiceRepository;
@@ -115,6 +119,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     this.taxService = taxService;
     this.productCompanyService = productCompanyService;
     this.versionService = versionService;
+    this.appAccountService = appAccountService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -237,8 +242,9 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
       for (ContractLine line : lines) {
         ContractLine tmp = contractLineRepo.copy(line, false);
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
+        LocalDate start = null;
         if (isPeriodicInvoicing && isTimeProratedInvoice) {
-          LocalDate start = computeStartDate(contract, line, version);
+          start = computeStartDate(contract, line, version);
           tmp.setFromDate(start);
           ratio =
               durationService.computeRatio(
@@ -254,9 +260,57 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
                 .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
         tmp = this.contractLineService.computeTotal(tmp, contract);
         InvoiceLine invLine = generate(invoice, tmp);
+
+        AppAccount appAccount = appAccountService.getAppAccount();
+        fillCutOffDate(contract, appAccount, start, invLine, end, isPeriodicInvoicing);
         invLine.setContractLine(line);
         setContractLineInAnalyticMoveLine(line, invLine);
       }
+    }
+  }
+
+  protected void fillCutOffDate(
+      Contract contract,
+      AppAccount appAccount,
+      LocalDate start,
+      InvoiceLine invLine,
+      LocalDate end,
+      boolean isPeriodicInvoicing) {
+    if (appAccount.getManageCutOffPeriod()) {
+      if (!isPeriodicInvoicing) {
+        start = getNonPeriodicInvoiceCutOffStartDate(contract);
+        end = contract.getInvoicingDate();
+        if (end == null) {
+          end = appBaseService.getTodayDate(contract.getCompany());
+        }
+      }
+      if (start == null) {
+        start =
+            contract.getInvoicePeriodStartDate() != null
+                ? contract.getInvoicePeriodStartDate()
+                : contract.getStartDate();
+      }
+      invLine.setCutOffStartDate(start);
+      invLine.setCutOffEndDate(end);
+    }
+  }
+
+  protected LocalDate getNonPeriodicInvoiceCutOffStartDate(Contract contract) {
+    List<Invoice> invoiceList =
+        invoiceRepository
+            .all()
+            .filter(":contractId MEMBER OF self.contractSet")
+            .bind("contractId", contract.getId())
+            .order("invoiceDate")
+            .fetch();
+    int invoiceListSize = invoiceList.size();
+    switch (invoiceListSize) {
+      case 0:
+        return contract.getCurrentContractVersion().getActivationDateTime().toLocalDate();
+      case 1:
+        return invoiceList.get(0).getInvoiceDate();
+      default:
+        return invoiceList.get(invoiceListSize - 2).getInvoiceDate();
     }
   }
 

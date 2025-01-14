@@ -16,7 +16,7 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <integer name="statusSelect" title="Status" readonly="true"
       selection="base.year.status.select" default="1"/>
-    <integer name="periodDurationSelect" title="Period duration"
+    <string name="periodDurationSelect" title="Period duration"
       selection="base.year.period.duration.select"/>
     <integer name="typeSelect" title="Type" selection="account.year.type.select"
       required="true"/>
@@ -36,6 +36,16 @@
 		public static final int TYPE_FISCAL = 1;
 		public static final int TYPE_PAYROLL = 2;
 		public static final int TYPE_MANUFACTURING = 3;
+		public static final int TYPE_ALLOCATION = 4;
+
+		//PERIOD DURATION SELECT
+		public static final String DURATION_WEEK = "week";
+		public static final String DURATION_2WEEK = "2week";
+		public static final String DURATION_MONTH = "month";
+		public static final String DURATION_2MONTH = "2month";
+		public static final String DURATION_3MONTH = "3month";
+		public static final String DURATION_6MONTH = "6month";
+		public static final String DURATION_12MONTH = "12month";
 
 	]]></extra-code>
 
