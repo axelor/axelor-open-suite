@@ -25,11 +25,12 @@ import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface TimesheetLineCreateService {
 
@@ -68,7 +69,9 @@ public interface TimesheetLineCreateService {
       Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments)
       throws AxelorException;
 
-  void createTimesheetLinesUsingContextMap(
-      List<Map<String, Object>> projectTaskMapList, LocalDate date, Timesheet timesheet)
+  void createTimesheetLinesUsingPlanning(
+      List<Pair<ProjectPlanningTime, BigDecimal>> projectPlanningTimeListWithDuration,
+      LocalDate date,
+      Timesheet timesheet)
       throws AxelorException;
 }

@@ -42,8 +42,8 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateService {
   protected TimesheetLineService timesheetLineService;
@@ -188,20 +188,21 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
   }
 
   @Override
-  public void createTimesheetLinesUsingContextMap(
-      List<Map<String, Object>> projectPlanningTimeList, LocalDate date, Timesheet timesheet)
+  public void createTimesheetLinesUsingPlanning(
+      List<Pair<ProjectPlanningTime, BigDecimal>> projectPlanningTimeListWithDuration,
+      LocalDate date,
+      Timesheet timesheet)
       throws AxelorException {
-    if (ObjectUtils.isEmpty(projectPlanningTimeList)) {
+    if (ObjectUtils.isEmpty(projectPlanningTimeListWithDuration)) {
       return;
     }
 
     date = Optional.ofNullable(date).orElse(appBaseService.getTodayDate(timesheet.getCompany()));
 
-    for (Map<String, Object> projectPlanningTimeMap : projectPlanningTimeList) {
-      BigDecimal duration = new BigDecimal(String.valueOf(projectPlanningTimeMap.get("duration")));
-      ProjectPlanningTime projectPlanningTime =
-          projectPlanningTimeRepository.find(
-              Long.parseLong(projectPlanningTimeMap.get("id").toString()));
+    for (Pair<ProjectPlanningTime, BigDecimal> projectPlanningTimePair :
+        projectPlanningTimeListWithDuration) {
+      BigDecimal duration = projectPlanningTimePair.getRight();
+      ProjectPlanningTime projectPlanningTime = projectPlanningTimePair.getLeft();
       duration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
       Employee employee = timesheet.getEmployee();
       ProjectTask projectTask = projectPlanningTime.getProjectTask();

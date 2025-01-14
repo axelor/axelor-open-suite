@@ -46,6 +46,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -73,6 +74,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -643,17 +645,35 @@ public class TimesheetController {
       return;
     }
 
-    List<Map<String, Object>> projectPlanningTimeList =
+    ProjectPlanningTimeRepository projectPlanningTimeRepository =
+        Beans.get(ProjectPlanningTimeRepository.class);
+
+    List<Pair<ProjectPlanningTime, BigDecimal>> projectPlanningTimeListWithDuration =
         ((List<Map<String, Object>>) request.getContext().get("projectPlanningTimeList"))
             .stream()
                 .filter(
                     it ->
                         Objects.nonNull(it.get("duration"))
                             && (new BigDecimal(String.valueOf(it.get("duration")))).signum() > 0)
+                .map(
+                    ppt ->
+                        Pair.of(
+                            projectPlanningTimeRepository.find(
+                                Optional.of(ppt)
+                                    .map(it -> it.get("id"))
+                                    .map(String::valueOf)
+                                    .map(Long::valueOf)
+                                    .orElse(0L)),
+                            new BigDecimal(
+                                Optional.of(ppt)
+                                    .map(it -> it.get("duration"))
+                                    .map(String::valueOf)
+                                    .orElse("0"))))
                 .collect(Collectors.toList());
-    if (!ObjectUtils.isEmpty(projectPlanningTimeList)) {
+    if (!ObjectUtils.isEmpty(projectPlanningTimeListWithDuration)) {
       Beans.get(TimesheetLineCreateService.class)
-          .createTimesheetLinesUsingContextMap(projectPlanningTimeList, generationDate, timesheet);
+          .createTimesheetLinesUsingPlanning(
+              projectPlanningTimeListWithDuration, generationDate, timesheet);
       response.setValues(timesheet);
     } else {
       response.setError(I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_LINE_GENERATED));
