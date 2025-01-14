@@ -5,6 +5,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.rest.dto.LeaveDaysToDatePostRequest;
+import com.axelor.apps.hr.rest.dto.LeaveDaysToDateResponse;
 import com.axelor.apps.hr.rest.dto.LeaveRequestCheckDurationPostRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestCreatePostRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestDurationResponse;
@@ -14,6 +16,7 @@ import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
 import com.axelor.apps.hr.translation.ITranslation;
@@ -228,5 +231,28 @@ public class LeaveRequestRestController {
         Response.Status.OK,
         I18n.get(ITranslation.API_LEAVE_REQUEST_COMPUTE_DURATION),
         new LeaveRequestDurationResponse(duration));
+  }
+
+  @Operation(
+      summary = "Compute leave available to a specific date",
+      tags = {"Leave request"})
+  @Path("/compute-leave-available")
+  @POST
+  @HttpExceptionHandler
+  public Response getLeaveDaysToDate(LeaveDaysToDatePostRequest requestBody) {
+    new SecurityCheck().readAccess(LeaveReason.class, requestBody.getLeaveReasonId()).check();
+
+    Employee employee =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.API_LEAVE_REQUEST_LEAVE_DAYS_TO_DATE_COMPUTATION),
+        new LeaveDaysToDateResponse(
+            Beans.get(LeaveRequestService.class)
+                .getLeaveDaysToDate(
+                    requestBody.getToDate().atStartOfDay(),
+                    employee,
+                    requestBody.fetchLeaveReason())));
   }
 }

@@ -19,10 +19,12 @@
 package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface LeaveRequestService {
@@ -35,4 +37,6 @@ public interface LeaveRequestService {
   boolean isLeaveDay(Employee employee, LocalDate date);
 
   BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest);
+
+  BigDecimal getLeaveDaysToDate(LocalDateTime toDateT, Employee employee, LeaveReason leaveReason);
 }
