@@ -102,19 +102,26 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
   @Override
   public BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) {
+
+    return getLeaveDaysToDate(
+        leaveRequest.getToDateT(), leaveRequest.getEmployee(), leaveRequest.getLeaveReason());
+  }
+
+  @Override
+  public BigDecimal getLeaveDaysToDate(
+      LocalDateTime toDateT, Employee employee, LeaveReason leaveReason) {
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
-    LocalDateTime endDate = leaveRequest.getToDateT();
-    if (todayDate == null || endDate == null) {
+
+    if (todayDate == null || toDateT == null) {
       return BigDecimal.ZERO;
     }
 
-    LeaveReason leaveReason = leaveRequest.getLeaveReason();
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
             .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
-            .bind("leaveReason", leaveRequest.getLeaveReason())
-            .bind("employee", leaveRequest.getEmployee())
+            .bind("leaveReason", leaveReason)
+            .bind("employee", employee)
             .fetchOne();
 
     if (leaveReason == null || leaveLine == null) {
@@ -123,16 +130,15 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
     int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
 
-    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
+    int interval = getInterval(leaveReasonTypeSelect, toDateT, todayDate);
 
     return leaveLine
         .getQuantity()
         .add(
-            leaveRequest
-                .getEmployee()
+            employee
                 .getWeeklyPlanning()
                 .getLeaveCoef()
-                .multiply(leaveRequest.getLeaveReason().getDefaultDayNumberGain())
+                .multiply(leaveReason.getDefaultDayNumberGain())
                 .multiply(BigDecimal.valueOf(interval)));
   }
 

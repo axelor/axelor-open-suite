@@ -34,8 +34,13 @@
   <grid title="Leave reason" name="leave-reason-duration-grid"
     model="com.axelor.utils.db.Wizard">
     <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
-      onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"/>
+      onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"
+      onChange="action-leave-request-create-wizard-method-leave-reason-onchange"/>
     <field name="duration" type="decimal" min="0" x-scale="1"/>
+    <field name="leaveQuantity" title="Available quantity (acquired)" type="decimal"
+      readonly="true"/>
+    <field name="leaveDaysToDate" title="Leave available to date" type="decimal"
+      readonly="true"/>
     <field name="comment" type="string"/>
   </grid>
 
@@ -45,7 +50,11 @@
       <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
         onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"/>
       <field name="duration" type="decimal" min="0" x-scale="1"/>
-      <field name="comment" type="string"/>
+      <field name="leaveQuantity" title="Available quantity (acquired)" type="decimal"
+        readonly="true"/>
+      <field name="leaveDaysToDate" title="Leave available to date" type="decimal"
+        readonly="true"/>
+      <field name="comment" type="string" widget="html" colSpan="12"/>
     </panel>
   </form>
 
@@ -87,6 +96,12 @@
   <action-method name="action-leave-request-create-wizard-method-compute-duration">
     <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
       method="computeDuration"/>
+  </action-method>
+
+  <action-method
+    name="action-leave-request-create-wizard-method-leave-reason-onchange">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="leaveReasonOnChange"/>
   </action-method>
 
   <action-method

@@ -3,9 +3,13 @@ package com.axelor.apps.hr.web.leave;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
+import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
 import com.axelor.auth.AuthUtils;
@@ -15,10 +19,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -110,5 +117,29 @@ public class LeaveRequestCreateController {
         "leaveReason",
         "domain",
         Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(employee));
+  }
+
+  public void leaveReasonOnChange(ActionRequest request, ActionResponse response) {
+    Employee employee =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
+
+    Context context = request.getContext();
+    Long leaveReasonId =
+        context.get("leaveReason") != null
+            ? Long.valueOf(((Map<String, Object>) context.get("leaveReason")).get("id").toString())
+            : 0L;
+    LocalDateTime toDateT =
+        request.getContext().getParent().get("toDate") != null
+            ? LocalDate.parse((String) request.getContext().getParent().get("toDate"))
+                .atStartOfDay()
+            : null;
+    LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leaveReasonId);
+    response.setValue(
+        "leaveQuantity",
+        Beans.get(EmployeeComputeAvailableLeaveService.class)
+            .computeAvailableLeaveQuantityForActiveUser(employee, leaveReason));
+    response.setValue(
+        "leaveDaysToDate",
+        Beans.get(LeaveRequestService.class).getLeaveDaysToDate(toDateT, employee, leaveReason));
   }
 }
