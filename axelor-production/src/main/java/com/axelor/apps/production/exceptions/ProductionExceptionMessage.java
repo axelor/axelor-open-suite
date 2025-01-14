@@ -393,4 +393,7 @@ public final class ProductionExceptionMessage {
 
   public static final String CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER = /*$$(*/
       "This stock move is linked to a manufacturing order and can't be canceled." /*)*/;
+
+  public static final String SALE_ORDER_GENERATE_PROD_ORDER_FROM_SOL_ERROR = /*$$(*/
+      "These sale order lines are already linked to a production order." /*)*/;
 }
