@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -847,7 +847,10 @@ public class PaymentVoucherConfirmService {
         currencyService.getCurrencyConversionRate(
             invoiceTerm.getCurrency(),
             invoiceTerm.getCompanyCurrency(),
-            invoiceTerm.getInvoice().getInvoiceDate());
+            Optional.of(invoiceTerm)
+                .map(InvoiceTerm::getInvoice)
+                .map(Invoice::getInvoiceDate)
+                .orElse(Optional.ofNullable(moveLineToPay).map(MoveLine::getDate).orElse(null)));
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
             payVoucherElementToPay.getPaymentVoucher(), currencyAmount.multiply(currencyRate));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -411,4 +411,10 @@ public final class HumanResourceExceptionMessage {
 
   public static final String DATE_NOT_IN_TIMESHEET_PERIOD = /*$$(*/
       "The date must be in the timesheet period." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_WRONG_START_ON_SELECT = /*$$(*/
+      "startOnSelect should be 1 for morning or 2 for afternoon." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_NONE_CREATED = /*$$(*/
+      "No leave requests were created." /*)*/;
 }

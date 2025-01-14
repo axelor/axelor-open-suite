@@ -72,7 +72,7 @@
     <panel name="accountingSituationPanel" if-module="axelor-account"
       onTabSelect="action-partner-account-method-accounting-situation-label"
       if="__config__.app.isApp('account')" title="Accounting situation"
-      showIf="isSupplier || isCustomer || isSubcontractor || isInternal || isCarrier || isFactor || isEmployee || isCorporatePartner || isThirdPartyPayer">
+      showIf="companySet &amp;&amp; companySet.length > 0 &amp;&amp; (isSupplier || isCustomer || isSubcontractor || isInternal || isCarrier || isFactor || isEmployee || isCorporatePartner || isThirdPartyPayer)">
       <field name="isCompensation" colSpan="12" widget="boolean-switch"
         showIf="isCustomer &amp;&amp; isSupplier"/>
       <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
