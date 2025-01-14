@@ -189,8 +189,7 @@ public class ProjectController {
 
   public void generateBacklogSprint(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
-    project = Beans.get(ProjectRepository.class).find(project.getId());
     Beans.get(SprintService.class).generateBacklogSprint(project);
-    response.setReload(true);
+    response.setValue("backlogSprint", project.getBacklogSprint());
   }
 }

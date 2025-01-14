@@ -21,32 +21,22 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
-import com.axelor.apps.project.db.repo.SprintRepository;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class SprintServiceImpl implements SprintService {
 
-  protected SprintRepository sprintRepository;
-
   @Inject
-  public SprintServiceImpl(SprintRepository sprintRepository) {
-    this.sprintRepository = sprintRepository;
-  }
+  public SprintServiceImpl() {}
 
   @Override
-  @Transactional
   public void generateBacklogSprint(Project project) {
     Sprint sprint = new Sprint("Backlog - " + project.getName());
     project.setBacklogSprint(sprint);
-    sprintRepository.save(sprint);
   }
 
   @Override
-  @Transactional
   public void generateBacklogSprint(ProjectVersion projectVersion) {
     Sprint sprint = new Sprint("Backlog - " + projectVersion.getTitle());
     projectVersion.setBacklogSprint(sprint);
-    sprintRepository.save(sprint);
   }
 }

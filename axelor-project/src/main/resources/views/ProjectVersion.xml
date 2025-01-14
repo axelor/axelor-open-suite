@@ -24,8 +24,7 @@
         onChange="action-project-version-method-show-sprints"/>
       <panel itemSpan="12">
         <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
-          onClick="save,action-project-version-method-generate-backlog-sprint"
-          showIf="!backlogSprint"/>
+          onClick="action-project-version-method-generate-backlog-sprint" showIf="!backlogSprint"/>
         <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
           showIf="backlogSprint" readonly="true"/>
       </panel>
