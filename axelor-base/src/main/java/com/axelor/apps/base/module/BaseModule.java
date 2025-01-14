@@ -244,6 +244,8 @@ import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.api.PartnerApiCreateService;
+import com.axelor.apps.base.service.partner.api.PartnerApiCreateServiceImpl;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
@@ -526,6 +528,7 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
     bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
+    bind(PartnerApiCreateService.class).to(PartnerApiCreateServiceImpl.class);
     bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
   }
