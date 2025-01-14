@@ -19,7 +19,6 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -389,32 +388,5 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrder);
       }
     }
-  }
-
-  @Override
-  public List<SaleOrderLine> updateSaleOrderLinesDeliveryAddress(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (CollectionUtils.isEmpty(saleOrderLineList)) {
-      return saleOrderLineList;
-    }
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      updateSaleOrderLineDeliveryAddress(saleOrder, saleOrderLine);
-    }
-    return saleOrderLineList;
-  }
-
-  protected void updateSaleOrderLineDeliveryAddress(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    saleOrderLine.setDeliveryAddress(saleOrder.getDeliveryAddress());
-    saleOrderLine.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
-  }
-
-  @Override
-  public Address getDeliveryAddress(SaleOrder saleOrder) {
-    return saleOrder.getSaleOrderLineList().stream()
-        .map(SaleOrderLine::getDeliveryAddress)
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElse(saleOrder.getDeliveryAddress());
   }
 }

@@ -35,7 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -86,7 +86,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected ProductCompanyService productCompanyService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected TaxService taxService;
-  protected SaleOrderService saleOrderService;
+  protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -104,7 +104,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService,
       TaxService taxService,
-      SaleOrderService saleOrderService) {
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -119,7 +119,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.productCompanyService = productCompanyService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.taxService = taxService;
-    this.saleOrderService = saleOrderService;
+    this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
   }
 
   @Override
@@ -247,25 +247,29 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         continue;
       }
 
-      String addressKey = saleOrderLine.getDeliveryAddressStr();
-      if (addressKey == null) {
-        addressKey = saleOrderLine.getSaleOrder().getDeliveryAddressStr();
-      }
-
-      LocalDate dateKey = saleOrderLine.getEstimatedShippingDate();
-      if (dateKey == null) {
-        dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
-      }
-      if (dateKey == null) {
-        dateKey = saleOrderLine.getDesiredDeliveryDate();
-      }
-
-      Pair<String, LocalDate> key = Pair.of(addressKey, dateKey);
+      Pair<String, LocalDate> key = getDeliveryInformation(saleOrderLine);
 
       saleOrderLineMap.computeIfAbsent(key, k -> new ArrayList<>()).add(saleOrderLine);
     }
 
     return saleOrderLineMap;
+  }
+
+  protected Pair<String, LocalDate> getDeliveryInformation(SaleOrderLine saleOrderLine) {
+    String addressKey = saleOrderLine.getDeliveryAddressStr();
+    if (addressKey == null) {
+      addressKey = saleOrderLine.getSaleOrder().getDeliveryAddressStr();
+    }
+
+    LocalDate dateKey = saleOrderLine.getEstimatedShippingDate();
+    if (dateKey == null) {
+      dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
+    }
+    if (dateKey == null) {
+      dateKey = saleOrderLine.getDesiredDeliveryDate();
+    }
+
+    return Pair.of(addressKey, dateKey);
   }
 
   protected boolean isSaleOrderWithProductsToDeliver(SaleOrder saleOrder) throws AxelorException {
@@ -304,7 +308,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     Partner partner = computePartnerToUseForStockMove(saleOrder);
-    Address deliveryAddress = saleOrderService.getDeliveryAddress(saleOrder);
+    Address deliveryAddress = saleOrderDeliveryAddressService.getDeliveryAddress(saleOrder);
 
     StockMove stockMove =
         stockMoveService.createStockMove(
