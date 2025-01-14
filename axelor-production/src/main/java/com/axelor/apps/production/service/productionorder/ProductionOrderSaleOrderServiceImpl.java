@@ -92,6 +92,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       if (productionOrder != null && !productionOrderIdList.contains(productionOrder.getId())) {
         productionOrderIdList.add(productionOrder.getId());
       }
+      saleOrderLine.setProdOrder(productionOrder);
     }
 
     return productionOrderIdList;
