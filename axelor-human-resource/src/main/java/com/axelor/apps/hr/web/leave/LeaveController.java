@@ -461,4 +461,10 @@ public class LeaveController {
         "domain",
         Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(leave.getEmployee()));
   }
+
+  public void computeLeaveToDate(ActionRequest request, ActionResponse response) {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    response.setValue(
+        "leaveDaysToDate", Beans.get(LeaveRequestService.class).getLeaveDaysToDate(leave));
+  }
 }
