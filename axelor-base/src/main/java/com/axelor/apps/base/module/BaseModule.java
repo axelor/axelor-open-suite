@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,8 @@ import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.LanguageBaseRepository;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationBaseRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -205,6 +207,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -507,5 +517,10 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardRepository.class)
         .to(DataSharingProductWizardManagementRepository.class);
     bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(ConnectorMapperCreateService.class).to(ConnectorMapperCreateServiceImpl.class);
+    bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
+    bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
+    bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
   }
 }

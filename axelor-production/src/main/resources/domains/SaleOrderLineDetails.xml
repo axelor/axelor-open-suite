@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -20,6 +20,8 @@
     <many-to-one name="workCenter" title="Work center"
       ref="com.axelor.apps.production.db.WorkCenter"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="billOfMaterialLine"
+      ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
 
     <extra-code>
             <![CDATA[

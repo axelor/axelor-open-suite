@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -410,7 +410,8 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService =
         Beans.get(SaleOrderLineProductSupplychainService.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext());
+    SaleOrder saleOrder =
+        SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
         saleOrderLineProductSupplychainService.getProductionInformation(saleOrderLine, saleOrder));
@@ -429,7 +430,8 @@ public class SaleOrderLineController {
   public void getAnalyticDistributionTemplateDomain(
       ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttr(
         "analyticDistributionTemplate",
         "domain",
@@ -439,7 +441,8 @@ public class SaleOrderLineController {
 
   public void setDistributionLineReadonly(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttrs(
         Beans.get(SaleOrderLineViewSupplychainService.class)
             .setDistributionLineReadonly(saleOrder));

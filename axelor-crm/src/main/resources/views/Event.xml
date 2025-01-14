@@ -321,7 +321,7 @@
 		        </Box>
 		    </Box>
 	        <Box mt={2}>
-	        	{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100 }}></Box>}
+	        	{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100, overflow: "auto" }}></Box>}
 	        </Box>
 	  	</Box>
 	  </>

@@ -97,8 +97,8 @@
     <string name="taxNbr" title="Tax N°"/>
     <string name="siren" title="Short registration number"/>
     <string name="nic" title="Internal Classification Number"/>
-    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Agency"/>
+    <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName"
+      title="Agencies"/>
     <boolean name="isInternal" title="Internal partner" default="false"/>
 
     <string name="fullName" title="Name" namecolumn="true"/>

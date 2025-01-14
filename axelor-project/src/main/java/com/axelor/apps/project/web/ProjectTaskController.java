@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -306,5 +306,13 @@ public class ProjectTaskController {
     Beans.get(ProjectCheckListTemplateService.class)
         .generateCheckListItemsFromTemplate(projectTask, template);
     response.setValue("projectCheckListItemList", projectTask.getProjectCheckListItemList());
+  }
+
+  public void computeSprintDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    String domain = Beans.get(ProjectTaskAttrsService.class).getActiveSprintDomain(projectTask);
+
+    response.setAttr("activeSprint", "domain", domain);
   }
 }

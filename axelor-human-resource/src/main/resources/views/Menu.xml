@@ -701,22 +701,25 @@
     <context name="_forceTimeUnit" expr="eval: true"/>
   </action-view>
 
-  <!-- Top Menus -->
+  <menuitem name="project-allocation-years" parent="project-configurations"
+    title="Allocation years" action="project.allocation.years" order="1700"/>
 
-  <menuitem name="top-menu-hr" title="HR" order="4" top="true" left="false"
-    if="__config__.app.isApp('employee')"/>
+  <action-view name="project.allocation.years" title="Allocation years"
+    model="com.axelor.apps.base.db.Year">
+    <view type="grid" name="year-grid"/>
+    <view type="form" name="year-hr-allocation-form"/>
+    <view-param name="search-filters" value="year-filters"/>
+    <domain>self.typeSelect = 4</domain>
+  </action-view>
 
-  <menuitem name="top-menu-hr-my-timesheet" parent="top-menu-hr" title="My timesheet"
-    action="edit.timesheet" top="true" if="__config__.app.isApp('timesheet')"/>
+  <menuitem name="project-allocation-periods" parent="project-configurations"
+    title="Allocation periods" action="project.allocation.periods" order="1800"/>
 
-  <menuitem name="top-menu-hr-my-expense" parent="top-menu-hr" title="My expense"
-    action="edit.expense" top="true" if="__config__.app.isApp('expense')"/>
-
-  <menuitem name="top-menu-hr-my-leave-request" parent="top-menu-hr"
-    title="My leave request" action="edit.leave.request" top="true"
-    if="__config__.app.isApp('leave')"/>
-
-  <menuitem name="top-menu-hr-my-extra-hours" parent="top-menu-hr" title="My extra hours"
-    action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"/>
+  <action-view name="project.allocation.periods" title="Allocation periods"
+    model="com.axelor.apps.base.db.Period">
+    <view type="grid" name="period-grid"/>
+    <view type="form" name="period-hr-allocation-form"/>
+    <domain>self.year.typeSelect = 4</domain>
+  </action-view>
 
 </object-views>

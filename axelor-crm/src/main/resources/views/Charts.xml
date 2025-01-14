@@ -722,7 +722,7 @@
     title="Created leads per month">
     <search-fields>
       <field type="string" name="monthSelect" title="Historical Period"
-        selection="base.year.period.duration.select" x-required="true"/>
+        selection="base.month.select" x-required="true"/>
     </search-fields>
     <dataset type="sql">
       SELECT

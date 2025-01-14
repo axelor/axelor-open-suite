@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -62,7 +63,8 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
       ProductPriceService productPriceService,
-      FiscalPositionService fiscalPositionService) {
+      FiscalPositionService fiscalPositionService,
+      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService) {
     super(
         currencyService,
         priceListService,
@@ -79,7 +81,8 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         invoiceLineAttrsService,
         currencyScaleService,
         productPriceService,
-        fiscalPositionService);
+        fiscalPositionService,
+        invoiceLineSupplierCatalogService);
   }
 
   @Transactional

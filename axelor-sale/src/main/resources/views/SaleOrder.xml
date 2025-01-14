@@ -786,9 +786,15 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
+        <viewer
+          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,discountCurrency,discountScale">
+          <![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+                             {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T. before discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{$fmt('priceBeforeGlobalDiscount')}</Box>}
+                             {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{'-' + $fmt('discountAmount')}</Box>}
 	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
@@ -801,8 +807,22 @@
 	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
 	                     </Box>
 	                  </>
-	              ]]></viewer>
+                    ]]>
+        </viewer>
       </field>
+    </panel>
+    <panel name="globalDiscountPanel" title="Global discount"
+      if="__config__.app.getApp('sale')?.getIsGlobalDiscountEnabledOnSaleOrder()"
+      showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
+      sidebar="true">
+      <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
+      <field name="discountAmount" showIf="discountTypeSelect != 0"
+        x-currency="discountCurrency" x-scale="discountScale"
+        onChange="action-sale-order-method-on-line-change"/>
+      <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals" hidden="true"/>
+      <field name="discountCurrency" hidden="true" x-dirty="false"/>
+      <field name="discountScale" hidden="true" x-dirty="false"/>
     </panel>
     <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null"
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
@@ -1257,6 +1277,14 @@
     </panel>
   </form>
 
+  <form name="sale-order-incoterm-wizard-form" title="Fill incoterm"
+    model="com.axelor.apps.sale.db.SaleOrder" onSave="action-sale-group-confirmed">
+    <panel name="mainPanel" colSpan="12">
+      <field name="incoterm" required="true" grid-view="incoterm-grid"
+        form-view="incoterm-form"/>
+    </panel>
+  </form>
+
   <action-group name="action-group-sale-order-onsave">
     <action name="save"/>
     <action name="action-sale-order-method-compute"/>
@@ -1398,23 +1426,14 @@
 					</Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" mt={1}>
-					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
-						{invoicingState == 1 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
-		                {invoicingState == 2 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
-		                {invoicingState == 3 && <Badge bg="success">{_t('Invoiced')}</Badge>}
-
-	                	{deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
-	                	{deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
-	                	{deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
-		            </Box>
-		            <Box>
-			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
-		            </Box>
-				</Box>
-				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					<Box>
+						<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge> <Box/>
+						<Badge mt={1} style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					</Box>
+					<Box>
+						<strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+						<strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
+					</Box>
 				</Box>
 			</>
 		]]>
@@ -1494,6 +1513,8 @@
 
   <action-group name="action-sale-group-confirmed">
     <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
     <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
@@ -2218,5 +2239,9 @@
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
   </action-attrs>
+
+  <action-method name="action-sale-order-method-fill-incoterm-if-required">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="fillIncoterm"/>
+  </action-method>
 
 </object-views>

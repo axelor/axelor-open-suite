@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -302,6 +302,13 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void backToDraft(ActionRequest request, ActionResponse response) throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    Beans.get(InvoiceService.class).backToDraft(invoice);
+    response.setReload(true);
   }
 
   /**

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
 import java.util.Objects;
 
@@ -29,23 +30,37 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
   protected final SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
+  protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SolBomCustomizationService solBomCustomizationService;
+  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
+  protected final SolBomUpdateService solBomUpdateService;
   protected final AppProductionService appProductionService;
 
   @Inject
   public SaleOrderProductionSyncServiceImpl(
-      SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
+      SaleOrderLineBomService saleOrderLineBomService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolBomCustomizationService solBomCustomizationService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService,
+      SolBomUpdateService solBomUpdateService,
       AppProductionService appProductionService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.saleOrderLineBomService = saleOrderLineBomService;
+    this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.solBomCustomizationService = solBomCustomizationService;
+    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
+    this.solBomUpdateService = solBomUpdateService;
     this.appProductionService = appProductionService;
   }
 
   @Override
   public void syncSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
     Objects.requireNonNull(saleOrder);
+    AppProduction appProduction = appProductionService.getAppProduction();
 
-    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
+    if (!appProduction.getAllowPersonalizedBOM()
+        || appProduction.getIsBomLineGenerationInSODisabled()) {
       return;
     }
 
@@ -75,20 +90,24 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
 
     // if bom lines list is same size as sub line list (checking if more line or less)
     // and if each lines are sync
-    var isUpdated = saleOrderLineBomService.isUpdated(saleOrderLine);
+    var isUpdated = solBomUpdateService.isUpdated(saleOrderLine);
+    var isSolDetailsUpdated = solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine);
 
-    if (isUpdated) {
+    if (isUpdated && isSolDetailsUpdated) {
       return;
     }
 
-    // Not sync
-    // Checking first if a personalized bom is created on saleOrderLine. If not, will create one.
-    if (!saleOrderLine.getBillOfMaterial().getPersonalized()) {
-      saleOrderLineBomService.customizeBomOf(saleOrderLine);
-    }
-    // Will sync with current personalized bom
-    else {
-      saleOrderLineBomService.updateWithBillOfMaterial(saleOrderLine);
+    if (!isUpdated || !isSolDetailsUpdated) {
+      if (!saleOrderLine.getBillOfMaterial().getPersonalized()) {
+        solBomCustomizationService.customizeBomOf(saleOrderLine);
+      } else {
+        if (!isUpdated) {
+          solBomUpdateService.updateSolWithBillOfMaterial(saleOrderLine);
+        }
+        if (!isSolDetailsUpdated) {
+          solDetailsBomUpdateService.updateSolDetailslWithBillOfMaterial(saleOrderLine);
+        }
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -33,22 +34,26 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
 
   protected UnitConversionForProjectService unitConversionForProjectService;
   protected ProjectFrameworkContractService projectFrameworkContractService;
+  protected ProjectTimeUnitService projectTimeUnitService;
   public static final int COMPUTE_SCALE = 5;
 
   @Inject
   public ProjectTaskComputeServiceImpl(
       UnitConversionForProjectService unitConversionForProjectService,
-      ProjectFrameworkContractService projectFrameworkContractService) {
+      ProjectFrameworkContractService projectFrameworkContractService,
+      ProjectTimeUnitService projectTimeUnitService) {
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.projectFrameworkContractService = projectFrameworkContractService;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
   public void computeBudgetedTime(ProjectTask projectTask, Unit oldTimeUnit)
       throws AxelorException {
+    Unit unit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
     if (projectTask == null
         || oldTimeUnit == null
-        || projectTask.getTimeUnit() == null
+        || unit == null
         || projectTask.getProject() == null) {
       return;
     }
@@ -56,7 +61,7 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
     projectTask.setBudgetedTime(
         unitConversionForProjectService.convert(
             oldTimeUnit,
-            projectTask.getTimeUnit(),
+            unit,
             projectTask.getBudgetedTime(),
             COMPUTE_SCALE,
             projectTask.getProject()));
@@ -64,15 +69,14 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
 
   @Override
   public void computeQuantity(ProjectTask projectTask) throws AxelorException {
-    if (projectTask == null
-        || projectTask.getInvoicingUnit() == null
-        || projectTask.getTimeUnit() == null) {
+    Unit unit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
+    if (projectTask == null || projectTask.getInvoicingUnit() == null || unit == null) {
       return;
     }
 
     projectTask.setQuantity(
         unitConversionForProjectService.convert(
-            projectTask.getTimeUnit(),
+            unit,
             projectTask.getInvoicingUnit(),
             projectTask.getUpdatedTime(),
             COMPUTE_SCALE,

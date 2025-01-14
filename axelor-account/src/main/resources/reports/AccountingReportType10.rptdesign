@@ -311,30 +311,30 @@
             <xml-property name="queryText"><![CDATA[select MoveLine.name as move_line_name, AccountingReport.global,
        MoveLine.date_val as "date", MoveLine.partner_full_name as partner_name, MoveLine.partner_seq as partner_seq, MoveLine.credit,
   Invoice.invoice_id, MoveLine.account_code as account_code, Currency.number_of_decimals
-from public.account_accounting_report as AccountingReport
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?) 
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
+from account_accounting_report as AccountingReport
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?) 
+left outer join account_move as Move on (MoveLine.move = Move.id)
 
-left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join account_account as Account on (MoveLine.account  = Account.id )
 
-left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
-left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
-left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join base_company as Company on (AccountingReport.company = Company.id)
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 
-left outer join public.base_period as Period on (Move.period = Period.id)
-left outer join public.account_journal as Journal on (Move.journal = Journal.id)
-left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id)
-left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id)
-left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
-left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
-left outer join public.account_invoice as Invoice on (MoveReconciled.invoice = Invoice.id)
+left outer join base_period as Period on (Move.period = Period.id)
+left outer join account_journal as Journal on (Move.journal = Journal.id)
+left outer join account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id)
+left outer join account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id)
+left outer join account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
+left outer join account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
+left outer join account_invoice as Invoice on (MoveReconciled.invoice = Invoice.id)
 
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
@@ -595,12 +595,12 @@ AND (AccountingReport.display_opening_accounting_moves is true
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, AccountingReport.date_val as "ReportDate", Period.code as "PeriodCode",
 PaymentMode.name as "PaymentMode", Journal.code as "JournalCode", AccountingReport.publication_date_time as "ReportDateEdition", 
 AccountingReport.date_to, AccountingReport.date_from, Period.name as period_name, Currency.code as currency, AccountingReport.ref
-from public.account_accounting_report as AccountingReport 
-inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
-left outer join public.account_payment_mode as PaymentMode on (AccountingReport.payment_mode = PaymentMode.id)
-left outer join public.account_journal as Journal on (AccountingReport.journal = Journal.id)
-left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
+from account_accounting_report as AccountingReport 
+inner join base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
+left outer join base_period as Period on (AccountingReport.period = Period.id)
+left outer join account_payment_mode as PaymentMode on (AccountingReport.payment_mode = PaymentMode.id)
+left outer join account_journal as Journal on (AccountingReport.journal = Journal.id)
+left outer join base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>

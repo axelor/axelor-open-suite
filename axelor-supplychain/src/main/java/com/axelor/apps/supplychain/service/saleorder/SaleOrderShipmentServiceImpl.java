@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,15 @@ package com.axelor.apps.supplychain.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -43,17 +46,20 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      SaleOrderRepository saleOrderRepository) {
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -200,5 +206,39 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
       }
     }
     return exTaxTotal;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  public void computeFreightCarrierMode(
+      List<FreightCarrierMode> freightCarrierModeList, Long saleOrderId) throws AxelorException {
+    SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
+    if (saleOrder != null) {
+      this.checkSelectedFreightCarrierMode(freightCarrierModeList);
+      FreightCarrierMode freightCarrierMode = freightCarrierModeList.get(0);
+      saleOrder.setFreightCarrierMode(freightCarrierMode);
+      saleOrder.setCarrierPartner(freightCarrierMode.getCarrierPartner());
+
+      saleOrderRepository.save(saleOrder);
+    }
+  }
+
+  protected void checkSelectedFreightCarrierMode(List<FreightCarrierMode> freightCarrierModeList)
+      throws AxelorException {
+    if (freightCarrierModeList.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(
+                  SupplychainExceptionMessage.SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED)));
+    }
+
+    if (freightCarrierModeList.size() > 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(
+                  SupplychainExceptionMessage
+                      .SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED)));
+    }
   }
 }
