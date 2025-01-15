@@ -7,6 +7,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -100,5 +101,14 @@ public class LeaveRequestCreateController {
         Beans.get(LeaveRequestComputeDayDurationService.class)
             .computeDurationInDays(
                 company, employee, fromDate, toDate, startOnSelect, endOnSelect));
+  }
+
+  public void getLeaveReasonDomain(ActionRequest request, ActionResponse response) {
+    Employee employee =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
+    response.setAttr(
+        "leaveReason",
+        "domain",
+        Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(employee));
   }
 }

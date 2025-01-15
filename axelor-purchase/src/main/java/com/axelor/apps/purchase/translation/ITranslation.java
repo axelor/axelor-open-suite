@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,4 +28,6 @@ public interface ITranslation {
 
   public static final String PURCHASE_REQUEST_UPDATED = /*$$(*/
       "Purchase request successfully updated."; /*)*/
+  public static final String PURCHASE_REQUEST_CREATE_WRONG_STATUS = /*$$(*/
+      "You can create a purchase request only with the status 'Draft' or 'Requested'."; /*)*/
 }

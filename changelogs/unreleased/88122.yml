@@ -1,3 +1,0 @@
----
-title: "Bank reconciliation: fixed the filter to display move lines with no function origin selected and hide it when already reconciled in different currency than move in 'Bank reconciliation statement' report."
-module: axelor-account

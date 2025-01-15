@@ -1,3 +1,0 @@
----
-title: "City: fixed issue where country was not filled when adding a new city from address form."
-module: axelor-base

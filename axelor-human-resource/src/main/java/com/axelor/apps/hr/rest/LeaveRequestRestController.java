@@ -1,7 +1,13 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.rest.dto.LeaveRequestCheckDurationPostRequest;
+import com.axelor.apps.hr.rest.dto.LeaveRequestCreatePostRequest;
+import com.axelor.apps.hr.rest.dto.LeaveRequestDurationResponse;
 import com.axelor.apps.hr.rest.dto.LeaveRequestRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
@@ -9,7 +15,10 @@ import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
 import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -19,7 +28,11 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -155,5 +168,65 @@ public class LeaveRequestRestController {
         Response.Status.OK,
         I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED),
         new LeaveRequestResponse(leaveRequest));
+  }
+
+  @Operation(
+      summary = "Create leave request",
+      tags = {"Leave request"})
+  @Path("/")
+  @POST
+  @HttpExceptionHandler
+  public Response createLeaveRequest(LeaveRequestCreatePostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().createAccess(LeaveRequest.class).readAccess(LeaveReason.class).check();
+    LeaveRequestCreateRestService leaveRequestCreateRestService =
+        Beans.get(LeaveRequestCreateRestService.class);
+    leaveRequestCreateRestService.checkLeaveRequestCreatePostRequest(requestBody);
+    List<Long> leaveRequestIds =
+        leaveRequestCreateRestService.createLeaveRequests(
+            requestBody.getFromDate(), requestBody.getStartOnSelect(), requestBody.getRequests());
+
+    if (leaveRequestIds.size() != requestBody.getRequests().size()) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(ITranslation.API_LEAVE_REQUEST_CREATE_SUCCESS_WITH_ERRORS),
+          leaveRequestCreateRestService.createLeaveRequestResponse(leaveRequestIds));
+    }
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.API_LEAVE_REQUEST_CREATE_SUCCESS),
+        leaveRequestCreateRestService.createLeaveRequestResponse(leaveRequestIds));
+  }
+
+  @Operation(
+      summary = "Compute leave request duration",
+      tags = {"Leave request"})
+  @Path("/compute-duration")
+  @POST
+  @HttpExceptionHandler
+  public Response computeDuration(LeaveRequestCheckDurationPostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+
+    User user = AuthUtils.getUser();
+    Company company = Optional.ofNullable(user).map(User::getActiveCompany).orElse(null);
+    Employee employee = Optional.ofNullable(user).map(User::getEmployee).orElse(null);
+
+    BigDecimal duration =
+        Beans.get(LeaveRequestComputeDayDurationService.class)
+            .computeDurationInDays(
+                company,
+                employee,
+                requestBody.getFromDate(),
+                requestBody.getToDate(),
+                requestBody.getStartOnSelect(),
+                requestBody.getEndOnSelect());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.API_LEAVE_REQUEST_COMPUTE_DURATION),
+        new LeaveRequestDurationResponse(duration));
   }
 }

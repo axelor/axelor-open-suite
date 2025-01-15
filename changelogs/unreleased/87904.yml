@@ -1,3 +1,0 @@
----
-title: "Sale configurator: fixed issue where formula was not added when verifying the groovy script then directly exiting the pop-up"
-module: axelor-sale
