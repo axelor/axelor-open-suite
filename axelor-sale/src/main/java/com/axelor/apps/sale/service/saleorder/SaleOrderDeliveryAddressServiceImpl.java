@@ -28,8 +28,8 @@ public class SaleOrderDeliveryAddressServiceImpl implements SaleOrderDeliveryAdd
   }
 
   @Override
-  public Address getDeliveryAddress(SaleOrder saleOrder) {
-    return saleOrder.getSaleOrderLineList().stream()
+  public Address getDeliveryAddress(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) {
+    return saleOrderLineList.stream()
         .map(SaleOrderLine::getDeliveryAddress)
         .filter(Objects::nonNull)
         .findFirst()

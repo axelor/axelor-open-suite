@@ -43,6 +43,7 @@ public interface SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder,
       Company company,
+      List<SaleOrderLine> saleOrderLineList,
       String deliveryAddressStr,
       LocalDate estimatedDeliveryDate)
       throws AxelorException;

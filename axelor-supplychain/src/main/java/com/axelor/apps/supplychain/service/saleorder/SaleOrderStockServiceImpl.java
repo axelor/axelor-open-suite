@@ -168,7 +168,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       throws AxelorException {
     Company company = saleOrder.getCompany();
     StockMove stockMove =
-        this.createStockMove(saleOrder, company, deliveryAddressStr, estimatedDeliveryDate);
+        this.createStockMove(
+            saleOrder, company, saleOrderLineList, deliveryAddressStr, estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
 
     StockLocation toStockLocation = saleOrder.getToStockLocation();
@@ -292,6 +293,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder,
       Company company,
+      List<SaleOrderLine> saleOrderLineList,
       String deliveryAddressStr,
       LocalDate estimatedDeliveryDate)
       throws AxelorException {
@@ -308,7 +310,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     Partner partner = computePartnerToUseForStockMove(saleOrder);
-    Address deliveryAddress = saleOrderDeliveryAddressService.getDeliveryAddress(saleOrder);
+    Address deliveryAddress =
+        saleOrderDeliveryAddressService.getDeliveryAddress(saleOrder, saleOrderLineList);
 
     StockMove stockMove =
         stockMoveService.createStockMove(

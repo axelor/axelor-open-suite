@@ -9,5 +9,5 @@ public interface SaleOrderDeliveryAddressService {
 
   List<SaleOrderLine> updateSaleOrderLinesDeliveryAddress(SaleOrder saleOrder);
 
-  Address getDeliveryAddress(SaleOrder saleOrder);
+  Address getDeliveryAddress(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList);
 }
