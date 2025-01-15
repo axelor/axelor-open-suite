@@ -12,23 +12,40 @@
 
   <form name="project-version-form" title="Project.version"
     model="com.axelor.apps.project.db.ProjectVersion" width="large"
-    onNew="action-business-support-attrs-project-default">
+    onNew="action-project-version-onnew" onLoad="action-project-version-onnew">
     <panel name="mainPanel">
       <field name="title"/>
       <field name="statusSelect"/>
       <field name="testingServerDate"/>
       <field name="productionServerDate"/>
       <field name="content" widget="HTML" colSpan="12"/>
-      <field name="projectSet" grid-view="project-grid" form-view="business-project-form"
-        onSelect="action-version-attrs-project-domain" colSpan="12"/>
+      <field name="projectSet" grid-view="project-grid" form-view="project-form"
+        onSelect="action-version-attrs-project-domain" colSpan="12"
+        onChange="action-project-version-method-show-sprints"/>
+      <panel itemSpan="12">
+        <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+          onClick="action-project-version-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+        <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+          showIf="backlogSprint" readonly="true"/>
+      </panel>
+      <button name="generateSprintsBtn" title="Generate sprints"
+        onClick="save,action-sprint-generator-version-view-wizard-mass-generate"/>
       <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
-        canNew="true" canRemove="true"/>
+        canSelect="false"/>
     </panel>
     <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
       <panel-dashlet name="taskDashletPanel" title="Ticket associated"
         action="action-dashlet-version-view-show-task" colSpan="12"/>
     </panel>
   </form>
+
+  <action-group name="action-project-version-onnew">
+    <action name="action-project-version-method-show-sprints"/>
+  </action-group>
+
+  <action-method name="action-project-version-method-show-sprints">
+    <call class="com.axelor.apps.project.web.ProjectVersionController" method="showSprints"/>
+  </action-method>
 
   <action-attrs name="action-version-attrs-project-domain">
     <attribute name="domain" for="project"
@@ -42,5 +59,10 @@
     <view-param name="popup" value="true"/>
     <domain>self.targetVersion.id = :id</domain>
   </action-view>
+
+  <action-method name="action-project-version-method-generate-backlog-sprint">
+    <call class="com.axelor.apps.project.web.ProjectVersionController"
+      method="generateBacklogSprint"/>
+  </action-method>
 
 </object-views>

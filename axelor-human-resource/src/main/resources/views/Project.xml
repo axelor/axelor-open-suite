@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form id="hr-incl-project-roadmap-panel-form" name="incl-project-roadmap-panel-form"
+    title="Project" model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="//panel[@name='sprintPanel']">
+      <insert position="after">
+        <panel-dashlet name="allocationLinePanel" title="Allocation lines"
+          x-show-bars="true" action="action-project-view-related-allocation-lines" colSpan="12"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-project-view-related-allocation-lines"
+    title="Allocation lines" model="com.axelor.apps.hr.db.AllocationLine">
+    <view type="grid" name="allocation-line-grid"/>
+    <view type="form" name="allocation-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.project.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+</object-views>

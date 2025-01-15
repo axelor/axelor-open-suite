@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.auth.db.User;
@@ -62,6 +63,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected PlannedTimeValueService plannedTimeValueService;
   protected ICalendarService iCalendarService;
   protected ICalendarEventRepository iCalendarEventRepository;
+  protected ProjectTimeUnitService projectTimeUnitService;
 
   @Inject
   public ProjectPlanningTimeServiceImpl(
@@ -72,7 +74,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       ICalendarService iCalendarService,
       ICalendarEventRepository iCalendarEventRepository,
       UnitConversionForProjectService unitConversionForProjectService,
-      UnitConversionRepository unitConversionRepository) {
+      UnitConversionRepository unitConversionRepository,
+      ProjectTimeUnitService projectTimeUnitService) {
     this.planningTimeRepo = planningTimeRepo;
     this.appProjectService = appProjectService;
     this.projectConfigService = projectConfigService;
@@ -81,6 +84,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.unitConversionRepository = unitConversionRepository;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
@@ -310,10 +314,22 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
-  public String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime) {
+  public String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    Unit unit = projectPlanningTime.getTimeUnit();
+    if (unit == null) {
+      if (projectPlanningTime.getProjectTask() != null) {
+        unit =
+            projectTimeUnitService.getTaskDefaultHoursTimeUnit(
+                projectPlanningTime.getProjectTask());
+      } else if (projectPlanningTime.getProject() != null) {
+        unit =
+            projectTimeUnitService.getProjectDefaultHoursTimeUnit(projectPlanningTime.getProject());
+      }
+    }
+
     return "self.id IN ("
-        + StringHelper.getIdListString(
-            computeAvailableDisplayTimeUnits(projectPlanningTime.getTimeUnit()))
+        + StringHelper.getIdListString(computeAvailableDisplayTimeUnits(unit))
         + ")";
   }
 

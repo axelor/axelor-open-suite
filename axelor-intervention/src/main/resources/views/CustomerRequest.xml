@@ -258,7 +258,7 @@
 
   <action-attrs name="action-customer-request-attrs-set-delivered-partner-domain">
     <attribute for="deliveredPartner" name="domain"
-      expr="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE AND self.tradingName = :tradingName"
+      expr="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE AND :tradingName MEMBER OF self.tradingNameSet"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
     <attribute for="deliveredPartner" name="domain"
       expr="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE"

@@ -18,4 +18,5 @@ dependencies {
 	api project(":modules:axelor-base")
 
 	implementation libs.commons_lang3
+	implementation libs.swagger_jaxrs
 }

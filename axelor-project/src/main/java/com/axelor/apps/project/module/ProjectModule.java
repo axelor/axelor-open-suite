@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,10 +57,14 @@ import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.ProjectTaskToolServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateService;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
+import com.axelor.apps.project.service.ProjectTimeUnitServiceImpl;
 import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.apps.project.service.ProjectToolServiceImpl;
 import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.ResourceBookingServiceImpl;
+import com.axelor.apps.project.service.SprintService;
+import com.axelor.apps.project.service.SprintServiceImpl;
 import com.axelor.apps.project.service.TaskStatusProgressByCategoryService;
 import com.axelor.apps.project.service.TaskStatusProgressByCategoryServiceImpl;
 import com.axelor.apps.project.service.TaskStatusToolService;
@@ -75,6 +79,10 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.app.AppProjectServiceImpl;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
+import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveServiceImpl;
+import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
+import com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeService;
@@ -117,5 +125,9 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectToolService.class).to(ProjectToolServiceImpl.class);
     bind(ProjectTaskAttrsService.class).to(ProjectTaskAttrsServiceImpl.class);
     bind(ProjectCheckListTemplateService.class).to(ProjectCheckListTemplateServiceImpl.class);
+    bind(ProjectTimeUnitService.class).to(ProjectTimeUnitServiceImpl.class);
+    bind(ProjectVersionRemoveService.class).to(ProjectVersionRemoveServiceImpl.class);
+    bind(SprintService.class).to(SprintServiceImpl.class);
+    bind(SprintGeneratorService.class).to(SprintGeneratorServiceImpl.class);
   }
 }

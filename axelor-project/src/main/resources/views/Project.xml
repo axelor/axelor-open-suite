@@ -277,6 +277,7 @@
       <field name="manageTimeSpent" widget="inline-checkbox"
         onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
         if="__config__.app.isApp('timesheet')"/>
+      <field name="sprintManagementSelect" widget="RadioSelect"/>
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
       canCollapse="true" collapseIf="false">
@@ -378,9 +379,24 @@
 
   <form name="incl-project-roadmap-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Roadmap" name="roadmapPanel">
+    <panel title="Roadmap" name="roadmapPanel"
+      onTabSelect="action-project-attrs-hide-project-version-on-sprint">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
+      <panel name="sprintPanel" title="Sprints" showIf="sprintManagementSelect == 'project'"
+        colSpan="12">
+        <panel itemSpan="12">
+          <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+            onClick="action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+          <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+            showIf="backlogSprint" readonly="true"/>
+        </panel>
+        <button name="generateSprintsBtn" title="Generate sprints"
+          onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
+        <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
+          canNew="true" canRemove="true"/>
+        <field name="sprintManagementSelect" hidden="true"/>
+      </panel>
     </panel>
   </form>
 
@@ -482,6 +498,7 @@
     <action name="action-project-activity-dashboard-method-on-new"/>
     <action name="action-project-dashboard-method-on-new"/>
     <action name="action-attrs-project-show-log-time-panel"/>
+    <action name="action-project-attrs-hide-project-version-on-sprint"/>
   </action-group>
 
   <action-group name="action-project-group-on-new-project">
@@ -583,6 +600,10 @@
   <action-attrs name="action-project-attrs-set-time-unit-domain">
     <attribute name="domain" for="projectTimeUnit"
       expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-hide-project-version-on-sprint">
+    <attribute for="sprintList.targetVersion" name="hidden" expr="eval: true"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -705,6 +726,10 @@
   <action-method name="action-project-method-generate-checklist-items-from-template">
     <call class="com.axelor.apps.project.web.ProjectController"
       method="generateCheckListFromTemplate"/>
+  </action-method>
+
+  <action-method name="action-project-method-generate-backlog-sprint">
+    <call class="com.axelor.apps.project.web.ProjectController" method="generateBacklogSprint"/>
   </action-method>
 
   <!-- ACTION VIEW -->

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -83,14 +83,6 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
   @Override
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
-
-    LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
-    LocalDateTime endDate = leaveRequest.getToDateT();
-
-    LeaveReason leaveReason = leaveRequest.getLeaveReason();
-    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
-
-    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
@@ -103,18 +95,45 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
           && leaveReasonService.isExceptionalDaysReason(leaveRequest.getLeaveReason());
     }
 
-    BigDecimal num =
-        leaveLine
-            .getQuantity()
-            .add(
-                leaveRequest
-                    .getEmployee()
-                    .getWeeklyPlanning()
-                    .getLeaveCoef()
-                    .multiply(leaveRequest.getLeaveReason().getDefaultDayNumberGain())
-                    .multiply(BigDecimal.valueOf(interval)));
+    BigDecimal num = getLeaveDaysToDate(leaveRequest);
 
     return leaveRequest.getDuration().compareTo(num) <= 0;
+  }
+
+  @Override
+  public BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) {
+    LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
+    LocalDateTime endDate = leaveRequest.getToDateT();
+    if (todayDate == null || endDate == null) {
+      return BigDecimal.ZERO;
+    }
+
+    LeaveReason leaveReason = leaveRequest.getLeaveReason();
+    LeaveLine leaveLine =
+        leaveLineRepository
+            .all()
+            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
+            .bind("leaveReason", leaveRequest.getLeaveReason())
+            .bind("employee", leaveRequest.getEmployee())
+            .fetchOne();
+
+    if (leaveReason == null || leaveLine == null) {
+      return BigDecimal.ZERO;
+    }
+
+    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
+
+    int interval = getInterval(leaveReasonTypeSelect, endDate, todayDate);
+
+    return leaveLine
+        .getQuantity()
+        .add(
+            leaveRequest
+                .getEmployee()
+                .getWeeklyPlanning()
+                .getLeaveCoef()
+                .multiply(leaveRequest.getLeaveReason().getDefaultDayNumberGain())
+                .multiply(BigDecimal.valueOf(interval)));
   }
 
   protected int getInterval(

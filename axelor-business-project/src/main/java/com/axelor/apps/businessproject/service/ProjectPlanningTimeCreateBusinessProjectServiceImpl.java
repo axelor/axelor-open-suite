@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -39,6 +38,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -112,7 +112,7 @@ public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
       if (Objects.isNull(timeUnit)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_NO_UNIT_FOUND),
+            I18n.get(ProjectExceptionMessage.PROJECT_TASK_NO_UNIT_FOUND),
             projectTask.getName());
       }
       planningTime.setTimeUnit(timeUnit);
@@ -126,7 +126,7 @@ public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
       if (numberHoursADay.signum() <= 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+            I18n.get(ProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
       }
       planningTime.setPlannedTime(
           planningTime.getPlannedTime().divide(numberHoursADay, 2, RoundingMode.HALF_UP));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -80,20 +80,11 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_TASK_SOLD_TIME_ERROR = /*$$(*/
       "Sold time value error for project task %s." /*)*/;
 
-  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
-      "Please set the default number of hours per day in the project configuration." /*)*/;
-
   public static final String PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR = /*$$(*/
       "Sold time and updated time must be greater than 0 for task %s" /*)*/;
 
   public static final String PROJECT_TASK_NO_PROJECT_FOUND = /*$$(*/
       "No project found for task %s." /*)*/;
-
-  public static final String PROJECT_NO_UNIT_FOUND = /*$$(*/
-      "Please set the time unit for this project." /*)*/;
-
-  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
-      "Please set the unit for the task %s." /*)*/;
 
   public static final String BATCH_BACKUP_TO_PROJECT_HISTORY = /*$$(*/
       "Backup project data to project history" /*)*/;

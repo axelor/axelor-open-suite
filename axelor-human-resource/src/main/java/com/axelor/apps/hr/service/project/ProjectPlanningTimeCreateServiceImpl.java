@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -16,11 +17,13 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Adapter;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -41,6 +44,8 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
   protected ProductRepository productRepo;
   protected EmployeeRepository employeeRepo;
   protected TimesheetLineRepository timesheetLineRepository;
+  protected AppBaseService appBaseService;
+  protected ProjectTimeUnitService projectTimeUnitService;
 
   @Inject
   public ProjectPlanningTimeCreateServiceImpl(
@@ -60,6 +65,8 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     this.productRepo = productRepo;
     this.employeeRepo = employeeRepo;
     this.timesheetLineRepository = timesheetLineRepository;
+    this.appBaseService = appBaseService;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
@@ -176,7 +183,18 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     if (timePercent > 0) {
       totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
     }
-    planningTime.setPlannedTime(totalHours);
+
+    if (defaultTimeUnit != null) {
+      planningTime.setTimeUnit(defaultTimeUnit);
+    } else {
+      planningTime.setTimeUnit(projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask));
+    }
+    if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
+      BigDecimal numberHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);
+      planningTime.setPlannedTime(totalHours.divide(numberHoursADay, 2, RoundingMode.HALF_UP));
+    } else {
+      planningTime.setPlannedTime(totalHours);
+    }
     return planningTime;
   }
 }

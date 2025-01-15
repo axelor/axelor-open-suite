@@ -9,7 +9,8 @@
   </selection>
 
   <selection name="message.related.to.select" id="project.message.related.to.select">
-    <option value="com.axelor.apps.project.db.Project">Project</option>
+    <option value="com.axelor.apps.project.db.Project" data-grid="project-grid"
+      data-form="project-form">Project</option>
   </selection>
 
   <selection name="crm.event.related.to.select" id="project.crm.event.related.to.select">
@@ -78,5 +79,11 @@
     <option value="2">In progress</option>
     <option value="3">In test</option>
     <option value="4">In production</option>
+  </selection>
+
+  <selection name="project.sprint.management.select">
+    <option value="none">None</option>
+    <option value="project">Project</option>
+    <option value="version">Version</option>
   </selection>
 </object-views>

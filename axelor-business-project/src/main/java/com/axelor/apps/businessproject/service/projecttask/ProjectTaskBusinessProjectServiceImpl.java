@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,7 +46,6 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -57,6 +56,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -92,7 +92,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   protected PartnerPriceListService partnerPriceListService;
   protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetLineRepository;
-  protected UnitConversionForProjectService unitConversionForProjectService;
+  protected ProjectTimeUnitService projectTimeUnitService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -109,7 +109,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      ProjectTimeUnitService projectTimeUnitService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -124,7 +124,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
-    this.unitConversionForProjectService = unitConversionForProjectService;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
@@ -550,9 +550,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedTime = BigDecimal.ZERO;
     BigDecimal spentTime = BigDecimal.ZERO;
 
-    Unit timeUnit =
-        Optional.ofNullable(projectTask.getTimeUnit())
-            .orElse(projectTask.getProject().getProjectTimeUnit());
+    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
 
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
@@ -685,7 +683,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     Map<String, Object> data = new HashMap<>();
     data.put(
         "unit",
-        Optional.ofNullable(projectTask.getTimeUnit())
+        Optional.ofNullable(projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask))
             .map(unit -> unit.getName() + "(s)")
             .orElse(""));
     data.put("progress", projectTask.getPercentageOfProgress() + " %");
