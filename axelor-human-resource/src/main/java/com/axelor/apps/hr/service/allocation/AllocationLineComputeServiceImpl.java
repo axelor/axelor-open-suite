@@ -62,11 +62,11 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
           leaveRequestRepo
               .all()
               .filter(
-                  "self.statusSelect = ?4 AND self.employee = ?3 AND ((self.fromDateT BETWEEN ?2 AND ?1 OR self.toDateT BETWEEN ?2 AND ?1) OR (?1 BETWEEN self.fromDateT AND self.toDateT OR ?2 BETWEEN self.fromDateT AND self.toDateT))",
-                  toDate,
-                  fromDate,
-                  employee,
-                  LeaveRequestRepository.STATUS_VALIDATED)
+                  "self.statusSelect = :statusValidated AND self.employee = :employee AND ((self.fromDateT BETWEEN :fromDate AND :toDate OR self.toDateT BETWEEN :fromDate AND :toDate) OR (:toDate BETWEEN self.fromDateT AND self.toDateT OR :fromDate BETWEEN self.fromDateT AND self.toDateT))")
+              .bind("statusValidated", LeaveRequestRepository.STATUS_VALIDATED)
+              .bind("employee", employee)
+              .bind("fromDate", fromDate)
+              .bind("toDate", toDate)
               .fetch();
       if (ObjectUtils.notEmpty(leaveRequestList)) {
         for (LeaveRequest leaveRequest : leaveRequestList) {
