@@ -704,4 +704,16 @@ public final class BaseExceptionMessage {
 
   public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
       "There is no configured daily work hours in the app base config" /*)*/;
+
+  public static final String API_BAD_REQUEST = /*$$(*/
+      "Bad request please check api configuration information." /*)*/;
+
+  public static final String API_WRONG_CREDENTIALS = /*$$(*/
+      "Bad request please check credentials." /*)*/;
+
+  public static final String API_WRONG_SIRET_NUMBER = /*$$(*/
+      "Cannot get information with siret: %s ." /*)*/;
+
+  public static final String API_INVALID_SIRET_NUMBER = /*$$(*/
+      "Invalid SIRET number. It must contain exactly 14 digits." /*)*/;
 }
