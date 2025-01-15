@@ -21,7 +21,7 @@
     </panel>
     <panel-related name="leaveReasonPanel" field="$leaveReasonList"
       form-view="leave-reason-duration-form" grid-view="leave-reason-duration-grid"
-      title="Leave reasons" colSpan="12" type="one-to-many" target="com.axelor.apps.base.db.Wizard"
+      title="Leave reasons" colSpan="12" type="one-to-many" target="com.axelor.utils.db.Wizard"
       editable="true" onChange="action-leave-request-create-wizard-method-check-duration"
       readonlyIf="!fromDate || !toDate || !startOnSelect || !endOnSelect" required="true"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
