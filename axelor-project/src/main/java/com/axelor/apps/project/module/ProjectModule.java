@@ -81,6 +81,8 @@ import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveServiceImpl;
+import com.axelor.apps.project.service.roadmap.ProjectVersionService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionServiceImpl;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
@@ -129,5 +131,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectVersionRemoveService.class).to(ProjectVersionRemoveServiceImpl.class);
     bind(SprintService.class).to(SprintServiceImpl.class);
     bind(SprintGeneratorService.class).to(SprintGeneratorServiceImpl.class);
+    bind(ProjectVersionService.class).to(ProjectVersionServiceImpl.class);
   }
 }
