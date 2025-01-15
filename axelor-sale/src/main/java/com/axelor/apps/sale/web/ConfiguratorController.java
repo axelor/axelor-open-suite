@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -35,15 +36,11 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ConfiguratorController {
 
   protected static final String saleOrderContextIdKey = "_saleOrderId";
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Called from configurator form view, set values for the indicators JSON field. call {@link
@@ -95,8 +92,7 @@ public class ConfiguratorController {
                 .map());
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -107,7 +103,7 @@ public class ConfiguratorController {
     configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
     try {
       Beans.get(ConfiguratorService.class)
-          .regenerateProduct(
+          .fillProductFields(
               configurator,
               Beans.get(ProductRepository.class).find(configurator.getProduct().getId()),
               jsonAttributes,
@@ -125,8 +121,7 @@ public class ConfiguratorController {
                 .map());
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

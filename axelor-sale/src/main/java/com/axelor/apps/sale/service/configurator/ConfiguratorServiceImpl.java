@@ -224,14 +224,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       throws AxelorException {
 
     Product product = new Product();
-    regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
     configurator.setProduct(product);
     product.setConfigurator(configurator);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void regenerateProduct(
+  public void fillProductFields(
       Configurator configurator,
       Product product,
       JsonContext jsonAttributes,
@@ -463,7 +463,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    *
    * @param jsonIndicators
    */
-  public void cleanIndicators(JsonContext jsonIndicators) {
+  protected void cleanIndicators(JsonContext jsonIndicators) {
     logger.debug("Cleaning indicators");
     Map<String, Object> newKeyMap = new HashMap<>();
     for (Map.Entry entry : jsonIndicators.entrySet()) {
