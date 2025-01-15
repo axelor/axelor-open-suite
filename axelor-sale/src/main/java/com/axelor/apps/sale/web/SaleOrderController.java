@@ -758,7 +758,10 @@ public class SaleOrderController {
         return;
       }
 
-      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+      String alert = Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+      if (StringUtils.notEmpty(alert)) {
+        response.setInfo(alert);
+      }
 
       response.setValues(Mapper.toMap(saleOrder));
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
