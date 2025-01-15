@@ -25,6 +25,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,8 +101,15 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
     if (currency == null) {
       return;
     }
+    BigDecimal equivalence = saleOrderDiscountService.computeDiscountFixedEquivalence(saleOrder);
     this.addAttr("discountCurrency", "value", "%", attrsMap);
     this.addAttr("discountScale", "value", 2, attrsMap);
+    this.addAttr("$discountEquivalence", "value", equivalence, attrsMap);
+    this.addAttr(
+        "$swapDiscountTypeBtn",
+        "value",
+        formatEquivalence(equivalence, currency.getSymbol(), currency.getNumberOfDecimals()),
+        attrsMap);
   }
 
   protected void setSaleOrderFixedGlobalDiscountDummies(
@@ -109,7 +118,15 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
     if (currency == null) {
       return;
     }
+    BigDecimal equivalence =
+        saleOrderDiscountService.computeDiscountPercentageEquivalence(saleOrder);
     this.addAttr("discountCurrency", "value", currency.getSymbol(), attrsMap);
     this.addAttr("discountScale", "value", currency.getNumberOfDecimals(), attrsMap);
+    this.addAttr("$discountEquivalence", "value", equivalence, attrsMap);
+    this.addAttr("$swapDiscountTypeBtn", "value", formatEquivalence(equivalence, "%", 2), attrsMap);
+  }
+
+  protected String formatEquivalence(BigDecimal value, String symbol, int scale) {
+    return String.format("%s %s", value.setScale(scale, RoundingMode.HALF_UP), symbol);
   }
 }

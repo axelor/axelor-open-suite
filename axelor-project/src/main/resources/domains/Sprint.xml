@@ -7,7 +7,7 @@
 
   <entity name="Sprint">
 
-    <string name="name" title="Name"/>
+    <string name="name" title="Name" required="true"/>
     <many-to-one name="targetVersion" title="Version"
       ref="com.axelor.apps.project.db.ProjectVersion"/>
     <string name="description" title="Description" large="true"/>
@@ -15,6 +15,11 @@
       title="Tasks" mappedBy="activeSprint" orphanRemoval="false"/>
     <integer name="sequence" title="Sequence"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <date name="fromDate" title="From date"/>
+    <date name="toDate" title="To date"/>
+
+    <unique-constraint columns="name,project"/>
+    <unique-constraint columns="name,targetVersion"/>
 
   </entity>
 </domain-models>
