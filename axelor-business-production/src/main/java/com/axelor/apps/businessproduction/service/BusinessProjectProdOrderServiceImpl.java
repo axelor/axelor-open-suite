@@ -1,15 +1,12 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -42,12 +39,12 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
       return Collections.emptyList();
     }
 
-    if (CollectionUtils.isNotEmpty(saleOrderLineList)
-        && (saleOrderLineList.stream().noneMatch(line -> line.getProdOrder() == null))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.SALE_ORDER_GENERATE_PROD_ORDER_FROM_SOL_ERROR));
-    }
+    productionOrderSaleOrderService.checkProdOrderSolList(saleOrderLineList);
+
+    saleOrderLineList =
+        saleOrderLineList.stream()
+            .filter(line -> line.getProdOrder() == null)
+            .collect(Collectors.toList());
 
     List<ProductionOrder> productionOrderList = new ArrayList<>();
     AppProduction appProduction = appProductionService.getAppProduction();

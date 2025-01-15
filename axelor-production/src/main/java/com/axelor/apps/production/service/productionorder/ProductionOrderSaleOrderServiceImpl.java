@@ -36,6 +36,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
@@ -73,15 +74,15 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       return productionOrderIdList;
     }
 
-    if (CollectionUtils.isNotEmpty(saleOrderLineList)
-        && (saleOrderLineList.stream().noneMatch(line -> line.getProdOrder() == null))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.SALE_ORDER_GENERATE_PROD_ORDER_FROM_SOL_ERROR));
-    }
+    checkProdOrderSolList(saleOrderLineList);
+
+    saleOrderLineList =
+        saleOrderLineList.stream()
+            .filter(line -> line.getProdOrder() == null)
+            .collect(Collectors.toList());
 
     ProductionOrder productionOrder = null;
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
       if (productionOrder == null || !oneProdOrderPerSO) {
         productionOrder = this.createProductionOrder(saleOrder);
@@ -139,5 +140,15 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     }
 
     return null;
+  }
+
+  @Override
+  public void checkProdOrderSolList(List<SaleOrderLine> saleOrderLineList) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(saleOrderLineList)
+        && (saleOrderLineList.stream().noneMatch(line -> line.getProdOrder() == null))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.SALE_ORDER_GENERATE_PROD_ORDER_FROM_SOL_ERROR));
+    }
   }
 }
