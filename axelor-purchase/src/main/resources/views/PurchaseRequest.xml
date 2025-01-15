@@ -24,8 +24,8 @@
   </grid>
 
   <form name="purchase-request-form" title="Purchase request"
-    model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-group-onnew"
-    width="large">
+    model="com.axelor.apps.purchase.db.PurchaseRequest"
+    onNew="action-purchase-request-method-set-default-values" width="large">
     <panel name="statusSelectPanel" colSpan="12">
       <field name="statusSelect" readonly="true" colSpan="12" widget="nav-select"
         showTitle="false"/>
@@ -110,22 +110,10 @@
     <attribute name="readonly" for="$groupBySupplier" expr="eval: groupByProduct"/>
   </action-attrs>
 
-  <action-record name="action-purchase-request-record-default"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="company" expr="eval:__user__.activeCompany"/>
-    <field name="supplierPartner"
-      expr="eval:__repo__(Product).find(_product?.id)?.getDefaultSupplierPartner()" if="_product"/>
-  </action-record>
-
-  <action-record name="action-purchase-request-record-set-requester-user"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="requesterUser" expr="eval:__user__"/>
-  </action-record>
-
-  <action-record name="action-purchase-request-record-set-validator-user"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <field name="validatorUser" expr="eval:__user__"/>
-  </action-record>
+  <action-method name="action-purchase-request-method-set-default-values">
+    <call class="com.axelor.apps.purchase.web.PurchaseRequestController"
+      method="setDefaultValues"/>
+  </action-method>
 
   <!-- update status -->
 
@@ -177,14 +165,12 @@
   <action-group name="action-purchase-request-group-request-button">
     <action name="save"/>
     <action name="action-purchase-request-method-set-status-requested"/>
-    <action name="action-purchase-request-record-set-requester-user"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-purchase-request-group-accept-button">
     <action name="save"/>
     <action name="action-purchase-request-method-set-status-accepted"/>
-    <action name="action-purchase-request-record-set-validator-user"/>
     <action name="save"/>
   </action-group>
 
@@ -211,12 +197,6 @@
     <action name="save"/>
     <action name="action-purchase-request-method-set-status-drafted"/>
     <action name="save"/>
-  </action-group>
-
-  <action-group name="action-purchase-request-group-onnew">
-    <action name="action-purchase-request-record-default"/>
-    <action name="action-purchase-request-method-get-stock-location"
-      if="__config__.app.isApp('supplychain')"/>
   </action-group>
 
   <action-group name="action-purchase-request-group-company-onchange">

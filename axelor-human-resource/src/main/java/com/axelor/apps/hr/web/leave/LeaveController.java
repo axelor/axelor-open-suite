@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,6 +42,7 @@ import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -451,5 +452,19 @@ public class LeaveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getLeaveReasonDomain(ActionRequest request, ActionResponse response) {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    response.setAttr(
+        "leaveReason",
+        "domain",
+        Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(leave.getEmployee()));
+  }
+
+  public void computeLeaveToDate(ActionRequest request, ActionResponse response) {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    response.setValue(
+        "leaveDaysToDate", Beans.get(LeaveRequestService.class).getLeaveDaysToDate(leave));
   }
 }
