@@ -114,6 +114,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     Product product = inventoryLine.getProduct();
 
     if (product != null) {
+      inventoryLine.setPrice(BigDecimal.ZERO);
       StockLocationLine stockLocationLine =
           stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 

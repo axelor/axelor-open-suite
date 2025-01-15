@@ -59,6 +59,8 @@ import com.axelor.apps.hr.db.repo.UserHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.rest.LeaveRequestCreateRestService;
 import com.axelor.apps.hr.rest.LeaveRequestCreateRestServiceImpl;
+import com.axelor.apps.hr.service.AllocationLineService;
+import com.axelor.apps.hr.service.AllocationLineServiceImpl;
 import com.axelor.apps.hr.service.BankCardService;
 import com.axelor.apps.hr.service.BankCardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
@@ -206,6 +208,8 @@ import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysServ
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursServiceImpl;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainServiceImpl;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
@@ -445,6 +449,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestInitValueService.class).to(LeaveRequestInitValueServiceImpl.class);
     bind(WorkingDayService.class).to(WorkingDayServiceImpl.class);
     bind(LeaveRequestCreateRestService.class).to(LeaveRequestCreateRestServiceImpl.class);
+    bind(AllocationLineService.class).to(AllocationLineServiceImpl.class);
+    bind(LeaveReasonDomainService.class).to(LeaveReasonDomainServiceImpl.class);
     bind(ExpenseWorkflowService.class).to(ExpenseWorkflowServiceImpl.class);
   }
 }

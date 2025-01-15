@@ -21,6 +21,7 @@ package com.axelor.apps.base.service.connectormapper;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ConnectorMapper;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
 import java.util.List;
 
@@ -33,8 +34,10 @@ public interface ConnectorMapperFetchService {
    * @param metaModel the meta model associated with the connector mapper
    * @param connectorSelect the connector selection criteria
    * @param externalReference the external reference for the connector mapper
-   * @param company
-   * @param tradingName
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mapper for any company
+   * @param tradingName the trading name associated with the connector mapper; if null, returns
+   *     connector mapper for any trading name
    * @return the retrieved ConnectorMapper, or null if no match is found
    */
   ConnectorMapper getConnectorMapper(
@@ -51,12 +54,54 @@ public interface ConnectorMapperFetchService {
    * @param metaModel the meta model associated with the connector mappers
    * @param connectorSelect the connector selection criteria
    * @param externalReference the external reference for the connector mapper
-   * @param company
-   * @param tradingName
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mappers for any company
+   * @param tradingName the trading name associated with the connector mapper; if null, returns
+   *     connector mappers for any trading name
    * @return a list of matching ConnectorMappers, or an empty list if no matches are found
    */
   List<ConnectorMapper> getConnectorMapperList(
       MetaModel metaModel,
+      String connectorSelect,
+      String externalReference,
+      Company company,
+      TradingName tradingName);
+
+  /**
+   * Retrieves a ConnectorMapper based on the given model class, connector selection, external
+   * reference, company, and trading name.
+   *
+   * @param modelClass the model class associated with the connector mapper
+   * @param connectorSelect the connector selection criteria
+   * @param externalReference the external reference for the connector mapper
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mapper for any company
+   * @param tradingName the trading name associated with the connector mapper; returns connector
+   *     mapper for any trading name
+   * @return the retrieved ConnectorMapper, or null if no match is found
+   */
+  ConnectorMapper getConnectorMapper(
+      Class<? extends Model> modelClass,
+      String connectorSelect,
+      String externalReference,
+      Company company,
+      TradingName tradingName);
+
+  /**
+   * Retrieves a list of ConnectorMappers based on the given model class, connector selection,
+   * external reference, company, and trading name.
+   *
+   * @param modelClass the model class associated with the connector mappers
+   * @param connectorSelect the connector selection criteria
+   * @param externalReference the external reference for the connector mapper
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mappers for any company
+   * @param tradingName the trading name associated with the connector mapper; if null, returns
+   *     connector mappers for any trading name
+   * @return a list of matching ConnectorMappers, or an empty list if no matches are found
+   */
+  List<ConnectorMapper> getConnectorMapperList(
+      Class<? extends Model> modelClass,
       String connectorSelect,
       String externalReference,
       Company company,
