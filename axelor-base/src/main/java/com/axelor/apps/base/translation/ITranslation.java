@@ -65,5 +65,5 @@ public interface ITranslation {
   public static final String TRANSLATIONS_ADDED = /*$$(*/
       "%s translation(s) successfully added." /*)*/;
   public static final String PARTNER_ADDRESS_UPDATED = /*$$(*/
-      "Partner's address successfully updated." /*)*/;
+      "Partner address successfully updated." /*)*/;
 }
