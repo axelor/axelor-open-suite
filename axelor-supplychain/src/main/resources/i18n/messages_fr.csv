@@ -291,7 +291,7 @@
 "Invoice outgoing stock moves","Facturer les BL",,
 "Invoice partially stock move","Facture partiellement mouvement de stock",,
 "Invoice selected lines","Facturer les lignes sélectionnées",,
-"Invoice timetable has been updated because a part of the order has already been invoiced. Amount to be spread over the timetable : %s","L'échancier de facturation a été mis à jour car une partie de la commande a déjà été facturée. Le montant restant à répartir sur l'échéancier : %s",,
+"Invoice timetable has been updated because a part of the order has already been invoiced. Amount to be spread over the timetable : %s","L'échéancier de facturation a été mis à jour car une partie de la commande a déjà été facturée. Le montant restant à répartir sur l'échéancier : %s",,
 "Invoiced","Facturé",,
 "Invoiced Qty","Qté facturée",,
 "Invoiced by","Facturé par",,
