@@ -34,10 +34,10 @@ public interface ConnectorMapperFetchService {
    * @param metaModel the meta model associated with the connector mapper
    * @param connectorSelect the connector selection criteria
    * @param externalReference the external reference for the connector mapper
-   * @param company the company associated with the connector mapper; if null, filters records where
-   *     company IS NULL.
-   * @param tradingName the trading name associated with the connector mapper; if null, filters
-   *     records where tradingName IS NULL.
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mapper for any company
+   * @param tradingName the trading name associated with the connector mapper; if null, returns
+   *     connector mapper for any trading name
    * @return the retrieved ConnectorMapper, or null if no match is found
    */
   ConnectorMapper getConnectorMapper(
@@ -54,10 +54,10 @@ public interface ConnectorMapperFetchService {
    * @param metaModel the meta model associated with the connector mappers
    * @param connectorSelect the connector selection criteria
    * @param externalReference the external reference for the connector mapper
-   * @param company the company associated with the connector mapper; if null, filters records where
-   *     company IS NULL.
-   * @param tradingName the trading name associated with the connector mapper; if null, filters
-   *     records where tradingName IS NULL.
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mappers for any company
+   * @param tradingName the trading name associated with the connector mapper; if null, returns
+   *     connector mappers for any trading name
    * @return a list of matching ConnectorMappers, or an empty list if no matches are found
    */
   List<ConnectorMapper> getConnectorMapperList(
@@ -74,10 +74,10 @@ public interface ConnectorMapperFetchService {
    * @param modelClass the model class associated with the connector mapper
    * @param connectorSelect the connector selection criteria
    * @param externalReference the external reference for the connector mapper
-   * @param company the company associated with the connector mapper; if null, filters records where
-   *     company IS NULL.
-   * @param tradingName the trading name associated with the connector mapper; if null, filters
-   *     records where tradingName IS NULL.
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mapper for any company
+   * @param tradingName the trading name associated with the connector mapper; returns connector
+   *     mapper for any trading name
    * @return the retrieved ConnectorMapper, or null if no match is found
    */
   ConnectorMapper getConnectorMapper(
@@ -94,10 +94,10 @@ public interface ConnectorMapperFetchService {
    * @param modelClass the model class associated with the connector mappers
    * @param connectorSelect the connector selection criteria
    * @param externalReference the external reference for the connector mapper
-   * @param company the company associated with the connector mapper; if null, filters records where
-   *     company IS NULL.
-   * @param tradingName the trading name associated with the connector mapper; if null, filters
-   *     records where tradingName IS NULL.
+   * @param company the company associated with the connector mapper; if null, returns connector
+   *     mappers for any company
+   * @param tradingName the trading name associated with the connector mapper; if null, returns
+   *     connector mappers for any trading name
    * @return a list of matching ConnectorMappers, or an empty list if no matches are found
    */
   List<ConnectorMapper> getConnectorMapperList(

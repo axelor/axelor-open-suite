@@ -74,15 +74,10 @@ public class ConnectorMapperFetchServiceImpl implements ConnectorMapperFetchServ
     if (company != null) {
       filter.append(" AND self.company = :company");
       query.bind("company", company);
-    } else {
-      filter.append(" AND self.company IS NULL");
     }
-
     if (tradingName != null) {
       filter.append(" AND self.tradingName = :tradingName");
       query.bind("tradingName", tradingName);
-    } else {
-      filter.append(" AND self.tradingName IS NULL");
     }
     query
         .filter(filter.toString())
