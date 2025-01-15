@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.service.AllocationLineService;
+import com.axelor.apps.hr.service.allocation.AllocationLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.inject.Beans;
