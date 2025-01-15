@@ -118,4 +118,33 @@ public class SaleOrderDiscountServiceImpl implements SaleOrderDiscountService {
             .getDiscountAmount()
             .subtract(differenceInDiscount.divide(lastLine.getQty(), RoundingMode.HALF_UP)));
   }
+
+  @Override
+  public BigDecimal computeDiscountFixedEquivalence(SaleOrder saleOrder) {
+    if (saleOrder == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    BigDecimal priceBeforeGlobalDiscount = saleOrder.getPriceBeforeGlobalDiscount();
+    if (exTaxTotal == null || priceBeforeGlobalDiscount == null) {
+      return BigDecimal.ZERO;
+    }
+    return priceBeforeGlobalDiscount.subtract(exTaxTotal);
+  }
+
+  @Override
+  public BigDecimal computeDiscountPercentageEquivalence(SaleOrder saleOrder) {
+    if (saleOrder == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    BigDecimal priceBeforeGlobalDiscount = saleOrder.getPriceBeforeGlobalDiscount();
+    if (exTaxTotal == null || priceBeforeGlobalDiscount == null) {
+      return BigDecimal.ZERO;
+    }
+    return priceBeforeGlobalDiscount
+        .subtract(exTaxTotal)
+        .multiply(BigDecimal.valueOf(100))
+        .divide(priceBeforeGlobalDiscount, RoundingMode.HALF_UP);
+  }
 }
