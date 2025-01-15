@@ -80,12 +80,12 @@
         form-view="company-form" grid-view="company-grid" required="true"/>
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         onSelect="action-leave-request-attrs-set-employee-domain"
-        onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration,action-leave-request-method-leave-reason-to-justify"
+        onChange="action-leave-request-validate-dates,action-leave-request-group-compute-duration,action-leave-request-method-leave-reason-to-justify"
         canNew="false" canEdit="false" canView="false"/>
       <field name="requestDate" colSpan="12" width="50%"/>
       <field name="leaveReason" onSelect="action-leave-request-method-get-leave-reason-domain"
         title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
-        onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-methode-compute-duration"
+        onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-group-compute-duration"
         form-view="leave-reason-form" grid-view="leave-reason-grid"/>
       <field name="isPayrollInput" showIf="employee.hrManager"/>
       <panel name="quantityPanel" showIf="leaveReason.leaveReasonTypeSelect != 2">
@@ -100,36 +100,31 @@
       <panel name="fromDatesPanel" colSpan="12">
         <panel name="fromDatesFirstInferiorPanel" hideIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="fromDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="fromDateT" onChange="action-leave-request-group-date-onchange"
             widget="date"/>
-          <field name="startOnSelect"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+          <field name="startOnSelect" onChange="action-leave-request-group-date-onchange"/>
         </panel>
         <panel name="fromDatesSecondInferiorPanel" showIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="fromDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="fromDateT" onChange="action-leave-request-group-date-onchange"
             widget="datetime"/>
         </panel>
       </panel>
       <panel name="toDatesPanel" colSpan="12">
         <panel name="toDatesFirstInferiorPanel" hideIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="toDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="toDateT" onChange="action-leave-request-group-date-onchange"
             widget="date"/>
-          <field name="endOnSelect"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+          <field name="endOnSelect" onChange="action-leave-request-group-date-onchange"/>
         </panel>
         <panel name="toDatesSecondInferiorPanel" showIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="toDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="toDateT" onChange="action-leave-request-group-date-onchange"
             widget="datetime"/>
         </panel>
       </panel>
       <field name="duration" readonly="true" onChange="action-leave-request-methode-duration"/>
+      <field name="leaveDaysToDate" readonly="true" x-scale="1" hideIf="statusSelect > 2"/>
       <field name="leaveReason.unitSelect" readonly="true"/>
 
       <field name="comments" colSpan="12"/>
@@ -212,6 +207,7 @@
     <action name="action-leave-request-attrs-inject-change"/>
     <action name="action-leave-request-attrs-send"/>
     <action name="action-leave-request-attrs-valid-refuse"/>
+    <action name="action-leave-request-method-compute-leave-to-date"/>
   </action-group>
 
   <action-group name="action-leave-request-group-onnew">
@@ -220,6 +216,16 @@
     <action name="action-validate-check-user-employee"/>
     <action name="action-leave-request-record-to-justify"/>
     <action name="action-leave-request-method-leave-reason-to-justify"/>
+  </action-group>
+
+  <action-group name="action-leave-request-group-date-onchange">
+    <action name="action-leave-request-validate-dates"/>
+    <action name="action-leave-request-group-compute-duration"/>
+  </action-group>
+
+  <action-group name="action-leave-request-group-compute-duration">
+    <action name="action-leave-request-methode-compute-duration"/>
+    <action name="action-leave-request-method-compute-leave-to-date"/>
   </action-group>
 
   <action-record name="action-leave-request-record-default"
@@ -330,6 +336,10 @@
 
   <action-method name="action-leave-request-method-get-leave-reason-domain">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="getLeaveReasonDomain"/>
+  </action-method>
+
+  <action-method name="action-leave-request-method-compute-leave-to-date">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="computeLeaveToDate"/>
   </action-method>
 
   <action-view name="action-leave-request-refusal-popup-form" title="Ground for refusal"

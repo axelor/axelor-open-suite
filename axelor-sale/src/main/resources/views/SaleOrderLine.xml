@@ -399,6 +399,13 @@
         <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery">
+        <field name="deliveryAddress" canNew="true"
+          onChange="action-sale-order-line-record-compute-delivery-address-str"
+          onSelect="action-sale-order-line-attrs-domain-delivery-address" form-view="address-form"
+          grid-view="address-grid"/>
+        <field name="deliveryAddressStr" height="5">
+          <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
+        </field>
         <field name="desiredDeliveryDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedShippingDate"
           onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
@@ -747,4 +754,16 @@
     <attribute for="$computeWithSOL" name="value"
       expr="eval: _config__.app.getApp('sale')?.getIsSOLPriceTotalOfSubLines()"/>
   </action-attrs>
+
+  <action-record name="action-sale-order-line-record-compute-delivery-address-str"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="deliveryAddressStr"
+      expr="call: com.axelor.apps.base.service.address.AddressService:computeAddressStr(deliveryAddress)"/>
+  </action-record>
+
+  <action-attrs name="action-sale-order-line-attrs-domain-delivery-address">
+    <attribute name="domain" for="deliveryAddress"
+      expr="eval: &quot;self.id IN (${(__parent__?.clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
+  </action-attrs>
+
 </object-views>

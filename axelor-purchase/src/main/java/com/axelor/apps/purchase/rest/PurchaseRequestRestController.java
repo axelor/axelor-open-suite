@@ -20,9 +20,14 @@ package com.axelor.apps.purchase.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.apps.purchase.db.PurchaseRequestLine;
+import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
+import com.axelor.apps.purchase.rest.dto.PurchaseRequestPostRequest;
 import com.axelor.apps.purchase.rest.dto.PurchaseRequestResponse;
+import com.axelor.apps.purchase.service.PurchaseRequestRestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.purchase.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -32,6 +37,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -62,7 +68,7 @@ public class PurchaseRequestRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        ITranslation.PURCHASE_REQUEST_UPDATED,
+        I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
         new PurchaseRequestResponse(purchaseRequest));
   }
 
@@ -84,7 +90,7 @@ public class PurchaseRequestRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        ITranslation.PURCHASE_REQUEST_UPDATED,
+        I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
         new PurchaseRequestResponse(purchaseRequest));
   }
 
@@ -106,7 +112,7 @@ public class PurchaseRequestRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        ITranslation.PURCHASE_REQUEST_UPDATED,
+        I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
         new PurchaseRequestResponse(purchaseRequest));
   }
 
@@ -128,7 +134,34 @@ public class PurchaseRequestRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        ITranslation.PURCHASE_REQUEST_UPDATED,
+        I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
         new PurchaseRequestResponse(purchaseRequest));
+  }
+
+  @Operation(
+      summary = "Create purchase request",
+      tags = {"Create"})
+  @Path("/create")
+  @POST
+  @HttpExceptionHandler
+  public Response createPurchaseRequest(PurchaseRequestPostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .createAccess(PurchaseRequest.class)
+        .writeAccess(PurchaseRequest.class)
+        .createAccess(PurchaseRequestLine.class)
+        .check();
+
+    if (requestBody.getStatus() != null
+        && requestBody.getStatus() > PurchaseRequestRepository.STATUS_REQUESTED) {
+      return ResponseConstructor.build(
+          Response.Status.BAD_REQUEST, I18n.get(ITranslation.PURCHASE_REQUEST_CREATE_WRONG_STATUS));
+    }
+    PurchaseRequest purchaseRequest =
+        Beans.get(PurchaseRequestRestService.class).createPurchaseRequest(requestBody);
+
+    return ResponseConstructor.buildCreateResponse(
+        purchaseRequest, new PurchaseRequestResponse(purchaseRequest));
   }
 }

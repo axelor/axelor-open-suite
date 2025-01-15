@@ -19,12 +19,20 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import java.util.List;
+import java.util.Map;
 
 public interface PurchaseRequestService {
   public List<PurchaseOrder> generatePo(
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
       throws AxelorException;
+
+  public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
+      throws AxelorException;
+
+  public PurchaseRequest createPurchaseRequest(
+      Company fetchCompany, Integer status, String description) throws AxelorException;
 }

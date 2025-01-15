@@ -311,7 +311,7 @@
         onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <spacer name="budgetedTimeSpacer" colSpan="4"/>
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
         canSearch="true"/>
       <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
       <field name="project.isShowPlanning" hidden="true"/>
@@ -519,6 +519,7 @@
     <action name="action-project-task-record-project-configurations" if="project != null"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
+    <action name="action-project-task-group-reset-datas"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
@@ -535,6 +536,7 @@
 
   <action-group name="action-project-task-group-reset-datas">
     <action name="action-project-task-attrs-reset-version-and-sprint"/>
+    <action name="action-project-task-attrs-reset-parent-task"/>
   </action-group>
 
   <action-method name="action-project-task-method-set-link-type-domain">
@@ -721,13 +723,19 @@
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-reset-sprint">
-    <attribute for="activeSprint" name="value" expr="eval: null"
+    <attribute for="activeSprint" name="value" expr="eval: targetVersion?.backlogSprint"
       if="project?.sprintManagementSelect == 'version'"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-reset-version-and-sprint">
-    <attribute for="targetVersion" name="value" expr="eval: null"/>
-    <attribute for="activeSprint" name="value" expr="eval: null"/>
+    <attribute for="targetVersion" name="value" expr="eval: targetVersion?.backlogSprint"
+      if="project?.sprintManagementSelect == 'version'"/>
+    <attribute for="activeSprint" name="value" expr="eval: project?.backlogSprint"
+      if="project?.sprintManagementSelect == 'project'"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-reset-parent-task">
+    <attribute for="parentTask" name="value" expr="eval: null"/>
   </action-attrs>
 
   <!-- get timeUnit value from configuration -->

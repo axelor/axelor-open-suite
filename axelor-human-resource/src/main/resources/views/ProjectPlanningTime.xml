@@ -151,7 +151,12 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_project" expr="eval:__parent__"/>
+    <context name="_projectTask" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__?.project"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.Project'"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
   </action-view>
 

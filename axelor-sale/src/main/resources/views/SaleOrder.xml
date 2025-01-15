@@ -457,8 +457,7 @@
         <panel name="deliveryAddressPanel" stacked="true">
           <field name="deliveryAddress"
             hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true"
-            canEdit="false"
-            onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required"
+            canEdit="false" onChange="action-sale-order-group-delivery-address-change"
             onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
             grid-view="address-grid"/>
           <field name="deliveryAddressStr"
@@ -817,8 +816,11 @@
       sidebar="true">
       <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
-        x-currency="discountCurrency" x-scale="discountScale"
+        x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
         onChange="action-sale-order-method-on-line-change"/>
+      <button name="$swapDiscountTypeBtn" title="Swap discount type" widget="info-button"
+        showIf="discountTypeSelect != 0" icon="arrow-left-right" colSpan="6"
+        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-line-change"/>
       <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="discountCurrency" hidden="true" x-dirty="false"/>
@@ -1277,6 +1279,14 @@
     </panel>
   </form>
 
+  <form name="sale-order-incoterm-wizard-form" title="Fill incoterm"
+    model="com.axelor.apps.sale.db.SaleOrder" onSave="action-sale-group-confirmed">
+    <panel name="mainPanel" colSpan="12">
+      <field name="incoterm" required="true" grid-view="incoterm-grid"
+        form-view="incoterm-form"/>
+    </panel>
+  </form>
+
   <action-group name="action-group-sale-order-onsave">
     <action name="save"/>
     <action name="action-sale-order-method-compute"/>
@@ -1418,23 +1428,14 @@
 					</Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" mt={1}>
-					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
-						{invoicingState == 1 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
-		                {invoicingState == 2 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
-		                {invoicingState == 3 && <Badge bg="success">{_t('Invoiced')}</Badge>}
-
-	                	{deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
-	                	{deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
-	                	{deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
-		            </Box>
-		            <Box>
-			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
-		            </Box>
-				</Box>
-				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					<Box>
+						<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge> <Box/>
+						<Badge mt={1} style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					</Box>
+					<Box>
+						<strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+						<strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
+					</Box>
 				</Box>
 			</>
 		]]>
@@ -1514,6 +1515,8 @@
 
   <action-group name="action-sale-group-confirmed">
     <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
     <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
@@ -2238,5 +2241,36 @@
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
   </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-swap-discount-type">
+    <attribute for="discountTypeSelect" name="value" expr="eval: 1"
+      if="discountTypeSelect == 2"/>
+    <attribute for="discountTypeSelect" name="value" expr="eval: 2"
+      if="discountTypeSelect == 1"/>
+    <attribute for="discountAmount" name="value" expr="eval: discountEquivalence"/>
+  </action-attrs>
+
+  <action-method name="action-sale-order-method-fill-incoterm-if-required">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="fillIncoterm"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-delivery-address-change">
+    <action name="action-sale-order-method-address-str"/>
+    <action name="action-sale-order-attrs-set-is-ispm-required"/>
+    <action name="action-sale-order-validate-sale-order-lines-delivery-address"
+      if="saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <action name="action-sale-order-method-update-sale-order-lines-delivery-address"/>
+  </action-group>
+
+  <action-validate
+    name="action-sale-order-validate-sale-order-lines-delivery-address">
+    <alert message="Would you like to update all lines with this new address?"/>
+  </action-validate>
+
+  <action-method
+    name="action-sale-order-method-update-sale-order-lines-delivery-address">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateSaleOrderLinesDeliveryAddress"/>
+  </action-method>
 
 </object-views>

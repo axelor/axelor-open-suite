@@ -30,6 +30,7 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
+import com.axelor.apps.project.service.SprintService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -184,5 +185,11 @@ public class ProjectController {
     Beans.get(ProjectCheckListTemplateService.class)
         .generateCheckListItemsFromTemplate(project, template);
     response.setValue("projectCheckListItemList", project.getProjectCheckListItemList());
+  }
+
+  public void generateBacklogSprint(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    Beans.get(SprintService.class).generateBacklogSprint(project);
+    response.setValue("backlogSprint", project.getBacklogSprint());
   }
 }

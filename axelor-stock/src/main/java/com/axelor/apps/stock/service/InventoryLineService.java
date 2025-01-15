@@ -56,14 +56,19 @@ public interface InventoryLineService {
   public BigDecimal getCurrentQty(StockLocation stockLocation, Product product);
 
   public void updateInventoryLine(
-      InventoryLine inventoryLine, BigDecimal realQty, String description) throws AxelorException;
+      InventoryLine inventoryLine,
+      BigDecimal realQty,
+      String description,
+      StockLocation stockLocation)
+      throws AxelorException;
 
   public InventoryLine addLine(
       Inventory inventory,
       Product product,
       TrackingNumber trackingNumber,
       String rack,
-      BigDecimal realQty)
+      BigDecimal realQty,
+      StockLocation stockLocation)
       throws AxelorException;
 
   /**

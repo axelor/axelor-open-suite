@@ -36,6 +36,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -150,6 +151,17 @@ public class PurchaseRequestController {
       purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
       Beans.get(PurchaseRequestWorkflowService.class).draftPurchaseRequest(purchaseRequest);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDefaultValues(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      Map<String, Object> values =
+          Beans.get(PurchaseRequestService.class).getDefaultValues(purchaseRequest, null);
+      response.setValues(values);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
