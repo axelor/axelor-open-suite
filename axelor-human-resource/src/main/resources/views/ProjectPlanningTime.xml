@@ -101,12 +101,12 @@
         target-name="name" canEdit="false"
         onSelect="action-project-planning-time-attrs-set-site-domain" form-view="site-form"
         grid-view="site-grid" if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="timeUnit" showIf="!project.isBusinessProject"
+      <field name="timeUnit"
         onSelect="action-project-planning-time-method-compute-display-time-unit-domain"/>
-      <field name="project.isBusinessProject" hidden="true"/>
-      <spacer/>
+      <spacer colSpan="12"/>
+      <spacer colSpan="4"/>
       <button name="addMultipleProjectPlanningTimeBtn" title="Add lines"
-        onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3"
+        onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="4"
         readonlyIf="fromDate == null || toDate == null || employee == null"/>
       <field name="project" type="many-to-one" target="com.axelor.apps.project.db.Project"
         hidden="true"/>
@@ -151,7 +151,12 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_project" expr="eval:__parent__"/>
+    <context name="_projectTask" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__?.project"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.Project'"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
   </action-view>
 

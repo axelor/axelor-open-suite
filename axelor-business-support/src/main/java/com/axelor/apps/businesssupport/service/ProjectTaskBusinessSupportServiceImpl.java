@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
@@ -56,7 +57,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepository) {
+      TimesheetLineRepository timesheetLineRepository,
+      ProjectTimeUnitService projectTimeUnitService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -70,7 +72,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         priceListService,
         partnerPriceListService,
         productCompanyService,
-        timesheetLineRepository);
+        timesheetLineRepository,
+        projectTimeUnitService);
   }
 
   @Override
@@ -89,7 +92,6 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     // Module 'business support' fields
     nextProjectTask.setAssignment(ProjectTaskRepository.ASSIGNMENT_PROVIDER);
     nextProjectTask.setIsPrivate(projectTask.getIsPrivate());
-    nextProjectTask.setTargetVersion(projectTask.getTargetVersion());
   }
 
   @Override
@@ -100,11 +102,5 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     task.setInternalDescription(template.getInternalDescription());
 
     return task;
-  }
-
-  @Override
-  public void fillSubtask(ProjectTask projectTask) {
-    super.fillSubtask(projectTask);
-    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 }

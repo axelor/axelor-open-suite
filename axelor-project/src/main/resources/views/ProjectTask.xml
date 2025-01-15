@@ -224,11 +224,19 @@
       <field name="progress" onChange="action-project-task-group-progress-onchange"
         showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
         x-scale="0"/>
+      <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4"
+        form-view="project-version-form" grid-view="project-version-grid"
+        onChange="action-project-task-attrs-reset-sprint"/>
+      <field name="activeSprint"
+        showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
+        onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
+        form-view="sprint-form" grid-view="sprint-grid"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
       <field name="project.isShowTaskCategory" hidden="true"/>
       <field name="project.taskStatusManagementSelect" hidden="true"/>
+      <field name="project.sprintManagementSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -293,6 +301,9 @@
 
   <form name="incl-planning-panel-task-form" title="Planning"
     model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       if-module="axelor-human-resource" showIf="project.isShowPlanning">
       <field name="budgetedTime" colSpan="4"/>
@@ -300,7 +311,7 @@
         onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <spacer name="budgetedTimeSpacer" colSpan="4"/>
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
         canSearch="true"/>
       <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
       <field name="project.isShowPlanning" hidden="true"/>
@@ -508,9 +519,11 @@
     <action name="action-project-task-record-project-configurations" if="project != null"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
+    <action name="action-project-task-group-reset-datas"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
+    <action name="action-project-task-group-reset-datas"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-record-project-configurations"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
@@ -519,6 +532,11 @@
   <action-group name="action-project-task-group-generate-checklist-items">
     <action name="action-project-validate-checklist-items"/>
     <action name="action-project-task-method-generate-checklist-items-from-template"/>
+  </action-group>
+
+  <action-group name="action-project-task-group-reset-datas">
+    <action name="action-project-task-attrs-reset-version-and-sprint"/>
+    <action name="action-project-task-attrs-reset-parent-task"/>
   </action-group>
 
   <action-method name="action-project-task-method-set-link-type-domain">
@@ -548,6 +566,11 @@
 
   <action-method name="action-project-task-method-set-tag-domain">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="setTagDomain"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-compute-sprint-domain">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="computeSprintDomain"/>
   </action-method>
 
   <action-method
@@ -697,6 +720,22 @@
   <action-attrs name="action-project-task-attrs-set-time-unit-domain">
     <attribute for="timeUnit" name="domain"
       expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-reset-sprint">
+    <attribute for="activeSprint" name="value" expr="eval: targetVersion?.backlogSprint"
+      if="project?.sprintManagementSelect == 'version'"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-reset-version-and-sprint">
+    <attribute for="targetVersion" name="value" expr="eval: targetVersion?.backlogSprint"
+      if="project?.sprintManagementSelect == 'version'"/>
+    <attribute for="activeSprint" name="value" expr="eval: project?.backlogSprint"
+      if="project?.sprintManagementSelect == 'project'"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-reset-parent-task">
+    <attribute for="parentTask" name="value" expr="eval: null"/>
   </action-attrs>
 
   <!-- get timeUnit value from configuration -->

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -78,4 +78,18 @@ public final class ProjectExceptionMessage {
 
   public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
       "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
+
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
+
+  public static final String PROJECT_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the project %s." /*)*/;
+
+  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
+      "Please set the default number of hours per day in the project configuration." /*)*/;
+
+  public static final String SPRINT_GENERATED = /*$$(*/ "%s sprints have been generated" /*)*/;
+
+  public static final String SPRINT_FIELDS_MISSING =
+      /*$$(*/ "Please fill all dates and the number of days in a sprint with valid values." /*)*/;
 }

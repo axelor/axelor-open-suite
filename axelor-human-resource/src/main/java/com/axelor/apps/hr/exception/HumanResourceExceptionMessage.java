@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -209,6 +209,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
   public static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
+  public static final String EXPENSE_CLOSED_PERIOD = /*$$(*/ "Period is closed" /*)*/;
   public static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/
       "Please fill the payment mode." /*)*/;
   public static final String ALREADY_INVITED_TO_RESTAURANT = /*$$(*/
@@ -402,4 +403,10 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_LINE_INVALID_DATES = /*$$(*/
       "%s date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_WRONG_START_ON_SELECT = /*$$(*/
+      "startOnSelect should be 1 for morning or 2 for afternoon." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_NONE_CREATED = /*$$(*/
+      "No leave requests were created." /*)*/;
 }

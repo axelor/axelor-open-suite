@@ -126,6 +126,16 @@
     <one-to-many name="projectCheckListItemList"
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list" mappedBy="project"/>
 
+    <many-to-many name="roadmapSet" ref="com.axelor.apps.project.db.ProjectVersion"
+      title="Project.version" mappedBy="projectSet"/>
+
+    <string name="sprintManagementSelect" title="Manage sprints"
+      selection="project.sprint.management.select" default="none"/>
+    <one-to-many name="sprintList" ref="com.axelor.apps.project.db.Sprint"
+      title="Sprints" mappedBy="project"/>
+    <many-to-one name="backlogSprint" ref="com.axelor.apps.project.db.Sprint"
+      title="Backlog sprint"/>
+
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
 
@@ -140,6 +150,11 @@
       	public static final String CUSTOM_FIELD_MANAGEMENT_PROJECT = "project";
       	public static final String CUSTOM_FIELD_MANAGEMENT_CATEGORY = "category";
       	public static final String CUSTOM_FIELD_MANAGEMENT_APP = "app";
+
+      	// SPRINT MANAGEMENT
+      	public static final String SPRINT_MANAGEMENT_NONE = "none";
+      	public static final String SPRINT_MANAGEMENT_PROJECT = "project";
+      	public static final String SPRINT_MANAGEMENT_VERSION = "version";
 
     ]]></extra-code>
 

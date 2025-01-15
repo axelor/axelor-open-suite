@@ -466,6 +466,16 @@
     <view type="form" name="sync-contact-form"/>
   </action-view>
 
+
+  <menuitem name="referential-conf-api-configuration" parent="referential-conf"
+    title="API Configuration" action="referential.conf.api.configuration" order="1700"/>
+
+  <action-view name="referential.conf.api.configuration" title="API Configuration"
+    model="com.axelor.apps.base.db.PartnerApiConfiguration">
+    <view type="grid" name="api-configuration-grid"/>
+    <view type="form" name="api-configuration-form"/>
+  </action-view>
+
   <menuitem name="referential-conf-partner-link-types" parent="referential-conf"
     if="__config__.app.getApp('base')?.activatePartnerRelations" title="Partner relations type"
     action="referential.conf.partner.link.types" order="400"/>
@@ -1099,12 +1109,28 @@
     order="1400"/>
 
   <menuitem name="admin-root-connector-mapper" title="Connector mappers"
-    action="action.admin.root.view.connector.mapper" parent="admin-root-connector" order="100"/>
+    parent="admin-root-connector" order="100"/>
 
-  <action-view name="action.admin.root.view.connector.mapper" title="Connector mappers"
-    model="com.axelor.apps.base.db.ConnectorMapper">
+  <menuitem name="admin-root-all-connector-mapper" title="All connector mappers"
+    action="action.admin.root.view.all.connector.mapper" parent="admin-root-connector-mapper"
+    order="100"/>
+
+  <action-view name="action.admin.root.view.all.connector.mapper"
+    title="All connector mappers" model="com.axelor.apps.base.db.ConnectorMapper">
     <view type="grid" name="connector-mapper-grid"/>
     <view type="form" name="connector-mapper-form"/>
+  </action-view>
+
+  <menuitem name="admin-root-company-connector-mapper" title="Connector mappers"
+    action="action.admin.root.view.company.connector.mapper" parent="admin-root-connector-mapper"
+    order="200"/>
+
+  <action-view name="action.admin.root.view.company.connector.mapper"
+    title="Connector mappers" model="com.axelor.apps.base.db.ConnectorMapper">
+    <view type="grid" name="connector-mapper-grid"/>
+    <view type="form" name="connector-mapper-form"/>
+    <domain>self.company = :_activeCompany</domain>
+    <context name="_activeCompany" expr="eval: __user__?.activeCompany"/>
   </action-view>
 
   <menuitem name="admin-root-connector-data" title="Data sharing"

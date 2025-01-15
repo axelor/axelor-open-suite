@@ -9,9 +9,6 @@
     <one-to-many name="announcementList"
       ref="com.axelor.apps.businesssupport.db.ProjectAnnouncement" title="Announcement"
       mappedBy="project"/>
-    <many-to-many name="roadmapSet"
-      ref="com.axelor.apps.businesssupport.db.ProjectVersion" title="Project.version"
-      mappedBy="projectSet"/>
   </entity>
 
 </domain-models>

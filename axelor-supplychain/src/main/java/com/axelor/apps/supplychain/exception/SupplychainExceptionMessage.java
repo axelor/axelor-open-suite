@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -398,4 +398,10 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_TIMETABLE_PERCENTAGE_ERROR = /*$$(*/
       "One of the timetables has a percentage exceeding 100%." /*)*/;
+
+  public static final String SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "Please select one freight carrier pricing line." /*)*/;
+
+  public static final String SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "More than one freight carrier pricing line selected, please select only one line." /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,10 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.FreightCarrierModeRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
@@ -53,6 +55,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.exception.MessageExceptionMessage;
@@ -814,6 +817,30 @@ public class SaleOrderController {
             isPercent
                 ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
                 : Beans.get(CurrencyScaleService.class).getScale(saleOrder));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void selectFreightCarrierPricings(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    try {
+      FreightCarrierModeRepository freightCarrierModeRepository =
+          Beans.get(FreightCarrierModeRepository.class);
+      List<FreightCarrierMode> freightCarrierModeList =
+          ((List<Map<String, Object>>) context.get("freightCarrierPricingsSet"))
+              .stream()
+                  .map(o -> Mapper.toBean(FreightCarrierMode.class, o))
+                  .filter(FreightCarrierMode::isSelected)
+                  .map(it -> freightCarrierModeRepository.find(it.getId()))
+                  .collect(Collectors.toList());
+
+      if (context.get("_id") != null) {
+        Beans.get(SaleOrderShipmentService.class)
+            .computeFreightCarrierMode(
+                freightCarrierModeList, Long.valueOf(context.get("_id").toString()));
+        response.setCanClose(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

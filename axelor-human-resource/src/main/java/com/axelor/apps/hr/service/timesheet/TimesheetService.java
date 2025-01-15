@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,14 +27,6 @@ import java.time.LocalDate;
 public interface TimesheetService {
 
   String getPeriodTotalConvertTitle(Timesheet timesheet);
-
-  /**
-   * Update {@link Timesheet#timeLoggingPreferenceSelect} and recompute all durations.
-   *
-   * @param timesheet a context timesheet
-   * @return the updated timesheet
-   */
-  void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 
   BigDecimal computePeriodTotalLeavesAndHolidays(
       Employee employee, LocalDate fromDate, LocalDate toDate, String timeUnit)

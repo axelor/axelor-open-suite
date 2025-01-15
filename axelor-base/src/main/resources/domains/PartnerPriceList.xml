@@ -12,6 +12,8 @@
     <many-to-many name="priceListSet" title="Price lists"
       ref="com.axelor.apps.base.db.PriceList"/>
     <boolean name="isExclusive" title="Exclusive" default="false"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"
+      title="PartnerPriceList.currency" required="true"/>
   </entity>
 
 </domain-models>

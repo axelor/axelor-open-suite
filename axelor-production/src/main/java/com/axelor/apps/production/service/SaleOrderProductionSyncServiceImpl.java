@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
 import java.util.Objects;
 
@@ -56,8 +57,10 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
   @Override
   public void syncSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
     Objects.requireNonNull(saleOrder);
+    AppProduction appProduction = appProductionService.getAppProduction();
 
-    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
+    if (!appProduction.getAllowPersonalizedBOM()
+        || appProduction.getIsBomLineGenerationInSODisabled()) {
       return;
     }
 

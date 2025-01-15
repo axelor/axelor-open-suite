@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,6 +107,7 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
     expense.setCompany(company);
     expense.setEmployee(employee);
     expense.setCompanyCbSelect(companyCbSelect);
+    expense.setTypeSelect(ExpenseRepository.TYPE_EXPENSE);
     setCurrency(company, currency, expense);
     setBankDetails(employee, bankDetails, expense);
     setPeriod(company, period, expense);

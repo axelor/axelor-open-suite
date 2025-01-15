@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.businessproduction.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproduction.db.repo.ManufOrderBusinessProductionManagementRepository;
+import com.axelor.apps.businessproduction.service.BusinessProjectProdOrderService;
+import com.axelor.apps.businessproduction.service.BusinessProjectProdOrderServiceImpl;
 import com.axelor.apps.businessproduction.service.CostSheetServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.InvoicingProjectServiceBusinessProdImpl;
 import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
@@ -98,5 +100,6 @@ public class BusinessProductionModule extends AxelorModule {
     bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
     bind(TimesheetLineRemoveServiceImpl.class)
         .to(TimesheetLineRemoveBusinessProductionServiceImpl.class);
+    bind(BusinessProjectProdOrderService.class).to(BusinessProjectProdOrderServiceImpl.class);
   }
 }
