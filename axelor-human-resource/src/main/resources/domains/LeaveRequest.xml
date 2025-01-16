@@ -37,6 +37,8 @@
       scale="4" precision="8"/>
     <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
     <boolean name="isPayrollInput" title="Payroll input" default="false" readonly="true"/>
+    <decimal name="leaveDaysToDate" title="Leave available to date" transient="true"
+      help="Number of days acquired at the end of the request. This takes into account the leave you earn each month, minus leave already validated."/>
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

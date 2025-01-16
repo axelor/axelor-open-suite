@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -101,4 +101,18 @@ public interface ITranslation {
 
   String API_LEAVE_REQUEST_UPDATED_NO_MAIL = /*$$(*/
       "Leave request successfully updated. An error occurred while sending the mail." /*)*/;
+
+  String API_LEAVE_REQUEST_CREATE_SUCCESS = /*$$(*/
+      "Leave request(s) have been correctly created." /*)*/;
+
+  String API_LEAVE_REQUEST_CREATE_SUCCESS_WITH_ERRORS = /*$$(*/
+      "Leave request(s) have been correctly created. Some requests were ignored as they were not correctly configured." /*)*/;
+
+  String API_LEAVE_REQUEST_COMPUTE_DURATION = /*$$(*/ "Duration computed." /*)*/;
+
+  String API_LEAVE_REQUEST_LEAVE_DAYS_TO_DATE_COMPUTATION = /*$$(*/
+      "Available leave days computed." /*)*/;
+
+  String LEAVE_REQUEST_CREATE_DURATION_ALERT = /*$$(*/
+      "You exceeded the available/asked duration. Do you wish to proceed ?" /*)*/;
 }

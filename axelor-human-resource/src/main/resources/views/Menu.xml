@@ -701,4 +701,25 @@
     <context name="_forceTimeUnit" expr="eval: true"/>
   </action-view>
 
+  <menuitem name="project-allocation-years" parent="project-configurations"
+    title="Allocation years" action="project.allocation.years" order="1700"/>
+
+  <action-view name="project.allocation.years" title="Allocation years"
+    model="com.axelor.apps.base.db.Year">
+    <view type="grid" name="year-grid"/>
+    <view type="form" name="year-hr-allocation-form"/>
+    <view-param name="search-filters" value="year-filters"/>
+    <domain>self.typeSelect = 4</domain>
+  </action-view>
+
+  <menuitem name="project-allocation-periods" parent="project-configurations"
+    title="Allocation periods" action="project.allocation.periods" order="1800"/>
+
+  <action-view name="project.allocation.periods" title="Allocation periods"
+    model="com.axelor.apps.base.db.Period">
+    <view type="grid" name="period-grid"/>
+    <view type="form" name="period-hr-allocation-form"/>
+    <domain>self.year.typeSelect = 4</domain>
+  </action-view>
+
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -54,6 +55,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
+      SaleOrderDiscountService saleOrderDiscountService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -65,6 +67,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderLineComputeService,
         saleOrderLinePackService,
         saleOrderComplementaryProductService,
+        saleOrderDiscountService,
         saleOrderSupplychainService,
         saleOrderShipmentService);
     this.appProductionService = appProductionService;
@@ -72,13 +75,14 @@ public class SaleOrderOnLineChangeProductionServiceImpl
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
-    super.onLineChange(saleOrder);
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
+    String message = super.onLineChange(saleOrder);
 
     if (appProductionService.isApp("production")
         && appSaleService.getAppSale().getListDisplayTypeSelect()
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder);
     }
+    return message;
   }
 }

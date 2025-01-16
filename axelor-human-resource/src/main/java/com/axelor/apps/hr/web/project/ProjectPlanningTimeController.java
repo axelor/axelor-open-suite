@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -44,7 +45,7 @@ public class ProjectPlanningTimeController {
       throws AxelorException {
 
     Context context = request.getContext();
-    Beans.get(ProjectPlanningTimeService.class).addMultipleProjectPlanningTime(context);
+    Beans.get(ProjectPlanningTimeCreateService.class).addMultipleProjectPlanningTime(context);
 
     response.setCanClose(true);
   }
@@ -114,9 +115,9 @@ public class ProjectPlanningTimeController {
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 
-    response.setValues(
-        Beans.get(ProjectPlanningTimeComputeService.class)
-            .computePlannedTimeValues(projectPlanningTime));
+    Beans.get(ProjectPlanningTimeComputeService.class)
+        .computePlannedTimeValues(projectPlanningTime);
+    response.setValues(projectPlanningTime);
   }
 
   public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response)
