@@ -12,7 +12,7 @@
 
   <form name="configurator-form" title="Configurator"
     model="com.axelor.apps.sale.db.Configurator">
-    <panel name="mainPanel" readonlyIf="product">
+    <panel name="mainPanel">
       <field name="product" readonly="true" showTitle="false" showIf="product" colSpan="12"
         domain="self.dtype = 'Product'">
         <viewer>
@@ -28,10 +28,11 @@
     <panel name="indicatorsPanel" readonly="true">
       <field name="indicators" colSpan="12"/>
     </panel>
-    <panel name="actionPanel" showIf="configuratorCreator.generateProduct"
-      readonlyIf="product">
+    <panel name="actionPanel" showIf="configuratorCreator.generateProduct">
       <button name="generateProductBtn" title="Generate Product"
-        onClick="save,action-configurator-generate-product"/>
+        onClick="save,action-configurator-generate-product" showIf="!product"/>
+      <button name="regenerateProductBtn" title="Regenerate Product"
+        onClick="save,action-configurator-regenerate-product" showIf="product"/>
       <field name="configuratorCreator.generateProduct" hidden="true"/>
     </panel>
   </form>
@@ -78,6 +79,10 @@
 
   <action-method name="action-configurator-generate-product">
     <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
+  </action-method>
+
+  <action-method name="action-configurator-regenerate-product">
+    <call class="com.axelor.apps.sale.web.ConfiguratorController" method="regenerateProduct"/>
   </action-method>
 
   <action-record name="action-configurator-record-fill-creator-name"
