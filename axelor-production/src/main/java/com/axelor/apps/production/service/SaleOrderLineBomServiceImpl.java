@@ -140,34 +140,6 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         }
       }
     }
-
-    var bomLines =
-        bom.getBillOfMaterialLineList().stream()
-            .filter(
-                bomLine ->
-                    bomLine
-                        .getProduct()
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-            .collect(Collectors.toList());
-    // Case where a line has been removed
-    logger.debug("Removing bom lines");
-    for (BillOfMaterialLine billOfMaterialLine : bomLines) {
-      var isInSubList =
-          saleOrderLine.getSubSaleOrderLineList().stream()
-              .map(SaleOrderLine::getBillOfMaterialLine)
-              .filter(Objects::nonNull)
-              .anyMatch(bomLine -> bomLine.equals(billOfMaterialLine));
-
-      logger.debug(
-          "Checking existence of billOfMaterialLine {} in {}",
-          billOfMaterialLine,
-          saleOrderLine.getSubSaleOrderLineList());
-      if (!isInSubList) {
-        logger.debug("BomLine does not exist, removing it");
-        bom.removeBillOfMaterialLineListItem(billOfMaterialLine);
-      }
-    }
     billOfMaterialRepository.save(bom);
     logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
   }
