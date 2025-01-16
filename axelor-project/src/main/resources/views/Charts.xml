@@ -66,4 +66,15 @@
       widget="Progress"/>
     <field name="budgetedTime" title="Budgeted time" aggregate="sum" type="String"/>
   </grid>
+
+  <grid name="project-planning-time-dashboard-grid" title="Project"
+        model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <field name="project.name" type="com.axelor.apps.project.db.Project"/>
+    <field name="employee.fullName" title="Employee"
+           type="com.axelor.apps.hr.db.Employee"/>
+    <field name="task.name" title="Priority"
+           type="com.axelor.apps.project.db.ProjectTask"/>
+    <field name="timeUnit" title="Time unit" type="String"/>
+    <field name="plannedTime" title="Planned time" aggregate="sum" type="String"/>
+  </grid>
 </object-views>
