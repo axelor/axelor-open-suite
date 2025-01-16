@@ -49,8 +49,13 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeService {
@@ -413,5 +418,49 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return projectConfigService.getProjectConfig(optCompany.get());
     }
     return null;
+  }
+
+  @Override
+  public List<ProjectPlanningTime> getProjectPlanningTimeIdList(
+      Employee employee, LocalDate fromDate, LocalDate toDate) {
+
+    return planningTimeRepo
+        .all()
+        .filter(
+            "self.project IS NOT NULL and self.project.manageTimeSpent is true "
+                + "and self.employee = :employee "
+                + "and ((self.startDateTime <= :fromDate and self.endDateTime >= :toDate) or self.startDateTime between :fromDate and :toDate or (self.endDateTime between :fromDate and :toDate))")
+        .bind("employee", employee)
+        .bind("fromDate", Optional.ofNullable(fromDate).map(LocalDate::atStartOfDay).orElse(null))
+        .bind("toDate", Optional.ofNullable(toDate).map(date -> date.atTime(23, 59)).orElse(null))
+        .fetch()
+        .stream()
+        .filter(
+            distinctByTask(
+                (it ->
+                    new ProjectPlanningTimeObj(it.getProject(), it.getProjectTask()).toString())))
+        .collect(Collectors.toList());
+  }
+
+  public static <T> Predicate<T> distinctByTask(Function<? super T, ?> keyExtractor) {
+    Set<Object> seen = Collections.synchronizedSet(new HashSet<>());
+    return t -> seen.add(keyExtractor.apply(t));
+  }
+
+  static class ProjectPlanningTimeObj {
+    String project;
+    String projectTask;
+
+    ProjectPlanningTimeObj(Project project, ProjectTask projectTask) {
+      this.project =
+          Optional.ofNullable(project).map(Project::getId).map(String::valueOf).orElse("");
+      this.projectTask =
+          Optional.ofNullable(projectTask).map(ProjectTask::getId).map(String::valueOf).orElse("");
+    }
+
+    @Override
+    public String toString() {
+      return "ProjectPlanningTime{project='" + project + "', projectTask=" + projectTask + '}';
+    }
   }
 }
