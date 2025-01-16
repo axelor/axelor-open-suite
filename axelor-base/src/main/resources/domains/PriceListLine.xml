@@ -40,7 +40,7 @@
 				public static final int ANOMALY_UNAVAILABLE_FOR_PURCHASE = 3;
 
 				// DISCOUNTED AMOUNT AND PRICE SCALE
-                public static final int DISCOUNT_SCALE = 20;
+				public static final int DISCOUNT_SCALE = 20;
 			]]>
     </extra-code>
   </entity>
