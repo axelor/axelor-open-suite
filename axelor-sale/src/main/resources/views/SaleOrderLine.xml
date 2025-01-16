@@ -69,6 +69,9 @@
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
       readonlyIf="!product || typeSelect != 0"/>
+    <field name="productTypeIconSelect" title="" widget="ImageSelect" width="45"
+      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+      readonly="true"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
     <field name="product" canEdit="false" x-image-field="picture"
       onChange="action-sale-order-line-method-get-product-information"
