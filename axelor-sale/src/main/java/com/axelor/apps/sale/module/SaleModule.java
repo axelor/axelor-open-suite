@@ -80,6 +80,8 @@ import com.axelor.apps.sale.service.cartline.CartLineUpdateService;
 import com.axelor.apps.sale.service.cartline.CartLineUpdateServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
@@ -90,6 +92,8 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorInitService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorInitServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderLineService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.observer.ProductPopulateSaleObserver;
@@ -315,5 +319,7 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderComplementaryProductService.class)
         .to(SaleOrderComplementaryProductServiceImpl.class);
     bind(SaleOrderDiscountService.class).to(SaleOrderDiscountServiceImpl.class);
+    bind(ConfiguratorCheckService.class).to(ConfiguratorCheckServiceImpl.class);
+    bind(ConfiguratorSaleOrderLineService.class).to(ConfiguratorSaleOrderLineServiceImpl.class);
   }
 }

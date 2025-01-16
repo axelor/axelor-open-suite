@@ -30,11 +30,15 @@
     </panel>
     <panel name="actionPanel" showIf="configuratorCreator.generateProduct">
       <button name="generateProductBtn" title="Generate Product"
-        onClick="save,action-configurator-generate-product" showIf="!product"/>
+        onClick="save,action-configurator-generate-product" showIf="!product &amp;&amp; !_saleOrderId"/>
       <button name="regenerateProductBtn" title="Regenerate Product"
-        onClick="save,action-configurator-regenerate-product" showIf="product"/>
+        onClick="save,action-configurator-regenerate-product" showIf="product &amp;&amp; !_saleOrderId"/>
+      <button name="regenerateLineBtn" title="Regenerate line"
+              onClick="save,action-configurator-regenerate-line-for-sale-order" showIf="!product &amp;&amp; _saleOrderId"/>
       <field name="configuratorCreator.generateProduct" hidden="true"/>
+      <field name="_saleOrderId" hidden="true"/>
     </panel>
+
   </form>
 
   <form name="generate-configurator-form" model="com.axelor.apps.sale.db.Configurator"
@@ -81,6 +85,10 @@
     <call class="com.axelor.apps.sale.web.ConfiguratorController" method="generateProduct"/>
   </action-method>
 
+  <action-method name="action-configurator-regenerate-line-for-sale-order">
+    <call class="com.axelor.apps.sale.web.ConfiguratorController" method="regenerateForSaleOrder"/>
+  </action-method>
+
   <action-method name="action-configurator-regenerate-product">
     <call class="com.axelor.apps.sale.web.ConfiguratorController" method="regenerateProduct"/>
   </action-method>
@@ -107,5 +115,7 @@
     <attribute name="hidden" for="mainPanel" expr="true"/>
     <attribute name="title" for="generate-configurator-form" expr="configuratorCreator"/>
   </action-attrs>
+
+
 
 </object-views>

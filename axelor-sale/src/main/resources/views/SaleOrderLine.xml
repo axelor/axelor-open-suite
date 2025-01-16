@@ -769,4 +769,15 @@
       expr="eval: &quot;self.id IN (${(__parent__?.clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 
+
+  <action-view name="action-sale-order-line-view-regenerate-line" title="Regenerate line"
+               model="com.axelor.apps.sale.db.Configurator">
+    <view type="form" name="configurator-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_saleOrderId" expr="eval: saleOrder.id"/>
+    <context name="_showRecord" expr="eval: configurator.id"/>
+  </action-view>
 </object-views>

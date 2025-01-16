@@ -150,6 +150,24 @@ public class ConfiguratorController {
     }
   }
 
+  public void regenerateForSaleOrder(ActionRequest request, ActionResponse response) {
+    Configurator configurator = request.getContext().asType(Configurator.class);
+    long saleOrderId = getSaleOrderId(request.getContext());
+
+    JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
+    JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
+
+    configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
+    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
+    try {
+      Beans.get(ConfiguratorService.class)
+              .regenerateSaleOrderLine(configurator, saleOrder, jsonAttributes, jsonIndicators);
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Called from configurator view on selecting {@link Configurator#configuratorCreator}.
    *

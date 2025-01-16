@@ -86,22 +86,24 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLineGeneratorService saleOrderLineGeneratorService;
   protected SaleOrderRepository saleOrderRepository;
+  protected final ConfiguratorCheckService configuratorCheckService;
+  protected final ConfiguratorSaleOrderLineService configuratorSaleOrderLineService;
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public ConfiguratorServiceImpl(
-      AppBaseService appBaseService,
-      ConfiguratorFormulaService configuratorFormulaService,
-      ProductRepository productRepository,
-      SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderComputeService saleOrderComputeService,
-      MetaFieldRepository metaFieldRepository,
-      ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderLineComputeService saleOrderLineComputeService,
-      SaleOrderLineGeneratorService saleOrderLineGeneratorService,
-      SaleOrderRepository saleOrderRepository) {
+          AppBaseService appBaseService,
+          ConfiguratorFormulaService configuratorFormulaService,
+          ProductRepository productRepository,
+          SaleOrderLineRepository saleOrderLineRepository,
+          SaleOrderComputeService saleOrderComputeService,
+          MetaFieldRepository metaFieldRepository,
+          ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService,
+          SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+          SaleOrderLineComputeService saleOrderLineComputeService,
+          SaleOrderLineGeneratorService saleOrderLineGeneratorService,
+          SaleOrderRepository saleOrderRepository, ConfiguratorCheckService configuratorCheckService, ConfiguratorSaleOrderLineService configuratorSaleOrderLineService) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;
@@ -113,6 +115,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLineGeneratorService = saleOrderLineGeneratorService;
     this.saleOrderRepository = saleOrderRepository;
+      this.configuratorCheckService = configuratorCheckService;
+      this.configuratorSaleOrderLineService = configuratorSaleOrderLineService;
   }
 
   @Override
@@ -238,6 +242,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       JsonContext jsonIndicators,
       Long saleOrderId)
       throws AxelorException {
+
+    configuratorCheckService.checkLinkedSaleOrderLine(configurator, product);
+
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
 
     cleanIndicators(jsonIndicators);
@@ -270,6 +277,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
 
     productRepository.save(product);
+    configuratorSaleOrderLineService.regenerateSaleOrderLines(configurator, product);
+
   }
 
   protected void setValue(Product product, String fieldName, Object value) throws AxelorException {
@@ -297,24 +306,58 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (configurator.getConfiguratorCreator().getGenerateProduct()) {
       // generate sale order line from product
       generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrder.getId());
-      String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
-      BigDecimal qty = BigDecimal.ONE;
-      if (qtyFormula != null && !"".equals(qtyFormula)) {
-        Object result = computeFormula(qtyFormula, jsonAttributes);
-        if (result != null) {
-          qty = new BigDecimal(result.toString());
-        }
-      }
+      BigDecimal qty = getFormulaQty(configurator, jsonAttributes);
 
       saleOrderLine =
           saleOrderLineGeneratorService.createSaleOrderLine(
               saleOrder, configurator.getProduct(), qty);
-      saleOrderLineRepository.save(saleOrderLine);
+
     } else {
-      generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+      saleOrderLine =
+          generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
+    saleOrderLine.setConfigurator(configurator);
+    saleOrderLineRepository.save(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
+  }
+
+  protected BigDecimal getFormulaQty(Configurator configurator, JsonContext jsonAttributes) {
+    String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
+    BigDecimal qty = BigDecimal.ONE;
+    if (qtyFormula != null && !"".equals(qtyFormula)) {
+      Object result = computeFormula(qtyFormula, jsonAttributes);
+      if (result != null) {
+        qty = new BigDecimal(result.toString());
+      }
+    }
+    return qty;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void regenerateSaleOrderLine(Configurator configurator,
+                                      SaleOrder saleOrder,
+                                      JsonContext jsonAttributes,
+                                      JsonContext jsonIndicators) throws AxelorException {
+
+    //Product has been generated with configurator
+    if (configurator.getConfiguratorCreator().getGenerateProduct()) {
+
+      var product = configurator.getProduct();
+      //Editing the product will automatically regenerate lines and remove old line
+      fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
+
+    } else {
+       var newSaleOrderLine =
+              generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+       newSaleOrderLine.setConfigurator(configurator);
+       //saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+      saleOrderLineRepository.save(newSaleOrderLine);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderRepository.save(saleOrder);
+    }
+
   }
 
   /**
