@@ -30,4 +30,6 @@ public interface SprintService {
   void generateBacklogSprint(ProjectVersion projectVersion);
 
   List<Sprint> getSprintToDisplay(Project project);
+
+  String getSprintIdsToExclude(List<Sprint> sprintList);
 }

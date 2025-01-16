@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -35,10 +36,12 @@ import java.util.stream.Collectors;
 public class SprintServiceImpl implements SprintService {
 
   protected AppBaseService appBaseService;
+  protected SprintRepository sprintRepository;
 
   @Inject
-  public SprintServiceImpl(AppBaseService appBaseService) {
+  public SprintServiceImpl(AppBaseService appBaseService, SprintRepository sprintRepository) {
     this.appBaseService = appBaseService;
+    this.sprintRepository = sprintRepository;
   }
 
   @Override
@@ -83,6 +86,22 @@ public class SprintServiceImpl implements SprintService {
     }
 
     return sprintList;
+  }
+
+  @Override
+  public String getSprintIdsToExclude(List<Sprint> sprintList) {
+    String sprintIdsStr =
+        sprintList.stream()
+            .map(Sprint::getId)
+            .map(Object::toString)
+            .collect(Collectors.joining(","));
+    return sprintRepository
+        .all()
+        .filter(String.format("self.id NOT IN (%s)", sprintIdsStr))
+        .fetchStream()
+        .map(Sprint::getId)
+        .map(Object::toString)
+        .collect(Collectors.joining(","));
   }
 
   protected List<Sprint> filterSprintsWithCurrentDate(List<Sprint> sprintList, Company company) {

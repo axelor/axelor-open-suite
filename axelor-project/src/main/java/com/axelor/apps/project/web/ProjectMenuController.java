@@ -24,7 +24,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.apps.project.service.roadmap.SprintService;
@@ -39,7 +38,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ProjectMenuController {
 
@@ -109,31 +107,19 @@ public class ProjectMenuController {
   }
 
   public void viewTasksPerSprint(ActionRequest request, ActionResponse response) {
-
     Project project = request.getContext().asType(Project.class);
-    ActionView.ActionViewBuilder actionViewBuilder =
-        ActionView.define(I18n.get("Tasks per sprint"));
-
-    List<Sprint> sprintList = Beans.get(SprintService.class).getSprintToDisplay(project);
+    SprintService sprintService = Beans.get(SprintService.class);
+    List<Sprint> sprintList = sprintService.getSprintToDisplay(project);
 
     if (ObjectUtils.notEmpty(sprintList)) {
-      String sprintIdsStr =
-          sprintList.stream()
-              .map(Sprint::getId)
-              .map(Object::toString)
-              .collect(Collectors.joining(","));
+      String sprintIdsToExclude = sprintService.getSprintIdsToExclude(sprintList);
 
+      ActionView.ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get("Tasks per sprint"));
       actionViewBuilder.model(ProjectTask.class.getName());
       actionViewBuilder.add("kanban", "project-task-sprint-kanban");
       actionViewBuilder.add("form", "project-task-form");
-      actionViewBuilder.param(
-          "kanban-hide-columns",
-          Beans.get(SprintRepository.class)
-              .all()
-              .filter(String.format("self.id NOT IN (%s)", sprintIdsStr))
-              .fetchStream()
-              .map(sprint -> String.valueOf(sprint.getId()))
-              .collect(Collectors.joining(",")));
+      actionViewBuilder.param("kanban-hide-columns", sprintIdsToExclude);
       actionViewBuilder.domain("self.project.id = :_projectId");
       actionViewBuilder.context("_projectId", project.getId());
 
