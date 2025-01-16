@@ -160,32 +160,37 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
 
   protected Map<String, Object> setProductIconType(SaleOrderLine saleOrderLine, Product product) {
     Map<String, Object> map = new HashMap<>();
+    String iconTypeSelect = getIconTypeSelect(product);
+
+    if (!iconTypeSelect.isEmpty()) {
+      saleOrderLine.setProductTypeIconSelect(iconTypeSelect);
+      map.put("productTypeIconSelect", iconTypeSelect);
+    }
+    return map;
+  }
+
+  protected String getIconTypeSelect(Product product) {
     if (product != null) {
       if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())) {
-        saleOrderLine.setProductTypeIconSelect(
-            SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SERVICE);
-        map.put("productTypeIconSelect", saleOrderLine.getProductTypeIconSelect());
-        return map;
-      }
-
-      switch (product.getProductSubTypeSelect()) {
-        case ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT:
-          saleOrderLine.setProductTypeIconSelect(
-              SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_FINISHED_PRODUCT);
-          break;
-        case ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT:
-          saleOrderLine.setProductTypeIconSelect(
-              SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SEMI_FINISH_PRODUCT);
-          break;
-        case ProductRepository.PRODUCT_SUB_TYPE_COMPONENT:
-          saleOrderLine.setProductTypeIconSelect(
-              SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_COMPONENT);
-          break;
-        default:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SERVICE;
+      } else {
+        return getIconTypeSelect(product.getProductSubTypeSelect());
       }
     }
-    map.put("productTypeIconSelect", saleOrderLine.getProductTypeIconSelect());
-    return map;
+    return "";
+  }
+
+  protected String getIconTypeSelect(int productSubTypeSelect) {
+    switch (productSubTypeSelect) {
+      case ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_FINISHED_PRODUCT;
+      case ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SEMI_FINISH_PRODUCT;
+      case ProductRepository.PRODUCT_SUB_TYPE_COMPONENT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_COMPONENT;
+      default:
+        return "";
+    }
   }
 
   protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
