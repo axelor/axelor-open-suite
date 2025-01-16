@@ -7,8 +7,9 @@
     title="Project" model="com.axelor.apps.project.db.Project" extension="true">
     <extend target="//panel[@name='sprintPanel']">
       <insert position="after">
-        <panel-dashlet name="allocationLinePanel" title="Allocation lines" height="200%"
-          x-show-bars="true" action="action-project-view-related-allocation-lines" colSpan="12"/>
+        <panel-dashlet name="allocationLinePanel" title="Allocation lines"
+          height="200%" x-show-bars="true" action="action-project-view-related-allocation-lines"
+          colSpan="12"/>
       </insert>
     </extend>
   </form>

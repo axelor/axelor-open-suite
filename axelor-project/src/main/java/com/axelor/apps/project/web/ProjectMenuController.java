@@ -31,14 +31,12 @@ import com.axelor.apps.project.service.roadmap.SprintService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -119,11 +117,11 @@ public class ProjectMenuController {
     List<Sprint> sprintList = Beans.get(SprintService.class).getSprintToDisplay(project);
 
     if (ObjectUtils.notEmpty(sprintList)) {
-    String sprintIdsStr =
-            sprintList.stream()
-            .map(Sprint::getId)
-            .map(Object::toString)
-            .collect(Collectors.joining(","));
+      String sprintIdsStr =
+          sprintList.stream()
+              .map(Sprint::getId)
+              .map(Object::toString)
+              .collect(Collectors.joining(","));
 
       actionViewBuilder.model(ProjectTask.class.getName());
       actionViewBuilder.add("kanban", "project-task-sprint-kanban");

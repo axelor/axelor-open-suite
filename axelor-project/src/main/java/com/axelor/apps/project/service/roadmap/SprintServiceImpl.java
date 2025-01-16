@@ -56,7 +56,12 @@ public class SprintServiceImpl implements SprintService {
   @Override
   public List<Sprint> getSprintToDisplay(Project project) {
     List<Sprint> sprintList = new ArrayList<>();
-    if (project.getBacklogSprint() != null){
+    if (Objects.equals(
+        ProjectRepository.SPRINT_MANAGEMENT_NONE, project.getSprintManagementSelect())) {
+      return sprintList;
+    }
+
+    if (project.getBacklogSprint() != null) {
       sprintList.add(project.getBacklogSprint());
     }
 
