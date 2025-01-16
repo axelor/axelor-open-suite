@@ -412,6 +412,7 @@
 "Expense payment","Paiement de note de frais",,
 "Expense report template","Modèle rapport note de frais",,
 "Expense successfully updated.","Mise à jour réussie de la note de frais.",,
+"Expense successfully updated. An error occurred while sending the mail.","Mise à jour réussie de la note de frais. Une erreur s'est produite lors de l'envoi de mail.",,
 "Expense tax account","Compte de taxe",,
 "Expense type","Type de frais",,
 "Expense types","Types de frais",,
