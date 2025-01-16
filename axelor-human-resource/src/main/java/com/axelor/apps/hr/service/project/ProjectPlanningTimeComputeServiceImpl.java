@@ -31,8 +31,6 @@ import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTimeComputeService {
@@ -58,15 +56,14 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
   }
 
   @Override
-  public Map<String, Object> computePlannedTimeValues(ProjectPlanningTime projectPlanningTime)
+  public void computePlannedTimeValues(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
-    Map<String, Object> valuesMap = new HashMap<>();
     if (projectPlanningTime == null) {
-      return valuesMap;
+      return;
     }
+
     projectPlanningTime.setPlannedTime(
         projectPlanningTimeService.computePlannedTime(projectPlanningTime));
-    valuesMap.put("plannedTime", projectPlanningTime.getPlannedTime());
 
     Project project = getProject(projectPlanningTime);
     Company company = Optional.ofNullable(project).map(Project::getCompany).orElse(null);
@@ -74,23 +71,19 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
     if (company != null
         && projectConfigService.getProjectConfig(company).getIsSelectionOnDisplayPlannedTime()) {
       if (projectPlanningTime.getDisplayPlannedTimeRestricted() != null) {
-        valuesMap.put(
-            "displayPlannedTime",
+        projectPlanningTime.setDisplayPlannedTime(
             Optional.of(projectPlanningTime)
                 .map(ProjectPlanningTime::getDisplayPlannedTimeRestricted)
                 .map(PlannedTimeValue::getPlannedTime)
                 .orElse(BigDecimal.ZERO));
       }
     } else {
-      valuesMap.put(
-          "displayPlannedTimeRestricted",
+      projectPlanningTime.setDisplayPlannedTimeRestricted(
           plannedTimeValueService.createPlannedTimeValue(
               projectPlanningTime.getDisplayPlannedTime()));
     }
 
-    valuesMap.put("endDateTime", computeEndDateTime(projectPlanningTime, project));
-
-    return valuesMap;
+    projectPlanningTime.setEndDateTime(computeEndDateTime(projectPlanningTime, project));
   }
 
   protected Project getProject(ProjectPlanningTime projectPlanningTime) {
@@ -106,8 +99,9 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
     return project;
   }
 
-  protected LocalDateTime computeEndDateTime(
-      ProjectPlanningTime projectPlanningTime, Project project) throws AxelorException {
+  @Override
+  public LocalDateTime computeEndDateTime(ProjectPlanningTime projectPlanningTime, Project project)
+      throws AxelorException {
     if (projectPlanningTime == null || projectPlanningTime.getStartDateTime() == null) {
       return null;
     }
