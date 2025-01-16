@@ -21,7 +21,7 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.SprintService;
+import com.axelor.apps.project.service.roadmap.SprintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
