@@ -21,6 +21,9 @@
     <field name="unit" showIf="typeSelect == 1"/>
     <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="description"/>
+    <button name="openWorkCenterBtn"
+      onClick="action-sale-order-line-details-view-open-prod-process-line"
+      readonlyIf="typeSelect != 2" icon="fa-hammer"/>
   </grid>
 
   <grid name="sale-order-line-details-readonly-grid" title="Sale order lines details"
@@ -35,6 +38,9 @@
     <field name="unit" showIf="typeSelect == 1"/>
     <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="description"/>
+    <button name="openWorkCenterBtn"
+      onClick="action-sale-order-line-details-view-open-prod-process-line"
+      readonlyIf="typeSelect != 2" icon="fa-hammer"/>
   </grid>
 
   <form name="sale-order-line-details-form" title="Sale order line details"
@@ -114,5 +120,14 @@
     <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
       method="productOnChange"/>
   </action-method>
+
+  <action-view name="action-sale-order-line-details-view-open-prod-process-line"
+    title="Production process line" model="com.axelor.apps.production.db.ProdProcessLine">
+    <view type="form" name="prod-process-line-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: prodProcessLine.id"/>
+  </action-view>
 
 </object-views>
