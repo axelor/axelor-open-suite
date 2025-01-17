@@ -278,6 +278,10 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     saleOrder.setInvoicedPartner(invoicedPartner);
     saleOrder.setDeliveredPartner(deliveredPartner);
 
+    if (invoicedPartner != null) {
+      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(invoicedPartner));
+    }
+
     if (saleOrder.getPaymentMode() == null) {
       saleOrder.setPaymentMode(
           this.accountConfigService.getAccountConfig(company).getInPaymentMode());
