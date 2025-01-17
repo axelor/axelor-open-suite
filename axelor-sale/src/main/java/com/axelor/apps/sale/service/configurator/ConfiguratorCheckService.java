@@ -6,5 +6,7 @@ import com.axelor.apps.sale.db.Configurator;
 
 public interface ConfiguratorCheckService {
 
-    void checkLinkedSaleOrderLine(Configurator configurator, Product product) throws AxelorException;
+  void checkLinkedSaleOrderLine(Configurator configurator, Product product) throws AxelorException;
+
+  void checkLinkedSaleOrderLine(Configurator configurator) throws AxelorException;
 }

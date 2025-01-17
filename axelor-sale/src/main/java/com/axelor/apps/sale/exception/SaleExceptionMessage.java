@@ -168,5 +168,5 @@ public final class SaleExceptionMessage {
       "No order line needs to be generated for this cart." /*)*/;
 
   public static final String CONFIGURATOR_CAN_NOT_REGENERATE_PRODUCT = /*$$(*/
-          "Product can not be regenerated because delivered sale order lines are using it." /*)*/;
+      "Product can not be regenerated because validated sale order lines are using it." /*)*/;
 }
