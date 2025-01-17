@@ -20,7 +20,7 @@
       width="51"/>
     <button name="configuratorEditBtn" onClick="action-sale-order-line-view-regenerate-line"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-suitcase"/>
+      icon="fa-pen-to-square"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -73,7 +73,7 @@
       width="51"/>
     <button name="configuratorEditBtn" onClick="action-sale-order-line-view-regenerate-line"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-suitcase"/>
+      icon="fa-pen-to-square"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
