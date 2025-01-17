@@ -41,6 +41,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -50,6 +51,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.collections.CollectionUtils;
 
 @Path("/aos/expense")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -102,12 +104,14 @@ public class ExpenseRestController {
   public Response addLinesToExpense(
       @PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
       throws AxelorException {
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> lineIds = requestBody.getExpenseLineIdList();
+    if (CollectionUtils.isNotEmpty(lineIds)) {
+      Long[] linesId = requestBody.getExpenseLineIdList().toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(ExpenseLine.class, linesId);
+    }
+    securityCheck.writeAccess(Expense.class, expenseId).check();
     RequestValidator.validateBody(requestBody);
-    Long[] lineIds = requestBody.getExpenseLineIdList().toArray(new Long[0]);
-    new SecurityCheck()
-        .writeAccess(Expense.class, expenseId)
-        .readAccess(ExpenseLine.class, lineIds)
-        .check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
     Beans.get(ExpenseToolService.class)
