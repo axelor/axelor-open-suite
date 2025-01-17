@@ -61,7 +61,7 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -117,6 +117,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected TaxService taxService;
+  protected UserService userService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -141,7 +142,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       CompanyConfigService companyConfigService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      TaxService taxService) {
+      TaxService taxService,
+      UserService userService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -164,6 +166,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.taxService = taxService;
+    this.userService = userService;
   }
 
   /**
@@ -410,7 +413,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void checkClosurePeriod(Move move) throws AxelorException {
 
-    if (!periodCheckService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser())) {
+    if (!periodCheckService.isAuthorizedToAccountOnPeriod(move, userService.getUser())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED));
@@ -678,7 +681,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     if (moveIds == null) {
       return errors;
     }
-    User user = AuthUtils.getUser();
+    User user = userService.getUser();
     int i = 0;
     for (Integer moveId : moveIds) {
       Move move = moveRepository.find(moveId.longValue());
@@ -936,7 +939,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     if (!UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
-        AuthUtils.getUser(), move.getJournal().getAuthorizedRoleSet())) {
+        userService.getUser(), move.getJournal().getAuthorizedRoleSet())) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
