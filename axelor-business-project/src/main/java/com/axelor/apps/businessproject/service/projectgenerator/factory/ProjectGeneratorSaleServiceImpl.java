@@ -19,46 +19,47 @@
 package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDateTime;
 
-public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
+public class ProjectGeneratorSaleServiceImpl implements ProjectGeneratorSaleService {
 
   protected ProjectBusinessService projectBusinessService;
   protected ProjectRepository projectRepository;
   protected SequenceService sequenceService;
   protected AppProjectService appProjectService;
+  protected ProjectService projectService;
 
   @Inject
-  public ProjectGeneratorFactoryAlone(
+  public ProjectGeneratorSaleServiceImpl(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
       SequenceService sequenceService,
-      AppProjectService appProjectService) {
+      AppProjectService appProjectService,
+      ProjectService projectService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.sequenceService = sequenceService;
     this.appProjectService = appProjectService;
+    this.projectService = projectService;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public Project create(SaleOrder saleOrder) throws AxelorException {
-    Project project = projectBusinessService.generateProject(saleOrder);
+  public Project create(SaleOrder saleOrder, ProjectTemplate projectTemplate)
+      throws AxelorException {
+    Project project = generateProject(saleOrder, projectTemplate);
+
     project.setIsBusinessProject(true);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       saleOrderLine.setProject(project);
@@ -73,11 +74,26 @@ public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
     return projectRepository.save(project);
   }
 
-  @Override
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime localDateTime)
+  protected Project generateProject(SaleOrder saleOrder, ProjectTemplate projectTemplate)
       throws AxelorException {
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(BusinessProjectExceptionMessage.FACTORY_FILL_WITH_PROJECT_ALONE));
+    Project project = null;
+    if (saleOrder == null) {
+      return project;
+    }
+
+    if (projectTemplate == null) {
+      project = projectBusinessService.generateProject(saleOrder);
+    } else {
+      String projectCode = saleOrder.getFullName() + "_project";
+      project = projectRepository.findByName(projectCode);
+      if (project == null) {
+        project =
+            projectService.createProjectFromTemplate(
+                projectTemplate, projectCode, saleOrder.getClientPartner());
+        project.setAssignedTo(saleOrder.getSalespersonUser());
+      }
+    }
+
+    return project;
   }
 }
