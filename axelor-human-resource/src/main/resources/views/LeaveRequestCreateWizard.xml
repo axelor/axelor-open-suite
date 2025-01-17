@@ -22,11 +22,15 @@
     <panel-related name="leaveReasonPanel" field="$leaveReasonList"
       form-view="leave-reason-duration-form" grid-view="leave-reason-duration-grid"
       title="Leave reasons" colSpan="12" type="one-to-many" target="com.axelor.apps.base.db.Wizard"
-      editable="true" onChange="action-leave-request-create-wizard-method-check-duration"
+      editable="true" onChange="action-leave-request-create-wizard-method-compute-total-duration"
       readonlyIf="!fromDate || !toDate || !startOnSelect || !endOnSelect" required="true"/>
+    <panel name="durationPanel">
+      <field name="$totalDuration" title="Total duration" type="decimal"
+        hideIf="!$leaveReasonList || $leaveReasonList.length == 0" readonly="true"/>
+    </panel>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="createLeaveRequestBtn" title="Create leave requests"
-        onClick="action-leave-request-create-wizard-method-create-leave-request"
+        onClick="action-leave-request-create-wizard-create-btn-group"
         readonlyIf="!$leaveReasonList || $leaveReasonList.length == 0"/>
     </panel>
   </form>
@@ -84,6 +88,11 @@
       message="Invalid dates"/>
   </action-validate>
 
+  <action-group name="action-leave-request-create-wizard-create-btn-group">
+    <action name="action-leave-request-create-wizard-method-check-duration"/>
+    <action name="action-leave-request-create-wizard-method-create-leave-request"/>
+  </action-group>
+
   <action-method name="action-leave-request-create-wizard-method-create-leave-request">
     <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController" method="create"/>
   </action-method>
@@ -102,6 +111,12 @@
     name="action-leave-request-create-wizard-method-leave-reason-onchange">
     <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
       method="leaveReasonOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-leave-request-create-wizard-method-compute-total-duration">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="computeTotalDuration"/>
   </action-method>
 
   <action-method

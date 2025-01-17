@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.Model;
@@ -72,6 +73,14 @@ public interface ConfiguratorService {
           JSONException,
           ClassNotFoundException,
           AxelorException;
+
+  void fillProductFields(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException;
 
   /**
    * Generate a product, then generate a sale order line with the created product, then add this

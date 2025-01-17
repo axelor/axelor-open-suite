@@ -22,11 +22,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.PurchaseRequestLine;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
+import com.axelor.apps.purchase.rest.dto.PurchaseRequestLineRequest;
 import com.axelor.apps.purchase.rest.dto.PurchaseRequestPostRequest;
 import com.axelor.apps.purchase.rest.dto.PurchaseRequestResponse;
+import com.axelor.apps.purchase.service.PurchaseRequestLineService;
 import com.axelor.apps.purchase.service.PurchaseRequestRestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.purchase.translation.ITranslation;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -163,5 +166,43 @@ public class PurchaseRequestRestController {
 
     return ResponseConstructor.buildCreateResponse(
         purchaseRequest, new PurchaseRequestResponse(purchaseRequest));
+  }
+
+  @Operation(
+      summary = "Create purchase request line",
+      tags = {"Create line"})
+  @Path("/add-line/{id}")
+  @PUT
+  @HttpExceptionHandler
+  public Response createPurchaseRequestLine(
+      @PathParam("id") Long purchaseRequestId, PurchaseRequestLineRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .createAccess(PurchaseRequestLine.class)
+        .writeAccess(PurchaseRequest.class, purchaseRequestId)
+        .check();
+
+    if (requestBody.fetchProduct() == null && StringUtils.isEmpty(requestBody.getProductTitle())) {
+      return ResponseConstructor.build(
+          Response.Status.BAD_REQUEST,
+          I18n.get(ITranslation.MISSING_PRODUCT_INFORMATION_FOR_PURCHASE_REQUEST_LINE));
+    }
+
+    PurchaseRequest purchaseRequest =
+        ObjectFinder.find(PurchaseRequest.class, purchaseRequestId, requestBody.getVersion());
+
+    Beans.get(PurchaseRequestLineService.class)
+        .createPurchaseRequestLine(
+            purchaseRequest,
+            requestBody.fetchProduct(),
+            requestBody.getProductTitle(),
+            requestBody.fetchUnit(),
+            requestBody.getQuantity());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
+        new PurchaseRequestResponse(purchaseRequest));
   }
 }

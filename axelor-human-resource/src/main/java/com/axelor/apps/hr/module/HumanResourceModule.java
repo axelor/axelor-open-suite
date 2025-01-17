@@ -33,6 +33,8 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationServiceI
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
+import com.axelor.apps.hr.db.repo.AllocationLineManagementRepository;
+import com.axelor.apps.hr.db.repo.AllocationLineRepository;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractHRRepository;
@@ -59,8 +61,6 @@ import com.axelor.apps.hr.db.repo.UserHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.rest.LeaveRequestCreateRestService;
 import com.axelor.apps.hr.rest.LeaveRequestCreateRestServiceImpl;
-import com.axelor.apps.hr.service.AllocationLineService;
-import com.axelor.apps.hr.service.AllocationLineServiceImpl;
 import com.axelor.apps.hr.service.BankCardService;
 import com.axelor.apps.hr.service.BankCardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
@@ -85,6 +85,10 @@ import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.UnitConversionForProjectServiceImpl;
 import com.axelor.apps.hr.service.WorkingDayService;
 import com.axelor.apps.hr.service.WorkingDayServiceImpl;
+import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
+import com.axelor.apps.hr.service.allocation.AllocationLineComputeServiceImpl;
+import com.axelor.apps.hr.service.allocation.AllocationLineService;
+import com.axelor.apps.hr.service.allocation.AllocationLineServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -150,6 +154,8 @@ import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
@@ -229,6 +235,8 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
@@ -440,6 +448,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExtraHoursDomainService.class).to(ExtraHoursDomainServiceImpl.class);
     bind(TaskTemplateServiceImpl.class).to(TaskTemplateHrServiceImpl.class);
     bind(TimesheetAttrsService.class).to(TimesheetAttrsServiceImpl.class);
+    bind(ProjectPlanningTimeCreateService.class).to(ProjectPlanningTimeCreateServiceImpl.class);
     bind(LeaveRequestCreateHelperService.class).to(LeaveRequestCreateHelperServiceImpl.class);
     bind(LeaveRequestCreateHelperDurationService.class)
         .to(LeaveRequestCreateHelperDurationServiceImpl.class);
@@ -451,6 +460,9 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestCreateRestService.class).to(LeaveRequestCreateRestServiceImpl.class);
     bind(AllocationLineService.class).to(AllocationLineServiceImpl.class);
     bind(LeaveReasonDomainService.class).to(LeaveReasonDomainServiceImpl.class);
+    bind(ExpenseWorkflowService.class).to(ExpenseWorkflowServiceImpl.class);
+    bind(AllocationLineRepository.class).to(AllocationLineManagementRepository.class);
+    bind(AllocationLineComputeService.class).to(AllocationLineComputeServiceImpl.class);
     bind(EmployeeComputeAvailableLeaveService.class)
         .to(EmployeeComputeAvailableLeaveServiceImpl.class);
   }

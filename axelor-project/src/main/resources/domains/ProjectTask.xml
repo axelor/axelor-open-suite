@@ -89,6 +89,8 @@
     <string name="projectJson" title="Project json" json="true"/>
     <string name="categoryJson" title="Category json" json="true"/>
 
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
     <one-to-many name="projectCheckListItemList"
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
       mappedBy="projectTask"/>

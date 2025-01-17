@@ -5,19 +5,31 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessProjectServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.google.inject.Inject;
 
 public class TaskTemplateBusinessSupportServiceImpl extends TaskTemplateBusinessProjectServiceImpl {
 
   @Inject
   public TaskTemplateBusinessSupportServiceImpl(
-      ProductCompanyService productCompanyService,
+      ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
       AppBaseService appBaseService,
+      ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      ProductCompanyService productCompanyService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
-    super(productCompanyService, appBaseService, projectTaskBusinessProjectService);
+    super(
+        projectPlanningTimeCreateService,
+        appBaseService,
+        projectPlanningTimeComputeService,
+        projectPlanningTimeRepository,
+        productCompanyService,
+        projectTaskBusinessProjectService);
   }
 
   @Override

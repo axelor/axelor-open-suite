@@ -16,23 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service;
+package com.axelor.apps.project.service;
 
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
-import java.math.BigDecimal;
-import java.util.List;
+import com.axelor.apps.project.db.ProjectVersion;
+import com.axelor.apps.project.db.Sprint;
+import com.google.inject.Inject;
 
-public interface AllocationLineService {
+public class SprintServiceImpl implements SprintService {
 
-  String getEmployeeDomain(Project project);
+  @Inject
+  public SprintServiceImpl() {}
 
-  void addAllocationLines(
-      Project project, List<Employee> employeeList, List<Period> periodList, BigDecimal allocated);
+  @Override
+  public void generateBacklogSprint(Project project) {
+    Sprint sprint = new Sprint("Backlog - " + project.getName());
+    project.setBacklogSprint(sprint);
+  }
 
-  void removeAllocationLines(List<Integer> allocationLineIds);
-
-  void createOrUpdateAllocationLine(
-      Project project, Employee employee, Period period, BigDecimal allocated);
+  @Override
+  public void generateBacklogSprint(ProjectVersion projectVersion) {
+    Sprint sprint = new Sprint("Backlog - " + projectVersion.getTitle());
+    projectVersion.setBacklogSprint(sprint);
+  }
 }

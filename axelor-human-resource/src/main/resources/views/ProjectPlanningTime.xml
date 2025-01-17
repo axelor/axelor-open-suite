@@ -25,6 +25,15 @@
       help="Delete"/>
   </grid>
 
+  <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project Plannings"
+    editable="true" name="project-planning-timesheet-grid" edit-icon="false" groupBy="project">
+    <field name="project" readonly="true"/>
+    <field name="projectTask" readonly="true"/>
+    <field name="projectTask.ticketNumber" readonly="true"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="$duration" type="decimal" title="Duration"/>
+  </grid>
+
   <grid name="project-planning-db-grid" title="Project Plannings"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <field name="project"/>
@@ -151,7 +160,12 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_project" expr="eval:__parent__"/>
+    <context name="_projectTask" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__?.project"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.Project'"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
   </action-view>
 

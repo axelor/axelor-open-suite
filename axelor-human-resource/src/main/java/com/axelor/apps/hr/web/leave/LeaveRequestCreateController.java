@@ -12,6 +12,7 @@ import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
+import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -77,7 +78,21 @@ public class LeaveRequestCreateController {
     BigDecimal totalDuration =
         leaveRequestCreateHelperDurationService.getTotalDuration(leaveReasonList);
 
-    leaveRequestCreateHelperDurationService.checkDuration(duration, totalDuration);
+    if (leaveRequestCreateHelperDurationService.durationIsExceeded(duration, totalDuration)) {
+      response.setAlert(I18n.get(ITranslation.LEAVE_REQUEST_CREATE_DURATION_ALERT));
+    }
+  }
+
+  public void computeTotalDuration(ActionRequest request, ActionResponse response) {
+    LeaveRequestCreateHelperDurationService leaveRequestCreateHelperDurationService =
+        Beans.get(LeaveRequestCreateHelperDurationService.class);
+    List<HashMap<String, Object>> leaveReasonList =
+        (List<HashMap<String, Object>>) request.getContext().get("leaveReasonList");
+
+    BigDecimal totalDuration =
+        leaveRequestCreateHelperDurationService.getTotalDuration(leaveReasonList);
+
+    response.setValue("$totalDuration", totalDuration);
   }
 
   public void computeDuration(ActionRequest request, ActionResponse response)

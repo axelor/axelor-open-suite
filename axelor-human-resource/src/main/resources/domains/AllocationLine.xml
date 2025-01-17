@@ -13,6 +13,8 @@
     <decimal name="allocated" title="Allocated"/>
     <string name="description" title="Description" large="true" multiline="true"/>
 
+    <finder-method name="findByPeriodAndEmployee" using="period,employee" all="true"/>
+
   </entity>
 
 </domain-models>
