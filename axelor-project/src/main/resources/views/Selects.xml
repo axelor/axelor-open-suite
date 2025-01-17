@@ -69,6 +69,10 @@
     <option value="category">Category</option>
   </selection>
 
+  <selection name="project.batch.action.select">
+    <option value="1">Remove task status</option>
+  </selection>
+
   <selection name="check.list.template.type.select">
     <option value="project">Project</option>
     <option value="task">Project task</option>
