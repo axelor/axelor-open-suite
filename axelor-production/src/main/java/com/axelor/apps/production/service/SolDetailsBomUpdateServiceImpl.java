@@ -138,7 +138,8 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
     Objects.requireNonNull(saleOrderLineDetails);
     BillOfMaterialLine billOfMaterialLine = saleOrderLineDetails.getBillOfMaterialLine();
 
-    return billOfMaterialLine.getQty().equals(saleOrderLineDetails.getQty())
+    return billOfMaterialLine != null
+        && billOfMaterialLine.getQty().equals(saleOrderLineDetails.getQty())
         && billOfMaterialLine.getProduct().equals(saleOrderLineDetails.getProduct())
         && billOfMaterialLine.getUnit().equals(saleOrderLineDetails.getUnit());
   }

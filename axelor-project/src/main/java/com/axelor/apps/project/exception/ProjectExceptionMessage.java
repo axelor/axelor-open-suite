@@ -99,4 +99,9 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
       "Please set the default number of hours per day in the project configuration." /*)*/;
+
+  public static final String SPRINT_GENERATED = /*$$(*/ "%s sprints have been generated" /*)*/;
+
+  public static final String SPRINT_FIELDS_MISSING =
+      /*$$(*/ "Please fill all dates and the number of days in a sprint with valid values." /*)*/;
 }

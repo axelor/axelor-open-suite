@@ -21,6 +21,8 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.hr.db.Expense;
@@ -35,7 +37,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import wslite.json.JSONException;
 
 @Singleton
 public class ExpenseCancellationServiceImpl implements ExpenseCancellationService {
@@ -65,6 +66,7 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException {
+    checkPeriod(expense);
     Move move = expenseFetchMoveService.getExpenseMove(expense);
     if (move == null) {
       expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
@@ -86,17 +88,35 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
     expenseRepository.save(expense);
   }
 
+  protected void checkPeriod(Expense expense) throws AxelorException {
+    Period period = expense.getPeriod();
+    if (period == null) {
+      return;
+    }
+    int periodStatusSelect = period.getStatusSelect();
+    if (periodStatusSelect == PeriodRepository.STATUS_CLOSED
+        || periodStatusSelect == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_CLOSED_PERIOD));
+    }
+  }
+
   @Override
-  public Message sendCancellationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+  public Message sendCancellationEmail(Expense expense) throws AxelorException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
-    if (hrConfig.getTimesheetMailNotification()) {
+    try {
+      if (hrConfig.getTimesheetMailNotification()) {
 
-      return templateMessageService.generateAndSendMessage(
-          expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
+        return templateMessageService.generateAndSendMessage(
+            expense, hrConfigService.getCanceledExpenseTemplate(hrConfig));
+      }
+    } catch (IOException | ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
+
     return null;
   }
 }

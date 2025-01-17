@@ -42,6 +42,7 @@ import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGenerato
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -56,17 +57,21 @@ import com.axelor.utils.helpers.MetaHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
@@ -81,6 +86,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLineGeneratorService saleOrderLineGeneratorService;
   protected SaleOrderRepository saleOrderRepository;
+
+  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public ConfiguratorServiceImpl(
@@ -216,21 +223,33 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       Long saleOrderId)
       throws AxelorException {
 
+    Product product = new Product();
+    fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    configurator.setProduct(product);
+    product.setConfigurator(configurator);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void fillProductFields(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
 
     cleanIndicators(jsonIndicators);
-    Mapper mapper = Mapper.of(Product.class);
-    Product product = new Product();
     configuratorMetaJsonFieldService.fillAttrs(
         configurator.getConfiguratorCreator().getConfiguratorProductFormulaList(),
         jsonIndicators,
         Product.class,
         product);
     for (Entry<String, Object> entry : jsonIndicators.entrySet()) {
-      mapper.set(product, entry.getKey(), entry.getValue());
+      setValue(product, entry.getKey(), entry.getValue());
     }
 
-    fixRelationalFields(product);
     fetchManyToManyFields(product);
     fillOneToManyFields(configurator, product, jsonAttributes);
     if (product.getProductTypeSelect() == null) {
@@ -250,9 +269,19 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           I18n.get(SaleExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_NAME));
     }
 
-    configurator.setProduct(product);
-    product.setConfigurator(configurator);
     productRepository.save(product);
+  }
+
+  protected void setValue(Product product, String fieldName, Object value) throws AxelorException {
+    logger.debug("Setting value {} to field {}", fieldName, value);
+    Mapper mapper = Mapper.of(Product.class);
+    if (value instanceof LinkedHashMap) {
+      Integer intId = (Integer) ((LinkedHashMap) value).get("id");
+      if (intId != null) {
+        value = fetchRelationalField(fieldName, intId.longValue(), Product.class);
+      }
+    }
+    mapper.set(product, fieldName, value);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -435,6 +464,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * @param jsonIndicators
    */
   protected void cleanIndicators(JsonContext jsonIndicators) {
+    logger.debug("Cleaning indicators");
     Map<String, Object> newKeyMap = new HashMap<>();
     for (Map.Entry entry : jsonIndicators.entrySet()) {
       String oldKey = entry.getKey().toString();
@@ -442,6 +472,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
     jsonIndicators.clear();
     jsonIndicators.putAll(newKeyMap);
+    logger.debug("Cleaned indicators {}", jsonIndicators);
   }
 
   protected void fillOneToManyFields(
@@ -509,15 +540,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * @param model
    */
   protected void fetchManyToManyFields(Model model) throws AxelorException {
+    Class<Model> entityClass = EntityHelper.getEntityClass(model);
     // get all many to many fields
     List<MetaField> manyToManyFields =
         metaFieldRepository
             .all()
             .filter("self.metaModel.name = :name " + "AND self.relationship = 'ManyToMany'")
-            .bind("name", model.getClass().getSimpleName())
+            .bind("name", entityClass.getSimpleName())
             .fetch();
 
-    Mapper mapper = Mapper.of(model.getClass());
+    Mapper mapper = Mapper.of(entityClass);
     for (MetaField manyToManyField : manyToManyFields) {
       Set<? extends Model> manyToManyValue =
           (Set<? extends Model>) mapper.get(model, manyToManyField.getName());
@@ -528,16 +560,20 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   @Override
   public void fixRelationalFields(Model model) throws AxelorException {
     // get all many to one fields
+    Class<Model> entityClass = EntityHelper.getEntityClass(model);
     List<MetaField> manyToOneFields =
         metaFieldRepository
             .all()
             .filter("self.metaModel.name = :name " + "AND self.relationship = 'ManyToOne'")
-            .bind("name", model.getClass().getSimpleName())
+            .bind("name", entityClass.getSimpleName())
             .fetch();
 
-    Mapper mapper = Mapper.of(model.getClass());
+    logger.debug("Fixing relational fields for {} from model {}", manyToOneFields, model);
+    Mapper mapper = Mapper.of(entityClass);
     for (MetaField manyToOneField : manyToOneFields) {
+
       Model manyToOneValue = (Model) mapper.get(model, manyToOneField.getName());
+      logger.debug("ManyToOne value {}", manyToOneValue);
       fixRelationalField(model, manyToOneValue, manyToOneField);
     }
   }
@@ -545,11 +581,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected void fixRelationalField(Model parentModel, Model value, MetaField metaField)
       throws AxelorException {
     if (value != null) {
-      Mapper mapper = Mapper.of(parentModel.getClass());
+      Mapper mapper = Mapper.of(EntityHelper.getEntityClass(parentModel));
       try {
         String className = MetaHelper.computeFullClassName(metaField);
         Model manyToOneDbValue = JPA.find((Class<Model>) Class.forName(className), value.getId());
         mapper.set(parentModel, metaField.getName(), manyToOneDbValue);
+        logger.debug(
+            "Setted field {} with value {} to {}",
+            metaField.getName(),
+            manyToOneDbValue,
+            parentModel);
       } catch (Exception e) {
         throw new AxelorException(
             Configurator.class, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
@@ -557,10 +598,33 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
   }
 
+  protected Model fetchRelationalField(String name, Long id, Class<? extends Model> entityClass)
+      throws AxelorException {
+
+    // Fetching metafield
+    MetaField field =
+        metaFieldRepository
+            .all()
+            .filter(
+                "self.metaModel.name = :modelClassName "
+                    + "AND self.relationship = 'ManyToOne' AND self.name = :name")
+            .bind("modelClassName", entityClass.getSimpleName())
+            .bind("name", name)
+            .fetchOne();
+
+    try {
+      String className = MetaHelper.computeFullClassName(field);
+      return JPA.find((Class<Model>) Class.forName(className), id);
+    } catch (ClassNotFoundException e) {
+      throw new AxelorException(
+          Configurator.class, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+    }
+  }
+
   protected void fetchManyToManyField(
       Model parentModel, Set<? extends Model> values, MetaField metaField) throws AxelorException {
     if (values != null) {
-      Mapper mapper = Mapper.of(parentModel.getClass());
+      Mapper mapper = Mapper.of(EntityHelper.getEntityClass(parentModel));
       try {
         String className = MetaHelper.computeFullClassName(metaField);
         Set<Model> dbValues = new HashSet<>();
