@@ -3,11 +3,38 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
-  <dashboard title="Project Dashboard" name="project.dashboard.sample" width="large">
-    <dashlet action="dashlet.paymentVoucher.customer.paymentMode.distribution.nbr"
+  <dashboard title="Project Dashboard" name="project.dashboard.sample" width="large" onInit="action.base.chart.set.date.6m">
+    <search-fields>
+      <field name="fromDate" type="date" title="From date" x-required="true"/>
+      <field name="toDate" type="date" title="To date" x-required="true"/>
+      <field name="project" target="com.axelor.apps.project.db.ProjectTask"  title="Project" type="reference"/>
+    </search-fields>
+    <dashlet action="custom:report-table-project"
       height="350" canSearch="true"/>
   </dashboard>
+  <custom name="report-table-project" title="Project">
+    <field name="projectTaskCategory" title="ProjectTaskCategory" type="com.axelor.apps.project.db.ProjectTaskCategory"/>
+    <field name="ticketNumber" title="TicketNumber" type="String" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name" title="Name"/>
+    <field name="status" title="Status" type="com.axelor.apps.project.db.TaskStatus" />
+    <field name="assignedTo" title="AssignedTo" type="com.axelor.auth.db.User"/>
+    <field name="taskDate" title="taskDate" type="date"/>
+    <field name="priority" title="Priority" type="com.axelor.apps.project.db.ProjectPriority" />
+    <field name="progress" title="Progress" type="BigDecimal" widget="Progress"/>
+    <field name="budgetedTime" title="budgetedTime" type="String"/>
 
-
-
+    <dataset type="jpql" limit="40">
+      <![CDATA[
+  SELECT pt.name AS name, pt.status.name AS status, pt.projectTaskCategory.name as projectTaskCategory,
+  pt.priority.name as priority, pt.progress as progress , pt.budgetedTime  as budgetedTime, pt.taskDate as taskDate,pt.project as project,
+  pt.ticketNumber as ticketNumber
+  from ProjectTask pt, project p where DATE(pt.taskDate) BETWEEN DATE(:fromDate) AND DATE(:toDate)  and :project=pt.project
+  ]]>
+    </dataset>
+    <template>
+      <![CDATA[
+  <report-table sum='budgetedTime'/>
+  ]]>
+    </template>
+  </custom>
 </object-views>

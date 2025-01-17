@@ -51,4 +51,20 @@
     <series key="charge" type="bar" title="Planned charge"/>
   </chart>
 
+
+  <chart name="chart.daily.planned.charge.in.month.per.project"
+         title="Daily planned charge in a month per project">
+    <dataset type="jpql">
+      <![CDATA[
+   select sum(e.hourlyRate*t.plannedTime) as charge, p.name as project
+ FROM Project p
+ INNER JOIN ProjectPlanningTime t ON t.project = p.id
+ INNER JOIN Employee e ON t.employee = e.id
+ WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
+ GROUP BY p.id
+  ]]>
+    </dataset>
+    <category key="project" title="Project"/>
+    <series key="charge" type="bar" title="Planned charge"/>
+  </chart>
 </object-views>
