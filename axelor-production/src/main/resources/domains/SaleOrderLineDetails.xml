@@ -22,6 +22,8 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="billOfMaterialLine"
       ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
+    <many-to-one name="prodProcessLine"
+      ref="com.axelor.apps.production.db.ProdProcessLine" title="Operation"/>
 
     <extra-code>
             <![CDATA[

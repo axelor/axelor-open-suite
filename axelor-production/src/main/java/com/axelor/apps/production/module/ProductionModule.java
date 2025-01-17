@@ -98,6 +98,8 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServ
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
@@ -114,6 +116,8 @@ import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolBomUpdateServiceImpl;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateServiceImpl;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingService;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingServiceImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
@@ -373,5 +377,9 @@ public class ProductionModule extends AxelorModule {
     bind(SolBomUpdateService.class).to(SolBomUpdateServiceImpl.class);
     bind(SolDetailsBomUpdateService.class).to(SolDetailsBomUpdateServiceImpl.class);
     bind(SaleOrderBomRemoveLineService.class).to(SaleOrderBomRemoveLineServiceImpl.class);
+    bind(SaleOrderLineDetailsProdProcessService.class)
+        .to(SaleOrderLineDetailsProdProcessServiceImpl.class);
+    bind(SolDetailsProdProcessLineMappingService.class)
+        .to(SolDetailsProdProcessLineMappingServiceImpl.class);
   }
 }
