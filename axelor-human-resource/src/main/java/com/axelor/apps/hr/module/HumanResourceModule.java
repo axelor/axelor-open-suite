@@ -63,6 +63,8 @@ import com.axelor.apps.hr.rest.LeaveRequestCreateRestService;
 import com.axelor.apps.hr.rest.LeaveRequestCreateRestServiceImpl;
 import com.axelor.apps.hr.service.BankCardService;
 import com.axelor.apps.hr.service.BankCardServiceImpl;
+import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
+import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
 import com.axelor.apps.hr.service.EmployeeComputeStatusServiceImpl;
 import com.axelor.apps.hr.service.EmployeeFileDMSService;
@@ -461,5 +463,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseWorkflowService.class).to(ExpenseWorkflowServiceImpl.class);
     bind(AllocationLineRepository.class).to(AllocationLineManagementRepository.class);
     bind(AllocationLineComputeService.class).to(AllocationLineComputeServiceImpl.class);
+    bind(EmployeeComputeAvailableLeaveService.class)
+        .to(EmployeeComputeAvailableLeaveServiceImpl.class);
   }
 }
