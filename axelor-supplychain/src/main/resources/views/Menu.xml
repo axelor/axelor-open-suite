@@ -283,7 +283,7 @@
     model="com.axelor.apps.base.db.PricingRule">
     <view type="grid" name="pricing-rule-grid"/>
     <view type="form" name="pricing-rule-form"/>
-    <domain>self.concernedModel.name IN ('SaleOrder')</domain>
+
   </action-view>
 </object-views>
 

@@ -7,8 +7,11 @@
 
   <entity name="FreightCarrierMode">
 
+    <!--<many-to-one ref="com.axelor.apps.supplychain.db.FreightCarrierPricing" name="freightCarrierPricing"
+      title="Freight carrier pricing"/> -->
     <many-to-one ref="com.axelor.apps.base.db.Pricing" name="freightCarrierPricing"
       title="Freight carrier pricing"/>
+    <decimal name="calculatedPrice" title="Price" readonly="true" precision="20" scale="3"/>
   </entity>
 
 </domain-models>

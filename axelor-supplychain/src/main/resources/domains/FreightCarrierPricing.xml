@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
-    <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-    <entity name="FreightCarrierPricingLine">
-        il faut un FreightCarrierMode
-        avec ca on recupere le champ name/carrierPartner pour la vue grid
+  <entity name="FreightCarrierPricing">
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="freightCarrierMode"
+      ref="com.axelor.apps.stock.db.FreightCarrierMode" required="true" title="Freight carrier mode"/>
+    <many-to-one ref="com.axelor.apps.base.db.Pricing" name="pricing" title="Pricing"/>
+    <decimal name="pricingAmount" title="Price" readonly="true" precision="20" scale="3"/>
 
-        Il faut un champ freightCarrierPricing
-        <many-to-one ref="com.axelor.apps.base.db.Pricing" name="freightCarrierPricing" title="Freight carrier pricing"/>
-        <decimal name="pricingAmount" title="Price" readonly="true" precision="20" scale="3"/>
-
-    </entity>
+  </entity>
 
 </domain-models>
