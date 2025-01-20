@@ -15,7 +15,7 @@
     onNew="action-project-version-onnew" onLoad="action-project-version-onnew"
     onSave="action-project-version-method-check-if-project-or-version-conflicts">
     <panel name="mainPanel">
-      <field name="title"/>
+      <field name="title" required="true"/>
       <field name="statusSelect"/>
       <field name="testingServerDate"/>
       <field name="productionServerDate"/>
