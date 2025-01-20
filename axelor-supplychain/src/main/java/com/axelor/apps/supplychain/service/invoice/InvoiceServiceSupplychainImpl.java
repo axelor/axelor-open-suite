@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -131,6 +131,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       intercoService.generateIntercoInvoice(invoice);
     }
 
+    updateTimetable(invoice);
+  }
+
+  protected void updateTimetable(Invoice invoice) {
     TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
 
     List<Timetable> timetableList =
@@ -139,6 +143,24 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     for (Timetable timetable : timetableList) {
       timetable.setInvoiced(true);
       timeTableRepo.save(timetable);
+    }
+
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      Invoice originalInvoice = invoice.getOriginalInvoice();
+      if (originalInvoice != null) {
+        Timetable timetable =
+            timeTableRepo
+                .all()
+                .filter("self.invoice = :invoice")
+                .bind("invoice", originalInvoice)
+                .fetchOne();
+        if (timetable != null) {
+          timetable.setInvoiced(false);
+          timetable.setInvoice(null);
+        }
+      }
     }
   }
 

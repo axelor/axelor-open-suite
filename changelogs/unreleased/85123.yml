@@ -1,0 +1,3 @@
+---
+title: "Expense API: fixed an error that could occur when adding expense line to an expense."
+module: axelor-human-resource

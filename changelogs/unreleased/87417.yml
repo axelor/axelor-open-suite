@@ -1,0 +1,2 @@
+title: "User: made phone and email fields read-only as long as the user does not have a linked contact."
+module: axelor-base

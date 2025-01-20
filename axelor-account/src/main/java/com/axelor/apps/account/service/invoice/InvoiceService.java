@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -94,6 +94,14 @@ public interface InvoiceService {
    * @throws AxelorException
    */
   public void cancel(Invoice invoice) throws AxelorException;
+
+  /**
+   * Return to draft status.
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  void backToDraft(Invoice invoice) throws AxelorException;
 
   /**
    * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de

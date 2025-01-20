@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -87,12 +87,12 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     implements ProjectTaskBusinessProjectService {
 
   public static final int BIG_DECIMAL_SCALE = 2;
-  private PriceListLineRepository priceListLineRepo;
-  private PriceListService priceListService;
-  private PartnerPriceListService partnerPriceListService;
-  private ProductCompanyService productCompanyService;
-  private TimesheetLineRepository timesheetLineRepository;
-  private AppBusinessProjectService appBusinessProjectService;
+  protected PriceListLineRepository priceListLineRepo;
+  protected PriceListService priceListService;
+  protected PartnerPriceListService partnerPriceListService;
+  protected ProductCompanyService productCompanyService;
+  protected TimesheetLineRepository timesheetLineRepository;
+  protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -546,7 +546,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Transactional(rollbackOn = {Exception.class})
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
-    BigDecimal plannedTime;
+    BigDecimal plannedTime = BigDecimal.ZERO;
     BigDecimal spentTime = BigDecimal.ZERO;
 
     Unit timeUnit =
