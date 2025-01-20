@@ -1,0 +1,3 @@
+---
+title: "Stock move: stock move mass invoicing now generates an invoice with the correct invoicing address."
+module: axelor-supplychain
