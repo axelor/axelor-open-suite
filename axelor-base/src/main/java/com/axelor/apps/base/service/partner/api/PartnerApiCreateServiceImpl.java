@@ -17,6 +17,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -60,7 +61,7 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
 
   protected void setPartnerBasicDetails(Partner partner, JSONObject resultJson) {
     String registrationCode = getSafeString(resultJson, "siret");
-    safeSet(partner::setRegistrationCode, registrationCode);
+    safeSetString(partner::setRegistrationCode, partner::getRegistrationCode, registrationCode);
   }
 
   protected void setPartnerCategoryAndType(Partner partner, JSONObject jsonUniteLegal) {
@@ -81,9 +82,12 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
   }
 
   protected void setIndividualPartnerDetails(Partner partner, JSONObject jsonUniteLegal) {
-    partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    safeSet(partner::setName, getSafeString(jsonUniteLegal, "nomUniteLegale"));
-    safeSet(partner::setFirstName, getSafeString(jsonUniteLegal, "prenom1UniteLegale"));
+    safeSetInteger(partner::setPartnerTypeSelect, partner::getPartnerTypeSelect, PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+    safeSetString(partner::setName, partner::getName, getSafeString(jsonUniteLegal, "nomUniteLegale"));
+    safeSetString(
+        partner::setFirstName,
+        partner::getFirstName,
+        getSafeString(jsonUniteLegal, "prenom1UniteLegale"));
 
     String sexUniteLegale = getSafeString(jsonUniteLegal, "sexUniteLegale");
     if (Objects.equals(sexUniteLegale, "F")) {
@@ -95,7 +99,10 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
 
   protected void setCompanyPartnerDetails(Partner partner, JSONObject jsonUniteLegal) {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_COMPANY);
-    safeSet(partner::setName, getSafeString(jsonUniteLegal, "denominationUniteLegale"));
+    safeSetString(
+        partner::setName,
+        partner::getName,
+        getSafeString(jsonUniteLegal, "denominationUniteLegale"));
   }
 
   protected void setPartnerAddress(Partner partner, JSONObject jsonAddresseEtablissement) {
@@ -113,10 +120,20 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
   }
 
   protected void setAddressDetails(Address address, JSONObject jsonAddress) {
-    safeSet(address::setZip, getSafeString(jsonAddress, "codePostalEtablissement"));
-    safeSet(address::setFloor, getSafeString(jsonAddress, "complementAdresseEtablissement"));
-    safeSet(address::setPostBox, getSafeString(jsonAddress, "distributionSpecialeEtablissement"));
-    safeSet(address::setDepartment, getSafeString(jsonAddress, "enseigne1Etablissement"));
+    safeSetString(
+        address::setZip, address::getZip, getSafeString(jsonAddress, "codePostalEtablissement"));
+    safeSetString(
+        address::setFloor,
+        address::getFloor,
+        getSafeString(jsonAddress, "complementAdresseEtablissement"));
+    safeSetString(
+        address::setPostBox,
+        address::getPostBox,
+        getSafeString(jsonAddress, "distributionSpecialeEtablissement"));
+    safeSetString(
+        address::setDepartment,
+        address::getDepartment,
+        getSafeString(jsonAddress, "enseigne1Etablissement"));
 
     Country currentCountry = countryRepository.findByName("FRANCE");
     if (currentCountry != null) {
@@ -130,17 +147,26 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
     }
 
     String streetName = getSafeString(jsonAddress, "libelleVoieEtablissement");
-    safeSet(address::setStreetName, streetName);
-    safeSet(address::setFullName, streetName + " " + address.getZip() + " " + cityName);
+    safeSetString(address::setStreetName, address::getStreetName, streetName);
+    safeSetString(
+        address::setFullName,
+        address::getFullName,
+        streetName + " " + address.getZip() + " " + cityName);
   }
 
   protected boolean isValidAddress(Address address) {
     return address.getStreetName() != null && address.getCity() != null && address.getZip() != null;
   }
 
-  private void safeSet(Consumer<String> setter, String value) {
-    if (value != null) {
-      setter.accept(value);
+  private void safeSetString(Consumer<String> setter, Supplier<String> currentGetter, String newValue) {
+    if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
+      setter.accept(newValue);
+    }
+  }
+
+  private void safeSetInteger(Consumer<Integer> setter, Supplier<Integer> currentGetter, Integer newValue) {
+    if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
+      setter.accept(newValue);
     }
   }
 
