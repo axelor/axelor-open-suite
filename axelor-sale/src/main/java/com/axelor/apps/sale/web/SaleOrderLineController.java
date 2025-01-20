@@ -92,9 +92,13 @@ public class SaleOrderLineController {
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     Context parentContext = context.getParent();
+    SaleOrderLine parentSol = null;
     if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
-      SaleOrderLine parentSol = parentContext.asType(SaleOrderLine.class);
-      Beans.get(SaleOrderLineCheckService.class).checkParentLineType(parentSol);
+      parentSol = parentContext.asType(SaleOrderLine.class);
+      String parentMsg = Beans.get(SaleOrderLineCheckService.class).checkParentLineType(parentSol);
+      if (StringUtils.notEmpty(parentMsg)) {
+        response.setInfo(parentMsg);
+      }
     }
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
@@ -103,7 +107,7 @@ public class SaleOrderLineController {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class)
-            .getOnNewEditableDummies(saleOrderLine, saleOrder));
+            .getOnNewEditableDummies(saleOrderLine, saleOrder, parentSol));
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineInitValueService.class)
             .onNewEditableInitValues(saleOrder, saleOrderLine));

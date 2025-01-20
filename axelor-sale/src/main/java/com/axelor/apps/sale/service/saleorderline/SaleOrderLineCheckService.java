@@ -30,5 +30,5 @@ public interface SaleOrderLineCheckService {
 
   void unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
-  void checkParentLineType(SaleOrderLine parentSaleOrderLine) throws AxelorException;
+  String checkParentLineType(SaleOrderLine parentSaleOrderLine);
 }
