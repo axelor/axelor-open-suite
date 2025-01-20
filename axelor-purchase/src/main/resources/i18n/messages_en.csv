@@ -159,6 +159,7 @@
 "Please enter at least one detail line.",,,
 "Please enter supplier for following purchase request : %s",,,
 "Please fill printing settings on purchase order %s",,,
+"Please provide product information.",,,
 "Please select a product.",,,
 "Please select the purchase order(s) to print.",,,
 "Price List",,,

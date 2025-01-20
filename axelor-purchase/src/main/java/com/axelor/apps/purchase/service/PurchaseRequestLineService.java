@@ -21,7 +21,9 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.apps.purchase.db.PurchaseRequestLine;
 import java.math.BigDecimal;
+import java.util.Map;
 
 public interface PurchaseRequestLineService {
 
@@ -31,4 +33,8 @@ public interface PurchaseRequestLineService {
       String productTitle,
       Unit unit,
       BigDecimal quantity);
+
+  public BigDecimal getDefaultQuantity(PurchaseRequestLine purchaseRequestLine);
+
+  public Map<String, Object> getProductInformation(PurchaseRequestLine purchaseRequestLine);
 }

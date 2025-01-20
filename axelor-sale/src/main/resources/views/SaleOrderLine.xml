@@ -69,6 +69,9 @@
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
       readonlyIf="!product || typeSelect != 0"/>
+    <field name="productTypeIconSelect" title="" widget="ImageSelect" width="45"
+      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+      readonly="true"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
     <field name="product" canEdit="false" x-image-field="picture"
       onChange="action-sale-order-line-method-get-product-information"
@@ -98,7 +101,7 @@
       onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
-    <field name="taxLineSet" canEdit="false" colSpan="6"
+    <field name="taxLineSet" canEdit="false" width="160%"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
       onChange="action-sale-order-line-method-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"

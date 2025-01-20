@@ -100,7 +100,8 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
+    String message = "";
     saleOrderComplementaryProductService.handleComplementaryProducts(saleOrder);
     if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()) {
       if (saleOrder.getSaleOrderLineList().stream()
@@ -121,5 +122,6 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     }
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+    return message;
   }
 }
