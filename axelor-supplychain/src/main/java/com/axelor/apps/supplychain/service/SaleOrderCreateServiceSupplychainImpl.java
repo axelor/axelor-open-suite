@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -59,6 +60,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   protected AppBaseService appBaseService;
   protected SaleOrderSupplychainService saleOrderSupplychainService;
   protected AppStockService appStockService;
+  protected AddressService addressService;
 
   @Inject
   public SaleOrderCreateServiceSupplychainImpl(
@@ -72,8 +74,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderRepository saleOrderRepository,
       SaleOrderSupplychainService saleOrderSupplychainService,
       DMSService dmsService,
-      AppStockService appStockService) {
-
+      AppStockService appStockService,
+      AddressService addressService) {
     super(
         partnerService,
         saleOrderRepo,
@@ -87,6 +89,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     this.appBaseService = appBaseService;
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.appStockService = appStockService;
+    this.addressService = addressService;
   }
 
   @Override
@@ -233,6 +236,12 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     }
     saleOrder.setInvoicedPartner(invoicedPartner);
     saleOrder.setDeliveredPartner(deliveredPartner);
+
+    if (invoicedPartner != null) {
+      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(invoicedPartner));
+      saleOrder.setMainInvoicingAddressStr(
+          addressService.computeAddressStr(saleOrder.getMainInvoicingAddress()));
+    }
 
     if (saleOrder.getPaymentMode() == null) {
       saleOrder.setPaymentMode(
