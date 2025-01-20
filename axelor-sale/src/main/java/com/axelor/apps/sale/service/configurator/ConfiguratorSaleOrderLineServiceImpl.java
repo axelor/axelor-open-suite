@@ -64,20 +64,39 @@ public class ConfiguratorSaleOrderLineServiceImpl implements ConfiguratorSaleOrd
   public void regenerateSaleOrderLine(
       Configurator configurator, Product product, SaleOrderLine saleOrderLine)
       throws AxelorException {
-    Objects.requireNonNull(configurator);
-    Objects.requireNonNull(product);
-    Objects.requireNonNull(saleOrderLine);
-    var newSaleOrderLine =
-        saleOrderLineGeneratorService.createSaleOrderLine(
-            saleOrderLine.getSaleOrder(), product, saleOrderLine.getQty());
-    var saleOrder = newSaleOrderLine.getSaleOrder();
-    newSaleOrderLine.setConfigurator(configurator);
-    saleOrderLineRepository.save(newSaleOrderLine);
+
+    createSaleOrderSaleLine(configurator, product, saleOrderLine);
+    var saleOrder = saleOrderLine.getSaleOrder();
 
     // Bye bye old sale order line
     saleOrder.removeSaleOrderLineListItem(saleOrderLine);
 
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  @Override
+  public void generateSaleOrderLine(
+      Configurator configurator, Product product, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    Objects.requireNonNull(configurator);
+    Objects.requireNonNull(product);
+    Objects.requireNonNull(saleOrderLine);
+    createSaleOrderSaleLine(configurator, product, saleOrderLine);
+    var saleOrder = saleOrderLine.getSaleOrder();
+
+    saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderRepository.save(saleOrder);
+  }
+
+  protected void createSaleOrderSaleLine(
+      Configurator configurator, Product product, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    var newSaleOrderLine =
+        saleOrderLineGeneratorService.createSaleOrderLine(
+            saleOrderLine.getSaleOrder(), product, saleOrderLine.getQty());
+    newSaleOrderLine.setConfigurator(configurator);
+    saleOrderLineRepository.save(newSaleOrderLine);
   }
 }

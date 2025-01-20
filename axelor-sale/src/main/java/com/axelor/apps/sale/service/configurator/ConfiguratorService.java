@@ -53,6 +53,8 @@ public interface ConfiguratorService {
       SaleOrderLine saleOrderLine)
       throws AxelorException;
 
+  void duplicateSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
+
   /**
    * Give the result of a formula, with the script variables defined in the values map.
    *
