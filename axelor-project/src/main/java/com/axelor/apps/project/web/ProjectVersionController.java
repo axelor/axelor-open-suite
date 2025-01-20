@@ -21,9 +21,7 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.SprintService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -60,11 +58,5 @@ public class ProjectVersionController {
     response.setAttr("generateSprintsBtn", "hidden", isHidden);
     response.setAttr("sprintList", "hidden", isHidden);
     response.setAttr("sprintList.project", "hidden", true);
-  }
-
-  public void generateBacklogSprint(ActionRequest request, ActionResponse response) {
-    ProjectVersion projectVersion = request.getContext().asType(ProjectVersion.class);
-    Beans.get(SprintService.class).generateBacklogSprint(projectVersion);
-    response.setValue("backlogSprint", projectVersion.getBacklogSprint());
   }
 }
