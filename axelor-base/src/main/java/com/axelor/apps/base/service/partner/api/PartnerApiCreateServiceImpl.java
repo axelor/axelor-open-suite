@@ -82,8 +82,12 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
   }
 
   protected void setIndividualPartnerDetails(Partner partner, JSONObject jsonUniteLegal) {
-    safeSetInteger(partner::setPartnerTypeSelect, partner::getPartnerTypeSelect, PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    safeSetString(partner::setName, partner::getName, getSafeString(jsonUniteLegal, "nomUniteLegale"));
+    safeSetInteger(
+        partner::setPartnerTypeSelect,
+        partner::getPartnerTypeSelect,
+        PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+    safeSetString(
+        partner::setName, partner::getName, getSafeString(jsonUniteLegal, "nomUniteLegale"));
     safeSetString(
         partner::setFirstName,
         partner::getFirstName,
@@ -158,13 +162,15 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
     return address.getStreetName() != null && address.getCity() != null && address.getZip() != null;
   }
 
-  private void safeSetString(Consumer<String> setter, Supplier<String> currentGetter, String newValue) {
+  private void safeSetString(
+      Consumer<String> setter, Supplier<String> currentGetter, String newValue) {
     if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
       setter.accept(newValue);
     }
   }
 
-  private void safeSetInteger(Consumer<Integer> setter, Supplier<Integer> currentGetter, Integer newValue) {
+  private void safeSetInteger(
+      Consumer<Integer> setter, Supplier<Integer> currentGetter, Integer newValue) {
     if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
       setter.accept(newValue);
     }

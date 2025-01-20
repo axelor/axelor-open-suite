@@ -20,7 +20,7 @@ public class PartnerApiConfigurationController {
 
   @ErrorException
   public void fetchData(ActionRequest request, ActionResponse response) throws AxelorException {
-    String siret = request.getContext().get("siret number").toString();
+    String siret = request.getContext().get("siretNumber").toString();
     Object apiConfigContext = request.getContext().get("partnerApiConfiguration");
 
     Long apiConfigId =
