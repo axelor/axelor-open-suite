@@ -797,6 +797,8 @@
         onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
+      <button name="apiBtn" title="API data import"
+        onClick="action-partner-view-wizard-api-configuration"/>
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
