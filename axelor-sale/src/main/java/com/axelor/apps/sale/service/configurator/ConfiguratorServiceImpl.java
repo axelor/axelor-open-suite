@@ -52,6 +52,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -70,6 +71,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -371,11 +373,53 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       configuratorCheckService.checkLinkedSaleOrderLine(configurator);
 
-      var newSaleOrderLine =
-          generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
-      newSaleOrderLine.setConfigurator(configurator);
+      duplicateLine(configurator, saleOrder, jsonAttributes, jsonIndicators);
       saleOrder.removeSaleOrderLineListItem(saleOrderLine);
-      saleOrderLineRepository.save(newSaleOrderLine);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderRepository.save(saleOrder);
+    }
+  }
+
+  protected void duplicateLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators)
+      throws AxelorException {
+    var newSaleOrderLine =
+        generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+    saleOrderLineRepository.save(newSaleOrderLine);
+    newSaleOrderLine.setConfigurator(configurator);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void duplicateSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
+
+    Objects.requireNonNull(saleOrderLine);
+    var configurator = saleOrderLine.getConfigurator();
+    var context = new Context(Configurator.class);
+    var jsonAttributes =
+        new JsonContext(
+            context,
+            Mapper.of(Configurator.class).getProperty("attributes"),
+            configurator.getAttributes());
+    var jsonIndicators =
+        new JsonContext(
+            context,
+            Mapper.of(Configurator.class).getProperty("indicators"),
+            configurator.getIndicators());
+    var saleOrder = saleOrderLine.getSaleOrder();
+
+    if (configurator.getConfiguratorCreator().getGenerateProduct()) {
+
+      var product = configurator.getProduct();
+      configuratorSaleOrderLineService.generateSaleOrderLine(configurator, product, saleOrderLine);
+
+    } else {
+
+      configuratorCheckService.checkLinkedSaleOrderLine(configurator);
+      duplicateLine(configurator, saleOrder, jsonAttributes, jsonIndicators);
       saleOrderComputeService.computeSaleOrder(saleOrder);
       saleOrderRepository.save(saleOrder);
     }
@@ -516,7 +560,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(SaleExceptionMessage.CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME));
     }
+    saleOrderLine.setConfigurator(configurator);
     saleOrderLine = saleOrderLineRepository.save(saleOrderLine);
+
     saleOrderLineComputeService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
     return saleOrderLine;
   }

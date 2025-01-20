@@ -30,6 +30,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.cart.CartProductService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
@@ -356,6 +357,20 @@ public class SaleOrderLineController {
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void configuratorDuplicateSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine =
+        Optional.ofNullable(context.asType(SaleOrderLine.class))
+            // .map(solCtx -> Beans.get(SaleOrderLineRepository.class).find(solCtx.getId()))
+            .orElse(null);
+
+    if (saleOrderLine != null) {
+      Beans.get(ConfiguratorService.class).duplicateSaleOrderLine(saleOrderLine);
+      response.setReload(true);
     }
   }
 }
