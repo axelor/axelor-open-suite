@@ -452,6 +452,7 @@
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
           <field name="defaultFrameworkSupplierContract"
             onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
+          <field name="allowToGetPricesFromFrameworkContract" hidden="true"/>
         </panel>
         <button name="createNewCustomerContract" title="Create new customer contract"
           colSpan="6" onClick="save,action-project-view-create-new-customer-contract"/>
