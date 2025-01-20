@@ -11,6 +11,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
 
 public class TaskTemplateBusinessSupportServiceImpl extends TaskTemplateBusinessProjectServiceImpl {
@@ -20,6 +21,7 @@ public class TaskTemplateBusinessSupportServiceImpl extends TaskTemplateBusiness
       ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
       AppBaseService appBaseService,
       ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
+      AppProjectService appProjectService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       ProductCompanyService productCompanyService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
@@ -27,6 +29,7 @@ public class TaskTemplateBusinessSupportServiceImpl extends TaskTemplateBusiness
         projectPlanningTimeCreateService,
         appBaseService,
         projectPlanningTimeComputeService,
+        appProjectService,
         projectPlanningTimeRepository,
         productCompanyService,
         projectTaskBusinessProjectService);

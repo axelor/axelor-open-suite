@@ -61,7 +61,8 @@
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-task-view-show-planning" if="__config__.app.isApp('employee')"
+        onClick="save,action-project-task-view-show-planning"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         if-module="axelor-human-resource" showIf="project.isShowPlanning"/>
     </toolbar>
     <menubar>
@@ -83,7 +84,6 @@
           hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
           x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
-        <field name="project.isShowPlanning" hidden="true"/>
 
       </panel>
       <field name="$provider" hidden="true" type="string"/>
@@ -231,6 +231,9 @@
         showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
         onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
         form-view="sprint-form" grid-view="sprint-grid"/>
+      <field name="budgetedTime" colSpan="4"/>
+      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
