@@ -61,6 +61,7 @@ public class ProjectGeneratorSaleServiceImpl implements ProjectGeneratorSaleServ
     Project project = generateProject(saleOrder, projectTemplate);
 
     project.setIsBusinessProject(true);
+    saleOrder.setProject(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       saleOrderLine.setProject(project);
     }

@@ -30,6 +30,7 @@ import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectG
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.auth.AuthUtils;
@@ -46,6 +47,7 @@ import com.google.inject.Singleton;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.Optional;
 
 @Singleton
@@ -69,9 +71,14 @@ public class SaleOrderProjectController {
 
       Project project;
       if (projectGeneratorType.equals(ProjectGeneratorType.PROJECT_ALONE)) {
+        ProjectTemplateRepository projectTemplateRepository =
+            Beans.get(ProjectTemplateRepository.class);
+
         ProjectTemplate projectTemplate =
             Optional.of(request.getContext())
-                .map(context -> (ProjectTemplate) context.get("projectTemplate"))
+                .map(context -> (Map<String, Object>) context.get("projectTemplate"))
+                .map(map -> map.get("id"))
+                .map(id -> projectTemplateRepository.find(Long.valueOf(id.toString())))
                 .orElse(null);
         project = Beans.get(ProjectGeneratorSaleService.class).create(saleOrder, projectTemplate);
       } else {
