@@ -643,6 +643,7 @@
     <action name="action-purchase-order-method-empty-fiscal-position-if-not-compatible"/>
     <action name="action-purchase-order-method-fiscal-position-on-change"/>
     <action name="action-purchase-order-method-compute"/>
+    <action name="action-purchase-order-record-set-type-select"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-cancel">
@@ -1076,5 +1077,10 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="separateInNewQuotation"/>
   </action-method>
+
+  <action-record name="action-purchase-order-record-set-type-select"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="typeSelect" expr="eval: 1" if="!supplierPartner"/>
+  </action-record>
 
 </object-views>
