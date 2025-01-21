@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -473,5 +473,25 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
           ? currencyAmount
           : currencyAmount.negate();
     }
+  }
+
+  @Override
+  public boolean isMoveLineSpecialAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_SPECIAL.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
+
+  @Override
+  public boolean isMoveLineCommitmentAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_COMMITMENT.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
   }
 }

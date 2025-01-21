@@ -13,7 +13,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -31,7 +30,7 @@ import org.apache.commons.collections.MapUtils;
 
 public class ProductPriceListServiceImpl implements ProductPriceListService {
 
-  protected ProductPriceService productPriceService;
+  protected ProductSalePriceService productSalePriceService;
   protected PriceListService priceListService;
   protected SaleConfigService saleConfigService;
   protected TaxService taxService;
@@ -46,11 +45,11 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
       CompanyService companyService,
       TaxService taxService,
       AppBaseService appBaseService,
-      ProductPriceService productPriceService,
+      ProductSalePriceService productSalePriceService,
       AppSaleService appSaleService,
       PriceListService priceListService,
       AccountManagementService accountManagementService) {
-    this.productPriceService = productPriceService;
+    this.productSalePriceService = productSalePriceService;
     this.priceListService = priceListService;
     this.accountManagementService = accountManagementService;
     this.appSaleService = appSaleService;
@@ -66,7 +65,7 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
       throws AxelorException {
 
     BigDecimal price =
-        productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
+        productSalePriceService.getSaleUnitPrice(company, product, false, partner, currency);
     Map<String, Object> discountMap = fillDiscount(company, price, partner, product);
     BigDecimal exTaxPrice =
         priceListService.computeDiscount(

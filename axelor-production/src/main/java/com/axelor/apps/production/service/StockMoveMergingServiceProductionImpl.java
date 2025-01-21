@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,6 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -52,10 +51,10 @@ public class StockMoveMergingServiceProductionImpl extends StockMoveMergingServi
   }
 
   @Override
-  protected void checkErrors(List<StockMove> stockMoveList, StringHtmlListBuilder errors) {
+  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
     super.checkErrors(stockMoveList, errors);
     if (!checkAllSame(stockMoveList, StockMove::getManufOrder)) {
-      errors.append(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_MANUF_ORDER));
+      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_MANUF_ORDER));
     }
   }
 

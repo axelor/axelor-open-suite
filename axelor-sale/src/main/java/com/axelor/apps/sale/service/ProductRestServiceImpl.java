@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
-import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -64,7 +63,7 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected AppBaseService appBaseService;
   protected ProductPriceListService productPriceListService;
   protected UnitConversionService unitConversionService;
-  protected ProductPriceService productPriceService;
+  protected ProductSalePriceService productSalePriceService;
   protected AccountManagementService accountManagementService;
 
   @Inject
@@ -77,7 +76,7 @@ public class ProductRestServiceImpl implements ProductRestService {
       AppBaseService appBaseService,
       ProductPriceListService productPriceListService,
       UnitConversionService unitConversionService,
-      ProductPriceService productPriceService,
+      ProductSalePriceService productSalePriceService,
       AccountManagementService accountManagementService,
       TaxService taxService) {
     this.appSaleService = appSaleService;
@@ -88,7 +87,7 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.appBaseService = appBaseService;
     this.productPriceListService = productPriceListService;
     this.unitConversionService = unitConversionService;
-    this.productPriceService = productPriceService;
+    this.productSalePriceService = productSalePriceService;
     this.accountManagementService = accountManagementService;
     this.taxService = taxService;
   }
@@ -97,18 +96,10 @@ public class ProductRestServiceImpl implements ProductRestService {
       Product product, Partner partner, Company company, Currency currency, Unit unit)
       throws AxelorException {
     List<PriceResponse> priceList = new ArrayList<>();
-
-    BigDecimal priceWT;
-    BigDecimal priceATI;
-
-    if (partner == null) {
-      priceWT = productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
-      priceATI = productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
-    } else {
-      priceWT = productPriceListService.applyPriceList(product, partner, company, currency, false);
-      priceATI = getInTaxPrice(product, company, partner, priceWT);
-    }
-
+    BigDecimal priceWT =
+        productSalePriceService.getSaleUnitPrice(company, product, false, partner, currency);
+    BigDecimal priceATI =
+        productSalePriceService.getSaleUnitPrice(company, product, true, partner, currency);
     if (product.getSalesUnit() == null && product.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
