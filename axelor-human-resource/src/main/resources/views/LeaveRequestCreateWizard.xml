@@ -37,6 +37,10 @@
 
   <grid title="Leave reason" name="leave-reason-duration-grid"
     model="com.axelor.utils.db.Wizard">
+    <hilite if="$number(duration) &gt; $number(leaveDaysToDate)" color="red"/>
+    <hilite
+      if="$number(duration) &gt; $number(leaveQuantity) &amp;&amp; $number(duration) &lt; $number(leaveDaysToDate)"
+      color="orange"/>
     <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
       onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"
       onChange="action-leave-request-create-wizard-method-leave-reason-onchange"/>
