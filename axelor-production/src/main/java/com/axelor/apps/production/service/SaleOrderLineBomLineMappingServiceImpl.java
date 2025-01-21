@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.google.inject.Inject;
 import java.util.Objects;
@@ -32,13 +33,16 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
 
   protected final SaleOrderLineBomService saleOrderLineBomService;
   protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected final SaleOrderLineProductProductionService saleOrderLineProductProductionService;
 
   @Inject
   public SaleOrderLineBomLineMappingServiceImpl(
       SaleOrderLineBomService saleOrderLineBomService,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      SaleOrderLineProductProductionService saleOrderLineProductProductionService) {
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.saleOrderLineProductProductionService = saleOrderLineProductProductionService;
   }
 
   @Override
@@ -58,6 +62,14 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
               .orElse(0));
       // computing the line will generate sub lines.
       saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
+
+      int saleSupplySelect = saleOrderLine.getSaleSupplySelect();
+      if (saleSupplySelect != SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
+          || saleSupplySelect != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE) {
+        saleOrderLine.setSaleSupplySelect(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
+        saleOrderLineProductProductionService.computeProductInformationProduction(
+            saleOrderLine, saleOrder);
+      }
 
       return saleOrderLine;
     }
