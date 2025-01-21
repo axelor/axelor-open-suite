@@ -1,0 +1,3 @@
+---
+title: "User: Hid the active project field if the project module isn't installed."
+module: axelor-project

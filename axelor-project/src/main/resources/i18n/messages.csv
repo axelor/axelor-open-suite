@@ -454,6 +454,7 @@
 "View all issues",,,
 "View configuration",,,
 "Waiting Timesheet lines",,,
+"Warning, at least 2 versions with the title %s are used on the project(s) %s.",,,
 "Wiki",,,
 "Wiki description",,,
 "Wiki folder",,,
