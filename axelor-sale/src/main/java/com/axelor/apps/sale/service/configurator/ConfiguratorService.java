@@ -85,6 +85,14 @@ public interface ConfiguratorService {
           ClassNotFoundException,
           AxelorException;
 
+  void regenerateProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException;
+
   void fillProductFields(
       Configurator configurator,
       Product product,

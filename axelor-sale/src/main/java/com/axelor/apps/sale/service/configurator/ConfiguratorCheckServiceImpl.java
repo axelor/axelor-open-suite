@@ -5,7 +5,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import java.util.Objects;
 
-public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
+public abstract class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
 
   @Override
   public void checkLinkedSaleOrderLine(Configurator configurator, Product product)

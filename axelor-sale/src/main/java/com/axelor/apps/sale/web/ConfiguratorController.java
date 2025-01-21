@@ -107,7 +107,7 @@ public class ConfiguratorController {
     configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
     try {
       Beans.get(ConfiguratorService.class)
-          .fillProductFields(
+          .regenerateProduct(
               configurator,
               Beans.get(ProductRepository.class).find(configurator.getProduct().getId()),
               jsonAttributes,
