@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -57,14 +56,6 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
         updateBomLineSol(subSaleOrderLine, bom);
       }
     }
-
-    List<BillOfMaterialLine> saleOrderLineBomLineList =
-        saleOrderLine.getSubSaleOrderLineList().stream()
-            .map(SaleOrderLine::getBillOfMaterialLine)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    saleOrderBomRemoveLineService.removeBomLines(
-        saleOrderLineBomLineList, bom, ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
     logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
   }
 
