@@ -68,24 +68,27 @@ public class SprintServiceImpl implements SprintService {
       sprintList.add(project.getBacklogSprint());
     }
 
+    sprintList.addAll(filterSprintsWithCurrentDate(getSprintList(project), project.getCompany()));
+
+    return sprintList;
+  }
+
+  protected List<Sprint> getSprintList(Project project) {
+    List<Sprint> slist = new ArrayList<>();
     if (Objects.equals(
             ProjectRepository.SPRINT_MANAGEMENT_PROJECT, project.getSprintManagementSelect())
         && ObjectUtils.notEmpty(project.getSprintList())) {
-      sprintList.addAll(
-          filterSprintsWithCurrentDate(project.getSprintList(), project.getCompany()));
+      slist = project.getSprintList();
     } else if (Objects.equals(
             ProjectRepository.SPRINT_MANAGEMENT_VERSION, project.getSprintManagementSelect())
         && ObjectUtils.notEmpty(project.getRoadmapSet())) {
-      sprintList.addAll(
-          filterSprintsWithCurrentDate(
-              project.getRoadmapSet().stream()
-                  .map(ProjectVersion::getSprintList)
-                  .flatMap(Collection::stream)
-                  .collect(Collectors.toList()),
-              project.getCompany()));
+      slist =
+          project.getRoadmapSet().stream()
+              .map(ProjectVersion::getSprintList)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
     }
-
-    return sprintList;
+    return slist;
   }
 
   @Override
