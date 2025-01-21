@@ -572,7 +572,7 @@
 "Human Resources configurations","Configurations RH",,
 "Human resource configurations","Configurations des ressources humaines",,
 "I am at work","Je suis au travail",,
-"If enabled, planification will be available on project and project task views and some planning lines auto generation will be added to some process.","Si cette option est activée, la planification sera disponible dans les vues des projet/affaires et des tâches et la génération automatique de certaines lignes de planification sera ajoutée à certains processus.",,
+"If enabled, planification will be available on project and project task views and some planning lines auto generation will be added to generation via project template, and change of sprint on project tasks.","Si cette option est activée, la planification sera disponible dans les vues du projet et des tâches du projet et certaines lignes de planification générées automatiquement seront ajoutées à la génération via le modèle de projet, ainsi que le changement de sprint dans les tâches du projet.",,
 "Imposed holidays planning","Planning des jours de congés imposés",,
 "In Trial","En essai",,
 "In advance","En avance",,
