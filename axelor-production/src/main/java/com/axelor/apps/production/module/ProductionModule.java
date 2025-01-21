@@ -139,6 +139,8 @@ import com.axelor.apps.production.service.bomimport.BillOfMaterialImportServiceI
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomServiceImpl;
+import com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProduction;
+import com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorCreatorImportServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineServiceImpl;
@@ -222,6 +224,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderWizardS
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
 import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChangeProductionServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
@@ -388,5 +391,7 @@ public class ProductionModule extends AxelorModule {
         .to(TrackingNumberCompanyProductionServiceImpl.class);
     bind(SaleOrderLineCostPriceComputeServiceImpl.class)
         .to(SaleOrderLineCostPriceComputeProductionServiceImpl.class);
+    bind(ConfiguratorCheckServiceImpl.class).to(ConfiguratorCheckServiceProductionImpl.class);
+    bind(ConfiguratorCheckServiceProduction.class).to(ConfiguratorCheckServiceProductionImpl.class);
   }
 }

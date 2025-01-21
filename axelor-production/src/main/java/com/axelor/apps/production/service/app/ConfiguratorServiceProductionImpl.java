@@ -23,9 +23,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
+import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
+import com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProduction;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -50,6 +54,10 @@ import java.util.Optional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
+  protected final ConfiguratorBomService configuratorBomService;
+  protected final BillOfMaterialRepository billOfMaterialRepository;
+  protected final ConfiguratorCheckServiceProduction configuratorCheckServiceProduction;
+
   @Inject
   public ConfiguratorServiceProductionImpl(
       AppBaseService appBaseService,
@@ -66,6 +74,9 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       ConfiguratorCheckService configuratorCheckService,
       ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
       ProductCompanyRepository productCompanyRepository,
+      ConfiguratorBomService configuratorBomService,
+      BillOfMaterialRepository billOfMaterialRepository,
+      ConfiguratorCheckServiceProduction configuratorCheckServiceProduction,
       ConfiguratorRepository configuratorRepository) {
     super(
         appBaseService,
@@ -82,7 +93,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         configuratorCheckService,
         configuratorSaleOrderLineService,
         productCompanyRepository,
-        configuratorRepository);
+            configuratorRepository);
+    this.configuratorBomService = configuratorBomService;
+    this.billOfMaterialRepository = billOfMaterialRepository;
+    this.configuratorCheckServiceProduction = configuratorCheckServiceProduction;
   }
 
   /**
@@ -106,9 +120,42 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null) {
       Product generatedProduct = configurator.getProduct();
-      Beans.get(ConfiguratorBomService.class)
-          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct)
+      configuratorBomService
+          .generateBillOfMaterial(
+              configuratorBOM, jsonAttributes, 0, generatedProduct, configurator)
           .ifPresent(generatedProduct::setDefaultBillOfMaterial);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void regenerateProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
+    super.regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
+    BillOfMaterial oldBillOfMaterial = null;
+    ProdProcess oldProdProcess = null;
+    if (configuratorBOM != null) {
+      oldBillOfMaterial = product.getDefaultBillOfMaterial();
+      configuratorBomService
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, product, configurator)
+          .ifPresent(product::setDefaultBillOfMaterial);
+    }
+
+    // Removing
+    if (oldBillOfMaterial != null) {
+      try {
+        configuratorCheckServiceProduction.checkUsedBom(oldBillOfMaterial);
+        billOfMaterialRepository.remove(oldBillOfMaterial);
+      } catch (AxelorException e) {
+        // Only tracing, we will not remove the bom.
+        TraceBackService.trace(e);
+      }
     }
   }
 
@@ -126,7 +173,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null) {
       Beans.get(ConfiguratorBomService.class)
-          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null)
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null, configurator)
           .ifPresent(saleOrderLine::setBillOfMaterial);
     }
     return saleOrderLine;

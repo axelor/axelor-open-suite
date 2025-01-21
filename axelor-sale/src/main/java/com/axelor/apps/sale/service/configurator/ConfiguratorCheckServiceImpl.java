@@ -9,7 +9,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.i18n.I18n;
 import java.util.Objects;
 
-public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
+public abstract class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
 
   @Override
   public void checkLinkedSaleOrderLine(Configurator configurator, Product product)
