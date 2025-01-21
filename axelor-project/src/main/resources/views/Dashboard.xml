@@ -13,10 +13,10 @@
     </search-fields>
     <dashlet action="custom:report-table-project" height="350" canSearch="true"/>
   </dashboard>
-  <custom name="report-table-project" title="Project" >
-    <field name="projectTaskCategory" title="ProjectTaskCategory"
+  <custom name="report-table-project" title="Project">
+    <field name="projectTaskCategory" title="Project task category"
       type="com.axelor.apps.project.db.ProjectTaskCategory"/>
-    <field name="ticketNumber" title="TicketNumber" type="String"
+    <field name="ticketNumber" title="Ticket number" type="String"
       if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name" title="Name"/>
     <field name="status" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
@@ -83,8 +83,8 @@ ORDER BY
   <action-record model="com.axelor.apps.project.db.ProjectTask"
     name="action.sale.chart.set.date.project">
 
-      <field name="toDate" expr="eval:__config__.date"/>
-      <field name="fromDate" expr="eval:__config__.date.withDayOfMonth(1)"/>
+    <field name="toDate" expr="eval:__config__.date"/>
+    <field name="fromDate" expr="eval:__config__.date.withDayOfMonth(1)"/>
 
   </action-record>
 </object-views>
