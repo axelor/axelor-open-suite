@@ -26,7 +26,7 @@ import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectToolService;
-import com.axelor.apps.project.service.roadmap.SprintService;
+import com.axelor.apps.project.service.roadmap.SprintGetService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -108,11 +108,11 @@ public class ProjectMenuController {
 
   public void viewTasksPerSprint(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
-    SprintService sprintService = Beans.get(SprintService.class);
-    List<Sprint> sprintList = sprintService.getSprintToDisplay(project);
+    SprintGetService sprintGetService = Beans.get(SprintGetService.class);
+    List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
 
     if (ObjectUtils.notEmpty(sprintList)) {
-      String sprintIdsToExclude = sprintService.getSprintIdsToExclude(sprintList);
+      String sprintIdsToExclude = sprintGetService.getSprintIdsToExclude(sprintList);
 
       ActionView.ActionViewBuilder actionViewBuilder =
           ActionView.define(I18n.get("Tasks per sprint"));

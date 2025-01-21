@@ -20,16 +20,10 @@ package com.axelor.apps.project.service.roadmap;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
-import com.axelor.apps.project.db.Sprint;
-import java.util.List;
 
 public interface SprintService {
 
   void generateBacklogSprint(Project project);
 
   void generateBacklogSprint(ProjectVersion projectVersion);
-
-  List<Sprint> getSprintToDisplay(Project project);
-
-  String getSprintIdsToExclude(List<Sprint> sprintList);
 }
