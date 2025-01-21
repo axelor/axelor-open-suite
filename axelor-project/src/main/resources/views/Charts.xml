@@ -53,7 +53,7 @@
 
 
   <chart name="chart.daily.planned.charge.in.month.per.project"
-         title="Daily planned charge in a month per project">
+    title="Daily planned charge in a month per project">
     <dataset type="jpql">
       <![CDATA[
    select sum(e.hourlyRate*t.plannedTime) as charge, p.name as project
