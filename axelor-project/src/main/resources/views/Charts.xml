@@ -52,19 +52,71 @@
   </chart>
 
 
-  <chart name="chart.daily.planned.charge.in.month.per.project"
-    title="Daily planned charge in a month per project">
-    <dataset type="jpql">
+  <custom name="report-table-project" title="Project">
+    <field name="projectTaskCategory" title="Project task category"
+      type="com.axelor.apps.project.db.ProjectTaskCategory"/>
+    <field name="ticketNumber" title="Ticket number" type="String"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name" title="Name"/>
+    <field name="status" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
+    <field name="assignedTo" title="AssignedTo" type="com.axelor.auth.db.User"/>
+    <field name="taskDate" title="taskDate" type="date"/>
+    <field name="priority" title="Priority" type="com.axelor.apps.project.db.ProjectPriority"/>
+    <field name="progress" title="Progress" type="BigDecimal" widget="Progress"/>
+    <field name="budgetedTime" title="budgetedTime" type="String"/>
+
+    <dataset type="jpql" limit="40">
       <![CDATA[
-   select sum(e.hourlyRate*t.plannedTime) as charge, p.name as project
- FROM Project p
- INNER JOIN ProjectPlanningTime t ON t.project = p.id
- INNER JOIN Employee e ON t.employee = e.id
- WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
- GROUP BY p.id
+
+  SELECT
+    pt.name AS name,
+    pt.priority.name AS priority,
+    pt.status.name AS status,
+    pt.progress AS progress,
+    pt.taskDate AS taskDate,
+    pt.projectTaskCategory.name AS projectTaskCategory,
+    AVG(pt.progress) AS avgProgress,
+    SUM(pt.budgetedTime) AS sumBudgetedTime,
+    pt.project.fullName AS project,
+    pt.ticketNumber AS ticketNumber
+FROM
+    ProjectTask pt
+JOIN
+    pt.project p
+WHERE
+    (
+        (:fromDate IS NOT NULL AND :toDate IS NOT NULL AND DATE(pt.taskDate) BETWEEN DATE(:fromDate) AND DATE(:toDate))
+        OR
+        (:fromDate IS NULL OR :toDate IS NULL)
+    )
+    AND (:project = pt.project OR :project IS NULL)
+    AND p.id = pt.project.id
+GROUP BY
+    pt.project.fullName,
+    pt.name, pt.id,
+    pt.priority.name,
+    pt.priority,
+    pt.status.name,
+    pt.status,
+    pt.progress,
+    pt.taskDate,
+    pt.projectTaskCategory.name,
+    pt.ticketNumber
+
+ORDER BY
+    pt.priority.id DESC,
+    pt.status.id ASC,
+    pt.progress DESC,
+    pt.taskDate ASC,
+    pt.id DESC
+
   ]]>
     </dataset>
-    <category key="project" title="Project"/>
-    <series key="charge" type="bar" title="Planned charge"/>
-  </chart>
+    <template>
+      <![CDATA[
+  <report-table/>
+  ]]>
+    </template>
+  </custom>
+
 </object-views>
