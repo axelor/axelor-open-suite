@@ -23,4 +23,6 @@ import com.axelor.apps.project.db.Project;
 public interface SprintService {
 
   void generateBacklogSprint(Project project);
+
+  boolean checkSprintOverlap(Project project);
 }

@@ -21,6 +21,9 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
 import com.google.inject.Inject;
+import java.util.Comparator;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SprintServiceImpl implements SprintService {
 
@@ -31,5 +34,28 @@ public class SprintServiceImpl implements SprintService {
   public void generateBacklogSprint(Project project) {
     Sprint sprint = new Sprint("Backlog - " + project.getName());
     project.setBacklogSprint(sprint);
+  }
+
+  @Override
+  public boolean checkSprintOverlap(Project project) {
+    List<Sprint> sprintList = project.getSprintList();
+    if (CollectionUtils.isEmpty(sprintList)) {
+      return false;
+    }
+    sprintList.sort(Comparator.comparing(Sprint::getFromDate));
+
+    for (int i = 0; i < sprintList.size() - 1; i++) {
+      Sprint currentSprint = sprintList.get(i);
+      Sprint nextSprint = sprintList.get(i + 1);
+      if (isOverlapping(currentSprint, nextSprint)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected boolean isOverlapping(Sprint currentSprint, Sprint nextSprint) {
+    return currentSprint.getFromDate().isBefore(nextSprint.getToDate())
+        && currentSprint.getToDate().isAfter(nextSprint.getFromDate());
   }
 }
