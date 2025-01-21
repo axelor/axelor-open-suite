@@ -40,4 +40,6 @@ public interface InvoiceLineAttrsService {
 
   void addCoefficientScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
+
+  void addTaxLineSetDomain(int operationTypeSelect, Map<String, Map<String, Object>> attrsMap);
 }

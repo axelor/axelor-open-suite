@@ -122,8 +122,8 @@
         </panel>
         <field name="taxLineSet" canEdit="false"
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
-          form-view="tax-line-form" domain="self.endDate = null or self.endDate &gt; :__date__"
-          widget="TagSelect"/>
+          form-view="tax-line-form"
+          onSelect="action-invoice-line-method-compute-tax-line-set-on-select" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
@@ -555,6 +555,10 @@
 
   <action-method name="action-invoice-line-method-recompute-tax">
     <call class="com.axelor.apps.account.web.InvoiceLineController" method="recomputeTax"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-compute-tax-line-set-on-select">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="onSelectTaxLineSet"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
