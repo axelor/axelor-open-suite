@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -636,6 +637,34 @@ public class InvoiceLineController {
 
       response.setAttrs(attrsMap);
     } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(
+      ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine == null) {
+        return;
+      }
+
+      Beans.get(TaxAccountService.class)
+          .checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLine.getTaxLineSet());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkSumOfNonDeductibleTaxes(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine == null) {
+        return;
+      }
+
+      Beans.get(TaxAccountService.class).checkSumOfNonDeductibleTaxes(invoiceLine.getTaxLineSet());
+    } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
   }

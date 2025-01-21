@@ -388,6 +388,8 @@
   </action-group>
 
   <action-group name="action-invoice-line-group-taxline-onchange">
+    <action name="action-invoice-method-check-invoice-lines-not-only-non-deductible-taxes"/>
+    <action name="action-invoice-line-method-check-sum-of-non-deductible-taxes"/>
     <action name="action-invoice-line-method-recompute-tax"/>
     <action name="action-invoice-line-method-convert-tax"/>
     <action name="action-invoice-line-method-compute"/>
@@ -559,6 +561,17 @@
 
   <action-method name="action-invoice-line-method-compute-tax-line-set-on-select">
     <call class="com.axelor.apps.account.web.InvoiceLineController" method="onSelectTaxLineSet"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-check-invoice-lines-not-only-non-deductible-taxes">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="checkTaxLinesNotOnlyNonDeductibleTaxes"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-check-sum-of-non-deductible-taxes">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="checkSumOfNonDeductibleTaxes"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
