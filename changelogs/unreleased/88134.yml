@@ -1,3 +1,5 @@
 ---
 title: "Sale order: generated sublines are now set to produce sale supply type"
 module: axelor-production
+developer: |
+  Added 'SaleOrderLineProductProductionService' to 'SaleOrderLineBomLineMappingServiceImpl'
