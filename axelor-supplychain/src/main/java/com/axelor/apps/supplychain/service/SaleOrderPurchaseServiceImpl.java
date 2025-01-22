@@ -170,8 +170,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
             partnerPriceListService.getDefaultPriceList(
                 supplierPartner, PriceListRepository.TYPE_PURCHASE),
             supplierPartner,
-            saleOrder.getTradingName(),
-            supplierPartner.getFiscalPosition());
+            saleOrder.getTradingName());
 
     purchaseOrder.setGeneratedSaleOrderId(saleOrder.getId());
     purchaseOrder.setGroupProductsOnPrintings(supplierPartner.getGroupProductsOnPrintings());
