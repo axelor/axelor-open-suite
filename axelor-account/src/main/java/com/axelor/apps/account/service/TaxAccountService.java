@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
@@ -103,6 +104,16 @@ public class TaxAccountService {
     }
   }
 
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return;
+    }
+
+    this.checkTaxLinesNotOnlyNonDeductibleTaxes(
+        (Set<TaxLine>) invoiceLineList.stream().map(InvoiceLine::getTaxLineSet));
+  }
+
   public void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
     if (ObjectUtils.isEmpty(taxLines)) {
       return;
@@ -122,6 +133,16 @@ public class TaxAccountService {
     }
 
     return taxes.stream().anyMatch(tax -> !tax.getIsNonDeductibleTax());
+  }
+
+  public void checkSumOfNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return;
+    }
+
+    this.checkSumOfNonDeductibleTaxes(
+        (Set<TaxLine>) invoiceLineList.stream().map(InvoiceLine::getTaxLineSet));
   }
 
   public void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {

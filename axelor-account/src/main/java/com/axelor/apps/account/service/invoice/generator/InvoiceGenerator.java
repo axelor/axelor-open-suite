@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -419,6 +420,10 @@ public abstract class InvoiceGenerator {
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
     CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
+    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLineList);
+    taxAccountService.checkSumOfNonDeductibleTaxes(invoiceLineList);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
@@ -426,7 +431,7 @@ public abstract class InvoiceGenerator {
     // In the company accounting currency
     invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    for (InvoiceLine invoiceLine : invoiceLineList) {
 
       if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
         continue;
@@ -447,7 +452,7 @@ public abstract class InvoiceGenerator {
 
     invoice.setHasPendingPayments(false);
 
-    if (!ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+    if (!ObjectUtils.isEmpty(invoiceLineList)
         && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
       Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
     }
