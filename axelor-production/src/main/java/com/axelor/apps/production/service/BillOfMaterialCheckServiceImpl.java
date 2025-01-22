@@ -33,7 +33,7 @@ public class BillOfMaterialCheckServiceImpl implements BillOfMaterialCheckServic
     if (anyManufOrder != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.CAN_NOT_RENGENERATE_SALE_ORDER_LINE_LINKED_TO_MO));
+          I18n.get(ProductionExceptionMessage.CAN_NOT_REGENERATE_BOM_AS_ALREADY_IN_PRODUCTION));
     }
   }
 }
