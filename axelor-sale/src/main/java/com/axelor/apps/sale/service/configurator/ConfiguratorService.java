@@ -26,7 +26,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.persist.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import wslite.json.JSONException;
 
@@ -46,7 +45,6 @@ public interface ConfiguratorService {
       Configurator configurator, JsonContext attributes, JsonContext indicators, Long saleOrderId)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   void regenerateSaleOrderLine(
       Configurator configurator,
       SaleOrder saleOrder,

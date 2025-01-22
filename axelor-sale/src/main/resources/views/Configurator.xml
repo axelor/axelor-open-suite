@@ -32,7 +32,7 @@
       <button name="generateProductBtn" title="Generate Product"
         onClick="save,action-configurator-generate-product" showIf="!product"/>
       <button name="regenerateProductBtn" title="Regenerate Product"
-        onClick="save,action-configurator-regenerate-product" showIf="product "/>
+        onClick="save,action-configurator-regenerate-product" showIf="product"/>
       <field name="configuratorCreator.generateProduct" hidden="true"/>
     </panel>
 
