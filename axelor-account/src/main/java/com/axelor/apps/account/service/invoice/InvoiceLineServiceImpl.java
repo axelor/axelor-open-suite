@@ -49,7 +49,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.db.AppInvoice;
 import com.google.common.collect.Sets;
@@ -731,8 +730,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       return BigDecimal.ZERO;
     }
 
-    Set<TaxLine> taxLineSet =
-        taxService.getNotNonDeductibleTaxesSet(invoiceLine.getTaxLineSet());
+    Set<TaxLine> taxLineSet = taxService.getNotNonDeductibleTaxesSet(invoiceLine.getTaxLineSet());
     BigDecimal taxValue =
         Optional.of(taxLineSet)
             .map(taxService::getTotalTaxRateInPercentage)

@@ -113,7 +113,10 @@ public class TaxAccountService extends TaxService {
     }
 
     this.checkTaxLinesNotOnlyNonDeductibleTaxes(
-        (Set<TaxLine>) invoiceLineList.stream().map(InvoiceLine::getTaxLineSet));
+        invoiceLineList.stream()
+            .map(InvoiceLine::getTaxLineSet)
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet()));
   }
 
   public void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
@@ -151,7 +154,10 @@ public class TaxAccountService extends TaxService {
     }
 
     this.checkSumOfNonDeductibleTaxes(
-        (Set<TaxLine>) invoiceLineList.stream().map(InvoiceLine::getTaxLineSet));
+        invoiceLineList.stream()
+            .map(InvoiceLine::getTaxLineSet)
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet()));
   }
 
   public void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
@@ -183,8 +189,8 @@ public class TaxAccountService extends TaxService {
       return BigDecimal.ZERO;
     }
     return this.getNotNonDeductibleTaxesSet(taxLineSet).stream()
-            .map(TaxLine::getValue)
-            .filter(Objects::nonNull)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        .map(TaxLine::getValue)
+        .filter(Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
