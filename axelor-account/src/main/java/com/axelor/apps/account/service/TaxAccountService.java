@@ -112,6 +112,7 @@ public class TaxAccountService extends TaxService {
       return;
     }
 
+    // split in for loop, catch the exception, and throw another exception with the specific account
     this.checkTaxLinesNotOnlyNonDeductibleTaxes(
         invoiceLineList.stream()
             .map(InvoiceLine::getTaxLineSet)
