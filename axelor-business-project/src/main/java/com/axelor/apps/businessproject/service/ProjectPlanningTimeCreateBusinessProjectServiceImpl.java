@@ -39,6 +39,7 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -62,8 +63,9 @@ public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ProjectTimeUnitService projectTimeUnitService,
+      AppBusinessProjectService appBusinessProjectService) {
     super(
         planningTimeRepo,
         projectRepo,
@@ -72,9 +74,10 @@ public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
         holidayService,
         productRepo,
         employeeRepo,
-        timesheetLineRepository);
+        timesheetLineRepository,
+        appBaseService,
+        projectTimeUnitService);
     this.appBusinessProjectService = appBusinessProjectService;
-    this.appBaseService = appBaseService;
   }
 
   @Override

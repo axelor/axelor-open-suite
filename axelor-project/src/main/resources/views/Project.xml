@@ -44,7 +44,8 @@
     onSave="action-project-method-check-resource-availibility" width="large">
     <toolbar>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
+        onClick="save,action-project-view-show-planning-panel"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         if-module="axelor-human-resource" showIf="isShowPlanning"/>
     </toolbar>
     <menubar>
@@ -311,7 +312,8 @@
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
       collapseIf="false">
-      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
+      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
       <spacer colSpan="8"/>
