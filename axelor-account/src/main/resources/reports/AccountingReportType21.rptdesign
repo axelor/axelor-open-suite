@@ -377,9 +377,9 @@
 	ReportType.type_select 					AS report_type,
 	AccountingReport.ref
 	
-FROM public.account_accounting_report AS AccountingReport
+FROM account_accounting_report AS AccountingReport
 
-INNER JOIN public.base_company AS Company 
+INNER JOIN base_company AS Company 
 ON AccountingReport.company = Company.id
 
 LEFT JOIN account_accounting_report_type AS ReportType 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -90,8 +92,36 @@ public class ConfiguratorController {
                 .map());
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void regenerateProduct(ActionRequest request, ActionResponse response) {
+    Configurator configurator = request.getContext().asType(Configurator.class);
+    JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
+    JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
+    configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
+    try {
+      Beans.get(ConfiguratorService.class)
+          .fillProductFields(
+              configurator,
+              Beans.get(ProductRepository.class).find(configurator.getProduct().getId()),
+              jsonAttributes,
+              jsonIndicators,
+              getSaleOrderId(request.getContext()));
+      response.setReload(true);
+      if (configurator.getProduct() != null) {
+        response.setView(
+            ActionView.define(I18n.get("Product generated"))
+                .model(Product.class.getName())
+                .add("form", "product-form")
+                .add("grid", "product-grid")
+                .param("search-filters", "products-filters")
+                .context("_showRecord", configurator.getProduct().getId())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,6 +51,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
@@ -757,7 +758,10 @@ public class SaleOrderController {
         return;
       }
 
-      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+      String alert = Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+      if (StringUtils.notEmpty(alert)) {
+        response.setInfo(alert);
+      }
 
       response.setValues(Mapper.toMap(saleOrder));
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
@@ -837,5 +841,30 @@ public class SaleOrderController {
     saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).companyOnChange(saleOrder));
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
+  }
+
+  public void fillIncoterm(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    boolean isIncotermRequired = Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder);
+    if (isIncotermRequired) {
+      response.setView(
+          ActionView.define(I18n.get("Fill incoterm"))
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-incoterm-wizard-form")
+              .param("popup", "reload")
+              .param("forceEdit", "true")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .context("_showRecord", saleOrder.getId())
+              .map());
+    }
+  }
+
+  public void updateSaleOrderLinesDeliveryAddress(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderDeliveryAddressService.class)
+            .updateSaleOrderLinesDeliveryAddress(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
   }
 }

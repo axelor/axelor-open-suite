@@ -133,6 +133,8 @@
       selection="project.sprint.management.select" default="none"/>
     <one-to-many name="sprintList" ref="com.axelor.apps.project.db.Sprint"
       title="Sprints" mappedBy="project"/>
+    <many-to-one name="backlogSprint" ref="com.axelor.apps.project.db.Sprint"
+      title="Backlog sprint"/>
 
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>

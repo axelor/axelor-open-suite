@@ -16,6 +16,8 @@
     <one-to-many name="sprintList" ref="com.axelor.apps.project.db.Sprint"
       title="Sprints" mappedBy="targetVersion"/>
 
+    <finder-method name="findByTitle" using="title" all="true"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_ON_HOLD = 1;

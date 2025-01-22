@@ -383,10 +383,18 @@
       onTabSelect="action-project-attrs-hide-project-version-on-sprint">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
-      <panel name="sprintPanel" title="Sprints" showIf="sprintManagementSelect == 'project'"
-        colSpan="12">
+      <panel name="sprintPanel" title="Sprints" colSpan="12">
+        <panel itemSpan="12">
+          <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+            onClick="action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+          <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+            showIf="backlogSprint" readonly="true"/>
+        </panel>
+        <button name="generateSprintsBtn" title="Generate sprints"
+          showIf="sprintManagementSelect == 'project'"
+          onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
         <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
-          canNew="true" canRemove="true"/>
+          canNew="true" canRemove="true" showIf="sprintManagementSelect == 'project'"/>
         <field name="sprintManagementSelect" hidden="true"/>
       </panel>
     </panel>
@@ -718,6 +726,10 @@
   <action-method name="action-project-method-generate-checklist-items-from-template">
     <call class="com.axelor.apps.project.web.ProjectController"
       method="generateCheckListFromTemplate"/>
+  </action-method>
+
+  <action-method name="action-project-method-generate-backlog-sprint">
+    <call class="com.axelor.apps.project.web.ProjectController" method="generateBacklogSprint"/>
   </action-method>
 
   <!-- ACTION VIEW -->

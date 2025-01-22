@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -78,6 +79,16 @@ public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
     } else {
       domain = "self.project = :project";
     }
+
+    domain =
+        domain.concat(
+            String.format(
+                " OR self.id = %s",
+                Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getBacklogSprint)
+                    .map(Sprint::getId)
+                    .orElse(0L)));
 
     return domain;
   }

@@ -489,27 +489,27 @@ Case when AccountType.technical_type_select = 'tax' then
 	end
 end as creditTaxAmount,
 Currency.number_of_decimals
-from public.account_accounting_report as AccountingReport 
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_account as Account on (MoveLine.account = Account.id)
-left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
-left outer join public.account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
+from account_accounting_report as AccountingReport 
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_account as Account on (MoveLine.account = Account.id)
+left outer join account_account_type as AccountType on (Account.account_type = AccountType.id)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
+left outer join account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
 
-left outer join public.base_company as Company on Move.company = Company.id
-left outer join public.base_partner as CompanyPartner on Company.partner = CompanyPartner.id
-left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join base_company as Company on Move.company = Company.id
+left outer join base_partner as CompanyPartner on Company.partner = CompanyPartner.id
+left outer join account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 
-left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
+left outer join account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 LEFT OUTER JOIN (
     SELECT 
         TaxLineSet.account_move_line AS moveLineId,
         string_agg(Tax.code, ',') AS code
-    FROM public.account_move_line_tax_line_set AS TaxLineSet
-    INNER JOIN public.account_tax_line AS TaxLine ON TaxLineSet.tax_line_set = TaxLine.id
-    INNER JOIN public.account_tax AS Tax ON TaxLine.tax = Tax.id
+    FROM account_move_line_tax_line_set AS TaxLineSet
+    INNER JOIN account_tax_line AS TaxLine ON TaxLineSet.tax_line_set = TaxLine.id
+    INNER JOIN account_tax AS Tax ON TaxLine.tax = Tax.id
     GROUP BY TaxLineSet.account_move_line
 ) AS TaxCodes ON TaxCodes.moveLineId = MoveLine.id
 where
@@ -720,10 +720,10 @@ AcYear.name as year_name,
 AccountingReport.publication_date_time as "ReportDateEdition",
 MetaFile.file_path AS logo_path,
 Currency.code as currency, AccountingReport.ref
-from public.account_accounting_report as AccountingReport 
-inner join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
-left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)
+from account_accounting_report as AccountingReport 
+inner join base_company as Company on (AccountingReport.company = Company.id)
+left outer join base_year as AcYear on (AccountingReport.year = AcYear.id)
+left outer join base_currency as Currency on (AccountingReport.currency = Currency.id)
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 where AccountingReport.id = ? 
 ]]></xml-property>
@@ -947,22 +947,22 @@ sum(Case when AccountType.technical_type_select = 'tax' then
 end) as creditTaxAmount,
 Currency.number_of_decimals
 
-from public.account_accounting_report as AccountingReport 
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_account as Account on (MoveLine.account = Account.id)
-left outer join public.base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
-left outer join public.account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
+from account_accounting_report as AccountingReport 
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_account as Account on (MoveLine.account = Account.id)
+left outer join base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
+left outer join account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
 
-left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.base_company as Company on Move.company = Company.id
-left outer join public.base_partner as CompanyPartner on Company.partner = CompanyPartner.id
-left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
-left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
-left outer join public.account_move_line_tax_line_set as TaxLineSet on (TaxLineSet.account_move_line = MoveLine.id)
-left outer join public.account_tax_line as TaxLine on (TaxLineSet.tax_line_set = TaxLine.id) 
-left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join account_account_type as AccountType on (Account.account_type = AccountType.id)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join base_company as Company on Move.company = Company.id
+left outer join base_partner as CompanyPartner on Company.partner = CompanyPartner.id
+left outer join account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
+left outer join account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
+left outer join account_move_line_tax_line_set as TaxLineSet on (TaxLineSet.account_move_line = MoveLine.id)
+left outer join account_tax_line as TaxLine on (TaxLineSet.tax_line_set = TaxLine.id) 
+left outer join account_tax as Tax on (TaxLine.tax = Tax.id) 
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND AccountingReport.company = Move.company 
