@@ -185,6 +185,9 @@
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
       min="0"/>
 
+    <integer name="taxComputationSelect" title="Tax computation method"
+      selection="base.app.base.tax.computation.select" default="0"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -198,6 +201,10 @@
 	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
 
 	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
+
+	   			// TAX COMPUTATAION SELECT
+	   			public static final int TAX_COMPUTATION_FROM_TOTAL = 0;
+	   			public static final int TAX_COMPUTATION_FROM_LINES = 1;
 	   		]]>
     </extra-code>
 

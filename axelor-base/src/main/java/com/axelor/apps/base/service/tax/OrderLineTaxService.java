@@ -43,4 +43,6 @@ public interface OrderLineTaxService {
   boolean isManageByAmount(OrderLineTax orderLineTax);
 
   BigDecimal computeInTaxTotal(OrderLineTax orderLineTax, Currency currency);
+
+  void computeTaxFromLines(OrderLineTax saleOrderLineTax, BigDecimal exTaxTotal, Currency currency);
 }

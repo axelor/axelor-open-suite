@@ -22,11 +22,13 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.common.ObjectUtils;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -47,12 +49,16 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected OrderLineTaxService orderLineTaxService;
   protected CurrencyScaleService currencyScaleService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderLineCreateTaxLineServiceImpl(
-      OrderLineTaxService orderLineTaxService, CurrencyScaleService currencyScaleService) {
+      OrderLineTaxService orderLineTaxService,
+      CurrencyScaleService currencyScaleService,
+      AppBaseService appBaseService) {
     this.orderLineTaxService = orderLineTaxService;
     this.currencyScaleService = currencyScaleService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -127,6 +133,8 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
             createSaleOrderLineTax(saleOrder, saleOrderLine, taxLine);
         map.put(taxLine, saleOrderLineTax);
       }
+      orderLineTaxService.computeTaxFromLines(
+          map.get(taxLine), saleOrderLine.getExTaxTotal(), saleOrder.getCurrency());
     }
   }
 
@@ -148,7 +156,10 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       List<SaleOrderLineTax> currentSaleOrderLineTaxList) {
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
       // Dans la devise de la facture
-      orderLineTaxService.computeTax(saleOrderLineTax, currency);
+      if (appBaseService.getAppBase().getTaxComputationSelect()
+          == AppBaseRepository.TAX_COMPUTATION_FROM_TOTAL) {
+        orderLineTaxService.computeTax(saleOrderLineTax, currency);
+      }
       SaleOrderLineTax oldSaleOrderLineTax =
           getExistingSaleOrderLineTax(saleOrderLineTax, currentSaleOrderLineTaxList);
       if (oldSaleOrderLineTax == null) {
