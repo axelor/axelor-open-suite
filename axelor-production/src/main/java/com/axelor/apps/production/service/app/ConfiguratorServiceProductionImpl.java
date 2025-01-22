@@ -26,10 +26,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
-import com.axelor.apps.production.db.ProdProcess;
-import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.service.BillOfMaterialRemoveService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
-import com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProduction;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -54,8 +52,7 @@ import java.util.Optional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   protected final ConfiguratorBomService configuratorBomService;
-  protected final BillOfMaterialRepository billOfMaterialRepository;
-  protected final ConfiguratorCheckServiceProduction configuratorCheckServiceProduction;
+  protected final BillOfMaterialRemoveService billOfMaterialRemoveService;
 
   @Inject
   public ConfiguratorServiceProductionImpl(
@@ -74,8 +71,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
       ProductCompanyRepository productCompanyRepository,
       ConfiguratorBomService configuratorBomService,
-      BillOfMaterialRepository billOfMaterialRepository,
-      ConfiguratorCheckServiceProduction configuratorCheckServiceProduction) {
+      BillOfMaterialRemoveService billOfMaterialRemoveService) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -92,8 +88,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         configuratorSaleOrderLineService,
         productCompanyRepository);
     this.configuratorBomService = configuratorBomService;
-    this.billOfMaterialRepository = billOfMaterialRepository;
-    this.configuratorCheckServiceProduction = configuratorCheckServiceProduction;
+    this.billOfMaterialRemoveService = billOfMaterialRemoveService;
   }
 
   /**
@@ -136,7 +131,6 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     super.regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     BillOfMaterial oldBillOfMaterial = null;
-    ProdProcess oldProdProcess = null;
     if (configuratorBOM != null) {
       oldBillOfMaterial = product.getDefaultBillOfMaterial();
       configuratorBomService
@@ -145,14 +139,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     }
 
     // Removing
-    if (oldBillOfMaterial != null) {
-      try {
-        configuratorCheckServiceProduction.checkUsedBom(oldBillOfMaterial);
-        billOfMaterialRepository.remove(oldBillOfMaterial);
-      } catch (AxelorException e) {
-        // Only tracing, we will not remove the bom.
-        TraceBackService.trace(e);
-      }
+    try {
+      billOfMaterialRemoveService.removeBomAndProdProcess(oldBillOfMaterial);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
     }
   }
 

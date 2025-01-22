@@ -3,7 +3,6 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
@@ -16,11 +15,9 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCheckServiceImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckServiceImpl
-    implements ConfiguratorCheckServiceProduction {
+public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckServiceImpl {
 
   protected final ProductionOrderRepository productionOrderRepository;
   protected final ManufOrderRepository manufOrderRepository;
@@ -55,9 +52,9 @@ public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckSer
     var anyProductionOrder =
         productionOrderRepository
             .all()
-            .filter("self.saleOrder.id IN (:saleOrders)")
+            .filter("self.saleOrder.id IN (:saleOrdersId)")
             .bind(
-                "saleOrders",
+                "saleOrdersId",
                 StringHelper.getIdListString(
                     saleOrderLines.stream()
                         .map(SaleOrderLine::getSaleOrder)
@@ -65,25 +62,6 @@ public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckSer
             .fetchOne();
 
     if (anyProductionOrder != null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.CAN_NOT_RENGENERATE_SALE_ORDER_LINE_LINKED_TO_MO));
-    }
-  }
-
-  @Override
-  public void checkUsedBom(BillOfMaterial billOfMaterial) throws AxelorException {
-    Objects.requireNonNull(billOfMaterial);
-
-    // Check usage in ManufOrder
-    var anyManufOrder =
-        manufOrderRepository
-            .all()
-            .filter("self.billOfMaterial = :billOfMaterial")
-            .bind("billOfMaterial", billOfMaterial)
-            .fetchOne();
-
-    if (anyManufOrder != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ProductionExceptionMessage.CAN_NOT_RENGENERATE_SALE_ORDER_LINE_LINKED_TO_MO));
@@ -107,9 +85,9 @@ public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckSer
     var anyProductionOrder =
         productionOrderRepository
             .all()
-            .filter("self.saleOrder IN (:saleOrders)")
+            .filter("self.saleOrder.id IN (:saleOrdersId)")
             .bind(
-                "saleOrders",
+                "saleOrdersId",
                 StringHelper.getIdListString(
                     saleOrderLines.stream()
                         .map(SaleOrderLine::getSaleOrder)
