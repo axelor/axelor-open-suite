@@ -41,6 +41,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -116,7 +117,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected CompanyConfigService companyConfigService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
-  protected TaxService taxService;
+  protected TaxAccountService taxService;
   protected UserService userService;
 
   @Inject
@@ -142,7 +143,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       CompanyConfigService companyConfigService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      TaxService taxService,
+      TaxAccountService taxService,
       UserService userService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -957,9 +958,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     Set<TaxLine> taxLineSet =
-        moveLine.getTaxLineSet().stream()
-            .filter(it -> !it.getTax().getIsNonDeductibleTax())
-            .collect(Collectors.toSet());
+        taxService.getNotNonDeductibleTaxesSet(moveLine.getTaxLineSet());
 
     for (TaxLine taxLine : taxLineSet) {
       BigDecimal taxAmount =

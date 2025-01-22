@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -76,7 +77,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
-  protected TaxService taxService;
+  protected TaxAccountService taxService;
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
@@ -94,7 +95,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      TaxService taxService,
+      TaxAccountService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
@@ -730,9 +731,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       return BigDecimal.ZERO;
     }
 
+    Set<TaxLine> taxLineSet =
+        taxService.getNotNonDeductibleTaxesSet(invoiceLine.getTaxLineSet());
     BigDecimal taxValue =
-        Optional.of(invoiceLine)
-            .map(InvoiceLine::getTaxLineSet)
+        Optional.of(taxLineSet)
             .map(taxService::getTotalTaxRateInPercentage)
             .map(
                 it ->

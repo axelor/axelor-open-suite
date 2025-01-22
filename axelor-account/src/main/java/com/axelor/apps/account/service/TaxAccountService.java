@@ -28,17 +28,19 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class TaxAccountService {
+public class TaxAccountService extends TaxService {
 
   protected AccountManagementAccountService accountManagementAccountService;
 
@@ -135,6 +137,13 @@ public class TaxAccountService {
     return taxes.stream().anyMatch(tax -> !tax.getIsNonDeductibleTax());
   }
 
+  public Set<TaxLine> getNotNonDeductibleTaxesSet(Set<TaxLine> taxesLineSet) {
+    return taxesLineSet.stream()
+        .filter(Objects::nonNull)
+        .filter(it -> !ObjectUtils.isEmpty(it.getTax()) && !it.getTax().getIsNonDeductibleTax())
+        .collect(Collectors.toSet());
+  }
+
   public void checkSumOfNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
       throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceLineList)) {
@@ -166,5 +175,16 @@ public class TaxAccountService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED));
     }
+  }
+
+  @Override
+  public BigDecimal getTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return BigDecimal.ZERO;
+    }
+    return this.getNotNonDeductibleTaxesSet(taxLineSet).stream()
+            .map(TaxLine::getValue)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }

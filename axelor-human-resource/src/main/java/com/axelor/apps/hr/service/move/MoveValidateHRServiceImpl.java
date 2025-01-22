@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -79,7 +80,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
-      TaxService taxService,
+      TaxAccountService taxService,
       UserService userService) {
     super(
         moveLineControlService,
