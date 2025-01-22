@@ -64,6 +64,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1026,8 +1027,9 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMove stockMove, BigDecimal splitQty, StockMoveLine moveLine, BigDecimal totalQty) {
     moveLine.setQty(splitQty);
     moveLine.setRealQty(splitQty);
+    moveLine.setTotalNetMass(moveLine.getNetMass().multiply(splitQty));
 
-    int limit = totalQty.divide(splitQty).intValue();
+    int limit = totalQty.divide(splitQty, RoundingMode.HALF_UP).intValue();
     for (int counter = 1; counter < limit; counter++) {
       copyLine(stockMove, moveLine, splitQty);
     }
@@ -1037,6 +1039,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockMoveLine newLine = stockMoveLineRepo.copy(moveLine, false);
     newLine.setQty(remainder);
     newLine.setRealQty(remainder);
+    moveLine.setTotalNetMass(moveLine.getNetMass().multiply(remainder));
     stockMove.addStockMoveLineListItem(newLine);
   }
 
