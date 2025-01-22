@@ -395,7 +395,8 @@ public class ProductionModule extends AxelorModule {
         .to(TrackingNumberCompanyProductionServiceImpl.class);
     bind(SaleOrderLineCostPriceComputeServiceImpl.class)
         .to(SaleOrderLineCostPriceComputeProductionServiceImpl.class);
-    bind(ConfiguratorCheckServiceSupplychainImpl.class).to(ConfiguratorCheckServiceProductionImpl.class);
+    bind(ConfiguratorCheckServiceSupplychainImpl.class)
+        .to(ConfiguratorCheckServiceProductionImpl.class);
     bind(BillOfMaterialRemoveService.class).to(BillOfMaterialRemoveServiceImpl.class);
     bind(BillOfMaterialCheckService.class).to(BillOfMaterialCheckServiceImpl.class);
   }
