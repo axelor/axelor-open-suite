@@ -9,15 +9,13 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.db.Configurator;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.configurator.ConfiguratorCheckServiceImpl;
+import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
-import java.util.stream.Collectors;
 
-public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckServiceImpl {
+public class ConfiguratorCheckServiceProductionImpl
+    extends ConfiguratorCheckServiceSupplychainImpl {
 
   protected final ProductionOrderRepository productionOrderRepository;
   protected final ManufOrderRepository manufOrderRepository;
@@ -49,22 +47,14 @@ public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckSer
             .fetch();
 
     // Will check if any production orders have been generated
-    var anyProductionOrder =
-        productionOrderRepository
-            .all()
-            .filter("self.saleOrder.id IN (:saleOrdersId)")
-            .bind(
-                "saleOrdersId",
-                StringHelper.getIdListString(
-                    saleOrderLines.stream()
-                        .map(SaleOrderLine::getSaleOrder)
-                        .collect(Collectors.toList())))
-            .fetchOne();
+    var inProduction =
+        saleOrderLines.stream()
+            .anyMatch(sol -> sol.getManufOrderList() != null && !sol.getManufOrderList().isEmpty());
 
-    if (anyProductionOrder != null) {
+    if (inProduction) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.CAN_NOT_RENGENERATE_SALE_ORDER_LINE_LINKED_TO_MO));
+          I18n.get(ProductionExceptionMessage.CAN_NOT_RENGENERATE_PRODUCT_LINKED_TO_MO));
     }
   }
 
@@ -82,22 +72,14 @@ public class ConfiguratorCheckServiceProductionImpl extends ConfiguratorCheckSer
             .fetch();
 
     // Will check if any production orders have been generated
-    var anyProductionOrder =
-        productionOrderRepository
-            .all()
-            .filter("self.saleOrder.id IN (:saleOrdersId)")
-            .bind(
-                "saleOrdersId",
-                StringHelper.getIdListString(
-                    saleOrderLines.stream()
-                        .map(SaleOrderLine::getSaleOrder)
-                        .collect(Collectors.toList())))
-            .fetchOne();
+    var inProduction =
+        saleOrderLines.stream()
+            .anyMatch(sol -> sol.getManufOrderList() != null && !sol.getManufOrderList().isEmpty());
 
-    if (anyProductionOrder != null) {
+    if (inProduction) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.CAN_NOT_RENGENERATE_SALE_ORDER_LINE_LINKED_TO_MO));
+          I18n.get(ProductionExceptionMessage.CAN_NOT_RENGENERATE_PRODUCT_LINKED_TO_MO));
     }
   }
 }
