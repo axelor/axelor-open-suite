@@ -68,47 +68,55 @@
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
-      readonlyIf="!product || typeSelect != 0"/>
+      readonlyIf="!product || typeSelect != 0 || $isParentTitleLine"/>
     <field name="productTypeIconSelect" title="" widget="ImageSelect" width="45"
       if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
       readonly="true"/>
-    <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"/>
+    <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"
+      readonlyIf="$isParentTitleLine"/>
     <field name="product" canEdit="false" x-image-field="picture"
       onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"
+      readonlyIf="$isParentTitleLine"/>
     <field name="product" canEdit="false"
       onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
-      grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
-    <field name="product.code" width="120"/>
-    <field name="productName"/>
+      grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"
+      readonlyIf="$isParentTitleLine"/>
+    <field name="product.code" width="120" readonlyIf="$isParentTitleLine"/>
+    <field name="productName" readonlyIf="$isParentTitleLine"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
-    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty" readonlyIf="$isParentTitleLine"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid"
+      readonlyIf="$isParentTitleLine"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || $isParentTitleLine || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
       onChange="action-sale-order-line-method-onchange-price" hidden="true"
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="inTaxPrice" readonlyIf="$isReadOnly !== false || deliveryState == 3"
+    <field name="inTaxPrice"
+      readonlyIf="$isReadOnly !== false || deliveryState == 3 || $isParentTitleLine"
       onChange="action-sale-order-line-method-onchange-intaxprice"
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
+    <field name="discountTypeSelect" colSpan="3"
+      readonlyIf="$nonNegotiable || $isParentTitleLine"
       onChange="action-sale-order-line-method-discount-type-onchange"/>
     <field name="discountAmount" colSpan="3"
-      readonlyIf="$nonNegotiable || discountTypeSelect == 0"
+      readonlyIf="$nonNegotiable || discountTypeSelect == 0 || $isParentTitleLine"
       validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
       onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
     <field name="taxLineSet" canEdit="false" width="160%"
-      readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
+      readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0 || $isParentTitleLine"
       onChange="action-sale-order-line-method-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="TagSelect"/>
-    <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
-    <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
-    <field name="description"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
+      readonlyIf="$isParentTitleLine"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
+      readonlyIf="$isParentTitleLine"/>
+    <field name="description" readonlyIf="$isParentTitleLine"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
@@ -118,6 +126,7 @@
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
+    <field name="$isParentTitleLine" hidden="true"/>
     <field name="$computeWithSOL" hidden="true"/>
   </grid>
 

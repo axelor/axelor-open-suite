@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed fiscal position when creating a purchase order from sale order."
+module: axelor-supplychain
