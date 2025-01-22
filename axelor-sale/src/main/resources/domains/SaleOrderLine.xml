@@ -133,6 +133,9 @@
     <string name="productTypeIconSelect"
       selection="sale.sale.order.line.product.sub.type.icon.select"/>
 
+    <many-to-one name="configurator" ref="com.axelor.apps.sale.db.Configurator"
+      title="Configurator"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-code>

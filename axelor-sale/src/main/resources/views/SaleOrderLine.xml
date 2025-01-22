@@ -10,6 +10,7 @@
     <hilite color="warning" if="deliveryState == 2"/>
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
+
     <button name="treeIconButton" showIf="hasTree" onClick="refresh" readonlyIf="true"
       icon="list-ul"
       if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
@@ -17,6 +18,10 @@
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="configuratorEditBtn"
+      onClick="save,action-sale-order-line-view-regenerate-line"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -57,14 +62,20 @@
     <field name="hasTree" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="configurator" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
     onNew="action-sale-order-line-attrs-set-compute-with-sol">
 
+
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="configuratorEditBtn"
+      onClick="save,action-sale-order-line-view-regenerate-line"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -128,6 +139,7 @@
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="$isParentTitleLine" hidden="true"/>
     <field name="$computeWithSOL" hidden="true"/>
+    <field name="configurator" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -778,4 +790,16 @@
       expr="eval: &quot;self.id IN (${(__parent__?.clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 
+
+  <action-view name="action-sale-order-line-view-regenerate-line"
+    title="Regenerate line" model="com.axelor.apps.sale.db.Configurator">
+    <view type="form" name="regenerate-configurator-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_saleOrderLineId" expr="eval: id"/>
+    <context name="_showRecord" expr="eval: configurator.id"/>
+  </action-view>
 </object-views>
