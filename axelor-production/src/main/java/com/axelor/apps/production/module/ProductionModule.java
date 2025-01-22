@@ -50,12 +50,16 @@ import com.axelor.apps.production.rest.ManufOrderRestService;
 import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
 import com.axelor.apps.production.rest.OperationOrderRestService;
 import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialCheckService;
+import com.axelor.apps.production.service.BillOfMaterialCheckServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialRemoveService;
+import com.axelor.apps.production.service.BillOfMaterialRemoveServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.BomLineCreationService;
@@ -139,7 +143,6 @@ import com.axelor.apps.production.service.bomimport.BillOfMaterialImportServiceI
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomServiceImpl;
-import com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProduction;
 import com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorCreatorImportServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineService;
@@ -392,6 +395,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineCostPriceComputeServiceImpl.class)
         .to(SaleOrderLineCostPriceComputeProductionServiceImpl.class);
     bind(ConfiguratorCheckServiceImpl.class).to(ConfiguratorCheckServiceProductionImpl.class);
-    bind(ConfiguratorCheckServiceProduction.class).to(ConfiguratorCheckServiceProductionImpl.class);
+    bind(BillOfMaterialRemoveService.class).to(BillOfMaterialRemoveServiceImpl.class);
+    bind(BillOfMaterialCheckService.class).to(BillOfMaterialCheckServiceImpl.class);
   }
 }
