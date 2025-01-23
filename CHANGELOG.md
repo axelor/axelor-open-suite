@@ -1,3 +1,44 @@
+## [7.2.31] (2025-01-23)
+
+### Fixes
+#### Base
+
+* Currency: fixed 'codeISO' field emptying on load.
+* Product: fixed the incorrect domain on historical orders to display validated orders today.
+* User: made phone and email fields read-only as long as the user does not have a linked contact.
+
+#### Account
+
+* FEC Import: set VAT system on move lines during import.
+
+#### CRM
+
+* Partner: creating a new partner is no longer a prospect and a customer at the same time.
+
+#### Sale
+
+* Sale order: fixed impossible to invoice the remainder of an order when a deposit has already been paid and charged to a partial invoice.
+
+#### Stock
+
+* Stock move line: fixed the issue by making the availability column readonly.
+
+#### Supply Chain
+
+* Stock move: stock move mass invoicing now generates an invoice with the correct invoicing address.
+* Stock move invoicing: missing translation in wizard on stock move lines.
+
+
+### Developer
+
+#### Account
+
+Added `MoveLineTaxService` dependency to `FECImporter` class.
+
+#### Supply Chain
+
+Added 'AddressService' to 'SaleOrderCreateServiceSupplychainImpl'.
+
 ## [7.2.30] (2025-01-09)
 
 ### Fixes
@@ -1470,6 +1511,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.31]: https://github.com/axelor/axelor-open-suite/compare/v7.2.30...v7.2.31
 [7.2.30]: https://github.com/axelor/axelor-open-suite/compare/v7.2.29...v7.2.30
 [7.2.29]: https://github.com/axelor/axelor-open-suite/compare/v7.2.28...v7.2.29
 [7.2.28]: https://github.com/axelor/axelor-open-suite/compare/v7.2.27...v7.2.28
