@@ -1,5 +1,0 @@
----
-title: "FEC Import: set VAT system on move lines during import."
-module: axelor-account
-developer: |
-  Added `MoveLineTaxService` dependency to `FECImporter` class.

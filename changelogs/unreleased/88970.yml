@@ -1,5 +1,0 @@
----
-title: "Project: set stock locations while generating sale quotation from project."
-module: axelor-business-project
-developer: |
-  The `ProjectBusinessServiceImpl` constructor signature was modified: it now includes `ProjectBusinessServiceImpl`.
