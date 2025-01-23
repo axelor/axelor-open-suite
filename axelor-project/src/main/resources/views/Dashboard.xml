@@ -337,8 +337,8 @@
       <field type="date" name="toDate" title="To Date" required="true"/>
 
     </search-fields>
-    <dashlet action="action-project-dashboard-report-table-project-with-ProjectTaskSequence" name="test" height="350" canSearch="true" colSpan="12" if="_test &amp;&amp; __config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
-    <dashlet action="custom:report-table-project-without-ProjectTaskSequence" name="test" height="350" canSearch="true" colSpan="12" if="!__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <dashlet action="report-table-project-with-ProjectTaskSequence" height="350" canSearch="true" colSpan="12" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <dashlet action="custom:report-table-project-without-ProjectTaskSequence" height="350" canSearch="true" colSpan="12" if="!__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
 
   </dashboard>
   <action-record model="com.axelor.apps.project.db.ProjectTask"
@@ -347,9 +347,5 @@
     <field name="toDate" expr="eval:__config__.date.plusDays(6)"/>
   </action-record>
 
-  <action-view name="action-project-dashboard-report-table-project-with-ProjectTaskSequence"
-               title="Supplier amount in progress">
-    <view type="custom" name="report-table-project-with-ProjectTaskSequence"/>
-    <context name="_test" expr="eval:fromDate!=null &amp;&amp; toDate!=null"/>
-  </action-view>
+
 </object-views>
