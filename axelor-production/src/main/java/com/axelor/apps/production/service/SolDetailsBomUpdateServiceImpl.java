@@ -26,7 +26,6 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BomLineCreationService bomLineCreationService;
-  protected final SaleOrderBomRemoveLineService saleOrderBomRemoveLineService;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -34,12 +33,10 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   public SolDetailsBomUpdateServiceImpl(
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
-      BomLineCreationService bomLineCreationService,
-      SaleOrderBomRemoveLineService saleOrderBomRemoveLineService) {
+      BomLineCreationService bomLineCreationService) {
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.bomLineCreationService = bomLineCreationService;
-    this.saleOrderBomRemoveLineService = saleOrderBomRemoveLineService;
   }
 
   @Override
@@ -60,14 +57,6 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
         updateBomLineSolDetails(saleOrderLineDetails, bom);
       }
     }
-
-    List<BillOfMaterialLine> saleOrderLineBomLineList =
-        saleOrderLine.getSaleOrderLineDetailsList().stream()
-            .map(SaleOrderLineDetails::getBillOfMaterialLine)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    saleOrderBomRemoveLineService.removeBomLines(
-        saleOrderLineBomLineList, bom, ProductRepository.PRODUCT_SUB_TYPE_COMPONENT);
     logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
   }
 

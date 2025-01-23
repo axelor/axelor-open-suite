@@ -21,6 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
+import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncServ
     }
   }
 
-  protected void removeBomLines(SaleOrderLine saleOrderLine) {
+  @Override
+  public void removeBomLines(SaleOrderLine saleOrderLine) {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
 
     if (subSaleOrderLineList != null) {
@@ -50,6 +52,11 @@ public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncServ
       }
     }
 
+    removeBomLines(saleOrderLine, subSaleOrderLineList);
+  }
+
+  protected void removeBomLines(
+      SaleOrderLine saleOrderLine, List<SaleOrderLine> subSaleOrderLineList) {
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
     if (billOfMaterial != null && billOfMaterial.getPersonalized()) {
       List<BillOfMaterialLine> bomLineToRemove =
@@ -57,7 +64,38 @@ public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncServ
       for (BillOfMaterialLine billOfMaterialLine : bomLineToRemove) {
         billOfMaterial.removeBillOfMaterialLineListItem(billOfMaterialLine);
       }
+
+      List<BillOfMaterialLine> solDetailsBomLineToRemove =
+          getSolDetailsBomLineToRemove(saleOrderLine, billOfMaterial);
+      for (BillOfMaterialLine solDetailsBomLine : solDetailsBomLineToRemove) {
+        billOfMaterial.removeBillOfMaterialLineListItem(solDetailsBomLine);
+      }
     }
+  }
+
+  protected List<BillOfMaterialLine> getSolDetailsBomLineToRemove(
+      SaleOrderLine saleOrderLine, BillOfMaterial billOfMaterial) {
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList();
+    Set<BillOfMaterialLine> billOfMaterialLineList =
+        billOfMaterial.getBillOfMaterialLineList().stream()
+            .filter(
+                line ->
+                    line.getProduct()
+                        .getProductSubTypeSelect()
+                        .equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT))
+            .collect(Collectors.toSet());
+    if (CollectionUtils.isEmpty(saleOrderLineDetailsList)) {
+      return new ArrayList<>(billOfMaterialLineList);
+    }
+    Set<BillOfMaterialLine> soDetailsBillOfMaterialLineList =
+        saleOrderLineDetailsList.stream()
+            .map(SaleOrderLineDetails::getBillOfMaterialLine)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+    List<BillOfMaterialLine> solDetailsBomLineToRemove = new ArrayList<>(billOfMaterialLineList);
+    solDetailsBomLineToRemove.removeAll(soDetailsBillOfMaterialLineList);
+    return solDetailsBomLineToRemove;
   }
 
   protected List<BillOfMaterialLine> getBomLinesToRemove(
