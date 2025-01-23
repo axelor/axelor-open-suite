@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class DataSharingReferentialLineServiceImpl implements DataSharingReferentialLineService {
@@ -48,7 +50,16 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
   @Override
   public <T extends Model> Query<T> getQuery(
       DataSharingReferential dataSharingReferential, Class<T> modelClass) {
-    return this.getQuery(dataSharingReferential.getDataSharingReferentialLineList(), modelClass);
+    List<DataSharingReferentialLine> dataSharingReferentialLineList =
+        dataSharingReferential.getDataSharingReferentialLineList().stream()
+            .filter(
+                dataSharingReferentialLine ->
+                    Objects.equals(
+                        dataSharingReferentialLine.getMetaModel().getName(),
+                        modelClass.getSimpleName()))
+            .collect(Collectors.toList());
+
+    return this.getQuery(dataSharingReferentialLineList, modelClass);
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -129,7 +129,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       values.put("currency", saleOrder.getCurrency());
       saleOrder.setDeliveryComments(clientPartner.getDeliveryComments());
       values.put("deliveryComments", saleOrder.getDeliveryComments());
-      saleOrder.setDescription(clientPartner.getDescription());
+      saleOrder.setDescription(clientPartner.getSaleOrderComments());
       values.put("description", saleOrder.getDescription());
       saleOrder.setPickingOrderComments(clientPartner.getPickingOrderComments());
       values.put("pickingOrderComments", saleOrder.getPickingOrderComments());

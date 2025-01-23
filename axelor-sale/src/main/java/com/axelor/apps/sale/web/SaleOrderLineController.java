@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -91,6 +91,15 @@ public class SaleOrderLineController {
 
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+      String parentMsg = Beans.get(SaleOrderLineCheckService.class).checkParentLineType(parentSol);
+      if (StringUtils.notEmpty(parentMsg)) {
+        response.setInfo(parentMsg);
+      }
+    }
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
@@ -98,7 +107,7 @@ public class SaleOrderLineController {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class)
-            .getOnNewEditableDummies(saleOrderLine, saleOrder));
+            .getOnNewEditableDummies(saleOrderLine, saleOrder, parentSol));
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineInitValueService.class)
             .onNewEditableInitValues(saleOrder, saleOrderLine));
