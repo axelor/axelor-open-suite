@@ -455,6 +455,7 @@
 "View all issues","Voir toutes les anomalies",,
 "View configuration",,,
 "Waiting Timesheet lines","Lignes de feuilles de temps en attente",,
+"Warning, at least 2 versions with the title %s are used on the project(s) %s.","Attention, il y a au moins deux versions avec le même titre %s qui sont utilisées sur le(s) même(s) projet(s) %s.",,
 "Wiki",,,
 "Wiki description","Description",,
 "Wiki folder","Dossier wiki",,

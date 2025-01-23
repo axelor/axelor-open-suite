@@ -19,7 +19,6 @@
 package com.axelor.apps.project.service.roadmap;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
 import com.google.inject.Inject;
 
@@ -32,11 +31,5 @@ public class SprintServiceImpl implements SprintService {
   public void generateBacklogSprint(Project project) {
     Sprint sprint = new Sprint("Backlog - " + project.getName());
     project.setBacklogSprint(sprint);
-  }
-
-  @Override
-  public void generateBacklogSprint(ProjectVersion projectVersion) {
-    Sprint sprint = new Sprint("Backlog - " + projectVersion.getTitle());
-    projectVersion.setBacklogSprint(sprint);
   }
 }

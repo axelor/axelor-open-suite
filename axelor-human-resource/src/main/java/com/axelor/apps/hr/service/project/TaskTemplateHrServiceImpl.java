@@ -9,16 +9,20 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class TaskTemplateHrServiceImpl extends TaskTemplateServiceImpl {
 
   protected ProjectPlanningTimeCreateService projectPlanningTimeCreateService;
   protected AppBaseService appBaseService;
   protected ProjectPlanningTimeComputeService projectPlanningTimeComputeService;
+  protected AppProjectService appProjectService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
 
   @Inject
@@ -26,10 +30,12 @@ public class TaskTemplateHrServiceImpl extends TaskTemplateServiceImpl {
       ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
       AppBaseService appBaseService,
       ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
+      AppProjectService appProjectService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository) {
     this.projectPlanningTimeCreateService = projectPlanningTimeCreateService;
     this.appBaseService = appBaseService;
     this.projectPlanningTimeComputeService = projectPlanningTimeComputeService;
+    this.appProjectService = appProjectService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
   }
 
@@ -38,7 +44,11 @@ public class TaskTemplateHrServiceImpl extends TaskTemplateServiceImpl {
       throws AxelorException {
     super.manageTemplateFields(task, taskTemplate, project);
 
-    manageProjectPlanningTime(taskTemplate, task, project);
+    if (Optional.ofNullable(appProjectService.getAppProject())
+        .map(AppProject::getEnablePlanification)
+        .orElse(false)) {
+      manageProjectPlanningTime(taskTemplate, task, project);
+    }
   }
 
   @Transactional(rollbackOn = Exception.class)

@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
@@ -42,6 +43,14 @@ public interface ConfiguratorService {
    */
   void updateIndicators(
       Configurator configurator, JsonContext attributes, JsonContext indicators, Long saleOrderId)
+      throws AxelorException;
+
+  void regenerateSaleOrderLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrderLine saleOrderLine)
       throws AxelorException;
 
   /**

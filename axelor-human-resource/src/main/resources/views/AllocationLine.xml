@@ -17,7 +17,8 @@
     <field name="employee"/>
     <field name="period"/>
     <field name="allocated"/>
-    <field name="$plannedTime" readonly="true" title="Planned time" x-scale="2"/>
+    <field name="$plannedTime" readonly="true" title="Planned time" x-scale="2"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
     <field name="$leaves" readonly="true" title="Leaves" x-scale="2"/>
     <field name="$alreadyAllocated" readonly="true" title="Already allocated" x-scale="2"/>
     <field name="$availableAllocation" readonly="true" title="Available" x-scale="2"/>
@@ -33,7 +34,8 @@
       <field name="period" grid-view="period-grid" form-view="period-hr-allocation-form"
         required="true" domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
       <field name="allocated"/>
-      <field name="$plannedTime" colSpan="3" readonly="true" title="Planned time" x-scale="2"/>
+      <field name="$plannedTime" colSpan="3" readonly="true" title="Planned time" x-scale="2"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="$leaves" readonly="true" colSpan="3" title="Leaves" x-scale="2"/>
       <field name="$alreadyAllocated" readonly="true" colSpan="3" title="Already allocated"
         x-scale="2"/>

@@ -23,6 +23,8 @@ import static com.axelor.utils.MetaJsonFieldType.ONE_TO_MANY;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -86,6 +88,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLineGeneratorService saleOrderLineGeneratorService;
   protected SaleOrderRepository saleOrderRepository;
+  protected final ConfiguratorCheckService configuratorCheckService;
+  protected final ConfiguratorSaleOrderLineService configuratorSaleOrderLineService;
+  protected final ProductCompanyRepository productCompanyRepository;
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -101,7 +106,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      ConfiguratorCheckService configuratorCheckService,
+      ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
+      ProductCompanyRepository productCompanyRepository) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;
@@ -113,6 +121,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLineGeneratorService = saleOrderLineGeneratorService;
     this.saleOrderRepository = saleOrderRepository;
+    this.configuratorCheckService = configuratorCheckService;
+    this.configuratorSaleOrderLineService = configuratorSaleOrderLineService;
+    this.productCompanyRepository = productCompanyRepository;
   }
 
   @Override
@@ -238,6 +249,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       JsonContext jsonIndicators,
       Long saleOrderId)
       throws AxelorException {
+
+    configuratorCheckService.checkLinkedSaleOrderLine(configurator, product);
+
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
 
     cleanIndicators(jsonIndicators);
@@ -269,6 +283,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           I18n.get(SaleExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_NAME));
     }
 
+    if (product.getProductCompanyList() != null) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        // Delinking productCompany with company so we don't have a unicity constraint error
+        productCompany.setCompany(null);
+        productCompanyRepository.save(productCompany);
+      }
+      product.clearProductCompanyList();
+    }
+
     productRepository.save(product);
   }
 
@@ -297,24 +320,65 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (configurator.getConfiguratorCreator().getGenerateProduct()) {
       // generate sale order line from product
       generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrder.getId());
-      String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
-      BigDecimal qty = BigDecimal.ONE;
-      if (qtyFormula != null && !"".equals(qtyFormula)) {
-        Object result = computeFormula(qtyFormula, jsonAttributes);
-        if (result != null) {
-          qty = new BigDecimal(result.toString());
-        }
-      }
+      BigDecimal qty = getFormulaQty(configurator, jsonAttributes);
 
       saleOrderLine =
           saleOrderLineGeneratorService.createSaleOrderLine(
               saleOrder, configurator.getProduct(), qty);
-      saleOrderLineRepository.save(saleOrderLine);
+
     } else {
-      generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+      saleOrderLine =
+          generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
+    saleOrderLine.setConfigurator(configurator);
+    saleOrderLineRepository.save(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
+  }
+
+  protected BigDecimal getFormulaQty(Configurator configurator, JsonContext jsonAttributes) {
+    String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
+    BigDecimal qty = BigDecimal.ONE;
+    if (qtyFormula != null && !"".equals(qtyFormula)) {
+      Object result = computeFormula(qtyFormula, jsonAttributes);
+      if (result != null) {
+        qty = new BigDecimal(result.toString());
+      }
+    }
+    return qty;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void regenerateSaleOrderLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    // Product has been generated with configurator
+    if (configurator.getConfiguratorCreator().getGenerateProduct()) {
+
+      var product = configurator.getProduct();
+      // Editing the product will automatically regenerate lines and remove old line
+      fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
+      configuratorSaleOrderLineService.regenerateSaleOrderLine(
+          configurator, product, saleOrderLine);
+
+    } else {
+
+      configuratorCheckService.checkLinkedSaleOrderLine(configurator);
+
+      var newSaleOrderLine =
+          generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+      newSaleOrderLine.setConfigurator(configurator);
+      saleOrder.removeSaleOrderLineListItem(saleOrderLine);
+      saleOrderLineRepository.save(newSaleOrderLine);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderRepository.save(saleOrder);
+    }
   }
 
   /**

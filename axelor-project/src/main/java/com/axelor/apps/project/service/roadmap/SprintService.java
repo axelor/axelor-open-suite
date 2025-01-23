@@ -19,11 +19,8 @@
 package com.axelor.apps.project.service.roadmap;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectVersion;
 
 public interface SprintService {
 
   void generateBacklogSprint(Project project);
-
-  void generateBacklogSprint(ProjectVersion projectVersion);
 }

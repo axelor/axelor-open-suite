@@ -30,6 +30,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.script.ImportPurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -89,6 +90,8 @@ public class ImportSupplyChain {
 
   @Inject protected SaleOrderConfirmService saleOrderConfirmService;
 
+  @Inject protected PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
+
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
 
@@ -134,6 +137,7 @@ public class ImportSupplyChain {
         purchaseOrder.setValidationDateTime(purchaseOrder.getOrderDate().atStartOfDay());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
         purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
+        purchaseOrderTypeSelectService.setTypeSelect(purchaseOrder);
         Invoice invoice =
             Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
 

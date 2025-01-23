@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -30,8 +31,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderLineService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -58,7 +61,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      ConfiguratorCheckService configuratorCheckService,
+      ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
+      ProductCompanyRepository productCompanyRepository) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -70,7 +76,10 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         saleOrderLineOnProductChangeService,
         saleOrderLineComputeService,
         saleOrderLineGeneratorService,
-        saleOrderRepository);
+        saleOrderRepository,
+        configuratorCheckService,
+        configuratorSaleOrderLineService,
+        productCompanyRepository);
   }
 
   /**
