@@ -23,8 +23,8 @@ dependencies {
 
     jaxb libs.jaxb_xjc
 
-	implementation libs.bcprov_jdk15on
-	implementation libs.bcpkix_jdk15on
+	implementation libs.bcprov_jdk18on
+	implementation libs.bcpkix_jdk18on
 
 	implementation libs.commons_codec
 	implementation libs.commons_httpclient

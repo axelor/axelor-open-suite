@@ -4,8 +4,8 @@ libs.axelor_studio = 'com.axelor.addons:axelor-studio:3.1.10'
 libs.axelor_message = 'com.axelor.addons:axelor-message:3.1.3'
 libs.axelor_utils = 'com.axelor.addons:axelor-utils:3.1.5'
 
-libs.bcpkix_jdk15on = 'org.bouncycastle:bcpkix-jdk15on:1.70'
-libs.bcprov_jdk15on = 'org.bouncycastle:bcprov-jdk15on:1.70'
+libs.bcpkix_jdk18on = 'org.bouncycastle:bcpkix-jdk18on:1.78.1'
+libs.bcprov_jdk18on = 'org.bouncycastle:bcprov-jdk18on:1.78.1'
 
 libs.commons_codec = 'commons-codec:commons-codec:1.15'
 libs.commons_collections4 = 'org.apache.commons:commons-collections4:4.4'
