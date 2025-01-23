@@ -1,3 +1,0 @@
----
-title: "Contract: fixed the filter on partner field to select only customer/supplier respectively on customer/supplier contracts."
-module: axelor-contract

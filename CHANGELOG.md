@@ -1,3 +1,61 @@
+## [8.1.16] (2025-01-23)
+
+### Fixes
+#### Base
+
+* Updated axelor-utils dependency to 3.1.5, fixing an issue that could prevent PDF generation in some cases.
+* Updated bouncycastle dependency to improve security.
+* Currency: fixed 'codeISO' field emptying on load.
+* Product: fixed the incorrect domain on historical orders to display validated orders today.
+* User: made phone and email fields read-only as long as the user does not have a linked contact.
+
+#### Account
+
+* Move line query line: removed taxes from the grid to recover the broken grid view.
+* FEC Import: set VAT system on move lines during import.
+
+#### Business Project
+
+* Invoicing project: fix project task progress in invoicing project annex report.
+
+#### Contract
+
+* Contract: fixed the filter on partner field to select only customer/supplier respectively on customer/supplier contracts.
+
+#### CRM
+
+* Partner: creating a new partner is no longer a prospect and a customer at the same time.
+
+#### Project
+
+* User: Hid the active project field if the project module isn't installed.
+
+#### Sale
+
+* Sale order: fixed impossible to invoice the remainder of an order when a deposit has already been paid and charged to a partial invoice.
+
+#### Stock
+
+* Stock move line: fixed the issue by making the availability column readonly.
+* Stock move: compute total net mass when splitting lines.
+
+#### Supply Chain
+
+* Purchase order: fixed fiscal position when creating a purchase order from sale order.
+* Stock move: stock move mass invoicing now generates an invoice with the correct invoicing address.
+* Stock move invoicing: missing translation in wizard on stock move lines.
+
+
+### Developer
+
+#### Base
+
+The dependency `'org.bouncycastle:bcprov-jdk15on:1.70'` was replaced by `'org.bouncycastle:bcpkix-jdk18on:1.78.1'`. If you are using an AOS module with other modules that depends on `'org.bouncycastle:bcprov-jdk15on:1.70'`, please change your gradle configuration to avoid a conflict or update your dependencies.
+
+#### Account
+
+Added `MoveLineTaxService` dependency to `FECImporter` class.
+
 ## [8.1.15] (2025-01-09)
 
 ### Fixes
@@ -1066,6 +1124,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.16]: https://github.com/axelor/axelor-open-suite/compare/v8.1.15...v8.1.16
 [8.1.15]: https://github.com/axelor/axelor-open-suite/compare/v8.1.14...v8.1.15
 [8.1.14]: https://github.com/axelor/axelor-open-suite/compare/v8.1.13...v8.1.14
 [8.1.13]: https://github.com/axelor/axelor-open-suite/compare/v8.1.12...v8.1.13
