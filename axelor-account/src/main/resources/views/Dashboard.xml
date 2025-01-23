@@ -7,6 +7,13 @@
 
   <dashboard title="Invoice Dashboard" name="account.sale.invoice.dashboard.1"
     width="large">
+    <dashlet action="dashlet.paymentVoucher.customer.forecast.vs.revenue" height="350" canSearch="true" colSpan="12"/>
+    <dashlet action="dashlet.account.invoice.with.expenses.summary" height="350" canSearch="true"/>
+    <dashlet action="dashlet.invoice.turnover.by.customer" height="350" canSearch="true"/>
+    <dashlet action="dashlet.supplier.invoices.due" height="350" canSearch="true"/>
+    <dashlet action="dashlet.supplier.cost.by.months" height="350" canSearch="true"/>
+
+
     <dashlet action="dashlet.customer.invoices.to.collect" height="350" canSearch="true"
       colSpan="12"/>
     <dashlet action="dashlet.invoice.turnover.cust.history" height="350" canSearch="true"/>
@@ -26,6 +33,7 @@
 
   <dashboard title="Invoice Dashboard" name="account.purchase.invoice.dashboard.1"
     width="large">
+
     <dashlet action="dashlet.supplier.invoices.due" height="350" canSearch="true"
       colSpan="12"/>
     <dashlet action="dashlet.prod.qty.suppl.invoices.last.12m" height="350" canSearch="true"/>
@@ -182,6 +190,12 @@
     <view type="chart" name="chart.account.invoice.summary"/>
   </action-view>
 
+  <action-view name="dashlet.account.invoice.with.expenses.summary" title="Revenue vs costs" model="com.axelor.apps.account.db.Invoice">
+    <view type="chart" name="chart.account.invoice.with.expenses.summary"/>
+  </action-view>
+
+
+
   <action-view name="dashlet.invoiced.turnover.ytd.vs.lastyear"
     title="Invoiced Turnover This year vs Last year" model="com.axelor.apps.account.db.Invoice">
     <view type="chart" name="chart.invoiced.turnover.ytd.vs.lastyear"/>
@@ -210,6 +224,14 @@
     <view type="chart" name="chart.invoice.total.revenue.by.product"/>
 
     <context name="todayDate" expr="eval:__config__.date"/>
+  </action-view>
+
+  <action-view name="dashlet.invoice.turnover.by.customer" title="Business turnover research by customer" model="com.axelor.apps.account.db.Invoice">
+    <view type="chart" name="chart.invoice.turnover.by.customer"/>
+  </action-view>
+
+  <action-view name="dashlet.supplier.cost.by.months" title="Partner cost by months" model="com.axelor.apps.account.db.Invoice">
+    <view type="chart" name="chart.supplier.cost.by.months"/>
   </action-view>
 
   <action-view name="dashlet.total.revenue.by.geo.region"
@@ -256,6 +278,11 @@
     model="com.axelor.apps.account.db.PaymentVoucher">
     <view type="chart" name="chart.paymentVoucher.customer.paymentMode.distribution.nbr"/>
     <context name="todayDate" expr="eval:__config__.date"/>
+  </action-view>
+
+  <action-view name="dashlet.paymentVoucher.customer.forecast.vs.revenue" title="Revenue vs Forecast" model="com.axelor.apps.account.db.PaymentVoucher">
+    <view type="chart" name="chart.paymentVoucher.customer.forecast.vs.revenue"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
   </action-view>
 
   <action-view name="dashlet.invoice.terms.customer.paymentMode.distribution.nbr"

@@ -10,10 +10,6 @@ public class AccountInvoiceChartConstants {
         public static final String CALCULATE_GROSS_PROFIT = "GROSS_PROFIT";
         public static final String CALCULATE_EBITDA = "EBITDA";
 
-        public static final String CATEGORY_CODE_IT = "IT";
-        public static final String CATEGORY_CODE_MAIN = "MAIN";
-        public static final String CATEGORY_CODE_TRN = "TRN";
-        public static final String CATEGORY_CODE_COMM = "COMM";
         public static final String CATEGORY_CODE_ALL = "ALL";
 
 

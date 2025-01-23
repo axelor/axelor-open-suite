@@ -151,7 +151,8 @@
 
 
     <selection name="select.translation.five.years">
-        <option value="2023">2024</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
         <option value="2023">2023</option>
         <option value="2022">2022</option>
         <option value="2021">2021</option>
@@ -192,10 +193,8 @@
 
     <selection name="select.invoice.company.code">
         <option value="ALL" order="1">All</option>
-        <option value="COMM" order="2">Communications</option>
-        <option value="TRN" order="3">Translations</option>
-        <option value="IT" order="4">IT</option>
-        <option value="MAIN" order="5">HQ</option>
+        <option value="TECH" order="2">Krabu tech</option>
+        <option value="12841650" order="3">12841650 Pix invest</option>
     </selection>
 
     <!--    Operations select for account invoice summary chart -->
