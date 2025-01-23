@@ -1,3 +1,51 @@
+## [8.0.24] (2025-01-23)
+
+### Fixes
+#### Base
+
+* Updated axelor-utils dependency to 2.0.2, fixing an issue that could prevent PDF generation in some cases.
+* Update bouncycastle dependency to improve security.
+* Currency: fixed 'codeISO' field emptying on load.
+* Product: fixed the incorrect domain on historical orders to display validated orders today.
+* User: made phone and email fields read-only as long as the user does not have a linked contact.
+
+#### Account
+
+* FEC Import: set VAT system on move lines during import.
+* Accounting config: fixed translations on new company creation.
+
+#### CRM
+
+* Partner: creating a new partner is no longer a prospect and a customer at the same time.
+
+#### Sale
+
+* Sale order: fixed impossible to invoice the remainder of an order when a deposit has already been paid and charged to a partial invoice.
+
+#### Stock
+
+* Stock move line: fixed the issue by making the availability column readonly.
+
+#### Supply Chain
+
+* Stock move: stock move mass invoicing now generates an invoice with the correct invoicing address.
+* Stock move invoicing: missing translation in wizard on stock move lines
+
+
+### Developer
+
+#### Base
+
+The dependency `'org.bouncycastle:bcprov-jdk15on:1.70'` was replaced by `'org.bouncycastle:bcpkix-jdk18on:1.78.1'`. If you are using an AOS module with other modules that depends on `'org.bouncycastle:bcprov-jdk15on:1.70'`, please change your gradle configuration to avoid a conflict or update your dependencies.
+
+#### Account
+
+Added `MoveLineTaxService` dependency to `FECImporter` class.
+
+#### Supply Chain
+
+Added 'AddressService' to 'SaleOrderCreateServiceSupplychainImpl'.
+
 ## [8.0.23] (2025-01-09)
 
 ### Fixes
@@ -1419,6 +1467,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.24]: https://github.com/axelor/axelor-open-suite/compare/v8.0.23...v8.0.24
 [8.0.23]: https://github.com/axelor/axelor-open-suite/compare/v8.0.22...v8.0.23
 [8.0.22]: https://github.com/axelor/axelor-open-suite/compare/v8.0.21...v8.0.22
 [8.0.21]: https://github.com/axelor/axelor-open-suite/compare/v8.0.20...v8.0.21
