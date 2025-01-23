@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
@@ -365,7 +366,7 @@ public class SaleOrderLineController {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine =
         Optional.ofNullable(context.asType(SaleOrderLine.class))
-            // .map(solCtx -> Beans.get(SaleOrderLineRepository.class).find(solCtx.getId()))
+            .map(solCtx -> Beans.get(SaleOrderLineRepository.class).find(solCtx.getId()))
             .orElse(null);
 
     if (saleOrderLine != null) {

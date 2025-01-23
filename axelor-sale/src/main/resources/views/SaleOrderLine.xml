@@ -81,7 +81,7 @@
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
       icon="fa-pen-to-square"/>
     <button name="configuratorDuplicateBtn"
-      onClick="action-sale-order-line-method-configurator-duplicate"
+      onClick="save,action-sale-order-line-method-configurator-duplicate"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
       icon="fa-copy"/>
     <button name="addToCartBtn" title="Add to cart"
