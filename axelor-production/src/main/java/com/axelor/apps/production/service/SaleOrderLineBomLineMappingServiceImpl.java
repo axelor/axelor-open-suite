@@ -26,6 +26,9 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.google.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -79,6 +82,12 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
   @Override
   public boolean isBomLineEqualsSol(
       BillOfMaterialLine billOfMaterialLine, SaleOrderLine saleOrderLine) {
+    int saleSupplySelect = saleOrderLine.getSaleSupplySelect();
+    List<Integer> saleSupplyStatusWithBom = new ArrayList<>();
+    saleSupplyStatusWithBom.add(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
+    saleSupplyStatusWithBom.add(SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE);
+
+    boolean isBomLineConsistentWithSol = saleSupplyStatusWithBom.contains(saleSupplySelect) && billOfMaterialLine.getBillOfMaterial() != null;
 
     return billOfMaterialLine.getQty().equals(saleOrderLine.getQty())
         && billOfMaterialLine.getProduct().equals(saleOrderLine.getProduct())
@@ -87,7 +96,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
         && Optional.ofNullable(saleOrderLine.getBillOfMaterial())
             .map(solBom -> solBom.equals(billOfMaterialLine.getBillOfMaterial()))
             .or(() -> Optional.of(billOfMaterialLine.getBillOfMaterial() == null))
-            .orElse(false);
+            .orElse(false) && isBomLineConsistentWithSol;
   }
 
   @Override
