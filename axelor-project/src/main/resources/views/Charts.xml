@@ -52,33 +52,33 @@
   </chart>
 
 
-  <custom name="report-table-project" title="Project">
+  <custom name="report-table-project-with-ProjectTaskSequence" title="Project" >
     <field name="projectTaskCategory" title="Project task category"
       type="com.axelor.apps.project.db.ProjectTaskCategory"/>
     <field name="ticketNumber" title="Ticket number" type="String"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+      showIf="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name" title="Name"/>
-    <field name="status" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
     <field name="assignedTo" title="AssignedTo" type="com.axelor.auth.db.User"/>
-    <field name="taskDate" title="taskDate" type="date"/>
+    <field name="status" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
+    <field name="taskDate" title="Start date" type="date"/>
     <field name="priority" title="Priority" type="com.axelor.apps.project.db.ProjectPriority"/>
-    <field name="progress" title="Progress" type="BigDecimal" widget="Progress"/>
-    <field name="budgetedTime" title="budgetedTime" type="String"/>
+    <field name="progress" title="Progress" type="BigDecimal" aggregate="avg" widget="Progress" />
+    <field name="budgetedTime" title="budgetedTime" aggregate="sum" type="String"/>
 
     <dataset type="jpql" limit="40">
       <![CDATA[
-
   SELECT
+  pt.projectTaskCategory.name AS projectTaskCategory,
+     pt.ticketNumber AS ticketNumber,
     pt.name AS name,
+        pt.status.name AS status,
+        pt.assignedTo.fullName as AssignedTo,
+           pt.taskDate AS taskDate,
     pt.priority.name AS priority,
-    pt.status.name AS status,
     pt.progress AS progress,
-    pt.taskDate AS taskDate,
-    pt.projectTaskCategory.name AS projectTaskCategory,
-    AVG(pt.progress) AS avgProgress,
-    SUM(pt.budgetedTime) AS sumBudgetedTime,
     pt.project.fullName AS project,
-    pt.ticketNumber AS ticketNumber
+       pt.budgetedTime AS budgetedTime
+
 FROM
     ProjectTask pt
 JOIN
@@ -91,18 +91,6 @@ WHERE
     )
     AND (:project = pt.project OR :project IS NULL)
     AND p.id = pt.project.id
-GROUP BY
-    pt.project.fullName,
-    pt.name, pt.id,
-    pt.priority.name,
-    pt.priority,
-    pt.status.name,
-    pt.status,
-    pt.progress,
-    pt.taskDate,
-    pt.projectTaskCategory.name,
-    pt.ticketNumber
-
 ORDER BY
     pt.priority.id DESC,
     pt.status.id ASC,
@@ -114,7 +102,58 @@ ORDER BY
     </dataset>
     <template>
       <![CDATA[
-  <report-table/>
+  <report-table sums='budgetedTime'/>
+  ]]>
+    </template>
+  </custom>
+  <custom name="report-table-project-without-ProjectTaskSequence" title="Project" >
+    <field name="projectTaskCategory" title="Project task category"
+           type="com.axelor.apps.project.db.ProjectTaskCategory"/>
+    <field name="name" title="Name"/>
+    <field name="assignedTo" title="AssignedTo" type="com.axelor.auth.db.User"/>
+    <field name="status" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
+    <field name="taskDate" title="Start date" type="date"/>
+    <field name="priority" title="Priority" type="com.axelor.apps.project.db.ProjectPriority"/>
+    <field name="progress" title="Progress" type="BigDecimal" aggregate="avg" widget="Progress" />
+    <field name="budgetedTime" title="budgetedTime" aggregate="sum" type="String"/>
+
+    <dataset type="jpql" limit="40">
+      <![CDATA[
+  SELECT
+  pt.projectTaskCategory.name AS projectTaskCategory,
+    pt.name AS name,
+        pt.status.name AS status,
+        pt.assignedTo.fullName as AssignedTo,
+           pt.taskDate AS taskDate,
+    pt.priority.name AS priority,
+    pt.progress AS progress,
+    pt.project.fullName AS project,
+       pt.budgetedTime AS budgetedTime
+
+FROM
+    ProjectTask pt
+JOIN
+    pt.project p
+WHERE
+    (
+        (:fromDate IS NOT NULL AND :toDate IS NOT NULL AND DATE(pt.taskDate) BETWEEN DATE(:fromDate) AND DATE(:toDate))
+        OR
+        (:fromDate IS NULL OR :toDate IS NULL)
+    )
+    AND (:project = pt.project OR :project IS NULL)
+    AND p.id = pt.project.id
+ORDER BY
+    pt.priority.id DESC,
+    pt.status.id ASC,
+    pt.progress DESC,
+    pt.taskDate ASC,
+    pt.id DESC
+
+  ]]>
+    </dataset>
+    <template>
+      <![CDATA[
+  <report-table sums='budgetedTime'/>
   ]]>
     </template>
   </custom>
