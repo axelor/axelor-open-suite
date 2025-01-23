@@ -1,0 +1,20 @@
+importId;code;product.code;name;quantity;unit.importId;parentBoMImportLine.importId
+1;EQPT-0004;EQPT-0004;;1;1;
+2;COMP-0001;COMP-0001;Hard Disk SATA 1To;2;1;1
+3;COMP-0003;COMP-0003;"Processor 4x3;4 GHz";1;1;1
+4;COMP-0005;COMP-0005;Rack Casing;1;1;1
+5;COMP-0006;COMP-0006;Memory 8 Go DDR3;4;1;1
+6;COMP-0008;COMP-0008;Classic MotherBoard;1;1;2
+7;COMP-0010;COMP-0010;Power Supply;1;1;2
+8;CONS-0001;CONS-0001;Cables set;1;1;4
+9;CONS-0002;CONS-0002;Screws set;1;1;4
+20;EQPT-0004;EQPT-0004;Basic Server (option);1;1;9
+21;COMP-0001;COMP-0001;Hard Disk SATA 1To;2;1;9
+22;COMP-0003;COMP-0003;"Processor 4x3;4 GHz";1;1;20
+23;COMP-0005;COMP-0005;Rack Casing;1;1;20
+24;COMP-0007;COMP-0007;Memory 16 Go DDR3;2;1;20
+25;COMP-0008;COMP-0008;Classic MotherBoard;1;1;20
+26;COMP-0010;COMP-0010;Power Supply;1;1;25
+27;CONS-0001;CONS-0001;Cables set;1;1;25
+28;CONS-0002;CONS-0002;Screws set;1;1;25
+29;CONS-0002;CONS-0002;Screws set;1;1;28
