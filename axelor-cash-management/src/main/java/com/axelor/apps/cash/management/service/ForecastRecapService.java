@@ -20,13 +20,12 @@ package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.cash.management.db.ForecastRecap;
-import java.time.LocalDate;
 
 public interface ForecastRecapService {
 
   void reset(ForecastRecap forecastRecap);
 
-  void finish(ForecastRecap forecastRecap, LocalDate today);
+  void finish(ForecastRecap forecastRecap);
 
   void populate(ForecastRecap forecastRecap) throws AxelorException;
 

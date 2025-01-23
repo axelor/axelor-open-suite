@@ -153,17 +153,16 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
 
   @Override
   @Transactional
-  public void finish(ForecastRecap forecastRecap, LocalDate today) {
+  public void finish(ForecastRecap forecastRecap) {
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
-    forecastRecap.setCalculationDate(today);
+    forecastRecap.setCalculationDate(appBaseService.getTodayDate(forecastRecap.getCompany()));
     forecastRecap.setIsComplete(true);
     forecastRecapRepo.save(forecastRecap);
   }
 
   @Override
   public void populate(ForecastRecap forecastRecap) throws AxelorException {
-    LocalDate today = appBaseService.getTodayDate(forecastRecap.getCompany());
     this.reset(forecastRecapRepo.find(forecastRecap.getId()));
 
     Query<ForecastRecapLineType> forecastRecapLineTypeQuery = forecastRecapLineTypeRepo.all();
@@ -191,14 +190,14 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               : false;
       for (ForecastRecapLineType forecastRecapLineType : forecastRecapLineTypeList) {
         offset++;
-        populateWithTimetables(forecastRecap, forecastRecapLineType, manageMultiBanks, today);
+        populateWithTimetables(forecastRecap, forecastRecapLineType, manageMultiBanks);
         populateWithForecastLineType(forecastRecap, forecastRecapLineType, manageMultiBanks);
       }
       JPA.clear();
       forecastRecap = forecastRecapRepo.find(forecastRecap.getId());
     }
 
-    this.finish(forecastRecapRepo.find(forecastRecap.getId()), today);
+    this.finish(forecastRecapRepo.find(forecastRecap.getId()));
   }
 
   protected void populateWithForecastLineType(
@@ -486,7 +485,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected BigDecimal getCompanyAmount(
       ForecastRecap forecastRecap, ForecastRecapLineType forecastRecapLineType, Model forecastModel)
       throws AxelorException {
-    LocalDate today = appBaseService.getTodayDate(forecastRecap.getCompany());
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
@@ -500,7 +498,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 saleOrder.getCurrency(),
                 saleOrder.getCompany().getCurrency(),
                 getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
-                today)
+                appBaseService.getTodayDate(forecastRecap.getCompany()))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
         PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
@@ -509,7 +507,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 purchaseOrder.getCurrency(),
                 purchaseOrder.getCompany().getCurrency(),
                 getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
-                today)
+                appBaseService.getTodayDate(forecastRecap.getCompany()))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
@@ -519,8 +517,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return forecast.getAmount().abs();
       case ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY:
         Opportunity opportunity = (Opportunity) forecastModel;
-        return getCompanyAmountForOpportunity(
-            forecastRecap, forecastRecapLineType, opportunity, today);
+        return getCompanyAmountForOpportunity(forecastRecap, forecastRecapLineType, opportunity);
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         // this element is not supported by this method.
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
@@ -590,8 +587,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected BigDecimal getCompanyAmountForOpportunity(
       ForecastRecap forecastRecap,
       ForecastRecapLineType forecastRecapLineType,
-      Opportunity opportunity,
-      LocalDate today)
+      Opportunity opportunity)
       throws AxelorException {
     BigDecimal opportunityAmount;
     if (forecastRecap.getOpportunitiesTypeSelect()
@@ -610,7 +606,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             opportunityAmount
                 .multiply(opportunity.getProbability())
                 .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-            today)
+            appBaseService.getTodayDate(forecastRecap.getCompany()))
         .setScale(2, RoundingMode.HALF_UP);
   }
 
@@ -802,8 +798,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected void populateWithTimetables(
       ForecastRecap forecastRecap,
       ForecastRecapLineType forecastRecapLineType,
-      boolean manageMultiBanks,
-      LocalDate today)
+      boolean manageMultiBanks)
       throws AxelorException {
 
     List<Integer> statusList = StringHelper.getIntegerList(forecastRecapLineType.getStatusSelect());
@@ -858,7 +853,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                     timetable.getSaleOrder().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     timetable.getAmount(),
-                    today)
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         this.createForecastRecapLine(
             timetable.getEstimatedDate(),
@@ -901,7 +896,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                     timetable.getPurchaseOrder().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     timetable.getAmount(),
-                    today)
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         this.createForecastRecapLine(
             timetable.getEstimatedDate(),
@@ -953,7 +948,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                     invoiceTerm.getMoveLine().getMove().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     invoiceTerm.getAmount(),
-                    today)
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
         this.createForecastRecapLine(
