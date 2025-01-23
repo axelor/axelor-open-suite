@@ -1,0 +1,5 @@
+---
+title: "Update bouncycastle dependency to improve security."
+module: axelor-base
+developer: |
+  The dependency `'org.bouncycastle:bcprov-jdk15on:1.70'` was replaced by `'org.bouncycastle:bcpkix-jdk18on:1.78.1'`. If you are using AOS module with other modules that depends on `'org.bouncycastle:bcprov-jdk15on:1.70'`, please change your gradle configuration to avoid a conflict or update your dependencies.
