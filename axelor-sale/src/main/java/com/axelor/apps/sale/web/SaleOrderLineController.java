@@ -369,8 +369,16 @@ public class SaleOrderLineController {
             .map(solCtx -> Beans.get(SaleOrderLineRepository.class).find(solCtx.getId()))
             .orElse(null);
 
-    if (saleOrderLine != null) {
-      Beans.get(ConfiguratorService.class).duplicateSaleOrderLine(saleOrderLine);
+    try {
+      if (saleOrderLine != null) {
+        Beans.get(ConfiguratorService.class).duplicateSaleOrderLine(saleOrderLine);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      var sol = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ConfiguratorService.class).simpleDuplicate(sol, sol.getSaleOrder());
+      response.setInfo(I18n.get(SaleExceptionMessage.ERROR_DURING_DUPLICATION_SALE_ORDER_LINE));
       response.setReload(true);
     }
   }
