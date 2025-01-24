@@ -813,4 +813,9 @@
     <option value="other" order="10000">Other</option>
   </selection>
 
+  <selection name="base.app.base.tax.computation.select">
+    <option value="0">Compute tax from total</option>
+    <option value="1">Compute tax from lines</option>
+  </selection>
+
 </object-views>

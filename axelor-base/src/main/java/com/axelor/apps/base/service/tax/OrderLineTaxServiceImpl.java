@@ -28,6 +28,7 @@ import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.base.interfaces.PricedOrderLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -38,10 +39,13 @@ import java.util.Set;
 public class OrderLineTaxServiceImpl implements OrderLineTaxService {
 
   protected CurrencyScaleService currencyScaleService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public OrderLineTaxServiceImpl(CurrencyScaleService currencyScaleService) {
+  public OrderLineTaxServiceImpl(
+      CurrencyScaleService currencyScaleService, AppBaseService appBaseService) {
     this.currencyScaleService = currencyScaleService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -86,6 +90,34 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
     }
     orderLineTax.setInTaxTotal(
         currencyScaleService.getScaledValue(exTaxBase.add(taxTotal), currencyScale));
+  }
+
+  @Override
+  public void computeTaxFromLines(
+      OrderLineTax orderLineTax, BigDecimal exTaxTotal, Currency currency) {
+    if (appBaseService.getAppBase().getTaxComputationSelect()
+        != AppBaseRepository.TAX_COMPUTATION_FROM_LINES) {
+      return;
+    }
+    int currencyScale = currencyScaleService.getCurrencyScale(currency);
+
+    BigDecimal taxTotal =
+        exTaxTotal.multiply(
+            orderLineTax
+                .getTaxLine()
+                .getValue()
+                .divide(
+                    new BigDecimal(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP));
+    orderLineTax.setTaxTotal(
+        orderLineTax
+            .getTaxTotal()
+            .add(currencyScaleService.getScaledValue(taxTotal, currencyScale)));
+    orderLineTax.setPercentageTaxTotal(
+        orderLineTax.getPercentageTaxTotal().add(orderLineTax.getTaxTotal()));
+    orderLineTax.setInTaxTotal(
+        orderLineTax
+            .getInTaxTotal()
+            .add(currencyScaleService.getScaledValue(exTaxTotal.add(taxTotal), currencyScale)));
   }
 
   @Override
