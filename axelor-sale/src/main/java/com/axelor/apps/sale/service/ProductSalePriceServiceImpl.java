@@ -57,7 +57,8 @@ public class ProductSalePriceServiceImpl implements ProductSalePriceService {
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
       FiscalPositionService fiscalPositionService,
-      ProductPriceService productPriceService) {
+      ProductPriceService productPriceService,
+      ProductPriceListService productPriceListService) {
 
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
@@ -66,6 +67,7 @@ public class ProductSalePriceServiceImpl implements ProductSalePriceService {
     this.accountManagementService = accountManagementService;
     this.fiscalPositionService = fiscalPositionService;
     this.productPriceService = productPriceService;
+    this.productPriceListService = productPriceListService;
   }
 
   @Override
@@ -99,29 +101,18 @@ public class ProductSalePriceServiceImpl implements ProductSalePriceService {
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(todayDate, product, company, fiscalPosition, false);
     if (partner == null) {
-      return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
+      return productPriceService.getSaleUnitPrice(
+          company, product, taxLineSet, inAti, todayDate, toCurrency);
     }
-    BigDecimal priceWT =
-        productPriceListService.applyPriceList(product, partner, company, currency, false);
+    BigDecimal price =
+        productPriceService.getSaleUnitPrice(
+            company, product, taxLineSet, false, todayDate, toCurrency);
+    BigDecimal priceDiscounted =
+        productPriceListService.applyPriceList(product, partner, company, currency, price);
     if (!inAti) {
-      return priceWT;
+      return priceDiscounted;
     }
-    return getInTaxPrice(product, company, partner, priceWT);
-  }
-
-  @Override
-  public BigDecimal getSaleUnitPrice(
-      Company company,
-      Product product,
-      Set<TaxLine> taxLineSet,
-      boolean resultInAti,
-      LocalDate localDate,
-      Currency toCurrency)
-      throws AxelorException {
-    BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
-    Currency currency = (Currency) productCompanyService.get(product, "saleCurrency", company);
-    return productPriceService.getConvertedPrice(
-        company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
+    return getInTaxPrice(product, company, partner, priceDiscounted);
   }
 
   BigDecimal getInTaxPrice(Product product, Company company, Partner partner, BigDecimal exTaxPrice)

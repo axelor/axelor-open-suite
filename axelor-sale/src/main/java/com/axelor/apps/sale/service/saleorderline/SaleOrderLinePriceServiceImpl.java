@@ -30,7 +30,6 @@ import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.ProductSalePriceService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -46,7 +45,6 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
   protected TaxService taxService;
   protected AppSaleService appSaleService;
   protected ProductPriceService productPriceService;
-  protected ProductSalePriceService productSalePriceService;
 
   @Inject
   public SaleOrderLinePriceServiceImpl(
@@ -55,14 +53,12 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
       ProductCompanyService productCompanyService,
       TaxService taxService,
       AppSaleService appSaleService,
-      ProductSalePriceService productSalePriceService,
       ProductPriceService productPriceService) {
     this.currencyScaleService = currencyScaleService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.taxService = taxService;
     this.appSaleService = appSaleService;
-    this.productSalePriceService = productSalePriceService;
     this.productPriceService = productPriceService;
   }
 
@@ -173,7 +169,7 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
 
     Currency fromCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
     if (productSalePrice.compareTo(BigDecimal.ZERO) == 0) {
-      return productSalePriceService.getSaleUnitPrice(
+      return productPriceService.getSaleUnitPrice(
           company,
           product,
           taxLineSet,

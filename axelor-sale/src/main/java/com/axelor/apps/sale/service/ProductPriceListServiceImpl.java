@@ -61,11 +61,8 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
 
   @Override
   public BigDecimal applyPriceList(
-      Product product, Partner partner, Company company, Currency currency, boolean inAti)
+      Product product, Partner partner, Company company, Currency currency, BigDecimal price)
       throws AxelorException {
-
-    BigDecimal price =
-        productSalePriceService.getSaleUnitPrice(company, product, false, partner, currency);
     Map<String, Object> discountMap = fillDiscount(company, price, partner, product);
     BigDecimal exTaxPrice =
         priceListService.computeDiscount(

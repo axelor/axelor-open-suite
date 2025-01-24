@@ -28,6 +28,15 @@ import java.time.LocalDate;
 import java.util.Set;
 
 public interface ProductPriceService {
+  BigDecimal getSaleUnitPrice(
+      Company company,
+      Product product,
+      Set<TaxLine> taxLineSet,
+      boolean resultInAti,
+      LocalDate localDate,
+      Currency toCurrency)
+      throws AxelorException;
+
   BigDecimal getPurchaseUnitPrice(
       Company company,
       Product product,

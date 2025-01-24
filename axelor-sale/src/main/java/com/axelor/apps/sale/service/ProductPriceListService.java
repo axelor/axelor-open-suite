@@ -10,6 +10,6 @@ import java.math.BigDecimal;
 public interface ProductPriceListService {
 
   BigDecimal applyPriceList(
-      Product product, Partner partner, Company company, Currency currency, boolean inAti)
+      Product product, Partner partner, Company company, Currency currency, BigDecimal price)
       throws AxelorException;
 }
