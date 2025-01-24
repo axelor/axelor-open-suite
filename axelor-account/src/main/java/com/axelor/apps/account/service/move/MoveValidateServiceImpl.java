@@ -888,7 +888,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal taxLinesAmount =
         moveLineList.stream()
-            .filter(moveLineToolService::isMoveLineTaxAccount)
+            .filter(moveLineToolService::isMoveLineTaxAccountOrNonDeductibleTax)
             .map(this::getMoveLineSignedValue)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);

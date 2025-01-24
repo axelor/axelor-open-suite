@@ -148,6 +148,17 @@ public class TaxAccountService extends TaxService {
         .collect(Collectors.toSet());
   }
 
+  public boolean isNonDeductibleTaxesSet(Set<TaxLine> taxesLineSet) {
+    if (ObjectUtils.isEmpty(taxesLineSet)) {
+      return false;
+    }
+
+    return taxesLineSet.stream()
+        .map(TaxLine::getTax)
+        .filter(Objects::nonNull)
+        .anyMatch(Tax::getIsNonDeductibleTax);
+  }
+
   public void checkSumOfNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
       throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceLineList)) {
