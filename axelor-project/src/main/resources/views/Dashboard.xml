@@ -330,22 +330,24 @@
   <dashboard title="Project Dashboard" name="project.dashboard.sample" width="large"
     onInit="action.sale.chart.set.date.project">
     <search-fields>
-
       <field name="project" target="com.axelor.apps.project.db.Project" title="Project"
-             type="reference" colSpan="12"/>
+        type="reference" colSpan="12"/>
       <field type="date" name="fromDate" title="From Date" required="true"/>
       <field type="date" name="toDate" title="To Date" required="true"/>
-
     </search-fields>
-    <dashlet action="report-table-project-with-ProjectTaskSequence" height="350" canSearch="true" colSpan="12" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
-    <dashlet action="custom:report-table-project-without-ProjectTaskSequence" height="350" canSearch="true" colSpan="12" if="!__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
-
+    <dashlet height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
   </dashboard>
   <action-record model="com.axelor.apps.project.db.ProjectTask"
     name="action.sale.chart.set.date.project">
-    <field name="fromDate" expr="eval:__config__.date" />
+    <field name="fromDate" expr="eval:__config__.date"/>
     <field name="toDate" expr="eval:__config__.date.plusDays(6)"/>
   </action-record>
-
+  <action-view name="project-project-task-action"
+    model="com.axelor.apps.project.db.ProjectTask" title="Project task">
+    <view name="project-task-dashboard-grid" type="grid"/>
+    <domain> (self.taskDate &lt;= :toDate and self.taskDate &gt;= :fromDate )
+      and
+      (self.project=:project OR :project IS NULL)</domain>
+  </action-view>
 
 </object-views>
