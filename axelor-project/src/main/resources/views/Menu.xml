@@ -52,7 +52,9 @@
   </action-view>
 
   <menuitem name="project-reporting-planned-charge" parent="project-reporting" order="200"
-    title="Planned charge" action="project.planned.charge"/>
+    title="Planned charge" action="project.planned.charge"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+    if-module="axelor-human-resource"/>
   <action-view name="project.planned.charge" title="Planned charge">
     <view type="dashboard" name="project-planned-charge"/>
   </action-view>

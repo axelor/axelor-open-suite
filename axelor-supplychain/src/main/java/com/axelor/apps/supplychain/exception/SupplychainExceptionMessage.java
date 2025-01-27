@@ -404,4 +404,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
       "More than one freight carrier pricing line selected, please select only one line." /*)*/;
+
+  public static final String CONFIGURATOR_CAN_NOT_REGENERATE_PRODUCT = /*$$(*/
+      "Product cannot be regenerated because delivered / invoiced sale order lines are using it." /*)*/;
 }

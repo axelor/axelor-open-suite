@@ -1,3 +1,0 @@
----
-title: "Product API: when querying multiple product prices using the `/aos/product/price` endpoint, if a configuration error is detected for one product, return the price for other products instead of only returning the error."
-module: axelor-sale

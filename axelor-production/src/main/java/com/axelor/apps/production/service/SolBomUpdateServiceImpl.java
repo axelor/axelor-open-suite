@@ -23,7 +23,6 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
   protected final BomLineCreationService bomLineCreationService;
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
-  protected final SaleOrderBomRemoveLineService saleOrderBomRemoveLineService;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -32,13 +31,11 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       BomLineCreationService bomLineCreationService,
       BillOfMaterialRepository billOfMaterialRepository,
-      BillOfMaterialLineRepository billOfMaterialLineRepository,
-      SaleOrderBomRemoveLineService saleOrderBomRemoveLineService) {
+      BillOfMaterialLineRepository billOfMaterialLineRepository) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.bomLineCreationService = bomLineCreationService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
-    this.saleOrderBomRemoveLineService = saleOrderBomRemoveLineService;
   }
 
   @Override

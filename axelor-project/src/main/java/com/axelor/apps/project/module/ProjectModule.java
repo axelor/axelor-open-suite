@@ -63,8 +63,6 @@ import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.apps.project.service.ProjectToolServiceImpl;
 import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.ResourceBookingServiceImpl;
-import com.axelor.apps.project.service.SprintService;
-import com.axelor.apps.project.service.SprintServiceImpl;
 import com.axelor.apps.project.service.TaskStatusProgressByCategoryService;
 import com.axelor.apps.project.service.TaskStatusProgressByCategoryServiceImpl;
 import com.axelor.apps.project.service.TaskStatusToolService;
@@ -87,6 +85,10 @@ import com.axelor.apps.project.service.roadmap.ProjectVersionService;
 import com.axelor.apps.project.service.roadmap.ProjectVersionServiceImpl;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl;
+import com.axelor.apps.project.service.roadmap.SprintGetService;
+import com.axelor.apps.project.service.roadmap.SprintGetServiceImpl;
+import com.axelor.apps.project.service.roadmap.SprintService;
+import com.axelor.apps.project.service.roadmap.SprintServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkServiceImpl;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkTypeService;
@@ -133,6 +135,7 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectVersionRemoveService.class).to(ProjectVersionRemoveServiceImpl.class);
     bind(SprintService.class).to(SprintServiceImpl.class);
     bind(SprintGeneratorService.class).to(SprintGeneratorServiceImpl.class);
+    bind(SprintGetService.class).to(SprintGetServiceImpl.class);
     bind(ProjectVersionService.class).to(ProjectVersionServiceImpl.class);
     bind(ProjectBatchInitService.class).to(ProjectBatchInitServiceImpl.class);
   }

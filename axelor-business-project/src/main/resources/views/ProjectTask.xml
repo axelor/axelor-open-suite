@@ -127,7 +127,7 @@
         showIf="project.taskStatusManagementSelect != 1"/>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
         onClick="save,action-business-project-task-view-show-planning"
-        if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         showIf="project.isShowPlanning"/>
       <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
         onClick="save,action-project-task-view-show-financial-datas-panel"/>
@@ -152,7 +152,6 @@
           hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
           x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
-        <field name="project.isShowPlanning" hidden="true"/>
       </panel>
 
       <panel name="projectDetailsPanel" colSpan="12">
