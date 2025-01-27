@@ -264,7 +264,7 @@
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
-      <panel title="Sale order" name="saleOrderPanel" hidden="true">
+      <panel title="Technical case" name="saleOrderPanel" hidden="true">
         <panel-related readonly="true" field="saleOrderLineList" widget="tree-grid"
           canNew="false" canEdit="false" canRemove="false" title="Details Lines (Tree)"
           orderBy="sequence" form-view="sale-order-line-form"
