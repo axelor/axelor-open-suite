@@ -52,12 +52,10 @@ public class PartnerApiConfigurationController {
                 .model(Partner.class.getName())
                 .add("form", "partner-form")
                 .add("grid", "partner-grid")
-                .param("popup", "reload")
-                .param("popup-save", "false")
-                .param("show-toolbar", "false")
                 .context("_showRecord", partner.getId());
 
         response.setView(actionViewBuilder.map());
+        response.setCanClose(true);
       }
     }
   }
