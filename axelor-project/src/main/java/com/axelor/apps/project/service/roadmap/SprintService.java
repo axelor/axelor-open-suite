@@ -16,20 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.roadmap;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.Sprint;
-import com.google.inject.Inject;
 
-public class SprintServiceImpl implements SprintService {
+public interface SprintService {
 
-  @Inject
-  public SprintServiceImpl() {}
-
-  @Override
-  public void generateBacklogSprint(Project project) {
-    Sprint sprint = new Sprint("Backlog - " + project.getName());
-    project.setBacklogSprint(sprint);
-  }
+  void generateBacklogSprint(Project project);
 }

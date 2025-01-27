@@ -29,6 +29,7 @@ import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
@@ -64,7 +65,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       SaleOrderRepository saleOrderRepository,
       ConfiguratorCheckService configuratorCheckService,
       ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
-      ProductCompanyRepository productCompanyRepository) {
+      ProductCompanyRepository productCompanyRepository,
+      ConfiguratorRepository configuratorRepository) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -79,7 +81,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         saleOrderRepository,
         configuratorCheckService,
         configuratorSaleOrderLineService,
-        productCompanyRepository);
+        productCompanyRepository,
+        configuratorRepository);
   }
 
   /**

@@ -185,6 +185,9 @@
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
       min="0"/>
 
+    <boolean name="isRegistrationCodeCheckBlocking"
+      title="Restrict duplicate registration codes" default="false"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

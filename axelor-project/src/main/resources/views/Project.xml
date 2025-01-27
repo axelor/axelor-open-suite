@@ -399,6 +399,9 @@
           canNew="true" canRemove="true" showIf="sprintManagementSelect == 'project'"/>
         <field name="sprintManagementSelect" hidden="true"/>
       </panel>
+      <panel-dashlet action="action-project-method-tasks-per-sprint"
+        name="tasksPerSprintPanel" colSpan="12" height="200%"/>
+      <field name="sprintManagementSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -732,6 +735,10 @@
 
   <action-method name="action-project-method-generate-backlog-sprint">
     <call class="com.axelor.apps.project.web.ProjectController" method="generateBacklogSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-tasks-per-sprint">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewTasksPerSprint"/>
   </action-method>
 
   <!-- ACTION VIEW -->

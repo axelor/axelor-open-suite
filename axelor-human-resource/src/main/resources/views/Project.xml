@@ -8,7 +8,8 @@
     <extend target="//panel[@name='sprintPanel']">
       <insert position="after">
         <panel-dashlet name="allocationLinePanel" title="Allocation lines"
-          x-show-bars="true" action="action-project-view-related-allocation-lines" colSpan="12"/>
+          height="200%" x-show-bars="true" action="action-project-view-related-allocation-lines"
+          colSpan="12"/>
       </insert>
     </extend>
   </form>
