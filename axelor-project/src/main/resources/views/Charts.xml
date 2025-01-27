@@ -54,7 +54,8 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="projectTaskCategory.name" title="Project task category"
       type="com.axelor.apps.project.db.ProjectTaskCategory"/>
-    <field name="ticketNumber" title="Ticket number" type="String" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="ticketNumber" title="Ticket number" type="String"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name" title="Name"/>
     <field name="assignedTo.fullName" title="AssignedTo" type="com.axelor.auth.db.User"/>
     <field name="status.name" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
