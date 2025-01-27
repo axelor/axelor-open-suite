@@ -42,6 +42,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -147,6 +148,9 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
                 counter,
                 moveLine.getOrigin(),
                 moveLine.getName());
+        if (StringUtils.notEmpty(moveLine.getDescription())) {
+          newMoveLine.setDescription(moveLine.getDescription());
+        }
         newMoveLine.setVatSystemSelect(moveLine.getVatSystemSelect());
         newMoveLine.setCutOffStartDate(moveLine.getCutOffStartDate());
         newMoveLine.setCutOffEndDate(moveLine.getCutOffEndDate());
