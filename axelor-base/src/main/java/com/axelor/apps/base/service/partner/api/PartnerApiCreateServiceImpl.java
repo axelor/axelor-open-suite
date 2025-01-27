@@ -150,7 +150,11 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
       address.setCity(currentCity);
     }
 
-    String streetName = getSafeString(jsonAddress, "libelleVoieEtablissement");
+    String numeroVoieEtablissement = getSafeString(jsonAddress, "numeroVoieEtablissement");
+    String typeVoieEtablissement = getSafeString(jsonAddress, "typeVoieEtablissement");
+    String libelleVoieEtablissement = getSafeString(jsonAddress, "libelleVoieEtablissement");
+    String streetName =
+        numeroVoieEtablissement + " " + typeVoieEtablissement + " " + libelleVoieEtablissement;
     safeSetString(address::setStreetName, address::getStreetName, streetName);
     safeSetString(
         address::setFullName,
