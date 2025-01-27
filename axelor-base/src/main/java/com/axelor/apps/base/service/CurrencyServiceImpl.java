@@ -31,7 +31,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -42,36 +41,29 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class CurrencyServiceImpl implements CurrencyService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
   protected CurrencyConversionLineRepository currencyConversionLineRepo;
-  private LocalDate today;
 
   @Inject
   public CurrencyServiceImpl(
       AppBaseService appBaseService, CurrencyConversionLineRepository currencyConversionLineRepo) {
 
     this.appBaseService = appBaseService;
-    this.today =
-        appBaseService.getTodayDate(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     this.currencyConversionLineRepo = currencyConversionLineRepo;
-  }
-
-  public CurrencyServiceImpl(AppBaseService appBaseService, LocalDate today) {
-
-    this.appBaseService = appBaseService;
-    this.today = today;
   }
 
   @CallMethod
   public BigDecimal getCurrencyConversionRate(Currency startCurrency, Currency endCurrency)
       throws AxelorException {
-    return this.getCurrencyConversionRate(startCurrency, endCurrency, this.today);
+    return this.getCurrencyConversionRate(
+        startCurrency,
+        endCurrency,
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
   }
 
   public BigDecimal getCurrencyConversionRate(
@@ -216,11 +208,10 @@ public class CurrencyServiceImpl implements CurrencyService {
 
   public LocalDate getDateToConvert(LocalDate date) {
 
-    if (date == null) {
-      date = this.today;
-    }
-
-    return date;
+    return Optional.ofNullable(date)
+        .orElse(
+            appBaseService.getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
   }
 
   public void checkOverLappingPeriod(

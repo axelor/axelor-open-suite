@@ -166,6 +166,8 @@
 	          </>
 	        ]]></viewer>
         </field>
+        <field name="typeSelect" showTitle="false" colSpan="2" widget="SingleSelect"
+          hidden="true"/>
         <field name="company.tradingNameList" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox"
           onChange="action-group-purchase-order-company-change-actions" form-view="company-form"
@@ -263,10 +265,8 @@
         <field name="contract" readonly="true" hidden="true" showIf="contract"
           form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" domain="self.isBusinessProject = true"
-          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
-        <button name="updateLinesBtn" title="Update lines with selected project"
-          onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
-          readonlyIf="!project"/>
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"
+          onChange="action-business-project-purchase-order-method-update-lines"/>
         <field name="projectTask" domain="self.project = :project"
           form-view="business-project-task-form" grid-view="business-project-task-grid" colSpan="6"/>
       </panel>
@@ -643,6 +643,7 @@
     <action name="action-purchase-order-method-empty-fiscal-position-if-not-compatible"/>
     <action name="action-purchase-order-method-fiscal-position-on-change"/>
     <action name="action-purchase-order-method-compute"/>
+    <action name="action-purchase-order-record-set-type-select"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-cancel">
@@ -986,6 +987,9 @@
       <domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id =
         :_internalUser</domain>
     </filter>
+    <filter name="purchase-order-filters-standard-purchases" title="Standard purchases">
+      <domain>self.typeSelect = 1</domain>
+    </filter>
   </search-filters>
 
   <action-record name="action-purchase-order-record-update-info-company"
@@ -1073,5 +1077,10 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="separateInNewQuotation"/>
   </action-method>
+
+  <action-record name="action-purchase-order-record-set-type-select"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="typeSelect" expr="eval: 1" if="!supplierPartner"/>
+  </action-record>
 
 </object-views>

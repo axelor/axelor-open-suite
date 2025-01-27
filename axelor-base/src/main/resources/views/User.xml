@@ -90,11 +90,12 @@
             onChange="action-user-attrs-remove-linked-employee">
             <editor x-viewer="true">
               <field name="fullName" readonly="true"/>
-              <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-              <field name="mobilePhone" widget="phone"/>
+              <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"
+                readonlyIf="fullName == null"/>
+              <field name="mobilePhone" widget="phone" readonlyIf="fullName == null"/>
               <field name="emailAddress" form-view="email-address-simple-form"
                 canNew="!emailAddress" canSelect="false" canRemove="false"
-                placeholder="Email address"/>
+                placeholder="Email address" readonlyIf="fullName == null"/>
             </editor>
           </field>
         </panel>

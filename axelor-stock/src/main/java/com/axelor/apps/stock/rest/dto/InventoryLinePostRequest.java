@@ -20,6 +20,7 @@ package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
@@ -49,6 +50,9 @@ public class InventoryLinePostRequest extends RequestPostStructure {
   @NotNull
   @Min(0)
   private BigDecimal realQty;
+
+  @Min(0)
+  private Long stockLocationId;
 
   public Long getInventoryId() {
     return inventoryId;
@@ -94,6 +98,14 @@ public class InventoryLinePostRequest extends RequestPostStructure {
     this.realQty = realQty;
   }
 
+  public Long getStockLocationId() {
+    return stockLocationId;
+  }
+
+  public void setStockLocationId(Long stockLocationId) {
+    this.stockLocationId = stockLocationId;
+  }
+
   // Transform id to object
   public Product fetchProduct() {
     return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
@@ -106,6 +118,14 @@ public class InventoryLinePostRequest extends RequestPostStructure {
   public TrackingNumber fetchTrackingNumber() {
     if (this.trackingNumberId != null) {
       return ObjectFinder.find(TrackingNumber.class, trackingNumberId, ObjectFinder.NO_VERSION);
+    } else {
+      return null;
+    }
+  }
+
+  public StockLocation fetchStockLocation() {
+    if (this.stockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, stockLocationId, ObjectFinder.NO_VERSION);
     } else {
       return null;
     }

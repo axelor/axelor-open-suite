@@ -151,14 +151,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return checkAvailabiltyRequest;
     }
 
-    List<Timetable> timetableList = saleOrder.getTimetableList();
-    if (CollectionUtils.isNotEmpty(timetableList)
-        && timetableList.stream().anyMatch(Timetable::getInvoiced)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(SupplychainExceptionMessage.SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED));
-    }
-
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_PLANNED)
@@ -216,6 +208,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return;
     }
 
+    checkTimetable(saleOrderView);
+
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
     List<SaleOrderLine> saleOrderViewLineList =
@@ -247,6 +241,19 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             I18n.get(SupplychainExceptionMessage.SO_CANT_REMOVED_DELIVERED_LINE),
             saleOrderLine.getFullName());
       }
+    }
+  }
+
+  protected void checkTimetable(SaleOrder saleOrderView) throws AxelorException {
+    List<BigDecimal> percentageList =
+        saleOrderView.getTimetableList().stream()
+            .map(Timetable::getPercentage)
+            .collect(Collectors.toList());
+    if (percentageList.stream()
+        .anyMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) > 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_TIMETABLE_PERCENTAGE_ERROR));
     }
   }
 
@@ -339,23 +346,40 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Override
-  public void updateTimetableAmounts(SaleOrder saleOrder) {
-    if (saleOrder.getTimetableList() != null) {
-      saleOrder
-          .getTimetableList()
-          .forEach(
-              timetable ->
-                  timetable.setAmount(
-                      saleOrder
-                          .getExTaxTotal()
-                          .multiply(
-                              timetable
-                                  .getPercentage()
-                                  .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))
-                          .setScale(
-                              appBaseService.getAppBase().getNbDecimalDigitForUnitPrice(),
-                              RoundingMode.HALF_UP)));
+  public String updateTimetableAmounts(SaleOrder saleOrder) throws AxelorException {
+    int invoicingState = saleOrder.getInvoicingState();
+    List<Timetable> timetableList = saleOrder.getTimetableList();
+    if (CollectionUtils.isNotEmpty(timetableList)) {
+      if (invoicingState == SaleOrderRepository.INVOICING_STATE_PARTIALLY_INVOICED
+          || invoicingState == SaleOrderRepository.INVOICING_STATE_INVOICED) {
+        timetableList.forEach(
+            timetable ->
+                timetable.setPercentage(
+                    timetable
+                        .getAmount()
+                        .multiply(BigDecimal.valueOf(100))
+                        .divide(
+                            saleOrder.getExTaxTotal(),
+                            appBaseService.getNbDecimalDigitForUnitPrice(),
+                            RoundingMode.HALF_UP)));
+        return String.format(
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_TIMETABLE_CAN_NOT_BE_UPDATED),
+            saleOrder.getAmountToBeSpreadOverTheTimetable());
+      }
+      timetableList.forEach(
+          timetable ->
+              timetable.setAmount(
+                  saleOrder
+                      .getExTaxTotal()
+                      .multiply(
+                          timetable
+                              .getPercentage()
+                              .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))
+                      .setScale(
+                          appBaseService.getAppBase().getNbDecimalDigitForUnitPrice(),
+                          RoundingMode.HALF_UP)));
     }
+    return "";
   }
 
   @Override

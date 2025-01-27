@@ -33,9 +33,11 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -60,7 +62,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
-      ProductPriceService productPriceService) {
+      ProductPriceService productPriceService,
+      FiscalPositionService fiscalPositionService,
+      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService) {
     super(
         currencyService,
         priceListService,
@@ -76,7 +80,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         internationalService,
         invoiceLineAttrsService,
         currencyScaleService,
-        productPriceService);
+        productPriceService,
+        fiscalPositionService,
+        invoiceLineSupplierCatalogService);
   }
 
   @Transactional

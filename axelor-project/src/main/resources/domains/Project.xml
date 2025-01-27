@@ -69,6 +69,7 @@
       title="Project time unit"
       help="This will determine the unit used for project-wide reporting. If there are tasks using another unit, conversions will be made using &apos;Number of hours in a day&apos; value."/>
 
+    <decimal name="numberHoursADay" title="Number of hours in a day" min="0"/>
 
     <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
 
@@ -92,20 +93,18 @@
       help="Activate a panel tab, within a project-task-form related to the project, allowing to replicate a task following a date frequency defined by the user."/>
     <boolean name="manageTimeSpent" title="Time Spent?" default="true"
       help="Allow to allocate Time spent from the project-task-form. A readonly logtimes paneltab will also appear on the related project-form. Note: if you use the HR timesheets, these log times will allocate HR Timesheet for the concerned colleague."/>
-    <boolean name="isShowSection" title="Section?" default="true"
-      help="Allow to activate an additional tasks classification, customizable according the the user needs. Section can be created in the Configuration sub-menu of the Project menu."/>
     <boolean name="isShowTopic" title="Topic?"
       help="Allow to open discussion topic, where project members can interact, accessible via the the Tools menu."/>
     <boolean name="isShowGantt" title="Enable Gantt view"
       help="Activates a gantt view of the project accessible via the Tools menu."/>
     <boolean name="isShowKanbanPerStatus" title="Enable Kanban view per status"
       help="Activates a Kanban view with tasks of the project categorized by status, accessible via the Tools menu."/>
-    <boolean name="isShowKanbanPerSection" title="Enable Kanban view per section"
-      help="Activates a Kanban view with tasks of the project categorized by section, accessible via the Tools menu."/>
+    <boolean name="isShowKanbanPerCategory" title="Enable Kanban view per category"
+      help="Activates a Kanban view with tasks of the project categorized by category, accessible via the Tools menu."/>
     <boolean name="isShowCalendarPerStatus" title="Enable calendar view per status"
       help="Activates a calendar view with tasks of the project categorized by status, accessible via the Tools menu."/>
-    <boolean name="isShowCalendarPerSection" title="Enable calendar view per section"
-      help="Activates a calendar view with tasks of the project categorized by section, accessible via the Tools menu."/>
+    <boolean name="isShowCalendarPerCategory" title="Enable calendar view per category"
+      help="Activates a calendar view with tasks of the project categorized by category, accessible via the Tools menu."/>
     <boolean name="isShowCalendarPerUser" title="Enable calendar view per user"
       help="Activates a calendar view with tasks of the project categorized by user, accessible via the Tools menu."/>
     <many-to-one name="completedTaskStatus" title="Completed task status"
@@ -127,6 +126,16 @@
     <one-to-many name="projectCheckListItemList"
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list" mappedBy="project"/>
 
+    <many-to-many name="roadmapSet" ref="com.axelor.apps.project.db.ProjectVersion"
+      title="Project.version" mappedBy="projectSet"/>
+
+    <string name="sprintManagementSelect" title="Manage sprints"
+      selection="project.sprint.management.select" default="none"/>
+    <one-to-many name="sprintList" ref="com.axelor.apps.project.db.Sprint"
+      title="Sprints" mappedBy="project"/>
+    <many-to-one name="backlogSprint" ref="com.axelor.apps.project.db.Sprint"
+      title="Backlog sprint"/>
+
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
 
@@ -141,6 +150,11 @@
       	public static final String CUSTOM_FIELD_MANAGEMENT_PROJECT = "project";
       	public static final String CUSTOM_FIELD_MANAGEMENT_CATEGORY = "category";
       	public static final String CUSTOM_FIELD_MANAGEMENT_APP = "app";
+
+      	// SPRINT MANAGEMENT
+      	public static final String SPRINT_MANAGEMENT_NONE = "none";
+      	public static final String SPRINT_MANAGEMENT_PROJECT = "project";
+      	public static final String SPRINT_MANAGEMENT_VERSION = "version";
 
     ]]></extra-code>
 

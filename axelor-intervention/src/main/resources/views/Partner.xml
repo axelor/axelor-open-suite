@@ -9,8 +9,9 @@
       <insert position="before">
         <panel name="LinkPanel" title="Link" showIf="isContact != true &amp;&amp; isCustomer"
           colSpan="12">
-          <field name="tradingName" requiredIf="isContact != true &amp;&amp; isCustomer"
-            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+          <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
+            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            widget="TagSelect" domain="self.company IS NULL OR self.company IN :companySet"/>
         </panel>
       </insert>
     </extend>
@@ -28,6 +29,10 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//field[@name='companySet']">
+      <attribute name="onChange" value="action-partner-record-change-trading-name-set"/>
+    </extend>
   </form>
 
   <action-view name="action-intervention-view-equipments"
@@ -43,5 +48,12 @@
     <view type="form" name="intervention-form"/>
     <domain>self.deliveredPartner = :id</domain>
   </action-view>
+
+  <action-record name="action-partner-record-change-trading-name-set"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="tradingNameSet"
+      expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
+      if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
+  </action-record>
 
 </object-views>

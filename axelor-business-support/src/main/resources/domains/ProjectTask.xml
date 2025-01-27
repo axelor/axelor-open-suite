@@ -11,8 +11,6 @@
     <boolean name="isOrderAccepted" title="Order Accepted"/>
     <string name="internalDescription" title="Internal Description" large="true"
       multiline="true"/>
-    <many-to-one name="targetVersion" title="Target version"
-      ref="com.axelor.apps.businesssupport.db.ProjectVersion"/>
     <boolean name="isOrderProposed" title="Order Proposed"/>
 
     <extra-code>
@@ -26,7 +24,6 @@
     <track>
       <field name="isOrderAccepted"/>
       <field name="assignment"/>
-      <field name="targetVersion"/>
     </track>
   </entity>
 

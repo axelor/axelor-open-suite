@@ -3,24 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
-  <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
-    name="business-support-version-project-task-grid" orderBy="-taskDate">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
-    <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
-    <field name="name"/>
-    <field name="taskDate"/>
-    <field name="status"/>
-    <field name="progress" widget="SelectProgress"/>
-    <field name="projInvTypeSelect"/>
-    <button name="updateToInvoiceBtn" title="Update to invoice"
-      if="__config__.app.getApp('business-project').automaticInvoicing" readonlyIf="invoiced"
-      icon="fa-check-circle" onClick="action-project-task-method-update-to-invoice"/>
-  </grid>
-
   <grid name="project-task-client-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" orderBy="taskDate">
     <toolbar>
@@ -87,6 +69,11 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='contentPanel']">
+      <attribute name="hideIf"
+        value="typeSelect == 'ticket' &amp;&amp; invoicingType != 2"/>
+    </extend>
   </form>
 
   <form name="incl-overview-business-project-task-panel-form" title="Overview"
@@ -109,9 +96,6 @@
 
     <extend target="//field[@name='invoicingProgress']">
       <insert position="before">
-        <field name="targetVersion" if-module="axelor-business-support"
-          if="__config__.app.isApp('business-support')" domain=":project member of self.projectSet"
-          colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
         <field name="assignment" showIf="typeSelect == 'ticket'"
           if-module="axelor-business-support" if="__config__.app.isApp('business-support')"
           colSpan="4"/>
@@ -125,14 +109,6 @@
       </insert>
     </extend>
   </form>
-
-  <action-view name="action-dashlet-version-view-show-task" title="Ticket associated"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="business-support-version-project-task-grid"/>
-    <view type="form" name="business-project-task-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.targetVersion.id = :id</domain>
-  </action-view>
 
   <action-attrs name="action-project-task-attrs-assginment-provider">
     <attribute name="value" for="assignment" expr="eval: 2"/>

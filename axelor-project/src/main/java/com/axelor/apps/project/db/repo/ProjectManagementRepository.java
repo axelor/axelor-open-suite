@@ -28,6 +28,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -166,5 +167,12 @@ public class ProjectManagementRepository extends ProjectRepository {
       TraceBackService.trace(e);
     }
     return super.populate(json, context);
+  }
+
+  @Override
+  public void remove(Project entity) {
+    Beans.get(ProjectVersionRemoveService.class).removeProjectFromRoadmap(entity);
+
+    super.remove(entity);
   }
 }

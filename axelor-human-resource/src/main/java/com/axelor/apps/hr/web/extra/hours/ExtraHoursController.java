@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -307,5 +308,10 @@ public class ExtraHoursController {
     ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
     Beans.get(ExtraHoursService.class).updateLineEmployee(extraHours);
     response.setValue("extraHoursLineList", extraHours.getExtraHoursLineList());
+  }
+
+  public void getEmployeeDomain(ActionRequest request, ActionResponse response) {
+    response.setAttr(
+        "employee", "domain", Beans.get(ExtraHoursDomainService.class).getEmployeeDomain());
   }
 }

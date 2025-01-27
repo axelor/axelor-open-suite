@@ -56,6 +56,7 @@ import com.axelor.apps.sale.service.batch.SaleBatchService;
 import com.axelor.apps.sale.service.cart.CartResetServiceImpl;
 import com.axelor.apps.sale.service.cart.CartSaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.cartline.CartLineProductServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
@@ -128,8 +129,11 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
@@ -481,5 +485,7 @@ public class SupplychainModule extends AxelorModule {
     bind(CartLineProductServiceImpl.class).to(CartLineProductSupplychainServiceImpl.class);
     bind(CartResetServiceImpl.class).to(CartResetSupplychainServiceImpl.class);
     bind(InvoiceTaxService.class).to(InvoiceTaxServiceImpl.class);
+    bind(InvoiceLineSupplierCatalogService.class).to(InvoiceLineSupplierCatalogServiceImpl.class);
+    bind(ConfiguratorCheckServiceImpl.class).to(ConfiguratorCheckServiceSupplychainImpl.class);
   }
 }

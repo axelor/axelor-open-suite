@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.account.service.batch.AccountingBatchViewService;
 import com.axelor.apps.account.service.batch.BatchAutoMoveLettering;
 import com.axelor.apps.account.service.batch.BatchCloseAnnualAccounts;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
@@ -59,6 +60,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -449,5 +451,47 @@ public class AccountingBatchController {
               accountingBatch.getYear().getName(),
               daybookMoveCount));
     }
+  }
+
+  public void setClosureAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> closureAccountSet =
+        Beans.get(AccountingBatchViewService.class)
+            .getClosureAccountSet(
+                accountingBatch, (boolean) request.getContext().get("closeAllAccounts"));
+    response.setValue("closureAccountSet", closureAccountSet);
+  }
+
+  public void setOpeningAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> openingAccountSet =
+        Beans.get(AccountingBatchViewService.class)
+            .getOpeningAccountSet(
+                accountingBatch, (boolean) request.getContext().get("openAllAccounts"));
+    response.setValue("openingAccountSet", openingAccountSet);
+  }
+
+  public void setCloseAllAccounts(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    Set<Account> closureAccountSet = accountingBatch.getClosureAccountSet();
+    if (ObjectUtils.isEmpty(closureAccountSet)) {
+      response.setValue("$closeAllAccounts", false);
+      return;
+    }
+    List<Account> newClosureAccountSet =
+        Beans.get(AccountingBatchViewService.class).getClosureAccountSet(accountingBatch, true);
+    response.setValue("$closeAllAccounts", closureAccountSet.size() == newClosureAccountSet.size());
+  }
+
+  public void setOpenAllAccounts(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    Set<Account> openingAccountSet = accountingBatch.getOpeningAccountSet();
+    if (ObjectUtils.isEmpty(openingAccountSet)) {
+      response.setValue("$openAllAccounts", false);
+      return;
+    }
+    List<Account> newOpeningAccountSet =
+        Beans.get(AccountingBatchViewService.class).getOpeningAccountSet(accountingBatch, true);
+    response.setValue("$openAllAccounts", openingAccountSet.size() == newOpeningAccountSet.size());
   }
 }

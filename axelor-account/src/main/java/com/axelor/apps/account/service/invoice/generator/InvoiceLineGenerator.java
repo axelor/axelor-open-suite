@@ -41,7 +41,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.CurrencyServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -112,6 +111,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.productCompanyService = Beans.get(ProductCompanyService.class);
     this.currencyScaleService = Beans.get(CurrencyScaleService.class);
     this.taxService = Beans.get(TaxService.class);
+    this.currencyService = Beans.get(CurrencyService.class);
   }
 
   protected InvoiceLineGenerator(
@@ -134,7 +134,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
-    this.currencyService = new CurrencyServiceImpl(this.appBaseService, this.today);
     this.currencyScale = this.currencyScaleService.getScale(invoice);
     this.companyCurrencyScale = this.currencyScaleService.getCompanyScale(invoice);
   }

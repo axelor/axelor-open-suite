@@ -85,8 +85,6 @@ public interface PurchaseOrderLineService {
   public int getDiscountTypeSelect(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BigDecimal price);
 
-  public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
-
   public void checkMultipleQty(
       Company company,
       Partner supplierPartner,
@@ -104,4 +102,7 @@ public interface PurchaseOrderLineService {
 
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException;
+
+  public Map<String, Object> recomputeTax(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 }

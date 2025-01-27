@@ -27,6 +27,10 @@
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
         <field name="isProjectAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isDMSAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isPurchaseAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
         <field name="qrCode" colSpan="12" showTitle="false" hidden="true" readonly="true"
@@ -39,6 +43,7 @@
     </panel>
     <panel name="versionPanel" sidebar="true">
       <field name="minimalRequiredMobileAppVersion"/>
+      <field name="currentApkFile" widget="binary-link" x-accept=".apk"/>
     </panel>
     <panel name="configPanel" sidebar="true">
       <panel name="configBasePanel" title="General">
@@ -72,6 +77,10 @@
           onClick="action.sale.config.view"/>
         <button name="projectAppBtn" title="Config Project" hidden="true"
           showIf="isProjectAppEnabled" onClick="action.project.config.view"/>
+        <button name="dmsAppBtn" title="Config DMS" hidden="true" showIf="isDMSAppEnabled"
+          onClick="action.dms.config.view"/>
+        <button name="purchaseAppBtn" title="Config Purchase" hidden="true"
+          showIf="isPurchaseAppEnabled" onClick="action.purchase.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
@@ -156,6 +165,19 @@
         <field name="reportingTypesToDisplaySelect" widget="SingleSelect" placeholder="All"
           colSpan="6"/>
         <field name="isTimesheetProjectInvoicingEnabled" widget="boolean-switch" colSpan="6"/>
+      </panel>
+      <panel name="dmsConfigPanel" title="DMS" showIf="isDMSAppEnabled">
+        <field name="defaultDmsRoot" domain="self.isDirectory = true"/>
+        <field name="isFavoritesManagementEnabled" widget="boolean-switch"/>
+        <field name="isDownloadAllowed" widget="boolean-switch"/>
+        <field name="isRenamingAllowed" widget="boolean-switch"/>
+        <panel name="folderPanel" title="Folders">
+          <field name="isFolderCreationAllowed" widget="boolean-switch"/>
+        </panel>
+        <panel name="filePanel" title="Files">
+          <field name="isFileCreationAllowed" widget="boolean-switch"/>
+          <field name="isFileDeletionAllowed" widget="boolean-switch"/>
+        </panel>
       </panel>
     </panel-tabs>
 
@@ -269,6 +291,26 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-project').fetchOne()?.id"/>
   </action-view>
 
+  <action-view name="action.dms.config.view" title="DMS config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-dms').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.purchase.config.view" title="Purchase config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-purchase').fetchOne()?.id"/>
+  </action-view>
+
   <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
     model="com.axelor.apps.mobilesettings.db.MobileDashboard">
     <view type="grid" name="mobile-dashboard-grid"/>
@@ -298,6 +340,8 @@
     <attribute for="isSaleAppEnabled" name="readonly" expr="!__config__.app.isApp('sale')"/>
     <attribute for="isProjectAppEnabled" name="readonly"
       expr="!__config__.app.isApp('project')"/>
+    <attribute for="isPurchaseAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('purchase')"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-config-group-on-load">

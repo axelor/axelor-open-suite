@@ -30,8 +30,8 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppTimesheet;
@@ -49,7 +49,7 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
   protected WeeklyPlanningService weeklyPlanningService;
   protected PublicHolidayService publicHolidayService;
   protected LeaveRequestService leaveRequestService;
-  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
+  protected LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService;
   protected TimesheetLineCreateService timesheetLineCreateService;
 
   @Inject
@@ -58,13 +58,13 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
       WeeklyPlanningService weeklyPlanningService,
       PublicHolidayService publicHolidayService,
       LeaveRequestService leaveRequestService,
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService,
       TimesheetLineCreateService timesheetLineCreateService) {
     this.appHumanResourceService = appHumanResourceService;
     this.weeklyPlanningService = weeklyPlanningService;
     this.publicHolidayService = publicHolidayService;
     this.leaveRequestService = leaveRequestService;
-    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
+    this.leaveRequestComputeLeaveHoursService = leaveRequestComputeLeaveHoursService;
     this.timesheetLineCreateService = timesheetLineCreateService;
   }
 
@@ -161,7 +161,7 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
 
     if (ObjectUtils.notEmpty(leaveList)) {
       BigDecimal totalLeaveHours =
-          leaveRequestComputeDurationService.computeTotalLeaveHours(
+          leaveRequestComputeLeaveHoursService.computeTotalLeaveHours(
               date, dayValueInHours, leaveList);
       TimesheetLine timesheetLine =
           timesheetLineCreateService.createTimesheetLine(

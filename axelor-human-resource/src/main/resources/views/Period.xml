@@ -67,4 +67,31 @@
     </panel>
   </form>
 
+  <form name="period-hr-allocation-form" title="Allocation period"
+    model="com.axelor.apps.base.db.Period" onNew="action-period-hr-record-new-type-allocation"
+    width="large">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 5">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="year" title="Allocation year" form-view="year-hr-allocation-form"
+        grid-view="year-grid" domain="self.typeSelect = 4"/>
+      <field name="year.company" form-view="company-form" grid-view="company-grid"
+        readonly="true"/>
+      <field name="year.statusSelect"/>
+      <field name="year.typeSelect"/>
+      <field name="fromDate" required="true"/>
+      <field name="toDate" required="true"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-record name="action-period-hr-record-new-type-allocation"
+    model="com.axelor.apps.base.db.Period">
+    <field name="year" expr="eval: __parent__"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Year' &amp;&amp; __parent__.typeSelect == 4"/>
+  </action-record>
+
 </object-views>

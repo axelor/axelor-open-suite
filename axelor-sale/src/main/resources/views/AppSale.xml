@@ -28,6 +28,7 @@
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
+      <field name="isGlobalDiscountEnabledOnSaleOrder" widget="boolean-switch"/>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
 
     </panel>
@@ -37,6 +38,8 @@
         onChange="action-app-sale-attrs-reset-discount-enabled"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
         showIf="listDisplayTypeSelect != 0" colSpan="6"/>
+      <field name="isSOLPriceTotalOfSubLines" title="Compute price with sublines" colSpan="6"
+        widget="boolean-switch" showIf="listDisplayTypeSelect == 2"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"

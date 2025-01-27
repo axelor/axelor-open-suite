@@ -1,3 +1,97 @@
+## [8.2.7] (2025-01-23)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 7.2.5.
+* Updated axelor-studio dependency to 3.3.10.
+* Updated axelor-utils dependency to 3.3.2, fixing an issue that could prevent PDF generation in some cases.
+* Updated bouncycastle dependency to improve security.
+* Currency: fixed 'codeISO' field emptying on load.
+* Data sharing referential: filtered the data sharing referential lines by model.
+* Data backup: fixed backup of applications config.
+* Partner: fixed error in customer situation report.
+* Product: fixed the incorrect domain on historical orders to display validated orders today.
+* User: made phone and email fields read-only as long as the user does not have a linked contact.
+
+#### Account
+
+* Move line query line: removed taxes from the grid to recover the broken grid view.
+* Move Line: fixed vat system edition according to account type and move origin.
+* FEC Import: set VAT system on move lines during import.
+* Payment voucher: close popup when receipt is printed from invoice.
+* Account config: added demo data and l10n for the foreign exchange accounts.
+* Accounting config: fixed translations on new company creation.
+
+#### Business Project
+
+* Project: fixed display of 'frameworkContractPanel' panel.
+* Project: set stock locations while generating sale quotation from project.
+* Invoicing project: fix project task progress in invoicing project annex report.
+
+#### Contract
+
+* Contract: fixed the filter on partner field to select only customer/supplier respectively on customer/supplier contracts.
+
+#### CRM
+
+* Partner: creating a new partner is no longer a prospect and a customer at the same time.
+
+#### Human Resource
+
+* Expense API: fixed an error that could occur when adding expense line to an expense.
+
+#### Production
+
+* Sale order: fixed an error occurring when deleting a subline linked to a customized bill of material.
+
+#### Project
+
+* User: hid the active project field if the project module is not installed.
+
+#### Sale
+
+* Sale order: added a warning when adding a subline to a title line.
+* Sale order line: increased the width of the tax column for ergonomic purposes.
+* Sale order: fixed the description in the sale order to use the partner's sale order comments instead of the partner general note.
+* Sale order line tree grid: added missing translation for 'Add a new sale order line' and fixed title.
+* Product API: when querying multiple product prices using the `/aos/product/price` endpoint, if a configuration error is detected for one product, return the price for other products instead of only returning the error.
+
+#### Stock
+
+* Stock move line: fixed the issue by making the availability column readonly.
+* Stock move: compute total net mass when splitting lines.
+
+#### Supply Chain
+
+* Purchase order: fixed fiscal position when creating a purchase order from sale order.
+* Stock move: stock move mass invoicing now generates an invoice with the correct invoicing address.
+* Stock move invoicing: missing translation in wizard on stock move lines.
+* Sale order: enable stock reservation feature on sale order editable grid.
+
+
+### Developer
+
+#### Base
+
+The dependency `'org.bouncycastle:bcprov-jdk15on:1.70'` was replaced by `'org.bouncycastle:bcpkix-jdk18on:1.78.1'`. If you are using an AOS module with other modules that depends on `'org.bouncycastle:bcprov-jdk15on:1.70'`, please change your gradle configuration to avoid a conflict or update your dependencies.
+
+#### Account
+
+`UserService` has been added to the constructor of `MoveValidateServiceImpl`.
+
+---
+
+Added `MoveLineTaxService` dependency to `FECImporter` class.
+
+#### Business Project
+
+The `ProjectBusinessServiceImpl` constructor signature was modified: it now includes `ProjectBusinessServiceImpl`.
+
+#### Supply Chain
+
+Added 'AddressService' to the constructor of 'SaleOrderCreateServiceSupplychainImpl'.
+
 ## [8.2.6] (2025-01-09)
 
 ### Fixes
@@ -543,6 +637,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.7]: https://github.com/axelor/axelor-open-suite/compare/v8.2.6...v8.2.7
 [8.2.6]: https://github.com/axelor/axelor-open-suite/compare/v8.2.5...v8.2.6
 [8.2.5]: https://github.com/axelor/axelor-open-suite/compare/v8.2.4...v8.2.5
 [8.2.4]: https://github.com/axelor/axelor-open-suite/compare/v8.2.3...v8.2.4

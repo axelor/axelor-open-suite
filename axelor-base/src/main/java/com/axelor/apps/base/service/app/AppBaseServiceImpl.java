@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -48,6 +49,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Singleton;
 
 @Singleton
@@ -240,6 +242,45 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     }
 
     return duration;
+  }
+
+  @Override
+  public Unit getUnitDays() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit daysUnit = appBase.getUnitDays();
+    if (Objects.isNull(daysUnit)) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_DAYS));
+    }
+    return daysUnit;
+  }
+
+  @Override
+  public Unit getUnitHours() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit hoursUnit = appBase.getUnitHours();
+    if (Objects.isNull(hoursUnit)) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_HOURS));
+    }
+    return hoursUnit;
+  }
+
+  @Override
+  public BigDecimal getDailyWorkHours() throws AxelorException {
+    AppBase appBase = getAppBase();
+    BigDecimal dailyWorkHours = appBase.getDailyWorkHours();
+    if (Objects.isNull(dailyWorkHours) || dailyWorkHours.signum() <= 0) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_DAILY_WORK_HOURS));
+    }
+    return dailyWorkHours;
   }
 
   /** {@inheritDoc} */

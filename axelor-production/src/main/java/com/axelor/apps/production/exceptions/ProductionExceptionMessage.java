@@ -390,4 +390,7 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_WASTE_DECLARATION_IN_PRODUCED_LIST = /*$$(*/
       "Warning: The current product exists in produced products of the manuf order." /*)*/;
+
+  public static final String CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER = /*$$(*/
+      "This stock move is linked to a manufacturing order and can't be canceled." /*)*/;
 }

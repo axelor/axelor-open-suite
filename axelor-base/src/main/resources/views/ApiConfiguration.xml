@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="api-configuration-grid" title="API Configuration"
+    model="com.axelor.apps.base.db.PartnerApiConfiguration">
+    <field name="apiName"/>
+    <field name="apiUrl" widget="url"/>
+  </grid>
+
+  <form name="api-configuration-form" title="API Configuration"
+    model="com.axelor.apps.base.db.PartnerApiConfiguration" canDelete="false" canNew="false"
+    width="large">
+    <panel name="apiPanel" title="API Service" colSpan="12" showTitle="false">
+      <field name="apiName" required="true"/>
+      <field name="apiUrl" widget="url"/>
+      <field name="apiKey" widget="password"/>
+    </panel>
+  </form>
+
+  <form name="partner-api-configuration-wizard-form" title="Partner API configuration"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <field name="partnerApiConfiguration" title="API config"
+        target="com.axelor.apps.base.db.PartnerApiConfiguration" type="many-to-one" required="true"
+        canNew="false" colSpan="5"/>
+      <field name="siret number" title="Siret number" type="string" required="true"
+        colSpan="5"/>
+      <button name="executeApiBtn" title="Fetch data"
+        onClick="action-api-configuration-method-fetch-data" colSpan="2"/>
+    </panel>
+  </form>
+
+  <action-method name="action-api-configuration-method-fetch-data">
+    <call class="com.axelor.apps.base.web.PartnerApiConfigurationController" method="fetchData"/>
+  </action-method>
+
+</object-views>

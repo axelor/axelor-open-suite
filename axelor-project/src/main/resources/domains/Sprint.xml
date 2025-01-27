@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="Sprint">
+
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="targetVersion" title="Version"
+      ref="com.axelor.apps.project.db.ProjectVersion"/>
+    <string name="description" title="Description" large="true"/>
+    <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Tasks" mappedBy="activeSprint" orphanRemoval="false"/>
+    <integer name="sequence" title="Sequence"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <date name="fromDate" title="From date"/>
+    <date name="toDate" title="To date"/>
+
+    <unique-constraint columns="name,project"/>
+    <unique-constraint columns="name,targetVersion"/>
+
+  </entity>
+</domain-models>

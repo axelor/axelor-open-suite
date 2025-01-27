@@ -28,7 +28,7 @@ public interface YearAccountService {
       Company company,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       LocalDate reportedBalancedDate)
       throws AxelorException;
 
@@ -38,7 +38,7 @@ public interface YearAccountService {
       String code,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       int typeSelect,
       LocalDate reportedBalanceDate);
 }
