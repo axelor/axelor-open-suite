@@ -17,6 +17,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,6 +54,9 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     Sprint savedSprint = projectTask.getOldActiveSprint();
+    if (savedSprint == null && projectTask.getId() != null) {
+      savedSprint = projectTaskRepository.find(projectTask.getId()).getActiveSprint();
+    }
 
     Sprint backlogSprint =
         Optional.of(projectTask)
@@ -114,8 +118,13 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     Sprint currentSprint =
         Optional.ofNullable(projectTask).map(ProjectTask::getActiveSprint).orElse(null);
     return Optional.ofNullable(appProjectService.getAppProject())
-            .map(AppProject::getEnablePlanification)
-            .orElse(false)
+                .map(AppProject::getEnablePlanification)
+                .orElse(false)
+            && Optional.ofNullable(projectTask)
+                    .map(ProjectTask::getBudgetedTime)
+                    .map(BigDecimal::signum)
+                    .orElse(0)
+                > 0
         ? currentSprint
         : null;
   }
