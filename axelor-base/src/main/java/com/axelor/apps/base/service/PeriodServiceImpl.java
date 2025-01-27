@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
@@ -35,19 +36,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Singleton;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class PeriodServiceImpl implements PeriodService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PeriodRepository periodRepo;
   protected AdjustHistoryService adjustHistoryService;
-  protected int oldPeriodStatusSelect;
 
   @Inject
   public PeriodServiceImpl(PeriodRepository periodRepo, AdjustHistoryService adjustHistoryService) {
@@ -123,7 +122,7 @@ public class PeriodServiceImpl implements PeriodService {
     }
   }
 
-  public void close(Period period) {
+  public void close(Period period) throws AxelorException {
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);
     }
@@ -298,17 +297,25 @@ public class PeriodServiceImpl implements PeriodService {
 
   @Override
   public void closePeriod(Period period) {
-    this.oldPeriodStatusSelect = period.getStatusSelect();
+    int oldPeriodStatusSelect = period.getStatusSelect();
 
-    this.closureInProgress(period);
-    this.close(period);
+    try {
+      this.closureInProgress(period);
+      this.close(period);
+    } catch (Exception e) {
+      resetStatus(period, oldPeriodStatusSelect);
+      TraceBackService.trace(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
   }
 
-  @Override
-  @Transactional
-  public void resetStatusSelect(Period period) {
+  @Transactional(rollbackOn = {Exception.class})
+  protected void resetStatus(Period period, int oldPeriodStatusSelect) {
+
+    Period periodBDD = periodRepo.find(period.getId());
     if (period != null) {
-      period.setStatusSelect(this.oldPeriodStatusSelect);
+      periodBDD.setStatusSelect(oldPeriodStatusSelect);
     }
+    periodRepo.save(periodBDD);
   }
 }
