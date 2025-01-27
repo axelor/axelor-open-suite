@@ -59,16 +59,16 @@ public abstract class RegistrationNumberValidator {
   protected void checkRegistrationCode(Partner partner) throws AxelorException {
 
     String registrationCode = partner.getRegistrationCode();
-    registrationCode = registrationCode.replace(" ", "");
     RegistrationNumberTemplate registrationNumberTemplate =
         Optional.of(partner)
             .map(Partner::getMainAddress)
             .map(Address::getCountry)
             .map(Country::getRegistrationNumberTemplate)
             .orElse(null);
-    if (registrationNumberTemplate == null) {
+    if (registrationNumberTemplate == null || StringUtils.isEmpty(registrationCode)) {
       return;
     }
+    registrationCode = registrationCode.replace(" ", "");
     if (registrationNumberTemplate.getIsRequiredForCompanies()
         && StringUtils.isBlank(registrationCode)) {
       throw new AxelorException(
@@ -95,17 +95,23 @@ public abstract class RegistrationNumberValidator {
       return;
     }
 
-    checkRegistrationCode(partner);
     Country businessCountry = mainAddress.getCountry();
     RegistrationNumberTemplate registrationNumberTemplate =
         businessCountry.getRegistrationNumberTemplate();
 
+    String registrationCode = partner.getRegistrationCode();
     if (registrationNumberTemplate != null
-        && !Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+        && !Strings.isNullOrEmpty(registrationCode)
+        && registrationCode.length() == registrationNumberTemplate.getRequiredSize()) {
       partner.setTaxNbr(getTaxNbrFromRegistrationCode(partner));
       partner.setNic(getNicFromRegistrationCode(partner));
       partner.setSiren(getSirenFromRegistrationCode(partner));
+    } else {
+      partner.setTaxNbr(null);
+      partner.setNic(null);
+      partner.setSiren(null);
     }
+    checkRegistrationCode(partner);
   }
 
   protected abstract String getTaxNbrFromRegistrationCode(Partner partner);
