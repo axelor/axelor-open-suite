@@ -13,4 +13,27 @@
     </panel>
   </form>
 
+  <form name="incl-characteristics-panel-form" title="Characteristics"
+    id="hr-incl-characteristics-panel-form" model="com.axelor.apps.project.db.ProjectTask"
+    extension="true">
+    <extend target="//field[@name='activeSprint']">
+      <attribute name="onChange" value="action-project-task-group-sprint-onchange"/>
+    </extend>
+  </form>
+
+  <action-group name="action-project-task-group-sprint-onchange">
+    <action name="action-project-task-method-validate-sprint-planification"/>
+    <action name="action-project-task-method-create-sprint-planification"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-validate-sprint-planification">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="validateSprintPlanification"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-create-sprint-planification">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="createSprintPlanification"/>
+  </action-method>
+
 </object-views>
