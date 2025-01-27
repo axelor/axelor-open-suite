@@ -224,6 +224,8 @@ import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServ
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
+import com.axelor.apps.base.service.discount.GlobalDiscountService;
+import com.axelor.apps.base.service.discount.GlobalDiscountServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
@@ -539,5 +541,6 @@ public class BaseModule extends AxelorModule {
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
     bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
+    bind(GlobalDiscountService.class).to(GlobalDiscountServiceImpl.class);
   }
 }

@@ -18,15 +18,11 @@
  */
 package com.axelor.apps.sale.service.saleorder.views;
 
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.discount.GlobalDiscountService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,16 +30,16 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
 
   protected CurrencyScaleService currencyScaleService;
   protected SaleOrderService saleOrderService;
-  protected SaleOrderDiscountService saleOrderDiscountService;
+  protected GlobalDiscountService globalDiscountService;
 
   @Inject
   public SaleOrderAttrsServiceImpl(
       CurrencyScaleService currencyScaleService,
       SaleOrderService saleOrderService,
-      SaleOrderDiscountService saleOrderDiscountService) {
+      GlobalDiscountService globalDiscountService) {
     this.currencyScaleService = currencyScaleService;
     this.saleOrderService = saleOrderService;
-    this.saleOrderDiscountService = saleOrderDiscountService;
+    this.globalDiscountService = globalDiscountService;
   }
 
   protected void addAttr(
@@ -85,48 +81,11 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
     if (saleOrder == null) {
       return;
     }
-    switch (saleOrder.getDiscountTypeSelect()) {
-      case PriceListLineRepository.AMOUNT_TYPE_PERCENT:
-        setSaleOrderPercentageGlobalDiscountDummies(saleOrder, attrsMap);
-        break;
-      case PriceListLineRepository.AMOUNT_TYPE_FIXED:
-        setSaleOrderFixedGlobalDiscountDummies(saleOrder, attrsMap);
-        break;
-    }
-  }
-
-  protected void setSaleOrderPercentageGlobalDiscountDummies(
-      SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
-    Currency currency = saleOrder.getCurrency();
-    if (currency == null) {
-      return;
-    }
-    BigDecimal equivalence = saleOrderDiscountService.computeDiscountFixedEquivalence(saleOrder);
-    this.addAttr("discountCurrency", "value", "%", attrsMap);
-    this.addAttr("discountScale", "value", 2, attrsMap);
-    this.addAttr("$discountEquivalence", "value", equivalence, attrsMap);
-    this.addAttr(
-        "$swapDiscountTypeBtn",
-        "value",
-        formatEquivalence(equivalence, currency.getSymbol(), currency.getNumberOfDecimals()),
-        attrsMap);
-  }
-
-  protected void setSaleOrderFixedGlobalDiscountDummies(
-      SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
-    Currency currency = saleOrder.getCurrency();
-    if (currency == null) {
-      return;
-    }
-    BigDecimal equivalence =
-        saleOrderDiscountService.computeDiscountPercentageEquivalence(saleOrder);
-    this.addAttr("discountCurrency", "value", currency.getSymbol(), attrsMap);
-    this.addAttr("discountScale", "value", currency.getNumberOfDecimals(), attrsMap);
-    this.addAttr("$discountEquivalence", "value", equivalence, attrsMap);
-    this.addAttr("$swapDiscountTypeBtn", "value", formatEquivalence(equivalence, "%", 2), attrsMap);
-  }
-
-  protected String formatEquivalence(BigDecimal value, String symbol, int scale) {
-    return String.format("%s %s", value.setScale(scale, RoundingMode.HALF_UP), symbol);
+    attrsMap.putAll(
+        globalDiscountService.setDiscountDummies(
+            saleOrder.getDiscountTypeSelect(),
+            saleOrder.getCurrency(),
+            saleOrder.getExTaxTotal(),
+            saleOrder.getPriceBeforeGlobalDiscount()));
   }
 }
