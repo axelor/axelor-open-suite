@@ -1,6 +1,0 @@
-title: "InvoiceTerm/Holdback : fix due date management when the invoice term is holdback"
-module: axelor-account
-developer: |
-  Add a new service InvoiceTermDateComputeServiceImpl.
-  Split the InvoiceTermServiceImpl.computeInvoiceTermsDueDates method to override it in business-project
-  Add the InvoiceTermDateComputeService as parameter in the constructor of InvoiceTermServiceImpl
