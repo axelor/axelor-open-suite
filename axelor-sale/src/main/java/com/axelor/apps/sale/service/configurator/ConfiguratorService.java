@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.lang.reflect.InvocationTargetException;
 import wslite.json.JSONException;
 
@@ -52,6 +53,11 @@ public interface ConfiguratorService {
       JsonContext jsonIndicators,
       SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  void duplicateSaleOrderLine(SaleOrderLine saleOrderLine)
+      throws AxelorException, JsonProcessingException;
+
+  void simpleDuplicate(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Give the result of a formula, with the script variables defined in the values map.

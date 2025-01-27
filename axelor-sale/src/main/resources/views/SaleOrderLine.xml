@@ -22,6 +22,10 @@
       onClick="save,action-sale-order-line-view-regenerate-line"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
       icon="fa-pen-to-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="save,action-sale-order-line-method-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -76,6 +80,10 @@
       onClick="save,action-sale-order-line-view-regenerate-line"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
       icon="fa-pen-to-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="save,action-sale-order-line-method-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -802,4 +810,9 @@
     <context name="_saleOrderLineId" expr="eval: id"/>
     <context name="_showRecord" expr="eval: configurator.id"/>
   </action-view>
+
+  <action-method name="action-sale-order-line-method-configurator-duplicate">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="configuratorDuplicateSaleOrderLine"/>
+  </action-method>
 </object-views>

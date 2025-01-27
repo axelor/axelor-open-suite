@@ -52,10 +52,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.axelor.utils.helpers.MetaHelper;
+import com.axelor.utils.helpers.json.JsonHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
@@ -70,6 +73,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -91,7 +95,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected final ConfiguratorCheckService configuratorCheckService;
   protected final ConfiguratorSaleOrderLineService configuratorSaleOrderLineService;
   protected final ProductCompanyRepository productCompanyRepository;
-
+  protected final ConfiguratorRepository configuratorRepository;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -109,7 +113,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       SaleOrderRepository saleOrderRepository,
       ConfiguratorCheckService configuratorCheckService,
       ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
-      ProductCompanyRepository productCompanyRepository) {
+      ProductCompanyRepository productCompanyRepository,
+      ConfiguratorRepository configuratorRepository) {
     this.appBaseService = appBaseService;
     this.configuratorFormulaService = configuratorFormulaService;
     this.productRepository = productRepository;
@@ -124,6 +129,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     this.configuratorCheckService = configuratorCheckService;
     this.configuratorSaleOrderLineService = configuratorSaleOrderLineService;
     this.productCompanyRepository = productCompanyRepository;
+    this.configuratorRepository = configuratorRepository;
   }
 
   @Override
@@ -304,6 +310,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         value = fetchRelationalField(fieldName, intId.longValue(), Product.class);
       }
     }
+    if (value instanceof BigDecimal) {
+      // Necessary step as if the big decimal is not with the right scale, it needs to be
+      // recomputed.
+      // Casting it to string to allow Mapper to adapt the value with the right scaling.
+      value = ((BigDecimal) value).toString();
+    }
     mapper.set(product, fieldName, value);
   }
 
@@ -371,14 +383,83 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       configuratorCheckService.checkLinkedSaleOrderLine(configurator);
 
-      var newSaleOrderLine =
-          generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
-      newSaleOrderLine.setConfigurator(configurator);
+      duplicateLine(configurator, saleOrder, jsonAttributes, jsonIndicators);
       saleOrder.removeSaleOrderLineListItem(saleOrderLine);
-      saleOrderLineRepository.save(newSaleOrderLine);
       saleOrderComputeService.computeSaleOrder(saleOrder);
       saleOrderRepository.save(saleOrder);
     }
+  }
+
+  protected SaleOrderLine duplicateLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators)
+      throws AxelorException {
+    var newSaleOrderLine =
+        generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+    saleOrderLineRepository.save(newSaleOrderLine);
+    newSaleOrderLine.setConfigurator(configurator);
+    return newSaleOrderLine;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void duplicateSaleOrderLine(SaleOrderLine saleOrderLine)
+      throws AxelorException, JsonProcessingException {
+
+    Objects.requireNonNull(saleOrderLine);
+    var configurator = saleOrderLine.getConfigurator();
+    var context = new Context(Configurator.class);
+
+    var saleOrder = saleOrderLine.getSaleOrder();
+    var duplicatedConfigurator = configuratorRepository.copy(configurator, false);
+    var jsonAttributes =
+        new JsonContext(
+            context,
+            Mapper.of(Configurator.class).getProperty("attributes"),
+            duplicatedConfigurator.getAttributes());
+    var jsonIndicators =
+        new JsonContext(
+            context,
+            Mapper.of(Configurator.class).getProperty("indicators"),
+            duplicatedConfigurator.getIndicators());
+
+    duplicateLine(saleOrderLine, duplicatedConfigurator, jsonAttributes, jsonIndicators, saleOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void simpleDuplicate(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    var copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+    saleOrder.addSaleOrderLineListItem(copiedSaleOrderLine);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderRepository.save(saleOrder);
+  }
+
+  protected void duplicateLine(
+      SaleOrderLine saleOrderLine,
+      Configurator duplicatedConfigurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrder saleOrder)
+      throws AxelorException, JsonProcessingException {
+    updateIndicators(duplicatedConfigurator, jsonAttributes, jsonIndicators, saleOrder.getId());
+    duplicatedConfigurator.setIndicators(JsonHelper.toJson(jsonIndicators));
+    if (duplicatedConfigurator.getConfiguratorCreator().getGenerateProduct()) {
+      generateProduct(duplicatedConfigurator, jsonAttributes, jsonIndicators, saleOrder.getId());
+      configuratorSaleOrderLineService.generateSaleOrderLine(
+          duplicatedConfigurator, duplicatedConfigurator.getProduct(), saleOrderLine);
+    } else {
+
+      configuratorCheckService.checkLinkedSaleOrderLine(duplicatedConfigurator);
+      duplicateLine(duplicatedConfigurator, saleOrder, jsonAttributes, jsonIndicators);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderRepository.save(saleOrder);
+    }
+
+    configuratorRepository.save(duplicatedConfigurator);
   }
 
   /**
@@ -516,7 +597,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(SaleExceptionMessage.CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME));
     }
+    saleOrderLine.setConfigurator(configurator);
     saleOrderLine = saleOrderLineRepository.save(saleOrderLine);
+
     saleOrderLineComputeService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
     return saleOrderLine;
   }

@@ -35,6 +35,8 @@ import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
 import com.axelor.apps.sale.db.repo.CartLineRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorSaleRepository;
+import com.axelor.apps.sale.db.repo.ConfiguratorManagementRepository;
+import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.OpportunitySaleRepository;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.apps.sale.db.repo.SaleBatchSaleRepository;
@@ -321,5 +323,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderDiscountService.class).to(SaleOrderDiscountServiceImpl.class);
     bind(ConfiguratorCheckService.class).to(ConfiguratorCheckServiceImpl.class);
     bind(ConfiguratorSaleOrderLineService.class).to(ConfiguratorSaleOrderLineServiceImpl.class);
+    bind(ConfiguratorRepository.class).to(ConfiguratorManagementRepository.class);
   }
 }

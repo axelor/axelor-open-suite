@@ -11,4 +11,8 @@ public interface ConfiguratorSaleOrderLineService {
   void regenerateSaleOrderLine(
       Configurator configurator, Product product, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  void generateSaleOrderLine(
+      Configurator configurator, Product product, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }
