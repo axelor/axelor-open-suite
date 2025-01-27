@@ -90,6 +90,9 @@
     <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"
       default="true"/>
 
+    <boolean name="isTitleLineManaged" title="Include title lines on stock move"
+      default="false"/>
+
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>
@@ -129,6 +132,7 @@
       <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
       <field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
+      <field name="isTitleLineManaged" on="UPDATE"/>
     </track>
   </entity>
 

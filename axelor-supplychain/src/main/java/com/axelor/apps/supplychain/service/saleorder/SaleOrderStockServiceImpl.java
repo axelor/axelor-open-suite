@@ -62,11 +62,13 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -143,6 +145,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<Pair<String, LocalDate>, List<SaleOrderLine>> saleOrderLineMap =
         getSaleOrderLineMap(saleOrder);
 
+    boolean isTitleLine = saleOrderLineMap.entrySet().size() == 1 ? true : false;
+
     for (Map.Entry<Pair<String, LocalDate>, List<SaleOrderLine>> entry :
         saleOrderLineMap.entrySet()) {
 
@@ -153,7 +157,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       List<SaleOrderLine> saleOrderLineList = entry.getValue();
 
       Optional<StockMove> stockMove =
-          createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
+          createStockMove(
+              saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList, isTitleLine);
 
       stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
@@ -164,7 +169,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrder saleOrder,
       String deliveryAddressStr,
       LocalDate estimatedDeliveryDate,
-      List<SaleOrderLine> saleOrderLineList)
+      List<SaleOrderLine> saleOrderLineList,
+      boolean isTitleLine)
       throws AxelorException {
     Company company = saleOrder.getCompany();
     StockMove stockMove =
@@ -184,13 +190,28 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               stockConfigService.getStockConfig(company));
     }
 
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    List<SaleOrderLine> saleOrderLines = new ArrayList<>(saleOrderLineList);
+
+    if (isTitleLine && appSupplychainService.getAppSupplychain().getIsTitleLineManaged()) {
+      saleOrderLines.addAll(
+          saleOrder.getSaleOrderLineList().stream()
+              .filter(line -> line.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE)
+              .collect(Collectors.toList()));
+    }
+    saleOrderLines.sort(Comparator.comparing(SaleOrderLine::getId));
+
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+        continue;
+      }
       if (saleOrderLine.getProduct() != null) {
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
-        if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+        if (qty.signum() > 0) {
           createStockMoveLine(
               stockMove, saleOrderLine, qty, saleOrder.getStockLocation(), toStockLocation);
         }
+      } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+        stockMoveLineSupplychainService.createStockMoveTitleLine(stockMove, saleOrderLine);
       }
     }
 

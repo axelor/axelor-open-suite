@@ -41,6 +41,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
@@ -67,7 +68,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      AppSupplychainService appSupplychainService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -82,7 +84,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         appStockService,
         saleOrderMergingServiceSupplyChain,
         purchaseOrderMergingSupplychainService,
-        unitConversionService);
+        unitConversionService,
+        appSupplychainService);
   }
 
   @Override

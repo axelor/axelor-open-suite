@@ -9,7 +9,8 @@
       <insert position="before">
         <button name="addToCartBtn" title="Add to cart"
           onClick="action-stock-move-line-method-add-to-cart" icon="cart-plus-fill"
-          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+          readonlyIf="lineTypeSelect == 1"/>
       </insert>
     </extend>
   </grid>
