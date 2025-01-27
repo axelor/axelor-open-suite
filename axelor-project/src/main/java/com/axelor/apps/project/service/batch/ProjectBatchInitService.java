@@ -7,5 +7,5 @@ import java.util.Set;
 
 public interface ProjectBatchInitService {
   ProjectBatch initializeProjectBatch(
-      Integer actionSelect, Set<Project> projectSet, Set<TaskStatus> taskStatusSet, String code);
+      Integer actionSelect, Set<Project> projectSet, Set<TaskStatus> taskStatusSet);
 }

@@ -20,12 +20,11 @@ public class ProjectBatchInitServiceImpl implements ProjectBatchInitService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public ProjectBatch initializeProjectBatch(
-      Integer actionSelect, Set<Project> projectSet, Set<TaskStatus> taskStatusSet, String code) {
+      Integer actionSelect, Set<Project> projectSet, Set<TaskStatus> taskStatusSet) {
     ProjectBatch projectBatch = new ProjectBatch();
     projectBatch.setActionSelect(actionSelect);
     projectBatch.setProjectSet(projectSet);
     projectBatch.setTaskStatusSet(taskStatusSet);
-    projectBatch.setCode(code);
 
     projectBatchRepository.save(projectBatch);
 
