@@ -496,6 +496,26 @@
     </template>
   </kanban>
 
+  <kanban columnBy="activeSprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    draggable="true" limit="10">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+      <![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
   <calendar name="project-task-per-status-calendar" title="Task Calendar"
     model="com.axelor.apps.project.db.ProjectTask" eventStart="taskDate" eventStop="taskEndDate"
     eventLength="1" mode="month" colorBy="status">
