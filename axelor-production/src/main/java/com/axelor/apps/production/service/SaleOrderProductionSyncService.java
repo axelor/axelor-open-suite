@@ -18,16 +18,35 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.production.db.SaleOrderLineDetails;
+import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.google.inject.Inject;
+import java.util.List;
 
-public interface SaleOrderProductionSyncService {
+public class SaleOrderProductionSyncService extends SaleOrderSyncService {
 
-  /**
-   * This method will synchronize the sale order lines and sub sale order lines.
-   *
-   * @param saleOrder
-   * @throws AxelorException
-   */
-  void syncSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
+  @Inject
+  protected SaleOrderProductionSyncService(
+      SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
+      SaleOrderLineBomService saleOrderLineBomService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolBomCustomizationService solBomCustomizationService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService,
+      SolBomUpdateService solBomUpdateService,
+      AppProductionService appProductionService) {
+    super(
+        saleOrderLineBomLineMappingService,
+        saleOrderLineBomService,
+        saleOrderLineDetailsBomService,
+        solBomCustomizationService,
+        solDetailsBomUpdateService,
+        solBomUpdateService,
+        appProductionService);
+  }
+
+  @Override
+  protected List<SaleOrderLineDetails> getSaleOrderListDetailsList(SaleOrderLine saleOrderLine) {
+    return saleOrderLine.getSaleOrderLineDetailsList();
+  }
 }

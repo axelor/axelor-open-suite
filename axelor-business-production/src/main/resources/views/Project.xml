@@ -15,11 +15,30 @@
           onClick="action-project-method-generate-prod-orders"/>
       </insert>
     </extend>
+
+    <extend target="//panel-related[@name='projectSaleOrderLineEditableTreePanel']">
+      <replace>
+        <panel-related name="projectSaleOrderLineEditableTreePanel"
+          field="saleOrderLineList" widget="tree-grid" canNew="false" canRemove="false"
+          title="Details Lines (Tree)" orderBy="sequence" form-view="sale-order-line-form"
+          x-tree-field-title="Add a new sale order line"
+          summary-view="business-production-sale-order-line-summary-project-form"
+          grid-view="business-production-sale-order-line-editable-grid"
+          x-tree-field="subSaleOrderLineList" colSpan="12"
+          x-expand-all="subSaleOrderLineList,projectSaleOrderLineDetailsList"
+          onChange="action-project-method-sale-order-line-list-onchange"/>
+      </replace>
+    </extend>
   </form>
 
   <action-method name="action-project-method-generate-prod-orders">
     <call class="com.axelor.apps.businessproduction.web.ProjectController"
       method="generateProdOrders"/>
+  </action-method>
+
+  <action-method name="action-project-method-sale-order-line-list-onchange">
+    <call class="com.axelor.apps.businessproduction.web.ProjectBusinessProductionController"
+      method="solListOnChange"/>
   </action-method>
 
 </object-views>
