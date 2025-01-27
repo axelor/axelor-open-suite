@@ -379,4 +379,6 @@ public interface StockMoveLineService {
    */
   void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
       throws AxelorException;
+
+  StockMoveLine createStockMoveLine(String productName, int lineTypeSelect, StockMove stockMove);
 }

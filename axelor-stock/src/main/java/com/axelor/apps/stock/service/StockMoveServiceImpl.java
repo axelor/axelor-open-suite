@@ -1092,7 +1092,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     modifiedStockMoveLines =
         modifiedStockMoveLines.stream()
-            .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0
+                        && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
 
@@ -1168,7 +1171,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    for (StockMoveLine line : stockMoveLineList) {
       stockMoveLineService.fillRealQuantities(line, stockMove, line.getQty());
     }
     stockMoveRepo.save(stockMove);

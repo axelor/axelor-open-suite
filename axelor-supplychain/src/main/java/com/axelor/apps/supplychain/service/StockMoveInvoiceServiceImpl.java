@@ -38,6 +38,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -46,6 +47,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -84,6 +86,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
   protected PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
   protected UnitConversionService unitConversionService;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -100,7 +103,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      AppSupplychainService appSupplychainService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -115,6 +119,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
     this.unitConversionService = unitConversionService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -459,18 +464,27 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     Product product = stockMoveLine.getProduct();
     boolean isTitleLine = false;
+    boolean isTitleLineManaged = appSupplychainService.getAppSupplychain().getIsTitleLineManaged();
 
     int sequence = InvoiceLineGenerator.DEFAULT_SEQUENCE;
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 
     if (saleOrderLine != null) {
+      if (isTitleLineManaged
+          && saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+        isTitleLine = true;
+      }
       sequence = saleOrderLine.getSequence();
     } else if (purchaseOrderLine != null) {
-      if (purchaseOrderLine.getIsTitleLine()) {
+      if (isTitleLineManaged && purchaseOrderLine.getIsTitleLine()) {
         isTitleLine = true;
       }
       sequence = purchaseOrderLine.getSequence();
+    } else if (stockMoveLine != null
+        && isTitleLineManaged
+        && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_TITLE) {
+      isTitleLine = true;
     }
 
     // do not create lines with no qties
@@ -658,9 +672,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             .all()
             .filter(
                 "self.invoice.statusSelect != :invoiceCanceled "
-                    + "AND self.stockMoveLine.id = :stockMoveLineId")
+                    + "AND self.stockMoveLine.id = :stockMoveLineId AND self.stockMoveLine.lineTypeSelect = :lineTypeSelect")
             .bind("invoiceCanceled", InvoiceRepository.STATUS_CANCELED)
             .bind("stockMoveLineId", stockMoveLine.getId())
+            .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL)
             .fetch();
     BigDecimal nonCanceledInvoiceQty = BigDecimal.ZERO;
     for (InvoiceLine invoiceLine : nonCanceledInvoiceLineList) {

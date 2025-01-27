@@ -39,6 +39,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
@@ -72,6 +73,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
       UnitConversionService unitConversionService,
+      AppSupplychainService appSupplychainService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService,
       InvoiceToolBudgetService invoiceToolBudgetService,
@@ -91,7 +93,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
         appStockService,
         saleOrderMergingServiceSupplyChain,
         purchaseOrderMergingSupplychainService,
-        unitConversionService);
+        unitConversionService,
+        appSupplychainService);
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;

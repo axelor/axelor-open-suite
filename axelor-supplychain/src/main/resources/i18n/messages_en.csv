@@ -264,6 +264,7 @@
 "Include in DEB",,,
 "Include late sales",,,
 "Include sales with a planned delivery date in the past but which have not yet been delivered.",,,
+"Include title lines on stock move",,,
 "Incorrect product in the stock move %s",,,
 "Incoterm",,,
 "Incoterm must be filled",,,

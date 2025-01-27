@@ -588,8 +588,7 @@
       <panel-related name="stockMoveLineListPanel" field="stockMoveLineList"
         title="Stock move lines" height="12"
         readonlyIf="company == null || fromStockLocation == null || toStockLocation == null || statusSelect == 3"
-        onChange="action-stock-move-line-change-group"
-        onNew="action-stock-move-line-record-filter-on-available-products, action-stock-move-line-record-fill-stock-location"
+        onChange="action-stock-move-line-change-group" onNew="action-stock-move-line-onnew-group"
         grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
         orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true"/>
       <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">

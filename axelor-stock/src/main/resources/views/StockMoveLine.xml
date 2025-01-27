@@ -6,7 +6,7 @@
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
     <hilite strong="true" color="default" if="lineTypeSelect != 0"/>
-    <field name="lineTypeSelect" hidden="true"/>
+    <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
     <field name="fromStockLocation"
       onSelect="action-stock-move-line-method-compute-from-stock-location-domain"
       onChange="action-stock-move-line-group-stock-location-onchange"/>
@@ -40,12 +40,12 @@
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true"
       title="Allocate" icon="fa-plus-square"
-      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'"
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'"
       onClick="save,action-supplychain-stock-move-line-allocate-all"/>
     <button name="deallocate"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true"
       title="Deallocate" icon="fa-minus-square"
-      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0"
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0"
       onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
     <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice" width="120px"
@@ -89,7 +89,7 @@
       title="Split into fulfilled line and unfulfilled one"
       help="Split into fulfilled line and unfulfilled one" icon="fa-clone"
       onClick="save,action-stock-move-line-method-split-into-fulfilled-line-and-unfulfilled-one"
-      hideIf=" $get('stockMove.typeSelect') == 1 || $get('stockMove.statusSelect') &gt; 2 "/>
+      hideIf="lineTypeSelect == 1 || $get('stockMove.typeSelect') == 1 || $get('stockMove.statusSelect') &gt; 2 "/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
@@ -254,15 +254,16 @@
   <grid name="stock-move-line-split-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true" canNew="false" canDelete="false">
     <field name="product" x-image-field="picture" readonly="true" form-view="product-form"
-      grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"
+      grid-view="product-grid"
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 1"
       domain="self.dtype = 'Product'"/>
     <field name="productModel" readonly="true" form-view="product-form"
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
-      readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
+      readonlyIf="lineTypeSelect == 1 || product || $get('stockMove.statusSelect') > 1"/>
     <field name="productName" readonly="true"/>
     <field name="qty" aggregate="sum"
       onChange="action-stock-move-line-validate-check-split-quantity"
-      x-scale="$nbDecimalDigitForQty"/>
+      x-scale="$nbDecimalDigitForQty" readonlyIf="lineTypeSelect == 1"/>
     <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"
       readonlyIf="lineTypeSelect == 1"/>
     <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -279,6 +280,7 @@
     </field>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="lineTypeSelect" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -955,6 +957,17 @@
     <call class="com.axelor.apps.stock.web.StockMoveLineController"
       method="splitIntoFulfilledMoveLineAndUnfulfilledOne"/>
   </action-method>
+
+  <action-group name="action-stock-move-line-onnew-group">
+    <action name="action-stock-move-line-record-filter-on-available-products"/>
+    <action name="action-stock-move-line-record-fill-stock-location"/>
+    <action name="action-stock-move-line-attrs-filter-line-type-select"/>
+  </action-group>
+
+  <action-attrs name="action-stock-move-line-attrs-filter-line-type-select">
+    <attribute name="selection-in" for="lineTypeSelect"
+      expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+  </action-attrs>
 
   <search-filters name="stock-move-line-filters"
     model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line filters">

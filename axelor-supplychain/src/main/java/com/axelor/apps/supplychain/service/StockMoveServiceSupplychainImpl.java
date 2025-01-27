@@ -242,7 +242,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       return;
     }
     stockMove.getStockMoveLineList().stream()
-        .filter(line -> line.getRealQty().signum() == 0)
+        .filter(
+            line ->
+                line.getRealQty().signum() == 0
+                    && line.getSaleOrderLine() != null
+                    && line.getSaleOrderLine().getTypeSelect()
+                        == SaleOrderLineRepository.TYPE_NORMAL)
         .forEach(line -> line.setSaleOrderLine(null));
   }
 
@@ -343,7 +348,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean qtyWasDelivered)
       throws AxelorException {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      if (stockMoveLine.getSaleOrderLine() != null) {
+      if (stockMoveLine.getSaleOrderLine() != null
+          && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL) {
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 
         BigDecimal realQty =

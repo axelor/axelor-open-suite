@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1365,7 +1365,7 @@ BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
 StockMoveLine.real_qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 StockMoveLine.sequence,
-( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine"
+(COALESCE(StockMoveLine.line_type_select = 1, false) or COALESCE(SaleOrderLine.type_select = 1, false) OR COALESCE(PurchaseOrderLine.is_title_line, false)) AS "isTitleLine"
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
@@ -1376,7 +1376,8 @@ left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = Sto
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
 left join stock_stock_location as Location on (Location.id = StockMove.from_stock_location)
 left join stock_stock_location_line as StockLocationLine on (Location.id = StockLocationLine.stock_location AND StockLocationLine.product = Product.id)
-where StockMove.id = ?
+left join studio_app_supplychain as AppSupplyChain on true
+where StockMove.id = ? and (StockMoveLine.real_qty > 0 or AppSupplyChain.is_title_line_managed = true)
 order by StockMoveLine.sequence]]></xml-property>
         </oda-data-set>
     </data-sets>
@@ -3103,6 +3104,12 @@ rowNumD=0;]]></method>
                                         <text id="3459">
                                             <property name="fontSize">9pt</property>
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["Aggregation"]</VALUE-OF>]]></text-property>
                                         </text>
@@ -3120,6 +3127,12 @@ rowNumD=0;]]></method>
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <list-property name="paramBindings">
                                                 <structure>
                                                     <property name="paramName">param_1</property>
@@ -3207,7 +3220,7 @@ rowNumD=0;]]></method>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4151">
@@ -3693,7 +3706,7 @@ rowNumD=0;]]></method>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4152">
@@ -3996,6 +4009,12 @@ rowNumD=0;]]></method>
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["real_qty"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -4012,6 +4031,12 @@ rowNumD=0;]]></method>
                                         <property name="fontWeight">bold</property>
                                         <property name="marginLeft">0pt</property>
                                         <property name="textAlign">left</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[- <VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -4080,7 +4105,7 @@ rowNumD=0;]]></method>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4301">
@@ -4560,7 +4585,7 @@ rowNumD=0;]]></method>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4314">

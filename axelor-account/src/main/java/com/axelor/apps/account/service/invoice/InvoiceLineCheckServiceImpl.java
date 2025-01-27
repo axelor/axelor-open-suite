@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
@@ -27,6 +28,7 @@ public class InvoiceLineCheckServiceImpl implements InvoiceLineCheckService {
     // split in for loop, catch the exception, and throw another exception with the specific account
     taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(
         invoiceLineList.stream()
+            .filter(invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
             .map(InvoiceLine::getTaxLineSet)
             .flatMap(Set::stream)
             .collect(Collectors.toSet()));
@@ -40,6 +42,7 @@ public class InvoiceLineCheckServiceImpl implements InvoiceLineCheckService {
 
     taxAccountService.checkSumOfNonDeductibleTaxes(
         invoiceLineList.stream()
+            .filter(invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
             .map(InvoiceLine::getTaxLineSet)
             .flatMap(Set::stream)
             .collect(Collectors.toSet()));
