@@ -17,6 +17,8 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,10 +84,7 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
   }
 
   protected void setIndividualPartnerDetails(Partner partner, JSONObject jsonUniteLegal) {
-    safeSetInteger(
-        partner::setPartnerTypeSelect,
-        partner::getPartnerTypeSelect,
-        PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+    partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
     safeSetString(
         partner::setName, partner::getName, getSafeString(jsonUniteLegal, "nomUniteLegale"));
     safeSetString(
@@ -168,13 +167,6 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
 
   private void safeSetString(
       Consumer<String> setter, Supplier<String> currentGetter, String newValue) {
-    if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
-      setter.accept(newValue);
-    }
-  }
-
-  private void safeSetInteger(
-      Consumer<Integer> setter, Supplier<Integer> currentGetter, Integer newValue) {
     if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
       setter.accept(newValue);
     }
