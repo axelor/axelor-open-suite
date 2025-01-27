@@ -1,0 +1,3 @@
+---
+title: "Move: fixed description is not inherited on move lines when they are generated from mass entry lines."
+module: axelor-account
