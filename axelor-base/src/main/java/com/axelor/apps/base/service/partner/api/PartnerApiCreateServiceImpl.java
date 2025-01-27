@@ -93,7 +93,7 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
         partner::getFirstName,
         getSafeString(jsonUniteLegal, "prenom1UniteLegale"));
 
-    String sexUniteLegale = getSafeString(jsonUniteLegal, "sexUniteLegale");
+    String sexUniteLegale = getSafeString(jsonUniteLegal, "sexeUniteLegale");
     if (Objects.equals(sexUniteLegale, "F")) {
       partner.setTitleSelect(PartnerRepository.PARTNER_TITLE_MS);
     } else if (Objects.equals(sexUniteLegale, "M")) {
