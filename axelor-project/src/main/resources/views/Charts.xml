@@ -64,6 +64,6 @@
       type="com.axelor.apps.project.db.ProjectPriority"/>
     <field name="progress" title="Progress" type="BigDecimal" aggregate="avg"
       widget="Progress"/>
-    <field name="budgetedTime" title="budgetedTime" aggregate="sum" type="String"/>
+    <field name="budgetedTime" title="Budgeted time" aggregate="sum" type="String"/>
   </grid>
 </object-views>
