@@ -182,6 +182,22 @@
       <button name="generateLinesBtn" title="Generate lines"
         onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generate-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
     </panel>
+
+    <panel name="projectPlanningTimePanel" title="Project planning time on the duration"
+      collapseIf="true">
+      <panel-related field="$projectPlanningTimeList" showTitle="false"
+        target="com.axelor.apps.project.db.ProjectPlanningTime" type="one-to-many" canRemove="false"
+        canNew="false" canView="false" grid-view="project-planning-timesheet-grid"
+        form-view="resume-project-task-form" height="200%" colSpan="12"/>
+      <spacer colSpan="3"/>
+      <field name="$generationDate" type="date" title="Date" colSpan="3"
+        onChange="action-timesheet-validate-generation-date-onchange"/>
+      <button name="generateLinesBtn" title="Generate timesheet lines"
+        onClick="action-timesheet-group-generate-lines-using-project-task" colSpan="3"/>
+      <button name="clearProjectPlanningTimesDurationBtn"
+        title="Clear project planning times duration"
+        onClick="action-timesheet-method-clear-project-planning-times-duration" colSpan="3"/>
+    </panel>
     <panel name="linesPanel">
       <panel-dashlet name="timesheetLineEditorPanel" colSpan="12"
         action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
@@ -282,6 +298,7 @@
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-validate-check-user-employee"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
+    <action name="action-timesheet-method-init-project-planning"/>
   </action-group>
 
   <action-group name="action-timesheet-group-onsave">
@@ -301,6 +318,7 @@
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-timesheet-attrs-refresh-editor"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
+    <action name="action-timesheet-method-init-project-planning"/>
   </action-group>
 
   <action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -352,6 +370,13 @@
     <action name="action-timesheet-prefill-lines"
       if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
+    <action name="action-timesheet-method-init-project-planning"/>
+  </action-group>
+
+  <action-group name="action-timesheet-group-generate-lines-using-project-task">
+    <action name="action-timesheet-method-generate-timesheet-lines"/>
+    <action name="save"/>
+    <action name="action-timesheet-group-onload"/>
   </action-group>
 
   <action-method name="action-timesheet-prefill-lines">
@@ -597,6 +622,28 @@
   <action-method name="action-timesheet-method-remove-after-to-date-timesheetlines">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="removeAfterToDateTimesheetLines"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-init-project-planning">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="initProjectPlanningTime"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-generate-timesheet-lines">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="generateTimesheetLine"/>
+  </action-method>
+
+
+  <action-method name="action-timesheet-validate-generation-date-onchange"
+    model="com.axelor.apps.hr.db.Timesheet">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="validateGenerationDate"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-clear-project-planning-times-duration">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="clearProjectPlanningTimesDuration"/>
   </action-method>
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">

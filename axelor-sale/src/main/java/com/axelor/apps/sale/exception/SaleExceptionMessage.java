@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -166,4 +166,10 @@ public final class SaleExceptionMessage {
 
   public static final String NO_ORDER_LINE_NEEDS_TO_BE_GENERATED = /*$$(*/
       "No order line needs to be generated for this cart." /*)*/;
+
+  public static final String SALE_ORDER_LINE_PARENT_WRONG_TYPE = /*$$(*/
+      "Title type line can not have sublines." /*)*/;
+
+  public static final String ERROR_DURING_DUPLICATION_SALE_ORDER_LINE = /*$$(*/
+      "An error occured during the duplication of sale order line. Therefore, only a simple copy has been made, please see tracebacks for more details." /*)*/;
 }

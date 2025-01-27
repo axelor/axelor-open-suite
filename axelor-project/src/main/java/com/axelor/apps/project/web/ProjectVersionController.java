@@ -21,7 +21,10 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.roadmap.ProjectVersionService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -55,7 +58,23 @@ public class ProjectVersionController {
       }
     }
 
+    response.setAttr("generateSprintsBtn", "hidden", isHidden);
     response.setAttr("sprintList", "hidden", isHidden);
     response.setAttr("sprintList.project", "hidden", true);
+  }
+
+  public void checkIfProjectOrVersionConflicts(ActionRequest request, ActionResponse response) {
+    ProjectVersion projectVersion = request.getContext().asType(ProjectVersion.class);
+    Project project = null;
+    Context parentContext = request.getContext().getParent();
+    if (parentContext != null && Project.class.equals(parentContext.getContextClass())) {
+      project = parentContext.asType(Project.class);
+    }
+    String error =
+        Beans.get(ProjectVersionService.class)
+            .checkIfProjectOrVersionConflicts(projectVersion, project);
+    if (StringUtils.notEmpty(error)) {
+      response.setError(error);
+    }
   }
 }

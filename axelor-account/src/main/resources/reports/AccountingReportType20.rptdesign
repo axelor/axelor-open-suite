@@ -376,8 +376,8 @@ MetaFile.file_path as logo_path,
 Currency.code as currency,
 ReportType.type_select as report_type,
 AccountingReport.ref
-from public.account_accounting_report as AccountingReport
-inner join public.base_company as Company on (AccountingReport.company = Company.id)
+from account_accounting_report as AccountingReport
+inner join base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id
@@ -712,8 +712,8 @@ LEFT JOIN account_reconcile_group ReconcileGroup ON (MoveLine.reconcile_group = 
 LEFT JOIN base_partner Partner ON (Partner.id = Move.partner)
 LEFT JOIN account_account_config Config ON (Config.company = AccountingReport.company)
 left join account_service_type ServiceType ON (Account.service_type = ServiceType.id)
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join base_company as Company on (AccountingReport.company = Company.id)
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 
 WHERE (AccountingReport.company IS NULL OR AccountingReport.company = Move.company)
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)

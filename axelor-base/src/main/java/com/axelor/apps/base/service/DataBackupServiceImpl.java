@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -180,7 +180,7 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void updateImportId() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
     String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+        "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
 
     List<MetaModel> metaModelList = metaModelRepo.all().filter(filterStr).fetch();
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));

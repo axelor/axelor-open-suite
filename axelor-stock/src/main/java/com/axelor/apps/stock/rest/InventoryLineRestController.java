@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,7 +64,11 @@ public class InventoryLineRestController {
         ObjectFinder.find(InventoryLine.class, inventoryLineId, requestBody.getVersion());
 
     Beans.get(InventoryLineService.class)
-        .updateInventoryLine(inventoryLine, requestBody.getRealQty(), requestBody.getDescription());
+        .updateInventoryLine(
+            inventoryLine,
+            requestBody.getRealQty(),
+            requestBody.getDescription(),
+            requestBody.fetchStockLocation());
 
     return ResponseConstructor.build(
         Response.Status.OK,
@@ -92,7 +96,8 @@ public class InventoryLineRestController {
                 requestBody.fetchProduct(),
                 requestBody.fetchTrackingNumber(),
                 requestBody.getRack(),
-                requestBody.getRealQty());
+                requestBody.getRealQty(),
+                requestBody.fetchStockLocation());
 
     return ResponseConstructor.buildCreateResponse(
         inventoryLine, new InventoryLineResponse(inventoryLine));
