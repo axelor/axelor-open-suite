@@ -28,7 +28,7 @@
       <field name="siretNumber" title="Siret number" type="string" required="true" colSpan="5"/>
       <button name="executeApiBtn" title="Fetch data"
         onClick="action-api-configuration-method-fetch-data" colSpan="2"
-        showIf="partnerApiConfiguration != null &amp;&amp; siretNumber != null"/>
+        readonlyIf="partnerApiConfiguration == null || siretNumber == null"/>
     </panel>
   </form>
 
