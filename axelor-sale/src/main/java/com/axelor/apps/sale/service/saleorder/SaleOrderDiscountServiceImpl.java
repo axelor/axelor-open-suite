@@ -2,6 +2,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.discount.GlobalDiscountService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -11,10 +12,15 @@ import java.math.RoundingMode;
 
 public class SaleOrderDiscountServiceImpl implements SaleOrderDiscountService {
 
+  protected final GlobalDiscountService globalDiscountService;
+
   protected final SaleOrderComputeService saleOrderComputeService;
 
   @Inject
-  public SaleOrderDiscountServiceImpl(SaleOrderComputeService saleOrderComputeService) {
+  public SaleOrderDiscountServiceImpl(
+      GlobalDiscountService globalDiscountService,
+      SaleOrderComputeService saleOrderComputeService) {
+    this.globalDiscountService = globalDiscountService;
     this.saleOrderComputeService = saleOrderComputeService;
   }
 
@@ -124,12 +130,8 @@ public class SaleOrderDiscountServiceImpl implements SaleOrderDiscountService {
     if (saleOrder == null) {
       return BigDecimal.ZERO;
     }
-    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
-    BigDecimal priceBeforeGlobalDiscount = saleOrder.getPriceBeforeGlobalDiscount();
-    if (exTaxTotal == null || priceBeforeGlobalDiscount == null) {
-      return BigDecimal.ZERO;
-    }
-    return priceBeforeGlobalDiscount.subtract(exTaxTotal);
+    return globalDiscountService.computeDiscountFixedEquivalence(
+        saleOrder.getExTaxTotal(), saleOrder.getPriceBeforeGlobalDiscount());
   }
 
   @Override
@@ -137,14 +139,7 @@ public class SaleOrderDiscountServiceImpl implements SaleOrderDiscountService {
     if (saleOrder == null) {
       return BigDecimal.ZERO;
     }
-    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
-    BigDecimal priceBeforeGlobalDiscount = saleOrder.getPriceBeforeGlobalDiscount();
-    if (exTaxTotal == null || priceBeforeGlobalDiscount == null) {
-      return BigDecimal.ZERO;
-    }
-    return priceBeforeGlobalDiscount
-        .subtract(exTaxTotal)
-        .multiply(BigDecimal.valueOf(100))
-        .divide(priceBeforeGlobalDiscount, RoundingMode.HALF_UP);
+    return globalDiscountService.computeDiscountPercentageEquivalence(
+        saleOrder.getExTaxTotal(), saleOrder.getPriceBeforeGlobalDiscount());
   }
 }

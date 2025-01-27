@@ -49,6 +49,12 @@
       title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
 
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="priceBeforeGlobalDiscount" title="Total W.T. before discount"
+      precision="20" scale="10"/>
+
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice date"/>
     <date name="dueDate" title="Due date"/>

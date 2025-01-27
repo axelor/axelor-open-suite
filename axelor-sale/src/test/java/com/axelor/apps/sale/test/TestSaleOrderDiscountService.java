@@ -9,6 +9,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.discount.GlobalDiscountService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -45,6 +46,8 @@ class TestSaleOrderDiscountService extends BaseTest {
   protected final PriceListService priceListService;
   protected final CurrencyService currencyService;
   protected final CurrencyScaleService currencyScaleService;
+
+  protected final GlobalDiscountService globalDiscountService;
   protected SaleOrderDiscountService saleOrderDiscountService;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrder saleOrder;
@@ -53,10 +56,12 @@ class TestSaleOrderDiscountService extends BaseTest {
   TestSaleOrderDiscountService(
       PriceListService priceListService,
       CurrencyService currencyService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      GlobalDiscountService globalDiscountService) {
     this.priceListService = priceListService;
     this.currencyService = currencyService;
     this.currencyScaleService = currencyScaleService;
+    this.globalDiscountService = globalDiscountService;
   }
 
   @BeforeEach
@@ -66,7 +71,8 @@ class TestSaleOrderDiscountService extends BaseTest {
     when(appSale.getConsiderZeroCost()).thenReturn(false);
     when(appSaleService.getAppSale()).thenReturn(appSale);
     createSaleOrderComputeService(appSaleService);
-    saleOrderDiscountService = new SaleOrderDiscountServiceImpl(saleOrderComputeService);
+    saleOrderDiscountService =
+        new SaleOrderDiscountServiceImpl(globalDiscountService, saleOrderComputeService);
     prepareSaleOrder();
   }
 
