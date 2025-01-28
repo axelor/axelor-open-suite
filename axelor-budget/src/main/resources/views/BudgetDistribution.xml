@@ -212,6 +212,7 @@
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="amount" validIf="amount &gt; 0"
         x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="purchaseOrderLine" readonly="true" showIf="_purchaseOrderId"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
       <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -225,6 +226,7 @@
       <field name="budget" readonly="true"/>
       <field name="purchaseOrderLine.product" readonly="true"/>
       <field name="purchaseOrderLine.purchaseOrder" readonly="true"/>
+      <field name="purchaseOrderLine" readonly="true"/>
       <field name="purchaseOrderLine.purchaseOrder.validationDateTime" readonly="true"/>
       <field name="budgetAmountAvailable" readonly="true"
         if="__config__.app.getApp('budget')?.getManageMultiBudget()"
@@ -260,6 +262,7 @@
       <field name="budgetAmountAvailable" readonly="true"
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="amount" readonly="true" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="invoiceLine" readonly="true" showIf="_invoiceId"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
       <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -270,6 +273,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" width="large">
     <panel name="mainPanel" readonly="true">
       <field name="invoiceLine.invoice"/>
+      <field name="invoiceLine" readonly="true"/>
       <field name="invoiceLine.invoice.invoiceDate"/>
       <field name="invoiceLine.product" domain="self.dtype = 'Product'"/>
       <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
@@ -283,6 +287,7 @@
     canEdit="false">
     <panel name="mainPanel" readonly="true">
       <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
+      <field name="purchaseOrderLine"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
       <field name="budget.globalBudget" title="Global budget"/>
       <field name="budget.budgetLevel" title="Section line"/>
@@ -355,6 +360,7 @@
         name="budgetAmountAvailable" readonly="true"
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="amount" readonly="false" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="saleOrderLine" readonly="true" showIf="_globalId"/>
       <field name="saleOrderLine.saleOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
       <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
