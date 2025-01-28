@@ -1857,4 +1857,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     return date1.compareTo(date2);
   }
+
+  public void setIsCustomizedInvoiceTerms(Invoice invoice) {
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (ObjectUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+
+    if (PaymentConditionToolService.isFreePaymentCondition(invoice.getPaymentCondition())
+        && invoice.getDueDate() != null) {
+      invoiceTermList.forEach(invoiceTerm -> invoiceTerm.setIsCustomized(true));
+    }
+  }
 }

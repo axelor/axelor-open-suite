@@ -1111,7 +1111,7 @@
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date"/>
+          onChange="action-invoice-group-due-date-on-change"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1272,7 +1272,7 @@
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-invoice-date-on-change"/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date"/>
+          onChange="action-invoice-group-due-date-on-change"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
@@ -2938,5 +2938,15 @@
     <view type="form" name="invoice-form"/>
     <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
   </action-view>
+
+  <action-group name="action-invoice-group-due-date-on-change">
+    <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-set-is-customizable-invoice-terms"/>
+  </action-group>
+
+  <action-method name="action-invoice-method-set-is-customizable-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setIsCustomizableInvoiceTerms"/>
+  </action-method>
 
 </object-views>
