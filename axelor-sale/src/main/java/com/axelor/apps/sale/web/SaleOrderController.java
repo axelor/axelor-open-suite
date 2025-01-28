@@ -870,14 +870,16 @@ public class SaleOrderController {
     response.setValue("saleOrderLineList", saleOrderLineList);
   }
 
-
-  public void duplicateWithConfigurator(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void duplicateWithConfigurator(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
+    var copySaleOrder =
+        Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+            .duplicateSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
-    var copySaleOrder = Beans.get(ConfiguratorSaleOrderDuplicateService.class).duplicateSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
-
-    response.setView(ActionView.define(I18n.get(ITranslation.SALE_QUOTATION))
+    response.setView(
+        ActionView.define(I18n.get(ITranslation.SALE_QUOTATION))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form")
             .param("forceEdit", "true")
