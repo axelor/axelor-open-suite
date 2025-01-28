@@ -416,7 +416,8 @@
       <panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
         <field name="subTotalCostPrice"
           onChange="action-sale-order-line-method-compute-subMargin"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+          x-scale="$companyCurrency.numberOfDecimals"
+          readonlyIf="subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL"/>
         <field name="subTotalGrossMargin" readonly="true"
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>

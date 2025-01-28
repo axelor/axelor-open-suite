@@ -53,6 +53,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
   protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService;
 
   @Inject
   public SaleOrderLineComputeServiceImpl(
@@ -62,7 +63,8 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
       SaleOrderMarginService saleOrderMarginService,
       CurrencyService currencyService,
       PriceListService priceListService,
-      SaleOrderLinePackService saleOrderLinePackService) {
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService) {
     this.taxService = taxService;
     this.currencyScaleService = currencyScaleService;
     this.productCompanyService = productCompanyService;
@@ -70,6 +72,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.saleOrderLinePackService = saleOrderLinePackService;
+    this.saleOrderLineCostPriceComputeService = saleOrderLineCostPriceComputeService;
   }
 
   @Override
@@ -90,7 +93,6 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine, saleOrder.getInAti());
     BigDecimal taxRate = BigDecimal.ZERO;
-    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (CollectionUtils.isNotEmpty(saleOrderLine.getTaxLineSet())) {
       taxRate = taxService.getTotalTaxRate(saleOrderLine.getTaxLineSet());
@@ -125,19 +127,9 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     }
 
     Product product = saleOrderLine.getProduct();
-    if (product != null
-        && ((BigDecimal)
-                    productCompanyService.get(
-                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                .compareTo(BigDecimal.ZERO)
-            != 0) {
-      subTotalCostPrice =
-          currencyScaleService.getCompanyScaledValue(
-              saleOrder,
-              ((BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()))
-                  .multiply(saleOrderLine.getQty()));
-    }
-
+    map.putAll(
+        saleOrderLineCostPriceComputeService.computeSubTotalCostPrice(
+            saleOrder, saleOrderLine, product));
     map.putAll(setProductIconType(saleOrderLine, product));
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
@@ -145,13 +137,11 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     saleOrderLine.setPriceDiscounted(priceDiscounted);
     saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
-    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
     map.put("inTaxTotal", inTaxTotal);
     map.put("exTaxTotal", exTaxTotal);
     map.put("priceDiscounted", priceDiscounted);
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
-    map.put("subTotalCostPrice", subTotalCostPrice);
 
     map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
 

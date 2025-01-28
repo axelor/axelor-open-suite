@@ -95,6 +95,7 @@ import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineBomServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineCostPriceComputeProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
@@ -222,6 +223,7 @@ import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChan
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -380,5 +382,7 @@ public class ProductionModule extends AxelorModule {
     bind(PurchaseOrderTypeSelectServiceImpl.class)
         .to(PurchaseOrderTypeSelectProductionServiceImpl.class);
     bind(SaleOrderLineDetailsBomSyncService.class).to(SaleOrderLineDetailsBomSyncServiceImpl.class);
+    bind(SaleOrderLineCostPriceComputeServiceImpl.class)
+        .to(SaleOrderLineCostPriceComputeProductionServiceImpl.class);
   }
 }

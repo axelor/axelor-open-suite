@@ -22,6 +22,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
@@ -42,6 +43,7 @@ class TestSaleOrderDiscountService extends BaseTest {
   protected final PriceListService priceListService;
   protected final CurrencyService currencyService;
   protected final CurrencyScaleService currencyScaleService;
+  protected final SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService;
   protected SaleOrderDiscountService saleOrderDiscountService;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrder saleOrder;
@@ -50,10 +52,12 @@ class TestSaleOrderDiscountService extends BaseTest {
   TestSaleOrderDiscountService(
       PriceListService priceListService,
       CurrencyService currencyService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService) {
     this.priceListService = priceListService;
     this.currencyService = currencyService;
     this.currencyScaleService = currencyScaleService;
+    this.saleOrderLineCostPriceComputeService = saleOrderLineCostPriceComputeService;
   }
 
   @BeforeEach
@@ -86,7 +90,8 @@ class TestSaleOrderDiscountService extends BaseTest {
         createSaleOrderMarginService(appSaleService),
         currencyService,
         priceListService,
-        mock(SaleOrderLinePackService.class));
+        mock(SaleOrderLinePackService.class),
+        saleOrderLineCostPriceComputeService);
   }
 
   protected SaleOrderMarginService createSaleOrderMarginService(AppSaleService appSaleService) {

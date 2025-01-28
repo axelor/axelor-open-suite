@@ -41,18 +41,25 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
   }
 
   @Override
-  public BigDecimal computeSumSubLineList(
-      List<SaleOrderLine> subSaleOrderLineList, SaleOrder saleOrder) throws AxelorException {
-    for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-      List<SaleOrderLine> subSubSaleOrderLineList = subSaleOrderLine.getSubSaleOrderLineList();
-      if (CollectionUtils.isNotEmpty(subSubSaleOrderLineList)
-          && appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
-        subSaleOrderLine.setPrice(computeSumSubLineList(subSubSaleOrderLineList, saleOrder));
-        saleOrderLineComputeService.computeValues(saleOrder, subSaleOrderLine);
+  public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)
+        && appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+      for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+        computeSumSubLineList(subSaleOrderLine, saleOrder);
       }
+
+      saleOrderLine.setPrice(
+          subSaleOrderLineList.stream()
+              .map(SaleOrderLine::getExTaxTotal)
+              .reduce(BigDecimal.ZERO, BigDecimal::add));
+      saleOrderLine.setSubTotalCostPrice(
+          subSaleOrderLineList.stream()
+              .map(SaleOrderLine::getSubTotalCostPrice)
+              .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
-    return subSaleOrderLineList.stream()
-        .map(SaleOrderLine::getExTaxTotal)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
