@@ -145,6 +145,8 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
     City currentCity = cityRepository.findByName(cityName);
     if (currentCity != null) {
       address.setCity(currentCity);
+    }else {
+      createCity(address, cityName, currentCountry);
     }
 
     String numeroVoieEtablissement = getSafeString(jsonAddress, "numeroVoieEtablissement");
@@ -157,6 +159,16 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
         address::setFullName,
         address::getFullName,
         streetName + " " + address.getZip() + " " + cityName);
+  }
+  @Transactional
+  protected void createCity(Address address, String cityName, Country currentCountry) {
+    City newCity = new City();
+    newCity.setName(cityName);
+    if(!Objects.isNull(currentCountry) ){
+      newCity.setCountry(currentCountry);
+    }
+    cityRepository.save(newCity);
+    address.setCity(newCity);
   }
 
   protected boolean isValidAddress(Address address) {
