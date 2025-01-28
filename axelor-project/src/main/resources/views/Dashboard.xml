@@ -274,7 +274,8 @@
       <field type="date" name="toDate" title="To Date" required="true"/>
     </search-fields>
     <dashlet  height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
-    <dashlet height="350" action="project-planning-time-dashboard-action" canSearch="true" colSpan="12"/>
+    <dashlet height="350" action="project-planning-time-dashboard-action" canSearch="true"
+      colSpan="12"/>
   </dashboard>
   <action-record model="com.axelor.apps.project.db.ProjectTask"
     name="action.sale.chart.set.date.project">
@@ -291,10 +292,11 @@
   </action-view>
 
   <action-view name="project-planning-time-dashboard-action"
-               model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning task">
+    model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning task">
     <view name="project-planning-time-dashboard-grid" type="grid"/>
     <view name="project-planning-time-form" type="form"/>
-    <domain> (self.date &lt;= :toDate and self.date &gt;= :fromDate )
+    <domain> (self.startDateTime &lt;= :toDate and self.startDateTime &gt;= :fromDate and
+      self.endDateTime &lt;= :toDate and self.endDateTime &gt;= :fromDate )
       and
       (self.project=:project OR :project IS NULL)</domain>
   </action-view>
