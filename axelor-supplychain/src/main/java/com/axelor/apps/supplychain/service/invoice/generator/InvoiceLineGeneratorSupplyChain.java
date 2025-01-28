@@ -34,7 +34,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -277,13 +277,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
 
     // Determine and set the taxEquiv for the line
-    if (product != null) {
-      TaxEquiv taxEquiv =
-          Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, invoice.getCompany(), fiscalPosition, isPurchase);
+    TaxEquiv taxEquiv =
+        Beans.get(FiscalPositionServiceImpl.class)
+            .getTaxEquivFromOrToTaxSet(invoice.getFiscalPosition(), taxLineSet);
 
-      invoiceLine.setTaxEquiv(taxEquiv);
-    }
+    invoiceLine.setTaxEquiv(taxEquiv);
 
     return invoiceLine;
   }
