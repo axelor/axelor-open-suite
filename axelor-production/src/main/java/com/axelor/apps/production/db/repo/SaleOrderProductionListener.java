@@ -16,19 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorderline;
+package com.axelor.apps.production.db.repo;
 
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.inject.Beans;
+import javax.persistence.PostUpdate;
 
-public interface SaleOrderLineCheckService {
-  void productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException;
+public class SaleOrderProductionListener {
 
-  void qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
-
-  void unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
-
-  String checkParentLineType(SaleOrderLine parentSaleOrderLine);
+  @PostUpdate
+  public void saleOrderPostUpdate(SaleOrder saleOrder) {
+    Beans.get(SaleOrderLineBomSyncService.class).syncSaleOrderLineBom(saleOrder);
+  }
 }

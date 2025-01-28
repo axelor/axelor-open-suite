@@ -16,19 +16,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorderline;
+package com.axelor.apps.production.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 
-public interface SaleOrderLineCheckService {
-  void productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException;
-
-  void qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
-
-  void unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
-
-  String checkParentLineType(SaleOrderLine parentSaleOrderLine);
+public interface SaleOrderLineBomSyncService {
+  void syncSaleOrderLineBom(SaleOrder saleOrder);
 }
