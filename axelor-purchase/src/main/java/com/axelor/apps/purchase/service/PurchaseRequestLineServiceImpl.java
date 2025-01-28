@@ -26,6 +26,8 @@ import com.axelor.apps.purchase.db.repo.PurchaseRequestLineRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PurchaseRequestLineServiceImpl implements PurchaseRequestLineService {
 
@@ -48,17 +50,40 @@ public class PurchaseRequestLineServiceImpl implements PurchaseRequestLineServic
     PurchaseRequestLine purchaseRequestLine = new PurchaseRequestLine();
     if (product != null) {
       purchaseRequestLine.setProduct(product);
-      purchaseRequestLine.setProductTitle(product.getName());
+      getProductInformation(purchaseRequestLine);
     } else {
       purchaseRequestLine.setProductTitle(productTitle);
       purchaseRequestLine.setNewProduct(true);
     }
-    if (unit == null && product != null) {
-      unit = product.getUnit();
+    if (unit != null) {
+      purchaseRequestLine.setUnit(unit);
     }
-    purchaseRequestLine.setUnit(unit);
-    purchaseRequestLine.setQuantity(quantity);
+    if (quantity.compareTo(BigDecimal.ZERO) == 0) {
+      purchaseRequestLine.setQuantity(getDefaultQuantity(purchaseRequestLine));
+    } else {
+      purchaseRequestLine.setQuantity(quantity);
+    }
     purchaseRequest.addPurchaseRequestLineListItem(purchaseRequestLine);
     purchaseRequestLineRepository.save(purchaseRequestLine);
+  }
+
+  @Override
+  public BigDecimal getDefaultQuantity(PurchaseRequestLine purchaseRequestLine) {
+    return BigDecimal.ONE;
+  }
+
+  @Override
+  public Map<String, Object> getProductInformation(PurchaseRequestLine purchaseRequestLine) {
+    Product product = purchaseRequestLine.getProduct();
+    if (product == null) {
+      return null;
+    }
+    Unit unit = product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit();
+    Map<String, Object> values = new HashMap<>();
+    purchaseRequestLine.setUnit(unit);
+    purchaseRequestLine.setProductTitle(product.getName());
+    values.put("unit", purchaseRequestLine.getUnit());
+    values.put("productTitle", purchaseRequestLine.getProductTitle());
+    return values;
   }
 }

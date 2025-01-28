@@ -16,27 +16,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.batch;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectVersion;
-import com.axelor.apps.project.db.Sprint;
-import com.google.inject.Inject;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.administration.AbstractBatchService;
+import com.axelor.apps.project.db.ProjectBatch;
+import com.axelor.db.Model;
+import com.axelor.inject.Beans;
 
-public class SprintServiceImpl implements SprintService {
-
-  @Inject
-  public SprintServiceImpl() {}
+public class ProjectBatchService extends AbstractBatchService {
 
   @Override
-  public void generateBacklogSprint(Project project) {
-    Sprint sprint = new Sprint("Backlog - " + project.getName());
-    project.setBacklogSprint(sprint);
+  protected Class<? extends Model> getModelClass() {
+    return ProjectBatch.class;
   }
 
   @Override
-  public void generateBacklogSprint(ProjectVersion projectVersion) {
-    Sprint sprint = new Sprint("Backlog - " + projectVersion.getTitle());
-    projectVersion.setBacklogSprint(sprint);
+  public Batch run(Model model) throws AxelorException {
+
+    Batch batch;
+    ProjectBatch projectBatch = (ProjectBatch) model;
+
+    batch = removeTaskStatus(projectBatch);
+
+    return batch;
+  }
+
+  public Batch removeTaskStatus(ProjectBatch projectBatch) {
+    return Beans.get(BatchRemoveTaskStatusService.class).run(projectBatch);
   }
 }

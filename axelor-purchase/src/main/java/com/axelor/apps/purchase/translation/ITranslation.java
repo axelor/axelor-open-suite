@@ -30,4 +30,6 @@ public interface ITranslation {
       "Purchase request successfully updated."; /*)*/
   public static final String PURCHASE_REQUEST_CREATE_WRONG_STATUS = /*$$(*/
       "You can create a purchase request only with the status 'Draft' or 'Requested'."; /*)*/
+  public static final String MISSING_PRODUCT_INFORMATION_FOR_PURCHASE_REQUEST_LINE = /*$$(*/
+      "Please provide product information."; /*)*/
 }

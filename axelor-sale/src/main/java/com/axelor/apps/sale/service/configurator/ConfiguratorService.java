@@ -19,11 +19,14 @@
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.lang.reflect.InvocationTargetException;
 import wslite.json.JSONException;
 
@@ -42,6 +45,19 @@ public interface ConfiguratorService {
   void updateIndicators(
       Configurator configurator, JsonContext attributes, JsonContext indicators, Long saleOrderId)
       throws AxelorException;
+
+  void regenerateSaleOrderLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  void duplicateSaleOrderLine(SaleOrderLine saleOrderLine)
+      throws AxelorException, JsonProcessingException;
+
+  void simpleDuplicate(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Give the result of a formula, with the script variables defined in the values map.
@@ -72,6 +88,14 @@ public interface ConfiguratorService {
           JSONException,
           ClassNotFoundException,
           AxelorException;
+
+  void fillProductFields(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException;
 
   /**
    * Generate a product, then generate a sale order line with the created product, then add this

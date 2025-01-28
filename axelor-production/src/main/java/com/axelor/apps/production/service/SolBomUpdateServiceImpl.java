@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
   protected final BomLineCreationService bomLineCreationService;
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
-  protected final SaleOrderBomRemoveLineService saleOrderBomRemoveLineService;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -33,13 +31,11 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       BomLineCreationService bomLineCreationService,
       BillOfMaterialRepository billOfMaterialRepository,
-      BillOfMaterialLineRepository billOfMaterialLineRepository,
-      SaleOrderBomRemoveLineService saleOrderBomRemoveLineService) {
+      BillOfMaterialLineRepository billOfMaterialLineRepository) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.bomLineCreationService = bomLineCreationService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
-    this.saleOrderBomRemoveLineService = saleOrderBomRemoveLineService;
   }
 
   @Override
@@ -57,14 +53,6 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
         updateBomLineSol(subSaleOrderLine, bom);
       }
     }
-
-    List<BillOfMaterialLine> saleOrderLineBomLineList =
-        saleOrderLine.getSubSaleOrderLineList().stream()
-            .map(SaleOrderLine::getBillOfMaterialLine)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    saleOrderBomRemoveLineService.removeBomLines(
-        saleOrderLineBomLineList, bom, ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
     logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
   }
 

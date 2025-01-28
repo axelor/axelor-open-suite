@@ -67,6 +67,8 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
+import com.axelor.apps.base.rest.PartnerRestService;
+import com.axelor.apps.base.rest.PartnerRestServiceImpl;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -242,6 +244,8 @@ import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateService;
@@ -521,6 +525,8 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
     bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
+    bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
   }
 }

@@ -75,13 +75,14 @@ public class SaleOrderOnLineChangeProductionServiceImpl
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
-    super.onLineChange(saleOrder);
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
+    String message = super.onLineChange(saleOrder);
 
     if (appProductionService.isApp("production")
         && appSaleService.getAppSale().getListDisplayTypeSelect()
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder);
     }
+    return message;
   }
 }

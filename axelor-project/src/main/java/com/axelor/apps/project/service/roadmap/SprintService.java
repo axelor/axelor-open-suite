@@ -16,23 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service;
+package com.axelor.apps.project.service.roadmap;
 
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
-import java.math.BigDecimal;
-import java.util.List;
 
-public interface AllocationLineService {
+public interface SprintService {
 
-  String getEmployeeDomain(Project project);
-
-  void addAllocationLines(
-      Project project, List<Employee> employeeList, List<Period> periodList, BigDecimal allocated);
-
-  void removeAllocationLines(List<Integer> allocationLineIds);
-
-  void createOrUpdateAllocationLine(
-      Project project, Employee employee, Period period, BigDecimal allocated);
+  void generateBacklogSprint(Project project);
 }

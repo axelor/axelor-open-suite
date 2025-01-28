@@ -44,7 +44,8 @@
     onSave="action-project-method-check-resource-availibility" width="large">
     <toolbar>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
+        onClick="save,action-project-view-show-planning-panel"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         if-module="axelor-human-resource" showIf="isShowPlanning"/>
     </toolbar>
     <menubar>
@@ -311,7 +312,8 @@
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
       collapseIf="false">
-      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
+      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
       <spacer colSpan="8"/>
@@ -383,8 +385,7 @@
       onTabSelect="action-project-attrs-hide-project-version-on-sprint">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
-      <panel name="sprintPanel" title="Sprints" showIf="sprintManagementSelect == 'project'"
-        colSpan="12">
+      <panel name="sprintPanel" title="Sprints" colSpan="12">
         <panel itemSpan="12">
           <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
             onClick="action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
@@ -392,11 +393,15 @@
             showIf="backlogSprint" readonly="true"/>
         </panel>
         <button name="generateSprintsBtn" title="Generate sprints"
+          showIf="sprintManagementSelect == 'project'"
           onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
         <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
-          canNew="true" canRemove="true"/>
+          canNew="true" canRemove="true" showIf="sprintManagementSelect == 'project'"/>
         <field name="sprintManagementSelect" hidden="true"/>
       </panel>
+      <panel-dashlet action="action-project-method-tasks-per-sprint"
+        name="tasksPerSprintPanel" colSpan="12" height="200%"/>
+      <field name="sprintManagementSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -730,6 +735,10 @@
 
   <action-method name="action-project-method-generate-backlog-sprint">
     <call class="com.axelor.apps.project.web.ProjectController" method="generateBacklogSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-tasks-per-sprint">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewTasksPerSprint"/>
   </action-method>
 
   <!-- ACTION VIEW -->
