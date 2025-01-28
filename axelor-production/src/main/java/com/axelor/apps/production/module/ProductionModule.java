@@ -83,10 +83,9 @@ import com.axelor.apps.production.service.ProdProductServiceImpl;
 import com.axelor.apps.production.service.ProductVariantServiceProductionImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
+import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
-import com.axelor.apps.production.service.SaleOrderBomRemoveLineService;
-import com.axelor.apps.production.service.SaleOrderBomRemoveLineServiceImpl;
 import com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
@@ -100,6 +99,8 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServ
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
@@ -218,6 +219,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateS
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
 import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChangeProductionServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
@@ -375,6 +377,8 @@ public class ProductionModule extends AxelorModule {
     bind(SolBomCustomizationService.class).to(SolBomCustomizationServiceImpl.class);
     bind(SolBomUpdateService.class).to(SolBomUpdateServiceImpl.class);
     bind(SolDetailsBomUpdateService.class).to(SolDetailsBomUpdateServiceImpl.class);
-    bind(SaleOrderBomRemoveLineService.class).to(SaleOrderBomRemoveLineServiceImpl.class);
+    bind(PurchaseOrderTypeSelectServiceImpl.class)
+        .to(PurchaseOrderTypeSelectProductionServiceImpl.class);
+    bind(SaleOrderLineDetailsBomSyncService.class).to(SaleOrderLineDetailsBomSyncServiceImpl.class);
   }
 }

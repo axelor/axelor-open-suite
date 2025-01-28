@@ -46,6 +46,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -79,6 +80,7 @@ public class IntercoServiceImpl implements IntercoService {
   protected AnalyticLineModelService analyticLineModelService;
   protected TaxService taxService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
+  protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
@@ -87,11 +89,13 @@ public class IntercoServiceImpl implements IntercoService {
       PurchaseConfigService purchaseConfigService,
       AnalyticLineModelService analyticLineModelService,
       TaxService taxService,
-      SaleOrderStockLocationService saleOrderStockLocationService) {
+      SaleOrderStockLocationService saleOrderStockLocationService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
     this.taxService = taxService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
+    this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
   }
 
   @Override
@@ -197,6 +201,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     Partner supplierPartner = saleOrder.getCompany().getPartner();
     purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrderTypeSelectService.setTypeSelect(purchaseOrder);
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
 

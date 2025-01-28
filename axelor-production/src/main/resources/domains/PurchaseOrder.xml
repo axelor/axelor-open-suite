@@ -9,6 +9,12 @@
 
     <boolean name="outsourcingOrder" default="false"/>
 
+    <extra-code>
+      <![CDATA[
+		  public static final int TYPE_SUBCONTRACTING = 2;
+   		]]>
+    </extra-code>
+
   </entity>
 
 </domain-models>

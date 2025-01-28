@@ -228,6 +228,13 @@
         action="action-purchase-order-line-view-show-order-line-history" colSpan="12"/>
       <panel name="deliveryPanel" title="Delivery" hidden="true" colSpan="12">
         <panel name="deliveryDatePanel" colSpan="12">
+          <field name="stockLocation" form-view="stock-location-form"
+            grid-view="stock-location-grid" if-module="axelor-supplychain"
+            if="__config__.app.isApp('supplychain')"
+            onSelect="action-purchase-order-line-attrs-set-stock-location-domain"/>
+          <field name="stockLocation.address" form-view="address-form"
+            grid-view="address-grid" if-module="axelor-supplychain"
+            if="__config__.app.isApp('supplychain')"/>
           <field name="desiredReceiptDate"/>
           <field name="estimatedReceiptDate"/>
         </panel>
@@ -540,6 +547,7 @@
   <action-record name="action-purchase-order-line-record-new"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <field name="qty" expr="eval: 1"/>
+    <field name="stockLocation" expr="eval: __parent__?.stockLocation"/>
     <field name="desiredReceiptDate" expr="eval: __parent__?.estimatedReceiptDate"/>
     <field name="$isFilterOnSupplier" expr="eval: true"/>
     <field name="estimatedReceiptDate" expr="eval: __parent__?.estimatedReceiptDate"

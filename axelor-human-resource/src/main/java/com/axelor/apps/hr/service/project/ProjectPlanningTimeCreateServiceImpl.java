@@ -56,7 +56,9 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       PublicHolidayHrService holidayService,
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
-      TimesheetLineRepository timesheetLineRepository) {
+      TimesheetLineRepository timesheetLineRepository,
+      AppBaseService appBaseService,
+      ProjectTimeUnitService projectTimeUnitService) {
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskRepo;

@@ -477,4 +477,17 @@ public class PartnerController {
                   .collect(Collectors.joining(","))));
     }
   }
+
+  public void checkIfRegistrationCodeExists(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    if (!Beans.get(PartnerService.class).checkIfRegistrationCodeExists(partner)) {
+      return;
+    }
+    String message = I18n.get(BaseExceptionMessage.PARTNER_REGISTRATION_CODE_ALREADY_EXISTS);
+    if (Beans.get(AppBaseService.class).getAppBase().getIsRegistrationCodeCheckBlocking()) {
+      response.setError(message);
+    } else {
+      response.setAlert(message);
+    }
+  }
 }
