@@ -390,6 +390,7 @@
   <action-group name="action-invoice-line-group-taxline-onchange">
     <action name="action-invoice-method-check-invoice-lines-not-only-non-deductible-taxes"/>
     <action name="action-invoice-line-method-check-sum-of-non-deductible-taxes"/>
+
     <action name="action-invoice-line-method-recompute-tax"/>
     <action name="action-invoice-line-method-convert-tax"/>
     <action name="action-invoice-line-method-compute"/>

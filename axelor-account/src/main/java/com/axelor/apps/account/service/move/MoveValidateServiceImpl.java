@@ -116,7 +116,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected CompanyConfigService companyConfigService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
-  protected TaxAccountService taxService;
+  protected TaxAccountService taxAccountService;
   protected UserService userService;
 
   @Inject
@@ -142,7 +142,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       CompanyConfigService companyConfigService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      TaxAccountService taxService,
+      TaxAccountService taxAccountService,
       UserService userService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -165,7 +165,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.companyConfigService = companyConfigService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
-    this.taxService = taxService;
+    this.taxAccountService = taxAccountService;
     this.userService = userService;
   }
 
@@ -651,8 +651,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
       Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
       if (CollectionUtils.isNotEmpty(taxLineSet)) {
-        moveLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
-        moveLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+        moveLine.setTaxRate(taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
+        moveLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
       }
 
       setMoveLineFixedInformation(move, moveLine);
@@ -956,12 +956,13 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       return;
     }
 
-    Set<TaxLine> taxLineSet = taxService.getNotNonDeductibleTaxesSet(moveLine.getTaxLineSet());
+    Set<TaxLine> taxLineSet =
+        taxAccountService.getNotNonDeductibleTaxesSet(moveLine.getTaxLineSet());
 
     for (TaxLine taxLine : taxLineSet) {
       BigDecimal taxAmount =
           lineTotal
-              .multiply(taxService.getTotalTaxRateInPercentage(Set.of(taxLine)))
+              .multiply(taxAccountService.getTotalTaxRateInPercentage(Set.of(taxLine)))
               .divide(
                   BigDecimal.valueOf(100),
                   AppBaseService.COMPUTATION_SCALING,

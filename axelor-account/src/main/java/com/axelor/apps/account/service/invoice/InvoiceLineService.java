@@ -122,4 +122,9 @@ public interface InvoiceLineService {
   Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice);
 
   Map<String, Object> recomputeTax(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+
+  void checkTaxLinesNotOnlyNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
+      throws AxelorException;
+
+  void checkSumOfNonDeductibleTaxes(List<InvoiceLine> invoiceLineList) throws AxelorException;
 }

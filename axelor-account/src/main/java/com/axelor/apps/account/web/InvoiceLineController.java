@@ -625,13 +625,12 @@ public class InvoiceLineController {
 
   public void onSelectTaxLineSet(ActionRequest request, ActionResponse response) {
     try {
-      Context parentContext = request.getContext().getParent();
+      Invoice invoice = this.getInvoice(request.getContext());
 
-      if (parentContext == null) {
+      if (invoice == null) {
         return;
       }
 
-      Invoice invoice = parentContext.asType(Invoice.class);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
       Beans.get(InvoiceLineGroupService.class).setInvoiceLineTaxLineSetDomain(invoice, attrsMap);
 

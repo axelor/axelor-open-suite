@@ -64,18 +64,18 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
 
-  protected TaxAccountService taxService;
+  protected TaxAccountService taxAccountService;
   protected CurrencyService currencyService;
   protected MoveLineRepository moveLineRepository;
   protected MoveToolService moveToolService;
 
   @Inject
   public MoveLineToolServiceImpl(
-      TaxAccountService taxService,
+      TaxAccountService taxAccountService,
       CurrencyService currencyService,
       MoveLineRepository moveLineRepository,
       MoveToolService moveToolService) {
-    this.taxService = taxService;
+    this.taxAccountService = taxAccountService;
     this.currencyService = currencyService;
     this.moveLineRepository = moveLineRepository;
     this.moveToolService = moveToolService;
@@ -460,8 +460,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   @Override
   public boolean isMoveLineTaxAccountOrNonDeductibleTax(MoveLine moveLine) {
     return this.isMoveLineTaxAccount(moveLine)
-        || (!this.isMoveLineTaxAccount(moveLine)
-            && taxService.isNonDeductibleTaxesSet(moveLine.getTaxLineSet())
+        || (taxAccountService.isNonDeductibleTaxesSet(moveLine.getTaxLineSet())
             && moveLine.getIsNonDeductibleTax());
   }
 

@@ -20,7 +20,6 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
@@ -106,21 +105,8 @@ public class TaxAccountService extends TaxService {
     }
   }
 
-  public void checkTaxLinesNotOnlyNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
+  public static void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines)
       throws AxelorException {
-    if (CollectionUtils.isEmpty(invoiceLineList)) {
-      return;
-    }
-
-    // split in for loop, catch the exception, and throw another exception with the specific account
-    this.checkTaxLinesNotOnlyNonDeductibleTaxes(
-        invoiceLineList.stream()
-            .map(InvoiceLine::getTaxLineSet)
-            .flatMap(Set::stream)
-            .collect(Collectors.toSet()));
-  }
-
-  public void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
     if (ObjectUtils.isEmpty(taxLines)) {
       return;
     }
@@ -133,7 +119,7 @@ public class TaxAccountService extends TaxService {
     }
   }
 
-  protected boolean checkTaxesNotOnlyNonDeductibleTaxes(List<Tax> taxes) {
+  protected static boolean checkTaxesNotOnlyNonDeductibleTaxes(List<Tax> taxes) {
     if (ObjectUtils.isEmpty(taxes)) {
       return true;
     }
@@ -159,20 +145,7 @@ public class TaxAccountService extends TaxService {
         .anyMatch(Tax::getIsNonDeductibleTax);
   }
 
-  public void checkSumOfNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
-      throws AxelorException {
-    if (CollectionUtils.isEmpty(invoiceLineList)) {
-      return;
-    }
-
-    this.checkSumOfNonDeductibleTaxes(
-        invoiceLineList.stream()
-            .map(InvoiceLine::getTaxLineSet)
-            .flatMap(Set::stream)
-            .collect(Collectors.toSet()));
-  }
-
-  public void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+  public static void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
     if (CollectionUtils.isEmpty(taxLines)) {
       return;
     }
@@ -180,11 +153,10 @@ public class TaxAccountService extends TaxService {
     if (taxLines.stream()
             .filter(
                 taxLine ->
-                    Boolean.TRUE.equals(
-                        Optional.of(taxLine)
-                            .map(TaxLine::getTax)
-                            .map(Tax::getIsNonDeductibleTax)
-                            .orElse(null)))
+                    Optional.of(taxLine)
+                        .map(TaxLine::getTax)
+                        .map(Tax::getIsNonDeductibleTax)
+                        .orElse(false))
             .map(TaxLine::getValue)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
             .compareTo(BigDecimal.valueOf(100))

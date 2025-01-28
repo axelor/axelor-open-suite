@@ -279,7 +279,6 @@ public class TaxInvoiceLine extends TaxGenerator {
         it ->
             computeAndAddInvoiceLineTax(
                 it, updatedInvoiceLineTaxList, invoiceLineTaxList, nonDeductibleTaxList));
-    // il faut créer les lignes de taxe avec les données présente dedans
 
     return invoiceLineTaxList;
   }

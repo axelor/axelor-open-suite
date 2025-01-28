@@ -28,10 +28,10 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
@@ -420,10 +420,10 @@ public abstract class InvoiceGenerator {
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
     CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
-    TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLineList);
-    taxAccountService.checkSumOfNonDeductibleTaxes(invoiceLineList);
+    invoiceLineService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLineList);
+    invoiceLineService.checkSumOfNonDeductibleTaxes(invoiceLineList);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
