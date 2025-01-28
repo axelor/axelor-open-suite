@@ -50,5 +50,20 @@
     <category key="employee" title="Employee"/>
     <series key="charge" type="bar" title="Planned charge"/>
   </chart>
-
+  <grid name="project-task-dashboard-grid" title="Project"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="projectTaskCategory.name" title="Project task category"
+      type="com.axelor.apps.project.db.ProjectTaskCategory"/>
+    <field name="ticketNumber" title="Ticket number" type="String"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name" title="Name"/>
+    <field name="assignedTo.fullName" title="AssignedTo" type="com.axelor.auth.db.User"/>
+    <field name="status.name" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
+    <field name="taskDate" title="Start date" type="date"/>
+    <field name="priority.name" title="Priority"
+      type="com.axelor.apps.project.db.ProjectPriority"/>
+    <field name="progress" title="Progress" type="BigDecimal" aggregate="avg"
+      widget="Progress"/>
+    <field name="budgetedTime" title="Budgeted time" aggregate="sum" type="String"/>
+  </grid>
 </object-views>
