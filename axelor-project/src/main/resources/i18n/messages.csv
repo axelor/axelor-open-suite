@@ -404,6 +404,7 @@
 "Testing server date",,,
 "The company %s doesn't have any configured sequence for Project",,,
 "The parent task creates a loop in the task tree.",,,
+"The project contains overlapping sprints. Please correct the date ranges.",,,
 "The selectable projects are those for which the 'Manage via project' option is enabled.",,,
 "The selected statuses will be removed from the allowed status types for these projects and/or categories and, as a result, will no longer be available for associated tasks. In the case of categories, the statuses will only be removed from the tasks if the 'Manage via categories' option is enabled in the project configuration.",,,
 "The status of project tasks will be defined by the selection chosen. The priority of the statuses displayed is determined first by the category, then by the project.",,,
