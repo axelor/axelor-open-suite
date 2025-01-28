@@ -71,6 +71,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
         saleOrderLine.setDesiredDeliveryDate(null);
         saleOrderLine.setEstimatedShippingDate(null);
         saleOrderLine.setDiscountDerogation(null);
+        saleOrderLine.setConfigurator(null);
       }
     }
     Beans.get(SaleOrderService.class).computeEndOfValidityDate(copy);

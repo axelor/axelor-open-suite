@@ -254,6 +254,8 @@
     onNew="action-sale-order-method-onnew"
     onSave="action-sale-order-line-tree-method-update-hasTree">
     <toolbar>
+      <button name="duplicateWithConfiguratorBtn" title="Duplicate with configurator" onClick="action-sale-order-group-on-duplicate-with-configurator"
+              if="__config__.app.getApp('sale')?.getEnableConfigurator()" icon="fa-copy"/>
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -262,6 +264,7 @@
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
         if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
+
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
@@ -1932,6 +1935,10 @@
     <context name="_saleOrder" expr="eval: __this__"/>
   </action-view>
 
+  <action-validate name="action-sale-order-validate-duplicate-lines">
+    <alert message="This will duplicate lines and their configurator, do you want to proceed ?"/>
+  </action-validate>
+
   <action-view name="action-view-show-stock-move-line" title="Customer deliveries"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-sale-order-grid"/>
@@ -2272,5 +2279,16 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="updateSaleOrderLinesDeliveryAddress"/>
   </action-method>
+
+  <action-method
+    name="action-sale-order-duplicate-sale-order-with-configurator">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="duplicateWithConfigurator"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-on-duplicate-with-configurator">
+    <action name="save"/>
+    <action name="action-sale-order-validate-duplicate-lines"/>
+    <action name="action-sale-order-duplicate-sale-order-with-configurator"/>
+  </action-group>
 
 </object-views>

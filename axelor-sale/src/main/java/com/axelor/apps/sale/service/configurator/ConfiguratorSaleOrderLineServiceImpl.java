@@ -3,6 +3,7 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -55,48 +56,37 @@ public class ConfiguratorSaleOrderLineServiceImpl implements ConfiguratorSaleOrd
             .fetch();
 
     for (var saleOrderLine : saleOrderLines) {
-      regenerateSaleOrderLine(configurator, product, saleOrderLine);
+      var saleOrder = saleOrderLine.getSaleOrder();
+      regenerateSaleOrderLine(configurator, product, saleOrderLine, saleOrder);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
     }
   }
 
   @Transactional(rollbackOn = Exception.class)
   @Override
   public void regenerateSaleOrderLine(
-      Configurator configurator, Product product, SaleOrderLine saleOrderLine)
+      Configurator configurator, Product product, SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
-    createSaleOrderSaleLine(configurator, product, saleOrderLine);
-    var saleOrder = saleOrderLine.getSaleOrder();
+    generateSaleOrderLine(configurator, product, saleOrderLine);
 
     // Bye bye old sale order line
     saleOrder.removeSaleOrderLineListItem(saleOrderLine);
-
-    saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
   }
 
   @Transactional(rollbackOn = Exception.class)
   @Override
-  public void generateSaleOrderLine(
+  public SaleOrderLine generateSaleOrderLine(
       Configurator configurator, Product product, SaleOrderLine saleOrderLine)
       throws AxelorException {
     Objects.requireNonNull(configurator);
     Objects.requireNonNull(product);
     Objects.requireNonNull(saleOrderLine);
-    createSaleOrderSaleLine(configurator, product, saleOrderLine);
-    var saleOrder = saleOrderLine.getSaleOrder();
-
-    saleOrderComputeService.computeSaleOrder(saleOrder);
-    saleOrderRepository.save(saleOrder);
-  }
-
-  protected void createSaleOrderSaleLine(
-      Configurator configurator, Product product, SaleOrderLine saleOrderLine)
-      throws AxelorException {
     var newSaleOrderLine =
         saleOrderLineGeneratorService.createSaleOrderLine(
             saleOrderLine.getSaleOrder(), product, saleOrderLine.getQty());
     newSaleOrderLine.setConfigurator(configurator);
-    saleOrderLineRepository.save(newSaleOrderLine);
+    return saleOrderLineRepository.save(newSaleOrderLine);
   }
 }
