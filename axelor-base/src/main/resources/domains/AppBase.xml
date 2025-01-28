@@ -83,6 +83,9 @@
 
     <boolean name="activateBarCodeGeneration"
       title="Activate bar code generation for products" default="false"/>
+    <boolean name="enableMultiBarcodeOnProducts"
+      title="Enable multi-barcode management on products" default="false"
+      help="In addition to the main barcode, this feature allows you to enter a list of alternative barcodes to easily find the product on the application. Without the mobile app, these barcodes have only an informative value."/>
     <boolean name="editProductBarcodeType" title="Edit product barcode type" default="false"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
