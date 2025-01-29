@@ -155,7 +155,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
   }
 
   protected SaleOrder duplicateLinesOnly(SaleOrder saleOrder) throws AxelorException {
-    duplicateSaleOrderLineList(saleOrder, true);
+    duplicateSaleOrderLineList(saleOrder);
     saleOrder = saleOrderRepository.find(saleOrder.getId());
 
     return computeSaleOrder(saleOrder);
@@ -167,11 +167,10 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
     return saleOrderRepository.save(saleOrder);
   }
 
-  @Override
-  public List<SaleOrderLine> duplicateSaleOrderLineList(SaleOrder saleOrder, boolean deep) {
+  protected void duplicateSaleOrderLineList(SaleOrder saleOrder) {
 
     if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
-      return new ArrayList<>();
+      return;
     }
 
     // Duplicate only lines with configurator
@@ -190,8 +189,6 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       toRemoveLines.remove(saleOrderLine);
     }
     manageLines(saleOrder, toRemoveLines);
-
-    return toRemoveLines;
   }
 
   @Transactional(rollbackOn = Exception.class)
