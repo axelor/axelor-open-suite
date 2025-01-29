@@ -28,6 +28,8 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
+import com.axelor.apps.base.service.ProductPriceListService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -63,7 +65,7 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected AppBaseService appBaseService;
   protected ProductPriceListService productPriceListService;
   protected UnitConversionService unitConversionService;
-  protected ProductSalePriceService productSalePriceService;
+  protected ProductPriceService productPriceService;
   protected AccountManagementService accountManagementService;
 
   @Inject
@@ -76,7 +78,7 @@ public class ProductRestServiceImpl implements ProductRestService {
       AppBaseService appBaseService,
       ProductPriceListService productPriceListService,
       UnitConversionService unitConversionService,
-      ProductSalePriceService productSalePriceService,
+      ProductPriceService productPriceService,
       AccountManagementService accountManagementService,
       TaxService taxService) {
     this.appSaleService = appSaleService;
@@ -87,7 +89,7 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.appBaseService = appBaseService;
     this.productPriceListService = productPriceListService;
     this.unitConversionService = unitConversionService;
-    this.productSalePriceService = productSalePriceService;
+    this.productPriceService = productPriceService;
     this.accountManagementService = accountManagementService;
     this.taxService = taxService;
   }
@@ -97,9 +99,9 @@ public class ProductRestServiceImpl implements ProductRestService {
       throws AxelorException {
     List<PriceResponse> priceList = new ArrayList<>();
     BigDecimal priceWT =
-        productSalePriceService.getSaleUnitPrice(company, product, false, partner, currency);
+        productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
-        productSalePriceService.getSaleUnitPrice(company, product, true, partner, currency);
+        productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
     if (product.getSalesUnit() == null && product.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,

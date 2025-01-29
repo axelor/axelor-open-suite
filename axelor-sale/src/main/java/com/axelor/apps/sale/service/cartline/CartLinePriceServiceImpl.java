@@ -22,11 +22,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
-import com.axelor.apps.sale.service.ProductSalePriceService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -35,13 +35,13 @@ import java.util.List;
 public class CartLinePriceServiceImpl implements CartLinePriceService {
 
   protected SaleConfigService saleConfigService;
-  protected ProductSalePriceService productSalePriceService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public CartLinePriceServiceImpl(
-      SaleConfigService saleConfigService, ProductSalePriceService productSalePriceService) {
+      SaleConfigService saleConfigService, ProductPriceService productPriceService) {
     this.saleConfigService = saleConfigService;
-    this.productSalePriceService = productSalePriceService;
+    this.productPriceService = productPriceService;
   }
 
   @Override
@@ -55,7 +55,7 @@ public class CartLinePriceServiceImpl implements CartLinePriceService {
     boolean inAti =
         saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
             || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
-    return productSalePriceService.getSaleUnitPrice(company, product, inAti, partner);
+    return productPriceService.getSaleUnitPrice(company, product, inAti, partner);
   }
 
   @Override

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -55,5 +56,14 @@ public interface ProductPriceService {
       BigDecimal price,
       Currency fromCurrency,
       Currency toCurrency)
+      throws AxelorException;
+
+  BigDecimal getSaleUnitPrice(
+      Company company, Product product, boolean inAti, Partner partner, Currency currency)
+      throws AxelorException;
+
+  BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException;
+
+  BigDecimal getSaleUnitPrice(Company company, Product product, boolean inAti, Partner partner)
       throws AxelorException;
 }

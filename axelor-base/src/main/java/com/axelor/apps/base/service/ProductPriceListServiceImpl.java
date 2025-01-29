@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service;
+package com.axelor.apps.base.service;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
@@ -10,16 +10,9 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.service.CompanyService;
-import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.sale.db.SaleConfig;
-import com.axelor.apps.sale.db.repo.SaleConfigRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -30,30 +23,21 @@ import org.apache.commons.collections.MapUtils;
 
 public class ProductPriceListServiceImpl implements ProductPriceListService {
 
-  protected ProductSalePriceService productSalePriceService;
   protected PriceListService priceListService;
-  protected SaleConfigService saleConfigService;
   protected TaxService taxService;
   protected AppBaseService appBaseService;
-  protected AppSaleService appSaleService;
   protected CompanyService companyService;
   protected AccountManagementService accountManagementService;
 
   @Inject
   public ProductPriceListServiceImpl(
-      SaleConfigService saleConfigService,
       CompanyService companyService,
       TaxService taxService,
       AppBaseService appBaseService,
-      ProductSalePriceService productSalePriceService,
-      AppSaleService appSaleService,
       PriceListService priceListService,
       AccountManagementService accountManagementService) {
-    this.productSalePriceService = productSalePriceService;
     this.priceListService = priceListService;
     this.accountManagementService = accountManagementService;
-    this.appSaleService = appSaleService;
-    this.saleConfigService = saleConfigService;
     this.companyService = companyService;
     this.taxService = taxService;
     this.appBaseService = appBaseService;
@@ -61,9 +45,14 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
 
   @Override
   public BigDecimal applyPriceList(
-      Product product, Partner partner, Company company, Currency currency, BigDecimal price)
+      Product product,
+      Partner partner,
+      Company company,
+      Currency currency,
+      BigDecimal price,
+      boolean inAti)
       throws AxelorException {
-    Map<String, Object> discountMap = fillDiscount(company, price, partner, product);
+    Map<String, Object> discountMap = fillDiscount(company, price, partner, product, inAti);
     BigDecimal exTaxPrice =
         priceListService.computeDiscount(
             price,
@@ -73,29 +62,21 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
   }
 
   public Map<String, Object> fillDiscount(
-      Company company, BigDecimal price, Partner partner, Product product) throws AxelorException {
+      Company company, BigDecimal price, Partner partner, Product product, Boolean inAti)
+      throws AxelorException {
     int discountTypeSelect;
     BigDecimal discountAmount;
     Map<String, Object> discounts = getDiscountsFromPriceLists(partner, price, product);
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(
-            appSaleService.getTodayDate(company),
+            appBaseService.getTodayDate(company),
             product,
             company,
             partner.getFiscalPosition(),
             false);
     Map<String, Object> discounMap = new HashMap<>();
-    boolean companyInAti = false;
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
-    Company defaultCompany = companyService.getDefaultCompany(null);
-    if (defaultCompany != null) {
-      int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
-      companyInAti =
-          saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
-              || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
-    }
     if (MapUtils.isNotEmpty(discounts)) {
-      if (!product.getInAti().equals(companyInAti)
+      if (!product.getInAti().equals(inAti)
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         discountAmount =

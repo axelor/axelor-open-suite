@@ -1,4 +1,4 @@
-package com.axelor.apps.sale.service;
+package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -10,6 +10,11 @@ import java.math.BigDecimal;
 public interface ProductPriceListService {
 
   BigDecimal applyPriceList(
-      Product product, Partner partner, Company company, Currency currency, BigDecimal price)
+      Product product,
+      Partner partner,
+      Company company,
+      Currency currency,
+      BigDecimal price,
+      boolean inAti)
       throws AxelorException;
 }

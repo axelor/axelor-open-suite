@@ -18,10 +18,12 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -41,6 +43,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 
   protected TaxService taxService;
   protected AccountManagementService accountManagementService;
+  protected ProductPriceListService productPriceListService;
 
   @Inject
   public ProductPriceServiceImpl(
@@ -49,14 +52,15 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       TaxService taxService,
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
-      FiscalPositionService fiscalPositionService) {
-
+      FiscalPositionService fiscalPositionService,
+      ProductPriceListService productPriceListService) {
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
     this.accountManagementService = accountManagementService;
     this.fiscalPositionService = fiscalPositionService;
+    this.productPriceListService = productPriceListService;
   }
 
   @Override
@@ -72,6 +76,63 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     Currency currency = (Currency) productCompanyService.get(product, "saleCurrency", company);
     return getConvertedPrice(
         company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
+  }
+
+  @Override
+  public BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException {
+    return getSaleUnitPrice(company, product, product.getInAti(), null);
+  }
+
+  @Override
+  public BigDecimal getSaleUnitPrice(
+      Company company, Product product, boolean inAti, Partner partner) throws AxelorException {
+    return getSaleUnitPrice(company, product, inAti, partner, null);
+  }
+
+  @Override
+  public BigDecimal getSaleUnitPrice(
+      Company company, Product product, boolean inAti, Partner partner, Currency currency)
+      throws AxelorException {
+    LocalDate todayDate = appBaseService.getTodayDate(company);
+
+    Currency toCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
+    FiscalPosition fiscalPosition = null;
+    if (partner != null) {
+      fiscalPosition = partner.getFiscalPosition();
+      if (partner.getCurrency() != null) {
+        toCurrency = partner.getCurrency();
+      }
+    }
+    if (currency != null) {
+      toCurrency = currency;
+    }
+    Set<TaxLine> taxLineSet =
+        accountManagementService.getTaxLineSet(todayDate, product, company, fiscalPosition, false);
+    if (partner == null) {
+      return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
+    }
+    BigDecimal price = getSaleUnitPrice(company, product, taxLineSet, false, todayDate, toCurrency);
+    BigDecimal priceDiscounted =
+        productPriceListService.applyPriceList(product, partner, company, currency, price, inAti);
+    if (!inAti) {
+      return priceDiscounted;
+    }
+    return getInTaxPrice(product, company, partner, priceDiscounted);
+  }
+
+  BigDecimal getInTaxPrice(Product product, Company company, Partner partner, BigDecimal exTaxPrice)
+      throws AxelorException {
+    Set<TaxLine> taxLineSet =
+        accountManagementService.getTaxLineSet(
+            appBaseService.getTodayDate(company),
+            product,
+            company,
+            partner.getFiscalPosition(),
+            false);
+    BigDecimal taxRate = taxService.getTotalTaxRate(taxLineSet);
+    return exTaxPrice
+        .add(exTaxPrice.multiply(taxRate))
+        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   @Override
