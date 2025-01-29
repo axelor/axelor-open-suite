@@ -28,13 +28,14 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CompanyService;
-import com.axelor.apps.base.service.ProductPriceListService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.sale.db.SaleConfig;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.rest.dto.CurrencyResponse;
 import com.axelor.apps.sale.rest.dto.PriceResponse;
@@ -61,9 +62,7 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected PartnerRepository partnerRepository;
   protected TaxService taxService;
   protected UserService userService;
-  protected ProductRestService productRestService;
   protected AppBaseService appBaseService;
-  protected ProductPriceListService productPriceListService;
   protected UnitConversionService unitConversionService;
   protected ProductPriceService productPriceService;
   protected AccountManagementService accountManagementService;
@@ -74,9 +73,7 @@ public class ProductRestServiceImpl implements ProductRestService {
       CompanyService companyService,
       PartnerRepository partnerRepository,
       UserService userService,
-      ProductRestService productRestService,
       AppBaseService appBaseService,
-      ProductPriceListService productPriceListService,
       UnitConversionService unitConversionService,
       ProductPriceService productPriceService,
       AccountManagementService accountManagementService,
@@ -85,9 +82,7 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.companyService = companyService;
     this.userService = userService;
     this.partnerRepository = partnerRepository;
-    this.productRestService = productRestService;
     this.appBaseService = appBaseService;
-    this.productPriceListService = productPriceListService;
     this.unitConversionService = unitConversionService;
     this.productPriceService = productPriceService;
     this.accountManagementService = accountManagementService;
@@ -180,5 +175,18 @@ public class ProductRestServiceImpl implements ProductRestService {
     return exTaxPrice
         .add(exTaxPrice.multiply(taxRate))
         .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+  }
+  boolean isTaxEnabled(Company company)
+  {
+    boolean companyInAti = false;
+    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
+    Company defaultCompany = companyService.getDefaultCompany(null);
+    if (defaultCompany != null) {
+      int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
+      companyInAti =
+              saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
+                      || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
+    }
+    return companyInAti;
   }
 }
