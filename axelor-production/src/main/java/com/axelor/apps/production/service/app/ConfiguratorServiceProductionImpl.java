@@ -72,8 +72,6 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
       ProductCompanyRepository productCompanyRepository,
       ConfiguratorBomService configuratorBomService,
-      BillOfMaterialRepository billOfMaterialRepository,
-      ConfiguratorCheckServiceProduction configuratorCheckServiceProduction,
       ConfiguratorRepository configuratorRepository,
       BillOfMaterialRemoveService billOfMaterialRemoveService) {
     super(
@@ -91,7 +89,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         configuratorCheckService,
         configuratorSaleOrderLineService,
         productCompanyRepository,
-            configuratorRepository);
+        configuratorRepository);
     this.configuratorBomService = configuratorBomService;
     this.billOfMaterialRemoveService = billOfMaterialRemoveService;
   }
