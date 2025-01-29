@@ -9,8 +9,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class LeaveRequestCheckResponseServiceImpl implements LeaveRequestCheckResponseService {
 
@@ -27,51 +26,53 @@ public class LeaveRequestCheckResponseServiceImpl implements LeaveRequestCheckRe
   @Override
   public CheckResponse createResponse(LeaveRequest leaveRequest) {
     List<CheckResponseLine> checkResponseLineList = new ArrayList<>();
-    checkResponseLineList.add(checkDate(leaveRequest));
-    checkResponseLineList.add(checkDuration(leaveRequest));
-    checkResponseLineList.add(checkAvailableDays(leaveRequest));
-    List<CheckResponseLine> filteredList =
-        checkResponseLineList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    checkDate(leaveRequest).ifPresent(checkResponseLineList::add);
+    checkDuration(leaveRequest).ifPresent(checkResponseLineList::add);
+    checkAvailableDays(leaveRequest).ifPresent(checkResponseLineList::add);
 
-    return new CheckResponse(leaveRequest, filteredList);
+    return new CheckResponse(leaveRequest, checkResponseLineList);
   }
 
-  protected CheckResponseLine checkDate(LeaveRequest leaveRequest) {
+  protected Optional<CheckResponseLine> checkDate(LeaveRequest leaveRequest) {
     if (leaveRequestCheckService.isDatesInvalid(leaveRequest)) {
-      return new CheckResponseLine(
-          leaveRequest,
-          I18n.get(HumanResourceExceptionMessage.INVALID_DATES),
-          CheckResponseLine.CHECK_TYPE_ERROR);
+      return Optional.of(
+          new CheckResponseLine(
+              leaveRequest,
+              I18n.get(HumanResourceExceptionMessage.INVALID_DATES),
+              CheckResponseLine.CHECK_TYPE_ERROR));
     }
-    return null;
+    return Optional.empty();
   }
 
-  protected CheckResponseLine checkDuration(LeaveRequest leaveRequest) {
+  protected Optional<CheckResponseLine> checkDuration(LeaveRequest leaveRequest) {
     if (leaveRequestCheckService.isDurationInvalid(leaveRequest)) {
-      return new CheckResponseLine(
-          leaveRequest,
-          I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_WRONG_DURATION),
-          CheckResponseLine.CHECK_TYPE_ERROR);
+      return Optional.of(
+          new CheckResponseLine(
+              leaveRequest,
+              I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_WRONG_DURATION),
+              CheckResponseLine.CHECK_TYPE_ERROR));
     }
-    return null;
+    return Optional.empty();
   }
 
-  protected CheckResponseLine checkAvailableDays(LeaveRequest leaveRequest) {
+  protected Optional<CheckResponseLine> checkAvailableDays(LeaveRequest leaveRequest) {
     LeaveReason leaveReason = leaveRequest.getLeaveReason();
     if (!leaveRequestService.willHaveEnoughDays(leaveRequest) && leaveReason != null) {
 
       if (leaveReason.getAllowNegativeValue()) {
-        return new CheckResponseLine(
-            leaveRequest,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT_2),
-            CheckResponseLine.CHECK_TYPE_ALERT);
+        return Optional.of(
+            new CheckResponseLine(
+                leaveRequest,
+                I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT_2),
+                CheckResponseLine.CHECK_TYPE_ALERT));
       } else {
-        return new CheckResponseLine(
-            leaveRequest,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_NOT_ENOUGH_DAYS),
-            CheckResponseLine.CHECK_TYPE_ALERT);
+        return Optional.of(
+            new CheckResponseLine(
+                leaveRequest,
+                I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_NOT_ENOUGH_DAYS),
+                CheckResponseLine.CHECK_TYPE_ALERT));
       }
     }
-    return null;
+    return Optional.empty();
   }
 }
