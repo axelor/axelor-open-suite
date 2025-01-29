@@ -394,4 +394,30 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="totalAmountCommitted" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
+
+  <action-group name="action-budget-group-view-budget-distribution-order-line">
+    <action if="__this__?.globalBudget?.budgetTypeSelect != 2"
+      name="action-budget-view-budget-distribution-purchase-order-line"/>
+    <action if="__this__?.globalBudget?.budgetTypeSelect == 2"
+      name="action-budget-view-budget-distribution-sale-order-line"/>
+  </action-group>
+
+  <action-view name="action-budget-view-budget-distribution-purchase-order-line"
+    model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
+    <view name="budget-budget-distribution-purchase-order-line-global-dashlet-grid" type="grid"/>
+    <view name="budget-budget-distribution-purchase-order-line-dashlet-form" type="form"/>
+    <domain>self.budget.id = :_budgetId and self.purchaseOrderLine != null and
+      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)</domain>
+    <context name="_budgetId" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-view name="action-budget-view-budget-distribution-sale-order-line"
+    model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
+    <view name="budget-budget-distribution-sale-order-line-global-dashlet-grid" type="grid"/>
+    <view name="sale-order-budget-distribution-form" type="form"/>
+    <domain>self.budget.id = :_budgetId and self.saleOrderLine != null and
+      self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
+    <context name="_budgetId" expr="eval: __this__.id"/>
+  </action-view>
+
 </object-views>
