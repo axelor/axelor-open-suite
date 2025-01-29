@@ -1103,7 +1103,7 @@
 
     <panel-stack name="otherDetailsPanel" sidebar="true" hideIf="partner == null">
       <panel name="globalDiscountPanel" title="Global discount"
-        if="__config__.app.getApp('sale')?.getIsGlobalDiscountEnabledOnSaleOrder()"
+        if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
         showIf="partner &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0"
         canCollapse="true" collapseIf="true">
         <field name="discountTypeSelect" colSpan="12"
@@ -1773,9 +1773,9 @@
     <action name="action-invoice-method-update-product-qty-with-pack-header-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-apply-global-discount"
-      if="__config__.app.getApp('sale')?.getIsGlobalDiscountEnabledOnSaleOrder()"/>
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"/>
     <action name="action-invoice-method-set-discount-dummies"
-      if="__config__.app.getApp('sale')?.getIsGlobalDiscountEnabledOnSaleOrder()"/>
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
