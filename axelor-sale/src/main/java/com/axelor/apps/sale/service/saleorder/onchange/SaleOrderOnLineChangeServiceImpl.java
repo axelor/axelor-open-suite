@@ -113,7 +113,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
               saleOrder.getSaleOrderLineList())) {
         this.updateProductQtyWithPackHeaderQty(saleOrder);
       }
-      if (appSaleService.getAppSale().getIsGlobalDiscountEnabledOnSaleOrder()) {
+      if (appSaleService.getAppBase().getIsGlobalDiscountEnabled()) {
         saleOrderDiscountService.applyGlobalDiscountOnLines(saleOrder);
       }
     } else {
