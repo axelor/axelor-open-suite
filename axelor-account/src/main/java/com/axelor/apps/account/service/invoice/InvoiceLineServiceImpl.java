@@ -77,7 +77,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
-  protected TaxAccountService taxService;
+  protected TaxAccountService taxAccountService;
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
@@ -95,7 +95,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      TaxAccountService taxService,
+      TaxAccountService taxAccountService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
@@ -110,7 +110,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
-    this.taxService = taxService;
+    this.taxAccountService = taxAccountService;
     this.internationalService = internationalService;
     this.invoiceLineAttrsService = invoiceLineAttrsService;
     this.currencyScaleService = currencyScaleService;
@@ -250,7 +250,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         processedDiscounts.put(
             "discountAmount",
-            taxService.convertUnitPrice(
+            taxAccountService.convertUnitPrice(
                 invoiceLine.getProduct().getInAti(),
                 invoiceLine.getTaxLineSet(),
                 (BigDecimal) rawDiscounts.get("discountAmount"),
@@ -271,7 +271,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             "inTaxPrice", currencyScaleService.getScaledValue(invoiceLine, price));
         processedDiscounts.put(
             "price",
-            taxService.convertUnitPrice(
+            taxAccountService.convertUnitPrice(
                 true,
                 invoiceLine.getTaxLineSet(),
                 price,
@@ -282,7 +282,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             "inTaxPrice",
             currencyScaleService.getScaledValue(
                 invoiceLine,
-                taxService.convertUnitPrice(
+                taxAccountService.convertUnitPrice(
                     false,
                     invoiceLine.getTaxLineSet(),
                     price,
@@ -384,10 +384,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
-      taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
+      taxRate = taxAccountService.getTotalTaxRateInPercentage(taxLineSet);
       invoiceLine.setTaxRate(taxRate);
       invoiceLineMap.put("taxRate", invoiceLine.getTaxRate());
-      invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+      invoiceLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
       invoiceLineMap.put("taxCode", invoiceLine.getTaxCode());
     }
 
@@ -468,8 +468,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       taxLineSet = this.getTaxLineSet(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLineSet(taxLineSet);
       productInformation.put("taxLineSet", taxLineSet);
-      productInformation.put("taxRate", taxService.getTotalTaxRateInPercentage(taxLineSet));
-      productInformation.put("taxCode", taxService.computeTaxCode(taxLineSet));
+      productInformation.put("taxRate", taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
+      productInformation.put("taxCode", taxAccountService.computeTaxCode(taxLineSet));
 
       TaxEquiv taxEquiv =
           accountManagementAccountService.getProductTaxEquiv(
@@ -550,9 +550,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal coefficient = invoiceLine.getCoefficient();
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
-      taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
+      taxRate = taxAccountService.getTotalTaxRateInPercentage(taxLineSet);
       invoiceLine.setTaxRate(taxRate);
-      invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+      invoiceLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
     }
     if (Boolean.FALSE.equals(invoice.getInAti())) {
       exTaxTotal =
@@ -647,8 +647,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
       Set<TaxLine> taxLineSet = this.getTaxLineSet(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLineSet(taxLineSet);
-      invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
-      invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+      invoiceLine.setTaxRate(taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
+      invoiceLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
 
       TaxEquiv taxEquiv =
           accountManagementAccountService.getProductTaxEquiv(
@@ -673,12 +673,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setInTaxTotal(
           currencyScaleService.getScaledValue(
               invoice,
-              taxService.convertUnitPrice(
+              taxAccountService.convertUnitPrice(
                   false, taxLineSet, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice())));
       invoiceLine.setCompanyInTaxTotal(
           currencyScaleService.getCompanyScaledValue(
               invoice,
-              taxService.convertUnitPrice(
+              taxAccountService.convertUnitPrice(
                   false,
                   taxLineSet,
                   companyExTaxTotal,
@@ -686,7 +686,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setInTaxPrice(
           currencyScaleService.getScaledValue(
               invoice,
-              taxService.convertUnitPrice(
+              taxAccountService.convertUnitPrice(
                   false, taxLineSet, price, appBaseService.getNbDecimalDigitForUnitPrice())));
     }
     return invoiceLineList;
@@ -731,10 +731,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       return BigDecimal.ZERO;
     }
 
-    Set<TaxLine> taxLineSet = taxService.getNotNonDeductibleTaxesSet(invoiceLine.getTaxLineSet());
+    Set<TaxLine> taxLineSet =
+        taxAccountService.getNotNonDeductibleTaxesSet(invoiceLine.getTaxLineSet());
     BigDecimal taxValue =
         Optional.of(taxLineSet)
-            .map(taxService::getTotalTaxRateInPercentage)
+            .map(taxAccountService::getTotalTaxRateInPercentage)
             .map(
                 it ->
                     it.multiply(invoiceLine.getPrice())
@@ -765,6 +766,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     TaxEquiv taxEquiv = null;
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
+    taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(taxLineSet);
+    taxAccountService.checkSumOfNonDeductibleTaxes(taxLineSet);
+
     Map<String, Object> valuesMap = new HashMap<>();
     if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
       valuesMap.put("taxEquiv", taxEquiv);
@@ -773,7 +777,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
     if (taxEquiv != null) {
       taxLineSet =
-          taxService.getTaxLineSet(
+          taxAccountService.getTaxLineSet(
               taxEquiv.getToTaxSet(), appAccountService.getTodayDate(invoice.getCompany()));
     }
 
@@ -789,7 +793,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
 
     // split in for loop, catch the exception, and throw another exception with the specific account
-    TaxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(
+    taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(
         invoiceLineList.stream()
             .map(InvoiceLine::getTaxLineSet)
             .flatMap(Set::stream)
@@ -802,7 +806,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       return;
     }
 
-    TaxAccountService.checkSumOfNonDeductibleTaxes(
+    taxAccountService.checkSumOfNonDeductibleTaxes(
         invoiceLineList.stream()
             .map(InvoiceLine::getTaxLineSet)
             .flatMap(Set::stream)

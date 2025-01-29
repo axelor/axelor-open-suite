@@ -105,8 +105,7 @@ public class TaxAccountService extends TaxService {
     }
   }
 
-  public static void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines)
-      throws AxelorException {
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
     if (ObjectUtils.isEmpty(taxLines)) {
       return;
     }
@@ -119,7 +118,7 @@ public class TaxAccountService extends TaxService {
     }
   }
 
-  protected static boolean checkTaxesNotOnlyNonDeductibleTaxes(List<Tax> taxes) {
+  protected boolean checkTaxesNotOnlyNonDeductibleTaxes(List<Tax> taxes) {
     if (ObjectUtils.isEmpty(taxes)) {
       return true;
     }
@@ -145,7 +144,7 @@ public class TaxAccountService extends TaxService {
         .anyMatch(Tax::getIsNonDeductibleTax);
   }
 
-  public static void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+  public void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
     if (CollectionUtils.isEmpty(taxLines)) {
       return;
     }
