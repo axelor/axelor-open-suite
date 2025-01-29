@@ -713,6 +713,7 @@
 "Verify product stock before availabity request",,,
 "Warn delay from supplier",,,
 "When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'",,,
+"Would you like to update all lines with this stock location?",,,
 "You cannot request reservation with a negative quantity.",,,
 "You have to choose at least one incoming stock move",,,
 "You have to choose at least one outgoing stock move",,,
