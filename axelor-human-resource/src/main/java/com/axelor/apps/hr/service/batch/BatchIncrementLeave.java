@@ -82,6 +82,7 @@ public class BatchIncrementLeave extends AbstractBatch {
     LeaveReason leaveReason = leaveReasonRepository.find(id);
     Query<Employee> query = getEmployeeQuery(leaveReason);
     while (!(employeeList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      leaveReason = leaveReasonRepository.find(id);
       for (Employee employee : employeeList) {
         ++offset;
         employee = employeeRepository.find(employee.getId());
