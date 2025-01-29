@@ -40,9 +40,7 @@
     <panel-related name="projectSaleOrderLineDetailsEditablePanel"
       field="projectSaleOrderLineDetailsList" form-view="sale-order-line-details-form"
       grid-view="sale-order-line-details-grid" editable="true"
-      showIf="!$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)
-      &amp;&amp; projectSaleOrderLineDetailsList &amp;&amp; projectSaleOrderLineDetailsList.length > 0"
-      onDelete=""/>
+      showIf="!$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)"/>
 
     <panel-related name="projectSaleOrderLineDetailsReadonlyPanel"
       field="projectSaleOrderLineDetailsList" form-view="sale-order-line-details-form"

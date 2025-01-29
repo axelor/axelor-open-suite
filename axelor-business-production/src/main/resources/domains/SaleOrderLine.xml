@@ -8,8 +8,8 @@
   <entity name="SaleOrderLine">
 
     <one-to-many name="projectSaleOrderLineDetailsList"
-      ref="com.axelor.apps.production.db.SaleOrderLineDetails"
-      title="Project sale order line details list" mappedBy="confirmedSaleOrderLine"/>
+      ref="com.axelor.apps.production.db.SaleOrderLineDetails" title="Sale order line details list"
+      mappedBy="confirmedSaleOrderLine"/>
   </entity>
 
 </domain-models>
