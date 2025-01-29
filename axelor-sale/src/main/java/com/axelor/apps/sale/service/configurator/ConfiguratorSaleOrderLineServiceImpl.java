@@ -35,33 +35,6 @@ public class ConfiguratorSaleOrderLineServiceImpl implements ConfiguratorSaleOrd
     this.saleOrderRepository = saleOrderRepository;
   }
 
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void regenerateSaleOrderLines(Configurator configurator, Product product)
-      throws AxelorException {
-
-    Objects.requireNonNull(configurator);
-    Objects.requireNonNull(product);
-
-    configuratorCheckService.checkLinkedSaleOrderLine(configurator, product);
-
-    var saleOrderLines =
-        saleOrderLineRepository
-            .all()
-            .filter(
-                "self.product = :product AND self.configurator = :configurator AND self.saleOrder.statusSelect = :draftStatus")
-            .bind("product", product)
-            .bind("configurator", configurator)
-            .bind("draftStatus", SaleOrderRepository.STATUS_DRAFT_QUOTATION)
-            .fetch();
-
-    for (var saleOrderLine : saleOrderLines) {
-      var saleOrder = saleOrderLine.getSaleOrder();
-      regenerateSaleOrderLine(configurator, product, saleOrderLine, saleOrder);
-      saleOrderComputeService.computeSaleOrder(saleOrder);
-    }
-  }
-
   @Transactional(rollbackOn = Exception.class)
   @Override
   public void regenerateSaleOrderLine(
