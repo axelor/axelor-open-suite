@@ -19,11 +19,12 @@
 package com.axelor.apps.base.quickmenu;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.web.UserController;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
@@ -36,18 +37,16 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
+public class TradingNameUpdateQuickMenuCreator implements QuickMenuCreator {
 
   protected AppBaseService appBaseService;
-  protected CompanyRepository companyRepository;
+  protected UserService userService;
 
   @Inject
-  public ActiveCompanyUpdateQuickMenuCreator(
-      AppBaseService appBaseService, CompanyRepository companyRepository) {
+  public TradingNameUpdateQuickMenuCreator(AppBaseService appBaseService, UserService userService) {
     this.appBaseService = appBaseService;
-    this.companyRepository = companyRepository;
+    this.userService = userService;
   }
 
   @Override
@@ -58,43 +57,46 @@ public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
     }
 
     return new QuickMenu(
-        Optional.ofNullable(AuthUtils.getUser())
-            .map(User::getActiveCompany)
-            .map(Company::getName)
-            .orElse(I18n.get("Active company")),
-        1,
+        Optional.ofNullable(userService.getTradingName())
+            .map(TradingName::getName)
+            .filter(StringUtils::notEmpty)
+            .orElse(I18n.get("Active trading name")),
+        2,
         true,
         getItems());
   }
 
   protected boolean hasConfigEnabled() {
     AppBase appBase = appBaseService.getAppBase();
-    return !appBase.getEnableMultiCompany()
+    return !appBase.getEnableTradingNamesManagement()
         || StringUtils.isBlank(appBase.getShortcutMultiSelect())
-        || !appBase.getShortcutMultiSelect().contains(AppBaseRepository.SHORTCUT_ACTIVE_COMPANY);
+        || !appBase
+            .getShortcutMultiSelect()
+            .contains(AppBaseRepository.SHORTCUT_ACTIVE_TRADING_NAME);
   }
 
   protected List<QuickMenuItem> getItems() {
-    User user = AuthUtils.getUser();
-    Set<Company> companies = user.getCompanySet();
+    User user = userService.getUser();
+    Company activeCompany = user.getActiveCompany();
+    TradingName currentTradingName = user.getTradingName();
     List<QuickMenuItem> items = new ArrayList<>();
 
-    if (companies == null || companies.size() <= 1) {
+    if (activeCompany == null || ObjectUtils.isEmpty(activeCompany.getTradingNameList())) {
       return items;
     }
 
-    Company activeCompany = user.getActiveCompany();
-    String action = UserController.class.getName() + ":" + "setActiveCompany";
+    String action = UserController.class.getName() + ":" + "setTradingName";
 
-    for (Company company : companies) {
+    for (TradingName tradingName : activeCompany.getTradingNameList()) {
       QuickMenuItem item =
           new QuickMenuItem(
-              company.getName(),
+              tradingName.getName(),
               action,
-              new Context(company.getId(), Company.class),
-              company.equals(activeCompany));
+              new Context(tradingName.getId(), TradingName.class),
+              tradingName.equals(currentTradingName));
       items.add(item);
     }
+
     return items;
   }
 }

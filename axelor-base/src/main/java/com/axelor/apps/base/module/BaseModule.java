@@ -67,6 +67,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
+import com.axelor.apps.base.quickmenu.TradingNameUpdateQuickMenuCreator;
 import com.axelor.apps.base.rest.PartnerRestService;
 import com.axelor.apps.base.rest.PartnerRestServiceImpl;
 import com.axelor.apps.base.rest.TranslationRestService;
@@ -363,6 +364,7 @@ public class BaseModule extends AxelorModule {
 
     addQuickMenu(InstanceInfoQuickMenuCreator.class);
     addQuickMenu(ActiveCompanyUpdateQuickMenuCreator.class);
+    addQuickMenu(TradingNameUpdateQuickMenuCreator.class);
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);

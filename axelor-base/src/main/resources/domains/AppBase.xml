@@ -177,9 +177,9 @@
     <boolean name="isActivateInstanceInfoShortcut" default="false"
       title="Activate the instance information shortcut"
       help="This configuration allows quick access to the type of environment and the configured date and time"/>
-    <boolean name="isActivateCompanyChangeShortcut" default="false"
-      title="Activate the company change shortcut"
-      help="This configuration allows quick access to the active company change"/>
+    <string name="shortcutMultiSelect" title="Activate changes shortcut for"
+      selection="base.change.shortcut.select"
+      help="This configuration allows quick access to the activate changes shortcut"/>
 
     <integer name="defaultBatchFetchLimit" title="Default batch fetch limit"
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
@@ -199,6 +199,9 @@
 
 	   			public static final String SEQUENCE_PER_PRODUCT = "Per product";
 	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
+
+	   			public static final String SHORTCUT_ACTIVE_COMPANY = "0";
+	   			public static final String SHORTCUT_ACTIVE_TRADING_NAME = "1";
 
 	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
 	   		]]>
