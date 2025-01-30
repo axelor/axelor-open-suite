@@ -1791,7 +1791,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     unfulfilledStockMoveLine.setQty(fulfilledStockMoveLine.getQty().subtract(realQty));
     fulfilledStockMoveLine.setQty(realQty);
     unfulfilledStockMoveLine.setTotalNetMass(BigDecimal.ZERO);
-    unfulfilledStockMoveLine.setNetMass(BigDecimal.ZERO);
     unfulfilledStockMoveLine.setRealQty(BigDecimal.ZERO);
     unfulfilledStockMoveLine.setStockMove(fulfilledStockMoveLine.getStockMove());
     unfulfilledStockMoveLine.setConformitySelect(0);
