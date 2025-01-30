@@ -32,5 +32,7 @@
 	  	]]>
     </extra-code>
 
+    <entity-listener
+      class="com.axelor.apps.production.db.repo.SaleOrderLineDetailsListener"/>
   </entity>
 </domain-models>

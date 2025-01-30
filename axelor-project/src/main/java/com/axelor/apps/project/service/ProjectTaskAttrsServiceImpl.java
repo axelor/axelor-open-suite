@@ -21,7 +21,6 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.StringUtils;
@@ -76,24 +75,20 @@ public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
     }
 
     if (ProjectRepository.SPRINT_MANAGEMENT_VERSION.equals(sprintManagementSelect)) {
-      domain =
-          String.format(
-              "self.targetVersion = :targetVersion OR self.id = %s",
-              Optional.of(projectTask)
-                  .map(ProjectTask::getTargetVersion)
-                  .map(ProjectVersion::getBacklogSprint)
-                  .map(Sprint::getId)
-                  .orElse(0L));
+      domain = "self.targetVersion = :targetVersion";
     } else {
-      domain =
-          String.format(
-              "self.project = :project OR self.id = %s",
-              Optional.of(projectTask)
-                  .map(ProjectTask::getProject)
-                  .map(Project::getBacklogSprint)
-                  .map(Sprint::getId)
-                  .orElse(0L));
+      domain = "self.project = :project";
     }
+
+    domain =
+        domain.concat(
+            String.format(
+                " OR self.id = %s",
+                Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getBacklogSprint)
+                    .map(Sprint::getId)
+                    .orElse(0L)));
 
     return domain;
   }

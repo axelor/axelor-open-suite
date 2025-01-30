@@ -71,6 +71,7 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
   public Map<String, Object> onNewEditableInitValues(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine);
+    values.putAll(fillRequestQty(saleOrder, saleOrderLine));
     return values;
   }
 

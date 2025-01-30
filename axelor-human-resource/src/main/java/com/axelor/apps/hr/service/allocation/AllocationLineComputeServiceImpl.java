@@ -15,7 +15,9 @@ import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysServ
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,6 +32,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   protected WeeklyPlanningService weeklyPlanningService;
   protected AppBaseService appBaseService;
   protected UnitConversionForProjectService unitConversionForProjectService;
+  protected AppProjectService appProjectService;
   protected LeaveRequestRepository leaveRequestRepo;
   protected AllocationLineRepository allocationLineRepo;
   protected ProjectPlanningTimeRepository planningTimeRepo;
@@ -40,6 +43,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       WeeklyPlanningService weeklyPlanningService,
       AppBaseService appBaseService,
       UnitConversionForProjectService unitConversionForProjectService,
+      AppProjectService appProjectService,
       LeaveRequestRepository leaveRequestRepo,
       AllocationLineRepository allocationLineRepo,
       ProjectPlanningTimeRepository planningTimeRepo) {
@@ -47,6 +51,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     this.weeklyPlanningService = weeklyPlanningService;
     this.appBaseService = appBaseService;
     this.unitConversionForProjectService = unitConversionForProjectService;
+    this.appProjectService = appProjectService;
     this.leaveRequestRepo = leaveRequestRepo;
     this.allocationLineRepo = allocationLineRepo;
     this.planningTimeRepo = planningTimeRepo;
@@ -113,7 +118,13 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   public BigDecimal computePlannedTime(Period period, Employee employee, Project project)
       throws AxelorException {
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
-    if (period == null || employee == null || project == null) {
+    if (period == null
+        || employee == null
+        || project == null
+        || !project.getIsShowPlanning()
+        || !Optional.ofNullable(appProjectService.getAppProject())
+            .map(AppProject::getEnablePlanification)
+            .orElse(false)) {
       return totalPlannedTime;
     }
 

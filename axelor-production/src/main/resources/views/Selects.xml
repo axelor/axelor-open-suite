@@ -193,4 +193,9 @@
     <option value="3" icon="fa-cash-coin">Budget item</option>
   </selection>
 
+  <selection name="purchase.purchase.order.type.select"
+    id="production.purchase.purchase.order.type.select">
+    <option value="2" color="yellow">Subcontracting</option>
+  </selection>
+
 </object-views>

@@ -30,8 +30,8 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
-import com.axelor.apps.project.service.SprintService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.roadmap.SprintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -191,5 +191,12 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
     Beans.get(SprintService.class).generateBacklogSprint(project);
     response.setValue("backlogSprint", project.getBacklogSprint());
+  }
+
+  public void checkSprintOverlap(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    if (Beans.get(SprintService.class).checkSprintOverlap(project)) {
+      response.setError(ProjectExceptionMessage.PROJECT_SPRINTS_OVERLAPPED);
+    }
   }
 }

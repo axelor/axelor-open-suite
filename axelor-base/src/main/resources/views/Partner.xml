@@ -1137,10 +1137,17 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
+    <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
     <action name="action-method-partner-check-registration-code"/>
   </action-group>
+
+  <action-method
+    name="action-partner-method-check-if-registration-code-already-exists">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkIfRegistrationCodeExists"/>
+  </action-method>
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."

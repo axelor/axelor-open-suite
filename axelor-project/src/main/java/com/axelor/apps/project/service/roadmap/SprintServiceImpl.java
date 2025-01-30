@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.roadmap;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
 import com.google.inject.Inject;
+import java.util.Comparator;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SprintServiceImpl implements SprintService {
 
@@ -35,8 +37,25 @@ public class SprintServiceImpl implements SprintService {
   }
 
   @Override
-  public void generateBacklogSprint(ProjectVersion projectVersion) {
-    Sprint sprint = new Sprint("Backlog - " + projectVersion.getTitle());
-    projectVersion.setBacklogSprint(sprint);
+  public boolean checkSprintOverlap(Project project) {
+    List<Sprint> sprintList = project.getSprintList();
+    if (CollectionUtils.isEmpty(sprintList)) {
+      return false;
+    }
+    sprintList.sort(Comparator.comparing(Sprint::getFromDate));
+
+    for (int i = 0; i < sprintList.size() - 1; i++) {
+      Sprint currentSprint = sprintList.get(i);
+      Sprint nextSprint = sprintList.get(i + 1);
+      if (isOverlapping(currentSprint, nextSprint)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected boolean isOverlapping(Sprint currentSprint, Sprint nextSprint) {
+    return currentSprint.getFromDate().isBefore(nextSprint.getToDate())
+        && currentSprint.getToDate().isAfter(nextSprint.getFromDate());
   }
 }

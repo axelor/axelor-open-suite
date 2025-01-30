@@ -21,7 +21,7 @@
     </panel>
     <panel-related name="leaveReasonPanel" field="$leaveReasonList"
       form-view="leave-reason-duration-form" grid-view="leave-reason-duration-grid"
-      title="Leave reasons" colSpan="12" type="one-to-many" target="com.axelor.apps.base.db.Wizard"
+      title="Leave reasons" colSpan="12" type="one-to-many" target="com.axelor.utils.db.Wizard"
       editable="true" onChange="action-leave-request-create-wizard-method-compute-total-duration"
       readonlyIf="!fromDate || !toDate || !startOnSelect || !endOnSelect" required="true"/>
     <panel name="durationPanel">
@@ -37,6 +37,10 @@
 
   <grid title="Leave reason" name="leave-reason-duration-grid"
     model="com.axelor.utils.db.Wizard">
+    <hilite if="$number(duration) &gt; $number(leaveDaysToDate)" color="red"/>
+    <hilite
+      if="$number(duration) &gt; $number(leaveQuantity) &amp;&amp; $number(duration) &lt; $number(leaveDaysToDate)"
+      color="orange"/>
     <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
       onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"
       onChange="action-leave-request-create-wizard-method-leave-reason-onchange"/>

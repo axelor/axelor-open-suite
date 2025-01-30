@@ -172,6 +172,8 @@ import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.LeaveLineServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckResponseService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDateService;
@@ -465,5 +467,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(AllocationLineComputeService.class).to(AllocationLineComputeServiceImpl.class);
     bind(EmployeeComputeAvailableLeaveService.class)
         .to(EmployeeComputeAvailableLeaveServiceImpl.class);
+    bind(LeaveRequestCheckResponseService.class).to(LeaveRequestCheckResponseServiceImpl.class);
   }
 }
