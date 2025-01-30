@@ -189,6 +189,8 @@ import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineCheckService;
+import com.axelor.apps.account.service.invoice.InvoiceLineCheckServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -968,5 +970,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceTaxComputeService.class).to(InvoiceTaxComputeServiceImpl.class);
     bind(AccountingBatchViewService.class).to(AccountingBatchViewServiceImpl.class);
+    bind(InvoiceLineCheckService.class).to(InvoiceLineCheckServiceImpl.class);
   }
 }
