@@ -79,19 +79,20 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   }
 
   @Override
-  public BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException {
-    return getSaleUnitPrice(company, product, product.getInAti(), null);
+  public BigDecimal getSaleUnitPrice(
+      Company company, Product product, boolean conmpanyInAti, Partner partner)
+      throws AxelorException {
+    return getSaleUnitPrice(company, product, false, partner, null, conmpanyInAti);
   }
 
   @Override
   public BigDecimal getSaleUnitPrice(
-      Company company, Product product, boolean inAti, Partner partner) throws AxelorException {
-    return getSaleUnitPrice(company, product, inAti, partner, null);
-  }
-
-  @Override
-  public BigDecimal getSaleUnitPrice(
-      Company company, Product product, boolean inAti, Partner partner, Currency currency)
+      Company company,
+      Product product,
+      boolean inAti,
+      Partner partner,
+      Currency currency,
+      boolean conmpanyInAti)
       throws AxelorException {
     LocalDate todayDate = appBaseService.getTodayDate(company);
 
@@ -113,7 +114,8 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     }
     BigDecimal price = getSaleUnitPrice(company, product, taxLineSet, false, todayDate, toCurrency);
     BigDecimal priceDiscounted =
-        productPriceListService.applyPriceList(product, partner, company, currency, price, inAti);
+        productPriceListService.applyPriceList(
+            product, partner, company, currency, price, conmpanyInAti);
     if (!inAti) {
       return priceDiscounted;
     }

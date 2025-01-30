@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.sale.service;
 
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -43,22 +42,20 @@ import com.axelor.apps.sale.rest.dto.ProductResponse;
 import com.axelor.apps.sale.rest.dto.ProductResquest;
 import com.axelor.apps.sale.rest.dto.UnitResponse;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class ProductRestServiceImpl implements ProductRestService {
 
   protected AppSaleService appSaleService;
   protected CompanyService companyService;
-
   protected PartnerRepository partnerRepository;
   protected TaxService taxService;
   protected UserService userService;
@@ -66,6 +63,7 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected UnitConversionService unitConversionService;
   protected ProductPriceService productPriceService;
   protected AccountManagementService accountManagementService;
+  protected SaleConfigService saleConfigService;
 
   @Inject
   public ProductRestServiceImpl(
@@ -77,7 +75,8 @@ public class ProductRestServiceImpl implements ProductRestService {
       UnitConversionService unitConversionService,
       ProductPriceService productPriceService,
       AccountManagementService accountManagementService,
-      TaxService taxService) {
+      TaxService taxService,
+      SaleConfigService saleConfigService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
@@ -87,16 +86,20 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.productPriceService = productPriceService;
     this.accountManagementService = accountManagementService;
     this.taxService = taxService;
+    this.saleConfigService = saleConfigService;
   }
 
   protected List<PriceResponse> fetchProductPrice(
       Product product, Partner partner, Company company, Currency currency, Unit unit)
       throws AxelorException {
     List<PriceResponse> priceList = new ArrayList<>();
+    boolean conmpanyInAti = isTaxEnabled(company);
     BigDecimal priceWT =
-        productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
+        productPriceService.getSaleUnitPrice(
+            company, product, false, partner, currency, conmpanyInAti);
     BigDecimal priceATI =
-        productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
+        productPriceService.getSaleUnitPrice(
+            company, product, true, partner, currency, conmpanyInAti);
     if (product.getSalesUnit() == null && product.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -162,30 +165,15 @@ public class ProductRestServiceImpl implements ProductRestService {
     return productResponses;
   }
 
-  BigDecimal getInTaxPrice(Product product, Company company, Partner partner, BigDecimal exTaxPrice)
-      throws AxelorException {
-    Set<TaxLine> taxLineSet =
-        accountManagementService.getTaxLineSet(
-            appSaleService.getTodayDate(company),
-            product,
-            company,
-            partner.getFiscalPosition(),
-            false);
-    BigDecimal taxRate = taxService.getTotalTaxRate(taxLineSet);
-    return exTaxPrice
-        .add(exTaxPrice.multiply(taxRate))
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-  }
-  boolean isTaxEnabled(Company company)
-  {
+  boolean isTaxEnabled(Company company) throws AxelorException {
     boolean companyInAti = false;
     SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
     Company defaultCompany = companyService.getDefaultCompany(null);
     if (defaultCompany != null) {
       int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
       companyInAti =
-              saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
-                      || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
+          saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
+              || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
     }
     return companyInAti;
   }
