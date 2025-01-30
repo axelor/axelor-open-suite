@@ -74,7 +74,9 @@
     <field name="projectTask.name" title="Project task"
       type="com.axelor.apps.project.db.ProjectTask"/>
     <field name="timeUnit.name" title="Time unit" type="String"/>
-    <field name="plannedTime" title="Planned time" aggregate="sum" type="String"/>
+    <field name="plannedTime" title="Planned time" aggregate="sum" type="String"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+      if-module="axelor-human-resource"/>
     <field name="startDateTime" title="Start date"/>
     <field name="endDateTime" title="End date"/>
   </grid>
