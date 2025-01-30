@@ -242,7 +242,8 @@
         <field name="stockLocation" canEdit="false" if-module="axelor-supplychain" colSpan="3"
           form-view="stock-location-form" grid-view="stock-location-grid"
           if="__config__.app.isApp('supplychain')"
-          onSelect="action-purchase-order-attrs-set-stock-location-domain"/>
+          onSelect="action-purchase-order-attrs-set-stock-location-domain"
+          onChange="action-purchase-order-group-stock-location-change"/>
         <field name="stockLocation.address" if-module="axelor-supplychain"
           form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')"/>
         <field name="fromStockLocation" canEdit="false"
