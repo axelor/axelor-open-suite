@@ -23,8 +23,7 @@
 
   <kanban columnBy="activeSprint" model="com.axelor.apps.project.db.ProjectTask"
     sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
-    id="hr-project-task-sprint-kanban" onMove="action-project-task-group-sprint-onchange"
-    draggable="true" limit="10">
+    id="hr-project-task-sprint-kanban" draggable="true" limit="10">
 
     <field name="name"/>
     <field name="assignedTo.name"/>
@@ -55,6 +54,11 @@
   <action-method name="action-project-task-method-create-sprint-planification">
     <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
       method="createSprintPlanification"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-save-project-planning">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="saveProjectPlanning"/>
   </action-method>
 
 </object-views>

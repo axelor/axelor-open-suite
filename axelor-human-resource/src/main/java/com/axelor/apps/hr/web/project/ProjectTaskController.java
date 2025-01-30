@@ -25,7 +25,7 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask = EntityMergingHelper.merge(request.getContext(), ProjectTask.class);
 
-    projectTask = Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
-    response.setReload(projectTask != null);
+    Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
+    response.setValue("projectPlanningTimeList", projectTask.getProjectPlanningTimeList());
   }
 }

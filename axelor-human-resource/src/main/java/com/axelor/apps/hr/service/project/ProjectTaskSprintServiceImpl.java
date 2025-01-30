@@ -16,7 +16,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,16 +63,16 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             .map(Project::getBacklogSprint)
             .orElse(null);
 
-    if (savedSprint == null
-        || savedSprint.equals(backlogSprint)
-        || projectTask.getActiveSprint().equals(backlogSprint)
-        || savedSprint.equals(projectTask.getActiveSprint())) {
+    if (projectTask.getActiveSprint().equals(backlogSprint)) {
       return "";
     }
 
     List<ProjectPlanningTime> projectPlanningTimeList =
         getProjectPlanningTimeOnOldSprint(projectTask, savedSprint);
-    if (ObjectUtils.isEmpty(projectPlanningTimeList)) {
+    if (ObjectUtils.isEmpty(projectPlanningTimeList)
+        || savedSprint == null
+        || savedSprint.equals(backlogSprint)
+        || savedSprint.equals(projectTask.getActiveSprint())) {
       return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_REQUEST);
     } else {
       return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT);
@@ -81,12 +80,13 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
   }
 
   @Override
-  public ProjectTask createOrMovePlanification(ProjectTask projectTask) throws AxelorException {
+  public void createOrMovePlanification(ProjectTask projectTask) throws AxelorException {
     if (validateConfigAndSprint(projectTask) == null) {
-      return null;
+      return;
     }
 
     Sprint savedSprint = projectTask.getOldActiveSprint();
+    projectTask.setOldActiveSprint(projectTask.getActiveSprint());
 
     Sprint backlogSprint =
         Optional.of(projectTask)
@@ -96,7 +96,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
 
     if (projectTask.getActiveSprint().equals(backlogSprint)
         || projectTask.getActiveSprint().equals(savedSprint)) {
-      return null;
+      return;
     }
 
     if (savedSprint != null && !savedSprint.equals(backlogSprint)) {
@@ -107,11 +107,10 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
           moveProjectPlanningTime(projectPlanningTime, projectTask);
         }
 
-        return projectTask;
+        return;
       }
     }
     createProjectPlanningTime(projectTask);
-    return projectTask;
   }
 
   protected Sprint validateConfigAndSprint(ProjectTask projectTask) {
@@ -132,7 +131,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
   protected List<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
       ProjectTask projectTask, Sprint savedSprint) {
     List<ProjectPlanningTime> projectPlanningTimeList = new ArrayList<>();
-    if (!ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
+    if (savedSprint != null && !ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
       LocalDate fromDate = savedSprint.getFromDate();
       LocalDate toDate = savedSprint.getToDate();
       if (fromDate != null && toDate != null) {
@@ -148,7 +147,6 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     return projectPlanningTimeList;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void moveProjectPlanningTime(
       ProjectPlanningTime projectPlanningTime, ProjectTask projectTask) throws AxelorException {
     Sprint activeSprint = projectTask.getActiveSprint();
@@ -159,10 +157,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     updateProjectPlanningTimeDatesAndDuration(projectPlanningTime, projectTask);
-    projectPlanningTimeRepository.save(projectPlanningTime);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void createProjectPlanningTime(ProjectTask projectTask) throws AxelorException {
     Optional<LocalDateTime> startDateTime =
         Optional.of(projectTask)
@@ -195,7 +191,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             getTimeUnit(projectTask));
 
     updateProjectPlanningTimeDatesAndDuration(projectPlanningTime, projectTask);
-    projectPlanningTimeRepository.save(projectPlanningTime);
+    projectTask.addProjectPlanningTimeListItem(projectPlanningTime);
   }
 
   protected Unit getTimeUnit(ProjectTask projectTask) {
