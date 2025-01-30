@@ -37,11 +37,12 @@ public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
           I18n.get(SaleExceptionMessage.SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR));
     }
 
-    boolean hasConfigurator = saleOrder.getSaleOrderLineList().stream().anyMatch(sol -> sol.getConfigurator() != null);
+    boolean hasConfigurator =
+        saleOrder.getSaleOrderLineList().stream().anyMatch(sol -> sol.getConfigurator() != null);
     if (!hasConfigurator) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(SaleExceptionMessage.SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR));
     }
   }
 }
