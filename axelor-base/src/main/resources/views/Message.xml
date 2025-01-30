@@ -102,6 +102,21 @@
       if="eval: __config__.app.getApp('base').getEmailAccountByUser() &amp;&amp; __config__.app.getApp('base').getEmailAccountByCompany() &amp;&amp; company != null"/>
   </action-attrs>
 
+  <action-group name="action-group-message-message-onnew">
+    <action name="action-message-record-default"/>
+    <action name="action-message-record-mail-account"/>
+    <action name="action-message-record-get-signature"/>
+    <action name="action-message-record-default-media-type"/>
+  </action-group>
+
+  <action-group name="action-group-message-message-send-click">
+    <action name="action-validate-message-content-onsave"/>
+    <action name="save"/>
+    <action name="action-message-method-send-message"/>
+    <action name="markAsSent" if="relatedTo1Select == 'com.axelor.apps.account.db.Invoice'"/>
+    <action name="save"/>
+  </action-group>
+
   <action-record model="com.axelor.message.db.Message"
     name="action-message-record-active-company">
     <field name="company" expr="eval:__user__.activeCompany"
@@ -114,4 +129,7 @@
     <call class="com.axelor.apps.base.web.MessageController" method="printMessage"/>
   </action-method>
 
+  <action-method name="markAsSent">
+    <call class="com.axelor.apps.account.einvoice.Controller" method="markAsSent"/>
+  </action-method>
 </object-views>

@@ -396,12 +396,16 @@
     <toolbar>
       <button name="printBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
         readonlyIf="!id" onClick="action-invoice-group-report-button"/>
+
     </toolbar>
 
     <menubar>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
+        <item title="Check whether partner accepts e-invoices" action="save,action-check-partner-accept-einvoice" readonlyIf="partner == null"/>
+        <item title="Send invoice to e-arve" action="save,action-send-electronic-invoice" readonlyIf="statusSelect != 3" prompt="Send electronic invoice?"/>
+        <item title="Mark invoice as sent" action="save,action-mark-as-sent" readonlyIf="(statusSelect != 3) || (sentEmailDate != null)"/>
       </menu>
     </menubar>
 
@@ -2190,6 +2194,17 @@
   </action-validate>
 
   <!-- ACTION METHOD -->
+  <action-method name="action-check-partner-accept-einvoice">
+    <call class="com.axelor.apps.account.einvoice.Controller" method="check"/>
+  </action-method>
+
+  <action-method name="action-send-electronic-invoice">
+    <call class="com.axelor.apps.account.einvoice.Controller" method="send"/>
+  </action-method>
+
+  <action-method name="action-mark-as-sent">
+    <call class="com.axelor.apps.account.einvoice.Controller" method="markAsSent"/>
+  </action-method>
 
   <action-method name="action-method-invoice-address-str"
     model="com.axelor.apps.account.db.Invoice">
