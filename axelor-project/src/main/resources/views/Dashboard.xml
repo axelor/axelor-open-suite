@@ -338,6 +338,8 @@
       <field type="date" name="toDate" title="To Date" required="true"/>
     </search-fields>
     <dashlet height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
+    <dashlet height="350" action="project-allocation-line-action" canSearch="true"
+      colSpan="12"/>
   </dashboard>
   <action-record model="com.axelor.apps.project.db.ProjectTask"
     name="action.sale.chart.set.date.project">
@@ -352,5 +354,18 @@
       and
       (self.project=:project OR :project IS NULL)</domain>
   </action-view>
-
+  <action-view name="project-allocation-line-action"
+    model="com.axelor.apps.hr.db.AllocationLine" title="Project allocation lines">
+    <view name="project-allocation-line-grid" type="grid"/>
+    <view name="allocation-line-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain> (( date(self.period.fromDate ) &lt;= date(:toDate) and date(self.period.fromDate )
+      &gt;=
+      date(:fromDate) )or
+      (date(self.period.toDate) &lt;= date(:toDate) and
+      date(self.period.toDate)
+      &gt;= date(:fromDate) ))
+      and
+      (self.project=:project OR :project IS NULL)</domain>
+  </action-view>
 </object-views>
