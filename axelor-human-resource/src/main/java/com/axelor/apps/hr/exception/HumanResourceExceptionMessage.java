@@ -108,6 +108,8 @@ public final class HumanResourceExceptionMessage {
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   public static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
       "You now have a negative number of leaves available for the reason %s" /*)*/;
+  public static final String LEAVE_ALLOW_NEGATIVE_ALERT_2 = /*$$(*/
+      "You will have a negative number of leaves available." /*)*/;
   public static final String LEAVE_REASON_NO_UNIT = /*$$(*/
       "Please, choose unit in leave reason %s." /*)*/;
   public static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
@@ -424,4 +426,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT = /*$$(*/
       "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?" /*)*/;
+
+  public static final String LEAVE_REQUEST_NOT_ENOUGH_DAYS = /*$$(*/
+      "You will not have enough leaves available for this request." /*)*/;
 }

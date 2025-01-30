@@ -1319,6 +1319,8 @@
 "You must configure an expenses journal(company : %s)",,,
 "You need lines to fill your export.",,,
 "You now have a negative number of leaves available for the reason %s",,,
+"You will have a negative number of leaves available.",,,
+"You will not have enough leaves available for this request.",,,
 "amount",,,
 "com.axelor.apps.hr.service.batch.HrBatchService",,,
 "hr.department","Departments",,
