@@ -2,5 +2,5 @@
 title: "Tracking number: now take into account tracking number configuration per company "
 module: axelor-stock
 developer: |
-  `TrackingNumberManagementRepository` constructor changed from, added new parameter `TrackingNumberCompanyService`
+  `TrackingNumberManagementRepository` constructor changed, added new parameter `TrackingNumberCompanyService`
   which is a new service.
