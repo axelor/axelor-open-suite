@@ -497,6 +497,7 @@
 "Sale configurations","Config. Ventes",,
 "Sale details by product","Détails des ventes par produit",,
 "Sale order","Commande client",,
+"Sale order does not have configurator to duplicate.","La commande n'a pas de configurateur à dupliquer.",,
 "Sale order id",,,
 "Sale order line","Ligne de Devis/Cmde client",,
 "Sale order line field","Champ ligne de Devis/Cmde client",,

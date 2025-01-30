@@ -48,6 +48,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
@@ -873,6 +874,8 @@ public class SaleOrderController {
   public void duplicateWithConfigurator(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    Beans.get(ConfiguratorCheckService.class).checkHaveConfigurator(saleOrder);
 
     var copySaleOrder =
         Beans.get(ConfiguratorSaleOrderDuplicateService.class)
