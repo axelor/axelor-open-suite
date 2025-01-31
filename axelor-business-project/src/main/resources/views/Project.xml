@@ -504,8 +504,9 @@
             action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
         </panel>
 
-        <panel title="HoldBacks" name="projectHoldBacksPanel" colSpan="12" canCollapse="true"
-          collapseIf="true">
+        <panel title="HoldBacks" name="projectHoldBacksPanel" colSpan="12">
+          <button name="invoiceReleasedProjectHoldBacksBtn"
+            title="Re-invoice selected holdBacks" onClick="action-project-view-release-hold-backs"/>
           <panel-related name="holdBackLineListPanel" field="projectHoldBackLineList"
             title="HoldBacks lines" colSpan="12" form-view="project-hold-back-line-form"
             grid-view="project-hold-back-line-grid" editable="true"/>
@@ -608,6 +609,21 @@
     </panel>
   </form>
 
+  <form name="hold-backs-select-wizard-form" title="Select holdBacks"
+    onLoad="action-business-project-method-load-project-hold-backs"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <panel-related field="$projectHoldBackList" type="one-to-many"
+        target="com.axelor.apps.project.db.ProjectHoldBack" title="HoldBacks"
+        grid-view="project-hold-back-selection-grid" form-view="project-hold-back-form"
+        readonly="true" colSpan="12"/>
+      <spacer colSpan="8"/>
+      <button name="invoiceSelectedProjectHoldBacksBtn" readonlyIf="!$projectHoldBackList"
+        title="Re-invoice selected holdBacks"
+        onClick="action-business-project-method-invoice-released-hold-backs,close" colSpan="4"/>
+    </panel>
+  </form>
+
   <action-group name="action-business-project-project-group-on-new">
     <action name="action-project-group-on-new-project"/>
     <action name="action-attrs-project-set-project-type"
@@ -645,6 +661,16 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController" method="convertProject"/>
   </action-method>
 
+  <action-method name="action-business-project-method-invoice-released-hold-backs">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="generateInvoiceForReleasedHoldBacks"/>
+  </action-method>
+
+  <action-method name="action-business-project-method-load-project-hold-backs">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="loadProjectRelatedHoldBacks"/>
+  </action-method>
+
   <action-validate name="action-validate-unset-project">
     <alert message="Are you sure to unlink project from selected lines?"/>
   </action-validate>
@@ -672,6 +698,17 @@
     <attribute for="contactPartner" if="clientPartner == null" name="domain"
       expr="eval: &quot;self.isContact = true AND :company member of self.companySet&quot;"/>
   </action-attrs>
+
+  <action-view name="action-project-view-release-hold-backs"
+    model="com.axelor.apps.project.db.Project" title="Team">
+    <view name="hold-backs-select-wizard-form" type="form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
   <action-view name="action-dashlet-project-show-all-invoicing-task"
     title="Task Invoicing" model="com.axelor.apps.project.db.ProjectTask">
