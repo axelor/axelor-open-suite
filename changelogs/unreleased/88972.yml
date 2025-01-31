@@ -1,0 +1,3 @@
+---
+title: "Product: fixed issue where variants did not heritate field sellable and cost type from parent product"
+module: axelor-base

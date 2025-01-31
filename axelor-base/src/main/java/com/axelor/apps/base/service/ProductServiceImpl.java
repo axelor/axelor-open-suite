@@ -296,6 +296,8 @@ public class ProductServiceImpl implements ProductService {
     product.setCostPrice(productModel.getCostPrice());
     product.setSalePrice(productModel.getSalePrice());
     product.setManagPriceCoef(productModel.getManagPriceCoef());
+    product.setSellable(productModel.getSellable());
+    product.setCostTypeSelect(productModel.getCostTypeSelect());
 
     product = productVariantService.copyAdditionalFields(product, productModel);
 
