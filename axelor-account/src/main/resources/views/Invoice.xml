@@ -893,6 +893,15 @@
           showIf="operationTypeSelect == 3 &amp;&amp; operationSubTypeSelect != 9" colSpan="12"
           if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
       </panel>
+      <panel name="holdBackPanel" title="HoldBacks" showIf="project"
+        if-module="axelor-business-project">
+        <panel-related name="holdBackLineSetPanel" title="HoldBacks lines"
+          colSpan="12" field="projectHoldBackLineSet" form-view="project-hold-back-line-form"
+          grid-view="project-hold-back-line-grid" editable="true"
+          onChange="action-invoice-group-on-hold-back-lines-change"/>
+        <field name="holdBacksTotal" hidden="true"/>
+        <field name="companyHoldBacksTotal" hidden="true"/>
+      </panel>
       <panel name="pfpAccountConfigPanel"
         if="__config__.app.getApp('account')?.getActivatePassedForPayment()" hidden="true">
         <field name="$isValidPfpValidatorUser" type="boolean"/>
@@ -971,7 +980,7 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal">
+        <viewer depends="exTaxTotal,taxTotal,projectHoldBackATIList,currency,currency.symbol">
         	<![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -979,12 +988,27 @@
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+                             {projectHoldBackATIList.map((item, index) => (
+                              <>
+                                <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{item.name}</Box>
+                                <Box as="dd" m={0} px={3} py={1}>{item.amount} {currency.symbol}</Box>
+                              </>
+                              ))}
 	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
 	                     </Box>
 	                  </>
 		         ]]>
         </viewer>
+      </field>
+      <field name="projectHoldBackATIList" hidden="true">
+        <editor x-show-on-new="false">
+          <panel>
+            <field name="name"/>
+            <field name="amount"/>
+            <field name="companyAmount"/>
+          </panel>
+        </editor>
       </field>
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
@@ -1068,13 +1092,20 @@
         x-scale="company.currency.numberOfDecimals"/>
       <field name="companyInTaxTotal" showTitle="false" colSpan="12"
         x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals">
-        <viewer depends="companyExTaxTotal,companyTaxTotal,companyInTaxTotal"><![CDATA[
+        <viewer
+          depends="companyExTaxTotal,companyTaxTotal,companyInTaxTotal,projectHoldBackATIList"><![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
 	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyExTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyTaxTotal')}</Box>
+	                     	 {projectHoldBackATIList.map((item, index) => (
+                              <>
+                                <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{item.name}</Box>
+                                <Box as="dd" m={0} px={3} py={1}>{item.companyAmount} {currency.symbol}</Box>
+                              </>
+                              ))}
 	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('companyInTaxTotal')}</Box>
 	                     </Box>
@@ -2931,6 +2962,16 @@
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="generateLatePaymentInvoice"/>
   </action-method>
+
+  <action-method name="action-invoice-method-update-hold-back-ati"
+    if-module="axelor-business-project">
+    <call class="com.axelor.apps.businessproject.web.InvoiceController"
+      method="updateHoldBackATI"/>
+  </action-method>
+
+  <action-group name="action-invoice-group-on-hold-back-lines-change">
+    <action name="action-invoice-method-update-hold-back-ati"/>
+  </action-group>
 
   <action-view name="action-invoice-view-late-interest-invoices"
     title="Late interest invoices" model="com.axelor.apps.account.db.Invoice">

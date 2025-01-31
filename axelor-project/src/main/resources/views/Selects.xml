@@ -79,4 +79,5 @@
     <option value="3">In test</option>
     <option value="4">In production</option>
   </selection>
+
 </object-views>
