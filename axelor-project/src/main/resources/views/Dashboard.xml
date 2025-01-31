@@ -338,6 +338,10 @@
       <field type="date" name="toDate" title="To Date" required="true"/>
     </search-fields>
     <dashlet height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
+    <dashlet height="350" action="project-planning-time-dashboard-action" canSearch="true"
+      colSpan="12"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+      if-module="axelor-human-resource"/>
   </dashboard>
   <action-record model="com.axelor.apps.project.db.ProjectTask"
     name="action.sale.chart.set.date.project">
@@ -345,12 +349,25 @@
     <field name="toDate" expr="eval:__config__.date.plusDays(6)"/>
   </action-record>
   <action-view name="project-project-task-action"
-    model="com.axelor.apps.project.db.ProjectTask" title="Project task">
+    model="com.axelor.apps.project.db.ProjectTask" title="Project tasks">
     <view name="project-task-dashboard-grid" type="grid"/>
     <view name="project-task-form" type="form"/>
+    <view-param name="popup" value="true"/>
     <domain> (self.taskDate &lt;= :toDate and self.taskDate &gt;= :fromDate )
       and
       (self.project=:project OR :project IS NULL)</domain>
   </action-view>
 
+  <action-view name="project-planning-time-dashboard-action"
+    model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning tasks">
+    <view name="project-planning-time-dashboard-grid" type="grid"/>
+    <view name="project-planning-time-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain> (( date(self.startDateTime) &lt;= date(:toDate) and date(self.startDateTime) &gt;=
+      date(:fromDate) )or
+      (date(self.endDateTime) &lt;= date(:toDate) and date(self.endDateTime)
+      &gt;= date(:fromDate) ))
+      and
+      (self.project=:project OR :project IS NULL)</domain>
+  </action-view>
 </object-views>
