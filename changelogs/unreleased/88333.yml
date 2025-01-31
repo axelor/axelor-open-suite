@@ -1,0 +1,3 @@
+---
+title: "Advanced export: fixed NPE when target field is empty on advanced export line."
+module: axelor-base
