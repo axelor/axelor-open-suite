@@ -1146,20 +1146,23 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLine modifiedStockMoveLine) {
 
     StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(originalStockMoveLine, false);
-    newStockMoveLine.setQty(modifiedStockMoveLine.getQty());
-    newStockMoveLine.setRealQty(modifiedStockMoveLine.getQty());
+    BigDecimal netMass = originalStockMoveLine.getNetMass();
+    BigDecimal qty = modifiedStockMoveLine.getQty();
+    newStockMoveLine.setQty(qty);
+    newStockMoveLine.setRealQty(qty);
+    newStockMoveLine.setTotalNetMass(netMass.multiply(qty));
     newStockMoveLine.setUnitPriceUntaxed(modifiedStockMoveLine.getUnitPriceUntaxed());
 
     // Update quantity in original stock move.
     // If the remaining quantity is 0, remove the stock move line
-    BigDecimal remainingQty =
-        originalStockMoveLine.getQty().subtract(modifiedStockMoveLine.getQty());
+    BigDecimal remainingQty = originalStockMoveLine.getQty().subtract(qty);
     if (BigDecimal.ZERO.compareTo(remainingQty) == 0) {
       // Remove the stock move line
       originalStockMove.removeStockMoveLineListItem(originalStockMoveLine);
     } else {
       originalStockMoveLine.setQty(remainingQty);
       originalStockMoveLine.setRealQty(remainingQty);
+      originalStockMoveLine.setTotalNetMass(netMass.multiply(remainingQty));
     }
 
     return newStockMoveLine;
