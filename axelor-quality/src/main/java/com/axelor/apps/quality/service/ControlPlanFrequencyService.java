@@ -16,20 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.utils.service.translation;
+package com.axelor.apps.quality.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.meta.db.MetaTranslation;
-import java.util.List;
+import com.axelor.apps.quality.db.ControlPlanFrequency;
 
-public interface TranslationBaseService {
+public interface ControlPlanFrequencyService {
 
-  public String getValueTranslation(String key);
-
-  List<MetaTranslation> getLocalizationTranslations(String language, String key)
-      throws AxelorException;
-
-  void createValueTranslation(String language, String key, String message);
-
-  void updateValueTranslation(String language, String oldKey, String newKey, String message);
+  void createOrUpdateValueTranslations(ControlPlanFrequency controlPlanFrequency);
 }
