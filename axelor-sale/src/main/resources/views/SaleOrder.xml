@@ -251,8 +251,7 @@
 
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
-    onNew="action-sale-order-method-onnew"
-    onSave="action-sale-order-line-tree-method-update-hasTree">
+    onNew="action-sale-order-method-onnew">
     <toolbar>
       <button name="duplicateWithConfiguratorBtn" title="Duplicate with configurator"
         onClick="action-sale-order-group-on-duplicate-with-configurator"
@@ -503,17 +502,6 @@
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
           editable="true">
         </panel-related>
-
-        <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
-          height="30" widget="MasterDetail" form-view="sale-order-line-form"
-          tree-view="sale-order-line-tree" grid-view="sale-order-line-grid"
-          summary-view="sale-order-master-details-form" field="saleOrderLineList"
-          target="com.axelor.apps.sale.db.SaleOrderLine"
-          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          title="Details Lines" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change" canMove="true"
-          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE"/>
 
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"

@@ -197,12 +197,6 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProduct
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineCalculationComboService;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineCalculationComboServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationService;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeService;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
@@ -256,11 +250,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderMergingService.class).to(SaleOrderMergingServiceImpl.class);
     bind(SaleOrderOnLineChangeService.class).to(SaleOrderOnLineChangeServiceImpl.class);
     bind(SaleOrderVersionService.class).to(SaleOrderVersionServiceImpl.class);
-    bind(SaleOrderLineTreeService.class).to(SaleOrderLineTreeServiceImpl.class);
-    bind(SaleOrderLineTreeComputationService.class)
-        .to(SaleOrderLineTreeComputationServiceImpl.class);
-    bind(SaleOrderLineCalculationComboService.class)
-        .to(SaleOrderLineCalculationComboServiceImpl.class);
     bind(SaleOrderLineCreateTaxLineService.class).to(SaleOrderLineCreateTaxLineServiceImpl.class);
     bind(PricingObserverImpl.class).to(PricingObserverSaleImpl.class);
     bind(PricingGenericServiceImpl.class).to(SalePricingGenericServiceImpl.class);
