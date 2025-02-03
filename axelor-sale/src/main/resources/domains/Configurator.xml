@@ -14,6 +14,8 @@
     <string name="indicators" title="Indicators" json="true"/>
     <one-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       unique="true"/>
+    <integer name="configuratorVersion" title="Version" nullable="true" readonly="true"
+      default="null"/>
 
 
     <extra-code><![CDATA[

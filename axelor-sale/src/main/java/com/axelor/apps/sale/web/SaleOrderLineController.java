@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.cart.CartProductService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
@@ -46,6 +47,7 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService;
+import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -382,6 +384,15 @@ public class SaleOrderLineController {
           .simpleDuplicate(sol, sol.getSaleOrder());
       response.setInfo(I18n.get(SaleExceptionMessage.ERROR_DURING_DUPLICATION_SALE_ORDER_LINE));
       response.setReload(true);
+    }
+  }
+
+  public void checkDuplicationSaleOrderLine(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    if (Beans.get(ConfiguratorCheckService.class)
+        .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
+      response.setAlert(I18n.get(ITranslation.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
   }
 }

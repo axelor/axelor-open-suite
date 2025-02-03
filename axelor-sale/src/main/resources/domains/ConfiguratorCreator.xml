@@ -27,6 +27,7 @@
 
     <boolean name="isActive" title="Is Active" default="false"/>
     <boolean name="copyNeedingUpdate"/>
+    <integer name="configuratorVersion" title="Version" min="0" default="0" readonly="true"/>
 
 
     <entity-listener
