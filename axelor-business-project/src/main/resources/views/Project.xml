@@ -264,10 +264,11 @@
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
       <panel title="Technical case" name="saleOrderPanel" hidden="true">
-        <panel-related readonly="true" field="saleOrderLineList" widget="tree-grid"
-          canNew="false" canEdit="false" canRemove="false" title="Details Lines (Tree)"
-          orderBy="sequence" form-view="sale-order-line-form"
-          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+        <panel-related name="projectSaleOrderLineEditableTreePanel"
+          field="saleOrderLineList" widget="tree-grid" canNew="false" canEdit="false"
+          canRemove="false" title="Details Lines (Tree)" orderBy="sequence"
+          form-view="sale-order-line-form" x-tree-field-title="Add a new sale order line"
+          summary-view="sale-order-line-summary-form"
           x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
           grid-view="sale-order-line-editable-grid" x-tree-field="subSaleOrderLineList" colSpan="12"/>
       </panel>
