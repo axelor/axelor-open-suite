@@ -342,6 +342,8 @@
       colSpan="12"
       if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
       if-module="axelor-human-resource"/>
+    <dashlet height="350" action="project-allocation-line-action" canSearch="true"
+      colSpan="12"/>
   </dashboard>
   <action-record model="com.axelor.apps.project.db.ProjectTask"
     name="action.sale.chart.set.date.project">
@@ -366,6 +368,20 @@
     <domain> (( date(self.startDateTime) &lt;= date(:toDate) and date(self.startDateTime) &gt;=
       date(:fromDate) )or
       (date(self.endDateTime) &lt;= date(:toDate) and date(self.endDateTime)
+      &gt;= date(:fromDate) ))
+      and
+      (self.project=:project OR :project IS NULL)</domain>
+  </action-view>
+  <action-view name="project-allocation-line-action"
+    model="com.axelor.apps.hr.db.AllocationLine" title="Project allocation lines">
+    <view name="project-allocation-line-grid" type="grid"/>
+    <view name="allocation-line-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain> (( date(self.period.fromDate ) &lt;= date(:toDate) and date(self.period.fromDate )
+      &gt;=
+      date(:fromDate) )or
+      (date(self.period.toDate) &lt;= date(:toDate) and
+      date(self.period.toDate)
       &gt;= date(:fromDate) ))
       and
       (self.project=:project OR :project IS NULL)</domain>
