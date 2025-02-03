@@ -1,0 +1,3 @@
+---
+title: "Dashboard: fixed the opportunities dashboards to take into account the current user's company."
+module: axelor-crm

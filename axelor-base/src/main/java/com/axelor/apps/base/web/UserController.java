@@ -135,6 +135,7 @@ public class UserController {
       Beans.get(UserService.class).setActiveCompany(AuthUtils.getUser(), company);
       response.setNotify(
           String.format(I18n.get("Active company changed to %s"), company.getName()));
+      response.setSignal("refresh-app", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -67,6 +67,8 @@
             JOIN
                 auth_user AS _user
                 ON _user.id = :__user__
+            WHERE
+            	self.company = _user.active_company
             GROUP BY
 				status.name,status.sequence
 			ORDER BY
@@ -111,6 +113,11 @@
     			base_source as Source ON self.source = Source.id
 			INNER JOIN
     			crm_opportunity_status as status ON status.id = self.opportunity_status
+    		JOIN
+    			auth_user AS _user
+    			ON _user.id = :__user__
+    		WHERE
+    			self.company = _user.active_company
 			GROUP BY
     			_source
 			ORDER BY
@@ -133,6 +140,11 @@
 	    	LEFT JOIN
 	        	auth_user as sale_man ON self.user_id = sale_man.id
 	        	AND sale_man.full_name IS NOT NULL
+	        JOIN
+	        	auth_user AS _user
+	        	ON _user.id = :__user__
+	        WHERE
+	        	self.company = _user.active_company
 	    	GROUP BY
 		    	_sale_man
 			ORDER BY
@@ -202,6 +214,8 @@
             JOIN
                 auth_user AS _user
                 ON _user.id = :__user__
+            WHERE
+            	self.company = _user.active_company
 			GROUP BY
 			    status.name,status.sequence,src.name
 			ORDER BY
