@@ -372,4 +372,7 @@
     <bind to="useFakeData" column="useFakeData"/>
   </input>
 
+  <input file="base_alternativeBarcodeType.csv" separator=";"
+    type="com.axelor.apps.base.db.AlternativeBarcodeType" search="self.importId = :importId"/>
+
 </csv-inputs>

@@ -22,8 +22,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ConnectorMapper;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.ConnectorMapperRepository;
+import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.service.MetaModelService;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -82,5 +84,28 @@ public class ConnectorMapperFetchServiceImpl implements ConnectorMapperFetchServ
         .bind("connectorSelect", connectorSelect)
         .bind("metaModel", metaModel);
     return query.fetch();
+  }
+
+  @Override
+  public ConnectorMapper getConnectorMapper(
+      Class<? extends Model> modelClass,
+      String connectorSelect,
+      String externalReference,
+      Company company,
+      TradingName tradingName) {
+    MetaModel metaModel = MetaModelService.getMetaModel(modelClass);
+    return getConnectorMapper(metaModel, connectorSelect, externalReference, company, tradingName);
+  }
+
+  @Override
+  public List<ConnectorMapper> getConnectorMapperList(
+      Class<? extends Model> modelClass,
+      String connectorSelect,
+      String externalReference,
+      Company company,
+      TradingName tradingName) {
+    MetaModel metaModel = MetaModelService.getMetaModel(modelClass);
+    return getConnectorMapperList(
+        metaModel, connectorSelect, externalReference, company, tradingName);
   }
 }

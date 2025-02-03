@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,7 +55,8 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
       AccountingSituationService accountingSituationService,
       InvoiceJournalService invoiceJournalService,
       InvoicePfpValidateService invoicePfpValidateService,
-      InvoiceTermPfpToolService invoiceTermPfpToolService) {
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      AdvancePaymentRefundService advancePaymentRefundService) {
     super(
         sequenceService,
         moveCreateFromInvoiceService,
@@ -70,6 +71,7 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
         invoiceJournalService,
         invoicePfpValidateService,
         invoiceTermPfpToolService);
+    this.advancePaymentRefundService = advancePaymentRefundService;
   }
 
   @Override

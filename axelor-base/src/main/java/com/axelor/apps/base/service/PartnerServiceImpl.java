@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -734,5 +734,19 @@ public class PartnerServiceImpl implements PartnerService {
     return parentPartnerList.stream()
         .filter(p -> partnerCheckList.contains(p.getParentPartner()))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean checkIfRegistrationCodeExists(Partner partner) {
+    String registrationCode = partner.getRegistrationCode();
+    if (StringUtils.isEmpty(registrationCode)) {
+      return false;
+    }
+    return partnerRepo
+            .all()
+            .filter("self.registrationCode = :registrationCode")
+            .bind("registrationCode", registrationCode)
+            .count()
+        > 0;
   }
 }

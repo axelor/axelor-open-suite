@@ -7,7 +7,7 @@
     name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
     <search-fields>
       <field type="string" name="monthSelect" title="Historical Period"
-        selection="base.year.period.duration.select" x-required="true"/>
+        selection="base.month.select" x-required="true"/>
     </search-fields>
     <dataset type="jpql">
       SELECT
@@ -129,7 +129,7 @@
     name="chart.stockMove.deliveries.time.delay.in.nbr" title="Customer deliveries statistics">
     <search-fields>
       <field type="string" name="monthSelect" title="Historical Period"
-        selection="base.year.period.duration.select" x-required="true"/>
+        selection="base.month.select" x-required="true"/>
     </search-fields>
     <dataset type="sql">
       SELECT moves,

@@ -11,6 +11,13 @@
       help="This will attach an event to a project planning time"/>
     <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
       help="This will customize the event subject."/>
+
+    <boolean name="enablePlanification" title="Enable planification" default="true"
+      help="If enabled, planification will be available on project and project task views and some planning lines auto generation will be added to generation via project template, and change of sprint on project tasks."/>
+
+    <track>
+      <field name="enablePlanification" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

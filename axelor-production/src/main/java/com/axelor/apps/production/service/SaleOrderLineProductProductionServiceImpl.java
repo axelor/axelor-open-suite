@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,6 +57,7 @@ public class SaleOrderLineProductProductionServiceImpl
   protected final SaleOrderLineBomService saleOrderLineBomService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   protected final SolBomUpdateService solBomUpdateService;
+  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
 
   @Inject
   public SaleOrderLineProductProductionServiceImpl(
@@ -77,7 +78,8 @@ public class SaleOrderLineProductProductionServiceImpl
       AppProductionService appProductionService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
-      SolBomUpdateService solBomUpdateService) {
+      SolBomUpdateService solBomUpdateService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService) {
     super(
         appSaleService,
         appBaseService,
@@ -97,6 +99,7 @@ public class SaleOrderLineProductProductionServiceImpl
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
     this.solBomUpdateService = solBomUpdateService;
+    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
   }
 
   @Override
@@ -167,11 +170,13 @@ public class SaleOrderLineProductProductionServiceImpl
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSubSaleOrderLineListItem);
       }
-      saleOrderLineDetailsBomService
-          .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
-          .stream()
-          .filter(Objects::nonNull)
-          .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+      if (!solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine)) {
+        saleOrderLineDetailsBomService
+            .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+            .stream()
+            .filter(Objects::nonNull)
+            .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+      }
     }
   }
 }

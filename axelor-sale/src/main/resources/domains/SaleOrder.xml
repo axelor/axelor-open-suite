@@ -117,6 +117,12 @@
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Company bank"/>
 
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="priceBeforeGlobalDiscount" title="Total W.T. before discount"
+      precision="20" scale="10"/>
+
     <!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
 

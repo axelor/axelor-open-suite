@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
@@ -616,6 +617,23 @@ public class InvoiceLineController {
       Invoice invoice = getInvoice(context);
 
       response.setValues(Beans.get(InvoiceLineService.class).recomputeTax(invoice, invoiceLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onSelectTaxLineSet(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = this.getInvoice(request.getContext());
+
+      if (invoice == null) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(InvoiceLineGroupService.class).setInvoiceLineTaxLineSetDomain(invoice, attrsMap);
+
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

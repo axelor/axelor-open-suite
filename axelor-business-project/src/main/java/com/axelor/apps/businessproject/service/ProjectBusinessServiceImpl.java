@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,6 +55,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -88,6 +89,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
   protected UnitConversionForProjectService unitConversionForProjectService;
+  protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected ProjectTimeUnitService projectTimeUnitService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
@@ -111,6 +113,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
       UnitConversionForProjectService unitConversionForProjectService,
+      SaleOrderStockLocationService saleOrderStockLocationService,
       ProjectTimeUnitService projectTimeUnitService) {
     super(
         projectRepository,
@@ -127,6 +130,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
+    this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.projectTimeUnitService = projectTimeUnitService;
   }
 
@@ -211,6 +215,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                       .fetchOne()
                   != null;
       order.setInterco(interco);
+      order.setStockLocation(
+          saleOrderStockLocationService.getStockLocation(clientPartner, company));
+      order.setToStockLocation(
+          saleOrderStockLocationService.getToStockLocation(clientPartner, company));
 
       // Automatic invoiced and delivered partners set in case of partner delegations
       if (appBaseService.getAppBase().getActivatePartnerRelations()) {

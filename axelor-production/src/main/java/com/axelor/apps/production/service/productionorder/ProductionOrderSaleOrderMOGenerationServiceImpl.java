@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,9 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProductionOrderSaleOrderMOGenerationServiceImpl
@@ -152,13 +150,14 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    List<BillOfMaterial> childBomList = new ArrayList<>();
-    childBomList.add(billOfMaterial);
+    Map<BillOfMaterial, BigDecimal> subBomMapWithLineQty = new HashMap<>();
+    // One for the parent BOM (It will be multiplied by qtyRequested anyway)
+    subBomMapWithLineQty.put(billOfMaterial, BigDecimal.ONE);
 
     Map<BillOfMaterial, ManufOrder> subBomManufOrderParentMap = new HashMap<>();
     // prevent infinite loop
     int depth = 0;
-    while (!childBomList.isEmpty()) {
+    while (!subBomMapWithLineQty.isEmpty()) {
       if (depth >= 100) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -182,11 +181,11 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
         startDate = null;
       }
 
-      List<BillOfMaterial> tempChildBomList = new ArrayList<>();
+      Map<BillOfMaterial, BigDecimal> tempBomMapWithLineQty = new HashMap<>();
 
       // Map for future manufOrder and its manufOrder Parent
 
-      for (BillOfMaterial childBom : childBomList) {
+      for (BillOfMaterial childBom : subBomMapWithLineQty.keySet()) {
 
         if (childBom.getProdProcess() == null) {
           continue;
@@ -195,7 +194,7 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
             this.generateManufOrder(
                 childBom.getProduct(),
                 childBom,
-                qtyRequested.multiply(childBom.getQty()),
+                qtyRequested.multiply(subBomMapWithLineQty.get(childBom)),
                 startDate,
                 endDate,
                 saleOrder,
@@ -205,17 +204,22 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
 
         productionOrderUpdateService.addManufOrder(productionOrder, manufOrder);
 
-        List<BillOfMaterial> subBomList = billOfMaterialService.getSubBillOfMaterial(childBom);
-        subBomList.forEach(
-            bom -> {
-              subBomManufOrderParentMap.putIfAbsent(bom, manufOrder);
-            });
+        Map<BillOfMaterial, BigDecimal> mapBomWithQty =
+            billOfMaterialService.getSubBillOfMaterialMapWithLineQty(childBom);
 
-        tempChildBomList.addAll(subBomList);
+        mapBomWithQty
+            .keySet()
+            .forEach(
+                bom -> {
+                  subBomManufOrderParentMap.putIfAbsent(bom, manufOrder);
+                });
+
+        tempBomMapWithLineQty.putAll(mapBomWithQty);
       }
-      childBomList.clear();
-      childBomList.addAll(tempChildBomList);
-      tempChildBomList.clear();
+
+      subBomMapWithLineQty.clear();
+      subBomMapWithLineQty.putAll(tempBomMapWithLineQty);
+      tempBomMapWithLineQty.clear();
       depth++;
     }
     return productionOrder;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,14 +22,24 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
-public class TaxAccountService {
+public class TaxAccountService extends TaxService {
 
   protected AccountManagementAccountService accountManagementAccountService;
 
@@ -93,5 +103,77 @@ public class TaxAccountService {
       return accountManagementAccountService.getSaleVatRegulationAccount(
           accountManagement, tax, company);
     }
+  }
+
+  public void checkTaxLinesNotOnlyNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+    if (ObjectUtils.isEmpty(taxLines)) {
+      return;
+    }
+
+    if (!checkTaxesNotOnlyNonDeductibleTaxes(
+        taxLines.stream().map(TaxLine::getTax).collect(Collectors.toList()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR));
+    }
+  }
+
+  protected boolean checkTaxesNotOnlyNonDeductibleTaxes(List<Tax> taxes) {
+    if (ObjectUtils.isEmpty(taxes)) {
+      return true;
+    }
+
+    return taxes.stream().anyMatch(tax -> !tax.getIsNonDeductibleTax());
+  }
+
+  public Set<TaxLine> getNotNonDeductibleTaxesSet(Set<TaxLine> taxesLineSet) {
+    return taxesLineSet.stream()
+        .filter(Objects::nonNull)
+        .filter(it -> !ObjectUtils.isEmpty(it.getTax()) && !it.getTax().getIsNonDeductibleTax())
+        .collect(Collectors.toSet());
+  }
+
+  public boolean isNonDeductibleTaxesSet(Set<TaxLine> taxesLineSet) {
+    if (ObjectUtils.isEmpty(taxesLineSet)) {
+      return false;
+    }
+
+    return taxesLineSet.stream()
+        .map(TaxLine::getTax)
+        .filter(Objects::nonNull)
+        .anyMatch(Tax::getIsNonDeductibleTax);
+  }
+
+  public void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+    if (CollectionUtils.isEmpty(taxLines)) {
+      return;
+    }
+
+    if (taxLines.stream()
+            .filter(
+                taxLine ->
+                    Optional.of(taxLine)
+                        .map(TaxLine::getTax)
+                        .map(Tax::getIsNonDeductibleTax)
+                        .orElse(false))
+            .map(TaxLine::getValue)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .compareTo(BigDecimal.valueOf(100))
+        > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED));
+    }
+  }
+
+  @Override
+  public BigDecimal getTotalTaxRateInPercentage(Set<TaxLine> taxLineSet) {
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return BigDecimal.ZERO;
+    }
+    return this.getNotNonDeductibleTaxesSet(taxLineSet).stream()
+        .map(TaxLine::getValue)
+        .filter(Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }

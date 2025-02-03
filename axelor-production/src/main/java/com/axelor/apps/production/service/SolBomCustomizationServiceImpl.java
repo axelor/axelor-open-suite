@@ -57,10 +57,6 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
             .getProductSubTypeSelect()
             .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
           var bomLine = bomLineCreationService.createBomLineFromSol(subSaleOrderLine);
-          // If it is not personalized, we will customize, else just use the personalized one.
-          if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
-            subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
-          }
           // Relink billOfMaterialLine
           subSaleOrderLine.setBillOfMaterialLine(bomLine);
           personalizedBOM.addBillOfMaterialLineListItem(bomLine);
