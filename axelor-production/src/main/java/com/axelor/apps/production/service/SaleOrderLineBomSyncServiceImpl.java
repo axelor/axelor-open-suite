@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,19 +33,8 @@ import org.apache.commons.collections.CollectionUtils;
 public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncService {
 
   @Override
-  public void syncSaleOrderLineBom(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
-      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        removeBomLines(saleOrderLine);
-      }
-    }
-  }
-
-  @Override
   public void removeBomLines(SaleOrderLine saleOrderLine) {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-
     if (subSaleOrderLineList != null) {
       for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
         removeBomLines(subSaleOrderLine);
