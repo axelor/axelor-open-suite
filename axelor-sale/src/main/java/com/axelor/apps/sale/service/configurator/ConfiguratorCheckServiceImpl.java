@@ -2,7 +2,11 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.i18n.I18n;
 import java.util.Objects;
 
 public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
@@ -21,5 +25,24 @@ public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
     Objects.requireNonNull(configurator);
 
     // Nothing to check in sale module
+  }
+
+  @Override
+  public void checkHaveConfigurator(SaleOrder saleOrder) throws AxelorException {
+    Objects.requireNonNull(saleOrder);
+
+    if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR));
+    }
+
+    boolean hasConfigurator =
+        saleOrder.getSaleOrderLineList().stream().anyMatch(sol -> sol.getConfigurator() != null);
+    if (!hasConfigurator) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR));
+    }
   }
 }

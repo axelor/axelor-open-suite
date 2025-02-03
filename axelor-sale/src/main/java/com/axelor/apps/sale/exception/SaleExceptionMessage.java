@@ -175,4 +175,7 @@ public final class SaleExceptionMessage {
 
   public static final String DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES = /*$$(*/
       "You cannot bill together lines that do not have the same delivery address. Please use partial billing for lines with the same delivery address." /*)*/;
+
+  public static final String SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR = /*$$(*/
+      "Sale order does not have configurator to duplicate." /*)*/;
 }
