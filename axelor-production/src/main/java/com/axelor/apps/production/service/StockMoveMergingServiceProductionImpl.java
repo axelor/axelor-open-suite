@@ -28,6 +28,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.ConditionList;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -51,11 +52,12 @@ public class StockMoveMergingServiceProductionImpl extends StockMoveMergingServi
   }
 
   @Override
-  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
-    super.checkErrors(stockMoveList, errors);
-    if (!checkAllSame(stockMoveList, StockMove::getManufOrder)) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_MANUF_ORDER));
-    }
+  public ConditionList canMerge(List<StockMove> stockMoveList) {
+    ConditionList conditionList = super.canMerge(stockMoveList);
+    conditionList.check(
+        !checkAllSame(stockMoveList, StockMove::getManufOrder),
+        I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_MANUF_ORDER));
+    return conditionList;
   }
 
   @Override

@@ -1079,7 +1079,7 @@
 "You must configure an inventory virtual stock location for the company %s","Veuillez configurer un Emplacement Virtuel Inventaire pour la société %s",,
 "You must select a stock location","Veuillez sélectionner un entrepôt",,
 "You will modify the volume and therefore the unit weight of your tracking number. This will not have an impact on any stock location lines linked to it. This could generate inconsistencies.","Vous allez modifier le volume et donc le poids unitaire de votre n° de suivi. Cela n'aura pas d'impact sur les éventuelles lignes d'emplacement de stock qui lui sont liées. Cela pourrait générer des incohérences.",,
-"Your merge doesn't respect this/these condition(s) : %s","Votre fusion ne respecte pas la/les condition(s) : %s",,
+"Your merge doesn't respect this/these condition(s):","Votre fusion ne respecte pas la/les condition(s) :",,
 "import.name","Import",,
 "import.verb","Importer",,
 "stockMove.realDate","Date du mouvement",,

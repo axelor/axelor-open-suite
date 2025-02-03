@@ -28,6 +28,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.ConditionList;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -63,35 +64,36 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
     this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
-  public List<String> canMerge(List<StockMove> stockMoveList) {
-    List<String> errors = new ArrayList<>();
-    checkErrors(stockMoveList, errors);
-    return errors;
-  }
+  @Override
+  public ConditionList canMerge(List<StockMove> stockMoveList) {
+    ConditionList conditionList = ConditionList.html();
+    conditionList.check(
+        !checkAllSame(stockMoveList, StockMove::getCompany),
+        I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_COMPANY));
 
-  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
-    if (!checkAllSame(stockMoveList, StockMove::getCompany)) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_COMPANY));
-    }
     boolean enableTradingNames = appBaseService.getAppBase().getEnableTradingNamesManagement();
-    if (enableTradingNames && !checkAllSame(stockMoveList, StockMove::getTradingName)) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_TRADING_NAME));
-    }
-    if (!checkAllSame(stockMoveList, StockMove::getPartner)) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_PARTNER));
-    }
-    if (!checkAllSame(stockMoveList, StockMove::getFromStockLocation)
-        || !checkAllSame(stockMoveList, StockMove::getToStockLocation)) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION));
-    }
-    if (!stockMoveList.stream()
-        .map(StockMove::getStatusSelect)
-        .allMatch(
-            value ->
-                value.equals(StockMoveRepository.STATUS_DRAFT)
-                    || value.equals(StockMoveRepository.STATUS_PLANNED))) {
-      errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_STATUS));
-    }
+    conditionList.check(
+        enableTradingNames && !checkAllSame(stockMoveList, StockMove::getTradingName),
+        I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_TRADING_NAME));
+
+    conditionList.check(
+        !checkAllSame(stockMoveList, StockMove::getPartner),
+        I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_PARTNER));
+
+    conditionList.check(
+        !checkAllSame(stockMoveList, StockMove::getFromStockLocation)
+            || !checkAllSame(stockMoveList, StockMove::getToStockLocation),
+        I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION));
+
+    conditionList.check(
+        !stockMoveList.stream()
+            .map(StockMove::getStatusSelect)
+            .allMatch(
+                value ->
+                    value.equals(StockMoveRepository.STATUS_DRAFT)
+                        || value.equals(StockMoveRepository.STATUS_PLANNED)),
+        I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_STATUS));
+    return conditionList;
   }
 
   protected <T> boolean checkAllSame(

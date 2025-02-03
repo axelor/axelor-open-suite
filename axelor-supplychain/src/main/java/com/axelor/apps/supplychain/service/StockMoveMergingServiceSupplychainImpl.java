@@ -30,6 +30,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.ConditionList;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.function.Function;
@@ -55,24 +56,25 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   }
 
   @Override
-  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
-    super.checkErrors(stockMoveList, errors);
-    if (!checkAllSame(
-        stockMoveList,
-        stockMove ->
-            stockMove.getSaleOrderSet().stream()
-                .map(SaleOrder::getFiscalPosition)
-                .collect(Collectors.toSet()))) {
-      errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
-    }
-    if (!checkAllSame(
-        stockMoveList,
-        stockMove ->
-            stockMove.getPurchaseOrderSet().stream()
-                .map(PurchaseOrder::getFiscalPosition)
-                .collect(Collectors.toSet()))) {
-      errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
-    }
+  public ConditionList canMerge(List<StockMove> stockMoveList) {
+    ConditionList conditionList = super.canMerge(stockMoveList);
+    conditionList.check(
+        !checkAllSame(
+            stockMoveList,
+            stockMove ->
+                stockMove.getSaleOrderSet().stream()
+                    .map(SaleOrder::getFiscalPosition)
+                    .collect(Collectors.toSet())),
+        I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
+    conditionList.check(
+        !checkAllSame(
+            stockMoveList,
+            stockMove ->
+                stockMove.getPurchaseOrderSet().stream()
+                    .map(PurchaseOrder::getFiscalPosition)
+                    .collect(Collectors.toSet())),
+        I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
+    return conditionList;
   }
 
   @Override

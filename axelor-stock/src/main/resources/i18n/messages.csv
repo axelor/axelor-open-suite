@@ -1079,7 +1079,7 @@
 "You must configure an inventory virtual stock location for the company %s",,,
 "You must select a stock location",,,
 "You will modify the volume and therefore the unit weight of your tracking number. This will not have an impact on any stock location lines linked to it. This could generate inconsistencies.",,,
-"Your merge doesn't respect this/these condition(s) : %s",,,
+"Your merge doesn't respect this/these condition(s):",,,
 "import.name",,,
 "import.verb",,,
 "stockMove.realDate",,,
