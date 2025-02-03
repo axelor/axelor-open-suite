@@ -889,6 +889,7 @@
 "There no's defined nomenclature for product %s (%s)","Aucune nomenclature définie pour le produit %s (%s)",,
 "There's no configured sequence for fabrication's orders","Aucune séquence configurée pour les Ordres de fabrication",,
 "There's no configured sequence for production's orders","Aucune séquence configurée pour les Ordres de production",,
+"These sale order lines are already linked to a production order.","Ces lignes de commandes sont déjà liées à un ordre de production.",,
 "This bill of materials already has the following versions : <br/>%s And these versions may also have ones. Do you still wish to create a new one ?","Cette nomenclature possède déjà les versions suivantes : <br/>%s Et ces versions peuvent également en avoir elles-même. Voulez vous vraiment en créer une autre ?",,
 "This config allows to automatically fill the deliveries from the finished products of the manufacturing orders.","Cette configuration permet de remplir automatiquement les bons de livraisons depuis les produits finis des OF.",,
 "This production process already has the following versions : <br/> %s And these versions may also have ones. Do you still wish to create a new one ?","Cette gamme a déjà les versions suivantes : <br/> %s Et ces nouvelles versions en ont peut-être déjà quelques unes. Voulez-vous toujours en créer une nouvelle ?",,

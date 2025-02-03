@@ -32,4 +32,6 @@ public interface ProductionOrderSaleOrderService {
       throws AxelorException;
 
   ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
+
+  void checkProdOrderSolList(List<SaleOrderLine> saleOrderLineList) throws AxelorException;
 }

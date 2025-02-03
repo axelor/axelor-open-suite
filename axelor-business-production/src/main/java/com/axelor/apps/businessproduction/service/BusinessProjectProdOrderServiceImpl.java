@@ -34,9 +34,17 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
   @Override
   public List<ProductionOrder> generateProductionOrders(Project project) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = project.getSaleOrderLineList();
+
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return Collections.emptyList();
     }
+
+    productionOrderSaleOrderService.checkProdOrderSolList(saleOrderLineList);
+
+    saleOrderLineList =
+        saleOrderLineList.stream()
+            .filter(line -> line.getProdOrder() == null)
+            .collect(Collectors.toList());
 
     List<ProductionOrder> productionOrderList = new ArrayList<>();
     AppProduction appProduction = appProductionService.getAppProduction();
@@ -65,6 +73,7 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
           productionOrderSaleOrderService.createProductionOrder(saleOrder);
       for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
         productionOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
+        saleOrderLine.setProdOrder(productionOrder);
       }
       productionOrderList.add(productionOrder);
     }
@@ -78,6 +87,7 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
       ProductionOrder productionOrder =
           productionOrderSaleOrderService.createProductionOrder(saleOrder);
       productionOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
+      saleOrderLine.setProdOrder(productionOrder);
       productionOrderList.add(productionOrder);
     }
   }
