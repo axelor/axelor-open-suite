@@ -48,13 +48,18 @@ public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncServ
       SaleOrderLine saleOrderLine, List<SaleOrderLine> subSaleOrderLineList) {
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
     if (billOfMaterial != null && billOfMaterial.getPersonalized()) {
-      List<BillOfMaterialLine> bomLineToRemove =
-          getBomLinesToRemove(billOfMaterial, subSaleOrderLineList);
-      for (BillOfMaterialLine billOfMaterialLine : bomLineToRemove) {
-        billOfMaterial.removeBillOfMaterialLineListItem(billOfMaterialLine);
-      }
+      removeSolBomLine(subSaleOrderLineList, billOfMaterial);
 
       removeSolDetailsBomLine(saleOrderLine.getSaleOrderLineDetailsList(), billOfMaterial);
+    }
+  }
+
+  protected void removeSolBomLine(
+      List<SaleOrderLine> subSaleOrderLineList, BillOfMaterial billOfMaterial) {
+    List<BillOfMaterialLine> bomLineToRemove =
+        getBomLinesToRemove(billOfMaterial, subSaleOrderLineList);
+    for (BillOfMaterialLine billOfMaterialLine : bomLineToRemove) {
+      billOfMaterial.removeBillOfMaterialLineListItem(billOfMaterialLine);
     }
   }
 
