@@ -2,12 +2,14 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class AllocationLineManagementRepository extends AllocationLineRepository {
@@ -39,7 +41,9 @@ public class AllocationLineManagementRepository extends AllocationLineRepository
     json.put("$leaves", leaves);
     json.put("$alreadyAllocated", alreadyAllocated);
     json.put("$availableAllocation", availableAllocation);
-    json.put("$plannedTime", plannedTime);
+    json.put(
+        "$plannedTime",
+        plannedTime.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     return super.populate(json, context);
   }
 }
