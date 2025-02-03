@@ -1,0 +1,3 @@
+---
+title: "Project version: fixed domain for projectSet to avoid conflicts on project save."
+module: axelor-business-support
