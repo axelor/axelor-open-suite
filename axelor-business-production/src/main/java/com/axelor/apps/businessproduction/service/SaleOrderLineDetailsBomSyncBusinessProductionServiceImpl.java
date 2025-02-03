@@ -17,11 +17,11 @@ public class SaleOrderLineDetailsBomSyncBusinessProductionServiceImpl
 
   @Override
   public void syncSaleOrderLineDetailsBom(SaleOrderLineDetails saleOrderLineDetails) {
-    SaleOrderLine confirmedSaleOrderLine = saleOrderLineDetails.getConfirmedSaleOrderLine();
-    if (confirmedSaleOrderLine != null) {
+    SaleOrderLine projectSaleOrderLine = saleOrderLineDetails.getProjectSaleOrderLine();
+    if (projectSaleOrderLine != null) {
       saleOrderLineBomSyncService.removeSolDetailsBomLine(
-          confirmedSaleOrderLine.getProjectSaleOrderLineDetailsList(),
-          confirmedSaleOrderLine.getBillOfMaterial());
+          projectSaleOrderLine.getProjectSaleOrderLineDetailsList(),
+          projectSaleOrderLine.getBillOfMaterial());
     } else {
       super.syncSaleOrderLineDetailsBom(saleOrderLineDetails);
     }

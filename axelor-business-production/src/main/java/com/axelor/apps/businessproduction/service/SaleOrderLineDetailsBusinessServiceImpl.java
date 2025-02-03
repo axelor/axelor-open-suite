@@ -24,7 +24,7 @@ public class SaleOrderLineDetailsBusinessServiceImpl extends SaleOrderLineDetail
     SaleOrderLine saleOrderLine =
         saleOrderLineDetails.getSaleOrderLine() != null
             ? saleOrderLineDetails.getSaleOrderLine()
-            : saleOrderLineDetails.getConfirmedSaleOrderLine();
+            : saleOrderLineDetails.getProjectSaleOrderLine();
     return saleOrderLine.getSaleOrder();
   }
 }

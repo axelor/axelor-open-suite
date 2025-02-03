@@ -170,7 +170,8 @@ public class SaleOrderLineProductProductionServiceImpl
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSubSaleOrderLineListItem);
       }
-      if (!solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine)) {
+      if (!solDetailsBomUpdateService.isSolDetailsUpdated(
+          saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
         saleOrderLineDetailsBomService
             .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
             .stream()

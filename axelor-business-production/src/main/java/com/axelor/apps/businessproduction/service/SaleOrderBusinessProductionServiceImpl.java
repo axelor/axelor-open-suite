@@ -51,7 +51,7 @@ public class SaleOrderBusinessProductionServiceImpl implements SaleOrderBusiness
         SaleOrderLineDetails copySolDetails =
             saleOrderLineDetailsRepository.copy(saleOrderLineDetails, true);
         copySolDetails.setSaleOrderLine(null);
-        copySolDetails.setConfirmedSaleOrderLine(saleOrderLine);
+        copySolDetails.setProjectSaleOrderLine(saleOrderLine);
         copySolDetails.setOriginSaleOrderLineDetails(saleOrderLineDetails);
         saleOrderLine.addProjectSaleOrderLineDetailsListItem(copySolDetails);
       }

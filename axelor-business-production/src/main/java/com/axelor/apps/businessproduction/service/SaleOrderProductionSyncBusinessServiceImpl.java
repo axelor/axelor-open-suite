@@ -5,7 +5,7 @@ import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
-import com.axelor.apps.production.service.SaleOrderSyncService;
+import com.axelor.apps.production.service.SaleOrderSyncAbstractService;
 import com.axelor.apps.production.service.SolBomCustomizationService;
 import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
@@ -16,10 +16,11 @@ import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderBusinessProductionSyncService extends SaleOrderSyncService {
+public class SaleOrderProductionSyncBusinessServiceImpl extends SaleOrderSyncAbstractService
+    implements SaleOrderProductionSyncBusinessService {
 
   @Inject
-  protected SaleOrderBusinessProductionSyncService(
+  protected SaleOrderProductionSyncBusinessServiceImpl(
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
@@ -37,6 +38,7 @@ public class SaleOrderBusinessProductionSyncService extends SaleOrderSyncService
         appProductionService);
   }
 
+  @Override
   public void projectSoListOnChange(Project project) throws AxelorException {
     List<SaleOrderLine> saleOrderLines = project.getSaleOrderLineList();
     if (CollectionUtils.isEmpty(saleOrderLines)) {

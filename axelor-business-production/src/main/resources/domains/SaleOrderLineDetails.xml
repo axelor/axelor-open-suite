@@ -7,8 +7,8 @@
 
   <entity name="SaleOrderLineDetails">
 
-    <many-to-one name="confirmedSaleOrderLine"
-      ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order line"/>
+    <many-to-one name="projectSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sale order line"/>
     <many-to-one name="originSaleOrderLineDetails"
       title="Origin sale order line details"
       ref="com.axelor.apps.production.db.SaleOrderLineDetails"/>

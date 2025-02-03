@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
-public abstract class SaleOrderSyncService {
+public abstract class SaleOrderSyncAbstractService {
 
   protected final SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService;
   protected final SaleOrderLineBomService saleOrderLineBomService;
@@ -39,7 +39,7 @@ public abstract class SaleOrderSyncService {
   protected final AppProductionService appProductionService;
 
   @Inject
-  protected SaleOrderSyncService(
+  protected SaleOrderSyncAbstractService(
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,

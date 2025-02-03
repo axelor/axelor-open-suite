@@ -9,7 +9,7 @@
 
     <one-to-many name="projectSaleOrderLineDetailsList"
       ref="com.axelor.apps.production.db.SaleOrderLineDetails" title="Sale order line details list"
-      mappedBy="confirmedSaleOrderLine"/>
+      mappedBy="projectSaleOrderLine"/>
   </entity>
 
 </domain-models>
