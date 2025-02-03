@@ -412,7 +412,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected void updatePurchaseOrderLines(StockMove stockMove, boolean qtyWasReceived)
       throws AxelorException {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      if (stockMoveLine.getPurchaseOrderLine() != null) {
+      if (stockMoveLine.getPurchaseOrderLine() != null
+          && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL) {
         PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 
         BigDecimal realQty =

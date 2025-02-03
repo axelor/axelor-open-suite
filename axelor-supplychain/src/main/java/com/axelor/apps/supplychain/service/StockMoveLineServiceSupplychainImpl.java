@@ -715,11 +715,18 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  public StockMoveLine createStockMoveTitleLine(StockMove stockMove, SaleOrderLine saleOrderLine) {
+  public StockMoveLine createStockMoveTitleLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine) {
+    String productName = null;
+    if (saleOrderLine != null) {
+      productName = saleOrderLine.getProductName();
+    } else if (purchaseOrderLine != null) {
+      productName = purchaseOrderLine.getProductName();
+    }
     StockMoveLine stockMoveLine =
-        createStockMoveLine(
-            saleOrderLine.getProductName(), StockMoveLineRepository.TYPE_TITLE, stockMove);
+        createStockMoveLine(productName, StockMoveLineRepository.TYPE_TITLE, stockMove);
     stockMoveLine.setSaleOrderLine(saleOrderLine);
+    stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     return stockMoveLine;
   }
 }

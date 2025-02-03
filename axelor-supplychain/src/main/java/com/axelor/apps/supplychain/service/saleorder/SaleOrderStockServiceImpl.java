@@ -211,7 +211,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               stockMove, saleOrderLine, qty, saleOrder.getStockLocation(), toStockLocation);
         }
       } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
-        stockMoveLineSupplychainService.createStockMoveTitleLine(stockMove, saleOrderLine);
+        stockMoveLineSupplychainService.createStockMoveTitleLine(stockMove, saleOrderLine, null);
       }
     }
 

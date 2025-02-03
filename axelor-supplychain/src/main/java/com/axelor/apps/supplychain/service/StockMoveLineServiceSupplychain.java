@@ -108,5 +108,6 @@ public interface StockMoveLineServiceSupplychain {
 
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) throws AxelorException;
 
-  StockMoveLine createStockMoveTitleLine(StockMove stockMove, SaleOrderLine saleOrderLine);
+  StockMoveLine createStockMoveTitleLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine);
 }
