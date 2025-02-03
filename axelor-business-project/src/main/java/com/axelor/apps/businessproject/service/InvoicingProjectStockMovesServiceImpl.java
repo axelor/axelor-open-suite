@@ -65,7 +65,9 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
   protected boolean shouldProcessSaleOrderLine(SaleOrderLine saleOrderLine) {
     return saleOrderLine.getInvoicingModeSelect()
             == SaleOrderLineRepository.INVOICING_MODE_ON_DELIVERY
-        && saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED;
+        && (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+            || saleOrderLine.getDeliveryState()
+                == SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
   }
 
   protected void addStockMoveLinesToStockMoveLineSet(
