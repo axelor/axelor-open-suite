@@ -61,6 +61,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
       copy.setAdvancePaymentNeeded(false);
       copy.clearAdvancePaymentList();
+      copy.setAdvanceTotal(BigDecimal.ZERO);
     }
 
     if (copy.getSaleOrderLineList() != null) {
