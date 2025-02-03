@@ -6,8 +6,8 @@
   <grid name="sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint"
     orderBy="sequence" canMove="true" editable="true" onNew="action-sprint-group-onnew">
     <field name="name" required="true"/>
-    <field name="fromDate"/>
-    <field name="toDate"/>
+    <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
     <field name="project" readonly="true"/>
     <field name="targetVersion" readonly="true"/>
     <field name="description"/>
@@ -24,8 +24,8 @@
         <field name="project" readonly="true"/>
         <field name="targetVersion" readonly="true"/>
       </panel>
-      <field name="fromDate"/>
-      <field name="toDate"/>
+      <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+      <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
       <field name="description" colSpan="12"/>
       <field name="projectTaskList" canSelect="true" canNew="false" canEdit="false"
         domain="self.project = :project" showIf="id" colSpan="12"
@@ -63,6 +63,11 @@
     <action name="action-sprint-attrs-manage-hide-project-version"/>
   </action-group>
 
+  <action-record name="action-sprint-record-reset-to-date"
+    model="com.axelor.apps.project.db.Sprint">
+    <field name="toDate" expr="eval: null"/>
+  </action-record>
+
   <action-method name="action-sprint-generator-method-init-default-values">
     <call class="com.axelor.apps.project.web.SprintController" method="initDefaultWizardValues"/>
   </action-method>
@@ -77,7 +82,8 @@
 
   <action-validate name="action-sprint-generator-validate-dates">
     <error message="Invalid date"
-      if="fromDate &amp;&amp; toDate &amp;&amp; toDate &lt; fromDate"/>
+      if="fromDate &amp;&amp; toDate &amp;&amp; toDate &lt; fromDate"
+      action="action-sprint-record-reset-to-date"/>
   </action-validate>
 
   <action-attrs name="action-sprint-attrs-manage-hide-project-version">

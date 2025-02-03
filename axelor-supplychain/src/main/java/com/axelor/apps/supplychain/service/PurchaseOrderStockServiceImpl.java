@@ -664,4 +664,17 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
     return query;
   }
+
+  @Override
+  public List<PurchaseOrderLine> updatePurchaseOrderLinesStockLocation(
+      PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+      return purchaseOrderLineList;
+    }
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      purchaseOrderLine.setStockLocation(purchaseOrder.getStockLocation());
+    }
+    return purchaseOrderLineList;
+  }
 }

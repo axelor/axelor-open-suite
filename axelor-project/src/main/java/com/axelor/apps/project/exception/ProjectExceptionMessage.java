@@ -107,4 +107,7 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_VERSION_WITH_SAME_PROJECT_ALREADY_EXISTS = /*$$(*/
       "Warning, at least 2 versions with the title %s are used on the project(s) %s." /*)*/;
+
+  public static final String PROJECT_SPRINTS_OVERLAPPED =
+      /*$$(*/ "The project contains overlapping sprints. Please correct the date ranges." /*)*/;
 }

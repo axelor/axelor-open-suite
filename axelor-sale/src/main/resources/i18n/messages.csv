@@ -752,6 +752,7 @@
 "You can not choose this product for this order: %s",,,
 "You can not create sale order as some products are not in stock.",,,
 "You can only add a line to a draft sale order.",,,
+"You cannot bill together lines that do not have the same delivery address. Please use partial billing for lines with the same delivery address.",,,
 "You have to choose at least one sale order",,,
 "You have to choose at least one sale quotation",,,
 "You must configure a script to fill the created product code.",,,
