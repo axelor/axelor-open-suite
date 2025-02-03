@@ -39,6 +39,7 @@ import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -47,6 +48,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -866,5 +869,25 @@ public class SaleOrderController {
         Beans.get(SaleOrderDeliveryAddressService.class)
             .updateSaleOrderLinesDeliveryAddress(saleOrder);
     response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void duplicateWithConfigurator(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    Beans.get(ConfiguratorCheckService.class).checkHaveConfigurator(saleOrder);
+
+    var copySaleOrder =
+        Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+            .duplicateSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+
+    response.setView(
+        ActionView.define(I18n.get(ITranslation.SALE_QUOTATION))
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .param("forceEdit", "true")
+            .param("forceTitle", "true")
+            .context("_showRecord", String.valueOf(copySaleOrder.getId()))
+            .map());
   }
 }

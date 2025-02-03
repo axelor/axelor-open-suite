@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -41,7 +42,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
@@ -76,7 +76,7 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
       MoveBudgetService moveBudgetService,
-      TaxService taxService,
+      TaxAccountService taxAccountService,
       UserService userService) {
     super(
         moveLineControlService,
@@ -101,7 +101,7 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
         currencyScaleService,
         moveLineFinancialDiscountService,
         expenseRepository,
-        taxService,
+        taxAccountService,
         userService);
     this.moveBudgetService = moveBudgetService;
   }

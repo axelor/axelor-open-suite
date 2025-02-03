@@ -1809,4 +1809,10 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
       "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special or commitment should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
+
+  public static final String TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR = /*$$(*/
+      "Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
+
+  public static final String SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED = /*$$(*/
+      "The sum of non-deductible taxes should not exceed 100%." /*)*/;
 }

@@ -47,6 +47,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -108,6 +109,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected CurrencyScaleService currencyScaleService;
   protected OrderInvoiceService orderInvoiceService;
   protected InvoiceTaxService invoiceTaxService;
+  protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -125,7 +127,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
-      InvoiceTaxService invoiceTaxService) {
+      InvoiceTaxService invoiceTaxService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -141,6 +144,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.currencyScaleService = currencyScaleService;
     this.orderInvoiceService = orderInvoiceService;
     this.invoiceTaxService = invoiceTaxService;
+    this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
   }
 
   @Override
@@ -542,6 +546,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       List<SaleOrderLine> saleOrderLineList,
       Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
+
+    saleOrderDeliveryAddressService.checkSaleOrderLinesDeliveryAddress(
+        saleOrderLineList.stream()
+            .filter(saleOrderLine -> qtyToInvoiceMap.containsKey(saleOrderLine.getId()))
+            .collect(Collectors.toList()));
 
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
 

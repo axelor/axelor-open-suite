@@ -13,6 +13,7 @@ import com.axelor.apps.hr.rest.dto.LeaveRequestDurationResponse;
 import com.axelor.apps.hr.rest.dto.LeaveRequestRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckResponseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
@@ -35,6 +36,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -254,5 +256,22 @@ public class LeaveRequestRestController {
                     requestBody.getToDate().atStartOfDay(),
                     employee,
                     requestBody.fetchLeaveReason())));
+  }
+
+  @Operation(
+      summary = "Check leave request",
+      tags = {"Leave request"})
+  @Path("/check/{leaveRequestId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkLeaveRequest(@PathParam("leaveRequestId") Long leaveRequestId) {
+    new SecurityCheck().readAccess(LeaveRequest.class, leaveRequestId).check();
+    LeaveRequest leaveRequest =
+        ObjectFinder.find(LeaveRequest.class, leaveRequestId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
+        Beans.get(LeaveRequestCheckResponseService.class).createResponse(leaveRequest));
   }
 }
