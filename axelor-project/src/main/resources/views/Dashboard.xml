@@ -334,8 +334,10 @@
     <search-fields>
       <field name="project" target="com.axelor.apps.project.db.Project" title="Project"
         type="reference" colSpan="12"/>
-      <field type="date" name="fromDate" title="From Date" required="true"/>
-      <field type="date" name="toDate" title="To Date" required="true"/>
+      <field type="date" name="fromDate" title="From Date" required="true" colSpan="3"/>
+      <field type="date" name="toDate" title="To Date" required="true" colSpan="3"/>
+      <field type="reference" name="period" title="Allocation period" target="com.axelor.apps.base.db.Period" colSpan="3" />
+      <field type="reference" name="sprint" title="Sprint" target="com.axelor.apps.project.db.Sprint" colSpan="3"/>
     </search-fields>
     <dashlet height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
     <dashlet height="350" action="project-planning-time-dashboard-action" canSearch="true"
