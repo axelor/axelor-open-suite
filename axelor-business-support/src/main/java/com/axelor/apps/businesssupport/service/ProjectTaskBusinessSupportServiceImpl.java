@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businesssupport.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.FrequencyService;
@@ -35,6 +36,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
+import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -58,7 +60,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      ProjectTimeUnitService projectTimeUnitService) {
+      ProjectTimeUnitService projectTimeUnitService,
+      TaskTemplateService taskTemplateService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -73,7 +76,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         partnerPriceListService,
         productCompanyService,
         timesheetLineRepository,
-        projectTimeUnitService);
+        projectTimeUnitService,
+        taskTemplateService);
   }
 
   @Override
@@ -96,7 +100,8 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
 
   @Override
   public ProjectTask create(
-      TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty) {
+      TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty)
+      throws AxelorException {
 
     ProjectTask task = super.create(template, project, date, qty);
     task.setInternalDescription(template.getInternalDescription());

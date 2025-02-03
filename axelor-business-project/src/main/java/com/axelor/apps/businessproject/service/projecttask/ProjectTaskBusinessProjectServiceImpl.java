@@ -58,6 +58,7 @@ import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
+import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -93,6 +94,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetLineRepository;
   protected ProjectTimeUnitService projectTimeUnitService;
+  protected TaskTemplateService taskTemplateService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -109,7 +111,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      ProjectTimeUnitService projectTimeUnitService) {
+      ProjectTimeUnitService projectTimeUnitService,
+      TaskTemplateService taskTemplateService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -125,6 +128,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.projectTimeUnitService = projectTimeUnitService;
+    this.taskTemplateService = taskTemplateService;
   }
 
   @Override
@@ -166,7 +170,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
   @Override
   public ProjectTask create(
-      TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty) {
+      TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty)
+      throws AxelorException {
     ProjectTask task = create(template.getName(), project, template.getAssignedTo());
 
     task.setTaskDate(date.toLocalDate());
@@ -177,6 +182,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       plannedHrs = plannedHrs.multiply(qty);
     }
     task.setTotalPlannedHrs(plannedHrs);
+    taskTemplateService.manageTemplateFields(task, template, project);
 
     return task;
   }
