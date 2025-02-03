@@ -60,6 +60,8 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
               .reduce(BigDecimal.ZERO, BigDecimal::add));
 
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+    } else {
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
   }
 }

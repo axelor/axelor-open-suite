@@ -62,6 +62,8 @@ public class SubSaleOrderLineComputeServiceProductionImpl
       saleOrderLine.setPrice(totalPrice);
       saleOrderLine.setSubTotalCostPrice(totalCostPrice);
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+    } else {
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
   }
 }
