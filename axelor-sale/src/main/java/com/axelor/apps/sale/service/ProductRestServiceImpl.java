@@ -95,11 +95,9 @@ public class ProductRestServiceImpl implements ProductRestService {
     List<PriceResponse> priceList = new ArrayList<>();
     boolean conmpanyInAti = isTaxEnabled(company);
     BigDecimal priceWT =
-        productPriceService.getSaleUnitPrice(
-            company, product, false, partner, currency, conmpanyInAti);
+        productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
-        productPriceService.getSaleUnitPrice(
-            company, product, true, partner, currency, conmpanyInAti);
+        productPriceService.getSaleUnitPrice(company, product, true, partner, currency);
     if (product.getSalesUnit() == null && product.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
