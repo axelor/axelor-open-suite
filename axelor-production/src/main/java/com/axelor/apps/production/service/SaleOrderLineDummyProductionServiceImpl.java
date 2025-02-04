@@ -90,11 +90,17 @@ public class SaleOrderLineDummyProductionServiceImpl
       dummyFields.put(DUMMY_PRODUCTION_STATUS, PRODUCTION_STATUS_FINISHED);
       return dummyFields;
     }
+
     if (statusSelectList.stream()
-        .anyMatch(status -> status == ManufOrderRepository.STATUS_IN_PROGRESS)) {
+            .anyMatch(status -> status == ManufOrderRepository.STATUS_IN_PROGRESS)
+        || statusSelectList.stream()
+            .anyMatch(status -> status == ManufOrderRepository.STATUS_FINISHED)
+        || statusSelectList.stream()
+            .anyMatch(status -> status == ManufOrderRepository.STATUS_STANDBY)) {
       dummyFields.put(DUMMY_PRODUCTION_STATUS, PRODUCTION_STATUS_IN_PROGRESS);
       return dummyFields;
     }
+
     if (statusSelectList.stream()
         .anyMatch(status -> status == ManufOrderRepository.STATUS_PLANNED)) {
       dummyFields.put(DUMMY_PRODUCTION_STATUS, PRODUCTION_STATUS_PLANNED);
