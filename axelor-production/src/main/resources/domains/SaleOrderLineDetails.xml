@@ -22,6 +22,7 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="billOfMaterialLine"
       ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
+    <decimal name="subTotalCostPrice" title="Sub total cost price" precision="20" scale="3"/>
 
     <extra-code>
             <![CDATA[

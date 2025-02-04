@@ -22,8 +22,11 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.studio.db.AppSale;
 import com.axelor.utils.junit.BaseTest;
@@ -73,7 +76,7 @@ class TestSaleOrderDiscountService extends BaseTest {
             mock(SaleOrderLineCreateTaxLineService.class),
             createSaleOrderLineComputeService(appSaleService),
             mock(SaleOrderLinePackService.class),
-            mock(SubSaleOrderLineComputeService.class),
+            createSubSaleOrderLineComputeService(appSaleService),
             appSaleService);
   }
 
@@ -86,12 +89,25 @@ class TestSaleOrderDiscountService extends BaseTest {
         createSaleOrderMarginService(appSaleService),
         currencyService,
         priceListService,
-        mock(SaleOrderLinePackService.class));
+        mock(SaleOrderLinePackService.class),
+        createSaleOrderLineCostPriceComputeService(appSaleService));
   }
 
   protected SaleOrderMarginService createSaleOrderMarginService(AppSaleService appSaleService) {
     return new SaleOrderMarginServiceImpl(
         appSaleService, currencyService, mock(ProductCompanyService.class), currencyScaleService);
+  }
+
+  protected SaleOrderLineCostPriceComputeService createSaleOrderLineCostPriceComputeService(
+      AppSaleService appSaleService) {
+    return new SaleOrderLineCostPriceComputeServiceImpl(
+        appSaleService, mock(ProductCompanyService.class), currencyScaleService);
+  }
+
+  protected SubSaleOrderLineComputeService createSubSaleOrderLineComputeService(
+      AppSaleService appSaleService) {
+    return new SubSaleOrderLineComputeServiceImpl(
+        createSaleOrderLineComputeService(appSaleService), appSaleService);
   }
 
   protected void prepareSaleOrder() {
