@@ -152,7 +152,8 @@ public class PricingServiceImpl implements PricingService {
     }
   }
 
-  protected List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model) {
+  @Override
+  public List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model) {
     Context scriptContext = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
     List<Pricing> filteredPricings = new ArrayList<>();
