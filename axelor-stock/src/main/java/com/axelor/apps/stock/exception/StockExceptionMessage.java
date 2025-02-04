@@ -289,7 +289,7 @@ public final class StockExceptionMessage {
       "Please select at least 2 stock moves" /*)*/;
 
   public static final String STOCK_MOVE_MERGE_ERROR = /*$$(*/
-      "Your merge doesn't respect this/these condition(s):" /*)*/;
+      "Your merge doesn't respect this/these condition(s) : %s" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_COMPANY = /*$$(*/ "Same company" /*)*/;
   public static final String STOCK_MOVE_MERGE_ERROR_TRADING_NAME = /*$$(*/
       "Same trading name" /*)*/;

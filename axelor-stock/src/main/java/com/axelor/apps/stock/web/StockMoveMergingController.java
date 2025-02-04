@@ -32,7 +32,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.helpers.ConditionList;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,11 +50,12 @@ public class StockMoveMergingController {
       }
 
       List<StockMove> stockMoveList = getStockMoveList(request);
-      ConditionList conditionList = stockMoveMergingService.canMerge(stockMoveList);
-      if (conditionList.isNotEmpty()) {
+      List<String> errors = stockMoveMergingService.canMerge(stockMoveList);
+      if (!errors.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            conditionList.format(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR), null));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR),
+            StringHtmlListBuilder.formatMessage(errors));
       }
       if (stockMoveMergingService.checkShipmentValues(stockMoveList)) {
         response.setAlert(I18n.get(StockExceptionMessage.STOCK_MOVE_DIFF_SHIPMENT_FIELDS));

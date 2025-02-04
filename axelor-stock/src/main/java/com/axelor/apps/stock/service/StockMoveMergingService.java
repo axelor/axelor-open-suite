@@ -20,12 +20,11 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.utils.helpers.ConditionList;
 import java.util.List;
 
 public interface StockMoveMergingService {
 
-  public ConditionList canMerge(List<StockMove> stockMoveList);
+  public List<String> canMerge(List<StockMove> stockMoveList);
 
   public StockMove mergeStockMoves(List<StockMove> stockMoveList) throws AxelorException;
 
