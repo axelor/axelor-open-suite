@@ -11,16 +11,20 @@ import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SprintGeneratorServiceImpl implements SprintGeneratorService {
 
@@ -162,6 +166,26 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
     }
 
     return sprintSet;
+  }
+
+  @Override
+  public String getSprintDomain(Project project) {
+    List<Sprint> sprintList = new ArrayList<>();
+    if (Objects.equals(
+        project.getSprintManagementSelect(), ProjectRepository.SPRINT_MANAGEMENT_PROJECT)) {
+      sprintList = project.getSprintList();
+    }
+    if (Objects.equals(
+        project.getSprintManagementSelect(), ProjectRepository.SPRINT_MANAGEMENT_VERSION)) {
+      List<List<Sprint>> sprintListList =
+          project.getRoadmapSet().stream()
+              .map(ProjectVersion::getSprintList)
+              .collect(Collectors.toList());
+      for (List<Sprint> sprints : sprintListList) sprintList.addAll(sprints);
+    }
+    List<Long> ids = sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
+
+    return "self.id in (" + Joiner.on(",").join(ids) + ")";
   }
 
   @Transactional(rollbackOn = Exception.class)

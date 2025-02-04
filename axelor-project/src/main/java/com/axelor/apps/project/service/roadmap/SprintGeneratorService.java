@@ -16,4 +16,6 @@ public interface SprintGeneratorService {
       LocalDate fromDate,
       LocalDate toDate,
       Integer numberDays);
+
+  String getSprintDomain(Project project);
 }

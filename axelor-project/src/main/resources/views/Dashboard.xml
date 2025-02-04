@@ -333,12 +333,21 @@
     onInit="action.sale.chart.set.date.project">
     <search-fields>
       <field name="project" target="com.axelor.apps.project.db.Project" title="Project"
-        type="reference" colSpan="12"/>
+        type="reference" colSpan="12" onChange="action-project-record-empty-sprint"/>
       <field type="date" name="fromDate" title="From Date" required="true" colSpan="3"/>
       <field type="date" name="toDate" title="To Date" required="true" colSpan="3"/>
-      <field type="reference" name="period" title="Allocation period" target="com.axelor.apps.base.db.Period" colSpan="3" />
-      <field type="reference" name="sprint" title="Sprint" target="com.axelor.apps.project.db.Sprint" colSpan="3"/>
+      <field type="reference" name="period" title="Allocation period"
+        target="com.axelor.apps.base.db.Period" colSpan="3"
+        onChange="action.sale.chart.set.date.project"
+        domain="self.year.typeSelect = 4 AND self.toDate &gt; :toDate or self.fromDate &lt; :fromDate "/>
+
+
+      <field type="reference" name="sprint" title="Sprint"
+        target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!project"
+        onSelect="action-project-method-compute-sprint-domain"/>
+
     </search-fields>
+
     <dashlet height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
     <dashlet height="350" action="project-planning-time-dashboard-action" canSearch="true"
       colSpan="12"
@@ -388,4 +397,20 @@
       and
       (self.project=:project OR :project IS NULL)</domain>
   </action-view>
+  <action-record name="action-project-record-empty-sprint"
+    model="com.axelor.apps.project.db.Project">
+    <field name="sprint" expr="null"/>
+  </action-record>
+
+
+  <action-attrs name="action-test">
+    <attribute name="domain"
+      expr="eval: &quot; self.id IN (${:project?.sprintList?.collect{it.id}.join(',')}) &quot; : &quot;self = null&quot; "
+      for="sprint"/>
+  </action-attrs>
+
+  <action-method name="action-project-method-compute-sprint-domain">
+    <call class="com.axelor.apps.project.web.SprintController"
+      method="computeSprintDomainDashboard"/>
+  </action-method>
 </object-views>
