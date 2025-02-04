@@ -42,16 +42,21 @@ public class SaleOrderLineCostPriceComputeProductionServiceImpl
       return super.computeSubTotalCostPrice(saleOrder, saleOrderLine, product);
     }
     BigDecimal costPriceTotal = BigDecimal.ZERO;
-    costPriceTotal =
-        costPriceTotal.add(
-            subSaleOrderLineList.stream()
-                .map(SaleOrderLine::getSubTotalCostPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
-    costPriceTotal =
-        costPriceTotal.add(
-            saleOrderLineDetailsList.stream()
-                .map(SaleOrderLineDetails::getSubTotalCostPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
+    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+      costPriceTotal =
+          costPriceTotal.add(
+              subSaleOrderLineList.stream()
+                  .map(SaleOrderLine::getSubTotalCostPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      costPriceTotal =
+          costPriceTotal.add(
+              saleOrderLineDetailsList.stream()
+                  .map(SaleOrderLineDetails::getSubTotalCostPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+
     saleOrderLine.setSubTotalCostPrice(costPriceTotal.multiply(saleOrderLine.getQty()));
     map.put("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
     return map;
