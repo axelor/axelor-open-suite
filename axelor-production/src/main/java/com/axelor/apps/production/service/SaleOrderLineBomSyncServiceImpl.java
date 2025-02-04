@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncService {
+
   @Override
   public void syncSaleOrderLineBom(SaleOrder saleOrder) {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
@@ -65,18 +66,22 @@ public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncServ
         billOfMaterial.removeBillOfMaterialLineListItem(billOfMaterialLine);
       }
 
-      List<BillOfMaterialLine> solDetailsBomLineToRemove =
-          getSolDetailsBomLineToRemove(saleOrderLine, billOfMaterial);
-      for (BillOfMaterialLine solDetailsBomLine : solDetailsBomLineToRemove) {
-        billOfMaterial.removeBillOfMaterialLineListItem(solDetailsBomLine);
-      }
+      removeSolDetailsBomLine(saleOrderLine.getSaleOrderLineDetailsList(), billOfMaterial);
+    }
+  }
+
+  @Override
+  public void removeSolDetailsBomLine(
+      List<SaleOrderLineDetails> saleOrderLineDetailsList, BillOfMaterial billOfMaterial) {
+    List<BillOfMaterialLine> solDetailsBomLineToRemove =
+        getSolDetailsBomLineToRemove(saleOrderLineDetailsList, billOfMaterial);
+    for (BillOfMaterialLine solDetailsBomLine : solDetailsBomLineToRemove) {
+      billOfMaterial.removeBillOfMaterialLineListItem(solDetailsBomLine);
     }
   }
 
   protected List<BillOfMaterialLine> getSolDetailsBomLineToRemove(
-      SaleOrderLine saleOrderLine, BillOfMaterial billOfMaterial) {
-    List<SaleOrderLineDetails> saleOrderLineDetailsList =
-        saleOrderLine.getSaleOrderLineDetailsList();
+      List<SaleOrderLineDetails> saleOrderLineDetailsList, BillOfMaterial billOfMaterial) {
     Set<BillOfMaterialLine> billOfMaterialLineList =
         billOfMaterial.getBillOfMaterialLineList().stream()
             .filter(

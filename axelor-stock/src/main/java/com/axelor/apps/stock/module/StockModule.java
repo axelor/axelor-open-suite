@@ -102,6 +102,8 @@ import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberCompanyService;
+import com.axelor.apps.stock.service.TrackingNumberCompanyServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
@@ -221,5 +223,6 @@ public class StockModule extends AxelorModule {
         .to(MassStockMoveNeedToPickedProductServiceImpl.class);
     bind(StoredProductService.class).to(StoredProductServiceImpl.class);
     bind(LogisticalFormSequenceService.class).to(LogisticalFormSequenceServiceImpl.class);
+    bind(TrackingNumberCompanyService.class).to(TrackingNumberCompanyServiceImpl.class);
   }
 }
