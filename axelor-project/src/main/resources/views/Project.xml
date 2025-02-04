@@ -294,7 +294,7 @@
         requiredIf="taskStatusManagementSelect == 2"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <panel name="taskStatusManagementPanel" colSpan="12"
-        showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2">
+        showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
         <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
           title="Status to add" onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
           target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
