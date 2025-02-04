@@ -208,6 +208,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public int deleteMultiple(List<? extends Move> moveList) {
     int errorNB = 0;
     if (moveList == null) {
