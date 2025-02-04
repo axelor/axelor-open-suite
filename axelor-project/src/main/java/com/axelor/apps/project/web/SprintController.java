@@ -120,7 +120,8 @@ public class SprintController {
   public void computeSprintDomainDashboard(ActionRequest request, ActionResponse response) {
     Long projectId = Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
     ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    String domain = Beans.get(SprintGeneratorService.class).getSprintDomain(projectRepo.find(projectId));
+    String domain =
+        Beans.get(SprintGeneratorService.class).getSprintDomain(projectRepo.find(projectId));
 
     response.setAttr("sprint", "domain", domain);
   }
