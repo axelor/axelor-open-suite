@@ -94,6 +94,8 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorInitService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorInitServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderLineService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
@@ -171,6 +173,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
@@ -195,12 +199,6 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProduct
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineCalculationComboService;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineCalculationComboServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationService;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeComputationServiceImpl;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeService;
-import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
@@ -254,11 +252,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderMergingService.class).to(SaleOrderMergingServiceImpl.class);
     bind(SaleOrderOnLineChangeService.class).to(SaleOrderOnLineChangeServiceImpl.class);
     bind(SaleOrderVersionService.class).to(SaleOrderVersionServiceImpl.class);
-    bind(SaleOrderLineTreeService.class).to(SaleOrderLineTreeServiceImpl.class);
-    bind(SaleOrderLineTreeComputationService.class)
-        .to(SaleOrderLineTreeComputationServiceImpl.class);
-    bind(SaleOrderLineCalculationComboService.class)
-        .to(SaleOrderLineCalculationComboServiceImpl.class);
     bind(SaleOrderLineCreateTaxLineService.class).to(SaleOrderLineCreateTaxLineServiceImpl.class);
     bind(PricingObserverImpl.class).to(PricingObserverSaleImpl.class);
     bind(PricingGenericServiceImpl.class).to(SalePricingGenericServiceImpl.class);
@@ -324,5 +317,9 @@ public class SaleModule extends AxelorModule {
     bind(ConfiguratorCheckService.class).to(ConfiguratorCheckServiceImpl.class);
     bind(ConfiguratorSaleOrderLineService.class).to(ConfiguratorSaleOrderLineServiceImpl.class);
     bind(ConfiguratorRepository.class).to(ConfiguratorManagementRepository.class);
+    bind(ConfiguratorSaleOrderDuplicateService.class)
+        .to(ConfiguratorSaleOrderDuplicateServiceImpl.class);
+    bind(SaleOrderLineCostPriceComputeService.class)
+        .to(SaleOrderLineCostPriceComputeServiceImpl.class);
   }
 }

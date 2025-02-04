@@ -77,6 +77,8 @@ public interface MoveLineToolService {
 
   boolean isMoveLineTaxAccount(MoveLine moveLine);
 
+  boolean isMoveLineTaxAccountOrNonDeductibleTax(MoveLine moveLine);
+
   void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
 
   BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);

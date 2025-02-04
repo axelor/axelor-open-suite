@@ -222,4 +222,11 @@ public class ProjectController {
       ProjectBatchControllerTool.runBatch(projectBatch, response);
     }
   }
+
+  public void checkSprintOverlap(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    if (Beans.get(SprintService.class).checkSprintOverlap(project)) {
+      response.setError(ProjectExceptionMessage.PROJECT_SPRINTS_OVERLAPPED);
+    }
+  }
 }

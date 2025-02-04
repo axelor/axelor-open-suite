@@ -813,4 +813,9 @@
     <option value="other" order="10000">Other</option>
   </selection>
 
+  <selection name="base.change.shortcut.select">
+    <option value="0">Active company</option>
+    <option value="1">Active trading name</option>
+  </selection>
+
 </object-views>

@@ -41,7 +41,7 @@
 
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
-    onSave="action-project-method-check-resource-availibility" width="large">
+    onSave="action-project-group-on-save" width="large">
     <toolbar>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
         onClick="save,action-project-view-show-planning-panel"
@@ -529,6 +529,11 @@
     <action name="action-project-method-task-status-management-selection-in"/>
   </action-group>
 
+  <action-group name="action-project-group-on-save">
+    <action name="action-project-method-check-resource-availibility"/>
+    <action name="action-project-method-check-sprint-overlap"/>
+  </action-group>
+
   <action-group name="action-project-group-finish-project">
     <action name="action-project-record-status-finish"/>
     <action name="save"/>
@@ -775,6 +780,10 @@
 
   <action-method name="action-project-method-tasks-per-sprint">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewTasksPerSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-check-sprint-overlap">
+    <call class="com.axelor.apps.project.web.ProjectController" method="checkSprintOverlap"/>
   </action-method>
 
   <!-- ACTION VIEW -->

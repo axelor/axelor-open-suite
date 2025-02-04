@@ -8,12 +8,13 @@
     editable="true" extension="true">
     <extend target="//field[@name='sequence']">
       <insert position="before">
-        <hilite if="billOfMaterialLine" color="blue"/>
+        <hilite if="billOfMaterialLine &amp;&amp; saleSupplySelect == 3" color="blue"/>
       </insert>
     </extend>
     <extend target="//field[@name='availableStatus']">
       <insert position="after">
         <field name="billOfMaterialLine" hidden="true"/>
+        <field name="saleSupplySelect" hidden="true"/>
       </insert>
     </extend>
   </grid>
