@@ -339,8 +339,7 @@
       <field type="date" name="toDate" title="To Date" required="true" colSpan="3"
         onChange="action-project-record-empty-sprint-period"/>
       <field type="reference" name="period" title="Allocation period"
-        target="com.axelor.apps.base.db.Period" colSpan="3"
-        onChange="action-chart-set-period-date"
+        target="com.axelor.apps.base.db.Period" colSpan="3" onChange="action-chart-set-period-date"
         domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__ "/>
       <field type="reference" name="sprint" title="Sprint"
         target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!project"
