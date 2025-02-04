@@ -33,7 +33,9 @@
         required="true" canNew="false" onSelect="action-allocation-line-method-set-employee-domain"/>
       <field name="period" grid-view="period-grid" form-view="period-hr-allocation-form"
         required="true" domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
-      <field name="allocated"/>
+      <field name="allocated" hideIf="$initWithPlanningTime"/>
+      <field name="$initWithPlanningTime" title="Init with planning time" type="boolean"
+        showIf="$project.allowAllocatedInit" colSpan="3"/>
       <field name="$plannedTime" colSpan="3" readonly="true" title="Planned time" x-scale="2"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="$leaves" readonly="true" colSpan="3" title="Leaves" x-scale="2"/>
@@ -42,6 +44,7 @@
       <field name="$availableAllocation" readonly="true" colSpan="3" title="Available"
         x-scale="2"/>
       <field name="description" colSpan="12"/>
+      <field name="$project.allowAllocatedInit" hidden="true"/>
       <spacer/>
       <button name="addBtn" title="Add" onClick="action-allocation-line-method-add-line"
         showIf="_projectPopup" readonlyIf="!employee || !period"/>
@@ -59,12 +62,16 @@
         target="com.axelor.apps.base.db.Period" grid-view="period-grid"
         form-view="period-hr-allocation-form" widget="TagSelect" required="true"
         domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
-      <field name="$allocated" title="Allocated" type="decimal" min="0" max="5" x-scale="1"/>
+      <field name="$allocated" title="Allocated" type="decimal" min="0" max="5" x-scale="1"
+        hideIf="$initWithPlanningTime"/>
+      <field name="$initWithPlanningTime" title="Init with planning time"
+        showIf="$project.allowAllocatedInit" type="boolean"/>
       <button name="addMultipleLinesBtn" title="Add lines"
-        onClick="save,action-allocation-line-method-add-multiple-lines"/>
+        onClick="action-allocation-line-method-add-multiple-lines"/>
       <field name="$project" title="Project" type="many-to-one"
         target="com.axelor.apps.project.db.Project" grid-view="project-grid"
         form-view="project-form" hidden="true"/>
+      <field name="$project.allowAllocatedInit" hidden="true"/>
     </panel>
   </form>
 

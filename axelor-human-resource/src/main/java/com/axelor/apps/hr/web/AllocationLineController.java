@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.AllocationLine;
@@ -36,6 +37,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class AllocationLineController {
 
@@ -62,19 +64,26 @@ public class AllocationLineController {
         Beans.get(AllocationLineService.class).getEmployeeDomain(project));
   }
 
-  public void addAllocationLine(ActionRequest request, ActionResponse response) {
+  public void addAllocationLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     AllocationLine allocationLine = request.getContext().asType(AllocationLine.class);
+    boolean initWithPlanningTime =
+        Optional.ofNullable(request.getContext().get("initWithPlanningTime"))
+            .map(it -> ((boolean) it))
+            .orElse(false);
     Beans.get(AllocationLineService.class)
         .createOrUpdateAllocationLine(
             allocationLine.getProject(),
             allocationLine.getEmployee(),
             allocationLine.getPeriod(),
-            allocationLine.getAllocated());
+            allocationLine.getAllocated(),
+            initWithPlanningTime);
     response.setCanClose(true);
   }
 
   @SuppressWarnings("unchecked")
-  public void addAllocationLines(ActionRequest request, ActionResponse response) {
+  public void addAllocationLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Context context = request.getContext();
     if (context.get("project") == null) {
       return;
@@ -104,12 +113,17 @@ public class AllocationLineController {
           Beans.get(PeriodRepository.class).find(Long.parseLong(periodMap.get("id").toString())));
     }
 
+    boolean initWithPlanningTime =
+        Optional.ofNullable(context.get("initWithPlanningTime"))
+            .map(it -> ((boolean) it))
+            .orElse(false);
+
     BigDecimal allocated = BigDecimal.ZERO;
     if (context.get("allocated") != null) {
       allocated = new BigDecimal(context.get("allocated").toString());
     }
     Beans.get(AllocationLineService.class)
-        .addAllocationLines(project, employeeList, periodList, allocated);
+        .addAllocationLines(project, employeeList, periodList, allocated, initWithPlanningTime);
     response.setCanClose(true);
   }
 
