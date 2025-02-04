@@ -47,6 +47,7 @@ import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.ResourceBookingService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -89,6 +90,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected InvoiceRepository invoiceRepository;
   protected UnitConversionForProjectService unitConversionForProjectService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
+  protected ProjectTimeUnitService projectTimeUnitService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -111,7 +113,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
       UnitConversionForProjectService unitConversionForProjectService,
-      SaleOrderStockLocationService saleOrderStockLocationService) {
+      SaleOrderStockLocationService saleOrderStockLocationService,
+      ProjectTimeUnitService projectTimeUnitService) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -128,6 +131,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.invoiceRepository = invoiceRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
@@ -232,7 +236,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
    * @return The project generated.
    */
   @Override
-  public Project generateProject(SaleOrder saleOrder) {
+  public Project generateProject(SaleOrder saleOrder) throws AxelorException {
     Project project = projectRepository.findByName(saleOrder.getFullName() + "_project");
     project =
         project == null
@@ -254,7 +258,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner clientPartner)
+      throws AxelorException {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
 
@@ -273,14 +278,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setIsInvoicingTimesheet(true);
     }
 
-    project.setNumberHoursADay(
-        appBusinessProjectService.getAppBusinessProject().getDefaultHoursADay());
-    project.setProjectTimeUnit(appBusinessProjectService.getAppBusinessProject().getDaysUnit());
+    project.setNumberHoursADay(appBaseService.getDailyWorkHours());
+    project.setProjectTimeUnit(appBaseService.getUnitDays());
     return project;
   }
 
   @Override
-  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) {
+  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent)
+      throws AxelorException {
     return generateProject(
         parent,
         saleOrderLine.getFullName(),
@@ -355,10 +360,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
     BigDecimal totalSpentTime = BigDecimal.ZERO;
 
-    Unit projectUnit = project.getProjectTimeUnit();
+    Unit projectUnit = projectTimeUnitService.getProjectDefaultHoursTimeUnit(project);
 
     for (ProjectTask projectTask : projectTaskList) {
-      Unit projectTaskUnit = projectTask.getTimeUnit();
+      Unit projectTaskUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
+
       if (!projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
         continue;
       }
@@ -834,9 +840,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .domain(domain)
             .param("details-view", "true");
 
-    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
-      builder.add("kanban", "task-per-section-kanban");
-      builder.add("calendar", "project-task-per-section-calendar");
+    if (project.getIsShowKanbanPerCategory() && project.getIsShowCalendarPerCategory()) {
+      builder.add("kanban", "task-per-category-kanban");
+      builder.add("calendar", "project-task-per-category-calendar");
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");

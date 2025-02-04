@@ -19,8 +19,6 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
@@ -30,14 +28,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +45,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
   protected final BillOfMaterialService billOfMaterialService;
+  protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -59,13 +55,15 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.billOfMaterialService = billOfMaterialService;
+    this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
   }
 
   @Override
@@ -84,6 +82,14 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       var saleOrderLine =
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
+
+        if (saleOrderLine.getIsToProduce()) {
+          saleOrderLineDetailsBomService
+              .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+              .stream()
+              .filter(Objects::nonNull)
+              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+        }
         saleOrderLinesList.add(saleOrderLine);
       }
     }
@@ -91,149 +97,5 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     return saleOrderLinesList.stream()
         .sorted(Comparator.comparingInt(SaleOrderLine::getSequence))
         .collect(Collectors.toList());
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine) throws AxelorException {
-    return customizeBomOf(saleOrderLine, 0);
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void updateWithBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException {
-    // Easiest cases where a line has been added or modified.
-    logger.debug("Updating {}", saleOrderLine);
-    var bom = saleOrderLine.getBillOfMaterial();
-    if (saleOrderLine.getSubSaleOrderLineList() != null) {
-      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-        if (subSaleOrderLine
-            .getProduct()
-            .getProductSubTypeSelect()
-            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
-          if (!saleOrderLineBomLineMappingService.isSyncWithBomLine(subSaleOrderLine)) {
-            var bomLine = subSaleOrderLine.getBillOfMaterialLine();
-            // Updating the existing one
-            if (bomLine != null) {
-              logger.debug(
-                  "Updating bomLine {} with subSaleOrderLine {}", bomLine, subSaleOrderLine);
-              bomLine.setQty(subSaleOrderLine.getQty());
-              bomLine.setProduct(subSaleOrderLine.getProduct());
-              bomLine.setUnit(subSaleOrderLine.getUnit());
-              bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
-              bomLine.setPriority(subSaleOrderLine.getSequence() * 10);
-              bom.addBillOfMaterialLineListItem(bomLine);
-            }
-            // Creating a new one
-            else {
-              logger.debug(
-                  "Creating bomLine from subSaleOrderLine {} and adding it to bom {}",
-                  subSaleOrderLine,
-                  bom);
-              bomLine = createBomLineFrom(subSaleOrderLine);
-              logger.debug("Created bomLine {}", bomLine);
-              bom.addBillOfMaterialLineListItem(bomLine);
-              subSaleOrderLine.setBillOfMaterialLine(bomLine);
-              billOfMaterialLineRepository.save(bomLine);
-            }
-          }
-        }
-      }
-    }
-    billOfMaterialRepository.save(bom);
-    logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
-  }
-
-  protected BillOfMaterialLine createBomLineFrom(SaleOrderLine subSaleOrderLine) {
-    return billOfMaterialLineService.createBillOfMaterialLine(
-        subSaleOrderLine.getProduct(),
-        subSaleOrderLine.getBillOfMaterial(),
-        subSaleOrderLine.getQty(),
-        subSaleOrderLine.getUnit(),
-        Optional.ofNullable(subSaleOrderLine.getSequence())
-            .map(seq -> seq * 10)
-            .or(
-                () ->
-                    Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
-                        .map(BillOfMaterialLine::getPriority))
-            .orElse(0),
-        subSaleOrderLine.getProduct().getStockManaged(),
-        Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
-            .map(BillOfMaterialLine::getWasteRate)
-            .orElse(BigDecimal.ZERO));
-  }
-
-  protected BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine, int depth)
-      throws AxelorException {
-    var billOfMaterial = saleOrderLine.getBillOfMaterial();
-    if (billOfMaterial == null) {
-      return null;
-    }
-    BillOfMaterial personalizedBOM =
-        billOfMaterialService.getCustomizedBom(billOfMaterial, depth, false);
-
-    saleOrderLine.setBillOfMaterial(personalizedBOM);
-
-    if (saleOrderLine.getSubSaleOrderLineList() != null) {
-      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-        if (subSaleOrderLine
-            .getProduct()
-            .getProductSubTypeSelect()
-            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
-          var bomLine = createBomLineFrom(subSaleOrderLine);
-          // Relink billOfMaterialLine
-          subSaleOrderLine.setBillOfMaterialLine(bomLine);
-          personalizedBOM.addBillOfMaterialLineListItem(bomLine);
-        }
-      }
-    }
-
-    // Copy components lines
-    billOfMaterial.getBillOfMaterialLineList().stream()
-        .filter(
-            oldBomLine ->
-                !oldBomLine
-                    .getProduct()
-                    .getProductSubTypeSelect()
-                    .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-        .map(oldBomLine -> billOfMaterialLineRepository.copy(oldBomLine, false))
-        .forEach(personalizedBOM::addBillOfMaterialLineListItem);
-
-    return billOfMaterialRepository.save(personalizedBOM);
-  }
-
-  @Override
-  public boolean isUpdated(SaleOrderLine saleOrderLine) {
-
-    if (saleOrderLine.getBillOfMaterial() == null) {
-      return true;
-    }
-
-    var nbBomLinesAccountable =
-        saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream()
-            .map(BillOfMaterialLine::getProduct)
-            .filter(
-                product ->
-                    product
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-            .count();
-
-    var subSaleOrderLineListSize =
-        Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
-            .map(SaleOrderLine::getProduct)
-            .map(Product::getProductSubTypeSelect)
-            .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-            .count();
-
-    return nbBomLinesAccountable == subSaleOrderLineListSize
-        && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
-            .filter(
-                subSaleOrderLine ->
-                    subSaleOrderLine
-                        .getProduct()
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-            .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
   }
 }

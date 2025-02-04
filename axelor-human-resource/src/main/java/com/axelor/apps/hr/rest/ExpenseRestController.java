@@ -25,12 +25,14 @@ import com.axelor.apps.hr.rest.dto.ExpensePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpensePutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseResponse;
+import com.axelor.apps.hr.service.expense.ExpenseCancellationService;
 import com.axelor.apps.hr.service.expense.ExpenseCheckResponseService;
 import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
@@ -173,6 +175,55 @@ public class ExpenseRestController {
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
     Beans.get(ExpenseRefusalService.class)
         .refuseWithReason(expense, requestBody.getGroundForRefusal());
+
+    return ResponseConstructor.build(
+        Response.Status.OK, I18n.get(ITranslation.EXPENSE_UPDATED), new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Cancel an expense",
+      tags = {"Expense"})
+  @Path("/cancel/{expenseId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response cancelExpense(
+      @PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class, expenseId).check();
+
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
+    ExpenseCancellationService expenseCancellationService =
+        Beans.get(ExpenseCancellationService.class);
+
+    expenseCancellationService.cancel(expense);
+
+    try {
+      expenseCancellationService.sendCancellationEmail(expense);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(ITranslation.EXPENSE_UPDATED_NO_MAIL),
+          new ExpenseResponse(expense));
+    }
+
+    return ResponseConstructor.build(
+        Response.Status.OK, I18n.get(ITranslation.EXPENSE_UPDATED), new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Draft an expense",
+      tags = {"Expense"})
+  @Path("/draft/{expenseId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response draftExpense(
+      @PathParam("expenseId") Long expenseId, ExpensePutRequest requestBody) {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Expense.class, expenseId).check();
+
+    Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
+    Beans.get(ExpenseWorkflowService.class).backToDraft(expense);
 
     return ResponseConstructor.build(
         Response.Status.OK, I18n.get(ITranslation.EXPENSE_UPDATED), new ExpenseResponse(expense));

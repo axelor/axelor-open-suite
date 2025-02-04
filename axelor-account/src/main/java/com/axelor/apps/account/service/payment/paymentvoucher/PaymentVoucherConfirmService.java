@@ -59,6 +59,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -101,6 +102,7 @@ public class PaymentVoucherConfirmService {
   protected CurrencyScaleService currencyScaleService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected ForeignExchangeGapToolService foreignExchangeGapToolService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -124,7 +126,8 @@ public class PaymentVoucherConfirmService {
       FinancialDiscountService financialDiscountService,
       CurrencyScaleService currencyScaleService,
       InvoicePaymentRepository invoicePaymentRepository,
-      ForeignExchangeGapToolService foreignExchangeGapToolService) {
+      ForeignExchangeGapToolService foreignExchangeGapToolService,
+      AppBaseService appBaseService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -147,6 +150,7 @@ public class PaymentVoucherConfirmService {
     this.currencyScaleService = currencyScaleService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.foreignExchangeGapToolService = foreignExchangeGapToolService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -542,7 +546,9 @@ public class PaymentVoucherConfirmService {
       BigDecimal currencyRate =
           ObjectUtils.isEmpty(move.getMoveLineList())
               ? currencyService.getCurrencyConversionRate(
-                  paymentVoucher.getCurrency(), company.getCurrency())
+                  paymentVoucher.getCurrency(),
+                  company.getCurrency(),
+                  appBaseService.getTodayDate(company))
               : move.getMoveLineList().get(0).getCurrencyRate();
       // cancelling the moveLine (excess payment) by creating the balance of all the
       // payments

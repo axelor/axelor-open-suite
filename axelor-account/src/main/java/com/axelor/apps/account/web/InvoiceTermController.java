@@ -26,10 +26,12 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -413,5 +415,15 @@ public class InvoiceTermController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void setDueDate(ActionRequest request, ActionResponse response) throws AxelorException {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+    InvoiceTermDateComputeService invoiceTermDateComputeService =
+        Beans.get(InvoiceTermDateComputeService.class);
+
+    invoiceTermDateComputeService.resetDueDate(invoiceTerm);
+    response.setValues(invoiceTerm);
   }
 }

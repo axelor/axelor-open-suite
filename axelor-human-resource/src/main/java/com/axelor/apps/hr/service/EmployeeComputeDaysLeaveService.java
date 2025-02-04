@@ -47,7 +47,7 @@ public abstract class EmployeeComputeDaysLeaveService {
         .subtract(computeDaysLeave(employee, fromDate, toDate));
   }
 
-  protected BigDecimal computeDaysLeave(Employee employee, LocalDate fromDate, LocalDate toDate)
+  public BigDecimal computeDaysLeave(Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
     List<LeaveRequest> leaveRequestList =
         getEmployeeDaysLeave(employee, fromDate, toDate).stream()

@@ -10,7 +10,7 @@
       target="//panel[@name='stepUserPanel']/panel[@name='stepOverviewPanel']/field[@name='noHelp']">
       <insert position="after">
         <field name="activeProject"
-          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null)"
+          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"
           if-module="axelor-project" if="__config__.app.isApp('project')"/>
         <field name="isIncludeSubProjects" showIf="activeProject"/>
       </insert>
@@ -20,7 +20,7 @@
       target="//panel[@name='mainUserPanel']/panel[@name='overviewPanel']/field[@name='noHelp']">
       <insert position="after">
         <field name="activeProject"
-          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null)"
+          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"
           if-module="axelor-project" if="__config__.app.isApp('project')"/>
         <field name="isIncludeSubProjects" showIf="activeProject"/>
       </insert>
@@ -34,7 +34,7 @@
     <extend target="//field[@name='change']">
       <insert position="after">
         <field name="activeProject"
-          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null)"
+          domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"
           if-module="axelor-project" if="__config__.app.isApp('project')"/>
         <field name="isIncludeSubProjects" showIf="activeProject"/>
       </insert>

@@ -19,6 +19,13 @@
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
     </extend>
+    <extend target="//field[@name='shipmentMode']">
+      <insert position="after">
+        <button name="selectPricingLineBtn"
+          onClick="save,action-suppplychain-view-pricing-list" title="Select carrier" colSpan="6"
+          showIf="!$readonly() &amp;&amp; shipmentMode"/>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
@@ -359,6 +366,41 @@
   <action-method name="action-sale-order-method-update-timetable-amounts">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="updateTimetableAmounts"/>
+  </action-method>
+
+  <!-- Shipment process -->
+  <action-view name="action-suppplychain-view-pricing-list"
+    title="Freight carrier pricings" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="freight-carrier-pricings-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_shipmentMode" expr="eval: shipmentMode"/>
+  </action-view>
+
+  <form title="Freight carrier pricings" name="freight-carrier-pricings-wizard-form"
+    model="com.axelor.utils.db.Wizard"
+    onNew="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set">
+    <panel name="main">
+      <field name="$freightCarrierPricingsSet" type="many-to-many" showTitle="false"
+        target="com.axelor.apps.stock.db.FreightCarrierMode"
+        form-view="freight-carrier-pricings-form" grid-view="freight-carrier-pricings-grid"
+        colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false"/>
+      <button name="selectBtn" title="Select"
+        onClick="action-supplychain-sale-order-method-select-freight-carrier-pricings" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-attrs
+    name="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set">
+    <attribute for="$freightCarrierPricingsSet" name="value"
+      expr="eval: __repo__(FreightCarrierMode).all().filter('self.shipmentMode.id = ?1', _shipmentMode?.id).fetch().toSet()"/>
+  </action-attrs>
+
+  <action-method
+    name="action-supplychain-sale-order-method-select-freight-carrier-pricings">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="selectFreightCarrierPricings"/>
   </action-method>
 
 </object-views>

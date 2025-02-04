@@ -19,10 +19,13 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
-import java.util.Map;
+import java.time.LocalDateTime;
 
 public interface ProjectPlanningTimeComputeService {
-  Map<String, Object> computePlannedTimeValues(ProjectPlanningTime projectPlanningTime)
+  void computePlannedTimeValues(ProjectPlanningTime projectPlanningTime) throws AxelorException;
+
+  LocalDateTime computeEndDateTime(ProjectPlanningTime projectPlanningTime, Project project)
       throws AxelorException;
 }

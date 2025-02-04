@@ -121,9 +121,9 @@
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
         <field name="taxLineSet" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-          grid-view="tax-line-grid" form-view="tax-line-form"
-          domain="self.endDate = null or self.endDate &gt; :__date__" widget="TagSelect"/>
+          onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
+          form-view="tax-line-form"
+          onSelect="action-invoice-line-method-compute-tax-line-set-on-select" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
@@ -271,8 +271,8 @@
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="priceDiscounted" hidden="true"/>
         <field name="taxLineSet" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-          grid-view="tax-line-grid" form-view="tax-line-form" widget="TagSelect"/>
+          onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
+          form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
@@ -385,6 +385,13 @@
     <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+  </action-group>
+
+  <action-group name="action-invoice-line-group-taxline-onchange">
+    <action name="action-invoice-line-method-recompute-tax"/>
+    <action name="action-invoice-line-method-convert-tax"/>
+    <action name="action-invoice-line-method-compute"/>
+    <action name="action-invoice-line-method-compute-analytic-distribution"/>
   </action-group>
 
   <!-- ACTION RECORDS -->
@@ -544,6 +551,14 @@
 
   <action-method name="action-invoice-line-method-check-qty">
     <call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="checkQty"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-recompute-tax">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="recomputeTax"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-compute-tax-line-set-on-select">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="onSelectTaxLineSet"/>
   </action-method>
 
   <!-- ACTION ATTRS -->

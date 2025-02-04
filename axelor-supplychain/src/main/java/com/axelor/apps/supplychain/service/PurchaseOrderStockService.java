@@ -70,4 +70,6 @@ public interface PurchaseOrderStockService {
    */
   public String getPurchaseOrderLineListForAProduct(
       Long productId, Long companyId, Long stockLocationId);
+
+  public List<PurchaseOrderLine> updatePurchaseOrderLinesStockLocation(PurchaseOrder purchaseOrder);
 }

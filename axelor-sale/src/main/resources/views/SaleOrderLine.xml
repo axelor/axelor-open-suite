@@ -10,13 +10,18 @@
     <hilite color="warning" if="deliveryState == 2"/>
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
-    <button name="treeIconButton" showIf="hasTree" onClick="refresh" readonlyIf="true"
-      icon="list-ul"
-      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="configuratorEditBtn"
+      onClick="save,action-sale-order-line-view-regenerate-line"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="save,action-sale-order-line-method-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -54,20 +59,33 @@
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
-    <field name="hasTree" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="configurator" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
+    onNew="action-sale-order-line-attrs-set-compute-with-sol">
+
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <button name="configuratorEditBtn"
+      onClick="save,action-sale-order-line-view-regenerate-line"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="save,action-sale-order-line-method-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
       readonlyIf="!product || typeSelect != 0 || $isParentTitleLine"/>
+    <field name="productTypeIconSelect" title="" widget="ImageSelect" width="45"
+      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+      readonly="true"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"
       readonlyIf="$isParentTitleLine"/>
     <field name="product" canEdit="false" x-image-field="picture"
@@ -87,7 +105,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"
       readonlyIf="$isParentTitleLine"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || subSaleOrderLineList.length &gt; 0 || $isParentTitleLine"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || $isParentTitleLine || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
       onChange="action-sale-order-line-method-onchange-price" hidden="true"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="inTaxPrice"
@@ -123,6 +141,8 @@
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="$isParentTitleLine" hidden="true"/>
+    <field name="$computeWithSOL" hidden="true"/>
+    <field name="configurator" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -278,7 +298,7 @@
             onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || subSaleOrderLineList.length &gt; 0"
+            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
             onChange="action-sale-order-line-method-onchange-price" hidden="true"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
@@ -308,6 +328,7 @@
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
           <field name="discountsNeedReview" hidden="true"/>
           <field name="$qtyValid" hidden="true" colSpan="12"/>
+          <field name="$computeWithSOL" hidden="true"/>
         </panel>
 
         <panel name="taxPanel" colSpan="12">
@@ -405,6 +426,13 @@
         <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery">
+        <field name="deliveryAddress" canNew="true"
+          onChange="action-sale-order-line-record-compute-delivery-address-str"
+          onSelect="action-sale-order-line-attrs-domain-delivery-address" form-view="address-form"
+          grid-view="address-grid"/>
+        <field name="deliveryAddressStr" height="5">
+          <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
+        </field>
         <field name="desiredDeliveryDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedShippingDate"
           onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
@@ -749,4 +777,37 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="addToCart"/>
   </action-method>
 
+  <action-attrs name="action-sale-order-line-attrs-set-compute-with-sol">
+    <attribute for="$computeWithSOL" name="value"
+      expr="eval: _config__.app.getApp('sale')?.getIsSOLPriceTotalOfSubLines()"/>
+  </action-attrs>
+
+  <action-record name="action-sale-order-line-record-compute-delivery-address-str"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="deliveryAddressStr"
+      expr="call: com.axelor.apps.base.service.address.AddressService:computeAddressStr(deliveryAddress)"/>
+  </action-record>
+
+  <action-attrs name="action-sale-order-line-attrs-domain-delivery-address">
+    <attribute name="domain" for="deliveryAddress"
+      expr="eval: &quot;self.id IN (${(__parent__?.clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
+  </action-attrs>
+
+
+  <action-view name="action-sale-order-line-view-regenerate-line"
+    title="Regenerate line" model="com.axelor.apps.sale.db.Configurator">
+    <view type="form" name="regenerate-configurator-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_saleOrderLineId" expr="eval: id"/>
+    <context name="_showRecord" expr="eval: configurator.id"/>
+  </action-view>
+
+  <action-method name="action-sale-order-line-method-configurator-duplicate">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="configuratorDuplicateSaleOrderLine"/>
+  </action-method>
 </object-views>

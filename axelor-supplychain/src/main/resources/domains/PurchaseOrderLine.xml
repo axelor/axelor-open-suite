@@ -33,6 +33,9 @@
     <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Stock location"/>
+
     <extra-code>
   		<![CDATA[
 

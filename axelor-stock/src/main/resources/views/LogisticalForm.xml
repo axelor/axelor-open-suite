@@ -107,9 +107,13 @@
             target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid"
             form-view="stock-move-form" colSpan="4"
             onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"/>
-          <button name="addStockMoveBtn" title="Add"
-            onClick="action-group-logistical-form-add-stock-move" colSpan="2"
+          <button name="addAllStockMoveBtn" title="Add all the move"
+            onClick="action-group-logistical-form-add-all-stock-move" colSpan="2"
             readonlyIf="!$stockMove"/>
+          <button name="addConcernedStockMoveBtn" title="Add concerned move lines"
+            onClick="action-group-logistical-form-add-concerned-stock-move" colSpan="2"
+            if="__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"
+            readonlyIf="!stockLocation || !$stockMove"/>
         </panel>
         <panel-related name="logisticalFormLineList" field="logisticalFormLineList"
           grid-view="logistical-form-line-grid" form-view="logistical-form-line-form" colSpan="12"
@@ -171,14 +175,25 @@
     <field name="$stockMove" expr="eval: null"/>
   </action-record>
 
-  <action-group name="action-group-logistical-form-add-stock-move">
+  <action-group name="action-group-logistical-form-add-all-stock-move">
     <action name="save"/>
-    <action name="action-logistical-form-method-add-stock-move"/>
+    <action name="action-logistical-form-method-add-all-stock-move"/>
     <action name="save"/>
   </action-group>
 
-  <action-method name="action-logistical-form-method-add-stock-move">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addStockMove"/>
+  <action-group name="action-group-logistical-form-add-concerned-stock-move">
+    <action name="save"/>
+    <action name="action-logistical-form-method-add-concerned-stock-move"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-logistical-form-method-add-all-stock-move">
+    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addAllStockMove"/>
+  </action-method>
+
+  <action-method name="action-logistical-form-method-add-concerned-stock-move">
+    <call class="com.axelor.apps.stock.web.LogisticalFormController"
+      method="addConcernedStockMove"/>
   </action-method>
 
   <action-group name="action-group-logistical-form-save">

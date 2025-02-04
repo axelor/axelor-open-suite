@@ -114,6 +114,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     Product product = inventoryLine.getProduct();
 
     if (product != null) {
+      inventoryLine.setPrice(BigDecimal.ZERO);
       StockLocationLine stockLocationLine =
           stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 
@@ -226,12 +227,22 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateInventoryLine(
-      InventoryLine inventoryLine, BigDecimal realQty, String description) throws AxelorException {
+      InventoryLine inventoryLine,
+      BigDecimal realQty,
+      String description,
+      StockLocation stockLocation)
+      throws AxelorException {
     inventoryLine.setRealQty(realQty);
     if (description != null) {
       inventoryLine.setDescription(description);
     }
-    this.compute(inventoryLine, inventoryLine.getInventory());
+    if (stockLocation != null) {
+      inventoryLine.setStockLocation(stockLocation);
+    }
+
+    Inventory inventory = inventoryLine.getInventory();
+    updateInventoryLine(inventoryLine, inventory);
+    this.compute(inventoryLine, inventory);
     inventoryLineRepository.save(inventoryLine);
   }
 
@@ -242,20 +253,25 @@ public class InventoryLineServiceImpl implements InventoryLineService {
       Product product,
       TrackingNumber trackingNumber,
       String rack,
-      BigDecimal realQty)
+      BigDecimal realQty,
+      StockLocation stockLocation)
       throws AxelorException {
+
+    StockLocation finalStockLocation =
+        stockLocation != null ? stockLocation : inventory.getStockLocation();
+
     InventoryLine inventoryLine =
         createInventoryLine(
             inventory,
             product,
-            getCurrentQty(inventory.getStockLocation(), product),
+            getCurrentQty(finalStockLocation, product),
             rack,
             trackingNumber,
             null,
             null,
-            inventory.getStockLocation(),
+            finalStockLocation,
             null);
-    updateInventoryLine(inventoryLine, realQty, null);
+    updateInventoryLine(inventoryLine, realQty, null, null);
     return inventoryLine;
   }
 

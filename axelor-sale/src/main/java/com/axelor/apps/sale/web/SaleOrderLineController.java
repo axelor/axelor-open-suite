@@ -28,8 +28,10 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.cart.CartProductService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
@@ -356,6 +358,30 @@ public class SaleOrderLineController {
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void configuratorDuplicateSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine =
+        Optional.ofNullable(context.asType(SaleOrderLine.class))
+            .map(solCtx -> Beans.get(SaleOrderLineRepository.class).find(solCtx.getId()))
+            .orElse(null);
+
+    try {
+      if (saleOrderLine != null) {
+        Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+            .duplicateSaleOrderLine(saleOrderLine);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      var sol = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+          .simpleDuplicate(sol, sol.getSaleOrder());
+      response.setInfo(I18n.get(SaleExceptionMessage.ERROR_DURING_DUPLICATION_SALE_ORDER_LINE));
+      response.setReload(true);
     }
   }
 }

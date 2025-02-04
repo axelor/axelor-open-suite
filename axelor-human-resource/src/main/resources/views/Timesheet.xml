@@ -111,10 +111,9 @@
           onChange="action-hr-record-empty-user"/>
         <field name="employee" colSpan="5" form-view="employee-form"
           onChange="action-timesheet-group-employee-onchange"
+          readonlyIf="statusSelect != 1 || (timesheetLineList &amp;&amp; timesheetLineList.length != 0)"
           onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
           canEdit="false" canView="false"/>
-        <field name="timeLoggingPreferenceSelect" readonly="true" hidden="true"/>
-        <field name="employee" hidden="true"/>
         <field if-module="axelor-business-production"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="employee.timesheetImputationSelect" hidden="true"/>
@@ -124,6 +123,7 @@
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
+        <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="5"/>
         <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"
           readonly="true"/>
         <field name="employee.user" hidden="true"/>
@@ -182,6 +182,22 @@
       <button name="generateLinesBtn" title="Generate lines"
         onClick="com.axelor.apps.hr.web.timesheet.TimesheetController:generateLines,action-timesheet-attrs-generate-lines-panel-hidden-true,save,action-timesheet-attrs-refresh-editor"/>
     </panel>
+
+    <panel name="projectPlanningTimePanel" title="Project planning time on the duration"
+      collapseIf="true">
+      <panel-related field="$projectPlanningTimeList" showTitle="false"
+        target="com.axelor.apps.project.db.ProjectPlanningTime" type="one-to-many" canRemove="false"
+        canNew="false" canView="false" grid-view="project-planning-timesheet-grid"
+        form-view="resume-project-task-form" height="200%" colSpan="12"/>
+      <spacer colSpan="3"/>
+      <field name="$generationDate" type="date" title="Date" colSpan="3"
+        onChange="action-timesheet-validate-generation-date-onchange"/>
+      <button name="generateLinesBtn" title="Generate timesheet lines"
+        onClick="action-timesheet-group-generate-lines-using-project-task" colSpan="3"/>
+      <button name="clearProjectPlanningTimesDurationBtn"
+        title="Clear project planning times duration"
+        onClick="action-timesheet-method-clear-project-planning-times-duration" colSpan="3"/>
+    </panel>
     <panel name="linesPanel">
       <panel-dashlet name="timesheetLineEditorPanel" colSpan="12"
         action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
@@ -217,9 +233,14 @@
       <field name="$dailyLimit" hidden="true" type="boolean"/>
       <field name="$enableTimesheetManufOrder" hidden="true" type="boolean"/>
     </panel>
-    <panel name="totalsPanel" title="Totals on period">
-      <field name="periodTotal" readonly="true"/>
-      <field name="$periodTotalConvert" type="decimal" readonly="true" hidden="true"/>
+    <panel name="totalsPanel" title="Totals on period" showIf="id">
+      <field name="periodTotal" readonly="true" colSpan="3"/>
+      <field name="$periodTotalConvert" type="decimal" readonly="true" hidden="true"
+        colSpan="3"/>
+      <field name="$periodTotalLeavesAndHolidays" type="decimal" x-dirty="false"
+        readonly="true" hidden="true" colSpan="3"/>
+      <field name="$periodTotalDueTimeEntries" type="decimal" x-dirty="false" readonly="true"
+        hidden="true" colSpan="3"/>
     </panel>
     <panel-dashlet name="totalHoursPerDayPanel" title="Total Hours per Day"
       hidden="true" showIf="id &amp;&amp; employee.timesheetImputationSelect != 2"
@@ -262,8 +283,22 @@
   </form>
 
   <action-group name="action-timesheet-group-employee-onchange">
-    <action name="action-timesheet-method-update-time-logging-preference"/>
+    <action name="action-timesheet-record-default"/>
+    <action name="action-timesheet-method-set-show-activity"/>
+    <action name="action-timesheet-attrs-enable-timesheet-manuforder"
+      if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
+    <action name="action-timesheet-group-buttons"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
+    <action name="action-timesheet-record-from-period-date"/>
+    <action name="action-timesheet-record-to-date" if="fromDate != null"/>
+    <action name="action-timesheet-prefill-lines"
+      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
+    <action name="action-timesheet-attrs-title-project"/>
+    <action name="action-timesheet-attrs-from-date-on-new"/>
+    <action name="action-timesheet-attrs-panels"/>
+    <action name="action-validate-check-user-employee"/>
+    <action name="action-timesheet-method-timesheet-compute-period-total"/>
+    <action name="action-timesheet-method-init-project-planning"/>
   </action-group>
 
   <action-group name="action-timesheet-group-onsave">
@@ -283,6 +318,7 @@
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-timesheet-attrs-refresh-editor"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
+    <action name="action-timesheet-method-init-project-planning"/>
   </action-group>
 
   <action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -323,20 +359,8 @@
   </action-group>
 
   <action-group name="action-group-timesheet-onnew">
-    <action name="action-timesheet-record-default"/>
-    <action name="action-timesheet-method-set-show-activity"/>
-    <action name="action-timesheet-attrs-enable-timesheet-manuforder"
-      if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
-    <action name="action-timesheet-group-buttons"/>
-    <action name="action-timesheet-attrs-set-visible-duration-title"/>
-    <action name="action-timesheet-record-from-period-date"/>
-    <action name="action-timesheet-record-to-date" if="fromDate != null"/>
-    <action name="action-timesheet-prefill-lines"
-      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
-    <action name="action-timesheet-attrs-title-project"/>
-    <action name="action-timesheet-attrs-from-date-on-new"/>
-    <action name="action-timesheet-attrs-panels"/>
-    <action name="action-validate-check-user-employee"/>
+    <action name="action-timesheet-record-default-employee"/>
+    <action name="action-timesheet-group-employee-onchange"/>
   </action-group>
 
   <action-group name="action-timesheet-group-to-date-onchange">
@@ -346,6 +370,13 @@
     <action name="action-timesheet-prefill-lines"
       if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
+    <action name="action-timesheet-method-init-project-planning"/>
+  </action-group>
+
+  <action-group name="action-timesheet-group-generate-lines-using-project-task">
+    <action name="action-timesheet-method-generate-timesheet-lines"/>
+    <action name="save"/>
+    <action name="action-timesheet-group-onload"/>
   </action-group>
 
   <action-method name="action-timesheet-prefill-lines">
@@ -357,12 +388,6 @@
       method="timesheetPeriodTotalController"/>
   </action-method>
 
-  <action-method name="action-timesheet-method-update-time-logging-preference"
-    model="com.axelor.apps.hr.db.Timesheet">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
-      method="updateTimeLoggingPreference"/>
-  </action-method>
-
   <action-method name="action-timesheet-method-generate-lines-from-expected-planning">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="generateLinesFromExpectedPlanning"/>
@@ -370,11 +395,15 @@
 
   <action-record name="action-timesheet-record-default"
     model="com.axelor.apps.hr.db.Timesheet">
-    <field name="employee" expr="eval:__user__.employee"/>
     <field name="timeLoggingPreferenceSelect"
-      expr="eval: __user__?.employee?.timeLoggingPreferenceSelect"/>
+      expr="eval: employee?.timeLoggingPreferenceSelect ?: __config__.app.getApp('base')?.getTimeLoggingPreferenceSelect()"/>
     <field name="company"
-      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+      expr="eval: employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+  </action-record>
+
+  <action-record name="action-timesheet-record-default-employee"
+    model="com.axelor.apps.hr.db.Timesheet">
+    <field name="employee" expr="eval:__user__.employee"/>
   </action-record>
 
   <action-record name="action-hr-timesheet-record-empty-product"
@@ -390,8 +419,10 @@
 
   <action-record name="action-timesheet-record-to-date"
     model="com.axelor.apps.hr.db.Timesheet">
-    <field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)"
-      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 1"/>
+    <field name="toDate"
+      expr="eval:(fromDate.dayOfWeek == java.time.DayOfWeek.SUNDAY ? fromDate.plusWeeks(1) : fromDate).with(java.time.DayOfWeek.SUNDAY)"
+      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;
+          __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 1"/>
     <field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())"
       if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 2"/>
   </action-record>
@@ -493,7 +524,7 @@
 
   <action-attrs name="action-timesheet-attrs-from-date-on-new">
     <attribute name="readonly" for="fromDate"
-      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
+      expr="eval: __repo__(Timesheet).all().filter('self.employee.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', employee?.id, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-from-date">
@@ -524,7 +555,7 @@
   <action-record name="action-timesheet-record-from-period-date"
     model="com.axelor.apps.hr.db.Timesheet">
     <field name="fromDate"
-      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
+      expr="eval: (__repo__(Timesheet).all().filter('self.employee.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', employee?.id, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)) ?: __config__.date.with(java.time.DayOfWeek.MONDAY)"/>
   </action-record>
 
   <action-record name="action-timesheet-null-fromDate"
@@ -591,6 +622,28 @@
   <action-method name="action-timesheet-method-remove-after-to-date-timesheetlines">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="removeAfterToDateTimesheetLines"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-init-project-planning">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="initProjectPlanningTime"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-generate-timesheet-lines">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="generateTimesheetLine"/>
+  </action-method>
+
+
+  <action-method name="action-timesheet-validate-generation-date-onchange"
+    model="com.axelor.apps.hr.db.Timesheet">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="validateGenerationDate"/>
+  </action-method>
+
+  <action-method name="action-timesheet-method-clear-project-planning-times-duration">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="clearProjectPlanningTimesDuration"/>
   </action-method>
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">

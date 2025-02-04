@@ -46,6 +46,8 @@ import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.LanguageBaseRepository;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationBaseRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -65,6 +67,9 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
+import com.axelor.apps.base.quickmenu.TradingNameUpdateQuickMenuCreator;
+import com.axelor.apps.base.rest.PartnerRestService;
+import com.axelor.apps.base.rest.PartnerRestServiceImpl;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -205,6 +210,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -232,6 +245,8 @@ import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateService;
@@ -349,6 +364,7 @@ public class BaseModule extends AxelorModule {
 
     addQuickMenu(InstanceInfoQuickMenuCreator.class);
     addQuickMenu(ActiveCompanyUpdateQuickMenuCreator.class);
+    addQuickMenu(TradingNameUpdateQuickMenuCreator.class);
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
@@ -507,5 +523,12 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardRepository.class)
         .to(DataSharingProductWizardManagementRepository.class);
     bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(ConnectorMapperCreateService.class).to(ConnectorMapperCreateServiceImpl.class);
+    bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
+    bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
+    bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
+    bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
+    bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
   }
 }
