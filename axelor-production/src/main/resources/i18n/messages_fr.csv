@@ -107,6 +107,8 @@
 "Cannot make BOM obsolete that is not applicable","Impossible de mettre une nomenclature non applicable au statut obsolète",,
 "Cannot make prod process applicable that is not validated","Impossible de passer une gamme non validée au statut applicable",,
 "Cannot make prod process obsolete that is not applicable","Impossible de passer une gamme non applicable au statut obsolète",,
+"Cannot regenerate because the bill of material is in use in production (one manuf order exist)","La nomenclature ne peut pas être regénérée car elle est utilisée en production (au moins un ordre de fabrication l'utilise).",,
+"Cannot regenerate because the product is already in production (one manuf order exist)","Le produit ne peut pas être regénéré car il est utilisé en production (au moins un ordre de fabrication l'utilise)",,
 "Cannot validate BOM that is not draft","Impossible de valider une nomenclature qui n'est pas brouillon",,
 "Cannot validate prod process that is not draft",,,
 "Capacity","Capacité",,

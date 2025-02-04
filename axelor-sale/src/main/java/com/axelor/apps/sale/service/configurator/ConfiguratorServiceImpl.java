@@ -70,6 +70,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -244,6 +245,23 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
+  public void regenerateProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
+    Objects.requireNonNull(configurator);
+    Objects.requireNonNull(configurator.getProduct());
+
+    fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    configurator.setProduct(product);
+    product.setConfigurator(configurator);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void fillProductFields(
       Configurator configurator,
       Product product,
@@ -371,7 +389,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       var product = configurator.getProduct();
       // Editing the product will automatically regenerate lines and remove old line
-      fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
+      regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
       configuratorSaleOrderLineService.regenerateSaleOrderLine(
           configurator, product, saleOrderLine, saleOrder);
       saleOrderComputeService.computeSaleOrder(saleOrder);
