@@ -20,6 +20,7 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -27,6 +28,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.service.TrackingNumberCompanyService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.db.JPA;
@@ -44,6 +46,7 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   protected ProductCompanyService productCompanyService;
   protected StockLocationLineFetchService stockLocationLineFetchService;
   protected TrackingNumberService trackingNumberService;
+  protected final TrackingNumberCompanyService trackingNumberCompanyService;
 
   @Inject
   public TrackingNumberManagementRepository(
@@ -51,12 +54,14 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       BarcodeGeneratorService barcodeGeneratorService,
       ProductCompanyService productCompanyService,
       StockLocationLineFetchService stockLocationLineFetchService,
-      TrackingNumberService trackingNumberService) {
+      TrackingNumberService trackingNumberService,
+      TrackingNumberCompanyService trackingNumberCompanyService) {
     this.appStockService = appStockService;
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.productCompanyService = productCompanyService;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.trackingNumberService = trackingNumberService;
+    this.trackingNumberCompanyService = trackingNumberCompanyService;
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
@@ -87,6 +92,12 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
         json.put(
             "$availableQty",
             stockLocationLineFetchService.getTrackingNumberAvailableQty(trackingNumber));
+        Company company = trackingNumberCompanyService.getCompany(trackingNumber).orElse(null);
+        json.put(
+            "productTrackingNumberConfiguration",
+            productCompanyService.get(
+                trackingNumber.getProduct(), "trackingNumberConfiguration", company));
+
       } else {
         json.put("$availableQty", BigDecimal.ZERO);
       }
