@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.google.inject.Inject;
@@ -15,18 +16,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsService {
-  protected ProductCompanyService productCompanyService;
-  protected AppSaleService appSaleService;
-  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected final ProductCompanyService productCompanyService;
+  protected final AppSaleService appSaleService;
+  protected final SaleOrderLineProductService saleOrderLineProductService;
+  protected final MarginComputeService marginComputeService;
 
   @Inject
   public SaleOrderLineDetailsServiceImpl(
       ProductCompanyService productCompanyService,
       AppSaleService appSaleService,
-      SaleOrderLineProductService saleOrderLineProductService) {
+      SaleOrderLineProductService saleOrderLineProductService,
+      MarginComputeService marginComputeService) {
     this.productCompanyService = productCompanyService;
     this.appSaleService = appSaleService;
     this.saleOrderLineProductService = saleOrderLineProductService;
+    this.marginComputeService = marginComputeService;
   }
 
   @Override
@@ -39,21 +43,45 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
       return lineMap;
     }
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
+    BigDecimal costPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
     BigDecimal totalPrice =
         price
             .multiply(saleOrderLineDetails.getQty())
             .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    BigDecimal totalCostPrice =
+        costPrice
+            .multiply(saleOrderLineDetails.getQty())
+            .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
+    setLineInfo(saleOrderLineDetails, price, totalPrice, totalCostPrice, product);
+    setMapInfo(saleOrderLineDetails, saleOrder, lineMap);
+    return lineMap;
+  }
+
+  protected void setLineInfo(
+      SaleOrderLineDetails saleOrderLineDetails,
+      BigDecimal price,
+      BigDecimal totalPrice,
+      BigDecimal totalCostPrice,
+      Product product) {
     saleOrderLineDetails.setPrice(price);
     saleOrderLineDetails.setTotalPrice(totalPrice);
+    saleOrderLineDetails.setSubTotalCostPrice(totalCostPrice);
     saleOrderLineDetails.setTitle(product.getName());
     saleOrderLineDetails.setUnit(saleOrderLineProductService.getSaleUnit(product));
+  }
 
+  protected void setMapInfo(
+      SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder, Map<String, Object> lineMap)
+      throws AxelorException {
+    lineMap.putAll(
+        marginComputeService.getComputedMarginInfo(
+            saleOrder, saleOrderLineDetails, saleOrderLineDetails.getTotalPrice()));
     lineMap.put("price", saleOrderLineDetails.getPrice());
     lineMap.put("totalPrice", saleOrderLineDetails.getTotalPrice());
     lineMap.put("title", saleOrderLineDetails.getTitle());
     lineMap.put("unit", saleOrderLineDetails.getUnit());
-    return lineMap;
+    lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
   }
 
   @Override

@@ -30,7 +30,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -49,7 +49,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   protected TaxService taxService;
   protected CurrencyScaleService currencyScaleService;
   protected ProductCompanyService productCompanyService;
-  protected SaleOrderMarginService saleOrderMarginService;
+  protected MarginComputeService marginComputeService;
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
   protected SaleOrderLinePackService saleOrderLinePackService;
@@ -60,7 +60,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
       TaxService taxService,
       CurrencyScaleService currencyScaleService,
       ProductCompanyService productCompanyService,
-      SaleOrderMarginService saleOrderMarginService,
+      MarginComputeService marginComputeService,
       CurrencyService currencyService,
       PriceListService priceListService,
       SaleOrderLinePackService saleOrderLinePackService,
@@ -68,7 +68,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     this.taxService = taxService;
     this.currencyScaleService = currencyScaleService;
     this.productCompanyService = productCompanyService;
-    this.saleOrderMarginService = saleOrderMarginService;
+    this.marginComputeService = marginComputeService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.saleOrderLinePackService = saleOrderLinePackService;
@@ -143,7 +143,9 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
 
-    map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
+    map.putAll(
+        marginComputeService.getComputedMarginInfo(
+            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal()));
 
     return map;
   }
