@@ -615,8 +615,6 @@ public final class AccountExceptionMessage {
   public static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
 
-  public static final String CFONB_EXPORT_2 = /*$$(*/
-      "%s : Error detected during CFONB file's writing : %s" /*)*/;
   public static final String CFONB_EXPORT_3 = /*$$(*/
       "%s : You must configure a Sort Code for the RIB %s of third-payer %s" /*)*/;
   public static final String CFONB_EXPORT_4 = /*$$(*/
