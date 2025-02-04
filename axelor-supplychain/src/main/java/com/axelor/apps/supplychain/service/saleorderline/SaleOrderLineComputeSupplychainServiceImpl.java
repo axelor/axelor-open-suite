@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
@@ -57,6 +58,7 @@ public class SaleOrderLineComputeSupplychainServiceImpl extends SaleOrderLineCom
       CurrencyService currencyService,
       PriceListService priceListService,
       SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService,
       AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
       AppAccountService appAccountService,
@@ -69,7 +71,8 @@ public class SaleOrderLineComputeSupplychainServiceImpl extends SaleOrderLineCom
         saleOrderMarginService,
         currencyService,
         priceListService,
-        saleOrderLinePackService);
+        saleOrderLinePackService,
+        saleOrderLineCostPriceComputeService);
     this.appBaseService = appBaseService;
     this.appSupplychainService = appSupplychainService;
     this.appAccountService = appAccountService;
