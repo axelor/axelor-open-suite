@@ -102,17 +102,17 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 
   @Override
   public BigDecimal getSaleUnitPrice(
-          Company company,
-          Product product,
-          Set<TaxLine> taxLineSet,
-          boolean resultInAti,
-          LocalDate localDate,
-          Currency toCurrency)
-          throws AxelorException {
+      Company company,
+      Product product,
+      Set<TaxLine> taxLineSet,
+      boolean resultInAti,
+      LocalDate localDate,
+      Currency toCurrency)
+      throws AxelorException {
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
     Currency currency = (Currency) productCompanyService.get(product, "saleCurrency", company);
     return getConvertedPrice(
-            company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
+        company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
   }
 
   @Override
