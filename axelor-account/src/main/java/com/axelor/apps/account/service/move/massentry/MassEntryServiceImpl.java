@@ -102,7 +102,6 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
           inputLine.setCutOffStartDate(moveLine.getCutOffStartDate());
           inputLine.setCutOffEndDate(moveLine.getCutOffEndDate());
-          inputLine.setDeliveryDate(moveLine.getDeliveryDate());
           inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
           inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           moveLineMassEntryRecordService.setAnalytics(inputLine, moveLine);
