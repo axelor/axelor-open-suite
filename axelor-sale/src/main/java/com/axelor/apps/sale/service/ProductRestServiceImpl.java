@@ -51,34 +51,40 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   protected AppSaleService appSaleService;
   protected CompanyService companyService;
+
   protected PartnerRepository partnerRepository;
+  protected TaxService taxService;
   protected UserService userService;
+  protected ProductRestService productRestService;
   protected AppBaseService appBaseService;
-  protected UnitConversionService unitConversionService;
   protected ProductPriceService productPriceService;
+  protected UnitConversionService unitConversionService;
 
   @Inject
   public ProductRestServiceImpl(
-      AppSaleService appSaleService,
-      CompanyService companyService,
-      PartnerRepository partnerRepository,
-      UserService userService,
-      AppBaseService appBaseService,
-      UnitConversionService unitConversionService,
-      ProductPriceService productPriceService) {
+          AppSaleService appSaleService,
+          CompanyService companyService,
+          PartnerRepository partnerRepository,
+          UserService userService,
+          ProductRestService productRestService,
+          AppBaseService appBaseService,
+          ProductPriceService productPriceService,
+          UnitConversionService unitConversionService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
     this.partnerRepository = partnerRepository;
+    this.productRestService = productRestService;
     this.appBaseService = appBaseService;
-    this.unitConversionService = unitConversionService;
     this.productPriceService = productPriceService;
+    this.unitConversionService = unitConversionService;
   }
 
   protected List<PriceResponse> fetchProductPrice(
       Product product, Partner partner, Company company, Currency currency, Unit unit)
       throws AxelorException {
     List<PriceResponse> priceList = new ArrayList<>();
+
     BigDecimal priceWT =
         productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
