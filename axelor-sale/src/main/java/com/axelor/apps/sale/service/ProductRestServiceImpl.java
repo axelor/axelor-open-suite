@@ -30,7 +30,6 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.rest.dto.CurrencyResponse;
@@ -52,14 +51,11 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   protected AppSaleService appSaleService;
   protected CompanyService companyService;
-
   protected PartnerRepository partnerRepository;
-  protected TaxService taxService;
   protected UserService userService;
-  protected ProductRestService productRestService;
   protected AppBaseService appBaseService;
-  protected ProductPriceService productPriceService;
   protected UnitConversionService unitConversionService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public ProductRestServiceImpl(
@@ -67,25 +63,22 @@ public class ProductRestServiceImpl implements ProductRestService {
       CompanyService companyService,
       PartnerRepository partnerRepository,
       UserService userService,
-      ProductRestService productRestService,
       AppBaseService appBaseService,
-      ProductPriceService productPriceService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      ProductPriceService productPriceService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
     this.partnerRepository = partnerRepository;
-    this.productRestService = productRestService;
     this.appBaseService = appBaseService;
-    this.productPriceService = productPriceService;
     this.unitConversionService = unitConversionService;
+    this.productPriceService = productPriceService;
   }
 
   protected List<PriceResponse> fetchProductPrice(
       Product product, Partner partner, Company company, Currency currency, Unit unit)
       throws AxelorException {
     List<PriceResponse> priceList = new ArrayList<>();
-
     BigDecimal priceWT =
         productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
@@ -137,32 +130,20 @@ public class ProductRestServiceImpl implements ProductRestService {
       throws AxelorException {
     List<ProductResponse> productResponses = new ArrayList<>();
     for (ProductResquest productAndUnit : unitsProducts) {
-      Product product = null;
-      try {
-        product = productAndUnit.fetchProduct();
-        Unit unit = productAndUnit.fetchUnit();
-        CurrencyResponse currencyResponse =
-            createCurrencyResponse(product, partner, company, currency);
-        if (company == null) {
-          company =
-              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
-        }
-        List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
-        if (unit == null) {
-          unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
-        }
-        UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
-        productResponses.add(
-            new ProductResponse(product.getId(), prices, currencyResponse, unitResponse));
-      } catch (Exception e) {
-        long productId;
-        if (product == null) {
-          productId = productAndUnit.getProductId();
-        } else {
-          productId = product.getId();
-        }
-        productResponses.add(new ProductResponse(productId, e.getMessage()));
+      Unit unit = productAndUnit.fetchUnit();
+      Product product = productAndUnit.fetchProduct();
+      CurrencyResponse currencyResponse =
+          createCurrencyResponse(product, partner, company, currency);
+      if (company == null) {
+        company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       }
+      List<PriceResponse> prices = fetchProductPrice(product, partner, company, currency, unit);
+      if (unit == null) {
+        unit = product.getSalesUnit() != null ? product.getSalesUnit() : product.getUnit();
+      }
+      UnitResponse unitResponse = new UnitResponse(unit.getName(), unit.getLabelToPrinting());
+      productResponses.add(
+          new ProductResponse(product.getId(), prices, currencyResponse, unitResponse));
     }
     return productResponses;
   }
