@@ -1,3 +1,3 @@
 ---
-title: "Purchase order line: the advanced filter saved is not displayed unless we refresh the whole page."
+title: "Purchase order line: fixed advanced filter not displayed unless the whole page is refreshed."
 module: axelor-purchase
