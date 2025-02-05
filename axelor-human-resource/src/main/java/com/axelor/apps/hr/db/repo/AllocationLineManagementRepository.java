@@ -19,6 +19,10 @@ public class AllocationLineManagementRepository extends AllocationLineRepository
     AllocationLine allocationLine = find((Long) json.get("id"));
     Period period = allocationLine.getPeriod();
     Employee employee = allocationLine.getEmployee();
+
+    if (period == null || employee == null) {
+      return super.populate(json, context);
+    }
     BigDecimal leaves = BigDecimal.ZERO;
     BigDecimal alreadyAllocated = BigDecimal.ZERO;
     BigDecimal availableAllocation = BigDecimal.ZERO;
@@ -26,15 +30,17 @@ public class AllocationLineManagementRepository extends AllocationLineRepository
     AllocationLineComputeService allocationLineComputeService =
         Beans.get(AllocationLineComputeService.class);
     try {
-      leaves = allocationLineComputeService.getLeaves(period, employee);
+      leaves =
+          allocationLineComputeService.getLeaves(
+              period.getFromDate(), period.getToDate(), employee);
       alreadyAllocated =
           allocationLineComputeService.getAlreadyAllocated(allocationLine, period, employee);
       availableAllocation =
           allocationLineComputeService.getAvailableAllocation(
-              period, employee, leaves, alreadyAllocated);
+              period.getFromDate(), period.getToDate(), employee, leaves, alreadyAllocated);
       plannedTime =
           allocationLineComputeService.computePlannedTime(
-              period, employee, allocationLine.getProject());
+              period.getFromDate(), period.getToDate(), employee, allocationLine.getProject());
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
