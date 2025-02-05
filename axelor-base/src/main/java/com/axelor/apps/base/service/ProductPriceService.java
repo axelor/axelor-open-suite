@@ -29,13 +29,15 @@ import java.time.LocalDate;
 import java.util.Set;
 
 public interface ProductPriceService {
+  BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException;
+
+  BigDecimal getSaleUnitPrice(
+          Company company, Product product, boolean inAti, Partner partner, Currency currency)
+          throws AxelorException;
 
   BigDecimal getSaleUnitPrice(Company company, Product product, boolean inAti, Partner partner)
       throws AxelorException;
 
-  BigDecimal getSaleUnitPrice(
-      Company company, Product product, boolean inAti, Partner partner, Currency currency)
-      throws AxelorException;
 
   BigDecimal getSaleUnitPrice(
       Company company,

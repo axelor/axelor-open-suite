@@ -64,18 +64,8 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   }
 
   @Override
-  public BigDecimal getSaleUnitPrice(
-      Company company,
-      Product product,
-      Set<TaxLine> taxLineSet,
-      boolean resultInAti,
-      LocalDate localDate,
-      Currency toCurrency)
-      throws AxelorException {
-    BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
-    Currency currency = (Currency) productCompanyService.get(product, "saleCurrency", company);
-    return getConvertedPrice(
-        company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
+  public BigDecimal getSaleUnitPrice(Company company, Product product) throws AxelorException {
+    return getSaleUnitPrice(company, product, product.getInAti(), null);
   }
 
   @Override
@@ -103,13 +93,26 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     }
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(todayDate, product, company, fiscalPosition, false);
-    if (partner == null) {
-      return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
-    }
-    BigDecimal price = getSaleUnitPrice(company, product, taxLineSet, false, todayDate, toCurrency);
+
+    BigDecimal price = getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
 
     return productPriceListService.applyPriceList(
         product, partner, company, currency, price, inAti);
+  }
+
+  @Override
+  public BigDecimal getSaleUnitPrice(
+          Company company,
+          Product product,
+          Set<TaxLine> taxLineSet,
+          boolean resultInAti,
+          LocalDate localDate,
+          Currency toCurrency)
+          throws AxelorException {
+    BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
+    Currency currency = (Currency) productCompanyService.get(product, "saleCurrency", company);
+    return getConvertedPrice(
+            company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
   }
 
   @Override

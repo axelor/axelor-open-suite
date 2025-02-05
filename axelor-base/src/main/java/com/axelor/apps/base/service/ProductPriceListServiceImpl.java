@@ -49,9 +49,13 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
       Partner partner,
       Company company,
       Currency currency,
-      BigDecimal exTaxPrice,
+      BigDecimal price,
       boolean inAti)
       throws AxelorException {
+
+    if (partner == null) {
+      return price;
+    }
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(
             appBaseService.getTodayDate(company),
@@ -62,9 +66,9 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
     BigDecimal inTaxPrice =
         inAti
             ? taxService.convertUnitPrice(
-                false, taxLineSet, exTaxPrice, appBaseService.getNbDecimalDigitForUnitPrice())
-            : exTaxPrice;
-    Map<String, Object> discountMap = fillDiscount(company, exTaxPrice, partner, product, inAti);
+                false, taxLineSet, price, appBaseService.getNbDecimalDigitForUnitPrice())
+            : price;
+    Map<String, Object> discountMap = fillDiscount(company, price, partner, product, inAti);
     return priceListService.computeDiscount(
         inTaxPrice,
         (Integer) discountMap.get("discountTypeSelect"),
