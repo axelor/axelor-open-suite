@@ -63,45 +63,41 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
             company,
             partner.getFiscalPosition(),
             false);
-    BigDecimal inTaxPrice =
-        inAti
-            ? taxService.convertUnitPrice(
-                false, taxLineSet, price, appBaseService.getNbDecimalDigitForUnitPrice())
-            : price;
-    Map<String, Object> discountMap = fillDiscount(company, price, partner, product, inAti);
-    return priceListService.computeDiscount(
-        inTaxPrice,
-        (Integer) discountMap.get("discountTypeSelect"),
-        (BigDecimal) discountMap.get("discountAmount"));
+
+    if (!product.getInAti().equals(inAti)) {
+      price =
+          taxService.convertUnitPrice(
+              inAti,
+              taxLineSet,
+              price,
+              appBaseService.getNbDecimalDigitForUnitPrice());
+    }
+    Map<String, Object> discountMap = fillDiscount(price, partner, product);
+
+    price =
+        priceListService.computeDiscount(
+            price,
+            (Integer) discountMap.get("discountTypeSelect"),
+            (BigDecimal) discountMap.get("discountAmount"));
+
+    if (!product.getInAti().equals(inAti)) {
+      price =
+          taxService.convertUnitPrice(
+              product.getInAti(),
+              taxLineSet,
+              price,
+              appBaseService.getNbDecimalDigitForUnitPrice());
+    }
+    return price;
   }
 
-  public Map<String, Object> fillDiscount(
-      Company company, BigDecimal price, Partner partner, Product product, Boolean inAti)
-      throws AxelorException {
+  protected Map<String, Object> fillDiscount(BigDecimal price, Partner partner, Product product) {
     int discountTypeSelect;
     BigDecimal discountAmount;
     Map<String, Object> discounts = getDiscountsFromPriceLists(partner, price, product);
-    Set<TaxLine> taxLineSet =
-        accountManagementService.getTaxLineSet(
-            appBaseService.getTodayDate(company),
-            product,
-            company,
-            partner.getFiscalPosition(),
-            false);
     Map<String, Object> discounMap = new HashMap<>();
     if (MapUtils.isNotEmpty(discounts)) {
-      if (!product.getInAti().equals(inAti)
-          && (Integer) discounts.get("discountTypeSelect")
-              != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
-        discountAmount =
-            taxService.convertUnitPrice(
-                product.getInAti(),
-                taxLineSet,
-                (BigDecimal) discounts.get("discountAmount"),
-                appBaseService.getNbDecimalDigitForUnitPrice());
-      } else {
-        discountAmount = (BigDecimal) discounts.get("discountAmount");
-      }
+      discountAmount = (BigDecimal) discounts.get("discountAmount");
       discountTypeSelect = (Integer) discounts.get("discountTypeSelect");
     } else {
       discountAmount = BigDecimal.ZERO;
@@ -113,7 +109,7 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
     return discounMap;
   }
 
-  public Map<String, Object> getDiscountsFromPriceLists(
+  protected Map<String, Object> getDiscountsFromPriceLists(
       Partner partner, BigDecimal price, Product product) {
 
     Map<String, Object> discounts = new HashMap<>();
