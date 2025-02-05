@@ -67,10 +67,7 @@ public class ProductPriceListServiceImpl implements ProductPriceListService {
     if (!product.getInAti().equals(inAti)) {
       price =
           taxService.convertUnitPrice(
-              inAti,
-              taxLineSet,
-              price,
-              appBaseService.getNbDecimalDigitForUnitPrice());
+              inAti, taxLineSet, price, appBaseService.getNbDecimalDigitForUnitPrice());
     }
     Map<String, Object> discountMap = fillDiscount(price, partner, product);
 
