@@ -26,8 +26,7 @@
       <spacer/>
       <field name="projectTaskStatusSet" widget="TagSelect"
         requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
-        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory" readonly="true"
-        onChange="action-category-group-task-status-onchange,action-project-task-category-method-validate-progress"/>
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory" readonly="true"/>
       <field name="completedTaskStatus"
         requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         form-view="task-status-form" grid-view="task-status-grid"
@@ -38,15 +37,13 @@
         <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
           title="Status to add" onSelect="action-category-attrs-status-to-add-domain" colSpan="3"
           target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
-        <button name="addStatusBtn"
-          onClick="action-category-attrs-add-task-status,action-category-method-manage-completed-task-status"
+        <button name="addStatusBtn" onClick="action-category-group-add-status"
           title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
         <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
           title="Status to remove" onSelect="action-category-attrs-status-to-remove-domain"
           colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
-        <button name="removeStatusBtn"
-          onClick="save, action-category-method-remove-task-status" title="Remove status"
-          colSpan="3" showIf="$statusToRemoveSet.length &gt; 0"/>
+        <button name="removeStatusBtn" onClick="action-category-group-remove-status"
+          title="Remove status" colSpan="3" showIf="$statusToRemoveSet.length &gt; 0"/>
       </panel>
       <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
         form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
@@ -67,6 +64,20 @@
   <action-group name="action-category-group-task-status-onchange">
     <action name="action-project-task-category-method-manage-completed-task-status"/>
     <action name="action-category-method-fill-progress-by-category"/>
+    <action name="action-project-task-category-method-validate-progress"/>
+  </action-group>
+
+  <action-group name="action-category-group-add-status">
+    <action name="action-category-attrs-add-task-status"/>
+    <action name="action-category-method-manage-completed-task-status"/>
+    <action name="action-category-group-task-status-onchange"/>
+  </action-group>
+
+  <action-group name="action-category-group-remove-status">
+    <action name="save"/>
+    <action name="action-category-method-remove-task-status"/>
+    <action name="action-category-group-task-status-onchange"/>
+    <action name="save"/>
   </action-group>
 
   <action-attrs
