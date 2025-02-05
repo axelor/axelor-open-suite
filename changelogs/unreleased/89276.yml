@@ -1,2 +1,4 @@
 title: "Product: Calculated the price based on the partner's price list in APIs "
 module: axelor-sale
+developer: |
+  Added a new argument `ProductPriceListService` in `ProductPriceServiceImpl.java` constructor.
