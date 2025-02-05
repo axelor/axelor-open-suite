@@ -183,6 +183,9 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
               .collect(Collectors.toList());
       for (List<Sprint> sprints : sprintListList) sprintList.addAll(sprints);
     }
+    if (sprintList.isEmpty()) {
+      return "self.id=0";
+    }
     List<Long> ids = sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
 
     return "self.id in (" + Joiner.on(",").join(ids) + ")";

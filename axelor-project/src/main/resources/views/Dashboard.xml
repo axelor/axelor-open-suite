@@ -343,6 +343,7 @@
         domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__ "/>
       <field type="reference" name="sprint" title="Sprint"
         target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!project"
+        onChange="action-chart-set-sprint-date"
         onSelect="action-project-method-compute-sprint-domain"/>
 
     </search-fields>
@@ -410,8 +411,14 @@
     name="action-chart-set-period-date">
     <field name="fromDate" expr="eval:__repo__(Period).find(period.id).fromDate "/>
     <field name="toDate" expr="eval: __repo__(Period).find(period.id).toDate "/>
+    <field name="sprint" expr="eval: null"/>
   </action-record>
-
+  <action-record model="com.axelor.apps.project.db.Sprint"
+    name="action-chart-set-sprint-date">
+    <field name="fromDate" expr="eval:__repo__(Sprint).find(sprint.id).fromDate "/>
+    <field name="toDate" expr="eval: __repo__(Sprint).find(sprint.id).toDate "/>
+    <field name="period" expr="eval: null"/>
+  </action-record>
   <action-method name="action-project-method-compute-sprint-domain">
     <call class="com.axelor.apps.project.web.SprintController"
       method="computeSprintDomainDashboard"/>
