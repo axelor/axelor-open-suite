@@ -34,16 +34,16 @@ public interface ProductPriceService {
       throws AxelorException;
 
   BigDecimal getSaleUnitPrice(
+      Company company, Product product, boolean inAti, Partner partner, Currency currency)
+      throws AxelorException;
+
+  BigDecimal getSaleUnitPrice(
       Company company,
       Product product,
       Set<TaxLine> taxLineSet,
       boolean resultInAti,
       LocalDate localDate,
       Currency toCurrency)
-      throws AxelorException;
-
-  BigDecimal getSaleUnitPrice(
-      Company company, Product product, boolean inAti, Partner partner, Currency currency)
       throws AxelorException;
 
   BigDecimal getPurchaseUnitPrice(

@@ -30,11 +30,7 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.sale.db.SaleConfig;
-import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.rest.dto.CurrencyResponse;
 import com.axelor.apps.sale.rest.dto.PriceResponse;
@@ -42,7 +38,6 @@ import com.axelor.apps.sale.rest.dto.ProductResponse;
 import com.axelor.apps.sale.rest.dto.ProductResquest;
 import com.axelor.apps.sale.rest.dto.UnitResponse;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -57,13 +52,10 @@ public class ProductRestServiceImpl implements ProductRestService {
   protected AppSaleService appSaleService;
   protected CompanyService companyService;
   protected PartnerRepository partnerRepository;
-  protected TaxService taxService;
   protected UserService userService;
   protected AppBaseService appBaseService;
   protected UnitConversionService unitConversionService;
   protected ProductPriceService productPriceService;
-  protected AccountManagementService accountManagementService;
-  protected SaleConfigService saleConfigService;
 
   @Inject
   public ProductRestServiceImpl(
@@ -73,10 +65,7 @@ public class ProductRestServiceImpl implements ProductRestService {
       UserService userService,
       AppBaseService appBaseService,
       UnitConversionService unitConversionService,
-      ProductPriceService productPriceService,
-      AccountManagementService accountManagementService,
-      TaxService taxService,
-      SaleConfigService saleConfigService) {
+      ProductPriceService productPriceService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
@@ -84,16 +73,12 @@ public class ProductRestServiceImpl implements ProductRestService {
     this.appBaseService = appBaseService;
     this.unitConversionService = unitConversionService;
     this.productPriceService = productPriceService;
-    this.accountManagementService = accountManagementService;
-    this.taxService = taxService;
-    this.saleConfigService = saleConfigService;
   }
 
   protected List<PriceResponse> fetchProductPrice(
       Product product, Partner partner, Company company, Currency currency, Unit unit)
       throws AxelorException {
     List<PriceResponse> priceList = new ArrayList<>();
-    boolean conmpanyInAti = isTaxEnabled(company);
     BigDecimal priceWT =
         productPriceService.getSaleUnitPrice(company, product, false, partner, currency);
     BigDecimal priceATI =
@@ -161,18 +146,5 @@ public class ProductRestServiceImpl implements ProductRestService {
           new ProductResponse(product.getId(), prices, currencyResponse, unitResponse));
     }
     return productResponses;
-  }
-
-  boolean isTaxEnabled(Company company) throws AxelorException {
-    boolean companyInAti = false;
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
-    Company defaultCompany = companyService.getDefaultCompany(null);
-    if (defaultCompany != null) {
-      int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
-      companyInAti =
-          saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
-              || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
-    }
-    return companyInAti;
   }
 }
