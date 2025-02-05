@@ -11,12 +11,13 @@ import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Joiner;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -177,18 +178,13 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
     }
     if (Objects.equals(
         project.getSprintManagementSelect(), ProjectRepository.SPRINT_MANAGEMENT_VERSION)) {
-      List<List<Sprint>> sprintListList =
+      sprintList =
           project.getRoadmapSet().stream()
               .map(ProjectVersion::getSprintList)
+              .flatMap(Collection::stream)
               .collect(Collectors.toList());
-      for (List<Sprint> sprints : sprintListList) sprintList.addAll(sprints);
     }
-    if (sprintList.isEmpty()) {
-      return "self.id=0";
-    }
-    List<Long> ids = sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
-
-    return "self.id in (" + Joiner.on(",").join(ids) + ")";
+    return String.format("self.id in (%s)", StringHelper.getIdListString(sprintList));
   }
 
   @Transactional(rollbackOn = Exception.class)
