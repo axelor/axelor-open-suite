@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,4 +41,7 @@ public final class BusinessProductionExceptionMessage {
 
   public static final String TIMESHEET_MANUF_ORDER_NOT_ENABLED = /*$$(*/
       "Timesheet on manuf order is not enabled." /*)*/;
+
+  public static final String SALE_ORDER_EDIT_SO_LINK_TO_PROJECT_ERROR = /*$$(*/
+      "You can not edit a confirmed sale order linked to a project." /*)*/;
 }

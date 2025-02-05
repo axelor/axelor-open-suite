@@ -65,10 +65,10 @@
     <date name="fromDate"/>
 
 
-    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="discountAmount" title="Discount amount" precision="30" scale="20"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
-    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="30" scale="20"/>
 
     <decimal name="initialUnitPrice" title="Initial unit price" nullable="true"
       precision="20" scale="10"/>

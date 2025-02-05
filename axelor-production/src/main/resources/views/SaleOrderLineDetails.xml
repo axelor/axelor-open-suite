@@ -5,7 +5,8 @@
 
   <grid name="sale-order-line-details-grid" title="Sale order lines details"
     model="com.axelor.apps.production.db.SaleOrderLineDetails">
-    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"/>
+    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
+      widget="ImageSelect" title=""/>
     <field name="product" form-view="product-form" grid-view="product-grid"
       onChange="action-sale-order-line-details-method-product-onchange" showIf="!$readonly()"
       readonlyIf="typeSelect != 1"/>
@@ -25,7 +26,8 @@
 
   <grid name="sale-order-line-details-readonly-grid" title="Sale order lines details"
     model="com.axelor.apps.production.db.SaleOrderLineDetails">
-    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"/>
+    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
+      widget="ImageSelect"/>
     <field name="title"/>
     <field name="qty" min="0"
       onChange="action-sale-order-line-details-attrs-compute-total-price"
@@ -41,27 +43,32 @@
     model="com.axelor.apps.production.db.SaleOrderLineDetails"
     onNew="action-sale-order-line-details-group-onnew"
     onLoad="action-sale-order-line-details-group-onload">
-    <panel name="mainPanel" colSpan="12">
-      <field name="typeSelect" colSpan="6"
-        onChange="action-sale-order-line-details-group-type-onchange"/>
-      <field name="title" colSpan="6"/>
-      <field name="product" form-view="product-form" grid-view="product-grid"
-        onChange="action-sale-order-line-details-method-product-onchange" colSpan="6"
-        showIf="typeSelect == 1"/>
-      <field name="unit" colSpan="6" showIf="typeSelect == 1"/>
-      <field name="workCenter" colSpan="6"
-        onChange="action-sale-order-line-details-attrs-work-center-onchange"
-        showIf="typeSelect == 2"/>
-      <spacer colSpan="6"/>
-      <field name="qty" min="0"
-        onChange="action-sale-order-line-details-attrs-compute-total-price" colSpan="4"
-        showIf="typeSelect &amp;&amp; typeSelect == 1"/>
-      <spacer colSpan="8"/>
-      <field name="price" colSpan="6"
-        onChange="action-sale-order-line-details-attrs-compute-total-price"/>
-      <field name="totalPrice" colSpan="6"/>
-      <field name="description" colSpan="12"/>
-    </panel>
+    <panel-tabs name="mainPanelTabs" colSpan="12">
+      <panel name="mainPanel" title="Information">
+        <field name="typeSelect" colSpan="6"
+          onChange="action-sale-order-line-details-group-type-onchange"/>
+        <field name="title" colSpan="6"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"
+          onChange="action-sale-order-line-details-method-product-onchange" colSpan="6"
+          showIf="typeSelect == 1"/>
+        <field name="unit" colSpan="6" showIf="typeSelect == 1"/>
+        <field name="workCenter" colSpan="6"
+          onChange="action-sale-order-line-details-attrs-work-center-onchange"
+          showIf="typeSelect == 2"/>
+        <spacer colSpan="6"/>
+        <field name="qty" min="0"
+          onChange="action-sale-order-line-details-attrs-compute-total-price" colSpan="4"
+          showIf="typeSelect &amp;&amp; typeSelect == 1"/>
+        <spacer colSpan="8"/>
+        <field name="price" colSpan="6"
+          onChange="action-sale-order-line-details-attrs-compute-total-price"/>
+        <field name="totalPrice" colSpan="6"/>
+        <field name="description" colSpan="12"/>
+      </panel>
+      <panel name="marginPanel" title="Margin">
+        <field name="subTotalCostPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+      </panel>
+    </panel-tabs>
   </form>
 
   <action-group name="action-sale-order-line-details-group-onnew">

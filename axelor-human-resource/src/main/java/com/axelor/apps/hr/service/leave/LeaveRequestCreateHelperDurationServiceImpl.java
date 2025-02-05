@@ -1,8 +1,5 @@
 package com.axelor.apps.hr.service.leave;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +8,8 @@ public class LeaveRequestCreateHelperDurationServiceImpl
     implements LeaveRequestCreateHelperDurationService {
 
   @Override
-  public void checkDuration(BigDecimal duration, BigDecimal totalDuration) throws AxelorException {
-    if (totalDuration.compareTo(duration) > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("You exceeded the available duration"));
-    }
+  public boolean durationIsExceeded(BigDecimal duration, BigDecimal totalDuration) {
+    return totalDuration.compareTo(duration) > 0;
   }
 
   @Override

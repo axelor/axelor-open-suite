@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -51,6 +53,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
   protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService;
 
   @Inject
   public SaleOrderLineComputeServiceImpl(
@@ -60,7 +63,8 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
       SaleOrderMarginService saleOrderMarginService,
       CurrencyService currencyService,
       PriceListService priceListService,
-      SaleOrderLinePackService saleOrderLinePackService) {
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService) {
     this.taxService = taxService;
     this.currencyScaleService = currencyScaleService;
     this.productCompanyService = productCompanyService;
@@ -68,6 +72,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.saleOrderLinePackService = saleOrderLinePackService;
+    this.saleOrderLineCostPriceComputeService = saleOrderLineCostPriceComputeService;
   }
 
   @Override
@@ -88,7 +93,6 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine, saleOrder.getInAti());
     BigDecimal taxRate = BigDecimal.ZERO;
-    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (CollectionUtils.isNotEmpty(saleOrderLine.getTaxLineSet())) {
       taxRate = taxService.getTotalTaxRate(saleOrderLine.getTaxLineSet());
@@ -122,37 +126,61 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
               RoundingMode.HALF_UP);
     }
 
-    if (saleOrderLine.getProduct() != null
-        && ((BigDecimal)
-                    productCompanyService.get(
-                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                .compareTo(BigDecimal.ZERO)
-            != 0) {
-      subTotalCostPrice =
-          currencyScaleService.getCompanyScaledValue(
-              saleOrder,
-              ((BigDecimal)
-                      productCompanyService.get(
-                          saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                  .multiply(saleOrderLine.getQty()));
-    }
+    Product product = saleOrderLine.getProduct();
+    map.putAll(
+        saleOrderLineCostPriceComputeService.computeSubTotalCostPrice(
+            saleOrder, saleOrderLine, product));
+    map.putAll(setProductIconType(saleOrderLine, product));
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
     saleOrderLine.setExTaxTotal(exTaxTotal);
     saleOrderLine.setPriceDiscounted(priceDiscounted);
     saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
-    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
     map.put("inTaxTotal", inTaxTotal);
     map.put("exTaxTotal", exTaxTotal);
     map.put("priceDiscounted", priceDiscounted);
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
-    map.put("subTotalCostPrice", subTotalCostPrice);
 
     map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
 
     return map;
+  }
+
+  protected Map<String, Object> setProductIconType(SaleOrderLine saleOrderLine, Product product) {
+    Map<String, Object> map = new HashMap<>();
+    String iconTypeSelect = getIconTypeSelect(product);
+
+    if (!iconTypeSelect.isEmpty()) {
+      saleOrderLine.setProductTypeIconSelect(iconTypeSelect);
+      map.put("productTypeIconSelect", iconTypeSelect);
+    }
+    return map;
+  }
+
+  protected String getIconTypeSelect(Product product) {
+    if (product != null) {
+      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())) {
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SERVICE;
+      } else {
+        return getIconTypeSelect(product.getProductSubTypeSelect());
+      }
+    }
+    return "";
+  }
+
+  protected String getIconTypeSelect(int productSubTypeSelect) {
+    switch (productSubTypeSelect) {
+      case ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_FINISHED_PRODUCT;
+      case ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SEMI_FINISH_PRODUCT;
+      case ProductRepository.PRODUCT_SUB_TYPE_COMPONENT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_COMPONENT;
+      default:
+        return "";
+    }
   }
 
   protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+
+  <grid name="project-batch-grid" title="Project batches"
+    model="com.axelor.apps.project.db.ProjectBatch">
+    <field name="actionSelect"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="createdOn"/>
+    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+  </grid>
+
+  <form name="project-batch-form" title="Project batch"
+    model="com.axelor.apps.project.db.ProjectBatch" onNew="action-project-batch-record-on-new">
+    <panel name="mainPanel">
+      <field name="actionSelect" readonly="true"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"
+        onChange="action-base-batch-condition-check-unique-code"/>
+    </panel>
+
+    <panel name="removeTaskStatusPanel" title="Remove task status">
+      <label
+        title="The selected statuses will be removed from the allowed status types for these projects and/or categories and, as a result, will no longer be available for associated tasks. In the case of categories, the statuses will only be removed from the tasks if the 'Manage via categories' option is enabled in the project configuration."
+        colSpan="12"/>
+      <field name="projectSet" form-view="project-form" grid-view="project-grid"
+        widget="TagSelect" canNew="false" canEdit="false"
+        domain="self.taskStatusManagementSelect = 2 AND self.projectTaskStatusSet IS NOT EMPTY"/>
+      <field name="taskCategorySet" form-view="project-task-category-form" widget="TagSelect"
+        grid-view="project-task-category-grid" canNew="false" canEdit="false"
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
+        domain="self.projectTaskStatusSet IS NOT EMPTY"/>
+      <field name="taskStatusSet" widget="TagSelect" canNew="false" canEdit="false"/>
+    </panel>
+    <panel name="informationPanel" title="Information">
+      <field name="createdOn" title="Created on"/>
+      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+      <field name="description" showTitle="false" colSpan="12"/>
+      <panel-related name="batchListPanel" field="batchList" colSpan="12"
+        form-view="batch-form" grid-view="batch-grid"/>
+    </panel>
+
+    <panel name="actionPanel" sidebar="true">
+      <button name="removeTaskStatusBtn" title="Remove task status"
+        onClick="save,action-project-batch-method-run-batch"/>
+    </panel>
+  </form>
+
+  <action-record name="action-project-batch-record-on-new"
+    model="com.axelor.apps.project.db.ProjectBatch">
+    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
+      if="__user__.activeCompany != null"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="createdBy" expr="eval:__user__"/>
+  </action-record>
+
+  <action-method name="action-project-batch-method-run-batch">
+    <call class="com.axelor.apps.project.web.ProjectBatchController" method="runBatch"/>
+  </action-method>
+</object-views>

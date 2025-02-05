@@ -166,6 +166,8 @@
     <toolbar>
       <button name="showMapBtn" title="Map" icon="fa-map-marker"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
+      <button name="apiBtn" title="API data import"
+        onClick="action-partner-view-wizard-api-configuration"/>
     </toolbar>
     <menubar>
       <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -1135,10 +1137,17 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
+    <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
     <action name="action-method-partner-check-registration-code"/>
   </action-group>
+
+  <action-method
+    name="action-partner-method-check-if-registration-code-already-exists">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkIfRegistrationCodeExists"/>
+  </action-method>
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."
@@ -1764,6 +1773,16 @@
     <view type="grid" name="invoicing-project-grid"/>
     <view type="form" name="invoicing-project-form"/>
     <domain>self.project.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-wizard-api-configuration"
+    title="Partner API configuration" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="partner-api-configuration-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_xPartnerId" expr="eval: id"/>
   </action-view>
 
 </object-views>

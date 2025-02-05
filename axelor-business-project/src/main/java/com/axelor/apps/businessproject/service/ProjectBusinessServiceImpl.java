@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,6 +51,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -82,6 +83,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
   protected UnitConversionForProjectService unitConversionForProjectService;
+  protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected SaleOrderGeneratorService saleOrderGeneratorService;
 
@@ -106,6 +108,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
       UnitConversionForProjectService unitConversionForProjectService,
+      SaleOrderStockLocationService saleOrderStockLocationService,
       ProjectTimeUnitService projectTimeUnitService,
       SaleOrderGeneratorService saleOrderGeneratorService) {
     super(
@@ -123,6 +126,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
+    this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.projectTimeUnitService = projectTimeUnitService;
     this.saleOrderGeneratorService = saleOrderGeneratorService;
   }

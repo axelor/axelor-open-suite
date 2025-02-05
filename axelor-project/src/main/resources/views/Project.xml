@@ -41,10 +41,11 @@
 
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
-    onSave="action-project-method-check-resource-availibility" width="large">
+    onSave="action-project-group-on-save" width="large">
     <toolbar>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
+        onClick="save,action-project-view-show-planning-panel"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         if-module="axelor-human-resource" showIf="isShowPlanning"/>
     </toolbar>
     <menubar>
@@ -285,12 +286,28 @@
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
       <field name="projectTaskStatusSet" widget="TagSelect"
-        showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
-        canEdit="false" onChange="action-project-method-manage-completed-task-status"/>
+        readonlyIf="projectTaskList.length &gt; 0" showIf="taskStatusManagementSelect == 2"
+        requiredIf="taskStatusManagementSelect == 2" canEdit="false"
+        onChange="action-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form" showIf="taskStatusManagementSelect == 2"
         requiredIf="taskStatusManagementSelect == 2"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
+      <panel name="taskStatusManagementPanel" colSpan="12"
+        showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
+        <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
+          title="Status to add" onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
+          target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="addStatusBtn"
+          onClick="action-project-attrs-add-task-status,action-project-method-manage-completed-task-status"
+          title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
+        <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
+          title="Status to remove" onSelect="action-project-attrs-status-to-remove-domain"
+          colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="removeStatusBtn"
+          onClick="save, action-project-method-remove-task-status" title="Remove status" colSpan="3"
+          showIf="$statusToRemoveSet.length &gt; 0"/>
+      </panel>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
       <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
@@ -311,7 +328,8 @@
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
       collapseIf="false">
-      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
+      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
       <spacer colSpan="8"/>
@@ -383,12 +401,23 @@
       onTabSelect="action-project-attrs-hide-project-version-on-sprint">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
-      <panel name="sprintPanel" title="Sprints" showIf="sprintManagementSelect == 'project'"
-        colSpan="12">
+      <panel name="sprintPanel" title="Sprints" colSpan="12">
+        <panel itemSpan="12">
+          <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+            onClick="action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+          <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+            showIf="backlogSprint" readonly="true"/>
+        </panel>
+        <button name="generateSprintsBtn" title="Generate sprints"
+          showIf="sprintManagementSelect == 'project'"
+          onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
         <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
-          canNew="true" canRemove="true"/>
+          canNew="true" canRemove="true" showIf="sprintManagementSelect == 'project'"/>
         <field name="sprintManagementSelect" hidden="true"/>
       </panel>
+      <panel-dashlet action="action-project-method-tasks-per-sprint"
+        name="tasksPerSprintPanel" colSpan="12" height="200%"/>
+      <field name="sprintManagementSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -500,6 +529,11 @@
     <action name="action-project-method-task-status-management-selection-in"/>
   </action-group>
 
+  <action-group name="action-project-group-on-save">
+    <action name="action-project-method-check-resource-availibility"/>
+    <action name="action-project-method-check-sprint-overlap"/>
+  </action-group>
+
   <action-group name="action-project-group-finish-project">
     <action name="action-project-record-status-finish"/>
     <action name="save"/>
@@ -596,6 +630,22 @@
 
   <action-attrs name="action-project-attrs-hide-project-version-on-sprint">
     <attribute for="sprintList.targetVersion" name="hidden" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-status-to-add-domain">
+    <attribute for="$statusToAddSet" name="domain"
+      expr="eval: &quot; self.id NOT IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-status-to-remove-domain">
+    <attribute for="$statusToRemoveSet" name="domain"
+      expr="eval: &quot; self.id IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-add-task-status">
+    <attribute for="projectTaskStatusSet" name="value"
+      expr="eval: projectTaskStatusSet+statusToAddSet"/>
+    <attribute for="$statusToAddSet" name="value" expr="eval: null"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -718,6 +768,22 @@
   <action-method name="action-project-method-generate-checklist-items-from-template">
     <call class="com.axelor.apps.project.web.ProjectController"
       method="generateCheckListFromTemplate"/>
+  </action-method>
+
+  <action-method name="action-project-method-generate-backlog-sprint">
+    <call class="com.axelor.apps.project.web.ProjectController" method="generateBacklogSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-remove-task-status">
+    <call class="com.axelor.apps.project.web.ProjectController" method="removeTaskStatus"/>
+  </action-method>
+
+  <action-method name="action-project-method-tasks-per-sprint">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewTasksPerSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-check-sprint-overlap">
+    <call class="com.axelor.apps.project.web.ProjectController" method="checkSprintOverlap"/>
   </action-method>
 
   <!-- ACTION VIEW -->

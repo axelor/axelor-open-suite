@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,5 +64,13 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
       }
     }
     return super.populate(json, context);
+  }
+
+  @Override
+  public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
+    SaleOrderLine copy = super.copy(entity, deep);
+    copy.setConfigurator(null);
+
+    return copy;
   }
 }

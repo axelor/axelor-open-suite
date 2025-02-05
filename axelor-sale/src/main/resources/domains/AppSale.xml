@@ -47,6 +47,9 @@
     <boolean name="isSOLPriceTotalOfSubLines"
       help="When enabled, sale order lines price will be computed based on theirs sub lines"
       default="true"/>
+    <boolean name="isGlobalDiscountEnabledOnSaleOrder"
+      title="Enable global discount on sale order"
+      help="Allow the user to apply a global discount on a sale order. Global discount and discount per line are not cumulative."/>
 
     <extra-code>
       <![CDATA[
@@ -58,7 +61,6 @@
 		public static final int APP_SALE_LINE_DISPLAY_TYPE_CLASSIC = 0;
 		public static final int APP_SALE_LINE_DISPLAY_TYPE_EDITABLE = 1;
         public static final int APP_SALE_LINE_DISPLAY_TYPE_MULTI = 2;
-        public static final int APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE = 3;
       ]]>
     </extra-code>
 

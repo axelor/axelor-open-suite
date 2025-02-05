@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -166,5 +167,12 @@ public class ProjectManagementRepository extends ProjectRepository {
       TraceBackService.trace(e);
     }
     return super.populate(json, context);
+  }
+
+  @Override
+  public void remove(Project entity) {
+    Beans.get(ProjectVersionRemoveService.class).removeProjectFromRoadmap(entity);
+
+    super.remove(entity);
   }
 }

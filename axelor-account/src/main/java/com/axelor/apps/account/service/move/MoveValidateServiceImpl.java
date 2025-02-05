@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -59,9 +60,8 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -116,7 +116,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected CompanyConfigService companyConfigService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
-  protected TaxService taxService;
+  protected TaxAccountService taxAccountService;
+  protected UserService userService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -141,7 +142,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       CompanyConfigService companyConfigService,
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
-      TaxService taxService) {
+      TaxAccountService taxAccountService,
+      UserService userService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -163,7 +165,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.companyConfigService = companyConfigService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
-    this.taxService = taxService;
+    this.taxAccountService = taxAccountService;
+    this.userService = userService;
   }
 
   /**
@@ -311,6 +314,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLineTaxService.checkDuplicateTaxMoveLines(move);
       moveLineTaxService.checkEmptyTaxLines(move.getMoveLineList());
       this.checkTaxAmount(move);
+      this.checkSpecialAccountAmount(move, move.getId());
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
       this.checkMoveLineDescription(move);
@@ -409,7 +413,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void checkClosurePeriod(Move move) throws AxelorException {
 
-    if (!periodCheckService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser())) {
+    if (!periodCheckService.isAuthorizedToAccountOnPeriod(move, userService.getUser())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED));
@@ -647,8 +651,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
       Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
       if (CollectionUtils.isNotEmpty(taxLineSet)) {
-        moveLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
-        moveLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+        moveLine.setTaxRate(taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
+        moveLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
       }
 
       setMoveLineFixedInformation(move, moveLine);
@@ -677,7 +681,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     if (moveIds == null) {
       return errors;
     }
-    User user = AuthUtils.getUser();
+    User user = userService.getUser();
     int i = 0;
     for (Integer moveId : moveIds) {
       Move move = moveRepository.find(moveId.longValue());
@@ -884,7 +888,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal taxLinesAmount =
         moveLineList.stream()
-            .filter(moveLineToolService::isMoveLineTaxAccount)
+            .filter(moveLineToolService::isMoveLineTaxAccountOrNonDeductibleTax)
             .map(this::getMoveLineSignedValue)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -935,7 +939,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     if (!UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
-        AuthUtils.getUser(), move.getJournal().getAuthorizedRoleSet())) {
+        userService.getUser(), move.getJournal().getAuthorizedRoleSet())) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -953,14 +957,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     Set<TaxLine> taxLineSet =
-        moveLine.getTaxLineSet().stream()
-            .filter(it -> !it.getTax().getIsNonDeductibleTax())
-            .collect(Collectors.toSet());
+        taxAccountService.getNotNonDeductibleTaxesSet(moveLine.getTaxLineSet());
 
     for (TaxLine taxLine : taxLineSet) {
       BigDecimal taxAmount =
           lineTotal
-              .multiply(taxService.getTotalTaxRateInPercentage(Set.of(taxLine)))
+              .multiply(taxAccountService.getTotalTaxRateInPercentage(Set.of(taxLine)))
               .divide(
                   BigDecimal.valueOf(100),
                   AppBaseService.COMPUTATION_SCALING,
@@ -1027,6 +1029,70 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_LINE_DESCRIPTION_MISSING));
+    }
+  }
+
+  @Override
+  public void checkSpecialAccountAmount(Move move, Long moveId) throws AxelorException {
+    List<MoveLine> moveLineList = move.getMoveLineList();
+
+    if (!moveToolService.isOpenOrClosureMove(move)) {
+      // Compute the sum of debit/credit special account type lines
+      BigDecimal debitSpecialAccountSum =
+          moveLineList.stream()
+              .filter(moveLineToolService::isMoveLineSpecialAccount)
+              .map(MoveLine::getDebit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      BigDecimal creditSpecialAccountSum =
+          moveLineList.stream()
+              .filter(moveLineToolService::isMoveLineSpecialAccount)
+              .map(MoveLine::getCredit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      // Compute the sum of debit/credit commitment account type lines
+      BigDecimal debitCommitmentAccountSum =
+          moveLineList.stream()
+              .filter(moveLineToolService::isMoveLineCommitmentAccount)
+              .map(MoveLine::getDebit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      BigDecimal creditCommitmentAccountSum =
+          moveLineList.stream()
+              .filter(moveLineToolService::isMoveLineCommitmentAccount)
+              .map(MoveLine::getCredit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      // Compute the sum of debit/credit other account type lines
+      BigDecimal debitOtherAccountSum =
+          moveLineList.stream()
+              .filter(
+                  moveLine ->
+                      !moveLineToolService.isMoveLineSpecialAccount(moveLine)
+                          && !moveLineToolService.isMoveLineCommitmentAccount(moveLine))
+              .map(MoveLine::getDebit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      BigDecimal creditOtherAccountSum =
+          moveLineList.stream()
+              .filter(
+                  moveLine ->
+                      !moveLineToolService.isMoveLineSpecialAccount(moveLine)
+                          && !moveLineToolService.isMoveLineCommitmentAccount(moveLine))
+              .map(MoveLine::getCredit)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      if (debitSpecialAccountSum.compareTo(creditSpecialAccountSum) != 0
+          || debitOtherAccountSum.compareTo(creditOtherAccountSum) != 0
+          || debitCommitmentAccountSum.compareTo(creditCommitmentAccountSum) != 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS),
+            moveId);
+      }
     }
   }
 }

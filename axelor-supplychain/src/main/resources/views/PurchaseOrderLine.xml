@@ -159,4 +159,13 @@
       method="addToCart"/>
   </action-method>
 
+  <action-attrs name="action-purchase-order-line-attrs-set-stock-location-domain">
+    <attribute name="domain" for="stockLocation"
+      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(__parent__?.tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <attribute name="domain" for="stockLocation"
+      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;"
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+  </action-attrs>
+
 </object-views>

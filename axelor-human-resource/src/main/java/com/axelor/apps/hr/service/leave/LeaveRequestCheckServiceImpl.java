@@ -23,23 +23,32 @@ public class LeaveRequestCheckServiceImpl implements LeaveRequestCheckService {
 
   @Override
   public void checkDates(LeaveRequest leaveRequest) throws AxelorException {
-    LocalDateTime fromDateTime = leaveRequest.getFromDateT();
-    LocalDateTime toDateTime = leaveRequest.getToDateT();
-    int startOnSelect = leaveRequest.getStartOnSelect();
-    int endOnSelect = leaveRequest.getEndOnSelect();
-    BigDecimal duration = leaveRequest.getDuration();
-
-    if (toDateTime.isBefore(fromDateTime)
-        || (toDateTime.isEqual(fromDateTime) && startOnSelect > endOnSelect)) {
+    if (isDatesInvalid(leaveRequest)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_INVALID_DATES));
+          I18n.get(HumanResourceExceptionMessage.INVALID_DATES));
     }
 
-    if (duration.signum() == 0) {
+    if (isDurationInvalid(leaveRequest)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_WRONG_DURATION));
     }
+  }
+
+  @Override
+  public boolean isDatesInvalid(LeaveRequest leaveRequest) {
+    LocalDateTime fromDateTime = leaveRequest.getFromDateT();
+    LocalDateTime toDateTime = leaveRequest.getToDateT();
+    int startOnSelect = leaveRequest.getStartOnSelect();
+    int endOnSelect = leaveRequest.getEndOnSelect();
+    return toDateTime.isBefore(fromDateTime)
+        || (toDateTime.isEqual(fromDateTime) && startOnSelect > endOnSelect);
+  }
+
+  @Override
+  public boolean isDurationInvalid(LeaveRequest leaveRequest) {
+    BigDecimal duration = leaveRequest.getDuration();
+    return duration.signum() == 0;
   }
 }
