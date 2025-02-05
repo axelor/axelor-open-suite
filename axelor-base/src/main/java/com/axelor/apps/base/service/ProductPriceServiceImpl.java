@@ -107,25 +107,9 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
     }
     BigDecimal price = getSaleUnitPrice(company, product, taxLineSet, false, todayDate, toCurrency);
-    BigDecimal priceDiscounted =
-        productPriceListService.applyPriceList(product, partner, company, currency, price, false);
-    if (!inAti) return priceDiscounted;
-    return getInTaxPrice(product, company, partner, priceDiscounted);
-  }
 
-  BigDecimal getInTaxPrice(Product product, Company company, Partner partner, BigDecimal exTaxPrice)
-      throws AxelorException {
-    Set<TaxLine> taxLineSet =
-        accountManagementService.getTaxLineSet(
-            appBaseService.getTodayDate(company),
-            product,
-            company,
-            partner.getFiscalPosition(),
-            false);
-    BigDecimal taxRate = taxService.getTotalTaxRate(taxLineSet);
-    return exTaxPrice
-        .add(exTaxPrice.multiply(taxRate))
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return productPriceListService.applyPriceList(
+        product, partner, company, currency, price, inAti);
   }
 
   @Override
