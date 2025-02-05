@@ -81,6 +81,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected AppBusinessProjectService appBusinessProjectService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected AnalyticLineService analyticLineService;
+  protected final InvoiceServiceProject invoiceServiceProject;
 
   protected int sequence = 0;
 
@@ -100,7 +101,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       AppBusinessProjectService appBusinessProjectService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      InvoiceServiceProject invoiceServiceProject) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -116,6 +118,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.appBusinessProjectService = appBusinessProjectService;
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
     this.analyticLineService = analyticLineService;
+    this.invoiceServiceProject = invoiceServiceProject;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -160,7 +163,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
-    invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
+    projectHoldBackLineService.generateHoldBackATIs(invoice);
+    invoiceServiceProject.computeProjectInvoice(invoice);
     invoiceRepository.save(invoice);
 
     invoicingProject.setInvoice(invoice);
@@ -262,6 +266,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoiceLineList.addAll(
         projectTaskBusinessProjectService.createInvoiceLines(
             invoice, projectTaskList, folder.getProjectTaskSetPrioritySelect()));
+
+    invoiceLineList.addAll(projectHoldBackLineService.createInvoiceLines(invoice, invoiceLineList));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
