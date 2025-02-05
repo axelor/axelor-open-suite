@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.rest.dto.CurrencyResponse;
@@ -62,14 +63,14 @@ public class ProductRestServiceImpl implements ProductRestService {
 
   @Inject
   public ProductRestServiceImpl(
-          AppSaleService appSaleService,
-          CompanyService companyService,
-          PartnerRepository partnerRepository,
-          UserService userService,
-          ProductRestService productRestService,
-          AppBaseService appBaseService,
-          ProductPriceService productPriceService,
-          UnitConversionService unitConversionService) {
+      AppSaleService appSaleService,
+      CompanyService companyService,
+      PartnerRepository partnerRepository,
+      UserService userService,
+      ProductRestService productRestService,
+      AppBaseService appBaseService,
+      ProductPriceService productPriceService,
+      UnitConversionService unitConversionService) {
     this.appSaleService = appSaleService;
     this.companyService = companyService;
     this.userService = userService;
