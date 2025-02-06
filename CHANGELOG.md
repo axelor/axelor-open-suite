@@ -1,3 +1,55 @@
+## [8.1.17] (2025-02-06)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 7.1.12.
+* Advanced export: fixed NPE when target field is empty on advanced export line.
+* Period: fixed inconsistency when filling dates on form view.
+* Pricing: use formula filtering also on linked pricing.
+
+#### Account
+
+* FEC import: fixed an issue during accounting entries import where the entries were validated without any checks.
+* Move: fixed description is not inherited on move lines when they are generated from mass entry lines.
+* Accounting config: fixed translations on new company creation.
+
+#### Budget
+
+* Move: blocked budget distribution modification on daybooked moves.
+* Budget: fixed button to display committed lines.
+
+#### Business Production
+
+* Operation order: fixed filter for employees.
+
+#### Business Project
+
+* Sale order/business project: fixed an issue on partially delivered sale order invoicing
+* Sale order: fixed NPE on selecting a project.
+
+#### Business Support
+
+* Project version: fixed project filter to avoid conflicts on save.
+
+#### Human Resource
+
+* HR batch: fixed an error occurring when using 'Increment leave' batch.
+
+#### Sale
+
+* Sale order line: added missing translation for 'Customize BOM' and 'Customize production process'.
+* Sale order: fixed advance payment amount during copy.
+
+#### Stock
+
+* Stock move: fixed split into fulfilled line and unfulfilled one total net mass issue.
+* Stock move: fixed split into 2 total net mass issue.
+
+#### Supply Chain
+
+* Stock move: fixed an error during mass customer stock move invoicing.
+
 ## [8.1.16] (2025-01-23)
 
 ### Fixes
@@ -1124,6 +1176,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.17]: https://github.com/axelor/axelor-open-suite/compare/v8.1.16...v8.1.17
 [8.1.16]: https://github.com/axelor/axelor-open-suite/compare/v8.1.15...v8.1.16
 [8.1.15]: https://github.com/axelor/axelor-open-suite/compare/v8.1.14...v8.1.15
 [8.1.14]: https://github.com/axelor/axelor-open-suite/compare/v8.1.13...v8.1.14

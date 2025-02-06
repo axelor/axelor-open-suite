@@ -1,3 +1,0 @@
----
-title: "FEC import: fixed an issue during accounting entries import where the entries were validated without any checks."
-module: axelor-account
