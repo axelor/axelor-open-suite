@@ -2490,6 +2490,7 @@
 "Yes","Oui",,
 "You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?","Vous êtes sur le point de surcharger un taux de change existant. Ce taux est peut-être déjà utilisé par le système. Souhaitez-vous continuer ?",,
 "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal.",,,
+"You can download import files <a href=""https://download.geonames.org/export/zip/"" target=""_blank"">here</a>","Vous pouvez télécharger les fichiers d'import <a href=""https://download.geonames.org/export/zip/"" target=""_blank"">ici</a>",,
 "You can find classes and methods name <a href=""https://javadoc.io/doc/net.datafaker/datafaker/1.6.0/index.html"" target=""_blank"">here</a>",,,
 "You can not turn-off this configuration because more than one company is configurated in the system.","Vous ne pouvez pas désactiver la gestion multi-sociétés car plusieurs sociétés sont configurées dans le système",,
 "You can select only one default delivery address.","Vous ne pouvez choisir qu’une adresse de livraison par défaut.",,

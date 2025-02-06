@@ -1,3 +1,74 @@
+## [8.2.8] (2025-02-06)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 7.2.6.
+* Advanced export: fixed NPE when target field is empty on advanced export line.
+* Unit conversion: fixed demo data for 'Box of 24 Pces'.
+* Period: fixed inconsistency when filling dates on form view.
+* File: fixed id to load is required for loading error.
+* Pricing: use formula filtering also on linked pricing.
+* City: added a helper to prevent user from getting wrong files for manual import.
+
+#### Account
+
+* FEC import: fixed an issue during accounting entries import where the entries were validated without any checks.
+* Move: fixed description is not inherited on move lines when they are generated from mass entry lines.
+* TaxPaymentMoveLine: fixed computation error when the tax line contains multi tax.
+
+#### Budget
+
+* Move: blocked budget distribution modification on daybooked moves.
+* Budget: fixed button to display committed lines.
+
+#### Business Production
+
+* Operation order: fixed filter for employees.
+
+#### Business Project
+
+* Sale order/business project: fixed an issue on partially delivered sale order invoicing
+* Sale order: fixed NPE on selecting a project.
+
+#### Business Support
+
+* Project version: fixed project filter to avoid conflicts on save.
+
+#### Human Resource
+
+* HR batch: fixed an error occurring when using 'Increment leave' batch.
+
+#### Production
+
+* Sale order: sublines bill of material are not customized anymore.
+
+#### Purchase
+
+* Purchase order line: fixed advanced filter not displayed unless the whole page is refreshed.
+
+#### Sale
+
+* Product: Calculated the price based on the partner price list in APIs.
+* Sale order line: added missing translation for 'Customize BOM' and 'Customize production process'.
+* Sale order: fixed advance payment amount during copy.
+
+#### Stock
+
+* Stock move: fixed split into fulfilled line and unfulfilled one total net mass issue.
+* Stock move: fixed split into 2 total net mass issue.
+
+#### Supply Chain
+
+* Stock move: fixed an error during mass customer stock move invoicing.
+
+
+### Developer
+
+#### Sale
+
+Added a new argument `ProductPriceListService` in `ProductPriceServiceImpl.java` constructor.
+
 ## [8.2.7] (2025-01-23)
 
 ### Fixes
@@ -637,6 +708,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.8]: https://github.com/axelor/axelor-open-suite/compare/v8.2.7...v8.2.8
 [8.2.7]: https://github.com/axelor/axelor-open-suite/compare/v8.2.6...v8.2.7
 [8.2.6]: https://github.com/axelor/axelor-open-suite/compare/v8.2.5...v8.2.6
 [8.2.5]: https://github.com/axelor/axelor-open-suite/compare/v8.2.4...v8.2.5
