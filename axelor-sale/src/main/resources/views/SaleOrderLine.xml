@@ -126,6 +126,7 @@
       onChange="action-sale-order-line-method-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="TagSelect"/>
+
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
       readonlyIf="$isParentTitleLine"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
