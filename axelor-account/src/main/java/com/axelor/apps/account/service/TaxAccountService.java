@@ -32,6 +32,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -110,8 +111,16 @@ public class TaxAccountService extends TaxService {
       return;
     }
 
-    if (!checkTaxesNotOnlyNonDeductibleTaxes(
-        taxLines.stream().map(TaxLine::getTax).collect(Collectors.toList()))) {
+    this.checkTaxesNotOnlyNonDeductibleTaxes(
+        taxLines.stream().map(TaxLine::getTax).collect(Collectors.toSet()));
+  }
+
+  public void checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes) throws AxelorException {
+    if (ObjectUtils.isEmpty(taxes)) {
+      return;
+    }
+
+    if (!checkTaxesNotOnlyNonDeductibleTaxes(new ArrayList<>(taxes))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR));
