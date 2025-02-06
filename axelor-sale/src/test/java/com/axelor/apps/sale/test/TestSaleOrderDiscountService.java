@@ -107,7 +107,7 @@ class TestSaleOrderDiscountService extends BaseTest {
   protected SubSaleOrderLineComputeService createSubSaleOrderLineComputeService(
       AppSaleService appSaleService) {
     return new SubSaleOrderLineComputeServiceImpl(
-        createSaleOrderLineComputeService(appSaleService), appSaleService);
+        createSaleOrderLineComputeService(appSaleService), appSaleService, currencyScaleService);
   }
 
   protected void prepareSaleOrder() {
