@@ -330,13 +330,24 @@
 
 
   <dashboard title="Project Dashboard" name="project.dashboard.sample" width="large"
-    onInit="action.sale.chart.set.date.project">
+    onInit="action-chart-set-date-project">
     <search-fields>
       <field name="project" target="com.axelor.apps.project.db.Project" title="Project"
-        type="reference" colSpan="12"/>
-      <field type="date" name="fromDate" title="From Date" required="true"/>
-      <field type="date" name="toDate" title="To Date" required="true"/>
+        type="reference" colSpan="12" onChange="action-project-record-empty-sprint"/>
+      <field type="date" name="fromDate" title="From Date" required="true" colSpan="3"
+        onChange="action-project-record-empty-sprint-period"/>
+      <field type="date" name="toDate" title="To Date" required="true" colSpan="3"
+        onChange="action-project-record-empty-sprint-period"/>
+      <field type="reference" name="period" title="Allocation period"
+        target="com.axelor.apps.base.db.Period" colSpan="3" onChange="action-chart-set-period-date"
+        domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__ "/>
+      <field type="reference" name="sprint" title="Sprint"
+        target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!project"
+        onChange="action-chart-set-sprint-date"
+        onSelect="action-project-method-compute-sprint-domain"/>
+
     </search-fields>
+
     <dashlet height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
     <dashlet height="350" action="project-planning-time-dashboard-action" canSearch="true"
       colSpan="12"
@@ -345,11 +356,7 @@
     <dashlet height="350" action="project-allocation-line-action" canSearch="true"
       colSpan="12"/>
   </dashboard>
-  <action-record model="com.axelor.apps.project.db.ProjectTask"
-    name="action.sale.chart.set.date.project">
-    <field name="fromDate" expr="eval:__config__.date"/>
-    <field name="toDate" expr="eval:__config__.date.plusDays(6)"/>
-  </action-record>
+
   <action-view name="project-project-task-action"
     model="com.axelor.apps.project.db.ProjectTask" title="Project tasks">
     <view name="project-task-dashboard-grid" type="grid"/>
@@ -359,7 +366,6 @@
       and
       (self.project=:project OR :project IS NULL)</domain>
   </action-view>
-
   <action-view name="project-planning-time-dashboard-action"
     model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning tasks">
     <view name="project-planning-time-dashboard-grid" type="grid"/>
@@ -386,4 +392,35 @@
       and
       (self.project=:project OR :project IS NULL)</domain>
   </action-view>
+
+  <action-record name="action-project-record-empty-sprint"
+    model="com.axelor.apps.project.db.Project">
+    <field name="sprint" expr="eval: null"/>
+  </action-record>
+  <action-record name="action-project-record-empty-sprint-period"
+    model="com.axelor.apps.project.db.Project">
+    <field name="sprint" expr="eval: null"/>
+    <field name="period" expr="eval: null"/>
+  </action-record>
+  <action-record model="com.axelor.apps.project.db.ProjectTask"
+    name="action-chart-set-date-project">
+    <field name="fromDate" expr="eval:__config__.date"/>
+    <field name="toDate" expr="eval:__config__.date.plusDays(6)"/>
+  </action-record>
+  <action-record model="com.axelor.apps.base.db.Period"
+    name="action-chart-set-period-date">
+    <field name="fromDate" expr="eval:__repo__(Period).find(period.id).fromDate "/>
+    <field name="toDate" expr="eval: __repo__(Period).find(period.id).toDate "/>
+    <field name="sprint" expr="eval: null"/>
+  </action-record>
+  <action-record model="com.axelor.apps.project.db.Sprint"
+    name="action-chart-set-sprint-date">
+    <field name="fromDate" expr="eval:__repo__(Sprint).find(sprint.id).fromDate "/>
+    <field name="toDate" expr="eval: __repo__(Sprint).find(sprint.id).toDate "/>
+    <field name="period" expr="eval: null"/>
+  </action-record>
+  <action-method name="action-project-method-compute-sprint-domain">
+    <call class="com.axelor.apps.project.web.SprintController"
+      method="computeSprintDomainDashboard"/>
+  </action-method>
 </object-views>
