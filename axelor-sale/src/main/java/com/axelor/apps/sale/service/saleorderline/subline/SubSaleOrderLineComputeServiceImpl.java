@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.saleorderline.subline;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -32,12 +33,16 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
 
   protected final SaleOrderLineComputeService saleOrderLineComputeService;
   protected final AppSaleService appSaleService;
+  protected final CurrencyScaleService currencyScaleService;
 
   @Inject
   public SubSaleOrderLineComputeServiceImpl(
-      SaleOrderLineComputeService saleOrderLineComputeService, AppSaleService appSaleService) {
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      AppSaleService appSaleService,
+      CurrencyScaleService currencyScaleService) {
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.appSaleService = appSaleService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -55,9 +60,11 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
               .map(SaleOrderLine::getExTaxTotal)
               .reduce(BigDecimal.ZERO, BigDecimal::add));
       saleOrderLine.setSubTotalCostPrice(
-          subSaleOrderLineList.stream()
-              .map(SaleOrderLine::getSubTotalCostPrice)
-              .reduce(BigDecimal.ZERO, BigDecimal::add));
+          currencyScaleService.getCompanyScaledValue(
+              saleOrder,
+              subSaleOrderLineList.stream()
+                  .map(SaleOrderLine::getSubTotalCostPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add)));
 
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     } else {
