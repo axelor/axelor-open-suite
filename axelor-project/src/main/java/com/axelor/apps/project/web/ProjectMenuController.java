@@ -32,11 +32,13 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ProjectMenuController {
@@ -108,16 +110,6 @@ public class ProjectMenuController {
 
   public void viewTasksPerSprint(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
-    setKanbanSprintView(response, project);
-  }
-  protected void viewTasksPerSprintDashboard(ActionRequest request, ActionResponse response) {
-    Long projectId = (Long) request.getContext().get("project");
-    ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    Project project=projectRepo.find(projectId);
-    setKanbanSprintView(response, project);
-  }
-
-  protected void setKanbanSprintView(ActionResponse response, Project project) {
     SprintGetService sprintGetService = Beans.get(SprintGetService.class);
     List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
 
@@ -125,13 +117,72 @@ public class ProjectMenuController {
       String sprintIdsToExclude = sprintGetService.getSprintIdsToExclude(sprintList);
 
       ActionView.ActionViewBuilder actionViewBuilder =
-              ActionView.define(I18n.get("Tasks per sprint"));
+          ActionView.define(I18n.get("Tasks per sprint"));
       actionViewBuilder.model(ProjectTask.class.getName());
       actionViewBuilder.add("kanban", "project-task-sprint-kanban");
       actionViewBuilder.add("form", "project-task-form");
       actionViewBuilder.param("kanban-hide-columns", sprintIdsToExclude);
       actionViewBuilder.domain("self.project.id = :_projectId");
       actionViewBuilder.context("_projectId", project.getId());
+
+      response.setView(actionViewBuilder.map());
+    }
+  }
+
+  public ProjectMenuController() {
+    super();
+  }
+
+  @CallMethod
+  public String viewTasksPerSprintDashboard(Long projectId) {
+    String sprintIdsToExclude = null;
+    if (projectId != null) {
+
+      ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
+      Project project = projectRepo.find(projectId);
+      SprintGetService sprintGetService = Beans.get(SprintGetService.class);
+      List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
+      if (ObjectUtils.notEmpty(sprintList)) {
+        sprintIdsToExclude = sprintGetService.getSprintIdsToExclude(sprintList);
+      }
+    }
+
+    return sprintIdsToExclude;
+  }
+
+  public void viewTasksPerSprintDashboardTest(ActionRequest request, ActionResponse response) {
+    if (request.getContext().get("project") != null) {
+      Long projectId =
+          Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
+
+      ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
+      Project project = projectRepo.find(projectId);
+      SprintGetService sprintGetService = Beans.get(SprintGetService.class);
+      List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
+      if (ObjectUtils.notEmpty(sprintList)) {
+        String sprintIdsToExclude = sprintGetService.getSprintIdsToExclude(sprintList);
+
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Tasks per sprint"));
+        actionViewBuilder.model(ProjectTask.class.getName());
+        actionViewBuilder.add("kanban", "project-task-sprint-kanban");
+        actionViewBuilder.add("form", "project-task-form");
+        actionViewBuilder.param("kanban-hide-columns", sprintIdsToExclude);
+        actionViewBuilder.domain("self.project.id = :_projectId");
+        actionViewBuilder.context("_projectId", project.getId());
+
+        response.setView(actionViewBuilder.map());
+      }
+
+    } else {
+
+      ActionView.ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get("Tasks per sprint"));
+      actionViewBuilder.model(ProjectTask.class.getName());
+      actionViewBuilder.add("kanban", "project-task-sprint-kanban");
+      actionViewBuilder.add("form", "project-task-form");
+      actionViewBuilder.domain("self.project.id = :_projectId");
+      actionViewBuilder.context("_projectId", 1);
 
       response.setView(actionViewBuilder.map());
     }
