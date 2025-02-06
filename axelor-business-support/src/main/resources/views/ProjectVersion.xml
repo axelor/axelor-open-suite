@@ -29,8 +29,11 @@
   </form>
 
   <action-attrs name="action-version-attrs-project-domain">
-    <attribute name="domain" for="project"
-      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;"/>
+    <attribute name="domain" for="projectSet"
+      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;" if="!__parent__"/>
+    <attribute name="domain" for="projectSet"
+      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet AND self.id != ${__parent__.id} &quot;"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.project.db.Project'"/>
   </action-attrs>
 
 </object-views>
