@@ -1,3 +1,47 @@
+## [8.0.25] (2025-02-06)
+
+### Fixes
+#### Base
+
+* Advanced export: fixed NPE when target field is empty on advanced export line.
+* Period: fixed inconsistency when filling dates on form view.
+* Pricing: use formula filtering also on linked pricing.
+
+#### Account
+
+* FEC import: fixed an issue during accounting entries import where the entries were validated without any checks.
+* Move: fixed description is not inherited on move lines when they are generated from mass entry lines.
+
+#### Budget
+
+* Move: blocked budget distribution modification on daybooked moves.
+* Budget: fixed button to display committed lines.
+
+#### Business Production
+
+* Operation order: fixed filter for employees.
+
+#### Business Project
+
+* Sale order: fixed NPE on selecting a project.
+
+#### Business Support
+
+* Project version: fixed project filter to avoid conflicts on save.
+
+#### Human Resource
+
+* HR batch: fixed an error occurring when using 'Increment leave' batch.
+
+#### Sale
+
+* Sale order: fixed advance payment amount during copy.
+
+#### Stock
+
+* Stock move: fixed split into fulfilled line and unfulfilled one total net mass issue.
+* Stock move: fixed split into 2 total net mass issue.
+
 ## [8.0.24] (2025-01-23)
 
 ### Fixes
@@ -1467,6 +1511,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.25]: https://github.com/axelor/axelor-open-suite/compare/v8.0.24...v8.0.25
 [8.0.24]: https://github.com/axelor/axelor-open-suite/compare/v8.0.23...v8.0.24
 [8.0.23]: https://github.com/axelor/axelor-open-suite/compare/v8.0.22...v8.0.23
 [8.0.22]: https://github.com/axelor/axelor-open-suite/compare/v8.0.21...v8.0.22
