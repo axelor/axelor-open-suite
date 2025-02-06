@@ -67,8 +67,15 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
     Objects.requireNonNull(saleOrderLine);
     var configurator = saleOrderLine.getConfigurator();
     var context = new Context(Configurator.class);
-
     var saleOrder = saleOrderLine.getSaleOrder();
+
+    if (configurator == null) {
+      // Copy
+      var copy = saleOrderLineRepository.copy(saleOrderLine, false);
+      saleOrder.addSaleOrderLineListItem(copy);
+      return copy;
+    }
+
     var duplicatedConfigurator = configuratorRepository.copy(configurator, false);
     var jsonAttributes =
         new JsonContext(
