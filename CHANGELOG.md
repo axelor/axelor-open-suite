@@ -1,3 +1,33 @@
+## [7.2.32] (2025-02-06)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 6.1.7.
+* Advanced export: fixed NPE when target field is empty on advanced export line.
+* Period: fixed inconsistency when filling dates on form view.
+
+#### Account
+
+* FEC import: fixed an issue during accounting entries import where the entries were validated without any checks.
+* Move: fixed description is not inherited on move lines when they are generated from mass entry lines.
+
+#### Business Project
+
+* Sale order: fixed NPE on selecting a project.
+
+#### Business Support
+
+* Project version: fixed project filter to avoid conflicts on save.
+
+#### Sale
+
+* Sale order: fixed advance payment amount during copy.
+
+#### Stock
+
+* Stock move: fixed split into 2 total net mass issue.
+
 ## [7.2.31] (2025-01-23)
 
 ### Fixes
@@ -1511,6 +1541,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.32]: https://github.com/axelor/axelor-open-suite/compare/v7.2.31...v7.2.32
 [7.2.31]: https://github.com/axelor/axelor-open-suite/compare/v7.2.30...v7.2.31
 [7.2.30]: https://github.com/axelor/axelor-open-suite/compare/v7.2.29...v7.2.30
 [7.2.29]: https://github.com/axelor/axelor-open-suite/compare/v7.2.28...v7.2.29

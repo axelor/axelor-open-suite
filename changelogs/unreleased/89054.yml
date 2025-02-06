@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed NPE on selecting a project."
-module: axelor-business-project
