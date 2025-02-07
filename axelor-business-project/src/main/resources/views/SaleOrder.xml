@@ -12,8 +12,7 @@
     <extend target="//panel[@name='productionPanel']">
       <insert position="after">
         <panel name="businessProjectPanel" title="Business project"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
-          if-module="axelor-business-project">
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()">
           <field name="contract" readonly="true" hidden="true" showIf="contract"
             form-view="contract-form" grid-view="contract-grid"/>
           <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"

@@ -58,6 +58,10 @@ public class ProjectGeneratorSaleServiceImpl implements ProjectGeneratorSaleServ
   @Transactional(rollbackOn = Exception.class)
   public Project create(SaleOrder saleOrder, ProjectTemplate projectTemplate)
       throws AxelorException {
+    if (saleOrder == null) {
+      return null;
+    }
+
     Project project = generateProject(saleOrder, projectTemplate);
 
     project.setIsBusinessProject(true);
@@ -78,9 +82,6 @@ public class ProjectGeneratorSaleServiceImpl implements ProjectGeneratorSaleServ
   protected Project generateProject(SaleOrder saleOrder, ProjectTemplate projectTemplate)
       throws AxelorException {
     Project project = null;
-    if (saleOrder == null) {
-      return project;
-    }
 
     if (projectTemplate == null) {
       project = projectBusinessService.generateProject(saleOrder);
