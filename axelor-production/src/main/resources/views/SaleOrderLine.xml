@@ -42,6 +42,11 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//field[@name='standardDelay']">
+      <insert position="after">
+        <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true" colSpan="6"/>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-line-template-form" id="production-sale-order-line-template-form"
