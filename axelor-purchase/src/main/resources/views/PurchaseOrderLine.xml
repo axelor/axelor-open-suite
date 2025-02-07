@@ -661,6 +661,9 @@
     <error message="Please select a product." if="product == null"/>
   </action-validate>
 
+  <search-filters name="purchase-order-line-filters"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchases order line filters"/>
+
   <action-method
     name="action-purchase-order-line-attrs-display-different-unit-message">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"

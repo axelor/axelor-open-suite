@@ -149,8 +149,15 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     Set<TaxLine> taxLineSet = invoiceMoveLine.getTaxLineSet();
     List<TaxPaymentMoveLine> taxPaymentMoveLineList = new ArrayList<>();
 
+    BigDecimal taxTotal =
+        invoiceMoveLine.getTaxLineSet().stream()
+            .map(TaxLine::getValue)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
     if (paymentAmount.compareTo(BigDecimal.ZERO) == 0
-        || invoiceTotalAmount.compareTo(BigDecimal.ZERO) == 0) {
+        || invoiceTotalAmount.compareTo(BigDecimal.ZERO) == 0
+        || taxTotal.compareTo(BigDecimal.ZERO) == 0) {
       return taxPaymentMoveLineList;
     }
 
@@ -177,7 +184,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
           baseAmount =
               (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
                   .divide(
-                      vatRate.divide(BigDecimal.valueOf(100)),
+                      taxTotal.divide(BigDecimal.valueOf(100)),
                       AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                       BigDecimal.ROUND_HALF_UP);
         } else {

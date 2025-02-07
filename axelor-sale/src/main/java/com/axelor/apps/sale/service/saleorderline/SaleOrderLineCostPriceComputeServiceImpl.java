@@ -48,9 +48,8 @@ public class SaleOrderLineCostPriceComputeServiceImpl
                     saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany());
         if (productCostPrice.compareTo(BigDecimal.ZERO) != 0) {
           subTotalCostPrice =
-              currencyScaleService
-                  .getCompanyScaledValue(saleOrder, productCostPrice)
-                  .multiply(saleOrderLine.getQty());
+              currencyScaleService.getCompanyScaledValue(
+                  saleOrder, productCostPrice.multiply(saleOrderLine.getQty()));
         }
       }
       saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
