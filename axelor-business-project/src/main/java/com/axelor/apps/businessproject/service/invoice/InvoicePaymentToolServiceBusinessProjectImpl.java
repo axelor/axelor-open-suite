@@ -18,11 +18,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -89,6 +92,23 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
     updatePaymentProgress(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
+    if (saleOrder != null) {
+      // compute sale order totals
+      saleOrderComputeService._computeSaleOrder(saleOrder);
+    }
+    if (purchaseOrder != null) {
+      purchaseOrderService._computePurchaseOrder(purchaseOrder);
+    }
+    if (invoice.getPartner().getHasBlockedAccount()
+        && !invoice.getPartner().getHasManuallyBlockedAccount()) {
+      partnerSupplychainService.updateBlockedAccount(invoice.getPartner());
+    }
   }
 
   @Override
