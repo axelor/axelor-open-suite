@@ -13,8 +13,9 @@ public class AccountManagementAccountListener {
   @PreUpdate
   protected void checkTaxes(AccountManagement accountManagement) throws AxelorException {
     if (accountManagement.getPurchaseTaxSet() != null) {
-      Beans.get(TaxAccountService.class)
-          .checkTaxesNotOnlyNonDeductibleTaxes(accountManagement.getPurchaseTaxSet());
+      TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+      taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(accountManagement.getPurchaseTaxSet());
+      taxAccountService.checkSumOfNonDeductibleTaxes(accountManagement.getPurchaseTaxSet());
     }
   }
 }

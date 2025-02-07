@@ -353,8 +353,9 @@ public class AccountController {
     try {
       Account account = request.getContext().asType(Account.class);
       if (account != null && account.getDefaultTaxSet() != null) {
-        Beans.get(TaxAccountService.class)
-            .checkTaxesNotOnlyNonDeductibleTaxes(account.getDefaultTaxSet());
+        TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+        taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(account.getDefaultTaxSet());
+        taxAccountService.checkSumOfNonDeductibleTaxes(account.getDefaultTaxSet());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
