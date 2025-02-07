@@ -74,6 +74,8 @@ import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AlternativeBarcodeService;
+import com.axelor.apps.base.service.AlternativeBarcodeServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.AnonymizerLineService;
@@ -533,5 +535,6 @@ public class BaseModule extends AxelorModule {
     bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
+    bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
   }
 }
