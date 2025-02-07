@@ -159,8 +159,6 @@ public interface SaleOrderCreateService {
       TradingName tradingName)
       throws AxelorException;
 
-  public SaleOrder createSaleOrder(Company company) throws AxelorException;
-
   SaleOrder createTemplate(SaleOrder context);
 
   SaleOrder createSaleOrder(SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)

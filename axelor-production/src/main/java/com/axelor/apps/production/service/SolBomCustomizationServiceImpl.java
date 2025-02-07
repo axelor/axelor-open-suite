@@ -31,11 +31,14 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine) throws AxelorException {
-    return customizeBomOf(saleOrderLine, 0);
+  public void customizeBomOf(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetailsList)
+      throws AxelorException {
+    customizeBomOf(saleOrderLine, saleOrderLineDetailsList, 0);
   }
 
-  protected BillOfMaterial customizeBomOf(SaleOrderLine saleOrderLine, int depth)
+  protected BillOfMaterial customizeBomOf(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetailsList, int depth)
       throws AxelorException {
     var billOfMaterial = saleOrderLine.getBillOfMaterial();
     if (billOfMaterial == null) {
@@ -46,6 +49,19 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
 
     saleOrderLine.setBillOfMaterial(personalizedBOM);
 
+    createSemiFinishedProductBomLines(
+        saleOrderLine, saleOrderLineDetailsList, depth, personalizedBOM);
+    createComponentBomLines(saleOrderLineDetailsList, personalizedBOM);
+
+    return billOfMaterialRepository.save(personalizedBOM);
+  }
+
+  protected void createSemiFinishedProductBomLines(
+      SaleOrderLine saleOrderLine,
+      List<SaleOrderLineDetails> saleOrderLineDetailsList,
+      int depth,
+      BillOfMaterial personalizedBOM)
+      throws AxelorException {
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
       List<SaleOrderLine> subSaleOrderLineList =
           saleOrderLine.getSubSaleOrderLineList().stream()
@@ -57,20 +73,18 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
             .getProductSubTypeSelect()
             .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
           var bomLine = bomLineCreationService.createBomLineFromSol(subSaleOrderLine);
-          // If it is not personalized, we will customize, else just use the personalized one.
-          if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
-            subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
-          }
           // Relink billOfMaterialLine
           subSaleOrderLine.setBillOfMaterialLine(bomLine);
           personalizedBOM.addBillOfMaterialLineListItem(bomLine);
         }
       }
     }
+  }
 
-    if (CollectionUtils.isNotEmpty(saleOrderLine.getSaleOrderLineDetailsList())) {
-      for (SaleOrderLineDetails saleOrderLineDetails :
-          saleOrderLine.getSaleOrderLineDetailsList()) {
+  protected void createComponentBomLines(
+      List<SaleOrderLineDetails> saleOrderLineDetailsList, BillOfMaterial personalizedBOM) {
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
         if (saleOrderLineDetails.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
           var bomLine = bomLineCreationService.createBomLineFromSolDetails(saleOrderLineDetails);
           saleOrderLineDetails.setBillOfMaterialLine(bomLine);
@@ -78,7 +92,5 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
         }
       }
     }
-
-    return billOfMaterialRepository.save(personalizedBOM);
   }
 }

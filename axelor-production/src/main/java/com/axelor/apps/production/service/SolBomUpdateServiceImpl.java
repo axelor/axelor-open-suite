@@ -8,11 +8,11 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -24,7 +24,6 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
   protected final BomLineCreationService bomLineCreationService;
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
-  protected final SaleOrderBomRemoveLineService saleOrderBomRemoveLineService;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -33,13 +32,11 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       BomLineCreationService bomLineCreationService,
       BillOfMaterialRepository billOfMaterialRepository,
-      BillOfMaterialLineRepository billOfMaterialLineRepository,
-      SaleOrderBomRemoveLineService saleOrderBomRemoveLineService) {
+      BillOfMaterialLineRepository billOfMaterialLineRepository) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.bomLineCreationService = bomLineCreationService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
-    this.saleOrderBomRemoveLineService = saleOrderBomRemoveLineService;
   }
 
   @Override
@@ -57,14 +54,6 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
         updateBomLineSol(subSaleOrderLine, bom);
       }
     }
-
-    List<BillOfMaterialLine> saleOrderLineBomLineList =
-        saleOrderLine.getSubSaleOrderLineList().stream()
-            .map(SaleOrderLine::getBillOfMaterialLine)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    saleOrderBomRemoveLineService.removeBomLines(
-        saleOrderLineBomLineList, bom, ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
     logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
   }
 
@@ -92,8 +81,15 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
     bomLine.setQty(subSaleOrderLine.getQty());
     bomLine.setProduct(subSaleOrderLine.getProduct());
     bomLine.setUnit(subSaleOrderLine.getUnit());
-    bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
     bomLine.setPriority(subSaleOrderLine.getSequence() * 10);
+
+    int saleSupplySelect = subSaleOrderLine.getSaleSupplySelect();
+
+    if (saleSupplySelect != SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
+      bomLine.setBillOfMaterial(null);
+    } else {
+      bomLine.setBillOfMaterial(subSaleOrderLine.getBillOfMaterial());
+    }
     bom.addBillOfMaterialLineListItem(bomLine);
   }
 
@@ -129,6 +125,19 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
             .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .count();
 
+    var bomLineWithBom =
+        saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream()
+            .filter(line -> line.getBillOfMaterial() != null)
+            .count();
+    var subLineWithProduceSaleSupply =
+        Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
+            .filter(
+                line ->
+                    line.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
+                        || line.getSaleSupplySelect()
+                            == SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE)
+            .count();
+
     return nbBomLinesAccountable == subSaleOrderLineListSize
         && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .filter(
@@ -137,6 +146,7 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
                         .getProduct()
                         .getProductSubTypeSelect()
                         .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-            .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
+            .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine)
+        && bomLineWithBom == subLineWithProduceSaleSupply;
   }
 }

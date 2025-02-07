@@ -45,12 +45,12 @@
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
-    onNew="action-business-project-project-group-on-new"
-    onSave="action-project-method-check-resource-availibility">
+    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save">
     <toolbar>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
-        if-module="axelor-human-resource" showIf="isShowPlanning"/>
+        onClick="save,action-project-view-show-planning-panel"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+        showIf="isShowPlanning"/>
       <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
         onClick="save,action-project-view-show-financial-datas-panel"/>
     </toolbar>
@@ -263,11 +263,12 @@
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
-      <panel title="Sale order" name="saleOrderPanel" hidden="true">
-        <panel-related readonly="true" field="saleOrderLineList" widget="tree-grid"
-          canNew="false" canEdit="false" canRemove="false" title="Details Lines (Tree)"
-          orderBy="sequence" form-view="sale-order-line-form"
-          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+      <panel title="Technical case" name="saleOrderPanel" hidden="true">
+        <panel-related name="projectSaleOrderLineEditableTreePanel"
+          field="saleOrderLineList" widget="tree-grid" canNew="false" canEdit="false"
+          canRemove="false" title="Details Lines (Tree)" orderBy="sequence"
+          form-view="sale-order-line-form" x-tree-field-title="Add a new sale order line"
+          summary-view="sale-order-line-summary-form"
           x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
           grid-view="sale-order-line-editable-grid" x-tree-field="subSaleOrderLineList" colSpan="12"/>
       </panel>
@@ -452,6 +453,7 @@
             domain="self.contractTypeSelect = 2 AND self.targetTypeSelect = 2"/>
           <field name="defaultFrameworkSupplierContract"
             onSelect="action-project-attrs-set-default-supplier-contract-domain"/>
+          <field name="allowToGetPricesFromFrameworkContract" hidden="true"/>
         </panel>
         <button name="createNewCustomerContract" title="Create new customer contract"
           colSpan="6" onClick="save,action-project-view-create-new-customer-contract"/>

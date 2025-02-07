@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -58,6 +59,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   protected AppBaseService appBaseService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected AppStockService appStockService;
+  protected AddressService addressService;
 
   @Inject
   public SaleOrderCreateServiceSupplychainImpl(
@@ -72,7 +74,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       SaleOrderStockLocationService saleOrderStockLocationService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      AddressService addressService) {
     super(
         partnerService,
         saleOrderRepo,
@@ -86,6 +89,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     this.appBaseService = appBaseService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.appStockService = appStockService;
+    this.addressService = addressService;
   }
 
   @Override
@@ -136,42 +140,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         taxNumber,
         fiscalPosition,
         tradingName,
-        null,
-        null,
-        null);
-  }
-
-  public SaleOrder createSaleOrder(
-      User salespersonUser,
-      Company company,
-      Partner contactPartner,
-      Currency currency,
-      LocalDate estimatedShippingDate,
-      String internalReference,
-      String externalReference,
-      StockLocation stockLocation,
-      PriceList priceList,
-      Partner clientPartner,
-      Team team,
-      TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
-      throws AxelorException {
-
-    return createSaleOrder(
-        salespersonUser,
-        company,
-        contactPartner,
-        currency,
-        estimatedShippingDate,
-        internalReference,
-        externalReference,
-        stockLocation,
-        priceList,
-        clientPartner,
-        team,
-        taxNumber,
-        fiscalPosition,
-        null,
         null,
         null,
         null);
@@ -277,6 +245,12 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     }
     saleOrder.setInvoicedPartner(invoicedPartner);
     saleOrder.setDeliveredPartner(deliveredPartner);
+
+    if (invoicedPartner != null) {
+      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(invoicedPartner));
+      saleOrder.setMainInvoicingAddressStr(
+          addressService.computeAddressStr(saleOrder.getMainInvoicingAddress()));
+    }
 
     if (saleOrder.getPaymentMode() == null) {
       saleOrder.setPaymentMode(

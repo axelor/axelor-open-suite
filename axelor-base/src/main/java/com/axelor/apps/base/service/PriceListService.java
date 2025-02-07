@@ -208,7 +208,7 @@ public class PriceListService {
     if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
       return unitPrice
           .subtract(discountAmount)
-          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+          .setScale(PriceListLineRepository.DISCOUNT_SCALE, RoundingMode.HALF_UP);
     } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
       return unitPrice
           .multiply(new BigDecimal(100).subtract(discountAmount))

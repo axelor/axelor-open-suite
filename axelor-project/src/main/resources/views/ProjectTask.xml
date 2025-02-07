@@ -61,7 +61,8 @@
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-task-view-show-planning" if="__config__.app.isApp('employee')"
+        onClick="save,action-project-task-view-show-planning"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         if-module="axelor-human-resource" showIf="project.isShowPlanning"/>
     </toolbar>
     <menubar>
@@ -83,7 +84,6 @@
           hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
           x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
-        <field name="project.isShowPlanning" hidden="true"/>
 
       </panel>
       <field name="$provider" hidden="true" type="string"/>
@@ -225,12 +225,14 @@
         showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
         x-scale="0"/>
       <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4"
-        form-view="project-version-form" grid-view="project-version-grid"
-        onChange="action-project-task-attrs-reset-sprint"/>
+        form-view="project-version-form" grid-view="project-version-grid"/>
       <field name="activeSprint"
         showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
         onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
         form-view="sprint-form" grid-view="sprint-grid"/>
+      <field name="budgetedTime" colSpan="4"/>
+      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
@@ -494,6 +496,26 @@
     </template>
   </kanban>
 
+  <kanban columnBy="activeSprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    draggable="true" limit="10">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+      <![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
   <calendar name="project-task-per-status-calendar" title="Task Calendar"
     model="com.axelor.apps.project.db.ProjectTask" eventStart="taskDate" eventStop="taskEndDate"
     eventLength="1" mode="month" colorBy="status">
@@ -722,16 +744,8 @@
       expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
   </action-attrs>
 
-  <action-attrs name="action-project-task-attrs-reset-sprint">
-    <attribute for="activeSprint" name="value" expr="eval: targetVersion?.backlogSprint"
-      if="project?.sprintManagementSelect == 'version'"/>
-  </action-attrs>
-
   <action-attrs name="action-project-task-attrs-reset-version-and-sprint">
-    <attribute for="targetVersion" name="value" expr="eval: targetVersion?.backlogSprint"
-      if="project?.sprintManagementSelect == 'version'"/>
-    <attribute for="activeSprint" name="value" expr="eval: project?.backlogSprint"
-      if="project?.sprintManagementSelect == 'project'"/>
+    <attribute for="activeSprint" name="value" expr="eval: project?.backlogSprint"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-reset-parent-task">

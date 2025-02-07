@@ -13,6 +13,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -28,6 +29,7 @@ public class TaskTemplateBusinessProjectServiceImpl extends TaskTemplateHrServic
       ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
       AppBaseService appBaseService,
       ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
+      AppProjectService appProjectService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       ProductCompanyService productCompanyService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
@@ -35,6 +37,7 @@ public class TaskTemplateBusinessProjectServiceImpl extends TaskTemplateHrServic
         projectPlanningTimeCreateService,
         appBaseService,
         projectPlanningTimeComputeService,
+        appProjectService,
         projectPlanningTimeRepository);
     this.productCompanyService = productCompanyService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
@@ -59,7 +62,6 @@ public class TaskTemplateBusinessProjectServiceImpl extends TaskTemplateHrServic
       task.setCurrency(
           (Currency) productCompanyService.get(product, "saleCurrency", project.getCompany()));
       task.setUnitCost(product.getCostPrice());
-      task.setTimeUnit(appBaseService.getAppBase().getUnitHours());
       projectTaskBusinessProjectService.compute(task);
       task.setSoldTime(task.getBudgetedTime());
       task.setUpdatedTime(task.getBudgetedTime());

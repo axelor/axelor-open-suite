@@ -251,9 +251,11 @@
 
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
-    onNew="action-sale-order-method-onnew"
-    onSave="action-sale-order-line-tree-method-update-hasTree">
+    onNew="action-sale-order-method-onnew">
     <toolbar>
+      <button name="duplicateWithConfiguratorBtn" title="Duplicate with configurator"
+        onClick="action-sale-order-group-on-duplicate-with-configurator"
+        if="__config__.app.getApp('sale')?.getEnableConfigurator()" icon="fa-copy"/>
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -262,6 +264,7 @@
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
         if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
+
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
@@ -487,7 +490,7 @@
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
 
         <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
-          title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
+          title="Details Lines" field="saleOrderLineList" orderBy="sequence" canMove="true"
           form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
           widget="tree-grid" x-tree-field="subSaleOrderLineList"
           x-tree-field-title="Add a new sale order line"
@@ -499,17 +502,6 @@
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
           editable="true">
         </panel-related>
-
-        <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
-          height="30" widget="MasterDetail" form-view="sale-order-line-form"
-          tree-view="sale-order-line-tree" grid-view="sale-order-line-grid"
-          summary-view="sale-order-master-details-form" field="saleOrderLineList"
-          target="com.axelor.apps.sale.db.SaleOrderLine"
-          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          title="Details Lines" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change" canMove="true"
-          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE"/>
 
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"
@@ -1901,6 +1893,11 @@
     <context name="_saleOrder" expr="eval: __this__"/>
   </action-view>
 
+  <action-validate name="action-sale-order-validate-duplicate-lines">
+    <alert
+      message="This will duplicate lines and their configurator when possible, do you want to proceed ?"/>
+  </action-validate>
+
   <action-view name="action-view-show-stock-move-line" title="Customer deliveries"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-sale-order-grid"/>
@@ -2241,5 +2238,16 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="updateSaleOrderLinesDeliveryAddress"/>
   </action-method>
+
+  <action-method name="action-sale-order-duplicate-sale-order-with-configurator">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="duplicateWithConfigurator"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-on-duplicate-with-configurator">
+    <action name="save"/>
+    <action name="action-sale-order-validate-duplicate-lines"/>
+    <action name="action-sale-order-duplicate-sale-order-with-configurator"/>
+  </action-group>
 
 </object-views>

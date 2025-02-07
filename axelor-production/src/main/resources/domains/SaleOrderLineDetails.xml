@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="SaleOrderLineDetails">
+  <entity name="SaleOrderLineDetails" implements="com.axelor.apps.sale.interfaces.MarginLine">
 
     <string name="title" title="Title"/>
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10" min="0"/>
@@ -22,6 +22,11 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="billOfMaterialLine"
       ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
+    <decimal name="subTotalCostPrice" title="Sub total cost price" precision="20" scale="3"/>
+    <decimal name="subTotalGrossMargin" title="Sub Total gross profit" precision="20"
+      scale="3"/>
+    <decimal name="subMarginRate" title="Sub margin rate"/>
+    <decimal name="subTotalMarkup" title="Sub Total markup"/>
 
     <extra-code>
             <![CDATA[
@@ -32,5 +37,7 @@
 	  	]]>
     </extra-code>
 
+    <entity-listener
+      class="com.axelor.apps.production.db.repo.SaleOrderLineDetailsListener"/>
   </entity>
 </domain-models>

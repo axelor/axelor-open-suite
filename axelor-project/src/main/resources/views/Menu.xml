@@ -52,7 +52,9 @@
   </action-view>
 
   <menuitem name="project-reporting-planned-charge" parent="project-reporting" order="200"
-    title="Planned charge" action="project.planned.charge"/>
+    title="Planned charge" action="project.planned.charge"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+    if-module="axelor-human-resource"/>
   <action-view name="project.planned.charge" title="Planned charge">
     <view type="dashboard" name="project-planned-charge"/>
   </action-view>
@@ -243,6 +245,14 @@
     model="com.axelor.apps.project.db.ProjectVersion">
     <view type="grid" name="project-version-grid"/>
     <view type="form" name="project-version-form"/>
+  </action-view>
+
+  <menuitem name="project.dashboard.sample" parent="project-reporting"
+    title="Projects and resources management" action="project.dashboard" order="1800"/>
+
+  <action-view name="project.dashboard" title="Projects and resources management">
+    <view type="dashboard" name="project.dashboard.sample"/>
+
   </action-view>
 
 </object-views>

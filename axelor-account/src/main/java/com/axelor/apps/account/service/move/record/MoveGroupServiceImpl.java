@@ -175,7 +175,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveCheckService.checkPeriodPermission(move);
     moveDefaultService.setDefaultValues(move);
-    moveRecordSetService.setJournal(move);
+    if (move.getJournal() == null) {
+      moveRecordSetService.setJournal(move);
+    }
     moveRecordSetService.setPeriod(move);
 
     moveRecordSetService.setFunctionalOriginSelect(move);

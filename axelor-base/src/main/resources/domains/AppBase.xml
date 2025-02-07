@@ -83,6 +83,9 @@
 
     <boolean name="activateBarCodeGeneration"
       title="Activate bar code generation for products" default="false"/>
+    <boolean name="enableMultiBarcodeOnProducts"
+      title="Enable multi-barcode management on products" default="false"
+      help="In addition to the main barcode, this feature allows you to enter a list of alternative barcodes to easily find the product on the application. Without the mobile app, these barcodes have only an informative value."/>
     <boolean name="editProductBarcodeType" title="Edit product barcode type" default="false"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
@@ -177,13 +180,16 @@
     <boolean name="isActivateInstanceInfoShortcut" default="false"
       title="Activate the instance information shortcut"
       help="This configuration allows quick access to the type of environment and the configured date and time"/>
-    <boolean name="isActivateCompanyChangeShortcut" default="false"
-      title="Activate the company change shortcut"
-      help="This configuration allows quick access to the active company change"/>
+    <string name="shortcutMultiSelect" title="Activate changes shortcut for"
+      selection="base.change.shortcut.select"
+      help="This configuration allows to display a shortcut to switch active company/trading name of the current user."/>
 
     <integer name="defaultBatchFetchLimit" title="Default batch fetch limit"
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
       min="0"/>
+
+    <boolean name="isRegistrationCodeCheckBlocking"
+      title="Restrict duplicate registration codes" default="false"/>
 
     <extra-code>
 	   		<![CDATA[
@@ -196,6 +202,9 @@
 
 	   			public static final String SEQUENCE_PER_PRODUCT = "Per product";
 	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
+
+	   			public static final String SHORTCUT_ACTIVE_COMPANY = "0";
+	   			public static final String SHORTCUT_ACTIVE_TRADING_NAME = "1";
 
 	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
 	   		]]>
