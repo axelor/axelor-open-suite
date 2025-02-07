@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.businessproject.db.ProjectHoldBackATI;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -133,8 +134,8 @@ public class MoveLineCreateServiceBusinessProjectImpl extends MoveLineCreateServ
               move,
               partner,
               partnerAccount,
-              invoice.getInTaxTotal(),
-              invoice.getCompanyInTaxTotal(),
+              invoice.getInTaxTotal().subtract(invoice.getHoldBacksTotal()),
+              invoice.getCompanyInTaxTotal().subtract(invoice.getCompanyHoldBacksTotal()),
               null,
               isDebitCustomer,
               invoice.getInvoiceDate(),
@@ -247,6 +248,30 @@ public class MoveLineCreateServiceBusinessProjectImpl extends MoveLineCreateServ
       }
     }
 
+    // Creation of hold backs move lines
+    for (ProjectHoldBackATI projectHoldBackATI : invoice.getProjectHoldBackATIList()) {
+      if (projectHoldBackATI.getAmount().compareTo(BigDecimal.ZERO) != 0) {
+        Account account = accountingSituationService.getPartnerAccount(invoice, true);
+
+        MoveLine moveLine =
+            this.createMoveLine(
+                move,
+                partner,
+                account,
+                projectHoldBackATI.getAmount().abs(),
+                projectHoldBackATI.getCompanyAmount().abs(),
+                null,
+                isDebitCustomer,
+                invoice.getInvoiceDate(),
+                null,
+                invoice.getOriginDate(),
+                moveLineId++,
+                origin,
+                null);
+        moveLines.add(moveLine);
+      }
+    }
+
     if (consolidate) {
       moveLineConsolidateService.consolidateMoveLines(moveLines);
     }
@@ -254,6 +279,7 @@ public class MoveLineCreateServiceBusinessProjectImpl extends MoveLineCreateServ
     return moveLines;
   }
 
+  @Override
   protected List<MoveLine> addInvoiceTermMoveLines(
       Invoice invoice,
       Account partnerAccount,
@@ -264,19 +290,32 @@ public class MoveLineCreateServiceBusinessProjectImpl extends MoveLineCreateServ
       throws AxelorException {
     int moveLineId = 1;
     BigDecimal totalCompanyAmount = BigDecimal.ZERO;
-    List<MoveLine> moveLines = new ArrayList<MoveLine>();
+    BigDecimal totalAmount = BigDecimal.ZERO;
+    List<MoveLine> moveLines = new ArrayList<>();
     MoveLine moveLine = null;
     MoveLine holdBackMoveLine;
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
     BigDecimal companyAmount;
+    BigDecimal amount;
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       companyAmount =
           invoiceTerm.equals(
                   invoice.getInvoiceTermList().get(invoice.getInvoiceTermList().size() - 1))
-              ? (invoice.getCompanyInTaxTotal().subtract(totalCompanyAmount))
+              ? (invoice
+                  .getCompanyInTaxTotal()
+                  .subtract(totalCompanyAmount.add(invoice.getCompanyHoldBacksTotal().abs())))
               : invoiceTerm.getCompanyAmount();
       totalCompanyAmount = totalCompanyAmount.add(invoiceTerm.getCompanyAmount());
+
+      amount =
+          invoiceTerm.equals(
+                  invoice.getInvoiceTermList().get(invoice.getInvoiceTermList().size() - 1))
+              ? (invoice
+                  .getInTaxTotal()
+                  .subtract(totalAmount.add(invoice.getHoldBacksTotal().abs())))
+              : invoiceTerm.getAmount();
+      totalAmount = totalAmount.add(invoiceTerm.getAmount());
 
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
@@ -286,7 +325,7 @@ public class MoveLineCreateServiceBusinessProjectImpl extends MoveLineCreateServ
                 move,
                 partner,
                 account,
-                invoiceTerm.getAmount(),
+                amount,
                 companyAmount,
                 null,
                 isDebitCustomer,
@@ -305,7 +344,7 @@ public class MoveLineCreateServiceBusinessProjectImpl extends MoveLineCreateServ
                   move,
                   partner,
                   account,
-                  invoiceTerm.getAmount(),
+                  amount,
                   companyAmount,
                   null,
                   isDebitCustomer,
@@ -318,13 +357,12 @@ public class MoveLineCreateServiceBusinessProjectImpl extends MoveLineCreateServ
         } else {
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
-            BigDecimal currencyAmount = moveLine.getCurrencyAmount().add(invoiceTerm.getAmount());
+            BigDecimal currencyAmount = moveLine.getCurrencyAmount().add(amount);
             moveLine.setDebit(moveLine.getDebit().add(companyAmount));
             moveLine.setCurrencyAmount(currencyAmount);
           } else {
             // Credit
-            BigDecimal currencyAmount =
-                moveLine.getCurrencyAmount().subtract(invoiceTerm.getAmount());
+            BigDecimal currencyAmount = moveLine.getCurrencyAmount().subtract(amount);
             moveLine.setCredit(moveLine.getCredit().add(companyAmount));
             moveLine.setCurrencyAmount(currencyAmount);
           }

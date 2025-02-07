@@ -46,7 +46,8 @@ public class InvoiceTermPaymentServiceBusinessProjectImpl extends InvoiceTermPay
         invoicePayment.getInvoiceTermPaymentList().stream()
             .map(it -> it.getPaidAmount().add(it.getFinancialDiscountAmount()))
             .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
+            .orElse(BigDecimal.ZERO)
+            .subtract(invoicePayment.getInvoice().getHoldBacksTotal().abs());
 
     sum =
         currencyScaleService.getScaledValue(
