@@ -15,6 +15,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymen
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolService;
 import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -25,12 +26,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -86,14 +87,15 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
   public void updateAmountPaid(Invoice invoice) throws AxelorException {
 
     invoice.setAmountPaid(computeAmountPaid(invoice));
-    invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
-    invoice.setCompanyInTaxTotalRemaining(computeCompanyAmountRemaining(invoice));
+    invoice.setAmountRemaining(
+        invoice.getInTaxTotal().subtract(invoice.getAmountPaid()).add(invoice.getHoldBacksTotal()));
+    invoice.setCompanyInTaxTotalRemaining(
+        computeCompanyAmountRemaining(invoice).add(invoice.getCompanyHoldBacksTotal()));
     updateHasPendingPayments(invoice);
     updatePaymentProgress(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
     SaleOrder saleOrder = invoice.getSaleOrder();
@@ -116,12 +118,21 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
     BigDecimal pendingAmount = BigDecimal.ZERO;
 
     if (invoice.getInvoicePaymentList() != null) {
+      Currency currency = invoice.getCurrency();
       for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
         if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
-          pendingAmount = pendingAmount.add(invoicePayment.getAmount());
+          pendingAmount =
+              pendingAmount.add(
+                  currencyService.getAmountCurrencyConvertedAtDate(
+                      invoicePayment.getCurrency(),
+                      currency,
+                      invoicePayment.getAmount(),
+                      invoicePayment.getPaymentDate()));
         }
       }
     }
+
+    pendingAmount = pendingAmount.add(invoice.getHoldBacksTotal());
     BigDecimal remainingAmount =
         invoice.getFinancialDiscount() != null
             ? invoice.getRemainingAmountAfterFinDiscount()
@@ -150,12 +161,23 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
                 it -> it.setApplyFinancialDiscount(invoicePayment.getApplyFinancialDiscount()));
       }
 
+      Invoice invoice = invoicePayment.getInvoice();
+      LocalDate paymentDate = invoicePayment.getPaymentDate();
+      Currency paymentCurrency = invoicePayment.getCurrency();
+
       BigDecimal payableCurrencyAmount =
           this.getPayableAmount(
               invoiceTerms,
-              invoicePayment.getPaymentDate(),
+              paymentDate,
               invoicePayment.getManualChange(),
               invoicePayment.getCurrency());
+      payableCurrencyAmount =
+          payableCurrencyAmount.subtract(
+              currencyService.getAmountCurrencyConvertedAtDate(
+                  invoice.getCurrency(),
+                  paymentCurrency,
+                  invoice.getHoldBacksTotal().abs(),
+                  paymentDate));
 
       if (!invoicePayment.getManualChange()
           || invoicePayment.getAmount().compareTo(payableCurrencyAmount) > 0) {
@@ -220,7 +242,7 @@ public class InvoicePaymentToolServiceBusinessProjectImpl
             .getAmountPaid()
             .multiply(new BigDecimal(100))
             .divide(
-                invoice.getInTaxTotal(),
+                invoice.getInTaxTotal().subtract(invoice.getHoldBacksTotal().abs()),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP)
             .intValue());

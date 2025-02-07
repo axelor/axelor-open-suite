@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -27,7 +28,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
-import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.i18n.I18n;
@@ -66,7 +67,8 @@ public class MoveValidateServiceBusinessProjectImpl extends MoveValidateHRServic
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
-      TaxService taxService) {
+      TaxAccountService taxAccountService,
+      UserService userService) {
     super(
         moveLineControlService,
         moveLineToolService,
@@ -90,14 +92,15 @@ public class MoveValidateServiceBusinessProjectImpl extends MoveValidateHRServic
         currencyScaleService,
         moveLineFinancialDiscountService,
         expenseRepository,
-        taxService);
+        taxAccountService,
+        userService);
   }
 
+  @Override
   protected void checkMoveLineInvoiceTermBalance(Move move) throws AxelorException {
 
     log.debug(
         "Well-balanced move line invoice terms validation on account move {}", move.getReference());
-    BigDecimal financialDiscount = this.getInvoiceTermFinancialDiscount(move);
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
@@ -108,7 +111,8 @@ public class MoveValidateServiceBusinessProjectImpl extends MoveValidateHRServic
           moveLine.getInvoiceTermList().stream()
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+      totalMoveLineInvoiceTerm =
+          totalMoveLineInvoiceTerm.add(move.getInvoice().getCompanyHoldBacksTotal());
       if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
         throw new AxelorException(
             move,
