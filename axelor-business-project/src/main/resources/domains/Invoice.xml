@@ -27,6 +27,11 @@
           // GROUPING PERIOD SELECT
           public static final String GROUPING_PERIOD_MONTH = "month";
 	      public static final String GROUPING_PERIOD_WEEK = "week";
+
+	      // REPORT TYPE
+          public static final int REPORT_TYPE_INVOICE_WITH_HOLD_BACKS_DETAILS= 5;
+          public static final int REPORT_TYPE_INVOICE_WITH_PAYMENTS_AND_HOLD_BACKS_DETAILS= 6;
+
       ]]>
     </extra-code>
 

@@ -228,4 +228,11 @@ public interface ITranslation {
   public static final String INVOICE_EXPENSE_COMMENTS = /*$$(*/ "InvoiceExpense.comments"; /*)*/
   public static final String INVOICE_EXPENSE_EMPLOYEE = /*$$(*/ "InvoiceExpense.employee"; /*)*/
   public static final String GROUPING_PERIOD_WEEK = /*$$(*/ "week"; /*)*/
+
+  // ProjectHoldBackATI - Business Project
+  public static final String PROJECT_HOLD_BACK_ATI_NAME = /*$$(*/ "ProjectHoldBackATI.name"; /*)*/
+  public static final String PROJECT_HOLD_BACK_ATI_AMOUNT = /*$$(*/
+      "ProjectHoldBackATI.amount"; /*)*/
+  public static final String PROJECT_HOLD_BACK_ATI_PERCENTAGE = /*$$(*/
+      "ProjectHoldBackATI.percentage"; /*)*/
 }

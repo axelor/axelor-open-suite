@@ -193,6 +193,8 @@
 "Invoice lines","Lignes de factures",,
 "Invoice post task","Facturation post-tâche",,
 "Invoice pre task","Facturation pré-tâche",,
+"Invoice with holdBacks details","Facture avec détails des retenues",,
+"Invoice with payments and holdBacks details","Facture avec détails des paiements et des retenues",,
 "Invoice.creditNoteNoAnnex","ANNEXE D'AVOIR N°",,
 "Invoice.draftInvoiceNoAnnex","ANNEXE DE FACTURE PROFORMA N°",,
 "Invoice.expenseProduct","Type de note de frais",,
