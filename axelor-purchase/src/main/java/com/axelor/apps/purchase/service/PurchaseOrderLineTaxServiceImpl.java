@@ -192,45 +192,80 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
     for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
-      // Dans la devise de la commande
-      BigDecimal exTaxBase =
-          purchaseOrderLineTax.getReverseCharged()
-              ? purchaseOrderLineTax.getExTaxBase().negate()
-              : purchaseOrderLineTax.getExTaxBase();
-      BigDecimal taxTotal = BigDecimal.ZERO;
-      int currencyScale = currencyScaleService.getCurrencyScale(currency);
-
-      if (purchaseOrderLineTax.getTaxLine() != null) {
-        taxTotal =
-            exTaxBase.multiply(
-                purchaseOrderLineTax
-                    .getTaxLine()
-                    .getValue()
-                    .divide(
-                        new BigDecimal(100),
-                        AppBaseService.COMPUTATION_SCALING,
-                        RoundingMode.HALF_UP));
-      }
-      purchaseOrderLineTax.setTaxTotal(
-          currencyScaleService.getScaledValue(taxTotal, currencyScale));
-      purchaseOrderLineTax.setInTaxTotal(
-          currencyScaleService.getScaledValue(
-              purchaseOrderLineTax.getExTaxBase().add(taxTotal), currencyScale));
-      purchaseOrderLineTax.setPercentageTaxTotal(purchaseOrderLineTax.getTaxTotal());
-
-      PurchaseOrderLineTax oldPurchaseOrderLineTax =
-          getExistingPurchaseOrderLineTax(purchaseOrderLineTax, currentPurchaseOrderLineTaxList);
-      if (oldPurchaseOrderLineTax == null) {
-        purchaseOrderLineTaxList.add(purchaseOrderLineTax);
-
-        LOG.debug(
-            "Tax line : Tax total => {}, Total W.T. => {}",
-            purchaseOrderLineTax.getTaxTotal(),
-            purchaseOrderLineTax.getInTaxTotal());
-      } else {
-        purchaseOrderLineTaxList.add(oldPurchaseOrderLineTax);
-      }
+      computeAndAddPurchaseOrderLineTax(
+          purchaseOrderLineTax,
+          purchaseOrderLineTaxList,
+          currency,
+          currentPurchaseOrderLineTaxList);
     }
+  }
+
+  protected void computeAndAddPurchaseOrderLineTax(
+      PurchaseOrderLineTax purchaseOrderLineTax,
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
+      Currency currency,
+      List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
+    TaxLine taxLine = purchaseOrderLineTax.getTaxLine();
+    BigDecimal taxTotal = this.computeTaxLineTaxTotal(taxLine, purchaseOrderLineTax);
+
+    this.computePurchaseOrderLineTax(
+        purchaseOrderLineTax,
+        currency,
+        taxTotal,
+        currentPurchaseOrderLineTaxList,
+        purchaseOrderLineTaxList);
+  }
+
+  protected void computePurchaseOrderLineTax(
+      PurchaseOrderLineTax purchaseOrderLineTax,
+      Currency currency,
+      BigDecimal taxTotal,
+      List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList,
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList) {
+    int currencyScale = currencyScaleService.getCurrencyScale(currency);
+
+    purchaseOrderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
+    purchaseOrderLineTax.setInTaxTotal(
+        currencyScaleService.getScaledValue(
+            purchaseOrderLineTax.getExTaxBase().add(taxTotal), currencyScale));
+    purchaseOrderLineTax.setPercentageTaxTotal(purchaseOrderLineTax.getTaxTotal());
+
+    PurchaseOrderLineTax oldPurchaseOrderLineTax =
+        getExistingPurchaseOrderLineTax(purchaseOrderLineTax, currentPurchaseOrderLineTaxList);
+    if (oldPurchaseOrderLineTax == null) {
+      purchaseOrderLineTaxList.add(purchaseOrderLineTax);
+
+      LOG.debug(
+          "Tax line : Tax total => {}, Total W.T. => {}",
+          purchaseOrderLineTax.getTaxTotal(),
+          purchaseOrderLineTax.getInTaxTotal());
+    } else {
+      purchaseOrderLineTaxList.add(oldPurchaseOrderLineTax);
+    }
+  }
+
+  protected BigDecimal computeTaxLineTaxTotal(
+      TaxLine taxLine, PurchaseOrderLineTax purchaseOrderLineTax) {
+    BigDecimal taxTotal = BigDecimal.ZERO;
+
+    // Dans la devise de la commande
+    BigDecimal exTaxBase =
+        purchaseOrderLineTax.getReverseCharged()
+            ? purchaseOrderLineTax.getExTaxBase().negate()
+            : purchaseOrderLineTax.getExTaxBase();
+
+    if (taxLine != null) {
+      taxTotal =
+          exTaxBase.multiply(
+              taxLine
+                  .getValue()
+                  .divide(
+                      new BigDecimal(100),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP));
+    }
+
+    return taxTotal;
   }
 
   @Override
