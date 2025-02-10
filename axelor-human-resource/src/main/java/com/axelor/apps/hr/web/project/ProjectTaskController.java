@@ -26,6 +26,7 @@ public class ProjectTaskController {
     ProjectTask projectTask = EntityMergingHelper.merge(request.getContext(), ProjectTask.class);
 
     Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
+    response.setValue("oldActiveSprint", projectTask.getActiveSprint());
     response.setValue("projectPlanningTimeList", projectTask.getProjectPlanningTimeList());
   }
 }

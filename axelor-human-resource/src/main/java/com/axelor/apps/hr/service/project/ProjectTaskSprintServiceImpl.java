@@ -86,7 +86,6 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     Sprint savedSprint = projectTask.getOldActiveSprint();
-    projectTask.setOldActiveSprint(projectTask.getActiveSprint());
 
     Sprint backlogSprint =
         Optional.of(projectTask)
