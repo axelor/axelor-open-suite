@@ -5,7 +5,7 @@ import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public interface InvoiceDiscountService {
+public interface InvoiceGlobalDiscountService {
 
   void applyGlobalDiscountOnLines(Invoice invoice) throws AxelorException;
 

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 
-public class InvoiceDiscountServiceImpl implements InvoiceDiscountService {
+public class InvoiceGlobalDiscountServiceImpl implements InvoiceGlobalDiscountService {
 
   protected final GlobalDiscountService globalDiscountService;
 
@@ -19,7 +19,7 @@ public class InvoiceDiscountServiceImpl implements InvoiceDiscountService {
   protected final InvoiceLineService invoiceLineService;
 
   @Inject
-  public InvoiceDiscountServiceImpl(
+  public InvoiceGlobalDiscountServiceImpl(
       GlobalDiscountService globalDiscountService,
       InvoiceService invoiceService,
       InvoiceLineService invoiceLineService) {
