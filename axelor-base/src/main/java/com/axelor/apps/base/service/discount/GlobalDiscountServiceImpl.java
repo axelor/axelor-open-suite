@@ -39,18 +39,17 @@ public class GlobalDiscountServiceImpl implements GlobalDiscountService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
     switch (discountTypeSelect) {
       case PriceListLineRepository.AMOUNT_TYPE_PERCENT:
-        setSaleOrderPercentageGlobalDiscountDummies(
+        setPercentageGlobalDiscountDummies(
             currency, exTaxTotal, priceBeforeGlobalDiscount, attrsMap);
         break;
       case PriceListLineRepository.AMOUNT_TYPE_FIXED:
-        setSaleOrderFixedGlobalDiscountDummies(
-            currency, exTaxTotal, priceBeforeGlobalDiscount, attrsMap);
+        setFixedGlobalDiscountDummies(currency, exTaxTotal, priceBeforeGlobalDiscount, attrsMap);
         break;
     }
     return attrsMap;
   }
 
-  protected void setSaleOrderPercentageGlobalDiscountDummies(
+  protected void setPercentageGlobalDiscountDummies(
       Currency currency,
       BigDecimal exTaxTotal,
       BigDecimal priceBeforeGlobalDiscount,
@@ -69,7 +68,7 @@ public class GlobalDiscountServiceImpl implements GlobalDiscountService {
         attrsMap);
   }
 
-  protected void setSaleOrderFixedGlobalDiscountDummies(
+  protected void setFixedGlobalDiscountDummies(
       Currency currency,
       BigDecimal exTaxTotal,
       BigDecimal priceBeforeGlobalDiscount,

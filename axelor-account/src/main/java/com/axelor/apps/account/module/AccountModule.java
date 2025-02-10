@@ -181,12 +181,12 @@ import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceDiscountService;
-import com.axelor.apps.account.service.invoice.InvoiceDiscountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
@@ -977,6 +977,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceTermDateComputeService.class).to(InvoiceTermDateComputeServiceImpl.class);
     bind(InvoiceLineCheckService.class).to(InvoiceLineCheckServiceImpl.class);
-    bind(InvoiceDiscountService.class).to(InvoiceDiscountServiceImpl.class);
+    bind(InvoiceGlobalDiscountService.class).to(InvoiceGlobalDiscountServiceImpl.class);
   }
 }
