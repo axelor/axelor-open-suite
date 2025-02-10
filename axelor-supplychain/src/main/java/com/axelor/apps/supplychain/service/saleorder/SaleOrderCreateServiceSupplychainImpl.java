@@ -145,42 +145,6 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         null);
   }
 
-  public SaleOrder createSaleOrder(
-      User salespersonUser,
-      Company company,
-      Partner contactPartner,
-      Currency currency,
-      LocalDate estimatedShippingDate,
-      String internalReference,
-      String externalReference,
-      StockLocation stockLocation,
-      PriceList priceList,
-      Partner clientPartner,
-      Team team,
-      TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
-      throws AxelorException {
-
-    return createSaleOrder(
-        salespersonUser,
-        company,
-        contactPartner,
-        currency,
-        estimatedShippingDate,
-        internalReference,
-        externalReference,
-        stockLocation,
-        priceList,
-        clientPartner,
-        team,
-        taxNumber,
-        fiscalPosition,
-        null,
-        null,
-        null,
-        null);
-  }
-
   @Override
   public SaleOrder createSaleOrder(
       User salespersonUser,

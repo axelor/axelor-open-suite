@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrderLine"
-    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable, com.axelor.apps.sale.interfaces.MarginLine">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -26,7 +26,6 @@
     </string>
     <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
       title="Sale order"/>
-    <boolean name="hasTree" title="Has tree"/>
     <integer name="sequence" title="Seq."/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
@@ -114,9 +113,6 @@
       ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentSaleOrderLine"/>
     <many-to-one name="parentSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Parent sale order line"/>
-
-    <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
-      ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>
 
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[

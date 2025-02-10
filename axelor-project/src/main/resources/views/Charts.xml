@@ -66,4 +66,25 @@
       widget="Progress"/>
     <field name="budgetedTime" title="Budgeted time" aggregate="sum" type="String"/>
   </grid>
+
+  <grid name="project-planning-time-dashboard-grid" title="Project"
+    model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <field name="project.name" type="com.axelor.apps.project.db.Project"/>
+    <field name="employee.name" title="Employee" type="com.axelor.apps.hr.db.Employee"/>
+    <field name="projectTask.name" title="Project task"
+      type="com.axelor.apps.project.db.ProjectTask"/>
+    <field name="timeUnit.name" title="Time unit" type="String"/>
+    <field name="plannedTime" title="Planned time" aggregate="sum" type="String"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+      if-module="axelor-human-resource"/>
+    <field name="startDateTime" title="Start date"/>
+    <field name="endDateTime" title="End date"/>
+  </grid>
+  <grid name="project-allocation-line-grid" title="Project"
+    model="com.axelor.apps.hr.db.AllocationLine" orderBy="period.name,project.name,employee.name">
+    <field name="project.name" type="com.axelor.apps.project.db.Project"/>
+    <field name="employee.name" title="Employee" type="com.axelor.apps.hr.db.Employee"/>
+    <field name="period.name" title="Period" type="com.axelor.apps.base.db.Period"/>
+    <field name="allocated" title="Allocated" aggregate="sum" type="String"/>
+  </grid>
 </object-views>

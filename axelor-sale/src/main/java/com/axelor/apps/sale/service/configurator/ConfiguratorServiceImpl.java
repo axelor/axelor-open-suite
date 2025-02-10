@@ -52,13 +52,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.axelor.utils.helpers.MetaHelper;
-import com.axelor.utils.helpers.json.JsonHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
@@ -248,6 +245,23 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
+  public void regenerateProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
+    Objects.requireNonNull(configurator);
+    Objects.requireNonNull(configurator.getProduct());
+
+    fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    configurator.setProduct(product);
+    product.setConfigurator(configurator);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void fillProductFields(
       Configurator configurator,
       Product product,
@@ -375,22 +389,24 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
       var product = configurator.getProduct();
       // Editing the product will automatically regenerate lines and remove old line
-      fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
+      regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
       configuratorSaleOrderLineService.regenerateSaleOrderLine(
-          configurator, product, saleOrderLine);
+          configurator, product, saleOrderLine, saleOrder);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
 
     } else {
 
       configuratorCheckService.checkLinkedSaleOrderLine(configurator);
 
-      duplicateLine(configurator, saleOrder, jsonAttributes, jsonIndicators);
+      generateSaleOrderLine(configurator, saleOrder, jsonAttributes, jsonIndicators);
       saleOrder.removeSaleOrderLineListItem(saleOrderLine);
       saleOrderComputeService.computeSaleOrder(saleOrder);
       saleOrderRepository.save(saleOrder);
     }
   }
 
-  protected SaleOrderLine duplicateLine(
+  @Override
+  public SaleOrderLine generateSaleOrderLine(
       Configurator configurator,
       SaleOrder saleOrder,
       JsonContext jsonAttributes,
@@ -401,65 +417,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     saleOrderLineRepository.save(newSaleOrderLine);
     newSaleOrderLine.setConfigurator(configurator);
     return newSaleOrderLine;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void duplicateSaleOrderLine(SaleOrderLine saleOrderLine)
-      throws AxelorException, JsonProcessingException {
-
-    Objects.requireNonNull(saleOrderLine);
-    var configurator = saleOrderLine.getConfigurator();
-    var context = new Context(Configurator.class);
-
-    var saleOrder = saleOrderLine.getSaleOrder();
-    var duplicatedConfigurator = configuratorRepository.copy(configurator, false);
-    var jsonAttributes =
-        new JsonContext(
-            context,
-            Mapper.of(Configurator.class).getProperty("attributes"),
-            duplicatedConfigurator.getAttributes());
-    var jsonIndicators =
-        new JsonContext(
-            context,
-            Mapper.of(Configurator.class).getProperty("indicators"),
-            duplicatedConfigurator.getIndicators());
-
-    duplicateLine(saleOrderLine, duplicatedConfigurator, jsonAttributes, jsonIndicators, saleOrder);
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void simpleDuplicate(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    var copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
-    saleOrder.addSaleOrderLineListItem(copiedSaleOrderLine);
-    saleOrderComputeService.computeSaleOrder(saleOrder);
-    saleOrderRepository.save(saleOrder);
-  }
-
-  protected void duplicateLine(
-      SaleOrderLine saleOrderLine,
-      Configurator duplicatedConfigurator,
-      JsonContext jsonAttributes,
-      JsonContext jsonIndicators,
-      SaleOrder saleOrder)
-      throws AxelorException, JsonProcessingException {
-    updateIndicators(duplicatedConfigurator, jsonAttributes, jsonIndicators, saleOrder.getId());
-    duplicatedConfigurator.setIndicators(JsonHelper.toJson(jsonIndicators));
-    if (duplicatedConfigurator.getConfiguratorCreator().getGenerateProduct()) {
-      generateProduct(duplicatedConfigurator, jsonAttributes, jsonIndicators, saleOrder.getId());
-      configuratorSaleOrderLineService.generateSaleOrderLine(
-          duplicatedConfigurator, duplicatedConfigurator.getProduct(), saleOrderLine);
-    } else {
-
-      configuratorCheckService.checkLinkedSaleOrderLine(duplicatedConfigurator);
-      duplicateLine(duplicatedConfigurator, saleOrder, jsonAttributes, jsonIndicators);
-      saleOrderComputeService.computeSaleOrder(saleOrder);
-      saleOrderRepository.save(saleOrder);
-    }
-
-    configuratorRepository.save(duplicatedConfigurator);
   }
 
   /**

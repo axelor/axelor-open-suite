@@ -286,12 +286,28 @@
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
       <field name="projectTaskStatusSet" widget="TagSelect"
-        showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
-        canEdit="false" onChange="action-project-method-manage-completed-task-status"/>
+        readonlyIf="projectTaskList.length &gt; 0" showIf="taskStatusManagementSelect == 2"
+        requiredIf="taskStatusManagementSelect == 2" canEdit="false"
+        onChange="action-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form" showIf="taskStatusManagementSelect == 2"
         requiredIf="taskStatusManagementSelect == 2"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
+      <panel name="taskStatusManagementPanel" colSpan="12"
+        showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
+        <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
+          title="Status to add" onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
+          target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="addStatusBtn"
+          onClick="action-project-attrs-add-task-status,action-project-method-manage-completed-task-status"
+          title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
+        <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
+          title="Status to remove" onSelect="action-project-attrs-status-to-remove-domain"
+          colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="removeStatusBtn"
+          onClick="save, action-project-method-remove-task-status" title="Remove status" colSpan="3"
+          showIf="$statusToRemoveSet.length &gt; 0"/>
+      </panel>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
       <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
@@ -616,6 +632,22 @@
     <attribute for="sprintList.targetVersion" name="hidden" expr="eval: true"/>
   </action-attrs>
 
+  <action-attrs name="action-project-attrs-status-to-add-domain">
+    <attribute for="$statusToAddSet" name="domain"
+      expr="eval: &quot; self.id NOT IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-status-to-remove-domain">
+    <attribute for="$statusToRemoveSet" name="domain"
+      expr="eval: &quot; self.id IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-add-task-status">
+    <attribute for="projectTaskStatusSet" name="value"
+      expr="eval: projectTaskStatusSet+statusToAddSet"/>
+    <attribute for="$statusToAddSet" name="value" expr="eval: null"/>
+  </action-attrs>
+
   <!-- ACTION RECORD -->
 
   <action-record name="action-project-record-bind-customer-project"
@@ -740,6 +772,10 @@
 
   <action-method name="action-project-method-generate-backlog-sprint">
     <call class="com.axelor.apps.project.web.ProjectController" method="generateBacklogSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-remove-task-status">
+    <call class="com.axelor.apps.project.web.ProjectController" method="removeTaskStatus"/>
   </action-method>
 
   <action-method name="action-project-method-tasks-per-sprint">

@@ -30,7 +30,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -49,27 +49,30 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   protected TaxService taxService;
   protected CurrencyScaleService currencyScaleService;
   protected ProductCompanyService productCompanyService;
-  protected SaleOrderMarginService saleOrderMarginService;
+  protected MarginComputeService marginComputeService;
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
   protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService;
 
   @Inject
   public SaleOrderLineComputeServiceImpl(
       TaxService taxService,
       CurrencyScaleService currencyScaleService,
       ProductCompanyService productCompanyService,
-      SaleOrderMarginService saleOrderMarginService,
+      MarginComputeService marginComputeService,
       CurrencyService currencyService,
       PriceListService priceListService,
-      SaleOrderLinePackService saleOrderLinePackService) {
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService) {
     this.taxService = taxService;
     this.currencyScaleService = currencyScaleService;
     this.productCompanyService = productCompanyService;
-    this.saleOrderMarginService = saleOrderMarginService;
+    this.marginComputeService = marginComputeService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.saleOrderLinePackService = saleOrderLinePackService;
+    this.saleOrderLineCostPriceComputeService = saleOrderLineCostPriceComputeService;
   }
 
   @Override
@@ -90,7 +93,6 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine, saleOrder.getInAti());
     BigDecimal taxRate = BigDecimal.ZERO;
-    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (CollectionUtils.isNotEmpty(saleOrderLine.getTaxLineSet())) {
       taxRate = taxService.getTotalTaxRate(saleOrderLine.getTaxLineSet());
@@ -125,19 +127,9 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     }
 
     Product product = saleOrderLine.getProduct();
-    if (product != null
-        && ((BigDecimal)
-                    productCompanyService.get(
-                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                .compareTo(BigDecimal.ZERO)
-            != 0) {
-      subTotalCostPrice =
-          currencyScaleService.getCompanyScaledValue(
-              saleOrder,
-              ((BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()))
-                  .multiply(saleOrderLine.getQty()));
-    }
-
+    map.putAll(
+        saleOrderLineCostPriceComputeService.computeSubTotalCostPrice(
+            saleOrder, saleOrderLine, product));
     map.putAll(setProductIconType(saleOrderLine, product));
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
@@ -145,15 +137,15 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     saleOrderLine.setPriceDiscounted(priceDiscounted);
     saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
-    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
     map.put("inTaxTotal", inTaxTotal);
     map.put("exTaxTotal", exTaxTotal);
     map.put("priceDiscounted", priceDiscounted);
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
-    map.put("subTotalCostPrice", subTotalCostPrice);
 
-    map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
+    map.putAll(
+        marginComputeService.getComputedMarginInfo(
+            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal()));
 
     return map;
   }

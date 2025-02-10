@@ -65,4 +65,12 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
     }
     return super.populate(json, context);
   }
+
+  @Override
+  public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
+    SaleOrderLine copy = super.copy(entity, deep);
+    copy.setConfigurator(null);
+
+    return copy;
+  }
 }

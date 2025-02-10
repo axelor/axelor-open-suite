@@ -20,15 +20,12 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -53,16 +50,13 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.studio.db.AppSupplychain;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -91,6 +85,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected UnitConversionForProjectService unitConversionForProjectService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected ProjectTimeUnitService projectTimeUnitService;
+  protected SaleOrderGeneratorService saleOrderGeneratorService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -114,7 +109,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       InvoiceRepository invoiceRepository,
       UnitConversionForProjectService unitConversionForProjectService,
       SaleOrderStockLocationService saleOrderStockLocationService,
-      ProjectTimeUnitService projectTimeUnitService) {
+      ProjectTimeUnitService projectTimeUnitService,
+      SaleOrderGeneratorService saleOrderGeneratorService) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -132,12 +128,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.projectTimeUnitService = projectTimeUnitService;
+    this.saleOrderGeneratorService = saleOrderGeneratorService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateQuotation(Project project) throws AxelorException {
-    SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 
     Partner clientPartner = project.getClientPartner();
     Partner contactPartner = project.getContactPartner();
@@ -147,86 +143,35 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     Company company = project.getCompany();
 
+    Currency currency = getCurrency(project, clientPartner, company);
+
+    SaleOrder order =
+        saleOrderGeneratorService.createSaleOrder(
+            clientPartner, company, contactPartner, currency, null);
+
     order.setProject(projectRepository.find(project.getId()));
-    order.setClientPartner(clientPartner);
-    order.setContactPartner(contactPartner);
-    order.setCompany(company);
-
-    order.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
-    order.setMainInvoicingAddressStr(
-        addressService.computeAddressStr(order.getMainInvoicingAddress()));
-    order.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
-    order.setDeliveryAddressStr(addressService.computeAddressStr(order.getDeliveryAddress()));
-    order.setIsNeedingConformityCertificate(clientPartner.getIsNeedingConformityCertificate());
-    order.setCompanyBankDetails(
-        Beans.get(AccountingSituationService.class)
-            .getCompanySalesBankDetails(company, clientPartner));
-
-    if (project.getCurrency() != null) {
-      order.setCurrency(project.getCurrency());
-    } else if (clientPartner.getCurrency() != null) {
-      order.setCurrency(clientPartner.getCurrency());
-    } else {
-      order.setCurrency(company.getCurrency());
-    }
 
     if (project.getPriceList() != null) {
       order.setPriceList(project.getPriceList());
-    } else {
-      order.setPriceList(
-          Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE));
     }
 
     if (order.getPriceList() != null) {
       order.setHideDiscount(order.getPriceList().getHideDiscount());
     }
 
-    if (clientPartner.getPaymentCondition() != null) {
-      order.setPaymentCondition(clientPartner.getPaymentCondition());
-    } else {
-      if (company != null && company.getAccountConfig() != null) {
-        order.setPaymentCondition(company.getAccountConfig().getDefPaymentCondition());
-      }
-    }
-
-    if (clientPartner.getInPaymentMode() != null) {
-      order.setPaymentMode(clientPartner.getInPaymentMode());
-    } else {
-      if (company != null && company.getAccountConfig() != null) {
-        order.setPaymentMode(company.getAccountConfig().getInPaymentMode());
-      }
-    }
-
-    AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
-    if (appSupplychain != null) {
-      order.setShipmentMode(clientPartner.getShipmentMode());
-      order.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
-      if (clientPartner.getFreightCarrierMode() != null) {
-        order.setCarrierPartner(clientPartner.getFreightCarrierMode().getCarrierPartner());
-      }
-      Boolean interco =
-          appSupplychain.getIntercoFromSale()
-              && !order.getCreatedByInterco()
-              && clientPartner != null
-              && Beans.get(CompanyRepository.class)
-                      .all()
-                      .filter("self.partner = ?", clientPartner)
-                      .fetchOne()
-                  != null;
-      order.setInterco(interco);
-      order.setStockLocation(
-          saleOrderStockLocationService.getStockLocation(clientPartner, company));
-      order.setToStockLocation(
-          saleOrderStockLocationService.getToStockLocation(clientPartner, company));
-
-      // Automatic invoiced and delivered partners set in case of partner delegations
-      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
-        Beans.get(SaleOrderSupplychainService.class)
-            .setDefaultInvoicedAndDeliveredPartnersAndAddresses(order);
-      }
-    }
     return Beans.get(SaleOrderRepository.class).save(order);
+  }
+
+  protected Currency getCurrency(Project project, Partner clientPartner, Company company) {
+    Currency currency;
+    if (project.getCurrency() != null) {
+      currency = project.getCurrency();
+    } else if (clientPartner.getCurrency() != null) {
+      currency = clientPartner.getCurrency();
+    } else {
+      currency = company.getCurrency();
+    }
+    return currency;
   }
 
   /**
@@ -247,7 +192,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                 saleOrder.getCompany(),
                 saleOrder.getClientPartner())
             : project;
-    saleOrder.setProject(project);
     project.setDescription(saleOrder.getDescription());
     return project;
   }

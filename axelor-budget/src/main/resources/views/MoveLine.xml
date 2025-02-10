@@ -26,14 +26,15 @@
             </viewer>
           </field>
           <field name="budget" onChange="action-reset-budget-distribution-list-method"
-            readonlyIf="isBudgetImputed"
+            readonlyIf="isBudgetImputed || move.statusSelect == 2"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel" title="Budget"
             field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            onChange="action-group-budget-move-line-budget-distribution-onchange"/>
+            onChange="action-group-budget-move-line-budget-distribution-onchange"
+            readonlyIf="move.statusSelect == 2"/>
         </panel>
       </insert>
     </extend>

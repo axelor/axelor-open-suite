@@ -61,7 +61,6 @@
 		public static final int APP_SALE_LINE_DISPLAY_TYPE_CLASSIC = 0;
 		public static final int APP_SALE_LINE_DISPLAY_TYPE_EDITABLE = 1;
         public static final int APP_SALE_LINE_DISPLAY_TYPE_MULTI = 2;
-        public static final int APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE = 3;
       ]]>
     </extra-code>
 

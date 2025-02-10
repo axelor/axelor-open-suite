@@ -30,10 +30,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.cart.CartProductService;
-import com.axelor.apps.sale.service.configurator.ConfiguratorService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
@@ -123,8 +123,8 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, BigDecimal> map =
-        Beans.get(SaleOrderMarginService.class)
-            .getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine);
+        Beans.get(MarginComputeService.class)
+            .getComputedMarginInfo(saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal());
 
     response.setValues(map);
   }
@@ -371,13 +371,15 @@ public class SaleOrderLineController {
 
     try {
       if (saleOrderLine != null) {
-        Beans.get(ConfiguratorService.class).duplicateSaleOrderLine(saleOrderLine);
+        Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+            .duplicateSaleOrderLine(saleOrderLine);
         response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
       var sol = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
-      Beans.get(ConfiguratorService.class).simpleDuplicate(sol, sol.getSaleOrder());
+      Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+          .simpleDuplicate(sol, sol.getSaleOrder());
       response.setInfo(I18n.get(SaleExceptionMessage.ERROR_DURING_DUPLICATION_SALE_ORDER_LINE));
       response.setReload(true);
     }

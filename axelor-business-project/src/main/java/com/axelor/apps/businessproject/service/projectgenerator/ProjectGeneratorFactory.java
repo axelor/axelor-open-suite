@@ -21,7 +21,6 @@ package com.axelor.apps.businessproject.service.projectgenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryAlone;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactorySubProject;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTask;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryTaskTemplate;
@@ -59,8 +58,6 @@ public interface ProjectGeneratorFactory {
    */
   static ProjectGeneratorFactory getFactory(ProjectGeneratorType type) throws AxelorException {
     switch (type) {
-      case PROJECT_ALONE:
-        return Beans.get(ProjectGeneratorFactoryAlone.class);
       case TASK_BY_LINE:
         return Beans.get(ProjectGeneratorFactoryTask.class);
       case SUB_PROJECT_BY_LINE:

@@ -55,7 +55,7 @@
         target="com.axelor.apps.hr.db.Employee" grid-view="employee-grid" form-view="employee-form"
         widget="TagSelect" placeholder="All" canNew="false"
         onSelect="action-allocation-line-method-set-employee-set-domain"/>
-      <field name="$periodSet" title="Periods" type="many-to-many"
+      <field name="$periodSet" title="Allocation periods" type="many-to-many"
         target="com.axelor.apps.base.db.Period" grid-view="period-grid"
         form-view="period-hr-allocation-form" widget="TagSelect" required="true"
         domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
