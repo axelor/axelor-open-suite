@@ -222,6 +222,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     var subSaleOrderLineListSize =
         Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .map(SaleOrderLine::getProduct)
+            .filter(Objects::nonNull)
             .map(Product::getProductSubTypeSelect)
             .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .count();
@@ -230,10 +231,11 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .filter(
                 subSaleOrderLine ->
-                    subSaleOrderLine
-                        .getProduct()
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+                    subSaleOrderLine.getProduct() != null
+                        && subSaleOrderLine
+                            .getProduct()
+                            .getProductSubTypeSelect()
+                            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
   }
 }
