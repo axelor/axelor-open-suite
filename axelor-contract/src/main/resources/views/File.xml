@@ -96,7 +96,9 @@
 
   <action-record name="action-contract-record-set-contract-on-load"
     model="com.axelor.apps.base.db.File">
-    <field name="$contract" expr="eval: contractVersion?.contract"/>
+    <field name="$contract"
+      expr="eval: contractVersion.contract != null ? contractVersion.contract : contractVersion.contractHistory"
+      if="contractVersion"/>
   </action-record>
 
 
