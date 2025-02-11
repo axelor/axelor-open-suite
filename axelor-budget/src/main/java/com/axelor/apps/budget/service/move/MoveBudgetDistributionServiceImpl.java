@@ -77,34 +77,38 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
       List<BudgetDistribution> savedBudgetDistributionList) {
     if (ObjectUtils.notEmpty(budgetDistributionList)) {
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        Budget budget = budgetDistribution.getBudget();
-        if (map.containsKey(budget)) {
-          map.replace(budget, map.get(budget).add(budgetDistribution.getAmount()));
-        } else {
-          map.put(budget, budgetDistribution.getAmount());
-        }
+        fillMapWithBudgetDistribution(
+            map, budgetDistribution.getBudget(), budgetDistribution.getAmount());
       }
     }
     if (ObjectUtils.notEmpty(savedBudgetDistributionList)) {
       for (BudgetDistribution budgetDistribution : savedBudgetDistributionList) {
-        Budget budget = budgetDistribution.getBudget();
-        if (map.containsKey(budget)) {
-          BigDecimal newValue = map.get(budget).subtract(budgetDistribution.getAmount());
-          if (newValue.signum() == 0) {
-            map.remove(budget);
-          } else {
-            map.replace(budget, newValue);
-          }
-        } else {
-          if (budgetDistribution.getAmount().signum() != 0) {
-            map.put(budget, budgetDistribution.getAmount().negate());
-          }
-        }
+        fillMapWithBudgetDistribution(
+            map, budgetDistribution.getBudget(), budgetDistribution.getAmount().negate());
       }
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  protected void fillMapWithBudgetDistribution(
+      Map<Budget, BigDecimal> map, Budget budget, BigDecimal amount) {
+    if (budget == null || amount.signum() == 0) {
+      return;
+    }
+
+    if (map.containsKey(budget)) {
+      BigDecimal newValue = map.get(budget).add(amount);
+      if (newValue.signum() == 0) {
+        map.remove(budget);
+      } else {
+        map.replace(budget, newValue);
+      }
+    } else {
+      if (amount.signum() != 0) {
+        map.put(budget, amount);
+      }
+    }
+  }
+
   protected void updateChangedBudgetDistribution(
       Map<Budget, BigDecimal> budgetChangesMap, MoveLine moveLine) {
     if (ObjectUtils.isEmpty(budgetChangesMap)) {
@@ -121,6 +125,7 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void updateAmountsOnBudget(Budget budget, BigDecimal amount, MoveLine moveLine) {
     if (moveLine == null || budget == null || amount.signum() == 0 || moveLine.getMove() == null) {
       return;
