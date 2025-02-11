@@ -1137,7 +1137,7 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
-    <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
+    <action name="action-partner-method-check-if-registration-code-already-exists"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
     <action name="action-method-partner-check-registration-code"/>
