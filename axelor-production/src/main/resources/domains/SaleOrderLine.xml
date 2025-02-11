@@ -20,6 +20,8 @@
     <one-to-many name="saleOrderLineDetailsList" title="Sale order line details list"
       ref="com.axelor.apps.production.db.SaleOrderLineDetails" mappedBy="saleOrderLine"/>
 
+    <enum name="productionStatusSelect" ref="ProductionStatusSelect"/>
+
     <boolean name="isToProduce" transient="true">
       <![CDATA[
 		return (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
@@ -30,5 +32,14 @@
       class="com.axelor.apps.production.db.repo.SaleOrderLineProductionListener"/>
 
   </entity>
+
+  <enum name="ProductionStatusSelect">
+    <item name="PRODUCTION_STATUS_FINISHED" value="FINISHED"/>
+    <item name="PRODUCTION_STATUS_STANDBY" value="STANDBY"/>
+    <item name="PRODUCTION_STATUS_IN_PROGRESS" value="IN_PROGRESS"/>
+    <item name="PRODUCTION_STATUS_PLANNED" value="PLANNED"/>
+    <item name="PRODUCTION_STATUS_CANCELED" value="CANCELED"/>
+    <item name="PRODUCTION_STATUS_DRAFT" value="DRAFT"/>
+  </enum>
 
 </domain-models>
