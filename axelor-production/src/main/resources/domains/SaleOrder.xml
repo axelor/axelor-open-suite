@@ -9,9 +9,6 @@
 
     <string name="productionNote" title="Production note" large="true"/>
 
-    <entity-listener
-      class="com.axelor.apps.production.db.repo.SaleOrderProductionListener"/>
-
   </entity>
 
 </domain-models>

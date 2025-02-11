@@ -26,6 +26,8 @@
         ]]>
     </boolean>
 
+    <entity-listener
+      class="com.axelor.apps.production.db.repo.SaleOrderLineProductionListener"/>
 
   </entity>
 
