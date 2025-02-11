@@ -255,8 +255,7 @@
     <toolbar>
       <button name="duplicateWithConfiguratorBtn" title="Duplicate with configurator"
         onClick="action-sale-order-group-on-duplicate-with-configurator"
-        if="__config__.app.getApp('sale')?.getEnableConfigurator() &amp;&amp; __config__.app.getApp('sale')?.getEnableConfiguratorDuplication()"
-        icon="fa-copy"/>
+        if="__config__.app.getApp('sale')?.getEnableConfigurator()" icon="fa-copy"/>
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"

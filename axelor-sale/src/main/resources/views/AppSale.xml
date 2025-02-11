@@ -14,7 +14,7 @@
       <field name="isPastVersionRecovery" widget="boolean-switch"
         readonlyIf="!manageSaleOrderVersion"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
-      <field name="enableConfiguratorDuplication" widget="boolean-switch"/>
+      <field name="enableLineDuplication" widget="boolean-switch"/>
       <field name="allowPendingOrderModification" widget="boolean-switch"/>
       <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
       <field name="printingConfigPerSaleOrder" widget="boolean-switch"/>

@@ -50,9 +50,8 @@
     <boolean name="isGlobalDiscountEnabledOnSaleOrder"
       title="Enable global discount on sale order"
       help="Allow the user to apply a global discount on a sale order. Global discount and discount per line are not cumulative."/>
-    <boolean name="enableConfiguratorDuplication"
-      title="Enable duplication with configurators"
-      help="Allow the duplication of sale order and sale order lines with configurators"/>
+    <boolean name="enableLineDuplication" title="Enable line duplication"
+      help="Allow the duplication of sale quotation line. If the line is linked to a configurator, this one will be relunch if possible. "/>
 
     <extra-code>
       <![CDATA[
