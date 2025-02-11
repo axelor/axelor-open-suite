@@ -23,6 +23,7 @@ import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -80,7 +81,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
 
     if (appProductionService.isApp("production")
         && appSaleService.getAppSale().getListDisplayTypeSelect()
-            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
       saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder.getSaleOrderLineList());
     }
     return message;

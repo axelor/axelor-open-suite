@@ -19,21 +19,28 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
   protected final MarginComputeService marginComputeService;
   protected final ProductCompanyService productCompanyService;
   protected final AppSaleService appSaleService;
+  protected final SaleOrderLineDetailsService saleOrderLineDetailsService;
 
   @Inject
   public SaleOrderLineDetailsPriceServiceImpl(
       MarginComputeService marginComputeService,
       ProductCompanyService productCompanyService,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      SaleOrderLineDetailsService saleOrderLineDetailsService) {
     this.marginComputeService = marginComputeService;
     this.productCompanyService = productCompanyService;
     this.appSaleService = appSaleService;
+    this.saleOrderLineDetailsService = saleOrderLineDetailsService;
   }
 
   @Override
   public Map<String, Object> computePrices(
       SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> lineMap = new HashMap<>();
+
+    if (saleOrder == null) {
+      saleOrder = saleOrderLineDetailsService.getParentSaleOrder(saleOrderLineDetails);
+    }
 
     BigDecimal qty = saleOrderLineDetails.getQty();
     BigDecimal price = saleOrderLineDetails.getPrice();

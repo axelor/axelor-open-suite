@@ -39,8 +39,6 @@ import com.axelor.apps.businessproduction.service.OperationOrderWorkflowBusiness
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBusinessImpl;
-import com.axelor.apps.businessproduction.service.SaleOrderBusinessProductionService;
-import com.axelor.apps.businessproduction.service.SaleOrderBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineBomSyncServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineDetailsBomSyncBusinessProductionServiceImpl;
@@ -49,6 +47,8 @@ import com.axelor.apps.businessproduction.service.SaleOrderLineInitValueBusiness
 import com.axelor.apps.businessproduction.service.SaleOrderProductionSyncBusinessService;
 import com.axelor.apps.businessproduction.service.SaleOrderProductionSyncBusinessServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderServiceBusinessProductionImpl;
+import com.axelor.apps.businessproduction.service.SolDetailsBusinessProductionService;
+import com.axelor.apps.businessproduction.service.SolDetailsBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetBusinessProductionWorkflowServiceImpl;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionService;
 import com.axelor.apps.businessproduction.service.TimesheetLineBusinessProductionServiceImpl;
@@ -117,7 +117,8 @@ public class BusinessProductionModule extends AxelorModule {
         .to(TimesheetLineRemoveBusinessProductionServiceImpl.class);
     bind(BusinessProjectProdOrderService.class).to(BusinessProjectProdOrderServiceImpl.class);
     bind(SaleOrderBusinessProdObserver.class);
-    bind(SaleOrderBusinessProductionService.class).to(SaleOrderBusinessProductionServiceImpl.class);
+    bind(SolDetailsBusinessProductionService.class)
+        .to(SolDetailsBusinessProductionServiceImpl.class);
     bind(SaleOrderLineDetailsServiceImpl.class).to(SaleOrderLineDetailsBusinessServiceImpl.class);
     bind(SaleOrderLineDetailsBomSyncServiceImpl.class)
         .to(SaleOrderLineDetailsBomSyncBusinessProductionServiceImpl.class);

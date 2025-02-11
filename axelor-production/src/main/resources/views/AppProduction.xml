@@ -43,6 +43,8 @@
             showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
           <field name="allowPersonalizedProdProcess" widget="boolean-switch"/>
           <field name="operationContinuitySelect"/>
+          <field name="updateProjectSolDetailsLineTypeSelect"
+            if-module="axelor-business-production"/>
         </panel>
 
       </panel>
