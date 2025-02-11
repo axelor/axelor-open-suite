@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
+    onNew="action-project-set-date" width="large" canNew="false" canDelete="false">
+    <panel name="operationSelectPanel">
+
+      <field name="$project" target="com.axelor.apps.project.db.Project" title="Project"
+        type="many-to-one" colSpan="12" onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint" />
+      <field type="date" name="$fromDate" title="From Date" required="true" colSpan="3"
+        onChange="action-project-record-empty-sprint-period"/>
+      <field type="date" name="$toDate" title="To Date" required="true" colSpan="3"
+        onChange="action-project-record-empty-sprint-period"/>
+      <field type="many-to-one" name="$period" title="Allocation period"
+        target="com.axelor.apps.base.db.Period" colSpan="3" onChange="action-chart-set-period-date"
+        domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__ "/>
+      <field type="many-to-one" name="$sprint" title="Sprint"
+        target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!project"
+        onChange="action-chart-set-sprint-date"
+        onSelect="action-project-method-compute-sprint-domain"/>
+    </panel>
+
+    <panel-dashlet height="350" name="project-project-task-action-dashlet" action="project-project-task-action" canSearch="true"
+      colSpan="12"/>
+    <panel-dashlet height="350" name="project-planning-time-dashboard-action-dashlet" action="project-planning-time-dashboard-action"
+      canSearch="true" colSpan="12"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+      if-module="axelor-human-resource"/>
+    <panel-dashlet height="350" action="project-allocation-line-action" name="project-allocation-line-action-dashlet"
+      canSearch="true" colSpan="12"/>
+  </form>
+  <action-method model="com.axelor.utils.db.Wizard" name="action-project-set-date">
+    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
+      method="getDate"/>
+  </action-method>
+
+  <action-view name="project-project-task-action"
+               model="com.axelor.apps.project.db.ProjectTask" title="Project tasks">
+    <view name="project-task-dashboard-grid" type="grid"/>
+    <view name="project-task-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain> (self.taskDate &lt;= :toDate and self.taskDate &gt;= :fromDate )
+      and
+      (self.project=:project OR :project IS NULL)</domain>
+  </action-view>
+  <action-view name="project-planning-time-dashboard-action"
+               model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning tasks">
+    <view name="project-planning-time-dashboard-grid" type="grid"/>
+    <view name="project-planning-time-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain> (( date(self.startDateTime) &lt;= date(:toDate) and date(self.startDateTime) &gt;=
+      date(:fromDate) )or
+      (date(self.endDateTime) &lt;= date(:toDate) and date(self.endDateTime)
+      &gt;= date(:fromDate) ))
+      and
+      (self.project=:project OR :project IS NULL)</domain>
+  </action-view>
+  <action-view name="project-allocation-line-action"
+               model="com.axelor.apps.hr.db.AllocationLine" title="Project allocation lines">
+    <view name="project-allocation-line-grid" type="grid"/>
+    <view name="allocation-line-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain> (( date(self.period.fromDate ) &lt;= date(:toDate) and date(self.period.fromDate )
+      &gt;=
+      date(:fromDate) )or
+      (date(self.period.toDate) &lt;= date(:toDate) and
+      date(self.period.toDate)
+      &gt;= date(:fromDate) ))
+      and
+      (self.project=:project OR :project IS NULL)</domain>
+  </action-view>
+
+  <action-record name="action-project-record-empty-sprint"
+                 model="com.axelor.apps.project.db.Project">
+    <field name="sprint" expr="eval: null"/>
+  </action-record>
+  <action-record name="action-project-record-empty-sprint-period"
+                 model="com.axelor.apps.project.db.Project">
+    <field name="sprint" expr="eval: null"/>
+    <field name="period" expr="eval: null"/>
+  </action-record>
+
+  <action-record model="com.axelor.apps.base.db.Period"
+                 name="action-chart-set-period-date">
+    <field name="fromDate" expr="eval:__repo__(Period).find(period.id).fromDate "/>
+    <field name="toDate" expr="eval: __repo__(Period).find(period.id).toDate "/>
+    <field name="sprint" expr="eval: null"/>
+  </action-record>
+  <action-record model="com.axelor.apps.project.db.Sprint"
+                 name="action-chart-set-sprint-date">
+    <field name="fromDate" expr="eval:__repo__(Sprint).find(sprint.id).fromDate "/>
+    <field name="toDate" expr="eval: __repo__(Sprint).find(sprint.id).toDate "/>
+    <field name="period" expr="eval: null"/>
+  </action-record>
+  <action-method name="action-project-method-compute-sprint-domain">
+    <call class="com.axelor.apps.project.web.SprintController"
+          method="computeSprintDomainDashboard"/>
+  </action-method>
+  <action-attrs name="action-attrs-refresh-dashlets">
+    <attribute name="refresh" expr="eval: true" for="project-project-task-action-dashlet"/>
+    <attribute name="refresh" expr="eval: true" for="project-planning-time-dashboard-action-dashlet"/>
+    <attribute name="refresh" expr="eval: true" for="project-allocation-line-action-dashlet"/>
+  </action-attrs>
+</object-views>
