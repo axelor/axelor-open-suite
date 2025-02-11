@@ -11,15 +11,15 @@
         type="many-to-one" colSpan="12"
         onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint"/>
       <field type="date" name="$fromDate" title="From Date" required="true" colSpan="3"
-        onChange="action-project-record-empty-sprint-period"/>
+        onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint-period"/>
       <field type="date" name="$toDate" title="To Date" required="true" colSpan="3"
-        onChange="action-project-record-empty-sprint-period"/>
+        onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint-period"/>
       <field type="many-to-one" name="$period" title="Allocation period"
         target="com.axelor.apps.base.db.Period" colSpan="3" onChange="action-chart-set-period-date"
         domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__ "/>
       <field type="many-to-one" name="$sprint" title="Sprint"
         target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!$project"
-        onChange="action-chart-set-sprint-date"
+        onChange="action-attrs-refresh-dashlets,action-chart-set-sprint-date"
         onSelect="action-project-method-compute-sprint-domain"/>
     </panel>
 
