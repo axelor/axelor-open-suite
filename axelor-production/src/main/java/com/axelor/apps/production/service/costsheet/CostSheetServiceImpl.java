@@ -42,6 +42,7 @@ import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineComputeService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -74,6 +75,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   protected CostSheetLineService costSheetLineService;
   protected BillOfMaterialRepository billOfMaterialRepo;
   protected AppBaseService appBaseService;
+  protected ProdProcessLineComputeService prodProcessLineComputeService;
   protected AppProductionService appProductionService;
   protected Unit hourUnit;
   protected Unit cycleUnit;
@@ -82,17 +84,18 @@ public class CostSheetServiceImpl implements CostSheetService {
 
   @Inject
   public CostSheetServiceImpl(
-      AppProductionService appProductionService,
       UnitConversionService unitConversionService,
       CostSheetLineService costSheetLineService,
+      BillOfMaterialRepository billOfMaterialRepo,
       AppBaseService appBaseService,
-      BillOfMaterialRepository billOfMaterialRepo) {
-
-    this.appProductionService = appProductionService;
+      ProdProcessLineComputeService prodProcessLineComputeService,
+      AppProductionService appProductionService) {
     this.unitConversionService = unitConversionService;
     this.costSheetLineService = costSheetLineService;
-    this.appBaseService = appBaseService;
     this.billOfMaterialRepo = billOfMaterialRepo;
+    this.appBaseService = appBaseService;
+    this.prodProcessLineComputeService = prodProcessLineComputeService;
+    this.appProductionService = appProductionService;
   }
 
   protected void init() {
@@ -463,32 +466,32 @@ public class CostSheetServiceImpl implements CostSheetService {
             : workCenter.getCostAmount();
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
 
+      BigDecimal nbCycle =
+          prodProcessLineComputeService.getNbCycles(
+              prodProcessLine.getMaxCapacityPerCycle(), producedQty);
+      BigDecimal costPrice = costAmount.multiply(nbCycle);
+
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           prodProcessLine.getPriority(),
           bomLevel,
           parentCostSheetLine,
-          this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()),
-          costAmount,
+          nbCycle,
+          costPrice,
           cycleUnit);
 
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
 
-      BigDecimal qty =
-          new BigDecimal(prodProcessLine.getDurationPerCycle())
-              .divide(
-                  new BigDecimal(3600),
-                  appProductionService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_UP)
-              .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
-      BigDecimal costPrice = costAmount.multiply(qty);
+      BigDecimal machineDuration =
+          prodProcessLineComputeService.computeMachineDuration(prodProcessLine, producedQty);
+      BigDecimal costPrice = costAmount.multiply(machineDuration);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           prodProcessLine.getPriority(),
           bomLevel,
           parentCostSheetLine,
-          qty,
+          machineDuration,
           costPrice,
           hourUnit);
 
@@ -504,15 +507,6 @@ public class CostSheetServiceImpl implements CostSheetService {
           costPrice,
           pieceUnit);
     }
-  }
-
-  protected BigDecimal getNbCycle(BigDecimal producedQty, BigDecimal capacityPerCycle) {
-
-    if (capacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-      return producedQty;
-    }
-
-    return producedQty.divide(capacityPerCycle, RoundingMode.CEILING);
   }
 
   protected void computeRealResidualProduct(ManufOrder manufOrder) throws AxelorException {
@@ -871,7 +865,8 @@ public class CostSheetServiceImpl implements CostSheetService {
           operationOrder.getPriority(),
           bomLevel,
           parentCostSheetLine,
-          this.getNbCycle(producedQty, workCenter.getMaxCapacityPerCycle()),
+          prodProcessLineComputeService.getNbCycles(
+              workCenter.getMaxCapacityPerCycle(), producedQty),
           costAmount,
           cycleUnit);
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
