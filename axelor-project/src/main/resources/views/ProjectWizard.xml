@@ -10,10 +10,10 @@
         onChange="action-project-record-empty-sprint,action-attrs-refresh-dashlets"
         target="com.axelor.apps.project.db.Project"/>
       <field name="$fromDate" title="From Date" colSpan="3" type="date"
-        onChange="action-project-record-empty-sprint-period,action-attrs-refresh-dashlets"
+        onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint-period,action-attrs-refresh-dashlets"
         required="true"/>
       <field name="$toDate" title="To Date" colSpan="3" type="date"
-        onChange="action-project-record-empty-sprint-period,action-attrs-refresh-dashlets"
+        onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint-period,action-attrs-refresh-dashlets"
         required="true"/>
       <field name="$period" title="Allocation period" colSpan="3" type="many-to-one"
         onChange="action-project-record-set-period-date,action-attrs-refresh-dashlets"
@@ -21,18 +21,21 @@
         domain="self.year.typeSelect = 4 AND self.toDate > :__date__ "/>
       <field name="$sprint" title="Sprint" readonlyIf="!$project" colSpan="3"
         type="many-to-one"
-        onChange="action-project-record-set-sprint-date,action-attrs-refresh-dashlets"
+        onChange="action-attrs-refresh-dashlets,action-project-record-set-sprint-date,action-attrs-refresh-dashlets"
         onSelect="action-project-method-compute-sprint-domain"
         target="com.axelor.apps.project.db.Sprint"/>
     </panel>
-    <panel-dashlet name="project-project-task-action-dashlet" colSpan="12"
-      height="350" action="action-project-view-project-task" canSearch="true"/>
+    <panel-dashlet  name="project-project-task-action-dashlet"
+       colSpan="12"
+      height="350" action="
+      action-project-view-project-task" canSearch="true" />
     <panel-dashlet
       if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
       if-module="axelor-human-resource" name="project-planning-time-dashboard-action-dashlet"
       colSpan="12" height="350" action="action-project-view-planning-time-dashboard"
       canSearch="true"/>
-    <panel-dashlet name="project-allocation-line-action-dashlet" colSpan="12"
+    <panel-dashlet
+      name="project-allocation-line-action-dashlet"colSpan="12"
       height="350" action="action-project-view-allocation-line" canSearch="true"/>
   </form>
   <action-method model="com.axelor.utils.db.Wizard"
