@@ -352,6 +352,9 @@
           onChange="action-group-partner-registration-code-onChange"/>
         <field name="siren" colSpan="4" readonly="true" hidden="true"/>
         <field name="nic" colSpan="4" readonly="true" hidden="true"/>
+        <label name="isValidRegistrationCode" type="string" showTitle="false" x-dirty="false"
+          hidden="true" css="label-danger"/>
+        <spacer colSpan="8"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
@@ -1070,6 +1073,7 @@
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
     <action name="action-method-partner-siren-nic-onload"/>
+    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1140,7 +1144,6 @@
     <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
-    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-method
@@ -1309,6 +1312,7 @@
   </action-group>
 
   <action-group name="action-group-partner-registration-code-onChange">
+    <action name="action-method-partner-check-registration-code"/>
     <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
