@@ -105,7 +105,8 @@ public class AllocationLineServiceImpl implements AllocationLineService {
 
     if (initWithPlanningTime) {
       allocationLine.setAllocated(
-          allocationLineComputeService.computePlannedTime(period, employee, project));
+          allocationLineComputeService.computePlannedTime(
+              period.getFromDate(), period.getToDate(), employee, project));
     }
     allocationLineRepository.save(allocationLine);
   }
