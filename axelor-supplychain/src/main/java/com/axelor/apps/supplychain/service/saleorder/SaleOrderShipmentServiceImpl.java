@@ -33,6 +33,7 @@ import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.ShippingService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -47,6 +48,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderRepository saleOrderRepository;
+  protected ShippingService shippingService;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
@@ -54,12 +56,14 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      ShippingService shippingService) {
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderRepository = saleOrderRepository;
+    this.shippingService = shippingService;
   }
 
   @Override
@@ -72,7 +76,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
     CustomerShippingCarriagePaid customerShippingCarriagePaid =
         getClientCustomerShippingCarriagePaid(saleOrder, shipmentMode);
     Product shippingCostProduct =
-        getShippingCostProduct(shipmentMode, customerShippingCarriagePaid);
+        shippingService.getShippingCostProduct(shipmentMode, customerShippingCarriagePaid);
     if (shippingCostProduct == null) {
       return null;
     }
@@ -125,16 +129,6 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
       carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
     }
     return carriagePaidThreshold;
-  }
-
-  protected Product getShippingCostProduct(
-      ShipmentMode shipmentMode, CustomerShippingCarriagePaid customerShippingCarriagePaid) {
-    Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
-    if (customerShippingCarriagePaid != null
-        && customerShippingCarriagePaid.getShippingCostsProduct() != null) {
-      shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
-    }
-    return shippingCostProduct;
   }
 
   protected CustomerShippingCarriagePaid getClientCustomerShippingCarriagePaid(

@@ -172,6 +172,8 @@ import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChai
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingViewServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderShipmentService;
+import com.axelor.apps.supplychain.service.PurchaseOrderShipmentServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -181,6 +183,8 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateServiceImpl;
+import com.axelor.apps.supplychain.service.ShippingService;
+import com.axelor.apps.supplychain.service.ShippingServiceImpl;
 import com.axelor.apps.supplychain.service.StockCorrectionServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockHistoryServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineFetchServiceSupplychainImpl;
@@ -487,5 +491,7 @@ public class SupplychainModule extends AxelorModule {
     bind(ConfiguratorCheckServiceImpl.class).to(ConfiguratorCheckServiceSupplychainImpl.class);
     bind(TrackingNumberCompanyServiceImpl.class)
         .to(TrackingNumberCompanySupplychainServiceImpl.class);
+    bind(PurchaseOrderShipmentService.class).to(PurchaseOrderShipmentServiceImpl.class);
+    bind(ShippingService.class).to(ShippingServiceImpl.class);
   }
 }
