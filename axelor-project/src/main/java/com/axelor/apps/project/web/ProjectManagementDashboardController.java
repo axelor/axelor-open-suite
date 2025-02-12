@@ -19,11 +19,18 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardService;
+import com.axelor.apps.project.service.roadmap.SprintGetService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class ProjectManagementDashboardController {
@@ -35,5 +42,22 @@ public class ProjectManagementDashboardController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @CallMethod
+  public String TasksIDsPerSprint(Long projectId) {
+    String sprintIdsToExclude = null;
+    if (projectId != null) {
+
+      ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
+      Project project = projectRepo.find(projectId);
+      SprintGetService sprintGetService = Beans.get(SprintGetService.class);
+      List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
+      if (ObjectUtils.notEmpty(sprintList)) {
+        sprintIdsToExclude = sprintGetService.getSprintIdsToExclude(sprintList);
+      }
+    }
+
+    return sprintIdsToExclude;
   }
 }
