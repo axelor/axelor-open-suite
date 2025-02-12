@@ -1,6 +1,8 @@
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
-import javax.jws.soap.SOAPBinding;
+import jakarta.jws.*;
+import jakarta.jws.soap.SOAPBinding;
+
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**

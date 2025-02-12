@@ -1,6 +1,8 @@
 
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
+import com.axelor.apps.account.einvoice.ElementAdapter;
+import jakarta.jws.WebMethod;
 import org.w3c.dom.Element;
 
 import javax.xml.bind.annotation.*;
@@ -37,8 +39,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 })
 public class AccountPlanRequestType {
 
-    @XmlAnyElement
-    protected Element any;
+    @XmlJavaTypeAdapter(ElementAdapter.class) // Apply the adapter here
+    protected String any;
     @XmlAttribute(name = "format", required = true)
     protected RegistryFormatType format;
     @XmlAttribute(name = "replace")
@@ -55,10 +57,10 @@ public class AccountPlanRequestType {
      * 
      * @return
      *     possible object is
-     *     {@link Element }
+     *     {@link String }
      *     
      */
-    public Element getAny() {
+    public String getAny() {
         return any;
     }
 
@@ -70,7 +72,7 @@ public class AccountPlanRequestType {
      *     {@link Element }
      *     
      */
-    public void setAny(Element value) {
+    public void setAny(String value) {
         this.any = value;
     }
 

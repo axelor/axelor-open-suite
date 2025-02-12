@@ -440,6 +440,10 @@
 	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 2 || operationTypeSelect == 4) && <Badge bg="info">{_t('Advance payment credit note')}</Badge>}
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
+
+                                    {record.sentEmailDate  && <Badge bg="info">{_t(`Email sent on ${new Date(record.sentEmailDate).toLocaleDateString("ru-RU")}`)}</Badge> }
+                                    {record.sentEinvoiceDate  && <Badge bg="info">{_t(`e-Invoice sent on ${new Date(record.sentEinvoiceDate).toLocaleDateString("ru-RU")}`)}</Badge> }
+
 	                        	</Box>
 	                        </>
 	                    ]]>

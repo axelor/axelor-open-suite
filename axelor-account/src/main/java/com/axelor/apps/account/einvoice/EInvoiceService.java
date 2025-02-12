@@ -6,9 +6,9 @@ import com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp.*;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.i18n.I18n;
+import jakarta.xml.ws.BindingProvider;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.xml.ws.BindingProvider;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -22,7 +22,10 @@ public class EInvoiceService {
     private static String apiKey;
 
     private final static String TEST_ENDPOINT = "https://testfinance.post.ee:443/finance/erp/";
+    private final static String PRELIVE_ENDPOINT = "https://prelive.finbite.eu/finance/erp/";
     private final static String PROD_ENDPOINT = "https://finance.omniva.eu:443/finance/erp/";
+
+    private final static String einvoiceAuthKey = "319853:hfocdgiqifxzyvnylctrgxbqumgixfwaiwrihuaxkzlvzplrtt";
 
     private EInvoiceService() {
     }
@@ -30,14 +33,16 @@ public class EInvoiceService {
     public static synchronized EInvoiceService getInstance() {
         if (instance == null) {
             instance = new EInvoiceService();
-
-            apiKey = System.getProperties().getProperty("einvoice.authkey");
-            String environment = System.getProperties().getProperty("einvoice.environment", "test");
-            String endpoint = environment.equalsIgnoreCase("prod") ? PROD_ENDPOINT : TEST_ENDPOINT;
+//            apiKey = System.getProperties().getProperty("einvoice.authkey");
+//            String environment = System.getProperties().getProperty("einvoice.environment", "test");
+//            String endpoint =  environment.equalsIgnoreCase("prod") ? PROD_ENDPOINT : TEST_ENDPOINT;
+            apiKey = einvoiceAuthKey;
+            String endpoint =  PRELIVE_ENDPOINT;
 
             if (StringUtils.stripToNull(apiKey) == null) {
                 throw new RuntimeException(I18n.get("einvoice.authkey.not.set"));
             }
+
 
             port = new ErpDataExchangeService().getErpDataExchangeSoap11();
 
@@ -56,6 +61,11 @@ public class EInvoiceService {
         CompanyStatusRequestType requestType = new CompanyStatusRequestType();
         requestType.setAuthPhrase(apiKey);
         requestType.getRegNumber().add(regNumber);
+
+        System.out.println(regNumber.getValue());
+
+        System.out.println("Используемый endpoint: " + ((BindingProvider) port).getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY));
+        System.out.println("Отправленный authPhrase: " + requestType.getAuthPhrase());
 
         CompanyStatusResponseType responseType = port.companyStatus(requestType);
         List<CompanyActiveType> companyActive = responseType.getCompanyActive();
@@ -122,7 +132,7 @@ public class EInvoiceService {
     private InvoiceParties invoiceParties(Partner seller, Partner buyer, BankDetails bankDetails, Partner contactPerson) {
         AddressRecord sellerAddressRecord = new AddressRecord();
         sellerAddressRecord.setCity(seller.getMainAddress().getAddressL6());
-        sellerAddressRecord.setCountry(seller.getMainAddress().getAddressL7Country().getName());
+        sellerAddressRecord.setCountry(seller.getMainAddress().getCountry().getName());
         sellerAddressRecord.setPostalAddress1(seller.getMainAddress().getAddressL4());
 
         ContactDataRecord sellerContactDataRecord = new ContactDataRecord();
@@ -151,7 +161,7 @@ public class EInvoiceService {
 
         AddressRecord buyerAddressRecord = new AddressRecord();
         buyerAddressRecord.setCity(buyer.getMainAddress().getAddressL6());
-        buyerAddressRecord.setCountry(buyer.getMainAddress().getAddressL7Country().getName());
+        buyerAddressRecord.setCountry(buyer.getMainAddress().getCountry().getName());
         buyerAddressRecord.setPostalAddress1(buyer.getMainAddress().getAddressL4());
         ContactDataRecord buyerContactDataRecord = new ContactDataRecord();
         buyerContactDataRecord.setLegalAddress(buyerAddressRecord);
@@ -219,10 +229,12 @@ public class EInvoiceService {
 
     private ItemEntry newItem(InvoiceLine line) {
         String productName = line.getProductName();
-        if (line.getSaleOrderLine() != null && line.getSaleOrderLine().getContactPartner() != null) {
-            String contactPerson = line.getSaleOrderLine().getContactPartner().getSimpleFullName();
-            productName = productName + " (" + contactPerson + ")";
-        }
+
+        //todo
+//        if (line.getSaleOrderLine() != null && line.getSaleOrderLine().getContactPartner() != null) {
+//            String contactPerson = line.getSaleOrderLine().getContactPartner().getSimpleFullName();
+//            productName = productName + " (" + contactPerson + ")";
+//        }
         BigDecimal price = line.getPriceDiscounted();
         BigDecimal qty = line.getQty();
         String units = line.getUnit().getLabelToPrinting();

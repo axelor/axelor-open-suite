@@ -9,8 +9,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.xml.ws.soap.SOAPFaultException;
 
-import javax.xml.ws.soap.SOAPFaultException;
+
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -30,7 +31,7 @@ public class Controller {
         String registrationCode = partner.getRegistrationCode();
 
         boolean result = eIvoiceService.isPartnerAcceptEinvoice(registrationCode);
-        response.setFlash(I18n.get(result ? COMPANY_STATUS_YES : COMPANY_STATUS_NO));
+        response.setNotify(I18n.get(result ? COMPANY_STATUS_YES : COMPANY_STATUS_NO));
         response.setReload(false);
     }
 
@@ -40,7 +41,7 @@ public class Controller {
         Invoice invoice = request.getContext().asType(Invoice.class);
         try {
             eIvoiceService.sendInvoice(invoice);
-            response.setFlash(I18n.get(INVOICE_SENT_SUCCESSFULLY));
+            response.setNotify(I18n.get(INVOICE_SENT_SUCCESSFULLY));
             response.setReload(true);
 
             Invoice invoiceInDb = invoiceRepository.find(invoice.getId());

@@ -1,6 +1,7 @@
 
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
+import com.axelor.apps.account.einvoice.ElementAdapter;
 import org.w3c.dom.Element;
 
 import javax.xml.bind.annotation.*;
@@ -38,8 +39,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 })
 public class DimensionRegistryRequestType {
 
-    @XmlAnyElement
-    protected Element any;
+    @XmlJavaTypeAdapter(ElementAdapter.class) // Apply the adapter here
+    protected String any;
     @XmlAttribute(name = "format", required = true)
     protected RegistryFormatType format;
     @XmlAttribute(name = "replace")
@@ -62,7 +63,7 @@ public class DimensionRegistryRequestType {
      *     {@link Element }
      *     
      */
-    public Element getAny() {
+    public String getAny() {
         return any;
     }
 
@@ -74,7 +75,7 @@ public class DimensionRegistryRequestType {
      *     {@link Element }
      *     
      */
-    public void setAny(Element value) {
+    public void setAny(String value) {
         this.any = value;
     }
 

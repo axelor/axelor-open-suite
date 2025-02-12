@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://e-arvetekeskus.eu/erp" xmlns:sch1="http://www.pangaliit.ee/arveldused/e-arve/" xmlns:sch0="http://e-arvetekeskus.eu/erp" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://e-arvetekeskus.eu/erp">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://e-arvetekeskus.eu/erp" xmlns:epl="http://www.pangaliit.ee/arveldused/e-arve/" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://e-arvetekeskus.eu/erp"><xs:import namespace="http://www.pangaliit.ee/arveldused/e-arve/"/><xs:element name="BuyInvoiceExportRequest" type="BuyInvoiceReqType"><xs:annotation><xs:documentation>Obtain buy invoices that are marked in EAK to be sent to ERP or whose status is changed (if state given).</xs:documentation></xs:annotation></xs:element><xs:element name="BuyInvoiceExportResponse" type="EInvoiceResponseType"><xs:annotation><xs:documentation>Return buy invoices, id of invoice is identification used by EAK. Each invoice has a child attribute state</xs:documentation></xs:annotation></xs:element><xs:element name="SaleInvoiceBuyStatusRequest" type="SaleInvoiceBuyStatusRequestType"><xs:annotation/></xs:element><xs:element name="SaleInvoiceBuyStatusResponse" type="SaleInvoiceBuyStatusResponseType"><xs:annotation/></xs:element><xs:element name="BuyInvoiceRequest" type="BuyInvoiceReqType"><xs:annotation><xs:documentation>DEPRECATED: Use BuyInvoiceExportRequest instead.</xs:documentation></xs:annotation></xs:element><xs:element name="BuyInvoicesResponse" type="EInvoiceRespoonseType"><xs:annotation><xs:documentation>Return buy invoices, id of invoice is identification used by EAK. Each invoice has a child attribute state</xs:documentation></xs:annotation></xs:element><xs:element name="BuyInvoiceRegisteredRequest" type="BuyInvoiceRegisteredReqType"><xs:annotation><xs:documentation>Send notification to EAK about invoices that have been successfully registered in ERP</xs:documentation></xs:annotation></xs:element><xs:element name="BuyInvoiceRegisteredResponse" type="SimpleResponseType"><xs:annotation><xs:documentation>Notification received response</xs:documentation></xs:annotation></xs:element><xs:element name="BuyInvoicePaidRequest" type="BuyInvoicePaidReqType"><xs:annotation><xs:documentation>Send notification to EAK about invoices that have been paidd in ERP</xs:documentation></xs:annotation></xs:element><xs:element name="BuyInvoicePaidResponse" type="SimpleResponseType"><xs:annotation><xs:documentation>Notification received response</xs:documentation></xs:annotation></xs:element><xs:element name="SaleInvoiceExportRequest" type="SaleInvoiceExportReqType"><xs:annotation><xs:documentation>Obtain sale invoices that are marked in EAK to be sent to ERP or whose status is changed (if state given).</xs:documentation></xs:annotation></xs:element><xs:element name="SaleInvoiceExportResponse" type="EInvoiceRespoonseType"><xs:annotation><xs:documentation>Return sale invoices, id of invoice is identification used by EAK. Each invoice has a child attribute state</xs:documentation></xs:annotation></xs:element><xs:element name="CompanyStatusRequest" type="CompanyStatusRequestType"><xs:annotation><xs:documentation>Obtain status of company in EAK</xs:documentation></xs:annotation></xs:element><xs:element name="CompanyStatusResponse" type="CompanyStatusResponseType"><xs:annotation><xs:documentation>Returns requested companies statuses</xs:documentation></xs:annotation></xs:element><xs:element name="InvoiceAttachmentRequest" type="InvoiceAttachmentRequestType"><xs:annotation><xs:documentation>Obtain Invoice attachments</xs:documentation></xs:annotation></xs:element><xs:element name="InvoiceAttachmentResponse" type="InvoiceAttachmentResponseType"><xs:annotation><xs:documentation>Returns requested invoice attachments</xs:documentation></xs:annotation></xs:element><xs:element name="CostReportExportRequest" type="CostReportExportRequestType"><xs:annotation><xs:documentation>Obtain cost reports that are marked in EAK to be sent to ERP or whose status is changed (if state given).</xs:documentation></xs:annotation></xs:element><xs:element name="CostReportExportResponse" type="CostReportExportResponseType"><xs:annotation><xs:documentation>Return cost reports, id is identification used by EAK. Each cost report has a child attribute state</xs:documentation></xs:annotation></xs:element><xs:element name="CostReportAttachmentRequest" type="CostReportAttachmentRequestType"><xs:annotation><xs:documentation>Obtain cost report attachments</xs:documentation></xs:annotation></xs:element><xs:element name="CostReportAttachmentResponse" type="CostReportAttachmentResponseType"><xs:annotation><xs:documentation>Returns requested cost report attachments</xs:documentation></xs:annotation></xs:element><xs:complexType name="CostReportExportRequestType"><xs:sequence maxOccurs="unbounded" minOccurs="0"><xs:element name="state" type="CostReportStateType"><xs:annotation><xs:documentation>If at least one state is specified then only cost reports with this state are returned (if any).</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="since" type="xs:dateTime" use="required"><xs:annotation><xs:documentation>Only consider changes that have been made in EAK after this date. Cost report whose state has changed after this datum are
+            returned.
+        </xs:documentation></xs:annotation></xs:attribute><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:complexType name="CostReportExportResponseType"><xs:sequence><xs:any/></xs:sequence><xs:attribute name="includesLatest" type="YesNoType" use="required"><xs:annotation><xs:documentation>Does this include latest cost reports? If false, client should make a new request after this one.</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="latestChange" type="xs:dateTime" use="required"><xs:annotation><xs:documentation>When the last cost report in this document was last sent to ERP. If CostReportExportRequest had at least one status, then this
+            date
+            and time shows when the last invoice in this document had a status change or was sent to ERP.
+        </xs:documentation></xs:annotation></xs:attribute></xs:complexType><xs:simpleType name="CostReportStateType"><xs:annotation><xs:documentation>Types of cost reports that can be obtained from EAK</xs:documentation></xs:annotation><xs:restriction base="ShortTextType"><xs:enumeration value="COST_REPORT_STATE_CREATED"/><xs:enumeration value="COST_REPORT_STATE_BEING_VERIFIED"/><xs:enumeration value="COST_REPORT_STATE_VERIFIED"/><xs:enumeration value="COST_REPORT_STATE_DECLINED"/></xs:restriction></xs:simpleType><xs:complexType name="CostReportAttachmentRequestType"><xs:sequence maxOccurs="10" minOccurs="0"><xs:element name="Attachment" type="CostReportAttachmentType"><xs:annotation><xs:documentation>Requested attachment, fileName is filled in response</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:complexType name="CostReportAttachmentResponseType"><xs:sequence maxOccurs="10" minOccurs="0"><xs:element name="Attachment" type="CostReportAttachmentType"><xs:annotation><xs:documentation>Element representing single attachment</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType><xs:complexType name="CostReportAttachmentType"><xs:simpleContent><xs:extension base="xs:base64Binary"><xs:attribute name="costReportId" type="xs:long" use="required"/><xs:attribute name="attachmentId" type="xs:long" use="required"/><xs:attribute name="fileName" type="xs:string"/></xs:extension></xs:simpleContent></xs:complexType><xs:complexType name="EInvoiceResponseType"><xs:sequence><xs:element ref="epl:E_Invoice"/></xs:sequence><xs:attribute name="includesLatest" type="epl:YesNoType" use="required"><xs:annotation><xs:documentation>Does this include latest invoice? If false, client should make a new request after this one.</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="latestChange" type="xs:dateTime" use="required"><xs:annotation><xs:documentation>When the last invoice in this document was last sent to ERP.
+            If BuyInvoiceRequest had at least one status, then this date
+            and
+            time shows
+            when the last invoice in this document had a status change or was sent
+            to ERP.
+        </xs:documentation></xs:annotation></xs:attribute></xs:complexType><xs:complexType name="EInvoiceRespoonseType"><xs:annotation><xs:documentation>DEPRECATED: BuyInvoiceExportRequest and EInvoiceResponseType should be used instead</xs:documentation></xs:annotation><xs:sequence><xs:element ref="epl:E_Invoice"/></xs:sequence><xs:attribute name="includesLatest" type="epl:YesNoType" use="required"><xs:annotation><xs:documentation>Does this include latest invoice? If false, client should make a new request after this one.</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="latestChange" type="xs:dateTime" use="required"><xs:annotation><xs:documentation>When the last invoice in this document was last sent to ERP.
+            If BuyInvoiceRequest had at least one status, then this date
+            and
+            time shows
+            when the last invoice in this document had a status change or was sent
+            to ERP.
+        </xs:documentation></xs:annotation></xs:attribute></xs:complexType><xs:element name="HasBuyInvoiceRequest" type="BuyInvoiceReqType"><xs:annotation><xs:documentation>Are there any invoices that have a change of state (including (re)sending to ERP) newer than specified by "since" attribute
+        </xs:documentation></xs:annotation></xs:element><xs:element name="HasBuyInvoiceResponse" type="epl:YesNoType"><xs:annotation><xs:documentation>Returns true if there are invoices to be downloaded</xs:documentation></xs:annotation></xs:element><xs:element name="BuyInvoicePdfRequest"><xs:annotation><xs:documentation>DEPRECATED - Use InvoiceAttachmentRequest with onlyInvoice="YES" instead. Get a buy invoice attachment from EAK.
+        </xs:documentation></xs:annotation><xs:complexType><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/><xs:attribute name="invoiceId" type="epl:NormalTextType" use="required"/></xs:complexType></xs:element><xs:element name="BuyInvoicePdfResponse"><xs:complexType><xs:sequence><xs:element ref="PdfAttachment"/></xs:sequence></xs:complexType></xs:element><xs:complexType name="SaleInvoiceBuyStatusRequestType"><xs:sequence><xs:element maxOccurs="10" name="buyEvent" type="BuyInvoiceEventCodeType"/></xs:sequence><xs:attribute name="latestChangeId" type="xs:long" use="required"/><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:complexType name="SaleInvoiceBuyStatusResponseType"><xs:sequence><xs:element maxOccurs="1000" minOccurs="0" name="response" type="SaleInvoiceBuyStatusType"/></xs:sequence><xs:attribute name="latestChangeId" type="xs:long" use="required"/><xs:attribute name="includesLatest" type="YesNoType" use="required"/></xs:complexType><xs:complexType name="SaleInvoiceBuyStatusType"><xs:sequence><xs:element minOccurs="0" name="infoCode" type="ShortTextType"/><xs:element minOccurs="0" name="infoText" type="LongTextType"/></xs:sequence><xs:attribute name="changeId" type="xs:long" use="required"/><xs:attribute name="changeDateTime" type="xs:dateTime" use="required"/><xs:attribute name="invoiceNr" type="NormalTextType" use="required"/><xs:attribute name="invoiceDate" type="xs:date" use="required"/><xs:attribute name="event" type="BuyInvoiceEventCodeType" use="required"/></xs:complexType><xs:simpleType name="BuyInvoiceInfoCodeType"><xs:restriction base="xs:string"><xs:maxLength value="50"/></xs:restriction></xs:simpleType><xs:simpleType name="BuyInvoiceEventCodeType"><xs:restriction base="xs:string"><xs:enumeration value="RECEIVED"/><xs:enumeration value="BEING_VERIFIED"/><xs:enumeration value="VERIFIED"/><xs:enumeration value="RETURNED_TO_SENDER"/><xs:enumeration value="PAYMENT_RECEIVED"/><xs:enumeration value="PAID"/></xs:restriction></xs:simpleType><xs:complexType name="BuyInvoiceReqType"><xs:sequence maxOccurs="unbounded" minOccurs="0"><xs:element name="state" type="BuyInvoiceStateType"><xs:annotation><xs:documentation>If at least one state is specified then only buy infoices with this state are returned (if any).</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="since" type="xs:dateTime" use="required"><xs:annotation><xs:documentation>Only consider changes that have been made in EAK after this date. If at least one state is given, invoices that are sent to
+            erp after
+            this date or whose state has changed after this datum are returned. If no state is given, only these invoices are returned that
+            were sent to erp after
+            this date.
+        </xs:documentation></xs:annotation></xs:attribute><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/><xs:attribute name="format" type="InvoiceFormatType" use="optional"/><xs:attribute name="operator" type="epl:YesNoType" use="optional"/></xs:complexType><xs:complexType name="BuyInvoiceRegisteredReqType"><xs:sequence maxOccurs="1000" minOccurs="0"><xs:element name="RegisteredInvoice" type="RegisteredInvoiceType"><xs:annotation><xs:documentation>If at least one state is specified then only buy infoices with this state are returned (if any).</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:complexType name="RegisteredInvoiceType"><xs:sequence><xs:element name="ErpDocumentNumber" type="epl:LongTextType"><xs:annotation><xs:documentation>Document number in ERP</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="invoiceId" type="epl:NormalTextType" use="required"/></xs:complexType><xs:complexType name="BuyInvoicePaidReqType"><xs:sequence maxOccurs="1000" minOccurs="0"><xs:element name="PaidInvoice" type="PaidInvoiceType"/></xs:sequence><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:complexType name="PaidInvoiceType"><xs:attribute name="invoiceId" type="epl:NormalTextType" use="required"/></xs:complexType><xs:complexType name="SaleInvoiceExportReqType"><xs:sequence maxOccurs="unbounded"><xs:element name="state" type="SaleInvoiceStateType"><xs:annotation><xs:documentation>Only sale invoices with this state are returned (if any).</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="since" type="xs:dateTime" use="required"><xs:annotation><xs:documentation>Only consider changes that have been made in EAK after this date. Invoices whose state has changed after this datum are
+            returned.
+        </xs:documentation></xs:annotation></xs:attribute><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/><xs:attribute name="format" type="InvoiceFormatType" use="optional"/></xs:complexType><xs:simpleType name="BuyInvoiceStateType"><xs:annotation><xs:documentation>Types of buy invoices that can be obtained from EAK</xs:documentation></xs:annotation><xs:restriction base="epl:ShortTextType"><xs:enumeration value="RECEIVED"/><xs:enumeration value="BEING_VERIFIED"/><xs:enumeration value="VERIFIED"/><xs:enumeration value="FORPAY"/><xs:enumeration value="DECLINED"/><xs:enumeration value="RETURNED_TO_SENDER"/><xs:enumeration value="PAID"/></xs:restriction></xs:simpleType><xs:simpleType name="SaleInvoiceStateType"><xs:annotation><xs:documentation>Types of sale invoices that can be obtained from EAK</xs:documentation></xs:annotation><xs:restriction base="epl:ShortTextType"><xs:enumeration value="CREATED"/><xs:enumeration value="IMPORTED"/><xs:enumeration value="SENT"/></xs:restriction></xs:simpleType><xs:element name="EInvoiceRequest"><xs:annotation><xs:documentation>e-arvetekeskus.eu extension of Estonian electronic invoice format in order to receive pdf attachments together with Estonian
+            e-invoice
+        </xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element ref="epl:E_Invoice"><xs:annotation><xs:documentation>Estonian e-invoice version 1.0. More info available at http://www.pangaliit.ee/arveldused/e-arve/</xs:documentation></xs:annotation></xs:element><xs:element maxOccurs="unbounded" minOccurs="0" ref="PdfAttachment"/></xs:sequence><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"><xs:annotation><xs:documentation>Identifies and authorizes company making the request. Must be generated in EAK and inserted into settings of ERP.
+        </xs:documentation></xs:annotation></xs:attribute><xs:attribute name="operator" type="epl:YesNoType" use="optional"/></xs:complexType></xs:element><xs:element name="EInvoiceResponse" type="SimpleResponseType"><xs:annotation><xs:documentation>Response sent as a result of data exchange</xs:documentation></xs:annotation></xs:element><xs:complexType name="SimpleResponseType"><xs:annotation><xs:documentation>
+            Represents simple response with code and message
+        </xs:documentation></xs:annotation><xs:sequence><xs:element name="ErrorCode" type="xs:integer"><xs:annotation><xs:documentation>"0" indicates successful transmission, any other integer indicates an error code</xs:documentation></xs:annotation></xs:element><xs:element name="Message" type="xs:string"><xs:annotation><xs:documentation>Human readable error/success message</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType><xs:element name="PdfAttachment" type="Base64FileType"><xs:annotation><xs:documentation>A base64 encoded PDF file representing an Invoice packaged inside E_Invoice that has the same invoiceId as this node.
+        </xs:documentation></xs:annotation></xs:element><xs:complexType name="Base64FileType"><xs:simpleContent><xs:extension base="xs:base64Binary"><xs:attribute name="invoiceId" type="epl:NormalTextType" use="required"/></xs:extension></xs:simpleContent></xs:complexType><xs:complexType name="InvoiceAttachmentType"><xs:sequence><xs:element name="AttachmentContent" type="xs:base64Binary"/></xs:sequence><xs:attribute name="invoiceId" type="epl:NormalTextType"/><xs:attribute name="fileType" type="xs:string"/><xs:attribute name="fileName" type="xs:string"/><xs:attribute name="length" type="xs:integer"/></xs:complexType><xs:element name="AccountPlanResponse" type="SimpleResponseType"><xs:annotation><xs:documentation>Response sent as a result of account plan export from ERP to EAK</xs:documentation></xs:annotation></xs:element><xs:element name="AccountPlanRequest" type="AccountPlanRequestType"><xs:annotation><xs:documentation>Request for exporting entire or partial account plan from ERP to EAK</xs:documentation></xs:annotation></xs:element><xs:complexType name="AccountPlanRequestType"><xs:sequence><xs:any processContents="skip"><xs:annotation><xs:documentation>
+            Xml with supported client specific format is the request content
+        </xs:documentation></xs:annotation></xs:any></xs:sequence><xs:attribute name="format" type="RegistryFormatType" use="required"><xs:annotation><xs:documentation>Incoming data format. Currently available: AXAPTA</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="replace" type="epl:YesNoType" use="optional"><xs:annotation><xs:documentation>If whole account plan is sent and old one can be replaced entirely</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="parse" type="epl:YesNoType" use="optional"><xs:annotation><xs:documentation>If accounts are sent in batches then final request has to be marked - end of transaction. If single request contains all
+            accounts then
+            this
+            is YES. This triggers actual account parsing
+        </xs:documentation></xs:annotation></xs:attribute><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:element name="ClientRegistryResponse" type="SimpleResponseType"><xs:annotation><xs:documentation>Response sent as a result of client registry export from ERP to EAK</xs:documentation></xs:annotation></xs:element><xs:element name="ClientRegistryRequest" type="ClientRegistryRequestType"><xs:annotation><xs:documentation>Request for exporting entire or partial client registry from ERP to EAK</xs:documentation></xs:annotation></xs:element><xs:complexType name="ClientRegistryRequestType"><xs:sequence><xs:any><xs:annotation><xs:documentation>
+            Xml with supported client specific format is the request content
+        </xs:documentation></xs:annotation></xs:any></xs:sequence><xs:attribute name="format" type="RegistryFormatType" use="required"><xs:annotation><xs:documentation>Incoming data format. Currently available: AXAPTA</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="replace" type="epl:YesNoType"><xs:annotation><xs:documentation>If whole Client registry is sent and old one can be replaced entirely</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:element name="DimensionRegistryResponse"><xs:complexType><xs:complexContent><xs:extension base="SimpleResponseType"><xs:sequence><xs:element minOccurs="0" name="ConnectionErrors" type="DimensionRegistryConnectionErrorsType"/></xs:sequence></xs:extension></xs:complexContent></xs:complexType></xs:element><xs:element name="DimensionRegistryRequest" type="DimensionRegistryRequestType"><xs:annotation><xs:documentation>Request for exporting entire or partial Dimension registry from ERP to EAK</xs:documentation></xs:annotation></xs:element><xs:complexType name="DimensionRegistryConnectionErrorsType"><xs:sequence><xs:element maxOccurs="unbounded" name="ImportError"><xs:complexType><xs:sequence><xs:element name="Code" type="xs:string"/><xs:element name="Message" type="xs:string"/><xs:element name="ConnectionDimFrom" type="DimensionRegistryConnectionPartType"/><xs:element name="ConnectionDimTo" type="DimensionRegistryConnectionPartType"/></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType><xs:complexType name="DimensionRegistryConnectionPartType"><xs:sequence><xs:element name="Dimension" type="epl:NormalTextType"/><xs:element name="DimensionNum" type="epl:NormalTextType"/></xs:sequence></xs:complexType><xs:complexType name="DimensionRegistryRequestType"><xs:sequence><xs:any processContents="skip"><xs:annotation><xs:documentation>
+            Xml with supported client specific format is the request content
+        </xs:documentation></xs:annotation></xs:any></xs:sequence><xs:attribute name="format" type="RegistryFormatType" use="required"><xs:annotation><xs:documentation>Incoming data format. Currently available: AXAPTA</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="replace" type="epl:YesNoType" use="optional"><xs:annotation><xs:documentation>If whole client registry is sent and old one can be replaced entirely</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="parse" type="epl:YesNoType" use="optional"><xs:annotation><xs:documentation>If dimensions are sent in batches then final request has to be marked - end of transaction. If single request contains all
+            dimensions
+            then this
+            is YES. This triggers actual dimension parsing
+        </xs:documentation></xs:annotation></xs:attribute><xs:attribute name="parseConnections" type="epl:YesNoType" use="optional"><xs:annotation><xs:documentation>Same as "parse". Deprecated</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:complexType name="InvoiceAttachmentRequestType"><xs:sequence maxOccurs="10"><xs:element name="invoiceId" type="epl:NormalTextType"><xs:annotation><xs:documentation>InvoiceId for attachments</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/><xs:attribute name="startIndex" type="xs:integer" use="required"><xs:annotation><xs:documentation>inclusive index of attachment. Can be used if more than maximum result set returned. Minimum 1</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="onlyInvoice" type="epl:YesNoType" use="optional"><xs:annotation><xs:documentation>If yes only invoice main attachment is returned</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="operator" type="epl:YesNoType" use="optional"/></xs:complexType><xs:complexType name="InvoiceAttachmentResponseType"><xs:sequence maxOccurs="20" minOccurs="0"><xs:element name="InvoiceAttachment" type="InvoiceAttachmentType"><xs:annotation><xs:documentation>Element representing single attachment</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="nextAttachmentIndex" type="xs:integer" use="required"/></xs:complexType><xs:complexType name="CompanyStatusRequestType"><xs:sequence maxOccurs="100" minOccurs="0"><xs:element name="RegNumber"><xs:annotation><xs:documentation>Reg number of company whose status is requested</xs:documentation></xs:annotation><xs:complexType><xs:simpleContent><xs:extension base="epl:RegType"><xs:attribute name="countryCode" type="xs:string" use="optional"/></xs:extension></xs:simpleContent></xs:complexType></xs:element></xs:sequence><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/><xs:attribute name="subset" type="xs:string" use="optional"/></xs:complexType><xs:complexType name="CompanyStatusResponseType"><xs:sequence maxOccurs="100" minOccurs="0"><xs:element name="CompanyActive" type="CompanyActiveType"><xs:annotation><xs:documentation>Element representing status of single company</xs:documentation></xs:annotation></xs:element></xs:sequence></xs:complexType><xs:complexType name="CompanyActiveType"><xs:simpleContent><xs:extension base="epl:YesNoType"><xs:attribute name="regNumber" type="epl:RegType" use="required"/><xs:attribute name="country" type="xs:string" use="optional"/></xs:extension></xs:simpleContent></xs:complexType><xs:element name="RejectConfirmationResponse" type="SimpleResponseType"><xs:annotation><xs:documentation>Response sent as a result of confirmation circle rejection</xs:documentation></xs:annotation></xs:element><xs:element name="RejectConfirmationRequest" type="RejectConfirmationRequestType"><xs:annotation><xs:documentation>Request for rejecting confirmation circle</xs:documentation></xs:annotation></xs:element><xs:complexType name="RejectConfirmationRequestType"><xs:sequence><xs:element maxOccurs="5" name="RejectContent" type="RejectContentType"><xs:annotation><xs:documentation>Only sale invoices with this state are returned (if any).</xs:documentation></xs:annotation></xs:element></xs:sequence><xs:attribute name="name" type="epl:NormalTextType" use="required"><xs:annotation><xs:documentation>Name of the accountant rejecting confirmation</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="regNumber" type="epl:NormalTextType" use="required"><xs:annotation><xs:documentation>Reg number of the accountant rejecting confirmation</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="countryCode" type="epl:NormalTextType" use="optional"><xs:annotation><xs:documentation>Country code of the accountant rejecting confirmation</xs:documentation></xs:annotation></xs:attribute><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:complexType name="RejectContentType"><xs:simpleContent><xs:extension base="epl:LongTextType"><xs:attribute name="rejectType" type="RejectTypeType" use="required"/><xs:attribute name="invoiceId" type="epl:NormalTextType" use="required"/></xs:extension></xs:simpleContent></xs:complexType><xs:simpleType name="RejectTypeType"><xs:annotation><xs:documentation>Types of confirmation circle rejections</xs:documentation></xs:annotation><xs:restriction base="epl:NormalTextType"><xs:enumeration value="REJECT"/><xs:enumeration value="REJECT_AND_RESEND"/><xs:enumeration value="REJECT_AND_RESEND_TO_LAST"/></xs:restriction></xs:simpleType><xs:element name="RegistryImportRequest"><xs:annotation><xs:documentation>Request for queueing registry import messages for processing</xs:documentation></xs:annotation><xs:complexType><xs:complexContent><xs:extension base="AuthenticatedRequest"><xs:sequence><xs:any><xs:annotation><xs:documentation xml:lang="en">Xml content of the registry data to be imported</xs:documentation></xs:annotation></xs:any></xs:sequence></xs:extension></xs:complexContent></xs:complexType></xs:element><xs:element name="RegistryImportResponse"><xs:annotation><xs:documentation>Response sent as a result of RegistryImportRequest</xs:documentation></xs:annotation><xs:complexType><xs:complexContent><xs:extension base="SimpleResponseType"/></xs:complexContent></xs:complexType></xs:element><xs:simpleType name="RegistryFormatType"><xs:annotation><xs:documentation>Possible formats supported by registry import (not all registries support each type)</xs:documentation></xs:annotation><xs:restriction base="ShortTextType"><xs:enumeration value="STANDARD"/><xs:enumeration value="AXAPTA"/></xs:restriction></xs:simpleType><xs:complexType abstract="true" name="AuthenticatedRequest"><xs:attribute name="authPhrase" type="AuthPhraseType" use="required"/></xs:complexType><xs:simpleType name="AuthPhraseType"><xs:annotation><xs:documentation>Identifies and authorizes company making the request. Must be generated in EAK and inserted into settings of ERP.
+        </xs:documentation></xs:annotation><xs:restriction base="xs:string"><xs:maxLength value="100"/></xs:restriction></xs:simpleType><xs:simpleType name="InvoiceFormatType"><xs:annotation><xs:documentation>Types of formats supported by invoice export</xs:documentation></xs:annotation><xs:restriction base="epl:ShortTextType"><xs:enumeration value="AXAPTA"/><xs:enumeration value="E_INV_1_1"/></xs:restriction></xs:simpleType><xs:simpleType name="YesNoType"><xs:restriction base="xs:string"><xs:enumeration value="YES"/><xs:enumeration value="NO"/></xs:restriction></xs:simpleType><xs:simpleType name="ShortTextType"><xs:restriction base="xs:string"><xs:maxLength value="50"/></xs:restriction></xs:simpleType><xs:simpleType name="NormalTextType"><xs:restriction base="xs:string"><xs:maxLength value="100"/></xs:restriction></xs:simpleType><xs:simpleType name="LongTextType"><xs:restriction base="xs:string"><xs:maxLength value="500"/></xs:restriction></xs:simpleType></xs:schema>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.pangaliit.ee/arveldused/e-arve/" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.pangaliit.ee/arveldused/e-arve/"><xs:element name="E_Invoice"><xs:annotation><xs:documentation>root element</xs:documentation></xs:annotation><xs:complexType><xs:sequence><xs:element ref="Header"/><xs:element maxOccurs="unbounded" ref="Invoice"/></xs:sequence></xs:complexType></xs:element><xs:element name="Header"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="Test" type="YesNoType"/><xs:element name="Date" type="DateType"/><xs:element name="FileId" type="ShortTextType"/><xs:element name="Version" type="ShortTextType"/><xs:element minOccurs="0" name="SenderId" type="ShortTextType"/><xs:element minOccurs="0" name="ReceiverId" type="ShortTextType"/><xs:element minOccurs="0" name="ContractId" type="ShortTextType"/><xs:element minOccurs="0" name="PayeeAccountNumber" type="AccountType"/><xs:element name="TotalNumberInvoices" type="xs:positiveInteger"/><xs:element name="TotalAmount" type="Decimal2FractionDigitsType"/></xs:sequence></xs:complexType></xs:element><xs:element name="Invoice"><xs:complexType><xs:sequence><xs:element ref="InvoiceParties"/><xs:element ref="InvoiceInformation"/><xs:element maxOccurs="2" ref="InvoiceSumGroup"/><xs:element ref="InvoiceItem"/><xs:element maxOccurs="unbounded" minOccurs="0" ref="AdditionalInformation"/><xs:element ref="PaymentInfo"/></xs:sequence><xs:attribute name="invoiceId" type="NormalTextType" use="required"/><xs:attribute name="serviceId" type="ShortTextType" use="required"/><xs:attribute name="regNumber" type="RegType" use="required"/><xs:attribute name="accountNumber" type="AccountType" use="required"/><xs:attribute name="factoring" type="YesNoType" use="optional"/></xs:complexType></xs:element><xs:element name="InvoiceParties"><xs:complexType><xs:sequence><xs:element name="SellerParty" type="BillPartyRecord"/><xs:element name="BuyerParty" type="BillPartyRecord"/><xs:element minOccurs="0" name="RecipientParty" type="BillPartyRecord"/><xs:element minOccurs="0" name="DeliveryParty" type="BillPartyRecord"/></xs:sequence></xs:complexType></xs:element><xs:element name="InvoiceInformation"><xs:complexType><xs:sequence><xs:element name="Type"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="SourceInvoice" type="ShortTextType"/></xs:sequence><xs:attribute name="type" use="required"><xs:simpleType><xs:restriction base="xs:NMTOKEN"><xs:pattern value="DEB"/><xs:pattern value="CRE"/></xs:restriction></xs:simpleType></xs:attribute></xs:complexType></xs:element><xs:element minOccurs="0" name="FactorContractNumber" type="NormalTextType"/><xs:element minOccurs="0" name="ContractNumber" type="NormalTextType"/><xs:element minOccurs="0" name="DocumentName" type="NormalTextType"/><xs:element name="InvoiceNumber" type="NormalTextType"/><xs:element minOccurs="0" name="InvoiceContentCode" type="ShortTextType"/><xs:element minOccurs="0" name="InvoiceContentText" type="NormalTextType"/><xs:element minOccurs="0" name="PaymentReferenceNumber" type="ReferenceType"/><xs:element minOccurs="0" name="PaymentMethod" type="NormalTextType"/><xs:element name="InvoiceDate" type="DateType"/><xs:element minOccurs="0" name="DueDate" type="DateType"/><xs:element minOccurs="0" name="FineRatePerDay" type="Decimal2FractionDigitsType"/><xs:element minOccurs="0" name="Period"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="PeriodName" type="NormalTextType"/><xs:element minOccurs="0" name="StartDate" type="DateType"/><xs:element minOccurs="0" name="EndDate" type="DateType"/></xs:sequence></xs:complexType></xs:element><xs:element maxOccurs="unbounded" minOccurs="0" name="Extension" type="ExtensionRecord"/></xs:sequence></xs:complexType></xs:element><xs:element name="InvoiceSumGroup"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="Balance"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="BalanceDate" type="DateType"/><xs:element minOccurs="0" name="BalanceBegin" type="Decimal2FractionDigitsType"/><xs:element minOccurs="0" name="BalanceEnd" type="Decimal2FractionDigitsType"/></xs:sequence></xs:complexType></xs:element><xs:element minOccurs="0" name="InvoiceSum" type="Decimal4FractionDigitsType"/><xs:element minOccurs="0" name="PenaltySum" type="Decimal4FractionDigitsType"/><xs:element maxOccurs="unbounded" minOccurs="0" name="Addition" type="AdditionRecord"/><xs:element minOccurs="0" name="Rounding" type="Decimal4FractionDigitsType"/><xs:element maxOccurs="unbounded" minOccurs="0" name="VAT" type="VATRecord"/><xs:element name="TotalSum" type="Decimal2FractionDigitsType"/><xs:element minOccurs="0" name="Currency" type="CurrencyType"/><xs:element minOccurs="0" name="Accounting" type="AccountingRecord"/><xs:element maxOccurs="unbounded" minOccurs="0" name="Extension" type="ExtensionRecord"/></xs:sequence></xs:complexType></xs:element><xs:element name="InvoiceItem"><xs:complexType><xs:sequence><xs:element maxOccurs="unbounded" ref="InvoiceItemGroup"/></xs:sequence></xs:complexType></xs:element><xs:element name="InvoiceItemGroup"><xs:complexType><xs:sequence><xs:element maxOccurs="unbounded" ref="ItemEntry"/><xs:element minOccurs="0" ref="GroupEntry"/></xs:sequence><xs:attribute name="groupId" type="ShortTextType" use="optional"/></xs:complexType></xs:element><xs:element name="ItemEntry"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="SerialNumber" type="ShortTextType"/><xs:element minOccurs="0" name="Code" type="ShortTextType"/><xs:element minOccurs="0" name="Accounting" type="AccountingRecord"/><xs:element minOccurs="0" name="CustomerRef" type="NormalTextType"/><xs:element name="Description" type="LongTextType"/><xs:element minOccurs="0" name="EAN" type="NormalTextType"/><xs:element minOccurs="0" name="InitialReading" type="ShortTextType"/><xs:element minOccurs="0" name="FinalReading" type="ShortTextType"/><xs:element maxOccurs="unbounded" minOccurs="0" name="ItemReserve" type="ExtensionRecord"/><xs:element minOccurs="0" name="ItemUnit" type="ShortTextType"/><xs:element minOccurs="0" name="ItemAmount" type="Decimal4FractionDigitsType"/><xs:element minOccurs="0" name="ItemPrice" type="Decimal4FractionDigitsType"/><xs:element minOccurs="0" name="ItemSum" type="Decimal4FractionDigitsType"/><xs:element maxOccurs="unbounded" minOccurs="0" name="Addition" type="AdditionRecord"/><xs:element minOccurs="0" name="VAT" type="VATRecord"/><xs:element name="ItemTotal" type="Decimal4FractionDigitsType"/></xs:sequence></xs:complexType></xs:element><xs:element name="GroupEntry"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="GroupDescription" type="NormalTextType"/><xs:element maxOccurs="unbounded" minOccurs="0" name="Extension" type="ExtensionRecord"/><xs:element minOccurs="0" name="Accounting" type="AccountingRecord"/><xs:element minOccurs="0" name="GroupAmount" type="Decimal4FractionDigitsType"/><xs:element minOccurs="0" name="GroupSum" type="Decimal4FractionDigitsType"/><xs:element maxOccurs="unbounded" minOccurs="0" name="Addition" type="AdditionRecord"/><xs:element minOccurs="0" name="VAT" type="VATRecord"/><xs:element name="GroupTotal" type="Decimal4FractionDigitsType"/></xs:sequence></xs:complexType></xs:element><xs:element name="AdditionalInformation" type="ExtensionRecord"/><xs:element name="PaymentInfo"><xs:complexType><xs:sequence><xs:element name="Currency" type="CurrencyType"/><xs:element minOccurs="0" name="PaymentRefId" type="ReferenceType"/><xs:element minOccurs="0" name="PaymentDescription"><xs:simpleType><xs:restriction base="xs:string"><xs:maxLength value="210"/><xs:pattern value="[ -ÿ]*"/></xs:restriction></xs:simpleType></xs:element><xs:element name="Payable" type="YesNoType"/><xs:element minOccurs="0" name="PayDueDate" type="DateType"/><xs:element name="PaymentTotalSum" type="Decimal2FractionDigitsType"/><xs:element name="PayerName" type="NameTextType"/><xs:element name="PaymentId" type="xs:integer"/><xs:element name="PayToAccount" type="AccountType"/><xs:element name="PayToName" type="NameTextType"/><xs:element minOccurs="0" name="DirectDebitPayeeContractNumber" type="ShortTextType"/><xs:element minOccurs="0" name="DirectDebitPayerNumber" type="ReferenceType"/></xs:sequence></xs:complexType></xs:element><xs:complexType name="AccountDataRecord"><xs:sequence><xs:element name="AccountNumber" type="AccountType"/><xs:element minOccurs="0" name="IBAN" type="AccountType"/><xs:element minOccurs="0" name="BIC"><xs:simpleType><xs:restriction base="xs:string"><xs:maxLength value="11"/></xs:restriction></xs:simpleType></xs:element><xs:element minOccurs="0" name="BankName"><xs:simpleType><xs:restriction base="NameTextType"/></xs:simpleType></xs:element></xs:sequence></xs:complexType><xs:complexType name="AccountingRecord"><xs:sequence><xs:element minOccurs="0" name="Description" type="NormalTextType"/><xs:element maxOccurs="unbounded" name="JournalEntry"><xs:complexType><xs:sequence><xs:element minOccurs="0" name="GeneralLedger" type="ShortTextType"/><xs:element minOccurs="0" name="GeneralLedgerDetail" type="ShortTextType"/><xs:element minOccurs="0" name="CostObjective" type="ShortTextType"/><xs:element minOccurs="0" name="Sum" type="Decimal4FractionDigitsType"/><xs:element minOccurs="0" name="VatSum" type="Decimal4FractionDigitsType"/><xs:element minOccurs="0" name="VatRate" type="Decimal2FractionDigitsType"/></xs:sequence></xs:complexType></xs:element></xs:sequence></xs:complexType><xs:complexType name="AdditionRecord"><xs:sequence><xs:element name="AddContent" type="NormalTextType"/><xs:element minOccurs="0" name="AddRate" type="Decimal2FractionDigitsType"/><xs:element name="AddSum" type="Decimal4FractionDigitsType"/></xs:sequence><xs:attribute name="addCode" use="required"><xs:simpleType><xs:restriction base="xs:NMTOKEN"><xs:pattern value="DSC"/><xs:pattern value="CHR"/></xs:restriction></xs:simpleType></xs:attribute></xs:complexType><xs:complexType name="AddressRecord"><xs:sequence><xs:element name="PostalAddress1" type="NormalTextType"/><xs:element minOccurs="0" name="PostalAddress2" type="NormalTextType"/><xs:element name="City" type="NormalTextType"/><xs:element minOccurs="0" name="PostalCode"><xs:simpleType><xs:restriction base="xs:string"><xs:maxLength value="10"/></xs:restriction></xs:simpleType></xs:element><xs:element minOccurs="0" name="Country" type="NormalTextType"/><xs:element maxOccurs="unbounded" minOccurs="0" name="Extension" type="ExtensionRecord"/></xs:sequence></xs:complexType><xs:complexType name="BillPartyRecord"><xs:sequence><xs:element minOccurs="0" name="UniqueCode" type="ShortTextType"/><xs:element name="Name" type="NameTextType"/><xs:element minOccurs="0" name="DepId" type="NormalTextType"/><xs:element minOccurs="0" name="RegNumber" type="RegType"/><xs:element minOccurs="0" name="VATRegNumber" type="RegType"/><xs:element minOccurs="0" name="ContactData" type="ContactDataRecord"/><xs:element maxOccurs="unbounded" minOccurs="0" name="AccountInfo" type="AccountDataRecord"/><xs:element maxOccurs="unbounded" minOccurs="0" name="Extension" type="ExtensionRecord"/></xs:sequence></xs:complexType><xs:complexType name="ContactDataRecord"><xs:sequence><xs:element minOccurs="0" name="ContactName" type="NameTextType"/><xs:element minOccurs="0" name="ContactPersonCode" type="RegType"/><xs:element minOccurs="0" name="PhoneNumber" type="NormalTextType"/><xs:element minOccurs="0" name="FaxNumber" type="NormalTextType"/><xs:element minOccurs="0" name="E-mailAddress"><xs:simpleType><xs:restriction base="xs:string"><xs:pattern value=".+@.+"/></xs:restriction></xs:simpleType></xs:element><xs:element minOccurs="0" name="LegalAddress" type="AddressRecord"/><xs:element minOccurs="0" name="MailAddress" type="AddressRecord"/><xs:element maxOccurs="unbounded" minOccurs="0" name="ContactInformation" type="ExtensionRecord"/></xs:sequence></xs:complexType><xs:complexType name="ExtensionRecord"><xs:sequence><xs:element minOccurs="0" name="InformationName" type="NormalTextType"/><xs:element name="InformationContent" type="LongTextType"/></xs:sequence><xs:attribute name="extensionId" type="xs:anySimpleType" use="optional"/></xs:complexType><xs:complexType name="VATRecord"><xs:sequence><xs:element name="SumBeforeVAT" type="Decimal4FractionDigitsType"/><xs:element name="VATRate" type="Decimal2FractionDigitsType"/><xs:element name="VATSum" type="Decimal4FractionDigitsType"/></xs:sequence></xs:complexType><xs:simpleType name="AccountType"><xs:restriction base="xs:string"><xs:maxLength value="35"/><xs:pattern value="([0-9|A-Z])*"/></xs:restriction></xs:simpleType><xs:simpleType name="CurrencyType"><xs:restriction base="xs:string"><xs:pattern value="[A-Z][A-Z][A-Z]"/></xs:restriction></xs:simpleType><xs:simpleType name="DateType"><xs:restriction base="xs:date"/></xs:simpleType><xs:simpleType name="Decimal2FractionDigitsType"><xs:restriction base="xs:decimal"><xs:fractionDigits value="2"/></xs:restriction></xs:simpleType><xs:simpleType name="Decimal4FractionDigitsType"><xs:restriction base="xs:decimal"><xs:fractionDigits value="4"/></xs:restriction></xs:simpleType><xs:simpleType name="LongTextType"><xs:restriction base="xs:string"><xs:maxLength value="500"/></xs:restriction></xs:simpleType><xs:simpleType name="NormalTextType"><xs:restriction base="xs:string"><xs:maxLength value="100"/></xs:restriction></xs:simpleType><xs:simpleType name="NameTextType"><xs:restriction base="xs:string"><xs:maxLength value="70"/><xs:pattern value="[ -ÿ]*"/></xs:restriction></xs:simpleType><xs:simpleType name="RegType"><xs:restriction base="xs:string"><xs:maxLength value="15"/></xs:restriction></xs:simpleType><xs:simpleType name="ReferenceType"><xs:restriction base="xs:string"><xs:maxLength value="20"/><xs:pattern value="([0-9])*"/></xs:restriction></xs:simpleType><xs:simpleType name="ShortTextType"><xs:restriction base="xs:string"><xs:maxLength value="20"/></xs:restriction></xs:simpleType><xs:simpleType name="YesNoType"><xs:restriction base="xs:NMTOKEN"><xs:pattern value="YES"/><xs:pattern value="NO"/></xs:restriction></xs:simpleType></xs:schema>
+    </wsdl:types>
+    <wsdl:message name="BuyInvoiceExportResponse">
+        <wsdl:part element="tns:BuyInvoiceExportResponse" name="BuyInvoiceExportResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="CostReportExportResponse">
+        <wsdl:part element="tns:CostReportExportResponse" name="CostReportExportResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="InvoiceAttachmentResponse">
+        <wsdl:part element="tns:InvoiceAttachmentResponse" name="InvoiceAttachmentResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="HasBuyInvoiceResponse">
+        <wsdl:part element="tns:HasBuyInvoiceResponse" name="HasBuyInvoiceResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="CostReportAttachmentResponse">
+        <wsdl:part element="tns:CostReportAttachmentResponse" name="CostReportAttachmentResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="AccountPlanResponse">
+        <wsdl:part element="tns:AccountPlanResponse" name="AccountPlanResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoicesResponse">
+        <wsdl:part element="tns:BuyInvoicesResponse" name="BuyInvoicesResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="EInvoiceRequest">
+        <wsdl:part element="tns:EInvoiceRequest" name="EInvoiceRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoicePdfResponse">
+        <wsdl:part element="tns:BuyInvoicePdfResponse" name="BuyInvoicePdfResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="DimensionRegistryRequest">
+        <wsdl:part element="tns:DimensionRegistryRequest" name="DimensionRegistryRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="DimensionRegistryResponse">
+        <wsdl:part element="tns:DimensionRegistryResponse" name="DimensionRegistryResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SaleInvoiceBuyStatusRequest">
+        <wsdl:part element="tns:SaleInvoiceBuyStatusRequest" name="SaleInvoiceBuyStatusRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="ClientRegistryResponse">
+        <wsdl:part element="tns:ClientRegistryResponse" name="ClientRegistryResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="HasBuyInvoiceRequest">
+        <wsdl:part element="tns:HasBuyInvoiceRequest" name="HasBuyInvoiceRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoiceExportRequest">
+        <wsdl:part element="tns:BuyInvoiceExportRequest" name="BuyInvoiceExportRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="InvoiceAttachmentRequest">
+        <wsdl:part element="tns:InvoiceAttachmentRequest" name="InvoiceAttachmentRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="CompanyStatusResponse">
+        <wsdl:part element="tns:CompanyStatusResponse" name="CompanyStatusResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="RejectConfirmationRequest">
+        <wsdl:part element="tns:RejectConfirmationRequest" name="RejectConfirmationRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoicePaidRequest">
+        <wsdl:part element="tns:BuyInvoicePaidRequest" name="BuyInvoicePaidRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="CostReportAttachmentRequest">
+        <wsdl:part element="tns:CostReportAttachmentRequest" name="CostReportAttachmentRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="AccountPlanRequest">
+        <wsdl:part element="tns:AccountPlanRequest" name="AccountPlanRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="ClientRegistryRequest">
+        <wsdl:part element="tns:ClientRegistryRequest" name="ClientRegistryRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoiceRegisteredResponse">
+        <wsdl:part element="tns:BuyInvoiceRegisteredResponse" name="BuyInvoiceRegisteredResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="RegistryImportResponse">
+        <wsdl:part element="tns:RegistryImportResponse" name="RegistryImportResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoicePaidResponse">
+        <wsdl:part element="tns:BuyInvoicePaidResponse" name="BuyInvoicePaidResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="CompanyStatusRequest">
+        <wsdl:part element="tns:CompanyStatusRequest" name="CompanyStatusRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="RejectConfirmationResponse">
+        <wsdl:part element="tns:RejectConfirmationResponse" name="RejectConfirmationResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="EInvoiceResponse">
+        <wsdl:part element="tns:EInvoiceResponse" name="EInvoiceResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="RegistryImportRequest">
+        <wsdl:part element="tns:RegistryImportRequest" name="RegistryImportRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="CostReportExportRequest">
+        <wsdl:part element="tns:CostReportExportRequest" name="CostReportExportRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoicePdfRequest">
+        <wsdl:part element="tns:BuyInvoicePdfRequest" name="BuyInvoicePdfRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoiceRegisteredRequest">
+        <wsdl:part element="tns:BuyInvoiceRegisteredRequest" name="BuyInvoiceRegisteredRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SaleInvoiceExportRequest">
+        <wsdl:part element="tns:SaleInvoiceExportRequest" name="SaleInvoiceExportRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BuyInvoiceRequest">
+        <wsdl:part element="tns:BuyInvoiceRequest" name="BuyInvoiceRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SaleInvoiceBuyStatusResponse">
+        <wsdl:part element="tns:SaleInvoiceBuyStatusResponse" name="SaleInvoiceBuyStatusResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="SaleInvoiceExportResponse">
+        <wsdl:part element="tns:SaleInvoiceExportResponse" name="SaleInvoiceExportResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="ErpDataExchange">
+        <wsdl:operation name="BuyInvoiceExport">
+            <wsdl:input message="tns:BuyInvoiceExportRequest" name="BuyInvoiceExportRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:BuyInvoiceExportResponse" name="BuyInvoiceExportResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CostReportExport">
+            <wsdl:input message="tns:CostReportExportRequest" name="CostReportExportRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:CostReportExportResponse" name="CostReportExportResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InvoiceAttachment">
+            <wsdl:input message="tns:InvoiceAttachmentRequest" name="InvoiceAttachmentRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:InvoiceAttachmentResponse" name="InvoiceAttachmentResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="HasBuyInvoice">
+            <wsdl:input message="tns:HasBuyInvoiceRequest" name="HasBuyInvoiceRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:HasBuyInvoiceResponse" name="HasBuyInvoiceResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CostReportAttachment">
+            <wsdl:input message="tns:CostReportAttachmentRequest" name="CostReportAttachmentRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:CostReportAttachmentResponse" name="CostReportAttachmentResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AccountPlan">
+            <wsdl:input message="tns:AccountPlanRequest" name="AccountPlanRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:AccountPlanResponse" name="AccountPlanResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EInvoice">
+            <wsdl:input message="tns:EInvoiceRequest" name="EInvoiceRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:EInvoiceResponse" name="EInvoiceResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoicePdf">
+            <wsdl:input message="tns:BuyInvoicePdfRequest" name="BuyInvoicePdfRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:BuyInvoicePdfResponse" name="BuyInvoicePdfResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="DimensionRegistry">
+            <wsdl:input message="tns:DimensionRegistryRequest" name="DimensionRegistryRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:DimensionRegistryResponse" name="DimensionRegistryResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="SaleInvoiceBuyStatus">
+            <wsdl:input message="tns:SaleInvoiceBuyStatusRequest" name="SaleInvoiceBuyStatusRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:SaleInvoiceBuyStatusResponse" name="SaleInvoiceBuyStatusResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ClientRegistry">
+            <wsdl:input message="tns:ClientRegistryRequest" name="ClientRegistryRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:ClientRegistryResponse" name="ClientRegistryResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CompanyStatus">
+            <wsdl:input message="tns:CompanyStatusRequest" name="CompanyStatusRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:CompanyStatusResponse" name="CompanyStatusResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="RejectConfirmation">
+            <wsdl:input message="tns:RejectConfirmationRequest" name="RejectConfirmationRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:RejectConfirmationResponse" name="RejectConfirmationResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoicePaid">
+            <wsdl:input message="tns:BuyInvoicePaidRequest" name="BuyInvoicePaidRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:BuyInvoicePaidResponse" name="BuyInvoicePaidResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoiceRegistered">
+            <wsdl:input message="tns:BuyInvoiceRegisteredRequest" name="BuyInvoiceRegisteredRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:BuyInvoiceRegisteredResponse" name="BuyInvoiceRegisteredResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="RegistryImport">
+            <wsdl:input message="tns:RegistryImportRequest" name="RegistryImportRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:RegistryImportResponse" name="RegistryImportResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="SaleInvoiceExport">
+            <wsdl:input message="tns:SaleInvoiceExportRequest" name="SaleInvoiceExportRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:SaleInvoiceExportResponse" name="SaleInvoiceExportResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoice">
+            <wsdl:input message="tns:BuyInvoiceRequest" name="BuyInvoiceRequest">
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="ErpDataExchangeSoap11" type="tns:ErpDataExchange">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="BuyInvoiceExport">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="BuyInvoiceExportRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="BuyInvoiceExportResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CostReportExport">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="CostReportExportRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="CostReportExportResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="InvoiceAttachment">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="InvoiceAttachmentRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="InvoiceAttachmentResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="HasBuyInvoice">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="HasBuyInvoiceRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="HasBuyInvoiceResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CostReportAttachment">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="CostReportAttachmentRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="CostReportAttachmentResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="AccountPlan">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="AccountPlanRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="AccountPlanResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="EInvoice">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="EInvoiceRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="EInvoiceResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoicePdf">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="BuyInvoicePdfRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="BuyInvoicePdfResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="DimensionRegistry">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="DimensionRegistryRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="DimensionRegistryResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="SaleInvoiceBuyStatus">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="SaleInvoiceBuyStatusRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="SaleInvoiceBuyStatusResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ClientRegistry">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="ClientRegistryRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="ClientRegistryResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="CompanyStatus">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="CompanyStatusRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="CompanyStatusResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="RejectConfirmation">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="RejectConfirmationRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="RejectConfirmationResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoicePaid">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="BuyInvoicePaidRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="BuyInvoicePaidResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoiceRegistered">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="BuyInvoiceRegisteredRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="BuyInvoiceRegisteredResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="RegistryImport">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="RegistryImportRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="RegistryImportResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="SaleInvoiceExport">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="SaleInvoiceExportRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="SaleInvoiceExportResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="BuyInvoice">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="BuyInvoiceRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="ErpDataExchangeService">
+        <wsdl:port binding="tns:ErpDataExchangeSoap11" name="ErpDataExchangeSoap11">
+            <soap:address location="https://testfinance.post.ee:443/finance/erp/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

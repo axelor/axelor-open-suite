@@ -29,4 +29,18 @@ dependencies {
 	testImplementation libs.mockito
 
 	implementation libs.jaxb_bind_api
+
+	implementation 'jakarta.xml.ws:jakarta.xml.ws-api:4.0.0'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.1'
+
+	implementation 'com.sun.xml.ws:jaxws-rt:4.0.3'
+
+//	implementation libs.jaxb_xjc
+//	implementation libs.jaxws_api
+//
+//	// https://mvnrepository.com/artifact/javax.jws/jsr181-api
+//	implementation 'javax.jws:jsr181-api:1.0-MR1'
+//	// https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-ri
+//	implementation 'com.sun.xml.ws:jaxws-ri:4.0.3'
+
 }

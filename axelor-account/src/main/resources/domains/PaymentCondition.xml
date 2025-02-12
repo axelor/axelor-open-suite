@@ -9,6 +9,7 @@
 
     <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
+    <integer name="paymentTime" title="Payment period (N days / Month)"/>
     <boolean name="isFree" title="Free"/>
     <decimal name="advancePaymentNeeded" default="0" title="Percentage of advance payment"/>
     <one-to-many name="paymentConditionLineList"
