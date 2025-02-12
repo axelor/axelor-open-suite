@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the issue that required saving before applying cutoff dates."
+module: axelor-account

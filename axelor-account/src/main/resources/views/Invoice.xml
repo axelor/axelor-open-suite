@@ -621,8 +621,8 @@
           <field name="$cutOffEndDate" type="date" title="To date"
             validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
-            onClick="action-invoice-method-apply-cut-off-dates"
-            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
+            onClick="action-invoice-method-apply-cut-off-dates,save"
+            readonlyIf="!id || $cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
