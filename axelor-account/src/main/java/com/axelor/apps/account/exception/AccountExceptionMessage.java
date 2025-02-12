@@ -1813,4 +1813,7 @@ public final class AccountExceptionMessage {
 
   public static final String SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED = /*$$(*/
       "The sum of non-deductible taxes should not exceed 100%." /*)*/;
+
+  public static final String MOVE_LINE_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
+      "Non-deductible tax only authorized on purchase journal. Please remove the non-deductible tax on move line." /*)*/;
 }
