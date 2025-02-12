@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
@@ -86,5 +87,21 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
     equipmentList.forEach(equipment -> equipmentRepository.save(equipment));
 
     return invoice;
+  }
+
+  @Override
+  @Transactional
+  public Contract copyFromTemplate(Contract contract, ContractTemplate template)
+      throws AxelorException {
+    contract = super.copyFromTemplate(contract, template);
+    contract.setGuaranteedInterventionTime(template.getGuaranteedInterventionTime());
+    contract.setGuaranteedRecoveryTime(template.getGuaranteedRecoveryTime());
+    contract.setOnCallManagement(template.getOnCallManagement());
+    contract.setOnCallPlanning(template.getOnCallPlanning());
+    contract.setDelayToSendTheQuotation(template.getDelayToSendTheQuotation());
+    contract.setActivateRecurrencePlanning(template.getActivateRecurrencePlanning());
+    contract.setPlanningPreferenceSelect(template.getPlanningPreferenceSelect());
+    contract.setPeriodicity(template.getPeriodicity());
+    return contract;
   }
 }

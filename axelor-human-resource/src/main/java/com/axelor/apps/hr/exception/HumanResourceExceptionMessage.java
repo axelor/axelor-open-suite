@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -134,10 +134,6 @@ public final class HumanResourceExceptionMessage {
       "The employee %s has no seniority date" /*)*/;
   public static final String EMPLOYEE_NO_BIRTH_DATE = /*$$(*/
       "The employee %s has no birth date" /*)*/;
-  public static final String EMPLOYEE_NO_USER = /*$$(*/
-      "The employee %s has no associated user." /*)*/;
-  public static final String EMPLOYEE_NO_ACTIVE_COMPANY = /*$$(*/
-      "The employee %s user has no active company." /*)*/;
   public static final String CONTACT_CANNOT_DELETE = /*$$(*/
       "This contact is referenced from employee %s - %s" /*)*/;
 

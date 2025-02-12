@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,23 +28,25 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProjectMenuServiceImpl implements ProjectMenuService {
 
-  protected ProjectService projectService;
+  protected ProjectToolService projectToolService;
   protected ProjectTaskRepository projectTaskRepo;
 
   @Inject
   public ProjectMenuServiceImpl(
-      ProjectService projectService, ProjectTaskRepository projectTaskRepo) {
-    this.projectService = projectService;
+      ProjectToolService projectToolService, ProjectTaskRepository projectTaskRepo) {
+    this.projectToolService = projectToolService;
     this.projectTaskRepo = projectTaskRepo;
   }
 
   @Override
-  public Map<String, Object> getAllOpenProjectTasks() {
-    User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getContextProject();
+  public Map<String, Object> getAllOpenProjectTasks(Project project) {
+    if (project == null) {
+      project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+    }
 
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Project Tasks"))
@@ -55,8 +57,8 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .domain(
                 "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", contextProject)
-            .context("_projectIds", projectService.getContextProjectIds())
+            .context("_project", project)
+            .context("_projectIds", projectToolService.getRelatedProjectIds(project))
             .param("details-view", "true")
             .param("search-filters", "project-task-filters");
 
@@ -64,36 +66,18 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
   }
 
   @Override
-  public Map<String, Object> getAllOpenProjectTickets() {
-    User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getContextProject();
-
-    ActionViewBuilder builder =
-        ActionView.define(I18n.get("Ticket"))
-            .model(ProjectTask.class.getName())
-            .add("kanban", "project-task-kanban")
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.project.projectStatus.isCompleted = false AND self.typeSelect = :_typeSelect AND (self.project.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.project.membersUserSet")
-            .context("_typeSelect", ProjectTaskRepository.TYPE_TICKET)
-            .context("_project", contextProject)
-            .context("_projectIds", projectService.getContextProjectIds())
-            .param("search-filters", "project-task-filters")
-            .param("forceTitle", "true");
-
-    return builder.map();
-  }
-
-  @Override
-  public Map<String, Object> getAllProjects() {
+  public Map<String, Object> getAllProjects(Long projectId) {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Projects"))
             .model(Project.class.getName())
             .add("grid", "project-grid")
             .add("form", "project-form")
             .add("kanban", "project-kanban")
-            .param("search-filters", "project-filters");
+            .param("search-filters", "project-project-filters");
+
+    if (projectId != null) {
+      builder.context("_showRecord", projectId);
+    }
 
     return builder.map();
   }
@@ -106,6 +90,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
+            .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
             .param("search-filters", "project-task-filters");
@@ -118,9 +103,10 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Related Tasks"))
             .model(ProjectTask.class.getName())
-            .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
+            .add("kanban", "project-task-kanban")
             .add("form", "project-task-form")
+            .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
             .context("_id", project.getId())
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)

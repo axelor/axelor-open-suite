@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,8 @@ public interface BillOfMaterialLineService {
       BigDecimal qty,
       Unit unit,
       Integer priority,
-      boolean hasNoManageStock);
+      boolean hasNoManageStock,
+      BigDecimal wasteRate);
 
   BillOfMaterialLine createFromRawMaterial(
       long productId, int priority, BillOfMaterial billOfMaterial) throws AxelorException;

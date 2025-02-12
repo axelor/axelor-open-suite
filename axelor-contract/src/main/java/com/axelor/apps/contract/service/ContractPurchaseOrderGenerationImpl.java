@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -74,7 +74,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
             contract.getPartner(),
             null);
     purchaseOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());
-    purchaseOrder.setPaymentCondition(contract.getPartner().getPaymentCondition());
+    purchaseOrder.setPaymentCondition(contract.getPartner().getOutPaymentCondition());
     purchaseOrder.setContract(contract);
     purchaseOrder.setTradingName(contract.getTradingName());
 

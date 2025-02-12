@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,14 +41,15 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
-import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
-import com.axelor.apps.supplychain.service.SaleOrderStockService;
-import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderReservedQtyService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -157,7 +158,7 @@ public class SaleOrderController {
     try {
       Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(SaleOrderSupplychainService.class)
+          Beans.get(SaleOrderStockLocationService.class)
               .getStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("stockLocation", stockLocation);
     } catch (Exception e) {
@@ -206,8 +207,8 @@ public class SaleOrderController {
 
   /**
    * Called from the sale order invoicing wizard. Call {@link
-   * com.axelor.apps.supplychain.service.SaleOrderInvoiceService#generateInvoice(SaleOrder, int,
-   * BigDecimal, boolean, Map)} } Return to the view the generated invoice.
+   * SaleOrderInvoiceService#generateInvoice(SaleOrder, int, BigDecimal, boolean, Map)} } Return to
+   * the view the generated invoice.
    *
    * @param request
    * @param response
@@ -233,19 +234,14 @@ public class SaleOrderController {
           (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineList");
       fillMaps(saleOrderLineListContext, qtyToInvoiceMap, priceMap, qtyMap);
 
-      // Re-compute amount to invoice if invoicing partially
-      amountToInvoice =
-          saleOrderInvoiceService.computeAmountToInvoice(
-              amountToInvoice,
-              operationSelect,
-              saleOrder,
-              qtyToInvoiceMap,
-              priceMap,
-              qtyMap,
-              isPercent);
-
       saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
-          saleOrder, amountToInvoice, isPercent);
+          saleOrder,
+          amountToInvoice,
+          operationSelect,
+          qtyToInvoiceMap,
+          priceMap,
+          qtyMap,
+          isPercent);
 
       // Information to send to the service to handle an invoicing on timetables
       List<Long> timetableIdList = new ArrayList<>();
@@ -702,6 +698,7 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
    * PartnerLinkService#computePartnerFilter}
@@ -783,7 +780,7 @@ public class SaleOrderController {
     try {
       Company company = saleOrder.getCompany();
       StockLocation toStockLocation =
-          Beans.get(SaleOrderSupplychainService.class)
+          Beans.get(SaleOrderStockLocationService.class)
               .getToStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {

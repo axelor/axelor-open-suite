@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,10 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.inject.Beans;
+import com.axelor.db.JPA;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
 import com.google.inject.Inject;
@@ -39,15 +39,25 @@ import javax.persistence.PersistenceException;
 
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
 
-  @Inject private StockLocationRepository stockLocationRepo;
+  protected AppStockService appStockService;
+  protected BarcodeGeneratorService barcodeGeneratorService;
+  protected ProductCompanyService productCompanyService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected TrackingNumberService trackingNumberService;
 
-  @Inject private StockLocationLineService stockLocationLineService;
-
-  @Inject private AppStockService appStockService;
-
-  @Inject private BarcodeGeneratorService barcodeGeneratorService;
-
-  @Inject protected ProductCompanyService productCompanyService;
+  @Inject
+  public TrackingNumberManagementRepository(
+      AppStockService appStockService,
+      BarcodeGeneratorService barcodeGeneratorService,
+      ProductCompanyService productCompanyService,
+      StockLocationLineFetchService stockLocationLineFetchService,
+      TrackingNumberService trackingNumberService) {
+    this.appStockService = appStockService;
+    this.barcodeGeneratorService = barcodeGeneratorService;
+    this.productCompanyService = productCompanyService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.trackingNumberService = trackingNumberService;
+  }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
@@ -61,12 +71,13 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
 
         if (_parent.get("fromStockLocation") != null) {
           StockLocation stockLocation =
-              stockLocationRepo.find(
+              JPA.find(
+                  StockLocation.class,
                   Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
 
           if (stockLocation != null) {
             BigDecimal availableQty =
-                stockLocationLineService.getTrackingNumberAvailableQty(
+                stockLocationLineFetchService.getTrackingNumberAvailableQty(
                     stockLocation, trackingNumber);
 
             json.put("$availableQty", availableQty);
@@ -75,7 +86,7 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       } else if (trackingNumber.getProduct() != null) {
         json.put(
             "$availableQty",
-            stockLocationLineService.getTrackingNumberAvailableQty(trackingNumber));
+            stockLocationLineFetchService.getTrackingNumberAvailableQty(trackingNumber));
       } else {
         json.put("$availableQty", BigDecimal.ZERO);
       }
@@ -93,7 +104,7 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
     AppStock appStock = appStockService.getAppStock();
     try {
       // This method calls is to check circular parent dependencies.
-      Beans.get(TrackingNumberService.class).getOriginParents(trackingNumber);
+      trackingNumberService.getOriginParents(trackingNumber);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);

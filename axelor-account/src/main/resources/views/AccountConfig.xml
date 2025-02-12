@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="account-config-grid" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
@@ -24,7 +24,7 @@
           hideIf="$existingFiscalYear" colSpan="12">
           <field name="$noFiscalYearLabel" showTitle="false" readonly="true" colSpan="12">
             <viewer>
-              <![CDATA[<><Badge bg="info">{_t('There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration and click on the button \'Generate\' to create them automatically.')}</Badge></>]]>
+              <![CDATA[<><Badge bg="info">{_t('There is no fiscal year and periods defined. Please enter below the fiscal year dates (included-included) and the periods duration and click on the button Generate to create them automatically.')}</Badge></>]]>
             </viewer>
           </field>
           <field name="$generateFiscalYear"
@@ -46,7 +46,7 @@
         <field name="$noAccountChartLabel" showTitle="false" hidden="true" readonly="true"
           hideIf="$existingChartAccount || hasChartImported" colSpan="12">
           <viewer>
-            <![CDATA[<><Badge bg="info">{_t('There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below and click on the button \'Import\'.')}</Badge></>]]>
+            <![CDATA[<><Badge bg="info">{_t('There is no account chart defined. Please define a chart from the account configuration menu or import a default one using the account charts available below and click on the button Import.')}</Badge></>]]>
           </viewer>
         </field>
         <field name="accountingConfigTemplate" readonlyIf="hasChartImported" colSpan="3"
@@ -210,6 +210,15 @@
           <field name="cashPositionVariationCreditAccount"
             domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
             form-view="account-form" requiredIf="thresholdDistanceFromRegulation != 0"/>
+        </panel>
+        <panel name="foreignExchangeGainsLossesPanel" title="Foreign exchange gains/losses"
+          colSpan="12">
+          <field name="foreignExchangeGainsAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
+          <field name="foreignExchangeLossesAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form"/>
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">

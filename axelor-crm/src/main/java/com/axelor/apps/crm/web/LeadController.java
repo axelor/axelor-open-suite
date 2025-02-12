@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -214,6 +214,16 @@ public class LeadController {
                 I18n.get(CrmExceptionMessage.CRM_EMAIL_DOMAIN_ALREADY_EXISTS), fullNamesStr),
             I18n.get(ITranslation.CRM_DUPLICATE_RECORDS_FOUND));
       }
+    }
+  }
+
+  public void resetLead(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class).resetLead(Beans.get(LeadRepository.class).find(lead.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

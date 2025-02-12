@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVI
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -37,6 +38,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -59,6 +61,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +70,7 @@ import org.slf4j.LoggerFactory;
 public class PartnerServiceImpl implements PartnerService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  public static final int MAX_LEVEL_OF_PARTNER = 20;
 
   protected PartnerRepository partnerRepo;
   protected AppBaseService appBaseService;
@@ -542,7 +546,10 @@ public class PartnerServiceImpl implements PartnerService {
   public void convertToIndividualPartner(Partner partner) {
     partner.setIsContact(false);
     partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    addPartnerAddress(partner, partner.getMainAddress(), true, false, false);
+    Address mainAddress = partner.getMainAddress();
+    if (mainAddress != null) {
+      addPartnerAddress(partner, mainAddress, true, false, false);
+    }
     partner.setMainAddress(null);
   }
 
@@ -681,5 +688,51 @@ public class PartnerServiceImpl implements PartnerService {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
+  }
+
+  @Override
+  public List<Partner> getParentPartnerList(Partner partner) {
+    List<Partner> parentPartnerList = getFilteredPartners(partner);
+    parentPartnerList.removeAll(getPartnerExemptionList(partner, parentPartnerList, 0));
+    return parentPartnerList;
+  }
+
+  protected List<Partner> getFilteredPartners(Partner partner) {
+    List<Long> companySet =
+        ObjectUtils.notEmpty(partner.getCompanySet())
+            ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
+            : List.of(0l);
+    return partnerRepo
+        .all()
+        .filter(
+            "self.isContact = false "
+                + "AND self.partnerTypeSelect = :partnerType "
+                + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
+        .bind("partnerType", PartnerRepository.PARTNER_TYPE_COMPANY)
+        .bind("companySet", companySet)
+        .fetch();
+  }
+
+  protected List<Partner> getPartnerExemptionList(
+      Partner partner, List<Partner> parentPartnerList, int counter) {
+    List<Partner> partnerExemptionList = new ArrayList<>();
+    partnerExemptionList.add(partner);
+
+    List<Partner> filteredList = new ArrayList<>();
+    filteredList.add(partner);
+
+    while (ObjectUtils.notEmpty(filteredList) && counter < MAX_LEVEL_OF_PARTNER) {
+      counter++;
+      filteredList = getPartnerExemptionSubList(filteredList, parentPartnerList);
+      partnerExemptionList.addAll(filteredList);
+    }
+    return partnerExemptionList;
+  }
+
+  protected List<Partner> getPartnerExemptionSubList(
+      List<Partner> partnerCheckList, List<Partner> parentPartnerList) {
+    return parentPartnerList.stream()
+        .filter(p -> partnerCheckList.contains(p.getParentPartner()))
+        .collect(Collectors.toList());
   }
 }

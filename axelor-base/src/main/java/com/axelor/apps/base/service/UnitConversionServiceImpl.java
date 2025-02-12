@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -114,6 +114,13 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         BigDecimal coefficient =
             this.getCoefficient(unitConversionList, startUnit, endUnit, model, nameInContext);
 
+        if (coefficient.signum() == 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.COEFFICIENT_SHOULD_NOT_BE_ZERO),
+              startUnit.getName(),
+              endUnit.getName());
+        }
         return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_UP);
       } catch (IOException | ClassNotFoundException e) {
         TraceBackService.trace(e);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.studio.app.service.AppService;
@@ -81,6 +83,8 @@ public interface AppBaseService extends AppService {
   public String getDefaultPartnerLocale();
 
   // Conversion de devise
+
+  AddressTemplate getDefaultAddressTemplate() throws AxelorException;
 
   /**
    * Get 0% vat

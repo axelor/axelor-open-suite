@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ public class PurchaseOrderLinePurchaseRepository extends PurchaseOrderLineReposi
 
     if (context.get("_model") != null
         && context.get("_model").toString().contains("PurchaseOrder")
-        && context.get("id") != null) {
+        && context.get("_parent") != null) {
       Long id = (Long) json.get("id");
       if (id != null) {
         PurchaseOrderLine purchaseOrderLine = find(id);

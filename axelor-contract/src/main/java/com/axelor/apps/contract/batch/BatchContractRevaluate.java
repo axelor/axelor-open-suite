@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.contract.batch;
 
-import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
@@ -92,7 +91,7 @@ public class BatchContractRevaluate extends BatchStrategy {
                 .bind("onGoingStatus", ContractVersionRepository.ONGOING_VERSION)
                 .bind("idsOk", idsOk)
                 .bind("idsFail", idsFail)
-                .fetch(FETCH_LIMIT))
+                .fetch(getFetchLimit()))
         .isEmpty()) {
       Map<String, List<Contract>> ids = revaluateContracts(contractList);
       idsOk.addAll(ids.get("OK").stream().map(Contract::getId).collect(Collectors.toList()));
@@ -100,6 +99,7 @@ public class BatchContractRevaluate extends BatchStrategy {
       idsReevaluated.addAll(
           ids.get("REEVALUATED").stream().map(Contract::getId).collect(Collectors.toList()));
       JPA.clear();
+      findBatch();
     }
     LOG.debug("{} Reevaluated contracts : {}", idsReevaluated.size(), idsReevaluated);
   }

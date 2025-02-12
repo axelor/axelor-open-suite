@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public interface FixedAssetService {
@@ -33,7 +34,7 @@ public interface FixedAssetService {
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
   /**
-   * Call splitFixedAsset and save both fixed asset. (Original and created)
+   * Call splitFixedAsset and save both fixed asset. (Original and all created)
    *
    * @param fixedAsset
    * @param splitType
@@ -43,7 +44,7 @@ public interface FixedAssetService {
    * @return
    * @throws AxelorException
    */
-  FixedAsset splitAndSaveFixedAsset(
+  List<FixedAsset> splitAndSaveFixedAsset(
       FixedAsset fixedAsset,
       int splitType,
       BigDecimal amount,

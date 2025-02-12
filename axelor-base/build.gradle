@@ -72,14 +72,10 @@ dependencies {
 
 	implementation libs.swagger_jaxrs
 
-	//Fix the version of PDFBox to prevent incompabilities with axelor-utils while Boxable is not updated
-	implementation ('org.apache.pdfbox:pdfbox'){
-		version {
-			strictly('2.0.26')
-		}
-	}
-	implementation libs.boxable
-	implementation libs.bcprov_jdk15on
-	implementation libs.bcpkix_jdk15on
+	implementation libs.pdfbox
+	implementation libs.openpdf
+	implementation libs.jsoup
+	implementation libs.bcprov_jdk18on
+	implementation libs.bcpkix_jdk18on
 	implementation libs.flyingsaucer_openpdf
 }

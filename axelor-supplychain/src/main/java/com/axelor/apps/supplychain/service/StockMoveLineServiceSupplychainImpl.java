@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,10 +44,12 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -104,7 +106,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       SupplyChainConfigService supplychainConfigService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       InvoiceLineRepository invoiceLineRepository,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      StockLocationLineFetchService stockLocationLineFetchService,
+      TrackingNumberCreateService trackingNumberCreateService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -117,7 +121,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         trackingNumberRepo,
         productCompanyService,
         shippingCoefService,
-        stockLocationLineHistoryService);
+        stockLocationLineHistoryService,
+        stockLocationLineFetchService,
+        trackingNumberCreateService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;
@@ -313,7 +319,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
         if (stockMoveLine.getTrackingNumber() != null) {
           StockLocationLine stockLocationLine =
-              stockLocationLineService.getDetailLocationLine(
+              stockLocationLineFetchService.getDetailLocationLine(
                   stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
 
           if (stockLocationLine != null) {
@@ -327,7 +333,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
         if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
           StockLocationLine stockLocationLineForProduct =
-              stockLocationLineService.getStockLocationLine(
+              stockLocationLineFetchService.getStockLocationLine(
                   stockLocation, stockMoveLine.getProduct());
 
           if (stockLocationLineForProduct != null) {
@@ -340,7 +346,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         }
       } else {
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(
+            stockLocationLineFetchService.getStockLocationLine(
                 stockLocation, stockMoveLine.getProduct());
 
         if (stockLocationLine != null) {

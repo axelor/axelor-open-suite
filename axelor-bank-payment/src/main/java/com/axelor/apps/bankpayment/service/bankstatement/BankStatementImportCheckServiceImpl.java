@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -252,19 +252,20 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       BankStatementLine finalBankStatementLine)
       throws AxelorException {
     BigDecimal initialBankStatementLineSum =
-        initialBankStatementLine.getDebit().max(initialBankStatementLine.getCredit());
+        initialBankStatementLine.getDebit().subtract(initialBankStatementLine.getCredit());
     BigDecimal finalBankStatementLineSum =
-        finalBankStatementLine.getDebit().max(finalBankStatementLine.getCredit());
+        finalBankStatementLine.getDebit().subtract(finalBankStatementLine.getCredit());
 
     BigDecimal movementLineSum =
         orderBankStatementLineQuery(
                 bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
                     bankStatement, bankDetails, BankStatementLineRepository.LINE_TYPE_MOVEMENT),
                 BankStatementLineRepository.LINE_TYPE_MOVEMENT)
-            .fetch().stream()
+            .fetch()
+            .stream()
             .map(
                 bankStatementLine ->
-                    bankStatementLine.getCredit().subtract(bankStatementLine.getDebit()))
+                    bankStatementLine.getDebit().subtract(bankStatementLine.getCredit()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     if (initialBankStatementLineSum.add(movementLineSum).compareTo(finalBankStatementLineSum)

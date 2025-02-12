@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,17 +21,18 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.AxelorException;
@@ -57,13 +58,14 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      MoveToolService moveToolService,
+      MoveLineToolService moveLineToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      BankReconciliationLineService bankReconciliationLineService,
+      BankReconciliationLineUnreconciliationService bankReconciliationLineUnreconciliationService,
       CurrencyScaleService currencyScaleService,
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService,
       ExpensePaymentService expensePaymentService,
       AppService appService) {
     super(
@@ -75,13 +77,14 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         extractContextMoveService,
         invoicePaymentRepository,
         invoicePaymentCancelService,
-        moveToolService,
+        moveLineToolService,
         bankReconciliationService,
         bankReconciliationLineRepository,
-        bankReconciliationLineService,
+        bankReconciliationLineUnreconciliationService,
         currencyScaleService,
         unReconcileService,
-        moveInvoiceTermService);
+        moveInvoiceTermService,
+        analyticLineService);
     this.expensePaymentService = expensePaymentService;
     this.appService = appService;
   }

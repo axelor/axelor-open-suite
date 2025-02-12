@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="maintenance-manuf-order-grid" title="Maintenance orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
@@ -233,6 +233,14 @@
     </panel-mail>
   </form>
 
+  <form id="maintenance-manuf-order-form" name="manuf-order-form" title="Manufacturing order"
+    model="com.axelor.apps.production.db.ManufOrder" extension="true">
+    <extend target="//field[@name='billOfMaterial']">
+      <attribute name="domain"
+        value="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 1"/>
+    </extend>
+  </form>
+
   <action-group name="action-maintenance-manuf-order-group-onnew">
     <action name="action-manuf-order-group-onnew"/>
     <action name="action-maintenance-manuf-order-attrs-set-default"/>
@@ -308,5 +316,15 @@
   <action-method name="action-manuf-order-method-print">
     <call class="com.axelor.apps.maintenance.web.ManufOrderController" method="print"/>
   </action-method>
+
+  <action-attrs name="action-manuf-order-attrs-filter-prodProcess"
+    id="maintenance-action-manuf-order-attrs-filter-prodProcess">
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;"
+      if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;"
+      if="billOfMaterial == null"/>
+  </action-attrs>
 
 </object-views>

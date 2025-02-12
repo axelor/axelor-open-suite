@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -383,8 +383,7 @@ public class ContractLineServiceImpl implements ContractLineService {
         && contract != null
         && contract.getTradingName() != null
         && contract.getCompany() != null
-        && contract.getCompany().getTradingNameSet() != null
-        && !contract.getCompany().getTradingNameSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(contract.getCompany().getTradingNameList())) {
       domain +=
           " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
     }

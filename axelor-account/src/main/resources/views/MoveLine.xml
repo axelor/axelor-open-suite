@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -160,11 +160,13 @@
     <field name="amountRemaining" hidden="true" width="80" x-scale="companyCurrencyDecimals"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-      requiredIf="(account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80" widget="TagSelect"/>
     <field name="vatSystemSelect"
-      readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect))"
+      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine"
+      requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
       width="80"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
@@ -223,6 +225,7 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="currencyDecimals" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
+    <field name="move.functionalOriginSelect" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
@@ -485,6 +488,40 @@
   <form name="move-line-tabs-form" title="Move line details"
     model="com.axelor.apps.account.db.MoveLine" width="large">
     <panel-tabs name="mainPanelTab">
+      <panel name="detailsPanel" title="Details">
+        <panel name="currencyPanel" title="Currency" colSpan="6">
+          <field name="currencyAmount" title="Currency and exchange rate"
+            x-scale="currencyDecimals">
+            <viewer>
+              <![CDATA[<><span>{currencyRate}</span> x <span>{$fmt('currencyAmount')}</span> <span>{move.currencyCode}</span></>]]>
+            </viewer>
+            <editor layout="table" x-show-titles="false">
+              <field name="currencyRate"
+                onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
+              <field name="currencyAmount" x-scale="currencyDecimals"
+                onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
+              <field name="move.currencyCode" readonly="true"/>
+              <field name="currencyDecimals" hidden="true"/>
+            </editor>
+          </field>
+        </panel>
+        <panel name="taxPanel" title="Tax" colSpan="6"
+          showIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'tax'">
+          <field name="taxLineSet" canEdit="false"
+            readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
+            showIf="account.isTaxRequiredOnMoveLine" colSpan="6" form-view="tax-line-form"
+            grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
+            onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
+          <field name="vatSystemSelect"
+            validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+            readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+            requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
+        </panel>
+        <panel name="das2Panel" title="DAS2" colSpan="6">
+          <field name="account.serviceType"/>
+          <field name="move.partner.das2Activity"/>
+        </panel>
+      </panel>
       <panel name="invoiceTermPanel" title="Term(s)"
         if="__config__.app.getApp('account').allowMultiInvoiceTerms"
         showIf="account.useForPartnerBalance &amp;&amp; move.invoice == null" colSpan="12">
@@ -581,40 +618,6 @@
         <panel-dashlet name="bankReconciliationLinePanel"
           title="Bank reconciliation lines" action="action-move-line-view-bank-reconciliation-lines"
           showIf="account.accountType.technicalTypeSelect == 'cash'" canAttach="false"/>
-      </panel>
-      <panel name="detailsPanel" title="Détails">
-        <panel name="currencyPanel" title="Currency" colSpan="6">
-          <field name="currencyAmount" title="Currency and exchange rate"
-            x-scale="currencyDecimals">
-            <viewer>
-              <![CDATA[<><span>{currencyRate}</span> x <span>{$fmt('currencyAmount')}</span> <span>{move.currencyCode}</span></>]]>
-            </viewer>
-            <editor layout="table" x-show-titles="false">
-              <field name="currencyRate"
-                onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
-              <field name="currencyAmount" x-scale="currencyDecimals"
-                onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
-              <field name="move.currencyCode" readonly="true"/>
-              <field name="currencyDecimals" hidden="true"/>
-            </editor>
-          </field>
-        </panel>
-        <panel name="taxPanel" title="Tax" colSpan="6"
-          showIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'tax'">
-          <field name="taxLineSet" canEdit="false"
-            readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
-            showIf="account.isTaxRequiredOnMoveLine" colSpan="6" form-view="tax-line-form"
-            grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
-            onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
-          <field name="vatSystemSelect"
-            readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect)) || ![1,5].includes(move.statusSelect)"
-            showIf="account.accountType.technicalTypeSelect == 'tax'"
-            requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
-        </panel>
-        <panel name="das2Panel" title="DAS2" colSpan="6">
-          <field name="account.serviceType"/>
-          <field name="move.partner.das2Activity"/>
-        </panel>
       </panel>
       <panel name="hiddenFields" readonly="true" itemSpan="4" hidden="true">
         <field name="$validatePeriod"/>

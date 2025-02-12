@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintS
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -325,30 +326,16 @@ public class StockMoveController {
   public void splitStockMoveLinesUnit(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
-      List<StockMoveLine> stockMoveLineContextList =
-          (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
-      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
-      if (stockMoveLineContextList == null) {
-        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_14));
-        return;
-      }
-      List<StockMoveLine> stockMoveLineList = new ArrayList<>();
-      StockMoveLineRepository stockMoveLineRepo = Beans.get(StockMoveLineRepository.class);
-      for (StockMoveLine stockMoveLineContext :
-          stockMoveLineContextList.stream()
-              .filter(StockMoveLine::isSelected)
-              .collect(Collectors.toList())) {
-        StockMoveLine stockMoveLine = stockMoveLineRepo.find(stockMoveLineContext.getId());
-        stockMoveLine.setSelected(true);
-        stockMoveLineList.add(stockMoveLine);
-      }
-      boolean selected =
-          Beans.get(StockMoveService.class)
-              .splitStockMoveLines(stockMove, stockMoveLineList, BigDecimal.ONE);
 
-      if (!selected) {
-        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_15));
-      }
+      List<StockMoveLine> selectedMoveLines =
+          stockMove.getStockMoveLineList().stream()
+              .filter(Model::isSelected)
+              .collect(Collectors.toList());
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+
+      Beans.get(StockMoveService.class)
+          .splitStockMoveLines(stockMove, selectedMoveLines, BigDecimal.ONE);
+
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -362,23 +349,13 @@ public class StockMoveController {
           (List<HashMap<String, Object>>) request.getContext().get("stockMoveLineList");
       Map<String, Object> stockMoveMap =
           (Map<String, Object>) request.getContext().get("stockMove");
-      if (selectedStockMoveLineMapList == null) {
-        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_14));
-        return;
-      }
 
       List<StockMoveLine> stockMoveLineList = new ArrayList<>();
       StockMoveLineRepository stockMoveLineRepo = Beans.get(StockMoveLineRepository.class);
       for (HashMap<String, Object> map : selectedStockMoveLineMapList) {
         StockMoveLine stockMoveLine = Mapper.toBean(StockMoveLine.class, map);
         stockMoveLine = stockMoveLineRepo.find(stockMoveLine.getId());
-        stockMoveLine.setSelected(true);
         stockMoveLineList.add(stockMoveLine);
-      }
-
-      if (stockMoveLineList.isEmpty()) {
-        response.setInfo(I18n.get(StockExceptionMessage.STOCK_MOVE_15));
-        return;
       }
 
       BigDecimal splitQty = null;

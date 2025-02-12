@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrd
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.google.inject.Inject;
 
 public class ProductionOrderSaleOrderServiceBusinessImpl
@@ -38,13 +38,13 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
       ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineFetchService stockLocationLineFetchService) {
     super(
         productionOrderService,
         productionOrderRepo,
         appProductionService,
         productionOrderSaleOrderMOGenerationService,
-        stockLocationLineService);
+        stockLocationLineFetchService);
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,9 @@
 package com.axelor.apps.budget.service.move;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
+import java.util.List;
 
 public interface MoveBudgetService {
 
@@ -61,4 +63,6 @@ public interface MoveBudgetService {
   boolean checkMissingBudgetDistributionOnAccountedMove(Move move);
 
   void autoComputeBudgetDistribution(Move move) throws AxelorException;
+
+  public List<MoveLine> getRequiredBudgetMoveLines(Move move);
 }

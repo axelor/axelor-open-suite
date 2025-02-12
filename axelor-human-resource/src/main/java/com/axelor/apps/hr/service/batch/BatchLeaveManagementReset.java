@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -167,9 +167,10 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       Employee employee, LeaveLine leaveLine, LeaveReason leaveReason, String comment)
       throws AxelorException {
     LeaveReason recoveryLeaveReason = leaveReason.getRecoveryLeaveReason();
-    recoveryLeaveReason = leaveReasonRepository.find(recoveryLeaveReason.getId());
-    BigDecimal qty = leaveLine.getQuantity();
+
     if (recoveryLeaveReason != null) {
+      recoveryLeaveReason = leaveReasonRepository.find(recoveryLeaveReason.getId());
+      BigDecimal qty = leaveLine.getQuantity();
       LeaveLine nextLeaveLine =
           leaveLineService.addLeaveReasonOrCreateIt(employee, recoveryLeaveReason);
       if (qty.signum() != 0) {

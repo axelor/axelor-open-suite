@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.contract.batch;
 
-import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
@@ -70,8 +68,7 @@ public class BatchContract extends BatchStrategy {
       Query<Contract> query = factory.prepare(batch);
       List<Contract> contracts;
 
-      while (!(contracts = query.fetch(FETCH_LIMIT)).isEmpty()) {
-        findBatch();
+      while (!(contracts = query.fetch(getFetchLimit())).isEmpty()) {
         for (Contract contract : contracts) {
           try {
             factory.process(contract);
@@ -82,6 +79,7 @@ public class BatchContract extends BatchStrategy {
           }
         }
         JPA.clear();
+        findBatch();
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -109,9 +107,5 @@ public class BatchContract extends BatchStrategy {
             I18n.get(ITranslation.CONTRACT_BATCH_EXECUTION_RESULT),
             batch.getDone(),
             batch.getAnomaly()));
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CONTRACT_BATCH);
   }
 }

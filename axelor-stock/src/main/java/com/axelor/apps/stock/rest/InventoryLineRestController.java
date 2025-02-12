@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,8 @@ import com.axelor.apps.stock.rest.dto.InventoryLinePostRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLinePutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLineResponse;
 import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -32,7 +34,6 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -57,7 +58,7 @@ public class InventoryLineRestController {
       @PathParam("id") Long inventoryLineId, InventoryLinePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Arrays.asList(Inventory.class, InventoryLine.class)).check();
+    new SecurityCheck().writeAccess(InventoryLine.class, inventoryLineId).check();
 
     InventoryLine inventoryLine =
         ObjectFinder.find(InventoryLine.class, inventoryLineId, requestBody.getVersion());
@@ -67,7 +68,7 @@ public class InventoryLineRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Inventory line successfully updated",
+        I18n.get(ITranslation.INVENTORY_LINE_UPDATED),
         new InventoryLineResponse(inventoryLine));
   }
 
@@ -79,7 +80,10 @@ public class InventoryLineRestController {
   @HttpExceptionHandler
   public Response addLineToInventory(InventoryLinePostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Inventory.class).createAccess(InventoryLine.class).check();
+    new SecurityCheck()
+        .writeAccess(Inventory.class, requestBody.getInventoryId())
+        .createAccess(InventoryLine.class)
+        .check();
 
     InventoryLine inventoryLine =
         Beans.get(InventoryLineService.class)

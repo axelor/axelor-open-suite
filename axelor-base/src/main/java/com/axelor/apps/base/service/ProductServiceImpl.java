@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -354,7 +354,7 @@ public class ProductServiceImpl implements ProductService {
     return extraPrice;
   }
 
-  private List<ProductVariant> getProductVariantList(ProductVariantConfig productVariantConfig) {
+  protected List<ProductVariant> getProductVariantList(ProductVariantConfig productVariantConfig) {
 
     List<ProductVariant> productVariantList = Lists.newArrayList();
 
@@ -372,7 +372,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig, ProductVariantValue productVariantValue1) {
 
     List<ProductVariant> productVariantList = Lists.newArrayList();
@@ -397,7 +397,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig,
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2) {
@@ -427,7 +427,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig,
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2,
@@ -464,7 +464,7 @@ public class ProductServiceImpl implements ProductService {
     return productVariantList;
   }
 
-  private List<ProductVariant> getProductVariantList(
+  protected List<ProductVariant> getProductVariantList(
       ProductVariantConfig productVariantConfig,
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2,

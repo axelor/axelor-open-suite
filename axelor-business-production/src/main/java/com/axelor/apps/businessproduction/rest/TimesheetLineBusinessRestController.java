@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,11 @@ import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessSer
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.rest.TimesheetLinePostRequestHelper;
 import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
+import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -59,7 +62,7 @@ public class TimesheetLineBusinessRestController {
     new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
-    Timesheet timesheet = requestBody.fetchTimesheet();
+    Timesheet timesheet = TimesheetLinePostRequestHelper.fetchOrCreateTimesheet(requestBody);
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineCreateBusinessService.class)
             .createTimesheetLine(
@@ -67,7 +70,7 @@ public class TimesheetLineBusinessRestController {
                 requestBody.fetchProjectTask(),
                 requestBody.fetchProduct(),
                 requestBody.getDate(),
-                requestBody.fetchTimesheet(),
+                timesheet,
                 requestBody.getDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice(),
@@ -110,7 +113,7 @@ public class TimesheetLineBusinessRestController {
         .setComputedPeriodTotal(timesheetLine.getTimesheet());
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Timesheet line successfully updated.",
+        I18n.get(ITranslation.TIMESHEET_LINE_UPDATED),
         new TimesheetLineResponse(timesheetLine));
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,4 +57,11 @@ public interface ITranslation {
   public static final String PRICING_BTN =
       /*$$(*/
       "Apply pricings"; /*)*/
+
+  public static final String ADDRESS_CREATED = /*$$(*/ "Address created" /*)*/;
+  public static final String ADDRESS_FOUND = /*$$(*/ "Address found" /*)*/;
+  public static final String TRANSLATIONS_UP_TO_DATE = /*$$(*/
+      "Translations already up-to-date." /*)*/;
+  public static final String TRANSLATIONS_ADDED = /*$$(*/
+      "%s translation(s) successfully added." /*)*/;
 }

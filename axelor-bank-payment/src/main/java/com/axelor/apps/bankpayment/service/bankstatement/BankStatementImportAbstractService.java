@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,6 +60,7 @@ public abstract class BankStatementImportAbstractService {
 
   @Transactional
   public void setBankStatementImported(BankStatement bankStatement) {
+    bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);
     bankStatementRepository.save(bankStatement);
   }

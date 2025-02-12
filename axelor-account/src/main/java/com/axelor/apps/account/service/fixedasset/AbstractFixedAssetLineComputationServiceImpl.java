@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -319,6 +319,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       LocalDate acquisitionDate,
       LocalDate depreciationDate,
       LocalDate nextDate) {
+    int DEFAULT_DAYS_PER_MONTH = 30;
     BigDecimal prorataTemporis;
 
     boolean isUSProrataTemporis = fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis();
@@ -327,18 +328,23 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         fixedAsset.getComputationMethodSelect())) {
       nextDate = null;
+      int endDayOfMonth =
+          depreciationDate.getMonth() == Month.FEBRUARY
+              ? depreciationDate.getDayOfMonth()
+              : DEFAULT_DAYS_PER_MONTH;
       nbDaysBetweenAcqAndFirstDepDate =
           nbDaysBetween(
               isUSProrataTemporis,
               acquisitionDate.withDayOfMonth(1),
-              depreciationDate.withDayOfMonth(30));
+              depreciationDate.withDayOfMonth(endDayOfMonth));
     } else {
       nbDaysBetweenAcqAndFirstDepDate =
           nbDaysBetween(isUSProrataTemporis, acquisitionDate, depreciationDate);
     }
 
     BigDecimal maxNbDaysOfPeriod =
-        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
+        BigDecimal.valueOf(
+                getPeriodicityInMonthProrataTemporis(fixedAsset) * DEFAULT_DAYS_PER_MONTH)
             .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
@@ -403,6 +409,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       }
 
     } else { // European way
+
+      if (depreciationMonth == Month.FEBRUARY
+          && isLastDayOfFebruary(depreciationYear, depreciationDay)) {
+        depreciationDay = 30;
+      }
 
       if (acquisitionDay == 31) {
         acquisitionDay = 30;

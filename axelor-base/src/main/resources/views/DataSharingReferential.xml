@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="data-sharing-referential-grid" title="Data sharing referentials"
+    model="com.axelor.apps.base.db.DataSharingReferential">
+    <field name="code"/>
+  </grid>
+
+  <form name="data-sharing-referential-form" title="Data sharing referential"
+    model="com.axelor.apps.base.db.DataSharingReferential" width="large">
+    <panel name="mainPanel">
+      <field name="code"/>
+    </panel>
+    <panel-related name="dataSharingReferentialLinePanel"
+      field="dataSharingReferentialLineList" title="Data sharing referential lines"
+      form-view="data-sharing-referential-line-form" grid-view="data-sharing-referential-line-grid"
+      colSpan="12" canRemove="false"/>
+  </form>
+
+</object-views>

@@ -1,14 +1,15 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="ProjectTask">
 
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
+    <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"
+      help="Assign the task to a user.The user has to be created beforehand and recorded as a member of the selected project (in the membersPanelTab of the project)."/>
     <date name="taskDate" title="Start date"/>
     <many-to-one name="status" title="Status"
       ref="com.axelor.apps.project.db.TaskStatus"/>
@@ -74,12 +75,23 @@
     <decimal name="budgetedTime" title="Estimated time"/>
     <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile"/>
 
-    <many-to-many name="projectTaskTagSet"
-      ref="com.axelor.apps.project.db.ProjectTaskTag" title="Tags"/>
+    <many-to-many name="tagSet" ref="com.axelor.apps.base.db.Tag" title="Tags"/>
     <many-to-one name="projectTaskSection"
       ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
 
     <string name="ticketNumber" title="Ticker number" readonly="true"/>
+
+    <one-to-many name="projectTaskLinkList"
+      ref="com.axelor.apps.project.db.ProjectTaskLink" title="Project task linked"
+      mappedBy="projectTask"/>
+
+    <string name="appJson" title="App json" json="true"/>
+    <string name="projectJson" title="Project json" json="true"/>
+    <string name="categoryJson" title="Category json" json="true"/>
+
+    <one-to-many name="projectCheckListItemList"
+      ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
+      mappedBy="projectTask"/>
 
     <extra-code>
 

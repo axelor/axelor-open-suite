@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -278,5 +278,37 @@ public class CurrencyServiceImpl implements CurrencyService {
     return Objects.equals(
         this.getCurrencyConversionRate(startCurrency, endCurrency, invoiceDate),
         this.getCurrencyConversionRate(startCurrency, endCurrency, paymentDate));
+  }
+
+  /**
+   * @param oldDate
+   * @param newDate
+   * @param startCurrency
+   * @param endCurrency
+   * @param oldCurrencyRate
+   * @return the currency rate at newDate only if currency rate is different between the two dates
+   * @throws AxelorException
+   */
+  @Override
+  public BigDecimal getCurrencyRate(
+      LocalDate oldDate,
+      LocalDate newDate,
+      Currency startCurrency,
+      Currency endCurrency,
+      BigDecimal oldCurrencyRate)
+      throws AxelorException {
+    if (!this.isSameCurrencyRate(oldDate, newDate, startCurrency, endCurrency)) {
+      return this.getCurrencyConversionRate(startCurrency, endCurrency, newDate);
+    }
+    return oldCurrencyRate;
+  }
+
+  @Override
+  public boolean isCurrencyRateLower(
+      LocalDate oldDate, LocalDate newDate, Currency startCurrency, Currency endCurrency)
+      throws AxelorException {
+    return this.getCurrencyConversionRate(startCurrency, endCurrency, oldDate)
+            .compareTo(this.getCurrencyConversionRate(startCurrency, endCurrency, newDate))
+        < 0;
   }
 }

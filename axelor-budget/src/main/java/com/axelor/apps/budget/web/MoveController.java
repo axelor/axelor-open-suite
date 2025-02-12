@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -104,11 +105,11 @@ public class MoveController {
   public void validateAccounting(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
     MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
-    if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       if (moveBudgetService.isBudgetInLines(move)) {
         String budgetExceedAlert = moveBudgetService.getBudgetExceedAlert(move);
         BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, false, response);
-      } else {
+      } else if (ObjectUtils.notEmpty(moveBudgetService.getRequiredBudgetMoveLines(move))) {
         BudgetControllerTool.verifyMissingBudget(response);
       }
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -112,10 +112,9 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
     PurchaseOrderInvoiceService purchaseOrderInvoiceService =
         Beans.get(PurchaseOrderInvoiceService.class);
     Set<Long> treatedSet = new HashSet<>();
+    List<PurchaseOrder> purchaseOrderList;
 
-    for (List<PurchaseOrder> purchaseOrderList;
-        !(purchaseOrderList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+    while (!(purchaseOrderList = query.fetch(getFetchLimit())).isEmpty()) {
       for (PurchaseOrder purchaseOrder : purchaseOrderList) {
         if (treatedSet.contains(purchaseOrder.getId())) {
           throw new IllegalArgumentException("Invoice generation error");
@@ -135,6 +134,8 @@ public class BatchOrderInvoicingPurchase extends BatchOrderInvoicing {
           break;
         }
       }
+      JPA.clear();
+      findBatch();
     }
   }
 }

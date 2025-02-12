@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
@@ -101,16 +102,14 @@ public class BillOfMaterialController {
     String message;
 
     if (!billOfMaterialList.isEmpty()) {
+      StringHtmlListBuilder builder = new StringHtmlListBuilder();
+      billOfMaterialList.stream().map(BillOfMaterial::getFullName).forEach(builder::append);
 
-      String existingVersions = "";
-      for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
-        existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
-      }
       message =
           String.format(
               I18n.get(
-                  "This bill of materials already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
-              existingVersions);
+                  "This bill of materials already has the following versions : <br/>%s And these versions may also have ones. Do you still wish to create a new one ?"),
+              builder.toString());
     } else {
       message = I18n.get("Do you really wish to create a new version of this bill of materials ?");
     }

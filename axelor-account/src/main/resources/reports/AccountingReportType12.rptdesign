@@ -69,6 +69,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
@@ -153,6 +161,17 @@
             <simple-property-list name="defaultValue">
                 <value type="constant">org.postgresql.Driver</value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="5358">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -349,6 +368,7 @@
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -469,27 +489,27 @@ Case when AccountType.technical_type_select = 'tax' then
 	end
 end as creditTaxAmount,
 Currency.number_of_decimals
-from public.account_accounting_report as AccountingReport 
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_account as Account on (MoveLine.account = Account.id)
-left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
-left outer join public.account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
+from account_accounting_report as AccountingReport 
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_account as Account on (MoveLine.account = Account.id)
+left outer join account_account_type as AccountType on (Account.account_type = AccountType.id)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
+left outer join account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
 
-left outer join public.base_company as Company on Move.company = Company.id
-left outer join public.base_partner as CompanyPartner on Company.partner = CompanyPartner.id
-left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join base_company as Company on Move.company = Company.id
+left outer join base_partner as CompanyPartner on Company.partner = CompanyPartner.id
+left outer join account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 
-left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
+left outer join account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 LEFT OUTER JOIN (
     SELECT 
         TaxLineSet.account_move_line AS moveLineId,
         string_agg(Tax.code, ',') AS code
-    FROM public.account_move_line_tax_line_set AS TaxLineSet
-    INNER JOIN public.account_tax_line AS TaxLine ON TaxLineSet.tax_line_set = TaxLine.id
-    INNER JOIN public.account_tax AS Tax ON TaxLine.tax = Tax.id
+    FROM account_move_line_tax_line_set AS TaxLineSet
+    INNER JOIN account_tax_line AS TaxLine ON TaxLineSet.tax_line_set = TaxLine.id
+    INNER JOIN account_tax AS Tax ON TaxLine.tax = Tax.id
     GROUP BY TaxLineSet.account_move_line
 ) AS TaxCodes ON TaxCodes.moveLineId = MoveLine.id
 where
@@ -700,10 +720,10 @@ AcYear.name as year_name,
 AccountingReport.publication_date_time as "ReportDateEdition",
 MetaFile.file_path AS logo_path,
 Currency.code as currency, AccountingReport.ref
-from public.account_accounting_report as AccountingReport 
-inner join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
-left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)
+from account_accounting_report as AccountingReport 
+inner join base_company as Company on (AccountingReport.company = Company.id)
+left outer join base_year as AcYear on (AccountingReport.year = AcYear.id)
+left outer join base_currency as Currency on (AccountingReport.currency = Currency.id)
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 where AccountingReport.id = ? 
 ]]></xml-property>
@@ -927,22 +947,22 @@ sum(Case when AccountType.technical_type_select = 'tax' then
 end) as creditTaxAmount,
 Currency.number_of_decimals
 
-from public.account_accounting_report as AccountingReport 
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_account as Account on (MoveLine.account = Account.id)
-left outer join public.base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
-left outer join public.account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
+from account_accounting_report as AccountingReport 
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_account as Account on (MoveLine.account = Account.id)
+left outer join base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
+left outer join account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
 
-left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.base_company as Company on Move.company = Company.id
-left outer join public.base_partner as CompanyPartner on Company.partner = CompanyPartner.id
-left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
-left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
-left outer join public.account_move_line_tax_line_set as TaxLineSet on (TaxLineSet.account_move_line = MoveLine.id)
-left outer join public.account_tax_line as TaxLine on (TaxLineSet.tax_line_set = TaxLine.id) 
-left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join account_account_type as AccountType on (Account.account_type = AccountType.id)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join base_company as Company on Move.company = Company.id
+left outer join base_partner as CompanyPartner on Company.partner = CompanyPartner.id
+left outer join account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
+left outer join account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
+left outer join account_move_line_tax_line_set as TaxLineSet on (TaxLineSet.account_move_line = MoveLine.id)
+left outer join account_tax_line as TaxLine on (TaxLineSet.tax_line_set = TaxLine.id) 
+left outer join account_tax as Tax on (TaxLine.tax = Tax.id) 
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND AccountingReport.company = Move.company 
@@ -2428,7 +2448,7 @@ balance
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["credit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF> ]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["credit"])</VALUE-OF> ]]></text-property>
                         </text>
                     </cell>
                     <cell id="4103">
@@ -2446,7 +2466,7 @@ balance
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["credittaxamount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["credittaxamount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4105">
@@ -2464,7 +2484,7 @@ balance
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["debit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4107">
@@ -2482,7 +2502,7 @@ balance
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["debittaxamount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debittaxamount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -2544,7 +2564,7 @@ balance
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalCreditTaxAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalCreditTaxAmount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4114">
@@ -2559,7 +2579,7 @@ balance
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalDebitTaxAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalDebitTaxAmount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -2620,7 +2640,7 @@ balance
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>
 if(row["creditBalance"])
-Formatter.format(row["creditBalance"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+formatNumber(row["creditBalance"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4127">
@@ -2637,7 +2657,7 @@ Formatter.format(row["creditBalance"], row["number_of_decimals"] == 0? "#,##0" :
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>
 if(row["debitBalance"])
-Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+formatNumber(row["debitBalance"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -3419,7 +3439,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["credit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["credit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4062">
@@ -3438,7 +3458,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["credittaxamount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["credittaxamount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4066">
@@ -3457,7 +3477,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["debit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4070">
@@ -3476,7 +3496,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             </list-property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["debittaxamount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debittaxamount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -3562,7 +3582,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalCredit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalCredit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4063">
@@ -3578,7 +3598,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalCreditTaxAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalCreditTaxAmount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4067">
@@ -3594,7 +3614,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalDebit"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalDebit"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4071">
@@ -3610,7 +3630,7 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
                             <property name="textAlign">right</property>
                             <structure name="toc"/>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["totalDebitTaxAmount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["totalDebitTaxAmount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -3662,4 +3682,9 @@ Formatter.format(row["debitBalance"], row["number_of_decimals"] == 0? "#,##0" : 
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

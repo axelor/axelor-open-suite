@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -112,7 +112,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
             .all()
             .filter("self.archived = false or self.archived is null")
             .order("id");
-    while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(debtRecoveries = query.fetch(getFetchLimit(), offset)).isEmpty()) {
       for (DebtRecovery debtRecovery : debtRecoveries) {
         ++offset;
         if (debtRecovery.getRespiteDateBeforeAccountBlocking() != null
@@ -165,6 +165,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
     blockCustomers(customersToBlock);
     unblockCustomers(customerToUnblock);

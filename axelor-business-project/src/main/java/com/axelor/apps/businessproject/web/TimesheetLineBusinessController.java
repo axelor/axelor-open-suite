@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,13 +20,10 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
-import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.helpers.StringHelper;
-import java.util.List;
 
 public class TimesheetLineBusinessController {
 
@@ -36,28 +33,6 @@ public class TimesheetLineBusinessController {
       timesheetLine =
           Beans.get(TimesheetLineBusinessService.class).getDefaultToInvoice(timesheetLine);
       response.setValue("toInvoice", timesheetLine.getToInvoice());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setTimesheet(ActionRequest request, ActionResponse response) {
-    try {
-      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      timesheetLine = Beans.get(TimesheetLineBusinessService.class).setTimesheet(timesheetLine);
-      response.setValues(timesheetLine);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setTimesheetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      List<Timesheet> timesheetList =
-          Beans.get(TimesheetLineBusinessService.class).getTimesheetQuery(timesheetLine).fetch();
-      String idList = StringHelper.getIdListString(timesheetList);
-      response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

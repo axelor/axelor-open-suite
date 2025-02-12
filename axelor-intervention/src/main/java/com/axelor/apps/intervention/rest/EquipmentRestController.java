@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,8 @@ import com.axelor.apps.intervention.db.Picture;
 import com.axelor.apps.intervention.rest.dto.EquipmentPicturePutRequest;
 import com.axelor.apps.intervention.rest.dto.EquipmentResponse;
 import com.axelor.apps.intervention.service.EquipmentRestService;
+import com.axelor.apps.intervention.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -64,7 +66,7 @@ public class EquipmentRestController {
     equipmentRestService.addPicture(request, equipment);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Picture successfully added.", new EquipmentResponse(equipment));
+        Response.Status.OK, I18n.get(ITranslation.PICTURE_ADDED), new EquipmentResponse(equipment));
   }
 
   @Operation(
@@ -87,6 +89,8 @@ public class EquipmentRestController {
     equipmentRestService.removePicture(request, equipment);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Picture successfully removed.", new EquipmentResponse(equipment));
+        Response.Status.OK,
+        I18n.get(ITranslation.PICTURE_REMOVED),
+        new EquipmentResponse(equipment));
   }
 }

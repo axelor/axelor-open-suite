@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,9 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.List;
@@ -66,6 +68,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       InvoiceLineOrderService invoiceLineOrderService,
       CurrencyService currencyService,
       CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
+      InvoiceTaxService invoiceTaxService,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
@@ -85,6 +89,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         invoiceLineOrderService,
         currencyService,
         currencyScaleService,
+        orderInvoiceService,
+        invoiceTaxService,
         priceListService,
         purchaseOrderLineService,
         appBusinessProjectService,

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.common.StringUtils;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -168,15 +169,19 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
   public String createDomainForMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException {
     String domain = "";
-    List<MoveLine> authorizedMoveLines =
+    String idList =
         moveLineRepository
             .all()
             .filter(bankReconciliationQueryService.getRequestMoveLines())
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
-            .fetch();
+            .select("id")
+            .fetch(0, 0)
+            .stream()
+            .map(m -> (Long) m.get("id"))
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
 
-    String idList = StringHelper.getIdListString(authorizedMoveLines);
-    if (idList.equals("")) {
+    if (StringUtils.isEmpty(idList)) {
       domain = "self.id IN (0)";
     } else {
       domain = "self.id IN (" + idList + ")";

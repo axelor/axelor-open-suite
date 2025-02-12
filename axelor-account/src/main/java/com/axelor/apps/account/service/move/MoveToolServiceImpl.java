@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -552,17 +553,6 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
   }
 
-  @Override
-  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
-    if (isDebit) {
-      return currencyAmount.abs();
-    } else {
-      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
-          ? currencyAmount
-          : currencyAmount.negate();
-    }
-  }
-
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {
@@ -613,19 +603,17 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Move> findDaybookAndAccountingByYear(Set<Year> yearList) {
+  public List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList) {
     List<Long> idList = new ArrayList<>();
     yearList.forEach(y -> idList.add(y.getId()));
-    if (!CollectionUtils.isEmpty(idList)) {
-      List<Integer> status =
-          Arrays.asList(MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
+    if (!CollectionUtils.isEmpty(idList) && !CollectionUtils.isEmpty(statusList)) {
       return Query.of(Move.class)
           .filter("self.period.year.id in :years AND self.statusSelect IN :statusSelect")
           .bind("years", idList)
-          .bind("statusSelect", status)
+          .bind("statusSelect", statusList)
           .fetch();
     }
-    return new ArrayList<Move>();
+    return new ArrayList<>();
   }
 
   @Override
@@ -840,5 +828,25 @@ public class MoveToolServiceImpl implements MoveToolService {
             .collect(Collectors.toList());
 
     return advancePaymentMoveLineList;
+  }
+
+  @Override
+  public List<InvoiceTerm> _getInvoiceTermList(Move move) {
+    List<InvoiceTerm> invoiceTermList = new ArrayList<>();
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      invoiceTermList.addAll(
+          move.getMoveLineList().stream()
+              .map(MoveLine::getInvoiceTermList)
+              .filter(Objects::nonNull)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList()));
+    }
+    return invoiceTermList;
+  }
+
+  @Override
+  public boolean isOpenOrClosureMove(Move move) {
+    return move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
+        || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE;
   }
 }

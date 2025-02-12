@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCorrectionService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLoadBankStatementService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationMoveGenerationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationQueryService;
@@ -82,7 +83,8 @@ public class BankReconciliationController {
       if (bankReconciliationLines.isEmpty()) {
         response.setInfo(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationLineService.class).unreconcileLines(bankReconciliationLines);
+        Beans.get(BankReconciliationLineUnreconciliationService.class)
+            .unreconcileLines(bankReconciliationLines);
         Beans.get(BankReconciliationService.class).mergeSplitedReconciliationLines(br);
         Beans.get(BankReconciliationBalanceComputationService.class).computeBalances(br);
         response.setReload(true);

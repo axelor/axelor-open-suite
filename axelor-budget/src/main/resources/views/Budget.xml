@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="budget-grid" title="Budget Line" model="com.axelor.apps.budget.db.Budget"
     orderBy="budgetLevel.id,code">
@@ -27,17 +27,14 @@
   <tree name="budget-tree" title="Budget Levels">
     <column name="name" type="string"/>
     <column name="code" type="string"/>
-    <column name="totalAmountExpected"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="totalAmountCommitted"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="totalFirmGap" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="realizedWithNoPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="realizedWithPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="simulatedAmount" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="availableAmountWithSimulated"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <column name="globalBudget.company.currency.numberOfDecimals" hidden="true"/>
+    <column name="totalAmountExpected" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="totalAmountCommitted" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="totalFirmGap" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="realizedWithNoPo" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="realizedWithPo" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="simulatedAmount" type="decimal" x-scale="$currencyNumberOfDecimals"/>
+    <column name="availableAmountWithSimulated" type="decimal"
+      x-scale="$currencyNumberOfDecimals"/>
 
     <node model="com.axelor.apps.budget.db.BudgetLevel"
       domain="self.parentBudgetLevel is null AND self.globalBudget.id = :_globalId "
@@ -397,4 +394,30 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="totalAmountCommitted" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
+
+  <action-group name="action-budget-group-view-budget-distribution-order-line">
+    <action if="__this__?.globalBudget?.budgetTypeSelect != 2"
+      name="action-budget-view-budget-distribution-purchase-order-line"/>
+    <action if="__this__?.globalBudget?.budgetTypeSelect == 2"
+      name="action-budget-view-budget-distribution-sale-order-line"/>
+  </action-group>
+
+  <action-view name="action-budget-view-budget-distribution-purchase-order-line"
+    model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
+    <view name="budget-budget-distribution-purchase-order-line-global-dashlet-grid" type="grid"/>
+    <view name="budget-budget-distribution-purchase-order-line-dashlet-form" type="form"/>
+    <domain>self.budget.id = :_budgetId and self.purchaseOrderLine != null and
+      self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)</domain>
+    <context name="_budgetId" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-view name="action-budget-view-budget-distribution-sale-order-line"
+    model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
+    <view name="budget-budget-distribution-sale-order-line-global-dashlet-grid" type="grid"/>
+    <view name="sale-order-budget-distribution-form" type="form"/>
+    <domain>self.budget.id = :_budgetId and self.saleOrderLine != null and
+      self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
+    <context name="_budgetId" expr="eval: __this__.id"/>
+  </action-view>
+
 </object-views>

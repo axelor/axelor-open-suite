@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -383,4 +383,16 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_INVOICING_ERROR = /*$$(*/
       "This stock move needs to be invoiced manually, manual intervention is needed : %s" /*)*/;
+
+  public static final String SALE_ORDER_CONFIRM_INCOTERM_REQUIRED = /*$$(*/
+      "Incoterm must be filled" /*)*/;
+
+  public static final String STOCK_LOCATION_PRODUCTS_ADDED_TO_CART = /*$$(*/
+      "Products of %s have been added to your cart." /*)*/;
+
+  public static final String PARENT_PARTNER_CONFIGURATION_ERROR = /*$$(*/
+      "There is a configuration error, partner %s is its own parent." /*)*/;
+
+  public static final String SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED = /*$$(*/
+      "At least one timetable is invoiced, you cannot edit the order anymore." /*)*/;
 }

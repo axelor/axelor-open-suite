@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,9 +42,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -212,28 +211,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return Duration.ofSeconds(totalSecDuration);
   }
 
-  @Override
-  public Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList) {
-    Map<Project, BigDecimal> projectTimeSpentMap = new HashMap<>();
-
-    if (timesheetLineList != null) {
-
-      for (TimesheetLine timesheetLine : timesheetLineList) {
-        Project project = timesheetLine.getProject();
-        BigDecimal hoursDuration = timesheetLine.getHoursDuration();
-
-        if (project != null) {
-          if (projectTimeSpentMap.containsKey(project)) {
-            hoursDuration = hoursDuration.add(projectTimeSpentMap.get(project));
-          }
-          projectTimeSpentMap.put(project, hoursDuration);
-        }
-      }
-    }
-
-    return projectTimeSpentMap;
-  }
-
   public void checkDailyLimit(
       Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
       throws AxelorException {
@@ -257,7 +234,11 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   protected BigDecimal calculateTotalHoursDuration(
       Timesheet timesheet, TimesheetLine currentTimesheetLine) {
-    return timesheet.getTimesheetLineList().stream()
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLineList)) {
+      return BigDecimal.ZERO;
+    }
+    return timesheetLineList.stream()
         .filter(
             l ->
                 !l.equals(currentTimesheetLine)
@@ -284,10 +265,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
-    if (timesheetLine.getProduct() == null) {
-      return timesheetLine.getEmployee().getProduct();
-    }
-    return timesheetLine.getProduct();
+    return userHrService.getTimesheetProduct(timesheetLine.getEmployee(), null);
   }
 
   @Override

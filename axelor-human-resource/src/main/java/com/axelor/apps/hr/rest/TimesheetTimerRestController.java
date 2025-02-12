@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,8 @@ import com.axelor.apps.hr.rest.dto.TSTimerPutRequest;
 import com.axelor.apps.hr.rest.dto.TSTimerResponse;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerCreateService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
+import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -92,7 +94,7 @@ public class TimesheetTimerRestController {
             requestBody.getStartDateTime());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
+        Response.Status.OK, I18n.get(ITranslation.TIMER_UPDATED), new TSTimerResponse(timer));
   }
 
   @Operation(
@@ -125,6 +127,6 @@ public class TimesheetTimerRestController {
         break;
     }
     return ResponseConstructor.build(
-        Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
+        Response.Status.OK, I18n.get(ITranslation.TIMER_UPDATED), new TSTimerResponse(timer));
   }
 }

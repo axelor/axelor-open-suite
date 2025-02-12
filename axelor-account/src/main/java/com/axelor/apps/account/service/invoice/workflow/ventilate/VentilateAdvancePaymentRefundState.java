@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,8 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.base.AxelorException;
@@ -52,6 +54,8 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
       InvoiceTermService invoiceTermService,
       AccountingSituationService accountingSituationService,
       InvoiceJournalService invoiceJournalService,
+      InvoicePfpValidateService invoicePfpValidateService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
       AdvancePaymentRefundService advancePaymentRefundService) {
     super(
         sequenceService,
@@ -64,7 +68,9 @@ public class VentilateAdvancePaymentRefundState extends VentilateState {
         fixedAssetGenerationService,
         invoiceTermService,
         accountingSituationService,
-        invoiceJournalService);
+        invoiceJournalService,
+        invoicePfpValidateService,
+        invoiceTermPfpToolService);
     this.advancePaymentRefundService = advancePaymentRefundService;
   }
 

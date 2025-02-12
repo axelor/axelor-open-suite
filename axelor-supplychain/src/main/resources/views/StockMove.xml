@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="in-stock-move-manuf-order-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" edit-icon="true">
@@ -195,20 +195,25 @@
         selection="supplychain.stock.move.invoicing.wizard.select"/>
     </panel>
     <panel-related name="stockMoveLineListPanel" field="$stockMoveLines"
-      canNew="false" target="com.axelor.apps.stock.db.StockMoveLine" type="one-to-many"
-      editable="true" showIf="operationSelect == 2" form-view="partial-invoice-stock-move-line-form">
+      title="Stock move lines" canNew="false" target="com.axelor.apps.stock.db.StockMoveLine"
+      type="one-to-many" editable="true" showIf="operationSelect == 2"
+      form-view="partial-invoice-stock-move-line-form">
       <field name="productCode" readonly="true"/>
       <field name="productName" readonly="true"/>
-      <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"/>
-      <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>
-      <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"/>
+      <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"
+        x-scale="$nbDecimalDigitForQty"/>
+      <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"
+        x-scale="$nbDecimalDigitForQty"/>
+      <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
         readonlyIf="invoiceAll || isSubline" min="0"
-        validIf="$number(remainingQty) >= $number(qtyToInvoice)"/>
+        validIf="$number(remainingQty) >= $number(qtyToInvoice)" x-scale="$nbDecimalDigitForQty"/>
       <field name="invoiceAll" title="Invoice all" type="boolean"
         onChange="action-attrs-stock-move-line-invoicing-wizard-fill-qty"/>
       <field name="isSubline" hidden="true"/>
       <field name="stockMoveLineId" hidden="true"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel-related>
     <panel name="actionPanel">
       <button name="createInvoiceBtn" title="Generate the invoice"

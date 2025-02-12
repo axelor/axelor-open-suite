@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,16 +64,25 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
             isCustom ? "=" : "<>");
 
     Stream<AccountingReportType> accountingReportTypeStream =
-        accountingReportTypeRepository.all().filter(queryStr)
+        accountingReportTypeRepository
+            .all()
+            .filter(queryStr)
             .bind("reportType", AccountingReportTypeRepository.REPORT)
-            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE).fetch().stream();
+            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE)
+            .fetch()
+            .stream();
 
     if (isCustom) {
       accountingReportTypeStream =
           accountingReportTypeStream.filter(
-              it ->
-                  CollectionUtils.isEmpty(it.getCompanySet())
-                      || it.getCompanySet().equals(accountingReport.getCompanySet()));
+              it -> {
+                if (CollectionUtils.isNotEmpty(it.getCompanySet())) {
+                  return it.getCompanySet().equals(accountingReport.getCompanySet());
+                } else if (it.getCompany() != null) {
+                  return accountingReport.getCompanySet().contains(it.getCompany());
+                }
+                return true;
+              });
     }
 
     return accountingReportTypeStream

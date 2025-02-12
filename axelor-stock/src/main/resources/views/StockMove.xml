@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -75,7 +75,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="toAddressStr"/>
     <field name="estimatedDate"/>
     <field name="realDate"/>
@@ -115,7 +116,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="origin" width="120"/>
   </grid>
 
@@ -142,7 +144,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="statusSelect"/>
     <field name="origin" width="120"/>
     <field name="availableStatusSelect">
@@ -175,7 +178,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="toStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="fromAddressStr"/>
     <field name="estimatedDate"/>
     <field name="realDate"/>
@@ -205,7 +209,8 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      x-image-field="picture"/>
     <field name="supplierShipmentRef"/>
     <field name="origin" width="120"/>
   </grid>
@@ -423,7 +428,7 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
@@ -437,12 +442,10 @@
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
         </static>
@@ -476,22 +479,21 @@
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="3"/>
-        <field name="partner" canEdit="false"
+        <field name="partner" canEdit="false" x-image-field="picture"
           domain="self.isContact = false AND :company member of self.companySet"
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="invoicedPartner" canEdit="false" readonlyIf="statusSelect != 1"
           onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
-          grid-view="partner-grid" form-view="partner-form"/>
+          grid-view="partner-grid" form-view="partner-form" x-image-field="picture"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
           canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
@@ -543,7 +545,7 @@
         <field name="company" readonlyIf="statusSelect != 1"
           onChange="action-stock-move-group-onchange-company" canEdit="false"
           grid-view="company-grid" form-view="company-form"/>
-        <field name="partner" canEdit="false"
+        <field name="partner" canEdit="false" x-image-field="picture"
           domain="self.isContact = false AND :company member of self.companySet"
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
@@ -552,12 +554,11 @@
           form-view="stock-location-form"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4"
-          form-view="address-partner-address-form"/>
+          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
+          domain="self.company = :company" form-view="trading-name-form"
           grid-view="trading-name-grid"/>
         <field name="estimatedDate"
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
@@ -659,6 +660,7 @@
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
               if-module="axelor-production"/>
             <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
+            <field name="massStockMove" hidden="true" showIf="massStockMove != null"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
             showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>
@@ -800,7 +802,7 @@
     onLoad="action-stock-move-attrs-set-scale">
     <panel name="mainPanel" colSpan="12">
       <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of"
-        x-scale="2" x-precision="18" colSpan="6"/>
+        x-precision="18" colSpan="6"/>
       <button name="splitBtn" title="Split"
         onClick="action-stock-move-method-split-stock-move-lines-special" colSpan="6"/>
     </panel>
@@ -1497,6 +1499,7 @@
     title="See stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
+    <view-param name="search-filters" value="stock-move-line-filters"/>
     <domain>self.stockMove.typeSelect = :_typeSelect AND self.stockMove.isReversion = :_isReversion</domain>
     <context name="_typeSelect" expr="eval:_typeSelect"/>
     <context name="_isReversion" expr="eval:_isReversion"/>

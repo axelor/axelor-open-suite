@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -111,11 +111,13 @@ public class ReconcileGroupController {
         reconcileGroupProposalService.cancelProposal(reconcileGroup);
       }
       if (isReconcileGroupForm) {
+        response.setCanClose(true);
         response.setView(
-            ActionView.define(I18n.get("Reconcile groups"))
+            ActionView.define(I18n.get("Reconcile Group proposals"))
                 .model(ReconcileGroup.class.getName())
                 .add("grid", "reconcile-group-grid")
                 .add("form", "reconcile-group-form")
+                .domain("self.isProposal IS true")
                 .map());
       } else {
         response.setReload(true);

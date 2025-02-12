@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,11 +66,11 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     globalBudget.setTotalAmountPaid(BigDecimal.ZERO);
     globalBudget.setActiveVersion(null);
     globalBudget.clearBudgetVersionList();
-    globalBudget.clearBudgetList();
     List<BudgetLevel> budgetLevelList = globalBudget.getBudgetLevelList();
     List<Budget> budgetList = globalBudget.getBudgetList();
 
     if (!ObjectUtils.isEmpty(budgetLevelList)) {
+      globalBudget.clearBudgetList();
       budgetLevelList.forEach(budgetLevelResetToolService::resetBudgetLevel);
     } else if (ObjectUtils.isEmpty(budgetList)) {
       budgetList.forEach(budgetResetToolService::resetBudget);

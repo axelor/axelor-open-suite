@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
@@ -212,6 +213,24 @@ public class InvoicePaymentController {
       List<Long> invoiceTermIdList =
           Beans.get(InvoicePaymentComputeService.class)
               .computeDataForFinancialDiscount(invoicePayment, invoiceId);
+
+      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void applyFinancialDiscountFields(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+
+      List<Long> invoiceTermIdList =
+          Beans.get(InvoiceTermPaymentService.class)
+              .applyFinancialDiscount(invoicePayment, invoiceId);
 
       response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
     } catch (Exception e) {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <menuitem name="maintenance-root" title="Maintenance" order="-500"
-    if="__config__.app.isApp('maintenance')" icon="fa-recycle" icon-background="olive"/>
+    if="__config__.app.isApp('maintenance')" icon="reset-wrench" icon-background="#cddc39"/>
 
   <menuitem name="maintenance-root-equipement-maintenances" parent="maintenance-root"
     title="Equipement maintenances" action="maintenance.root.equipement.maintenances" order="100"/>
@@ -79,7 +79,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-config" parent="maintenance-root" title="Configuration"
-    order="700"/>
+    order="700" icon="fa-cog"/>
 
   <menuitem name="maintenance-root-config-maintenance-category"
     parent="maintenance-root-config" title="Maintenance Category"

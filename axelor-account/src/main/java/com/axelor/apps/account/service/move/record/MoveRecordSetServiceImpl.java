@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,8 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.PfpService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -58,13 +57,12 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected BankDetailsService bankDetailsService;
   protected PeriodService periodService;
   protected PaymentConditionService paymentConditionService;
-  protected InvoiceTermService invoiceTermService;
   protected AppBaseService appBaseService;
   protected PartnerAccountService partnerAccountService;
   protected JournalService journalService;
-  protected MoveLineService moveLineService;
   protected PfpService pfpService;
   protected MoveToolService moveToolService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -72,24 +70,22 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       BankDetailsService bankDetailsService,
       PeriodService periodService,
       PaymentConditionService paymentConditionService,
-      InvoiceTermService invoiceTermService,
-      MoveLineService moveLineService,
       AppBaseService appBaseService,
       PartnerAccountService partnerAccountService,
       JournalService journalService,
       PfpService pfpService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
-    this.invoiceTermService = invoiceTermService;
-    this.moveLineService = moveLineService;
     this.appBaseService = appBaseService;
     this.partnerAccountService = partnerAccountService;
     this.journalService = journalService;
     this.pfpService = pfpService;
     this.moveToolService = moveToolService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -133,18 +129,22 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
+    PaymentCondition paymentCondition = null;
+    if (partner != null && journalType != null) {
 
-    if (partner != null
-        && journalType != null
-        && !journalType
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
-      PaymentCondition paymentCondition = partner.getPaymentCondition();
-      paymentConditionService.checkPaymentCondition(paymentCondition);
-      move.setPaymentCondition(paymentCondition);
-    } else {
-      move.setPaymentCondition(null);
+      Integer journalTechnicalType = journalType.getTechnicalTypeSelect();
+      if (journalTechnicalType.compareTo(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+          == 0) {
+        paymentCondition = partner.getOutPaymentCondition();
+      } else if (journalTechnicalType.compareTo(
+              JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+          != 0) {
+        paymentCondition = partner.getPaymentCondition();
+      }
     }
+
+    paymentConditionService.checkPaymentCondition(paymentCondition);
+    move.setPaymentCondition(paymentCondition);
   }
 
   @Override
@@ -263,7 +263,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     Objects.requireNonNull(move);
 
     move.setPfpValidatorUser(
-        invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+        invoiceTermPfpToolService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
   }
 
   @Override

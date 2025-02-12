@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -110,6 +110,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     }
     return moveLines;
   }
+
   /**
    * Method that returns all credit move lines of a move that are not completely lettered
    *
@@ -321,7 +322,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
     BigDecimal currencyAmount =
         unratedAmount.divide(moveLine.getCurrencyRate(), returnedScale, RoundingMode.HALF_UP);
-    moveLine.setCurrencyAmount(moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit));
+    moveLine.setCurrencyAmount(this.computeCurrencyAmountSign(currencyAmount, isDebit));
     return moveLine;
   }
 
@@ -461,5 +462,36 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     if (tax.getIsNonDeductibleTax()) {
       moveLine.setIsNonDeductibleTax(true);
     }
+  }
+
+  @Override
+  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
+    if (isDebit) {
+      return currencyAmount.abs();
+    } else {
+      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
+          ? currencyAmount
+          : currencyAmount.negate();
+    }
+  }
+
+  @Override
+  public boolean isMoveLineSpecialAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_SPECIAL.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
+
+  @Override
+  public boolean isMoveLineCommitmentAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_COMMITMENT.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
   }
 }

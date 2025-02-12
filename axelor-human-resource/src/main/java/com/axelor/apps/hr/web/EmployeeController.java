@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -68,10 +68,10 @@ public class EmployeeController {
         Beans.get(EmployeeService.class).getAnnualReportPrintingTemplate(employee);
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(employee));
-    factoryContext.setContext(Map.of("YearId", Long.valueOf(yearId)));
+    factoryContext.setContext(Map.of("YearId", Long.valueOf(yearId), "year", yearName));
     String fileLink =
         Beans.get(PrintingTemplatePrintService.class)
-            .getPrintLink(annualReportPrintTemplate, factoryContext, name);
+            .getPrintLink(annualReportPrintTemplate, factoryContext);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
 

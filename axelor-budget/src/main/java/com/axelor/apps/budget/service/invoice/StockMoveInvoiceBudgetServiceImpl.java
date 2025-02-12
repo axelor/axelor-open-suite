@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -37,11 +38,10 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -67,10 +67,11 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService,
+      AppBaseService appBaseService,
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
+      UnitConversionService unitConversionService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService,
       InvoiceToolBudgetService invoiceToolBudgetService,
@@ -86,10 +87,11 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
         stockMoveLineRepository,
         invoiceLineRepository,
         supplyChainConfigService,
-        appSupplychainService,
+        appBaseService,
         appStockService,
         saleOrderMergingServiceSupplyChain,
-        purchaseOrderMergingSupplychainService);
+        purchaseOrderMergingSupplychainService,
+        unitConversionService);
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;
@@ -118,31 +120,37 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
   public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
       throws AxelorException {
     InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty);
-    if (appBudgetService.isApp("budget") && invoiceLine != null) {
+    if (appBudgetService.isApp("budget")
+        && invoiceLine != null
+        && invoiceLine.getCompanyExTaxTotal().signum() != 0) {
       if (invoiceLine.getPurchaseOrderLine() != null) {
         PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
-        invoiceToolBudgetService.copyBudgetDistributionList(
-            purchaseOrderLine.getBudgetDistributionList(),
-            invoiceLine,
-            invoiceLine
-                .getCompanyExTaxTotal()
-                .divide(
-                    purchaseOrderLine.getCompanyExTaxTotal(),
-                    AppBaseService.COMPUTATION_SCALING,
-                    RoundingMode.HALF_UP));
+        if (purchaseOrderLine.getCompanyExTaxTotal().signum() != 0) {
+          invoiceToolBudgetService.copyBudgetDistributionList(
+              purchaseOrderLine.getBudgetDistributionList(),
+              invoiceLine,
+              invoiceLine
+                  .getCompanyExTaxTotal()
+                  .divide(
+                      purchaseOrderLine.getCompanyExTaxTotal(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP));
+        }
       } else if (invoiceLine.getSaleOrderLine() != null) {
         SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
         invoiceLine.setBudget(saleOrderLine.getBudget());
-        invoiceToolBudgetService.copyBudgetDistributionList(
-            saleOrderLine.getBudgetDistributionList(),
-            invoiceLine,
-            invoiceLine
-                .getCompanyExTaxTotal()
-                .divide(
-                    saleOrderLine.getCompanyExTaxTotal(),
-                    AppBaseService.COMPUTATION_SCALING,
-                    RoundingMode.HALF_UP));
+        if (saleOrderLine.getCompanyExTaxTotal().signum() != 0) {
+          invoiceToolBudgetService.copyBudgetDistributionList(
+              saleOrderLine.getBudgetDistributionList(),
+              invoiceLine,
+              invoiceLine
+                  .getCompanyExTaxTotal()
+                  .divide(
+                      saleOrderLine.getCompanyExTaxTotal(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP));
+        }
       }
 
       invoiceLine.setBudgetRemainingAmountToAllocate(

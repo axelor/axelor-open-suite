@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,13 +38,10 @@ import org.apache.commons.collections4.ListUtils;
 public class ProductStockRepositorySave {
 
   protected AppBaseService appBaseService;
-  public WeightedAveragePriceService weightedAveragePriceService;
 
   @Inject
-  public ProductStockRepositorySave(
-      AppBaseService appBaseService, WeightedAveragePriceService weightedAveragePriceService) {
+  public ProductStockRepositorySave(AppBaseService appBaseService) {
     this.appBaseService = appBaseService;
-    this.weightedAveragePriceService = weightedAveragePriceService;
   }
 
   public void addProductCompanies(Product product) {
@@ -90,7 +87,7 @@ public class ProductStockRepositorySave {
 
     // specific case for avgPrice per company
     productCompany.setAvgPrice(
-        weightedAveragePriceService.computeAvgPriceForCompany(product, company));
+        Beans.get(WeightedAveragePriceService.class).computeAvgPriceForCompany(product, company));
     productCompany.setCompany(company);
     productCompany.setProduct(product);
     return productCompany;

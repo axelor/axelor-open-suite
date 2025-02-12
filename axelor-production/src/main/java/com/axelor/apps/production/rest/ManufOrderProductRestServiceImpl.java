@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestService {
 
@@ -178,7 +179,9 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
       if (isProductNotChecked(checkProducts, product)) {
         List<StockMoveLine> productLines = getStockMoveLinesOfProduct(stockMoveLines, product);
 
-        if (productLines.size() == 1) {
+        if (ObjectUtils.isEmpty(productLines)) {
+          continue;
+        } else if (productLines.size() == 1) {
           result.add(createProductResponse(manufOrder, productLines.get(0), prodProduct.getQty()));
         } else {
           getAllProductResponsesOfProduct(

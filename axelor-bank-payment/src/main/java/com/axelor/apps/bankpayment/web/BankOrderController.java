@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,22 +20,31 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderEncryptionService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.auth.AuthService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,5 +183,67 @@ public class BankOrderController {
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
     Beans.get(BankOrderService.class).setStatusToDraft(bankOrder);
     response.setReload(true);
+  }
+
+  public void decryptAndDownload(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    BankOrder bankOrder =
+        Beans.get(BankOrderRepository.class)
+            .find(Long.parseLong(request.getContext().get("_bankOrder").toString()));
+
+    String password =
+        Optional.ofNullable(request.getContext().get("password")).map(Object::toString).orElse("");
+    Beans.get(BankOrderEncryptionService.class).checkInputPassword(password);
+
+    String encryptedPassword = Beans.get(AuthService.class).encrypt(password);
+    String base64HashedPassword =
+        Base64.getUrlEncoder().encodeToString(encryptedPassword.getBytes(StandardCharsets.UTF_8));
+
+    response.setView(
+        ActionView.define(I18n.get("Export file"))
+            .add(
+                "html",
+                "ws/aos/bankorder/file-download/"
+                    + base64HashedPassword
+                    + "/"
+                    + bankOrder.getGeneratedMetaFile().getId())
+            .param("download", "true")
+            .map());
+    response.setCanClose(true);
+  }
+
+  public void setIsFileEncrypted(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    MetaFile generatedMetaFile = bankOrder.getGeneratedMetaFile();
+    if (generatedMetaFile == null) {
+      return;
+    }
+    response.setValue(
+        "$isMetafileEncrypted",
+        Beans.get(BankOrderEncryptionService.class).isFileEncrypted(generatedMetaFile));
+  }
+
+  public void encryptUploadedFile(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    if (!Beans.get(AppBankPaymentService.class)
+        .getAppBankPayment()
+        .getEnableBankOrderFileEncryption()) {
+      return;
+    }
+    Context context = request.getContext();
+    boolean isMetafileEncrypted =
+        Optional.ofNullable(context.get("isMetafileEncrypted"))
+            .map(Object::toString)
+            .map(Boolean::valueOf)
+            .orElse(false);
+
+    BankOrder bankOrder = context.asType(BankOrder.class);
+    MetaFile originalFile = bankOrder.getGeneratedMetaFile();
+
+    if (originalFile == null || isMetafileEncrypted) {
+      return;
+    }
+    Beans.get(BankOrderEncryptionService.class).encryptUploadedBankOrderFile(originalFile);
   }
 }

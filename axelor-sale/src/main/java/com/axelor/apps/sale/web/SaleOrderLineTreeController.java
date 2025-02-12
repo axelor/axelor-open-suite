@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,8 @@ import com.axelor.apps.sale.db.SaleOrderLineTree;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineTreeRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineCalculationComboService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineTreeService;
+import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineCalculationComboService;
+import com.axelor.apps.sale.service.saleorderline.saleorderlinetree.SaleOrderLineTreeService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

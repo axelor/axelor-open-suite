@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
-import java.util.stream.Collectors;
 
 public class TradingNameAnalyticServiceImpl implements TradingNameAnalyticService {
 
@@ -38,34 +37,25 @@ public class TradingNameAnalyticServiceImpl implements TradingNameAnalyticServic
 
   @Override
   public String getDomainOnCompany(TradingName tradingName) {
-    String companyIds =
-        tradingName.getCompanySet().stream()
-            .map(Company::getId)
-            .map(Object::toString)
-            .collect(Collectors.joining(","))
-            .toString();
+    Company company = tradingName.getCompany();
     String domain =
-        !ObjectUtils.isEmpty(companyIds)
-            ? String.format("self.company.id in (%s) AND self.isSpecific = false", companyIds)
+        !ObjectUtils.isEmpty(company)
+            ? "self.company = " + company.getId() + " AND self.isSpecific = false"
             : "self.id = 0";
     return domain;
   }
 
   @Override
   public boolean isAnalyticTypeByTradingName(TradingName tradingName) {
-    return tradingName.getCompanySet().stream()
-            .filter(
-                c -> {
-                  try {
-                    return accountConfigService
-                            .getAccountConfig(c)
-                            .getAnalyticDistributionTypeSelect()
-                        == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME;
-                  } catch (AxelorException e) {
-                    return false;
-                  }
-                })
-            .count()
-        == 0;
+    Company company = tradingName.getCompany();
+    if (company == null) {
+      return false;
+    }
+    try {
+      return accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
+          == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME;
+    } catch (AxelorException e) {
+      return false;
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,18 @@ public class MobileConfigResponse {
 
   protected String sequence;
   protected Boolean isAppEnabled;
-  protected List<String> restrictedMenuList;
+  protected Boolean isCustomizeMenuEnabled;
+  protected List<MobileMenuResponse> accessibleMenuList;
 
   public MobileConfigResponse(
-      String sequence, Boolean isAppEnabled, List<String> restrictedMenuList) {
+      String sequence,
+      Boolean isAppEnabled,
+      Boolean isCustomizeMenuEnabled,
+      List<MobileMenuResponse> accessibleMenuList) {
     this.sequence = sequence;
     this.isAppEnabled = isAppEnabled;
-    this.restrictedMenuList = restrictedMenuList;
+    this.isCustomizeMenuEnabled = isCustomizeMenuEnabled;
+    this.accessibleMenuList = accessibleMenuList;
   }
 
   public String getSequence() {
@@ -41,7 +46,11 @@ public class MobileConfigResponse {
     return isAppEnabled;
   }
 
-  public List<String> getRestrictedMenuList() {
-    return restrictedMenuList;
+  public Boolean getIsCustomizeMenuEnabled() {
+    return isCustomizeMenuEnabled;
+  }
+
+  public List<MobileMenuResponse> getAccessibleMenuList() {
+    return accessibleMenuList;
   }
 }

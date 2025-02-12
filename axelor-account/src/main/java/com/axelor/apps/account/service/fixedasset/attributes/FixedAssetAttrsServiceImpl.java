@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -82,7 +82,9 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
     this.addAttr(
         "splitTypeSelect",
         "value",
-        qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0,
+        qty.compareTo(BigDecimal.ONE) == 0
+            ? FixedAssetRepository.SPLIT_TYPE_AMOUNT
+            : FixedAssetRepository.SPLIT_TYPE_QUANTITY,
         attrsMap);
   }
 

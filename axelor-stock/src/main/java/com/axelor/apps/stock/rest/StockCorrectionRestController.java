@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,12 +19,13 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.stock.db.StockCorrection;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPostRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPutRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionResponse;
 import com.axelor.apps.stock.service.StockCorrectionService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -32,7 +33,6 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -55,7 +55,7 @@ public class StockCorrectionRestController {
   @HttpExceptionHandler
   public Response createStockCorrection(StockCorrectionPostRequest requestBody) throws Exception {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(Arrays.asList(StockCorrection.class, StockMove.class)).check();
+    new SecurityCheck().createAccess(StockCorrection.class).check();
 
     StockCorrection stockCorrection =
         Beans.get(StockCorrectionService.class)
@@ -85,7 +85,7 @@ public class StockCorrectionRestController {
       @PathParam("id") long stockCorrectionId, StockCorrectionPutRequest requestBody)
       throws Exception {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockCorrection.class).createAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockCorrection.class, stockCorrectionId).check();
 
     StockCorrection stockCorrection =
         ObjectFinder.find(StockCorrection.class, stockCorrectionId, requestBody.getVersion());
@@ -94,13 +94,13 @@ public class StockCorrectionRestController {
     if (requestBody.getRealQty() != null) {
       Beans.get(StockCorrectionService.class)
           .updateCorrectionQtys(stockCorrection, requestBody.getRealQty());
-      message += "Real qty updated; ";
+      message += I18n.get(ITranslation.REAL_QTY_UPDATED);
     }
 
     if (requestBody.fetchReason() != null) {
       Beans.get(StockCorrectionService.class)
           .updateReason(stockCorrection, requestBody.fetchReason());
-      message += "Reason updated; ";
+      message += I18n.get(ITranslation.REASON_UPDATED);
     }
 
     // Stock correction is not already validated
@@ -110,7 +110,7 @@ public class StockCorrectionRestController {
       // user wants to validate stock correction
       if (status == StockCorrectionRepository.STATUS_VALIDATED) {
         if (Beans.get(StockCorrectionService.class).validate(stockCorrection)) {
-          message += "Status updated; ";
+          message += I18n.get(ITranslation.STATUS_UPDATED);
         }
       }
     }
@@ -118,7 +118,7 @@ public class StockCorrectionRestController {
     final String comments = requestBody.getComments();
     if (comments != null) {
       Beans.get(StockCorrectionService.class).updateComments(stockCorrection, comments);
-      message += "Comments updated; ";
+      message += I18n.get(ITranslation.COMMENTS_UPDATED);
     }
 
     StockCorrectionResponse objectBody = new StockCorrectionResponse(stockCorrection);

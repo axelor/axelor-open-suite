@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -44,7 +45,6 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl {
-
   @Inject
   public StockMoveServiceProductionImpl(
       StockMoveLineService stockMoveLineService,
@@ -57,6 +57,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
+      ProductCompanyService productCompanyService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -65,9 +66,9 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       ReservedQtyService reservedQtyService,
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PfpService pfpService,
-      ProductCompanyService productCompanyService) {
+      SaleOrderConfirmService saleOrderConfirmService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -79,6 +80,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         partnerStockSettingsService,
         stockConfigService,
         appStockService,
+        productCompanyService,
         appSupplyChainService,
         appAccountService,
         purchaseOrderRepo,
@@ -87,9 +89,9 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         reservedQtyService,
         partnerSupplychainService,
         fixedAssetRepository,
-        stockMoveLineServiceSupplychain,
         pfpService,
-        productCompanyService);
+        saleOrderConfirmService,
+        stockMoveLineServiceSupplychain);
   }
 
   @Override

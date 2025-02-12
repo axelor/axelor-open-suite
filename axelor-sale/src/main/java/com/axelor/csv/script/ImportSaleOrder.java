@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -35,18 +35,18 @@ public class ImportSaleOrder {
 
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
-  protected SaleOrderWorkflowService saleOrderWorkflowService;
+  protected SaleOrderFinalizeService saleOrderFinalizeService;
   protected SequenceService sequenceService;
 
   @Inject
   public ImportSaleOrder(
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
-      SaleOrderWorkflowService saleOrderWorkflowService,
+      SaleOrderFinalizeService saleOrderFinalizeService,
       SequenceService sequenceService) {
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
-    this.saleOrderWorkflowService = saleOrderWorkflowService;
+    this.saleOrderFinalizeService = saleOrderFinalizeService;
     this.sequenceService = sequenceService;
   }
 
@@ -65,7 +65,7 @@ public class ImportSaleOrder {
     } else {
       // Setting the status to draft or else we can't finalize it.
       saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
-      saleOrderWorkflowService.finalizeQuotation(saleOrder);
+      saleOrderFinalizeService.finalizeQuotation(saleOrder);
     }
 
     return saleOrder;

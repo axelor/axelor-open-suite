@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,8 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.PaymentModeControlService;
+import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -44,5 +46,15 @@ public class PaymentModeController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void saveInterestRateToHistory(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PaymentMode paymentMode =
+        Beans.get(PaymentModeRepository.class)
+            .find(request.getContext().asType(PaymentMode.class).getId());
+
+    Beans.get(PaymentModeInterestRateService.class).saveInterestRateToHistory(paymentMode);
+    response.setReload(true);
   }
 }

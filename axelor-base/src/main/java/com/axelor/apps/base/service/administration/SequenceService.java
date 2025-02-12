@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -439,7 +439,7 @@ public class SequenceService {
    */
   public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
     return Strings.isNullOrEmpty(sequenceNumber)
-        || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
+        || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", getDraftPrefix()));
   }
 
   /**

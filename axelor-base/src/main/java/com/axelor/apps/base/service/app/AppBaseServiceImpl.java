@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,12 +19,17 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -154,6 +159,22 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       }
     }
     return DEFAULT_LOCALE;
+  }
+
+  @Override
+  public AddressTemplate getDefaultAddressTemplate() throws AxelorException {
+    AppBase appBase = getAppBase();
+
+    if (appBase != null) {
+      AddressTemplate addressTemplate = appBase.getDefaultAddressTemplate();
+      if (addressTemplate != null) {
+        return addressTemplate;
+      }
+    }
+    throw new AxelorException(
+        appBase,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(BaseExceptionMessage.NO_DEFAULT_ADDRESS_TEMPLATE));
   }
 
   // Conversion de devise

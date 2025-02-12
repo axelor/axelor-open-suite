@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.service.localization.LocaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import java.util.Locale;

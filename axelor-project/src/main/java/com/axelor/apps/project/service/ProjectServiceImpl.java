@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,14 +28,14 @@ import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.ResourceBooking;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
-import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.app.AppProjectService;
-import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -43,7 +43,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.utils.db.Wizard;
+import com.axelor.studio.db.AppProject;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -53,8 +53,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -63,26 +63,25 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
-  protected ProjectTemplateRepository projTemplateRepo;
   protected ProjectCreateTaskService projectCreateTaskService;
+  protected WikiRepository wikiRepo;
+  protected ResourceBookingService resourceBookingService;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
       AppProjectService appProjectService,
-      ProjectTemplateRepository projTemplateRepo,
-      ProjectCreateTaskService projectCreateTaskService) {
+      ProjectCreateTaskService projectCreateTaskService,
+      WikiRepository wikiRepo,
+      ResourceBookingService resourceBookingService) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
-    this.projTemplateRepo = projTemplateRepo;
     this.projectCreateTaskService = projectCreateTaskService;
+    this.wikiRepo = wikiRepo;
+    this.resourceBookingService = resourceBookingService;
   }
-
-  @Inject WikiRepository wikiRepo;
-  @Inject ProjectTaskService projectTaskService;
-  @Inject ResourceBookingService resourceBookingService;
 
   @Override
   public Project generateProject(
@@ -109,8 +108,9 @@ public class ProjectServiceImpl implements ProjectService {
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
-    project.setProjectTaskStatusSet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+
+    manageTaskStatus(project, parentProject);
+
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
     project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
@@ -160,7 +160,8 @@ public class ProjectServiceImpl implements ProjectService {
       throws AxelorException {
     if (projectRepository.findByCode(projectCode) != null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, ITranslation.PROJECT_CODE_ERROR);
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProjectExceptionMessage.PROJECT_CODE_ERROR));
     }
 
     Project project = generateProject(projectTemplate, projectCode, clientPartner);
@@ -210,36 +211,6 @@ public class ProjectServiceImpl implements ProjectService {
     return builder.map();
   }
 
-  @Override
-  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
-      throws AxelorException {
-    if (appProjectService.getAppProject().getGenerateProjectSequence()
-        && !projectTemplate.getIsBusinessProject()) {
-      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
-      Project project =
-          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
-      return ActionView.define(I18n.get("Project"))
-          .model(Project.class.getName())
-          .add("form", "project-form")
-          .add("grid", "project-grid")
-          .param("search-filters", "project-filters")
-          .context("_showRecord", project.getId())
-          .map();
-    }
-
-    return ActionView.define(I18n.get("Create project from this template"))
-        .model(Wizard.class.getName())
-        .add("form", "project-template-wizard-form")
-        .param("popup", "reload")
-        .param("show-toolbar", "false")
-        .param("show-confirm", "false")
-        .param("width", "large")
-        .param("popup-save", "false")
-        .context("_projectTemplate", projectTemplate)
-        .context("_businessProject", projectTemplate.getIsBusinessProject())
-        .map();
-  }
-
   protected void setWikiItems(Project project, ProjectTemplate projectTemplate) {
     List<Wiki> wikiList = projectTemplate.getWikiList();
     if (ObjectUtils.notEmpty(wikiList)) {
@@ -264,11 +235,11 @@ public class ProjectServiceImpl implements ProjectService {
     project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
     project.setSynchronize(projectTemplate.getSynchronize());
     project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
-    project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
     project.setProjectStatus(getDefaultProjectStatus());
-    project.setProjectTaskStatusSet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+
+    manageTaskStatus(project, projectTemplate);
+
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
     project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
@@ -331,41 +302,52 @@ public class ProjectServiceImpl implements ProjectService {
                             && resourceBooking.getToDate().compareTo(x.getToDate()) <= 0));
   }
 
-  @Override
-  public void getChildProjectIds(Set<Long> projectIdsSet, Project project) {
-    if (projectIdsSet.contains(project.getId())) {
-      return;
+  protected void manageTaskStatus(Project project, ProjectTemplate projectTemplate) {
+    Integer taskStatusManagement =
+        Optional.ofNullable(projectTemplate)
+            .map(ProjectTemplate::getTaskStatusManagementSelect)
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
+
+    Set<TaskStatus> taskStatusSet = null;
+    if (taskStatusManagement == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
+      taskStatusSet =
+          Optional.ofNullable(projectTemplate)
+              .map(ProjectTemplate::getProjectTaskStatusSet)
+              .orElse(
+                  Optional.ofNullable(appProjectService.getAppProject())
+                      .map(AppProject::getDefaultTaskStatusSet)
+                      .orElse(null));
     }
 
-    projectIdsSet.add(project.getId());
-
-    for (Project childProject : project.getChildProjectList()) {
-      getChildProjectIds(projectIdsSet, childProject);
-    }
+    initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
 
-  @Override
-  public Set<Long> getContextProjectIds() {
-    User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getContextProject();
-    Set<Long> projectIdsSet = new HashSet<>();
-    if (contextProject == null) {
-      projectIdsSet.add(0l);
-      return projectIdsSet;
+  protected void manageTaskStatus(Project project, Project parentProject) {
+    Integer taskStatusManagement =
+        Optional.ofNullable(parentProject)
+            .map(Project::getTaskStatusManagementSelect)
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
+
+    Set<TaskStatus> taskStatusSet = null;
+    if (taskStatusManagement == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
+      taskStatusSet =
+          Optional.ofNullable(parentProject)
+              .map(Project::getProjectTaskStatusSet)
+              .orElse(
+                  Optional.ofNullable(appProjectService.getAppProject())
+                      .map(AppProject::getDefaultTaskStatusSet)
+                      .orElse(null));
     }
-    if (!currentUser.getIsIncludeSubContextProjects()) {
-      projectIdsSet.add(contextProject.getId());
-      return projectIdsSet;
-    }
-    this.getChildProjectIds(projectIdsSet, contextProject);
-    return projectIdsSet;
+
+    initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
 
-  @Override
-  public String getContextProjectIdsString() {
-    Set<Long> contextProjectIds = this.getContextProjectIds();
-    return contextProjectIds.contains(0l)
-        ? null
-        : contextProjectIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+  protected void initTaskStatus(
+      Project project, Integer taskStatusManagement, Set<TaskStatus> taskStatusSet) {
+    project.setTaskStatusManagementSelect(taskStatusManagement);
+
+    if (!ObjectUtils.isEmpty(taskStatusSet)) {
+      project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,14 +22,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.FileUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.StringHelper;
-import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.helpers.file.PdfHelper;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -94,7 +94,7 @@ public class PrintingTemplateHelper {
   public static String getFileLink(File file) throws AxelorException {
     String originalName = file.getName();
     originalName = translateFileName(originalName);
-    String safeName = FileUtils.safeFileName(originalName);
+    String safeName = FileUtils.safeFileName(originalName).replaceAll("[^\\p{ASCII}]", "");
 
     try {
       if (!originalName.equals(safeName)) {

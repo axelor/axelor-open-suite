@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,6 +58,7 @@ public interface ContractInvoicingService {
   Invoice invoicingContracts(List<Contract> contractList) throws AxelorException;
 
   Contract increaseInvoiceDates(Contract contract);
+
   /**
    * Take each consumption line and convert it to contract line if a associate consumption contract
    * line is present in contract.

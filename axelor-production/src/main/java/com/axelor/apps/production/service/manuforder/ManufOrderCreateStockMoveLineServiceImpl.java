@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -221,7 +221,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       throws AxelorException {
     Optional<StockMove> stockMoveOpt =
         manufOrderGetStockMoveService.getPlannedStockMove(
-            manufOrderGetStockMoveService.getNonResidualOutStockMoveLineList(manufOrder));
+            manufOrderGetStockMoveService.getFinishedProductOutStockMoveList(manufOrder));
     if (!stockMoveOpt.isPresent()) {
       return;
     }
@@ -236,6 +236,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
                     == StockMoveRepository.STATUS_CANCELED);
+    clearTrackingNumberOriginStockMoveLine(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -265,6 +266,14 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
+  }
+
+  protected void clearTrackingNumberOriginStockMoveLine(StockMove stockMove) {
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine.getTrackingNumber() != null) {
+        stockMoveLine.getTrackingNumber().setOriginStockMoveLine(null);
+      }
+    }
   }
 
   /**

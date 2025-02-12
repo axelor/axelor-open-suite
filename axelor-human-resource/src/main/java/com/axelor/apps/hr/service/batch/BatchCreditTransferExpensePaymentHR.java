@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -143,9 +143,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
       query.bind("bankDetailsSet", bankDetailsSet);
     }
 
-    for (List<Expense> expenseList;
-        !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+    List<Expense> expenseList;
+    while (!(expenseList = query.fetch(getFetchLimit())).isEmpty()) {
       for (Expense expense : expenseList) {
         try {
           addPayment(expense, accountingBatch.getBankDetails());
@@ -164,6 +163,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
           break;
         }
       }
+      JPA.clear();
+      findBatch();
     }
 
     return doneList;

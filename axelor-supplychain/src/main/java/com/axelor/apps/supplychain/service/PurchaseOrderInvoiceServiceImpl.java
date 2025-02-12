@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,9 +51,11 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -88,6 +90,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected CurrencyService currencyService;
   protected CurrencyScaleService currencyScaleService;
+  protected OrderInvoiceService orderInvoiceService;
+  protected InvoiceTaxService invoiceTaxService;
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
@@ -101,7 +105,9 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService,
       CurrencyService currencyService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
+      InvoiceTaxService invoiceTaxService) {
     this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
@@ -113,12 +119,15 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.currencyService = currencyService;
     this.currencyScaleService = currencyScaleService;
+    this.orderInvoiceService = orderInvoiceService;
+    this.invoiceTaxService = invoiceTaxService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
     Invoice invoice = this.createInvoice(purchaseOrder);
+    invoiceTaxService.manageTaxByAmount(purchaseOrder, invoice);
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
@@ -691,24 +700,15 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public void displayErrorMessageIfPurchaseOrderIsInvoiceable(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {
-    List<Invoice> invoices =
-        invoiceRepo
-            .all()
-            .filter(
-                " self.purchaseOrder.id = :purchaseOrderId "
-                    + "AND self.statusSelect != :invoiceStatus "
-                    + "AND (self.operationTypeSelect = :purchaseOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
-            .bind("purchaseOrderId", purchaseOrder.getId())
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("purchaseOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-            .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
-            .fetch();
     if (isPercent) {
       amountToInvoice =
           (amountToInvoice.multiply(purchaseOrder.getExTaxTotal()))
-              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
+              .divide(
+                  new BigDecimal("100"),
+                  currencyScaleService.getScale(purchaseOrder),
+                  RoundingMode.HALF_UP);
     }
-    BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(purchaseOrder);
     sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(

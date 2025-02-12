@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-  http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <grid name="gdpr-request-grid" title="Requests" canNew="true"
@@ -15,7 +15,7 @@
     <field name="dueSendingDateT"/>
   </grid>
 
-  <form name="gdpr-request-form" title="Request" canNew="true" canCopy="false"
+  <form name="gdpr-request-form" title="GDPRRequest.title" canNew="true" canCopy="false"
     model="com.axelor.apps.gdpr.db.GDPRRequest"
     onNew="action-gdpr-record-gdpr-set-pre-filled-request"
     onLoad="action-gdpr-request-attrs-hide-cancel">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
@@ -12,15 +12,18 @@
         hideIf="(!isCustomer &amp;&amp; !isSupplier) || isEmployee"/>
       <field name="groupProductsOnPrintings" hideIf="(!isCustomer &amp;&amp; !isSupplier)"
         if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"/>
+      <field name="financialDiscount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
       <field name="inPaymentMode" canEdit="false" grid-view="payment-mode-grid"
         form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
-      <field name="outPaymentMode" canEdit="false" grid-view="payment-mode-grid"
-        form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
       <field name="paymentCondition" canEdit="false" grid-view="payment-condition-grid"
         form-view="payment-condition-form" hideIf="isEmployee"
         onSelect="action-partner-attrs-payment-condition-set-domain"/>
-      <field name="financialDiscount"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      <field name="outPaymentMode" canEdit="false" grid-view="payment-mode-grid"
+        form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
+      <field name="outPaymentCondition" canEdit="false" grid-view="payment-condition-grid"
+        form-view="payment-condition-form" hideIf="isEmployee"
+        onSelect="action-partner-attrs-payment-condition-set-domain"/>
       <field name="currency" canEdit="false"
         requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form"
         grid-view="currency-grid"/>
@@ -69,7 +72,7 @@
     <panel name="accountingSituationPanel" if-module="axelor-account"
       onTabSelect="action-partner-account-method-accounting-situation-label"
       if="__config__.app.isApp('account')" title="Accounting situation"
-      hideIf="isContact || isProspect">
+      showIf="companySet &amp;&amp; companySet.length > 0 &amp;&amp; (isSupplier || isCustomer || isSubcontractor || isInternal || isCarrier || isFactor || isEmployee || isCorporatePartner || isThirdPartyPayer)">
       <field name="isCompensation" colSpan="12" widget="boolean-switch"
         showIf="isCustomer &amp;&amp; isSupplier"/>
       <label name="errorOnCompaniesLabel" css="label-danger" colSpan="12" hidden="true"/>
@@ -133,7 +136,8 @@
 
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='eventPanel']">
       <insert position="before">
-        <panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact || isProspect"
+        <panel name="paymentPanel" title="Invoicing/Payment"
+          showIf="isSupplier || isCustomer || isSubcontractor || isInternal || isCarrier || isFactor || isEmployee || isCorporatePartner || isThirdPartyPayer"
           if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
           <panel-include view="incl-invoice-payment-partner-form"/>
           <panel-related name="invoicingPaymentSituationListPanel"
@@ -153,6 +157,14 @@
           view="incl-accounting-situation-partner-form" if="__config__.app.isApp('account')"/>
         <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
           if="__config__.app.isApp('account')"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='$balance']">
+      <insert position="after">
+        <field name="daysSalesOutstanding" hidden="true" colSpan="3"/>
+        <button if="__config__.app.isApp('account')" name="$dsoBtn" title="DSO"
+          showIf="id &amp;&amp; isCustomer" colSpan="3" icon="payments" onClick=""
+          widget="info-button" x-field="daysSalesOutstanding"/>
       </insert>
     </extend>
   </form>
@@ -228,7 +240,7 @@
   </action-attrs>
 
   <action-attrs name="action-partner-attrs-payment-condition-set-domain">
-    <attribute name="domain" for="paymentCondition"
+    <attribute name="domain" for="paymentCondition,outPaymentCondition"
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>

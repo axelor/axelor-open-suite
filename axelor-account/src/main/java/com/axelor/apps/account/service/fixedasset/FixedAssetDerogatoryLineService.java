@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine fixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       int statusSelect);
+
   /**
    * This method will generate a fixedAssetDerogatoryLine list based on fixedAsset's fiscal and
    * economic lines that are planned. Keep in mind that it will not compute realized lines, and

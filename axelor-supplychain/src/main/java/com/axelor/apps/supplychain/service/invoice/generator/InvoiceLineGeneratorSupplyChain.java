@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -234,9 +234,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
         invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
-    }
-
-    if (stockMoveLine != null) {
+    } else if (stockMoveLine != null) {
       this.price = stockMoveLine.getUnitPriceUntaxed();
       this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
 
@@ -258,9 +256,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
 
-      analyticMoveLineList =
-          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();

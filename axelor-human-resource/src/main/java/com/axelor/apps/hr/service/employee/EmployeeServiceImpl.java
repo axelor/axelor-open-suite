@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,17 +50,22 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
   protected WeeklyPlanningService weeklyPlanningService;
   protected HRConfigService hrConfigService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public EmployeeServiceImpl(
-      WeeklyPlanningService weeklyPlanningService, HRConfigService hrConfigService) {
+      WeeklyPlanningService weeklyPlanningService,
+      HRConfigService hrConfigService,
+      AppBaseService appBaseService) {
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
+    this.appBaseService = appBaseService;
   }
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
@@ -71,16 +76,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
           employee.getName());
     }
-
-    Period period =
-        Period.between(
-            employee.getSeniorityDate(),
-            refDate == null
-                ? Beans.get(AppBaseService.class)
-                    .getTodayDate(
-                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                : refDate);
-    return period.getYears();
+    return getYears(employee.getUser(), employee.getSeniorityDate(), refDate);
   }
 
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
@@ -91,32 +87,16 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
           employee.getName());
     }
+    return getYears(employee.getUser(), employee.getBirthDate(), refDate);
+  }
 
-    if (employee.getUser() == null) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_USER),
-          employee.getName());
+  protected int getYears(User user, LocalDate fromDate, LocalDate toDate) {
+    if (toDate == null) {
+      toDate =
+          appBaseService.getTodayDate(
+              Optional.ofNullable(user).map(User::getActiveCompany).orElse(null));
     }
-
-    if (employee.getUser().getActiveCompany() == null) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_ACTIVE_COMPANY),
-          employee.getName());
-    }
-
-    Period period =
-        Period.between(
-            employee.getBirthDate(),
-            refDate == null
-                ? Beans.get(AppBaseService.class)
-                    .getTodayDate(
-                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                : refDate);
-    return period.getYears();
+    return Period.between(fromDate, toDate).getYears();
   }
 
   @Override

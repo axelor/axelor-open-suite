@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -79,6 +79,7 @@ public interface OperationOrderService {
       List<ProdProduct> prodProductList,
       List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
+
   /**
    * Check the realized consumed stock move lines in operation order has not changed.
    *
@@ -97,8 +98,6 @@ public interface OperationOrderService {
    */
   void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException;
-
-  void createBarcode(OperationOrder operationOrder);
 
   long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException;

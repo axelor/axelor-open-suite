@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -196,6 +196,7 @@
     <option value="1">Invoice.Standard</option>
     <option value="2">Invoice.AdvancePayment</option>
     <option value="3">Balance invoice</option>
+    <option value="9">Late payment interest invoice</option>
   </selection>
 
   <selection name='iaccount.account.schedule.export.type.select'>
@@ -348,6 +349,8 @@
     <option value="7">Irrecoverable Debt</option>
     <option value="8">Doubtful credit</option>
     <option value="9">Credit note imputation</option>
+    <option value="10">Foreign exchange gain</option>
+    <option value="11">Foreign exchange loss</option>
   </selection>
 
   <selection name="invoice.payment.status.select">
@@ -407,9 +410,12 @@
   </selection>
 
   <selection name="message.related.to.select" id="account.message.related.to.select">
-    <option value="com.axelor.apps.account.db.DebtRecoveryHistory">Debt Recovery History</option>
-    <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
-    <option value="com.axelor.apps.account.db.PaymentSession">Payment session</option>
+    <option value="com.axelor.apps.account.db.DebtRecoveryHistory"
+      data-grid="debt-recovery-history-grid" data-form="debt-recovery-history-form">Debt Recovery History</option>
+    <option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid"
+      data-form="invoice-form">Invoice</option>
+    <option value="com.axelor.apps.account.db.PaymentSession"
+      data-grid="payment-session-grid" data-form="payment-session-form">Payment session</option>
   </selection>
 
   <selection name="sequence.generic.code.select" id="account.sequence.generic.code.select">
@@ -543,6 +549,7 @@
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
     <option value='9'>Irrecoverable</option>
+    <option value='10'>Late payment interest</option>
   </selection>
 
   <selection name='iaccount.move.line.mass.entry.input.action.select'>
@@ -712,6 +719,7 @@
   <selection name="account.fixed.asset.split.type.select">
     <option value="1">Quantity</option>
     <option value="2">Amount</option>
+    <option value="3">Unit quantity</option>
   </selection>
 
   <selection name="account.fixed.asset.move.generation.exception">

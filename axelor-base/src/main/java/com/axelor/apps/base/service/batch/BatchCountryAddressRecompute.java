@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,11 +22,9 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.address.AddressService;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -86,7 +84,7 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
                 .filter("self.country.id IN :countryIds")
                 .bind("countryIds", countryIdList)
                 .order("id")
-                .fetch(AbstractBatch.FETCH_LIMIT, offset))
+                .fetch(getFetchLimit(), offset))
         .isEmpty()) {
       for (Address address : addressList) {
         ++offset;
@@ -118,10 +116,5 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
 
     super.stop();
     addComment(comment);
-  }
-
-  @Override
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BASE_BATCH);
   }
 }

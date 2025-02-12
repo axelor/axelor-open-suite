@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="stock-config-grid" title="Stock configurations"
     model="com.axelor.apps.stock.db.StockConfig">
@@ -51,12 +51,12 @@
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
         <field name="residualProductsDefaultStockLocation"
-          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
-          colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
+          onSelect="action-stock-config-attrs-residual-stocklocation-domain" colSpan="4"
+          form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
         <field name="finishedProductsDefaultStockLocation"
-          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
-          colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
+          onSelect="action-stock-config-attrs-finished-product-stocklocation-domain" colSpan="4"
+          form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
         <field name="directOrderStockLocation"
           domain="self.directOrderLocation = True and self.typeSelect != 3 AND self.company = :company"
@@ -70,6 +70,9 @@
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
+        <field name="cartStockLocation"
+          if="__config__.app.getApp('stock')?.isMassStockMoveManaged"
+          domain="self.typeSelect != 3 AND self.company = :company" colSpan="4"/>
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
       </panel>
@@ -191,6 +194,16 @@
     model="com.axelor.apps.stock.db.StockConfig">
     <attribute name="domain" for="pickupDefaultStockLocation"
       expr="eval: &quot; self.company = :company and self.typeSelect != 3 &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-stock-config-attrs-residual-stocklocation-domain">
+    <attribute name="domain" for="residualProductsDefaultStockLocation"
+      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${finishedProductsDefaultStockLocation?.id} &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-stock-config-attrs-finished-product-stocklocation-domain">
+    <attribute name="domain" for="finishedProductsDefaultStockLocation"
+      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${residualProductsDefaultStockLocation?.id} &quot;"/>
   </action-attrs>
 
   <action-record name="action-stock-config-record-set-stock-move-printing-settings"

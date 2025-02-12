@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -45,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -311,7 +313,8 @@ public class AccountingReportController {
 
   public void setAccountingReportTypeDomain(ActionRequest request, ActionResponse response) {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    boolean isCustom = (boolean) request.getContext().get("_isCustom");
+    boolean isCustom =
+        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
     String accountingReportTypeIds = "0";
 
     if (!isCustom || CollectionUtils.isNotEmpty(accountingReport.getCompanySet())) {
@@ -321,6 +324,10 @@ public class AccountingReportController {
     }
 
     response.setAttr(
-        "reportType", "domain", String.format("self.id IN (%s)", accountingReportTypeIds));
+        "reportType",
+        "domain",
+        String.format(
+            "self.id IN (%s)",
+            StringUtils.notEmpty(accountingReportTypeIds) ? accountingReportTypeIds : "0"));
   }
 }

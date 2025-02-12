@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -121,14 +121,13 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
       boolean toAttach)
       throws AxelorException {
     saleOrderService.checkPrintingSettings(saleOrder);
-    String title = saleOrderService.getFileName(saleOrder);
 
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(saleOrder));
     factoryContext.setContext(Map.of("ProformaInvoice", proforma));
 
     return printingTemplatePrintService.getPrintFile(
-        saleOrderPrintTemplate, factoryContext, title + " - ${date}", toAttach);
+        saleOrderPrintTemplate, factoryContext, toAttach);
   }
 
   /** Return the name for the printed sale orders. */

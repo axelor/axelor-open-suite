@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,6 +107,23 @@ public interface StockMoveLineService {
       TrackingNumber trackingNumber,
       StockLocation fromStockLocation,
       StockLocation toStockLocation)
+      throws AxelorException;
+
+  StockMoveLine createStockMoveLine(
+      Product product,
+      String productName,
+      String description,
+      BigDecimal quantity,
+      BigDecimal unitPrice,
+      BigDecimal companyUnitPriceUntaxed,
+      Unit unit,
+      StockMove stockMove,
+      int type,
+      boolean taxed,
+      BigDecimal taxRate,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      TrackingNumber trackingNumber)
       throws AxelorException;
 
   public StockMoveLine assignOrGenerateTrackingNumber(
@@ -264,7 +281,7 @@ public interface StockMoveLineService {
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
-  public void setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException;
+  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException;
 
   public List<TrackingNumber> getAvailableTrackingNumbers(StockMoveLine stockMoveLine);
 
@@ -360,5 +377,6 @@ public interface StockMoveLineService {
    * @return
    * @throws AxelorException
    */
-  void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine);
+  void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
+      throws AxelorException;
 }

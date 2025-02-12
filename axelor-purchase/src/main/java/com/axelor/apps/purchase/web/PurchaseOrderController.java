@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,6 +44,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
+import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -56,7 +57,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -382,5 +388,38 @@ public class PurchaseOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void separateInNewQuotation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Set<Map.Entry<String, Object>> contextEntry = request.getContext().entrySet();
+    Optional<Map.Entry<String, Object>> purchaseOrderLineEntries =
+        contextEntry.stream()
+            .filter(entry -> entry.getKey().equals("purchaseOrderLineList"))
+            .findFirst();
+    if (purchaseOrderLineEntries.isEmpty()) {
+      return;
+    }
+
+    Map.Entry<String, Object> entry = purchaseOrderLineEntries.get();
+    @SuppressWarnings("unchecked")
+    ArrayList<LinkedHashMap<String, Object>> purchaseOrderLines =
+        (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
+
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    PurchaseOrder copiePO =
+        Beans.get(PurchaseOrderSplitService.class)
+            .separateInNewQuotation(purchaseOrder, purchaseOrderLines);
+
+    response.setReload(true);
+    response.setView(
+        ActionView.define(I18n.get("Purchase order"))
+            .model(PurchaseOrder.class.getName())
+            .add("form", "purchase-order-form")
+            .add("grid", "purchase-order-grid")
+            .param("forceEdit", "true")
+            .context("_showRecord", copiePO.getId())
+            .map());
   }
 }

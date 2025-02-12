@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -152,7 +152,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
       AccountConfig accountConfig, AccountingSituation situation, int creationMode)
       throws AxelorException {
     Partner partner = situation.getPartner();
-    if (partner.getIsCustomer() == Boolean.FALSE || situation.getCustomerAccount() != null) return;
+    if (!partner.getIsCustomer() || situation.getCustomerAccount() != null) return;
 
     if (accountConfig.getCustomerAccount() == null) {
       throw new AxelorException(
@@ -208,7 +208,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
       AccountConfig accountConfig, AccountingSituation situation, int creationMode)
       throws AxelorException {
     Partner partner = situation.getPartner();
-    if (partner.getIsSupplier() == Boolean.FALSE || situation.getSupplierAccount() != null) return;
+    if (!partner.getIsSupplier() || situation.getSupplierAccount() != null) return;
 
     if (accountConfig.getSupplierAccount() == null) {
       throw new AxelorException(
@@ -265,7 +265,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
       AccountConfig accountConfig, AccountingSituation situation, int creationMode)
       throws AxelorException {
     Partner partner = situation.getPartner();
-    if (partner.getIsEmployee() == Boolean.FALSE || situation.getEmployeeAccount() != null) return;
+    if (!partner.getIsEmployee() || situation.getEmployeeAccount() != null) return;
 
     if (accountConfig.getEmployeeAccount() == null) {
       throw new AxelorException(

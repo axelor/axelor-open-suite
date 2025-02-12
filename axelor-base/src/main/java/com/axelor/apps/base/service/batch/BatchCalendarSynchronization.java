@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,14 +20,12 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ICalendar;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.google.inject.Inject;
 import java.util.List;
 
-public class BatchCalendarSynchronization extends AbstractBatch {
+public class BatchCalendarSynchronization extends BatchStrategy {
 
   @Inject ICalendarService iCalendarService;
 
@@ -36,7 +34,7 @@ public class BatchCalendarSynchronization extends AbstractBatch {
   @Override
   protected void process() {
     final Company company = batch.getBaseBatch().getCompany();
-    ;
+
     final List<ICalendar> calendars =
         repo.all()
             .filter("self.user.activeCompany = :company AND self.isValid = TRUE")
@@ -55,9 +53,5 @@ public class BatchCalendarSynchronization extends AbstractBatch {
         incrementAnomaly();
       }
     }
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BASE_BATCH);
   }
 }

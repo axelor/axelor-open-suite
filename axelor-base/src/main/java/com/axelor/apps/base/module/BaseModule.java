@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,8 @@ import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardManagementRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
@@ -96,6 +98,10 @@ import com.axelor.apps.base.service.DataBackupAnonymizeService;
 import com.axelor.apps.base.service.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.DataBackupService;
 import com.axelor.apps.base.service.DataBackupServiceImpl;
+import com.axelor.apps.base.service.DataSharingProductWizardService;
+import com.axelor.apps.base.service.DataSharingProductWizardServiceImpl;
+import com.axelor.apps.base.service.DataSharingReferentialLineService;
+import com.axelor.apps.base.service.DataSharingReferentialLineServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FakerService;
@@ -108,13 +114,11 @@ import com.axelor.apps.base.service.ImportExportTranslationService;
 import com.axelor.apps.base.service.ImportExportTranslationServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
-import com.axelor.apps.base.service.LanguageService;
-import com.axelor.apps.base.service.LanguageServiceImpl;
-import com.axelor.apps.base.service.LocalizationService;
-import com.axelor.apps.base.service.LocalizationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.MetaFileService;
+import com.axelor.apps.base.service.MetaFileServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkService;
@@ -143,12 +147,18 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPriceListService;
+import com.axelor.apps.base.service.ProductPriceListServiceImpl;
+import com.axelor.apps.base.service.ProductPriceService;
+import com.axelor.apps.base.service.ProductPriceServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.ProductUpdateServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
+import com.axelor.apps.base.service.TagService;
+import com.axelor.apps.base.service.TagServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -159,8 +169,10 @@ import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressAttrsServiceImpl;
-import com.axelor.apps.base.service.address.AddressExportService;
-import com.axelor.apps.base.service.address.AddressExportServiceImpl;
+import com.axelor.apps.base.service.address.AddressCreationService;
+import com.axelor.apps.base.service.address.AddressCreationServiceImpl;
+import com.axelor.apps.base.service.address.AddressFetchService;
+import com.axelor.apps.base.service.address.AddressFetchServiceImpl;
 import com.axelor.apps.base.service.address.AddressMetaService;
 import com.axelor.apps.base.service.address.AddressMetaServiceImpl;
 import com.axelor.apps.base.service.address.AddressService;
@@ -169,6 +181,10 @@ import com.axelor.apps.base.service.address.AddressTemplateLineViewService;
 import com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.address.AddressTemplateServiceImpl;
+import com.axelor.apps.base.service.address.CityService;
+import com.axelor.apps.base.service.address.CityServiceImpl;
+import com.axelor.apps.base.service.address.CountryService;
+import com.axelor.apps.base.service.address.CountryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryService;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorService;
@@ -193,8 +209,6 @@ import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
-import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
@@ -205,10 +219,20 @@ import com.axelor.apps.base.service.imports.ImportConfigurationService;
 import com.axelor.apps.base.service.imports.ImportConfigurationServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
+import com.axelor.apps.base.service.language.LanguageCheckerService;
+import com.axelor.apps.base.service.language.LanguageCheckerServiceImpl;
+import com.axelor.apps.base.service.language.LanguageService;
+import com.axelor.apps.base.service.language.LanguageServiceImpl;
+import com.axelor.apps.base.service.localization.LocalizationService;
+import com.axelor.apps.base.service.localization.LocalizationServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.meta.MetaViewService;
+import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
+import com.axelor.apps.base.service.observer.ProductFireService;
+import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
@@ -242,6 +266,8 @@ import com.axelor.apps.base.service.print.PrintTemplateService;
 import com.axelor.apps.base.service.print.PrintTemplateServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProvider;
 import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProviderImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
@@ -288,10 +314,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
-import com.axelor.utils.service.TranslationBaseService;
-import com.axelor.utils.service.TranslationBaseServiceImpl;
+import com.axelor.utils.service.translation.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.matcher.Matchers;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -301,10 +326,6 @@ public class BaseModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bindInterceptor(
-        Matchers.any(),
-        Matchers.annotatedWith(HandleExceptionResponse.class),
-        new HandleExceptionResponseImpl());
 
     bindInterceptor(
         new AbstractMatcher<>() {
@@ -455,7 +476,7 @@ public class BaseModule extends AxelorModule {
     bind(AddressTemplateLineViewService.class).to(AddressTemplateLineViewServiceImpl.class);
     bind(AddressMetaService.class).to(AddressMetaServiceImpl.class);
     bind(AddressTemplateService.class).to(AddressTemplateServiceImpl.class);
-    bind(AddressExportService.class).to(AddressExportServiceImpl.class);
+    bind(AddressFetchService.class).to(AddressFetchServiceImpl.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
@@ -474,5 +495,20 @@ public class BaseModule extends AxelorModule {
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
+    bind(MetaFileService.class).to(MetaFileServiceImpl.class);
+    bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
+    bind(ProductFireService.class).to(ProductFireServiceImpl.class);
+    bind(ProductPriceService.class).to(ProductPriceServiceImpl.class);
+    bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
+    bind(MetaViewService.class).to(MetaViewServiceImpl.class);
+    bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
+    bind(TagService.class).to(TagServiceImpl.class);
+    bind(AddressCreationService.class).to(AddressCreationServiceImpl.class);
+    bind(CityService.class).to(CityServiceImpl.class);
+    bind(CountryService.class).to(CountryServiceImpl.class);
+    bind(DataSharingProductWizardRepository.class)
+        .to(DataSharingProductWizardManagementRepository.class);
+    bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
   }
 }

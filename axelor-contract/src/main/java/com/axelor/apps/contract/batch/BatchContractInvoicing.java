@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,8 +19,6 @@
 package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractBatch;
@@ -40,7 +38,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BatchContractInvoicing extends AbstractBatch {
+public class BatchContractInvoicing extends BatchStrategy {
 
   protected ContractRepository contractRepository;
   protected ContractInvoicingService contractInvoicingService;
@@ -113,14 +111,19 @@ public class BatchContractInvoicing extends AbstractBatch {
 
   @Override
   protected void process() {
+    int offset = 0;
     for (List<Long> idList : getIdsGroupedBy()) {
+      ++offset;
       try {
         invoiceContracts(findContractsInList(idList));
         incrementDone();
-        JPA.clear();
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
+      }
+      if (offset % getFetchLimit() == 0) {
+        JPA.clear();
+        findBatch();
       }
     }
   }
@@ -133,10 +136,5 @@ public class BatchContractInvoicing extends AbstractBatch {
             I18n.get(ITranslation.CONTRACT_BATCH_EXECUTION_RESULT),
             batch.getDone(),
             batch.getAnomaly()));
-  }
-
-  @Override
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CONTRACT_BATCH);
   }
 }

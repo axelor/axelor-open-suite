@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,13 +27,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
-import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,21 +51,24 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   protected AppBaseService appBaseService;
   protected MetaFiles metaFiles;
   protected TranslationBaseService translationBaseService;
+  protected PrintingTemplateComputeNameService templateComputeNameService;
 
   @Inject
   public PrintingTemplatePrintServiceImpl(
       AppBaseService appBaseService,
       MetaFiles metaFiles,
-      TranslationBaseService translationBaseService) {
+      TranslationBaseService translationBaseService,
+      PrintingTemplateComputeNameService templateComputeNameService) {
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
     this.translationBaseService = translationBaseService;
+    this.templateComputeNameService = templateComputeNameService;
   }
 
   @Override
   public String getPrintLink(PrintingTemplate template, PrintingGenFactoryContext context)
       throws AxelorException {
-    return getPrintLink(template, context, template.getName());
+    return getPrintLink(template, context, getTemplateName(template));
   }
 
   @Override
@@ -78,7 +82,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   public String getPrintLink(
       PrintingTemplate template, PrintingGenFactoryContext context, boolean toAttach)
       throws AxelorException {
-    return getPrintLink(template, context, template.getName(), toAttach);
+    return getPrintLink(template, context, getTemplateName(template), toAttach);
   }
 
   @Override
@@ -95,7 +99,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   @Override
   public File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context)
       throws AxelorException {
-    return getPrintFile(template, context, template.getName());
+    return getPrintFile(template, context, getTemplateName(template));
   }
 
   @Override
@@ -107,13 +111,20 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
 
   @Override
   public File getPrintFile(
+      PrintingTemplate template, PrintingGenFactoryContext context, Boolean toAttach)
+      throws AxelorException {
+    return getPrintFile(template, context, getTemplateName(template), toAttach);
+  }
+
+  @Override
+  public File getPrintFile(
       PrintingTemplate template,
       PrintingGenFactoryContext context,
       String outputFileName,
       Boolean toAttach)
       throws AxelorException {
     List<TemplatePrint> prints = getPrintList(template, context);
-    return getPrintFile(prints, outputFileName, context, toAttach);
+    return getPrintFile(template, prints, outputFileName, context, toAttach);
   }
 
   @Override
@@ -165,11 +176,21 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   }
 
   protected File getPrintFile(
+      PrintingTemplate template,
       List<TemplatePrint> prints,
       String outputFileName,
       PrintingGenFactoryContext context,
       boolean toAttach)
       throws AxelorException {
+    try {
+      outputFileName = templateComputeNameService.computeFileName(outputFileName, context);
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PRINTING_TEMPLATE_SCRIPT_ERROR),
+          template.getName(),
+          e.getMessage());
+    }
     List<File> printFiles = getPrintFilesList(prints);
     File file = PrintingTemplateHelper.mergeToFile(printFiles, outputFileName);
     if (toAttach && context != null && context.getModel() != null) {
@@ -196,5 +217,12 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
         .map(TemplatePrint::getPrint)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
+  }
+
+  protected String getTemplateName(PrintingTemplate template) {
+    if (StringUtils.notEmpty(template.getScriptFieldName())) {
+      return template.getScriptFieldName();
+    }
+    return template.getName();
   }
 }

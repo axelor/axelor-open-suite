@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -116,7 +116,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
     timesheetLine.setProduct(projectPlanningTime.getProduct());
-    if (project.getIsShowTimeSpent()) {
+    if (project.getManageTimeSpent()) {
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
       Site site = projectPlanningTime.getSite();

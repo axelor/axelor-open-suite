@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -70,7 +71,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       TaxService taxService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      ProductPriceService productPriceService) {
     super(
         currencyService,
         priceListService,
@@ -84,7 +86,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         taxService,
         internationalService,
         invoiceLineAttrsService,
-        currencyScaleService);
+        currencyScaleService,
+        productPriceService);
     this.supplierCatalogService = supplierCatalogService;
   }
 

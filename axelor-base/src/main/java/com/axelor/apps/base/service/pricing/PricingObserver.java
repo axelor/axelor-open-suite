@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingRule;
+import com.axelor.db.Model;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 
@@ -58,7 +59,7 @@ public interface PricingObserver {
   void updateFieldToPopulate(MetaField field);
 
   /** Update the observer that the computation started */
-  void computationStarted();
+  void computationStarted(Model model);
 
   /** Update the observer that the computation finished */
   void computationFinished();

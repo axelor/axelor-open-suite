@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="project-version-grid" title="Project.version"
     model="com.axelor.apps.businesssupport.db.ProjectVersion">
@@ -19,7 +19,7 @@
       <field name="testingServerDate"/>
       <field name="productionServerDate"/>
       <field name="content" widget="HTML" colSpan="12"/>
-      <field name="projectSet" grid-view="project-grid" form-view="project-form"
+      <field name="projectSet" grid-view="project-grid" form-view="business-project-form"
         onSelect="action-version-attrs-project-domain" colSpan="12"/>
     </panel>
     <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
@@ -29,8 +29,11 @@
   </form>
 
   <action-attrs name="action-version-attrs-project-domain">
-    <attribute name="domain" for="project"
-      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;"/>
+    <attribute name="domain" for="projectSet"
+      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;" if="!__parent__"/>
+    <attribute name="domain" for="projectSet"
+      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet AND self.id != ${__parent__.id} &quot;"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.project.db.Project'"/>
   </action-attrs>
 
 </object-views>

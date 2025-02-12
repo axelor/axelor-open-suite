@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,8 +55,7 @@ public class BusinessProjectMobileController {
     try {
       User user = AuthUtils.getUser();
       if (user != null) {
-        List<Project> projectList =
-            Beans.get(ProjectRepository.class).all().filter("self.imputable = true").fetch();
+        List<Project> projectList = Beans.get(ProjectRepository.class).all().fetch();
         for (Project project : projectList) {
           if ((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
               || user.equals(project.getAssignedTo())) {

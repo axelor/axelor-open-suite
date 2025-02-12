@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -229,6 +229,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
     return true;
   }
+
   /**
    * Method that may computes action "realize" on lines of fiscalFixedAssetLineList,
    * fixedAssetLineList and fixedAssetDerogatoryLineList that matches the same depreciation date. It

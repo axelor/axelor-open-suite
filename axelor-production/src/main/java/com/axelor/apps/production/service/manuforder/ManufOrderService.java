@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -210,14 +210,6 @@ public interface ManufOrderService {
    * @param ids List of ids of manufacturing orders to merge
    */
   public boolean canMerge(List<Long> ids);
-
-  /**
-   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
-   * {@link ManufOrder} on the header of every page.
-   *
-   * @return
-   */
-  public void createBarcode(ManufOrder manufOrder);
 
   List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 

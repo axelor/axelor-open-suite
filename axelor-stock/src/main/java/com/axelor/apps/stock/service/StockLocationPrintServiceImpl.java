@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,18 +33,13 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class StockLocationPrintServiceImpl implements StockLocationPrintService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected StockConfigService stockConfigService;
   protected PrintingTemplatePrintService printingTemplatePrintService;
@@ -110,8 +105,6 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
     Long firstStockLocationId = stockLocationIds[0];
     StockLocation stockLocation = stockLocationRepository.find(firstStockLocationId);
 
-    String title = getOutputFileName(stockLocationIds);
-
     String stockLocationIdsString;
     if (withoutDetailsByStockLocation) {
       stockLocationIdsString = Long.toString(firstStockLocationId);
@@ -160,9 +153,7 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
             "WithoutDetailsByStockLocation",
             withoutDetailsByStockLocation));
 
-    log.debug("Printing {}", title);
-    return printingTemplatePrintService.getPrintLink(
-        stockLocationPrintTemplate, factoryContext, title + "-${date}");
+    return printingTemplatePrintService.getPrintLink(stockLocationPrintTemplate, factoryContext);
   }
 
   @Override

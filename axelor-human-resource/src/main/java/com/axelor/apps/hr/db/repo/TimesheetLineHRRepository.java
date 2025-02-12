@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,29 +20,29 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameService;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class TimesheetLineHRRepository extends TimesheetLineRepository {
 
+  protected TimesheetLineComputeNameService timesheetLineComputeNameService;
+
+  @Inject
+  public TimesheetLineHRRepository(
+      TimesheetLineComputeNameService timesheetLineComputeNameService) {
+    this.timesheetLineComputeNameService = timesheetLineComputeNameService;
+  }
+
   @Override
   public TimesheetLine save(TimesheetLine timesheetLine) {
     try {
-      computeFullName(timesheetLine);
+      timesheetLineComputeNameService.computeFullName(timesheetLine);
 
       return super.save(timesheetLine);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
-  }
-
-  public void computeFullName(TimesheetLine timesheetLine) {
-
-    timesheetLine.setFullName(
-        timesheetLine.getTimesheet().getFullName()
-            + " "
-            + timesheetLine.getDate()
-            + " "
-            + timesheetLine.getId());
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,8 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -63,14 +65,15 @@ public class StockMoveRestController {
   public Response realizeStockMove(@PathParam("id") long stockMoveId, RequestStructure requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMove.class, stockMoveId).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
     Beans.get(StockMoveService.class).realize(stockmove);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Stock move with id " + stockmove.getId() + " successfully realized.");
+        Response.Status.OK,
+        String.format(I18n.get(ITranslation.STOCK_MOVE_REALIZED), stockmove.getId()));
   }
 
   /** Add new line in a stock move. Full path to request is /ws/aos/stock-move/add-line/{id} */
@@ -84,7 +87,10 @@ public class StockMoveRestController {
       @PathParam("id") long stockMoveId, StockMoveLinePostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).createAccess(StockMoveLine.class).check();
+    new SecurityCheck()
+        .writeAccess(StockMove.class, stockMoveId)
+        .readAccess(StockMoveLine.class)
+        .check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
     new StockMoveLineRequestValidator(
@@ -108,7 +114,9 @@ public class StockMoveRestController {
     Beans.get(StockMoveService.class).updateStocks(stockmove);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully added to stock move with id " + stockmove.getId());
+        Response.Status.OK,
+        String.format(
+            I18n.get(ITranslation.STOCK_MOVE_LINE_ADDED_TO_STOCK_MOVE), stockmove.getId()));
   }
 
   /**
@@ -152,7 +160,7 @@ public class StockMoveRestController {
       @PathParam("id") long stockMoveId, StockInternalMovePutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class).check();
+    new SecurityCheck().writeAccess(StockMove.class, stockMoveId).check();
 
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
 
@@ -164,6 +172,8 @@ public class StockMoveRestController {
     }
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Successfully updated", new StockInternalMoveResponse(stockmove));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_UPDATED),
+        new StockInternalMoveResponse(stockmove));
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,19 +18,33 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectCheckListTemplate;
+import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.repo.ProjectCheckListTemplateRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppProject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Singleton
 public class ProjectController {
@@ -121,5 +135,54 @@ public class ProjectController {
         response.setError(I18n.get(ProjectExceptionMessage.RESOURCE_ALREADY_BOOKED_ERROR_MSG));
       }
     }
+  }
+
+  @ErrorException
+  public void manageCompletedTaskStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Project project = request.getContext().asType(Project.class);
+
+    Set<TaskStatus> taskStatusSet = project.getProjectTaskStatusSet();
+    Optional<TaskStatus> completedTaskStatus =
+        Beans.get(ProjectTaskToolService.class)
+            .getCompletedTaskStatus(project.getCompletedTaskStatus(), taskStatusSet);
+
+    response.setValue("completedTaskStatus", completedTaskStatus.orElse(null));
+  }
+
+  @ErrorException
+  public void taskStatusManagementSelectionIn(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+
+    List<Integer> taskStatusSelect = new ArrayList<>();
+    taskStatusSelect.addAll(
+        Arrays.asList(
+            ProjectRepository.TASK_STATUS_MANAGEMENT_NONE,
+            ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT));
+    if (appProject != null && appProject.getEnableStatusManagementByTaskCategory()) {
+      taskStatusSelect.add(ProjectRepository.TASK_STATUS_MANAGEMENT_CATEGORY);
+    }
+
+    response.setAttr("taskStatusManagementSelect", "selection-in", taskStatusSelect);
+  }
+
+  @ErrorException
+  public void generateCheckListFromTemplate(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+
+    Map<String, Object> checkListTemplateMap =
+        (Map<String, Object>) request.getContext().get("projectCheckListTemplate");
+    if (ObjectUtils.isEmpty(checkListTemplateMap)) {
+      return;
+    }
+
+    ProjectCheckListTemplate template =
+        Beans.get(ProjectCheckListTemplateRepository.class)
+            .find(Long.valueOf(checkListTemplateMap.get("id").toString()));
+
+    Beans.get(ProjectCheckListTemplateService.class)
+        .generateCheckListItemsFromTemplate(project, template);
+    response.setValue("projectCheckListItemList", project.getProjectCheckListItemList());
   }
 }

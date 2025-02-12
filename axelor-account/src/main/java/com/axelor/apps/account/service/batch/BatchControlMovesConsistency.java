@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.AxelorException;
@@ -30,6 +31,7 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -53,7 +55,9 @@ public class BatchControlMovesConsistency extends BatchStrategy {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     if (!CollectionUtils.isEmpty(accountingBatch.getYearSet())) {
       List<Move> moveList =
-          moveToolService.findDaybookAndAccountingByYear(accountingBatch.getYearSet());
+          moveToolService.findMoveByYear(
+              accountingBatch.getYearSet(),
+              Arrays.asList(MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK));
       if (!CollectionUtils.isEmpty(moveList)) {
         for (Move move : moveList) {
           try {

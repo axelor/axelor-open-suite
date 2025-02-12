@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class ManufOrderSetStockMoveLineServiceImpl implements ManufOrderSetStockMoveLineService {
 
@@ -35,6 +36,7 @@ public class ManufOrderSetStockMoveLineServiceImpl implements ManufOrderSetStock
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void setProducedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException {
 
     if (manufOrder.getProducedStockMoveLineList() != null) {

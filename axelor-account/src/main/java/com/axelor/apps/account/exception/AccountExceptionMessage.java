@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,6 +72,7 @@ public final class AccountExceptionMessage {
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
+
   /** Bank statement service */
   public static final String BANK_STATEMENT_1 = /*$$(*/
       "%s : Computed balance and Ending Balance must be equal" /*)*/;
@@ -207,6 +208,7 @@ public final class AccountExceptionMessage {
   /** AnalyticJournal service */
   public static final String NOT_UNIQUE_NAME_ANALYTIC_JOURNAL =
       /*$$(*/ "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly." /*)*/;
+
   /** Move line export service */
   public static final String MOVE_LINE_EXPORT_1 = /*$$(*/
       "%s : Error : You must configure a sale interface sequence for the company %s" /*)*/;
@@ -370,6 +372,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_LINE_CONTROL_ACCOUNTING_ACCOUNT_FAIL = /*$$(*/
       "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed." /*)*/;
+
   /** Move service */
   public static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
@@ -885,6 +888,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
       "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
+
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
@@ -1072,6 +1076,15 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
 
+  public static final String INVOICE_VALIDATE_WRONG_STATUS = /*$$(*/
+      "You can only validate a drafted invoice." /*)*/;
+  public static final String INVOICE_VENTILATE_WRONG_STATUS = /*$$(*/
+      "You can only ventilate a validated invoice" /*)*/;
+  public static final String INVOICE_CANCEL_WRONG_STATUS = /*$$(*/
+      "You can only cancel a drafted or validated invoice." /*)*/;
+  public static final String INVOICE_DRAFT_WRONG_STATUS = /*$$(*/
+      "You can only return to the draft status from a cancelled invoice." /*)*/;
+
   public static final String NO_CUT_OFF_TO_APPLY = /*$$(*/
       "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line." /*)*/;
 
@@ -1098,6 +1111,9 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
+
+  public static final String INVOICE_TERM_PFP_REFUSED = /*$$(*/
+      "A payment on invoice term %s is being attempted but its PFP has been refused." /*)*/;
 
   public static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
       "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;
@@ -1217,6 +1233,9 @@ public final class AccountExceptionMessage {
   public static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
       "There is no reverse date select value of value %d" /*)*/;
 
+  public static final String REVERSE_DATE_CAN_NOT_BE_BEFORE_MOVE_DATE = /*$$(*/
+      "The chosen date for the reverse entry can't be lower than the entry to be reversed." /*)*/;
+
   /*Check not lettered advance move lines*/
   public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
       "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
@@ -1225,7 +1244,8 @@ public final class AccountExceptionMessage {
       "Please set a reported balance date on fiscal year" /*)*/;
 
   public static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
-      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;
+  ;
 
   public static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid analytic move lines, some axes percentage values are different than 100%." /*)*/;
@@ -1750,4 +1770,43 @@ public final class AccountExceptionMessage {
 
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange gain account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT = /*$$(*/
+      "Please select a foreign exchange loss account config for company %s." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_INVOICE_NO_LATE = /*$$(*/
+      "None of the payment due dates have been exceeded." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_FLAT_FEE_NO_PRODUCT = /*$$(*/
+      "There is no product configured for flat fee." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PRODUCT = /*$$(*/
+      "There is no product configured for late payment interest." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_BELOW_THRESHOLD = /*$$(*/
+      "The amount remaining is below the threshold defined in configuration." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_PAYMENT_MODE_RATE = /*$$(*/
+      "There is no interest rate defined in invoice term payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_NO_INTEREST_RATE = /*$$(*/
+      "There is no interest rate defined in payment mode." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_DATES_INCONSISTENCY = /*$$(*/
+      "Inconsistency in begin and ending dates." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_CONTINUITY = /*$$(*/
+      "The periods must be continuous." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_PERIOD_OVERLAP = /*$$(*/
+      "2 interest rate history line periods can not overlap." /*)*/;
+
+  public static final String LATE_PAYMENT_INTEREST_HISTORY_END_DATE_IN_FUTURE = /*$$(*/
+      "The end date must be in the past." /*)*/;
+
+  public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
+      "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special or commitment should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
 }

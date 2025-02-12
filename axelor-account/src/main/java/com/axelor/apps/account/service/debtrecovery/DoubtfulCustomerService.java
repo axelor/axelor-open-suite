@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -461,10 +461,16 @@ public class DoubtfulCustomerService {
       query.append("AND self.move.functionalOriginSelect = :functionalOriginSale");
     }
 
-    return moveLineRepo.all().filter(query.toString()).bind("company", company).bind("date", date)
+    return moveLineRepo
+        .all()
+        .filter(query.toString())
+        .bind("company", company)
+        .bind("date", date)
         .bind("doubtfulCustomerAccount", doubtfulCustomerAccount)
         .bind("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE).fetch().stream()
+        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        .fetch()
+        .stream()
         .map(MoveLine::getId)
         .collect(Collectors.toList());
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,6 +58,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -326,14 +327,14 @@ public class FixedAssetController {
       BigDecimal amount =
           new BigDecimal(
               context
-                  .get(splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY ? "qty" : "grossValue")
+                  .get(splitType != FixedAssetRepository.SPLIT_TYPE_AMOUNT ? "qty" : "grossValue")
                   .toString());
 
       // Check values
       fixedAssetService.checkFixedAssetBeforeSplit(fixedAsset, splitType, amount);
 
       // Do the split
-      FixedAsset createdFixedAsset =
+      List<FixedAsset> createdFixedAssetList =
           fixedAssetService.splitAndSaveFixedAsset(
               fixedAsset,
               splitType,
@@ -341,18 +342,34 @@ public class FixedAssetController {
               Beans.get(AppBaseService.class).getTodayDate(fixedAsset.getCompany()),
               fixedAsset.getComments());
 
-      // Open in view
-      if (createdFixedAsset != null) {
-        response.setView(
-            ActionView.define(I18n.get("Fixed asset"))
-                .model(FixedAsset.class.getName())
-                .add("form", "fixed-asset-form")
-                .context("_showRecord", createdFixedAsset.getId())
-                .map());
-
-        response.setCanClose(true);
-        response.setReload(true);
+      if (!ObjectUtils.isEmpty(createdFixedAssetList)) {
+        // Open in view
+        if (createdFixedAssetList.size() == 1) {
+          response.setView(
+              ActionView.define(I18n.get("Fixed asset"))
+                  .model(FixedAsset.class.getName())
+                  .add("form", "fixed-asset-form")
+                  .context("_showRecord", createdFixedAssetList.get(0).getId())
+                  .map());
+        } else {
+          String createdFixedAssetIds =
+              createdFixedAssetList.stream()
+                  .map(FixedAsset::getId)
+                  .map(Objects::toString)
+                  .collect(Collectors.joining(","));
+          response.setView(
+              ActionView.define(I18n.get("Fixed assets"))
+                  .model(FixedAsset.class.getName())
+                  .add("grid", "fixed-asset-grid")
+                  .add("form", "fixed-asset-form")
+                  .domain(String.format("self.id IN (%s)", createdFixedAssetIds))
+                  .map());
+        }
       }
+
+      response.setCanClose(true);
+      response.setReload(true);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

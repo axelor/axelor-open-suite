@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -126,9 +126,9 @@ public class InvoiceLineController {
     }
 
     try {
-      Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
-
-      response.setValues(invoiceLine);
+      Map<String, Object> invoiceLineMap =
+          Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
+      response.setValues(invoiceLineMap);
       response.setAttr(
           "priceDiscounted",
           "hidden",

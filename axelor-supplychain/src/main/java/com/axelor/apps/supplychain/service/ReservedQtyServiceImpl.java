@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -58,6 +59,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   protected UnitConversionService unitConversionService;
   protected SupplyChainConfigService supplychainConfigService;
   protected AppBaseService appBaseService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public ReservedQtyServiceImpl(
@@ -65,12 +67,14 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       StockMoveLineRepository stockMoveLineRepository,
       UnitConversionService unitConversionService,
       SupplyChainConfigService supplyChainConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.stockLocationLineService = stockLocationLineService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.unitConversionService = unitConversionService;
     this.supplychainConfigService = supplyChainConfigService;
     this.appBaseService = appBaseService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -241,7 +245,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
     StockLocationLine stockLocationLine =
-        stockLocationLineService.getStockLocationLine(stockLocation, product);
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
     if (stockLocationLine == null) {
       return;
     }
@@ -350,7 +354,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       return;
     }
     StockLocationLine stockLocationLine =
-        stockLocationLineService.getStockLocationLine(stockLocation, product);
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
     if (stockLocationLine == null) {
       return;
     }
@@ -852,7 +856,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     // deallocate in stock location line
     if (stockMoveLine.getStockMove() != null) {
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(
+          stockLocationLineFetchService.getStockLocationLine(
               stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct());
       if (stockLocationLine != null) {
         updateReservedQty(stockLocationLine);

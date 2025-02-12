@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,6 +51,9 @@ public interface PrintingTemplatePrintService {
 
   File getPrintFile(
       PrintingTemplate template, PrintingGenFactoryContext context, String outputFileName)
+      throws AxelorException;
+
+  File getPrintFile(PrintingTemplate template, PrintingGenFactoryContext context, Boolean toAttach)
       throws AxelorException;
 
   File getPrintFile(

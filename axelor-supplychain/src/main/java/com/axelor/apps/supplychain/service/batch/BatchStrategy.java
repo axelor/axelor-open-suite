@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.inject.Beans;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -64,7 +64,17 @@ public abstract class BatchStrategy extends AbstractBatch {
     }
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SUPPLYCHAIN_BATCH);
+  }
+
+  @Override
+  protected Integer getFetchLimit() {
+    Integer batchFetchLimit = this.batch.getSupplychainBatch().getFetchLimit();
+    if (batchFetchLimit == 0) {
+      batchFetchLimit = super.getFetchLimit();
+    }
+    return batchFetchLimit;
   }
 }

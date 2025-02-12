@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <!-- <cards id="purchase-product-card-view" name="product-cards" title="Product" model="com.axelor.apps.base.db.Product"
     cardWidth="25%" css="rect-image" orderBy="code,name"> <toolbar> <button name="catalog" title="Catalog"
@@ -28,7 +28,7 @@
     title="Order history" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <view type="grid" name="purchase-order-line-history-grid"/>
     <view type="form" name="purchase-order-line-form"/>
-    <domain>self.product.id = :id AND self.purchaseOrder.orderDate &lt; :__date__ AND
+    <domain>self.product.id = :id AND self.purchaseOrder.orderDate &lt;= :__date__ AND
       self.purchaseOrder.statusSelect IN (3,4)</domain>
   </action-view>
 

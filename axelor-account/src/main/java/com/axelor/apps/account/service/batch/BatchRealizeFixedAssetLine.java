@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveSe
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -46,7 +45,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class BatchRealizeFixedAssetLine extends AbstractBatch {
+public class BatchRealizeFixedAssetLine extends BatchStrategy {
 
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected AppBaseService appBaseService;
@@ -83,7 +82,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     if (!batch.getAccountingBatch().getUpdateAllRealizedFixedAssetLines()
         && startDate != null
         && endDate != null
-        && startDate.isBefore(endDate)) {
+        && startDate.compareTo(endDate) <= 0) {
       query += " AND self.depreciationDate <= :endDate AND self.depreciationDate >= :startDate";
     } else {
       query += " AND self.depreciationDate < :dateNow";

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -141,14 +141,18 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       return false;
     }
 
-    List<MoveLine> moveLineList =
-        move.getMoveLineList().stream()
-            .filter(it -> budgetAccountService.checkAccountType(it.getAccount()))
-            .collect(Collectors.toList());
+    List<MoveLine> moveLineList = getRequiredBudgetMoveLines(move);
 
     return CollectionUtils.isNotEmpty(moveLineList)
         && moveLineList.stream()
             .anyMatch(ml -> CollectionUtils.isNotEmpty(ml.getBudgetDistributionList()));
+  }
+
+  @Override
+  public List<MoveLine> getRequiredBudgetMoveLines(Move move) {
+    return move.getMoveLineList().stream()
+        .filter(it -> budgetAccountService.checkAccountType(it.getAccount()))
+        .collect(Collectors.toList());
   }
 
   @Override

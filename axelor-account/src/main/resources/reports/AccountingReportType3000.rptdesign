@@ -68,6 +68,14 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function formatNumber(number) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return Formatter.format(number, formatPattern);
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -146,6 +154,17 @@
         </scalar-parameter>
         <scalar-parameter name="UserName" id="3034">
             <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="6443">
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -579,7 +598,7 @@ ON Company.id = Report.Company
 LEFT JOIN base_currency as Currency 
 ON Report.currency = Currency.id
 
-LEFT JOIN public.account_journal as Journal 
+LEFT JOIN account_journal as Journal 
 ON Report.journal = Journal.id
 
 LEFT JOIN account_payment_mode as PaymentMode
@@ -1021,6 +1040,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                 </list-property>
             </structure>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -2595,7 +2615,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                         <property name="aggregationOnRow">Line/line</property>
                                                         <property name="aggregationOnColumn">Column/column</property>
                                                         <property name="content">
-                                                            <text id="6057">
+                                                            <text id="6442">
                                                                 <property name="textAlign">right</property>
                                                                 <list-property name="highlightRules">
                                                                     <structure>
@@ -2662,7 +2682,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                     </structure>
                                                                 </list-property>
                                                                 <property name="contentType">html</property>
-                                                                <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(data["result_Line/line_Column/column"], data["nb_of_decimals"] == 0? "#,##0" : "#,##0." + Array((data["nb_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(data["result_Line/line_Column/column"])</VALUE-OF>]]></text-property>
                                                             </text>
                                                         </property>
                                                     </extended-item>
@@ -3931,6 +3951,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
     <property name="pageVariables">
         <variable-element name="showProvisionTitle">
             <expression name="value" type="javascript">false</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="numberOfDecimals">
             <property name="type">report</property>
         </variable-element>
     </property>

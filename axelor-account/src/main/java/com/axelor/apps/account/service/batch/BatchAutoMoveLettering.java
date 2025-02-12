@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -331,11 +331,13 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     }
     // End gestion du passage en 580
 
-    reconcileService.confirmReconcile(reconcile, true, true);
-    debitMoveLine.addBatchSetItem(batch);
-    creditMoveLine.addBatchSetItem(batch);
-    moveLineRepository.save(debitMoveLine);
-    moveLineRepository.save(creditMoveLine);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true, true);
+      debitMoveLine.addBatchSetItem(batch);
+      creditMoveLine.addBatchSetItem(batch);
+      moveLineRepository.save(debitMoveLine);
+      moveLineRepository.save(creditMoveLine);
+    }
 
     LOG.debug("Reconcile : {}", reconcile);
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -84,4 +84,16 @@ public interface ITranslation {
   String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
   public static final String INCREMENT_LEAVE_REASON_BATCH_EXECUTION_RESULT = /*$$(*/
       "%d leave reason(s) treated and %d anomaly(ies) reported !"; /*)*/
+
+  public static final String CHECK_RESPONSE_RESPONSE = /*$$(*/
+      "Here is the list of the warnings and errors" /*)*/;
+  public static final String EXPENSE_LINE_UPDATED = /*$$(*/
+      "Expense line successfully updated." /*)*/;
+  public static final String EXPENSE_UPDATED = /*$$(*/ "Expense successfully updated." /*)*/;
+  public static final String TIMESHEET_UPDATED = /*$$(*/ "Timesheet successfully updated." /*)*/;
+  public static final String TIMESHEET_LINE_UPDATED = /*$$(*/
+      "Timesheet line successfully updated." /*)*/;
+  public static final String TIMESHEET_CONVERTED_PERIOD_TOTAL = /*$$(*/
+      "Timesheet converted period total." /*)*/;
+  public static final String TIMER_UPDATED = /*$$(*/ "Timer successfully updated." /*)*/;
 }

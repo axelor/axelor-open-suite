@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.invoiceterm;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -34,25 +34,25 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
 
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermAttrsService invoiceTermAttrsService;
-  protected InvoiceTermPfpService invoiceTermPfpService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected CurrencyScaleService currencyScaleService;
   protected InvoiceTermRecordService invoiceTermRecordService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public InvoiceTermGroupServiceImpl(
       InvoiceTermService invoiceTermService,
       InvoiceTermAttrsService invoiceTermAttrsService,
-      InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       CurrencyScaleService currencyScaleService,
-      InvoiceTermRecordService invoiceTermRecordService) {
+      InvoiceTermRecordService invoiceTermRecordService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermAttrsService = invoiceTermAttrsService;
-    this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermRecordService = invoiceTermRecordService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -158,12 +158,12 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     Map<String, Object> valuesMap = new HashMap<>();
     valuesMap.put(
         "$isValidPfpValidatorUser",
-        invoiceTermPfpService.isPfpValidatorUser(invoiceTerm, AuthUtils.getUser()));
+        invoiceTermPfpToolService.isPfpValidatorUser(invoiceTerm, AuthUtils.getUser()));
 
     if (invoiceTerm.getPfpValidatorUser() != null) {
       valuesMap.put(
           "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
-          invoiceTermService.checkPfpValidatorUser(invoiceTerm));
+          invoiceTermPfpToolService.checkPfpValidatorUser(invoiceTerm));
     }
 
     valuesMap.put(
@@ -183,7 +183,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
 
     valuesMap.put(
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
-        invoiceTermService.checkPfpValidatorUser(invoiceTerm));
+        invoiceTermPfpToolService.checkPfpValidatorUser(invoiceTerm));
 
     return valuesMap;
   }

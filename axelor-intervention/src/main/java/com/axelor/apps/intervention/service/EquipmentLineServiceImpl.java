@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.db.EquipmentLine;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
@@ -39,20 +39,20 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class EquipmentLineServiceImpl implements EquipmentLineService {
 
-  protected final TrackingNumberService trackingNumberService;
+  protected final TrackingNumberCreateService trackingNumberCreateService;
   protected final AppBaseService appBaseService;
 
   @Inject
   public EquipmentLineServiceImpl(
-      TrackingNumberService trackingNumberService, AppBaseService appBaseService) {
-    this.trackingNumberService = trackingNumberService;
+      TrackingNumberCreateService trackingNumberCreateService, AppBaseService appBaseService) {
+    this.trackingNumberCreateService = trackingNumberCreateService;
     this.appBaseService = appBaseService;
   }
 
   @Override
   public TrackingNumber createTrackingNumber(EquipmentLine equipmentLine) throws AxelorException {
     Company company = AuthUtils.getUser().getActiveCompany();
-    return trackingNumberService.createTrackingNumber(
+    return trackingNumberCreateService.createTrackingNumber(
         equipmentLine.getProduct(), company, appBaseService.getTodayDate(company), null, null);
   }
 

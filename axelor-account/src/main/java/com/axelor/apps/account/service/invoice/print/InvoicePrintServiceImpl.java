@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.PfxCertificate;
@@ -38,7 +37,6 @@ import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
-import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -49,6 +47,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -120,14 +119,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     int copyNumber = invoice.getInvoicesCopySelect();
     copyNumber = copyNumber == 0 ? 1 : copyNumber;
     File fileCopies = file;
-    if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))) {
+    String fileName = file.getName();
+    if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(fileName))) {
       Path path = PdfHelper.printCopiesToFile(file, copyNumber).toPath();
       fileCopies =
-          Files.move(
-                  path,
-                  path.resolveSibling(
-                      getInvoiceReportTitle(invoice) + "." + ReportSettings.FORMAT_PDF),
-                  StandardCopyOption.REPLACE_EXISTING)
+          Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
               .toFile();
     }
     return fileCopies;
@@ -184,8 +180,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           invoice);
     }
 
-    String title = getInvoiceReportTitle(invoice);
-
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
       String userLocalizationCode =
@@ -219,17 +213,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(invoice));
     factoryContext.setContext(paramMap);
-    return printingTemplatePrintService.getPrintFile(
-        invoicePrintTemplate, factoryContext, title + " - ${date}", false);
-  }
-
-  protected String getInvoiceReportTitle(Invoice invoice) throws AxelorException {
-    String title =
-        I18n.get(InvoiceToolService.isRefund(invoice) ? "Credit note" : "Invoice").replace(" ", "");
-    if (invoice.getInvoiceId() != null) {
-      title += " " + invoice.getInvoiceId();
-    }
-    return title;
+    return printingTemplatePrintService.getPrintFile(invoicePrintTemplate, factoryContext);
   }
 
   public File printAndSave(
@@ -291,7 +275,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
                       printCopiesToFile(
                           invoice,
                           false,
-                          null,
+                          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
                           accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
                           null));
                 } catch (Exception e) {

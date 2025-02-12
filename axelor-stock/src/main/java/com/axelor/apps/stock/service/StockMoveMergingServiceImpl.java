@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,13 +63,13 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
     this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
-  public String canMerge(List<StockMove> stockMoveList) {
-    StringJoiner errors = new StringJoiner("</li><li>", "<ul><li>", "</li></ul>").setEmptyValue("");
+  public List<String> canMerge(List<StockMove> stockMoveList) {
+    List<String> errors = new ArrayList<>();
     checkErrors(stockMoveList, errors);
-    return errors.toString();
+    return errors;
   }
 
-  protected void checkErrors(List<StockMove> stockMoveList, StringJoiner errors) {
+  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
     if (!checkAllSame(stockMoveList, StockMove::getCompany)) {
       errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_COMPANY));
     }

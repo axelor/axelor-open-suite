@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -184,6 +184,15 @@ public final class BankPaymentExceptionMessage {
       "Unknown format for file generation" /*)*/;
   public static final String BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE = /*$$(*/
       "Unknown SEPA type for file generation" /*)*/;
+
+  public static final String BANK_ORDER_FILE_DECRYPT_ERROR = /*$$(*/
+      "Error during file decryption." /*)*/;
+
+  public static final String BANK_ORDER_FILE_ENCRYPTION_NO_PASSWORD = /*$$(*/
+      "The field encryption.bankorder.password in config file must be filled." /*)*/;
+
+  public static final String BANK_ORDER_FILE_ENCRYPTION_INCORRECT_PASSWORD = /*$$(*/
+      "The password is incorrect." /*)*/;
 
   /** Batch bank statement */
   public static final String BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT = /*$$(*/

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -270,14 +270,22 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   public String checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList) {
     if (!CollectionUtils.isEmpty(invoiceTermList)) {
       List<String> paymentVoucherRefList =
-          payVoucherElementToPayRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+          payVoucherElementToPayRepository
+              .all()
+              .filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList)
+              .fetch()
+              .stream()
               .map(PayVoucherElementToPay::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
       paymentVoucherRefList.addAll(
-          payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+          payVoucherDueElementRepository
+              .all()
+              .filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList)
+              .fetch()
+              .stream()
               .map(PayVoucherDueElement::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList()));

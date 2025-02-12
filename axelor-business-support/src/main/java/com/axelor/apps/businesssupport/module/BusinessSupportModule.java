@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.businesssupport.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementBusinessSupportRepository;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementRepository;
 import com.axelor.apps.businesssupport.db.repo.ProjectTaskBusinessSupportRepository;

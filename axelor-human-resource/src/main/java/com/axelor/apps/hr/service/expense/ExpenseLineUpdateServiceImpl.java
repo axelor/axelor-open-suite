@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -324,8 +324,15 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (StringUtils.notEmpty(toCity)) {
       expenseLine.setToCity(toCity);
     }
-    distance = distance != null ? distance : expenseLine.getDistance();
-    expenseLineToolService.computeDistance(distance, expenseLine);
+
+    if ((StringUtils.notEmpty(fromCity) || StringUtils.notEmpty(toCity)) && distance == null) {
+      expenseLineToolService.computeDistance(distance, expenseLine);
+    }
+
+    if (distance != null) {
+      expenseLine.setDistance(distance);
+    }
+
     expenseLineToolService.computeAmount(expenseLine.getEmployee(), expenseLine);
 
     expenseLineRepository.save(expenseLine);

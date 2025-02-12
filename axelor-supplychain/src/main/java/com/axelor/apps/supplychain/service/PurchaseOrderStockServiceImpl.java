@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -213,8 +213,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             StockMoveRepository.TYPE_INCOMING);
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
-        && company.getTradingNameSet() != null
-        && !company.getTradingNameSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(company.getTradingNameList())) {
       if (purchaseOrder.getTradingName() != null) {
         endLocation = purchaseOrder.getTradingName().getQualityControlDefaultStockLocation();
       } else {

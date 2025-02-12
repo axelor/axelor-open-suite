@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,12 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -44,5 +48,24 @@ public class InvoiceLineTaxController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void recomputeAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoiceLineTax invoiceLineTax = request.getContext().asType(InvoiceLineTax.class);
+    if (!Beans.get(InvoiceLineTaxToolService.class).isManageByAmount(invoiceLineTax)) {
+      return;
+    }
+
+    Invoice invoice = invoiceLineTax.getInvoice();
+    if (invoice == null) {
+      invoice = request.getContext().getParent().asType(Invoice.class);
+    }
+
+    Map<String, Object> values =
+        Beans.get(InvoiceLineTaxGroupService.class).recomputeAmounts(invoiceLineTax, invoice);
+
+    response.setValues(values);
   }
 }

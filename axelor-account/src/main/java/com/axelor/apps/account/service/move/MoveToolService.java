@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -195,7 +196,7 @@ public interface MoveToolService {
 
   List<Move> getMovesWithDuplicatedOrigin(Move move);
 
-  List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
+  List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
@@ -203,8 +204,6 @@ public interface MoveToolService {
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
   void setDescriptionOnMoveLineList(Move move);
-
-  BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
 
   boolean isMultiCurrency(Move move);
 
@@ -225,4 +224,8 @@ public interface MoveToolService {
 
   List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
       throws AxelorException;
+
+  List<InvoiceTerm> _getInvoiceTermList(Move move);
+
+  boolean isOpenOrClosureMove(Move move);
 }

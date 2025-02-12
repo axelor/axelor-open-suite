@@ -26,23 +26,27 @@ dependencies {
     implementation libs.jaxb_bind_api
 }
 
+ext {
+  reactDir = 'axelor-react-timesheet'
+}
+
 node {
 	version = '16.17.0'
 	yarnVersion = '1.22.19'
     download = true
     distBaseUrl = null
-    nodeModulesDir = file('src/main/axelor-react-timesheet')
+    nodeModulesDir = file(reactDir)
 }
 
 task buildFront(type: YarnTask) {
     group = 'axelor'
     description = 'Build Front-end'
 
-    inputs.files('src/main/axelor-react-timesheet/package.json', 'src/main/axelor-react-timesheet/yarn.lock')
-    inputs.dir('src/main/axelor-react-timesheet/src')
-    inputs.dir('src/main/axelor-react-timesheet/public')
-    inputs.dir(fileTree("src/main/axelor-react-timesheet/.yarn"))
-    outputs.dir('src/main/axelor-react-timesheet/build')
+    inputs.files("${reactDir}/package.json", "${reactDir}/yarn.lock")
+    inputs.dir("${reactDir}/src")
+    inputs.dir("${reactDir}/public")
+    inputs.dir(fileTree("${reactDir}/.yarn"))
+    outputs.dir("${reactDir}/build")
 
 	dependsOn 'installFrontDeps'
     args = ["run", "build"]
@@ -57,9 +61,9 @@ task installFrontDeps(type: YarnTask) {
 
 
 task copyReactWebapp(type: Copy) {
-	destinationDir = file(rootProject.buildDir)
-	into("webapp/hr/timesheet") {
-		from "src/main/axelor-react-timesheet/build"
+	destinationDir = file("$rootProject.buildDir/webapp")
+	into("hr/timesheet") {
+		from "${reactDir}/build"
 	}
 	
 	dependsOn 'buildFront'
@@ -67,18 +71,18 @@ task copyReactWebapp(type: Copy) {
 
 
 clean {
-    delete "src/main/axelor-react-timesheet/.yarn/cache",
-     "src/main/axelor-react-timesheet/.yarn/unplugged",
-      "src/main/axelor-react-timesheet/.yarn/install-state.gz",
-       "src/main/axelor-react-timesheet/dist",
-        "src/main/axelor-react-timesheet/node_modules",
-        "src/main/axelor-react-timesheet/build"
+  delete "${reactDir}/.yarn/cache",
+         "${reactDir}/.yarn/unplugged",
+         "${reactDir}/.yarn/install-state.gz",
+         "${reactDir}/dist",
+         "${reactDir}/node_modules",
+         "${reactDir}/build"
 }
 
 jar {
   dependsOn 'buildFront'
   into('webapp/hr/timesheet') {
-    from "src/main/axelor-react-timesheet/build"
+    from "${reactDir}/build"
     duplicatesStrategy 'exclude'
   }
 }

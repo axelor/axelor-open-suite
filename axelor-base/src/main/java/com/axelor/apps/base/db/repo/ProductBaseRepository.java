@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,11 +24,13 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class ProductBaseRepository extends ProductRepository {
@@ -40,6 +42,8 @@ public class ProductBaseRepository extends ProductRepository {
   protected static final String FULL_NAME_FORMAT = "[%s] %s";
 
   @Inject protected BarcodeGeneratorService barcodeGeneratorService;
+
+  @Inject protected ProductFireService productFireService;
 
   @Override
   public Product save(Product product) {
@@ -93,5 +97,11 @@ public class ProductBaseRepository extends ProductRepository {
     Product copy = super.copy(product, deep);
     Beans.get(ProductService.class).copyProduct(product, copy);
     return copy;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    productFireService.populate(json, context);
+    return super.populate(json, context);
   }
 }

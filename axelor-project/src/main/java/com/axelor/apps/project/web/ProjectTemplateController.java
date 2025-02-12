@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTemplateService;
+import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -44,7 +45,7 @@ public class ProjectTemplateController {
     try {
       ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
       Map<String, Object> projectTemplateView =
-          Beans.get(ProjectService.class).createProjectFromTemplateView(projectTemplate);
+          Beans.get(ProjectTemplateService.class).createProjectFromTemplateView(projectTemplate);
       response.setView(projectTemplateView);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -79,12 +80,13 @@ public class ProjectTemplateController {
               .createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
       response.setCanClose(true);
 
+      ProjectToolService projectToolService = Beans.get(ProjectToolService.class);
       response.setView(
           ActionView.define(I18n.get("Project"))
               .model(Project.class.getName())
-              .add("form", "project-form")
-              .add("grid", "project-grid")
-              .param("search-filters", "project-filters")
+              .add("form", projectToolService.getProjectFormName(project))
+              .add("grid", projectToolService.getProjectGridName(project))
+              .param("search-filters", "project-project-filters")
               .context("_showRecord", project.getId())
               .map());
     } catch (AxelorException e) {

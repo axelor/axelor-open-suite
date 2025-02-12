@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,17 +24,28 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
+import com.axelor.apps.production.service.operationorder.OperationOrderCreateBarcodeService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 
-  @Inject OperationOrderService operationOrderService;
+  protected SequenceService sequenceService;
+  protected OperationOrderCreateBarcodeService operationOrderCreateBarcodeService;
+  protected ManufOrderCreateBarcodeService manufOrderCreateBarcodeService;
+
+  @Inject
+  public ManufOrderManagementRepository(
+      SequenceService sequenceService,
+      OperationOrderCreateBarcodeService operationOrderCreateBarcodeService,
+      ManufOrderCreateBarcodeService manufOrderCreateBarcodeService) {
+    this.sequenceService = sequenceService;
+    this.operationOrderCreateBarcodeService = operationOrderCreateBarcodeService;
+    this.manufOrderCreateBarcodeService = manufOrderCreateBarcodeService;
+  }
 
   @Override
   public ManufOrder copy(ManufOrder entity, boolean deep) {
@@ -71,10 +82,10 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
     try {
       if (Strings.isNullOrEmpty(entity.getManufOrderSeq())
           && entity.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT) {
-        entity.setManufOrderSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(entity));
+        entity.setManufOrderSeq(sequenceService.getDraftSequenceNumber(entity));
       }
       if (entity.getBarCode() == null) {
-        Beans.get(ManufOrderService.class).createBarcode(entity);
+        manufOrderCreateBarcodeService.createBarcode(entity);
       }
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -84,7 +95,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
     if (entity.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : entity.getOperationOrderList()) {
         if (operationOrder.getBarCode() == null) {
-          operationOrderService.createBarcode(operationOrder);
+          operationOrderCreateBarcodeService.createBarcode(operationOrder);
         }
       }
     }

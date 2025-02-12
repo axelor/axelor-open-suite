@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,9 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService.SaleOrderMergingResult;
+import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingViewService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;

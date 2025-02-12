@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -95,6 +95,9 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_TASK_NO_PROJECT_FOUND = /*$$(*/
       "No project found for task %s." /*)*/;
 
+  public static final String PROJECT_NO_UNIT_FOUND = /*$$(*/
+      "Please set the time unit for this project." /*)*/;
+
   public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
       "Please set the unit for the task %s." /*)*/;
 
@@ -152,4 +155,7 @@ public final class BusinessProjectExceptionMessage {
       "Transition between paid status for projects" /*)*/;
   public static final String BATCH_TRANSITION_BETWEEN_PAID_STATUS_ERROR = /*$$(*/
       "Error while trying to transition between paid status for project %s." /*)*/;
+
+  public static final String PROJECT_BUSINESS_PROJECT_MISSING_CLIENT_PARTNER_COMPANY = /*$$(*/
+      "Please fill the company and the client partner before conversion." /*)*/;
 }

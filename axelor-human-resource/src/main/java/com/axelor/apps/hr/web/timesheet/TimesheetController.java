@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -129,7 +129,7 @@ public class TimesheetController {
                 .find(((Integer) productContext.get("id")).longValue());
       }
       if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee());
+        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee(), null);
       }
 
       timesheet =
@@ -574,7 +574,6 @@ public class TimesheetController {
       BigDecimal periodTotal =
           Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
 
-      response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
       response.setAttr(
           "$periodTotalConvert",

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -424,7 +424,7 @@ public class ImportCityServiceImpl implements ImportCityService {
               cityLine[8], // canton code
               cityLine[9], // latitude
               cityLine[10], // longitude
-              cityLine[11])); // accuracy
+              cityLine.length > 11 ? cityLine[11] : null)); // accuracy
     }
 
     return this.createCityFileZipImport(cityList, cityTextFile);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,8 +19,10 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -31,11 +33,25 @@ public class ImportSaleOrderLine {
     assert bean instanceof SaleOrderLine;
 
     SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-    saleOrderLine.setTaxLineSet(
-        saleOrderLineService.getTaxLineSet(saleOrderLine.getSaleOrder(), saleOrderLine));
-    saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    SaleOrderLineTaxService saleOrderLineTaxService = Beans.get(SaleOrderLineTaxService.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = getSaleOrder(saleOrderLine);
+    }
+    saleOrderLine.setTaxLineSet(saleOrderLineTaxService.getTaxLineSet(saleOrder, saleOrderLine));
+    Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine);
 
     return saleOrderLine;
+  }
+
+  protected SaleOrder getSaleOrder(SaleOrderLine saleOrderLine) {
+    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+    if (parentSaleOrderLine != null) {
+      return getSaleOrder(parentSaleOrderLine);
+    }
+    if (saleOrderLine.getSaleOrder() != null) {
+      return saleOrderLine.getSaleOrder();
+    }
+    return null;
   }
 }

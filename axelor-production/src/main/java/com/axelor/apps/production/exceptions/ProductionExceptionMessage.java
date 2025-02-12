@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -122,6 +122,21 @@ public final class ProductionExceptionMessage {
 
   public static final String PROD_PROCESS_LINE_MISSING_WORK_CENTER = /*$$(*/
       "Work center is missing from prod process line %s-%s." /*)*/;
+
+  public static final String PROD_PROCESS_NULL_STATUS = /*$$(*/
+      "Prod process currently has no status" /*)*/;
+
+  public static final String PROD_PROCESS_ALREADY_DRAFT_STATUS = /*$$(*/
+      "Prod process is already on draft status" /*)*/;
+
+  public static final String PROD_PROCESS_VALIDATED_WRONG_STATUS = /*$$(*/
+      "Cannot validate prod process that is not draft" /*)*/;
+
+  public static final String PROD_PROCESS_APPLICABLE_WRONG_STATUS = /*$$(*/
+      "Cannot make prod process applicable that is not validated" /*)*/;
+
+  public static final String PROD_PROCESS_OBSOLETE_WRONG_STATUS = /*$$(*/
+      "Cannot make prod process obsolete that is not applicable" /*)*/;
 
   /** Bill of materials service */
   public static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/
@@ -365,6 +380,14 @@ public final class ProductionExceptionMessage {
   public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
       "Max loop call reached when trying to compute end date." /*)*/;
 
+  public static final String TOO_MANY_CALL_GETTING_TIME_SLOT = /*$$(*/
+      "Max call reached when trying to find a time slot for operation %s." /*)*/;
+  public static final String MANUF_ORDER_CANT_COMPUTE_NEXT_SLOT_WITH_CURRENT_CONFIG = /*$$(*/
+      "Current production configuration does not permit to have operation orders with no duration nor interoperation time on the same machine and at the same time. (Operation: %s)" /*)*/;
+
   public static final String MANUF_ORDER_MISSING_COMPONENTS = /*$$(*/
       "<b>Missing components</b> :<br/>%s" /*)*/;
+
+  public static final String MANUF_ORDER_WASTE_DECLARATION_IN_PRODUCED_LIST = /*$$(*/
+      "Warning: The current product exists in produced products of the manuf order." /*)*/;
 }

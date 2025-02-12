@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,7 +51,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -220,13 +219,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
           (Class<? extends Model>) Class.forName(message.getClass().getName());
       Model model = JPA.find(className, message.getId());
 
-      String fileName =
-          "Message "
-              + message.getSubject()
-              + "-"
-              + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
       return printingTemplatePrintService.getPrintLink(
-          template, new PrintingGenFactoryContext(model), fileName);
+          template, new PrintingGenFactoryContext(model));
 
     } catch (AxelorException | ClassNotFoundException e) {
       TraceBackService.trace(e);
