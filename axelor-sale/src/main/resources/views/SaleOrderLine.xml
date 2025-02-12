@@ -55,7 +55,7 @@
       <button name="configuratorDuplicateBtn"
               onClick="save,action-sale-order-line-method-configurator-duplicate"
               if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
-              readonlyIf="saleOrder.id == null" icon="fa-copy"/>
+              readonlyIf="saleOrder.id == null" icon="fa-copy" title="Duplicate line"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
@@ -136,7 +136,7 @@
       <button name="configuratorDuplicateBtn"
               onClick="save,action-sale-order-line-method-configurator-duplicate"
               if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
-              readonlyIf="saleOrder.id == null" icon="fa-copy"/>
+              readonlyIf="saleOrder.id == null" icon="fa-copy" title="Duplicate line"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
