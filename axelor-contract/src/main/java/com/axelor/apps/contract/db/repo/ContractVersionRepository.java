@@ -60,7 +60,7 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
 
     ContractLineRepository repository = Beans.get(ContractLineRepository.class);
     List<ContractLine> lines =
-        ModelTool.copy(repository, currentVersion.getContractLineList(), false);
+        ModelTool.copy(repository, currentVersion.getContractLineList(), true);
 
     for (ContractLine line : lines) {
       newVersion.addContractLineListItem(line);
