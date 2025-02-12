@@ -328,33 +328,4 @@
       method="showTasksPerCategory"/>
   </action-method>
 
-
-  <dashboard title="Project Dashboard" name="project.dashboard.sample" width="large"
-    onInit="action-chart-set-date-project">
-    <search-fields>
-      <field name="project" target="com.axelor.apps.project.db.Project" title="Project"
-        type="reference" colSpan="12" onChange="action-project-record-empty-sprint"/>
-      <field type="date" name="fromDate" title="From Date" required="true" colSpan="3"
-        onChange="action-project-record-empty-sprint-period"/>
-      <field type="date" name="toDate" title="To Date" required="true" colSpan="3"
-        onChange="action-project-record-empty-sprint-period"/>
-      <field type="reference" name="period" title="Allocation period"
-        target="com.axelor.apps.base.db.Period" colSpan="3" onChange="action-chart-set-period-date"
-        domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__ "/>
-      <field type="reference" name="sprint" title="Sprint"
-        target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!project"
-        onChange="action-chart-set-sprint-date"
-        onSelect="action-project-method-compute-sprint-domain"/>
-
-    </search-fields>
-
-    <dashlet height="350" action="project-project-task-action" canSearch="true" colSpan="12"/>
-    <dashlet height="350" action="project-planning-time-dashboard-action" canSearch="true"
-      colSpan="12"
-      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-      if-module="axelor-human-resource"/>
-    <dashlet height="350" action="project-allocation-line-action" canSearch="true"
-      colSpan="12"/>
-  </dashboard>
-
 </object-views>

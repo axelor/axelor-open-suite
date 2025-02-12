@@ -4,33 +4,34 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
-    onNew="action-project-set-date" width="large" canNew="false" canDelete="false">
-    <panel name="operationSelectPanel">
-
-      <field name="$project" target="com.axelor.apps.project.db.Project" title="Project"
-        type="many-to-one" colSpan="12"
-        onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint"/>
-      <field type="date" name="$fromDate" title="From Date" required="true" colSpan="3"
-        onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint-period"/>
-      <field type="date" name="$toDate" title="To Date" required="true" colSpan="3"
-        onChange="action-attrs-refresh-dashlets,action-project-record-empty-sprint-period"/>
-      <field type="many-to-one" name="$period" title="Allocation period"
-        target="com.axelor.apps.base.db.Period" colSpan="3" onChange="action-chart-set-period-date"
-        domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__ "/>
-      <field type="many-to-one" name="$sprint" title="Sprint"
-        target="com.axelor.apps.project.db.Sprint" colSpan="3" readonlyIf="!$project"
-        onChange="action-attrs-refresh-dashlets,action-chart-set-sprint-date"
-        onSelect="action-project-method-compute-sprint-domain"/>
+    width="large" onNew="action-project-set-date" canNew="false" canDelete="false">
+    <panel name="operationSelectPanel" onChange="">
+      <field name="$project" title="Project" colSpan="12" type="many-to-one"
+        onChange="action-project-record-empty-sprint,action-attrs-refresh-dashlets"
+        target="com.axelor.apps.project.db.Project"/>
+      <field name="$fromDate" title="From Date" colSpan="3" type="date"
+        onChange="action-project-record-empty-sprint-period,action-attrs-refresh-dashlets"
+        required="true"/>
+      <field name="$toDate" title="To Date" colSpan="3" type="date"
+        onChange="action-project-record-empty-sprint-period,action-attrs-refresh-dashlets"
+        required="true"/>
+      <field name="$period" title="Allocation period" colSpan="3" type="many-to-one"
+        onChange="action-chart-set-period-date,action-attrs-refresh-dashlets"
+        target="com.axelor.apps.base.db.Period"
+        domain="self.year.typeSelect = 4 AND self.toDate > :__date__ "/>
+      <field name="$sprint" title="Sprint" readonlyIf="!$project" colSpan="3"
+        type="many-to-one" onChange="action-chart-set-sprint-date,action-attrs-refresh-dashlets"
+        onSelect="action-project-method-compute-sprint-domain"
+        target="com.axelor.apps.project.db.Sprint"/>
     </panel>
-
-    <panel-dashlet height="350" name="project-project-task-action-dashlet"
-      action="project-project-task-action" canSearch="true" colSpan="12"/>
-    <panel-dashlet height="350" name="project-planning-time-dashboard-action-dashlet"
-      action="project-planning-time-dashboard-action" canSearch="true" colSpan="12"
+    <panel-dashlet name="project-project-task-action-dashlet" colSpan="12"
+      height="350" action="project-project-task-action" canSearch="true"/>
+    <panel-dashlet
       if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-      if-module="axelor-human-resource"/>
-    <panel-dashlet height="350" action="project-allocation-line-action"
-      name="project-allocation-line-action-dashlet" canSearch="true" colSpan="12"/>
+      if-module="axelor-human-resource" name="project-planning-time-dashboard-action-dashlet"
+      colSpan="12" height="350" action="project-planning-time-dashboard-action" canSearch="true"/>
+    <panel-dashlet name="project-allocation-line-action-dashlet" colSpan="12"
+      height="350" action="project-allocation-line-action" canSearch="true"/>
   </form>
   <action-method model="com.axelor.utils.db.Wizard" name="action-project-set-date">
     <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
