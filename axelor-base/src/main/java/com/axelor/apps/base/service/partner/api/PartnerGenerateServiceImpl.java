@@ -114,7 +114,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     safeSetString(partner::setName, partner::getName, uniteLegale.getDenominationUniteLegale());
   }
 
-  protected void setPartnerAddress(Partner partner, AdresseEtablissementResponse adresseEtablissement) {
+  protected void setPartnerAddress(
+      Partner partner, AdresseEtablissementResponse adresseEtablissement) {
     if (adresseEtablissement == null) {
       return;
     }
@@ -130,7 +131,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     }
   }
 
-  protected void setAddressDetails(Address address, AdresseEtablissementResponse adresseEtablissement) {
+  protected void setAddressDetails(
+      Address address, AdresseEtablissementResponse adresseEtablissement) {
     safeSetString(
         address::setZip, address::getZip, adresseEtablissement.getCodePostalEtablissement());
     safeSetString(
