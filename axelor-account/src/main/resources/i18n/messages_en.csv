@@ -2363,7 +2363,7 @@
 "No style",,,
 "No value",,,
 "Non deductible tax",,,
-"Non-deductible tax only authorized on purchase journal. Please remove the non-deductible tax on move line.",,,
+"Non-deductible tax only authorized when functional origin is purchase. Please remove the non-deductible tax on move line.",,,
 "None",,,
 "None of the payment due dates have been exceeded.",,,
 "Not implemented for OSM",,,

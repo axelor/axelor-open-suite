@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.TaxAccountService;
@@ -131,10 +131,8 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
   }
 
   public void nonDeductibleTaxAuthorized(Move move, MoveLine moveLine) throws AxelorException {
-    int technicalType =
-        Optional.of(move.getJournal().getJournalType().getTechnicalTypeSelect())
-            .orElse(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EMPTY);
-    if (technicalType != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+    int technicalType = Optional.of(move.getFunctionalOriginSelect()).orElse(0);
+    if (technicalType != MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
       this.checkMoveLineTaxes(moveLine.getTaxLineSet());
     }
   }
