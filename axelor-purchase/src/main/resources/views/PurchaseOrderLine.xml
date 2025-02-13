@@ -641,4 +641,7 @@
     <error message="Please select a product." if="product == null"/>
   </action-validate>
 
+  <search-filters name="purchase-order-line-filters"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchases order line filters"/>
+
 </object-views>

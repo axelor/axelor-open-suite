@@ -841,6 +841,7 @@
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <view type="grid" name="purchase-order-line-grid"/>
     <view type="form" name="purchase-order-line-all-form"/>
+    <view-param name="search-filters" value="purchase-order-line-filters"/>
     <domain>self.purchaseOrder.statusSelect in (1,2)</domain>
   </action-view>
 
@@ -848,6 +849,7 @@
     title="See purchase order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <view type="grid" name="purchase-order-line-grid"/>
     <view type="form" name="purchase-order-line-all-form"/>
+    <view-param name="search-filters" value="purchase-order-line-filters"/>
     <domain>:status is NULL or self.purchaseOrder.statusSelect IN (:status)</domain>
     <context name="status" expr="eval: _status"/>
   </action-view>

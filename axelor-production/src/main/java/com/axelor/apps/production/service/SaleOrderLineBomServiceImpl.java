@@ -181,10 +181,6 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
             .getProductSubTypeSelect()
             .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
           var bomLine = createBomLineFrom(subSaleOrderLine);
-          // If it is not personalized, we will customize, else just use the personalized one.
-          if (subSaleOrderLine.getIsToProduce() && !bomLine.getBillOfMaterial().getPersonalized()) {
-            subSaleOrderLine.setBillOfMaterial(customizeBomOf(subSaleOrderLine, depth + 1));
-          }
           // Relink billOfMaterialLine
           subSaleOrderLine.setBillOfMaterialLine(bomLine);
           personalizedBOM.addBillOfMaterialLineListItem(bomLine);
@@ -226,6 +222,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     var subSaleOrderLineListSize =
         Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .map(SaleOrderLine::getProduct)
+            .filter(Objects::nonNull)
             .map(Product::getProductSubTypeSelect)
             .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .count();
@@ -234,10 +231,11 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .filter(
                 subSaleOrderLine ->
-                    subSaleOrderLine
-                        .getProduct()
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+                    subSaleOrderLine.getProduct() != null
+                        && subSaleOrderLine
+                            .getProduct()
+                            .getProductSubTypeSelect()
+                            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
   }
 }
