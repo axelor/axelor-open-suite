@@ -400,18 +400,22 @@
       onTabSelect="action-project-attrs-hide-project-version-on-sprint">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
-      <panel name="sprintPanel" title="Sprints" colSpan="12">
+      <panel name="sprintPanel" title="Sprints" colSpan="12"
+        hideIf="sprintManagementSelect == 'none'">
         <panel itemSpan="12">
           <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
             onClick="action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+
           <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
             showIf="backlogSprint" readonly="true"/>
         </panel>
         <button name="generateSprintsBtn" title="Generate sprints"
           showIf="sprintManagementSelect == 'project'"
           onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
-        <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
-          canNew="true" canRemove="true" showIf="sprintManagementSelect == 'project'"/>
+        <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
+          colSpan="12" action="action-project-method-show-sprint-list" height="200%"
+          canSearch="true" editable="true" canNew="sprintManagementSelect == 'project'"
+          canDelete="sprintManagementSelect == 'project'"/>
         <field name="sprintManagementSelect" hidden="true"/>
       </panel>
       <panel-dashlet action="action-project-method-tasks-per-sprint"
@@ -783,6 +787,10 @@
 
   <action-method name="action-project-method-check-sprint-overlap">
     <call class="com.axelor.apps.project.web.ProjectController" method="checkSprintOverlap"/>
+  </action-method>
+
+  <action-method name="action-project-method-show-sprint-list">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewSprints"/>
   </action-method>
 
   <!-- ACTION VIEW -->

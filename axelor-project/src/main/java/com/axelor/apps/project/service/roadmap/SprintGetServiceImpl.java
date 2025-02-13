@@ -27,14 +27,14 @@ public class SprintGetServiceImpl implements SprintGetService {
   }
 
   @Override
-  public List<Sprint> getSprintToDisplay(Project project) {
+  public List<Sprint> getSprintToDisplay(Project project, boolean includeBacklog) {
     List<Sprint> sprintList = new ArrayList<>();
     if (Objects.equals(
         ProjectRepository.SPRINT_MANAGEMENT_NONE, project.getSprintManagementSelect())) {
       return sprintList;
     }
 
-    if (project.getBacklogSprint() != null) {
+    if (project.getBacklogSprint() != null && includeBacklog) {
       sprintList.add(project.getBacklogSprint());
     }
 
@@ -43,7 +43,8 @@ public class SprintGetServiceImpl implements SprintGetService {
     return sprintList;
   }
 
-  protected List<Sprint> getSprintList(Project project) {
+  @Override
+  public List<Sprint> getSprintList(Project project) {
     List<Sprint> slist = new ArrayList<>();
     if (Objects.equals(
             ProjectRepository.SPRINT_MANAGEMENT_PROJECT, project.getSprintManagementSelect())
