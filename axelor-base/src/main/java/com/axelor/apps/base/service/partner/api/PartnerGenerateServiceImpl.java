@@ -6,12 +6,18 @@ import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.db.PartnerCategory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerCategoryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.rest.dto.sirene.AdresseEtablissementResponse;
+import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
+import com.axelor.apps.base.rest.dto.sirene.UniteLegaleResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -20,11 +26,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
-public class PartnerApiCreateServiceImpl extends GenericApiCreateService
-    implements PartnerApiCreateService {
+public class PartnerGenerateServiceImpl implements PartnerGenerateService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -32,85 +35,92 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
   protected final PartnerCategoryRepository partnerCategoryRepository;
   protected final CountryRepository countryRepository;
   protected final CityRepository cityRepository;
+  protected final PartnerApiFetchService partnerApiFetchService;
 
   @Inject
-  public PartnerApiCreateServiceImpl(
+  public PartnerGenerateServiceImpl(
       PartnerRepository partnerRepository,
       PartnerCategoryRepository partnerCategoryRepository,
       CountryRepository countryRepository,
-      CityRepository cityRepository) {
+      CityRepository cityRepository,
+      PartnerApiFetchService partnerApiFetchService) {
     this.partnerRepository = partnerRepository;
     this.partnerCategoryRepository = partnerCategoryRepository;
     this.countryRepository = countryRepository;
     this.cityRepository = cityRepository;
+    this.partnerApiFetchService = partnerApiFetchService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   @Override
-  public void setData(Partner partner, String result) throws AxelorException {
+  public void configurePartner(
+      Partner partner, PartnerApiConfiguration partnerApiConfiguration, String siret)
+      throws AxelorException {
+    String result = partnerApiFetchService.fetch(partnerApiConfiguration, siret);
     try {
-      JSONObject resultJson = new JSONObject(result);
-      setPartnerBasicDetails(partner, resultJson);
-      setPartnerCategoryAndType(partner, resultJson.optJSONObject("uniteLegale"));
-      setPartnerAddress(partner, resultJson.optJSONObject("adresseEtablissement"));
+      ObjectMapper objectMapper = new ObjectMapper();
+      PartnerDataResponse partnerData = objectMapper.readValue(result, PartnerDataResponse.class);
+
+      setPartnerBasicDetails(partner, partnerData);
+      setPartnerCategoryAndType(partner, partnerData.getUniteLegale());
+      setPartnerAddress(partner, partnerData.getAdresseEtablissement());
+
       partnerRepository.save(partner);
-    } catch (JSONException e) {
+    } catch (JsonProcessingException e) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, result);
     }
   }
 
-  protected void setPartnerBasicDetails(Partner partner, JSONObject resultJson) {
-    String registrationCode = getSafeString(resultJson, "siret");
-    safeSetString(partner::setRegistrationCode, partner::getRegistrationCode, registrationCode);
+  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData) {
+    safeSetString(
+        partner::setRegistrationCode, partner::getRegistrationCode, partnerData.getSiret());
   }
 
-  protected void setPartnerCategoryAndType(Partner partner, JSONObject jsonUniteLegal) {
-    if (jsonUniteLegal == null) return;
+  protected void setPartnerCategoryAndType(Partner partner, UniteLegaleResponse uniteLegale) {
+    if (uniteLegale == null) {
+      return;
+    }
 
-    String partnerCategoryCode = getSafeString(jsonUniteLegal, "categorieEntreprise");
+    String partnerCategoryCode = uniteLegale.getCategorieEntreprise();
     PartnerCategory partnerCategory = partnerCategoryRepository.findByCode(partnerCategoryCode);
     if (partnerCategory != null) {
       partner.setPartnerCategory(partnerCategory);
     }
 
-    String categorieJuridique = getSafeString(jsonUniteLegal, "categorieJuridiqueUniteLegale");
+    String categorieJuridique = uniteLegale.getCategorieJuridiqueUniteLegale();
     if (categorieJuridique != null && Integer.parseInt(categorieJuridique) == 1000) {
-      setIndividualPartnerDetails(partner, jsonUniteLegal);
+      setIndividualPartnerDetails(partner, uniteLegale);
     } else {
-      setCompanyPartnerDetails(partner, jsonUniteLegal);
+      setCompanyPartnerDetails(partner, uniteLegale);
     }
   }
 
-  protected void setIndividualPartnerDetails(Partner partner, JSONObject jsonUniteLegal) {
+  protected void setIndividualPartnerDetails(Partner partner, UniteLegaleResponse uniteLegale) {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+    safeSetString(partner::setName, partner::getName, uniteLegale.getNomUniteLegale());
     safeSetString(
-        partner::setName, partner::getName, getSafeString(jsonUniteLegal, "nomUniteLegale"));
-    safeSetString(
-        partner::setFirstName,
-        partner::getFirstName,
-        getSafeString(jsonUniteLegal, "prenom1UniteLegale"));
+        partner::setFirstName, partner::getFirstName, uniteLegale.getPrenom1UniteLegale());
 
-    String sexUniteLegale = getSafeString(jsonUniteLegal, "sexeUniteLegale");
-    if (Objects.equals(sexUniteLegale, "F")) {
+    String sex = uniteLegale.getSexeUniteLegale();
+    if ("F".equals(sex)) {
       partner.setTitleSelect(PartnerRepository.PARTNER_TITLE_MS);
-    } else if (Objects.equals(sexUniteLegale, "M")) {
+    } else if ("M".equals(sex)) {
       partner.setTitleSelect(PartnerRepository.PARTNER_TITLE_M);
     }
   }
 
-  protected void setCompanyPartnerDetails(Partner partner, JSONObject jsonUniteLegal) {
+  protected void setCompanyPartnerDetails(Partner partner, UniteLegaleResponse uniteLegale) {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_COMPANY);
-    safeSetString(
-        partner::setName,
-        partner::getName,
-        getSafeString(jsonUniteLegal, "denominationUniteLegale"));
+    safeSetString(partner::setName, partner::getName, uniteLegale.getDenominationUniteLegale());
   }
 
-  protected void setPartnerAddress(Partner partner, JSONObject jsonAddresseEtablissement) {
-    if (jsonAddresseEtablissement == null) return;
+  protected void setPartnerAddress(Partner partner, AdresseEtablissementResponse adresseEtablissement) {
+    if (adresseEtablissement == null) {
+      return;
+    }
 
     Address address = new Address();
-    setAddressDetails(address, jsonAddresseEtablissement);
+    setAddressDetails(address, adresseEtablissement);
 
     if (isValidAddress(address)) {
       PartnerAddress partnerAddress = new PartnerAddress();
@@ -120,38 +130,38 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
     }
   }
 
-  protected void setAddressDetails(Address address, JSONObject jsonAddress) {
+  protected void setAddressDetails(Address address, AdresseEtablissementResponse adresseEtablissement) {
     safeSetString(
-        address::setZip, address::getZip, getSafeString(jsonAddress, "codePostalEtablissement"));
+        address::setZip, address::getZip, adresseEtablissement.getCodePostalEtablissement());
     safeSetString(
         address::setFloor,
         address::getFloor,
-        getSafeString(jsonAddress, "complementAdresseEtablissement"));
+        adresseEtablissement.getComplementAdresseEtablissement());
     safeSetString(
         address::setPostBox,
         address::getPostBox,
-        getSafeString(jsonAddress, "distributionSpecialeEtablissement"));
+        adresseEtablissement.getDistributionSpecialeEtablissement());
     safeSetString(
         address::setDepartment,
         address::getDepartment,
-        getSafeString(jsonAddress, "enseigne1Etablissement"));
+        adresseEtablissement.getEnseigne1Etablissement());
 
     Country currentCountry = countryRepository.findByName("FRANCE");
     if (currentCountry != null) {
       address.setCountry(currentCountry);
     }
 
-    String cityName = getSafeString(jsonAddress, "libelleCommuneEtablissement");
+    String cityName = adresseEtablissement.getLibelleCommuneEtablissement();
     City currentCity = cityRepository.findByName(cityName);
     if (currentCity != null) {
       address.setCity(currentCity);
-    }else {
+    } else {
       createCity(address, cityName, currentCountry);
     }
 
-    String numeroVoieEtablissement = getSafeString(jsonAddress, "numeroVoieEtablissement");
-    String typeVoieEtablissement = getSafeString(jsonAddress, "typeVoieEtablissement");
-    String libelleVoieEtablissement = getSafeString(jsonAddress, "libelleVoieEtablissement");
+    String numeroVoieEtablissement = adresseEtablissement.getNumeroVoieEtablissement();
+    String typeVoieEtablissement = adresseEtablissement.getTypeVoieEtablissement();
+    String libelleVoieEtablissement = adresseEtablissement.getLibelleVoieEtablissement();
     String streetName =
         numeroVoieEtablissement + " " + typeVoieEtablissement + " " + libelleVoieEtablissement;
     safeSetString(address::setStreetName, address::getStreetName, streetName);
@@ -160,11 +170,12 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
         address::getFullName,
         streetName + " " + address.getZip() + " " + cityName);
   }
+
   @Transactional
   protected void createCity(Address address, String cityName, Country currentCountry) {
     City newCity = new City();
     newCity.setName(cityName);
-    if(!Objects.isNull(currentCountry) ){
+    if (!Objects.isNull(currentCountry)) {
       newCity.setCountry(currentCountry);
     }
     cityRepository.save(newCity);
@@ -180,16 +191,5 @@ public class PartnerApiCreateServiceImpl extends GenericApiCreateService
     if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
       setter.accept(newValue);
     }
-  }
-
-  private String getSafeString(JSONObject jsonObject, String key) {
-    try {
-      if (jsonObject.has(key) && !jsonObject.isNull(key)) {
-        return jsonObject.getString(key);
-      }
-    } catch (JSONException e) {
-      LOG.error(String.format("Error retrieving key %s : %s", key, e.getMessage()));
-    }
-    return null;
   }
 }

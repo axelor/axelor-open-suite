@@ -17,7 +17,7 @@
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
       <button name="apiBtn" title="API data import"
-              onClick="action-partner-view-wizard-api-configuration"/>
+        onClick="action-partner-view-wizard-api-configuration"/>
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>

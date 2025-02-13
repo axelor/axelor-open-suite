@@ -5,9 +5,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.db.repo.PartnerApiConfigurationRepository;
 import com.axelor.apps.base.service.exception.ErrorException;
-import com.axelor.apps.base.service.partner.api.PartnerApiCreateServiceImpl;
-import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
-import com.axelor.common.StringUtils;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,24 +37,22 @@ public class PartnerApiConfigurationController {
       partner = new Partner();
     }
 
-    String result = Beans.get(PartnerApiFetchService.class).fetch(partnerApiConfiguration, siret);
+    Beans.get(PartnerGenerateService.class)
+        .configurePartner(partner, partnerApiConfiguration, siret);
 
-    if (!StringUtils.isEmpty(result)) {
-      Beans.get(PartnerApiCreateServiceImpl.class).setData(partner, result);
-      if (partnerId != null) {
-        response.setValues(partner);
-        response.setCanClose(true);
-      } else {
-        ActionView.ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get("Partner"))
-                .model(Partner.class.getName())
-                .add("form", "partner-form")
-                .add("grid", "partner-grid")
-                .context("_showRecord", partner.getId());
+    if (partnerId != null) {
+      response.setValues(partner);
+      response.setCanClose(true);
+    } else {
+      ActionView.ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get("Partner"))
+              .model(Partner.class.getName())
+              .add("form", "partner-form")
+              .add("grid", "partner-grid")
+              .context("_showRecord", partner.getId());
 
-        response.setView(actionViewBuilder.map());
-        response.setCanClose(true);
-      }
+      response.setView(actionViewBuilder.map());
+      response.setCanClose(true);
     }
   }
 }
