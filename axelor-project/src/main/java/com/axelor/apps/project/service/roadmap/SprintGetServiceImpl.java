@@ -63,11 +63,14 @@ public class SprintGetServiceImpl implements SprintGetService {
 
   @Override
   public String getSprintIdsToExclude(List<Sprint> sprintList) {
-    String sprintIdsStr =
-        sprintList.stream()
-            .map(Sprint::getId)
-            .map(Object::toString)
-            .collect(Collectors.joining(","));
+    String sprintIdsStr = "0";
+    if (ObjectUtils.notEmpty(sprintList)) {
+      sprintIdsStr =
+          sprintList.stream()
+              .map(Sprint::getId)
+              .map(Object::toString)
+              .collect(Collectors.joining(","));
+    }
     return sprintRepository
         .all()
         .filter(String.format("self.id NOT IN (%s)", sprintIdsStr))

@@ -32,7 +32,7 @@
       colSpan="12" height="350" action="project-planning-time-dashboard-action" canSearch="true"/>
     <panel-dashlet name="project-allocation-line-action-dashlet" colSpan="12"
       height="350" action="project-allocation-line-action" canSearch="true"/>
-    <panel-dashlet height="350" name="dash-test"
+    <panel-dashlet height="350" name="project-sprint-task"
       action="action-project-method-tasks-per-sprint-chart" canSearch="true" colSpan="12"/>
   </form>
   <action-method model="com.axelor.utils.db.Wizard" name="action-project-set-date">
@@ -108,20 +108,9 @@
       for="project-planning-time-dashboard-action-dashlet"/>
     <attribute name="refresh" expr="eval: true"
       for="project-allocation-line-action-dashlet"/>
+    <attribute name="refresh" expr="eval: true" for="project-sprint-task"/>
   </action-attrs>
 
-
-  <action-view name="project-task-sprint-kanban-chart"
-    model="com.axelor.apps.project.db.ProjectTask" title="Tasks per sprint">
-    <view name="project-task-sprint-kanban" type="kanban"/>
-    <view name="project-task-form" type="form"/>
-    <view-param name="kanban-hide-columns" value="eval:ids"/>
-    <domain>(self.project=:project and self.id in ids)</domain>
-    <context name="ids"
-      expr="call:com.axelor.apps.project.web.ProjectManagementDashboardController:TasksIDsPerSprint($project.id)"/>
-
-
-  </action-view>
   <action-method name="action-project-method-tasks-per-sprint-chart">
     <call class="com.axelor.apps.project.web.ProjectMenuController"
       method="viewTasksPerSprintDashboardTest"/>
