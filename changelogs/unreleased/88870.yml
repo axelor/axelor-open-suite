@@ -1,0 +1,3 @@
+---
+title: "Bill of material: fixed null value for name when customizing the BOM."
+module: axelor-production
