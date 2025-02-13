@@ -211,7 +211,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     PaymentMode paymentMode = move.getPaymentMode();
     Company company = move.getCompany();
     Partner partner = move.getPartner();
-
+    BankDetails companyBankDetails = move.getCompanyBankDetails();
     if (company == null) {
       move.setCompanyBankDetails(null);
       return;
@@ -223,7 +223,8 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
     BankDetails defaultBankDetails =
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    move.setCompanyBankDetails(defaultBankDetails);
+    move.setCompanyBankDetails(
+        defaultBankDetails != null ? defaultBankDetails : companyBankDetails);
   }
 
   @Override
