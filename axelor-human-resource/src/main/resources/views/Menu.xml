@@ -32,9 +32,12 @@
     <context name="to_justify_leave_reason" expr="eval: false"/>
   </action-view>
 
-  <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
-    order="300" if="__config__.app.isApp('expense')" icon="credit-card-fill"
+  <menuitem name="edit-expense" parent="my-hr-root" title="Complete my expense"
+    action="edit.expense" order="300" if="__config__.app.isApp('expense')" icon="credit-card-fill"
     icon-background="#84429f"/>
+
+  <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
+    order="310" if="__config__.app.isApp('expense')" icon="list-task" icon-background="#84429f"/>
 
   <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
     title="My Expenses">
@@ -49,7 +52,7 @@
   </action-view>
 
   <menuitem name="my-hr-root-expense-declaration" parent="my-hr-root"
-    title="Expenses declaration" action="my.hr.root.expense.declaration" order="310"
+    title="Expenses declaration" action="my.hr.root.expense.declaration" order="320"
     if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.enableExpenseDeclaration"
     icon="credit-card-fill" icon-background="#84429f"/>
 
