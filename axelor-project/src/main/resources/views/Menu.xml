@@ -247,8 +247,8 @@
     <view type="form" name="project-version-form"/>
   </action-view>
 
-  <menuitem name="project.dashboard.wizard" parent="project-reporting" title="Wizard"
-    action="project.wizard.form" order="1820"/>
+  <menuitem name="project.dashboard.wizard" parent="project-reporting"
+    title="Projects and resources management" action="project.wizard.form" order="1820"/>
 
   <action-view name="project.wizard.form"
     title="Projects and resources management wizard" model="com.axelor.utils.db.Wizard">
