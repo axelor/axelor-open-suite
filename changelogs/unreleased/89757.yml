@@ -1,0 +1,3 @@
+---
+title: "Move: fixed company bank details domain when no payment mode is selected."
+module: axelor-account

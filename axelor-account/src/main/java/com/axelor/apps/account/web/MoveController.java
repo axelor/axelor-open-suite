@@ -939,4 +939,10 @@ public class MoveController {
 
     response.setView(actionViewBuilder.map());
   }
+
+  public void moveCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    response.setAttrs(
+        Beans.get(MoveGroupService.class).getCompanyBankDetailsOnSelectAttrsMap(move));
+  }
 }
