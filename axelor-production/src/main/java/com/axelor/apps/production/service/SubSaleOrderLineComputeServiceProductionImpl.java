@@ -1,6 +1,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -16,8 +17,10 @@ public class SubSaleOrderLineComputeServiceProductionImpl
     extends SubSaleOrderLineComputeServiceImpl {
   @Inject
   public SubSaleOrderLineComputeServiceProductionImpl(
-      SaleOrderLineComputeService saleOrderLineComputeService, AppSaleService appSaleService) {
-    super(saleOrderLineComputeService, appSaleService);
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      AppSaleService appSaleService,
+      CurrencyScaleService currencyScaleService) {
+    super(saleOrderLineComputeService, appSaleService, currencyScaleService);
   }
 
   @Override
@@ -47,7 +50,8 @@ public class SubSaleOrderLineComputeServiceProductionImpl
         totalPrice = totalPrice.add(subDetailsTotal);
         totalCostPrice = totalCostPrice.add(subDetailsTotalCostPrice);
         saleOrderLine.setPrice(totalPrice);
-        saleOrderLine.setSubTotalCostPrice(totalCostPrice);
+        saleOrderLine.setSubTotalCostPrice(
+            currencyScaleService.getCompanyScaledValue(saleOrder, totalCostPrice));
       }
       totalPrice =
           totalPrice.add(

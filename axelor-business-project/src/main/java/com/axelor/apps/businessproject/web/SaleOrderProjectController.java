@@ -18,14 +18,19 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
+import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.auth.AuthUtils;
@@ -42,6 +47,7 @@ import com.google.inject.Singleton;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.Optional;
 
 @Singleton
@@ -63,12 +69,20 @@ public class SaleOrderProjectController {
 
       ProjectGeneratorType projectGeneratorType = ProjectGeneratorType.valueOf(generatorType);
 
-      ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
-
       Project project;
       if (projectGeneratorType.equals(ProjectGeneratorType.PROJECT_ALONE)) {
-        project = factory.create(saleOrder);
+        ProjectTemplateRepository projectTemplateRepository =
+            Beans.get(ProjectTemplateRepository.class);
+
+        ProjectTemplate projectTemplate =
+            Optional.of(request.getContext())
+                .map(context -> (Map<String, Object>) context.get("projectTemplate"))
+                .map(map -> map.get("id"))
+                .map(id -> projectTemplateRepository.find(Long.valueOf(id.toString())))
+                .orElse(null);
+        project = Beans.get(ProjectGeneratorSaleService.class).create(saleOrder, projectTemplate);
       } else {
+        ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
         project = factory.generate(saleOrder, startDate);
       }
 
@@ -100,6 +114,12 @@ public class SaleOrderProjectController {
       }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
       LocalDateTime startDate = getElementStartDate(request.getContext());
+
+      if (ProjectGeneratorType.PROJECT_ALONE.equals(ProjectGeneratorType.valueOf(generatorType))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BusinessProjectExceptionMessage.FACTORY_FILL_WITH_PROJECT_ALONE));
+      }
 
       ProjectGeneratorFactory factory =
           ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));

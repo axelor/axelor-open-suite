@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.base.db.AlternativeBarcode;
 
-public interface SaleOrderMarginService {
+public interface AlternativeBarcodeService {
 
-  void computeMarginSaleOrder(SaleOrder saleOrder);
+  void generateBarcode(AlternativeBarcode alternativeBarcode);
 }

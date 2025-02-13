@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.allocation;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
@@ -34,10 +35,14 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class AllocationLineServiceImpl implements AllocationLineService {
 
+  protected AllocationLineComputeService allocationLineComputeService;
   protected AllocationLineRepository allocationLineRepository;
 
   @Inject
-  public AllocationLineServiceImpl(AllocationLineRepository allocationLineRepository) {
+  public AllocationLineServiceImpl(
+      AllocationLineComputeService allocationLineComputeService,
+      AllocationLineRepository allocationLineRepository) {
+    this.allocationLineComputeService = allocationLineComputeService;
     this.allocationLineRepository = allocationLineRepository;
   }
 
@@ -56,10 +61,15 @@ public class AllocationLineServiceImpl implements AllocationLineService {
 
   @Override
   public void addAllocationLines(
-      Project project, List<Employee> employeeList, List<Period> periodList, BigDecimal allocated) {
+      Project project,
+      List<Employee> employeeList,
+      List<Period> periodList,
+      BigDecimal allocated,
+      boolean initWithPlanningTime)
+      throws AxelorException {
     for (Employee employee : employeeList) {
       for (Period period : periodList) {
-        createOrUpdateAllocationLine(project, employee, period, allocated);
+        createOrUpdateAllocationLine(project, employee, period, allocated, initWithPlanningTime);
       }
     }
   }
@@ -78,7 +88,12 @@ public class AllocationLineServiceImpl implements AllocationLineService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void createOrUpdateAllocationLine(
-      Project project, Employee employee, Period period, BigDecimal allocated) {
+      Project project,
+      Employee employee,
+      Period period,
+      BigDecimal allocated,
+      boolean initWithPlanningTime)
+      throws AxelorException {
     AllocationLine allocationLine = getAllocationLine(project, employee, period);
     if (allocationLine == null) {
       allocationLine = new AllocationLine();
@@ -87,6 +102,12 @@ public class AllocationLineServiceImpl implements AllocationLineService {
       allocationLine.setProject(project);
     }
     allocationLine.setAllocated(allocated);
+
+    if (initWithPlanningTime) {
+      allocationLine.setAllocated(
+          allocationLineComputeService.computePlannedTime(
+              period.getFromDate(), period.getToDate(), employee, project));
+    }
     allocationLineRepository.save(allocationLine);
   }
 

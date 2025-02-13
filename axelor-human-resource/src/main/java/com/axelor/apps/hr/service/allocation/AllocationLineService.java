@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.allocation;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
@@ -29,10 +30,20 @@ public interface AllocationLineService {
   String getEmployeeDomain(Project project);
 
   void addAllocationLines(
-      Project project, List<Employee> employeeList, List<Period> periodList, BigDecimal allocated);
+      Project project,
+      List<Employee> employeeList,
+      List<Period> periodList,
+      BigDecimal allocated,
+      boolean initWithPlanningTime)
+      throws AxelorException;
 
   void removeAllocationLines(List<Integer> allocationLineIds);
 
   void createOrUpdateAllocationLine(
-      Project project, Employee employee, Period period, BigDecimal allocated);
+      Project project,
+      Employee employee,
+      Period period,
+      BigDecimal allocated,
+      boolean initWithPlanningTime)
+      throws AxelorException;
 }

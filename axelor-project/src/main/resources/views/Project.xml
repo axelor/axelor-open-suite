@@ -332,7 +332,6 @@
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
-      <spacer colSpan="8"/>
       <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
         showIf="taskStatusManagementSelect != 1"/>

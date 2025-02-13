@@ -16,11 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import java.math.BigDecimal;
 
-public interface SaleOrderMarginService {
+public interface ProductPriceListService {
 
-  void computeMarginSaleOrder(SaleOrder saleOrder);
+  BigDecimal applyPriceList(
+      Product product,
+      Partner partner,
+      Company company,
+      Currency currency,
+      BigDecimal price,
+      boolean inAti)
+      throws AxelorException;
 }

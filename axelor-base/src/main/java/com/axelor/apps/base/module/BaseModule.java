@@ -74,6 +74,8 @@ import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AlternativeBarcodeService;
+import com.axelor.apps.base.service.AlternativeBarcodeServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.AnonymizerLineService;
@@ -152,6 +154,8 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPriceListService;
+import com.axelor.apps.base.service.ProductPriceListServiceImpl;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.ProductPriceServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -530,5 +534,7 @@ public class BaseModule extends AxelorModule {
     bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
     bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
+    bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
+    bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
   }
 }

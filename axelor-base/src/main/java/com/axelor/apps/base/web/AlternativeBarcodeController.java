@@ -16,17 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.base.web;
 
-import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.base.db.AlternativeBarcode;
+import com.axelor.apps.base.service.AlternativeBarcodeService;
 import com.axelor.inject.Beans;
-import javax.persistence.PostUpdate;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public class SaleOrderProductionListener {
+public class AlternativeBarcodeController {
 
-  @PostUpdate
-  public void saleOrderPostUpdate(SaleOrder saleOrder) {
-    Beans.get(SaleOrderLineBomSyncService.class).syncSaleOrderLineBom(saleOrder);
+  public void generateBarcode(ActionRequest request, ActionResponse response) {
+    AlternativeBarcode alternativeBarcode = request.getContext().asType(AlternativeBarcode.class);
+    Beans.get(AlternativeBarcodeService.class).generateBarcode(alternativeBarcode);
+    response.setValue("barCode", alternativeBarcode.getBarCode());
   }
 }
