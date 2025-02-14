@@ -82,6 +82,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected CurrencyScaleService currencyScaleService;
   protected ProductPriceService productPriceService;
   protected FiscalPositionService fiscalPositionService;
+  protected InvoiceLineCheckService invoiceLineCheckService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -99,7 +100,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
       ProductPriceService productPriceService,
-      FiscalPositionService fiscalPositionService) {
+      FiscalPositionService fiscalPositionService,
+      InvoiceLineCheckService invoiceLineCheckService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -115,6 +117,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.currencyScaleService = currencyScaleService;
     this.productPriceService = productPriceService;
     this.fiscalPositionService = fiscalPositionService;
+    this.invoiceLineCheckService = invoiceLineCheckService;
   }
 
   @Override
@@ -465,6 +468,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     try {
       taxLineSet = this.getTaxLineSet(invoice, invoiceLine, isPurchase);
+      invoiceLineCheckService.checkInvoiceLineTaxes(taxLineSet);
       invoiceLine.setTaxLineSet(taxLineSet);
       productInformation.put("taxLineSet", taxLineSet);
       productInformation.put("taxRate", taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
@@ -766,7 +770,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
     taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(taxLineSet);
-    taxAccountService.checkSumOfNonDeductibleTaxes(taxLineSet);
+    taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(taxLineSet);
 
     Map<String, Object> valuesMap = new HashMap<>();
     if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {

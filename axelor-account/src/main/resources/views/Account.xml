@@ -121,7 +121,7 @@
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTaxSet" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
-            widget="TagSelect"/>
+            widget="TagSelect" onChange="action-account-method-check-default-tax-set"/>
           <field name="vatSystemSelect" colSpan="4"
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
         </panel>
@@ -525,6 +525,10 @@
 
   <action-method name="action-account-view-move-templates">
     <call class="com.axelor.apps.account.web.AccountController" method="viewMoveTemplates"/>
+  </action-method>
+
+  <action-method name="action-account-method-check-default-tax-set">
+    <call class="com.axelor.apps.account.web.AccountController" method="checkDefaultTaxSet"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">

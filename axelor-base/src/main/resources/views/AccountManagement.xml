@@ -45,7 +45,8 @@
       grid-view="account-grid" if="__config__.app.isApp('account')"
       domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
       canEdit="false"/>
-    <field name="saleTaxSet" form-view="tax-form" grid-view="tax-grid" widget="TagSelect"/>
+    <field name="saleTaxSet" form-view="tax-form" grid-view="tax-grid" widget="TagSelect"
+      domain="self.isNonDeductibleTax = false"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
       if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form" domain="self.company = :company"
@@ -104,7 +105,7 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false"/>
         <field name="saleTaxSet" form-view="tax-form" grid-view="tax-grid" canEdit="false"
-          widget="TagSelect"/>
+          widget="TagSelect" domain="self.isNonDeductibleTax = false"/>
       </panel>
 
       <!-- TAX -->
