@@ -1,7 +1,8 @@
 
 package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.util.ArrayList;

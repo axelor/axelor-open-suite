@@ -3,7 +3,7 @@ package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
 import org.w3c.dom.Element;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 
 /**

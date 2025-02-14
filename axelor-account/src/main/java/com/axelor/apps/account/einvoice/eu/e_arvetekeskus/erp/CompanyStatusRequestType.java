@@ -1,16 +1,17 @@
 
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  * <p>Java class for CompanyStatusRequestType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="CompanyStatusRequestType"&gt;
  *   &lt;complexContent&gt;
@@ -32,8 +33,8 @@ import java.util.List;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CompanyStatusRequestType", propOrder = {
@@ -41,12 +42,21 @@ import java.util.List;
 })
 public class CompanyStatusRequestType {
 
-    @XmlElement(name = "RegNumber")
+    @XmlElement(name = "RegNumber", namespace = "http://e-arvetekeskus.eu/erp")
     protected List<RegNumber> regNumber;
     @XmlAttribute(name = "authPhrase", required = true)
     protected String authPhrase;
     @XmlAttribute(name = "subset")
     protected String subset;
+
+    @Override
+    public String toString() {
+        return "CompanyStatusRequestType{" +
+                "regNumber=" + regNumber +
+                ", authPhrase='" + authPhrase + '\'' +
+                ", subset='" + subset + '\'' +
+                '}';
+    }
 
     /**
      * Gets the value of the regNumber property.
@@ -79,11 +89,11 @@ public class CompanyStatusRequestType {
 
     /**
      * Gets the value of the authPhrase property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getAuthPhrase() {
         return authPhrase;
@@ -91,11 +101,11 @@ public class CompanyStatusRequestType {
 
     /**
      * Sets the value of the authPhrase property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setAuthPhrase(String value) {
         this.authPhrase = value;
@@ -103,11 +113,11 @@ public class CompanyStatusRequestType {
 
     /**
      * Gets the value of the subset property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getSubset() {
         return subset;
@@ -115,11 +125,11 @@ public class CompanyStatusRequestType {
 
     /**
      * Sets the value of the subset property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setSubset(String value) {
         this.subset = value;
@@ -128,9 +138,9 @@ public class CompanyStatusRequestType {
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType&gt;
      *   &lt;simpleContent&gt;
@@ -140,12 +150,12 @@ public class CompanyStatusRequestType {
      *   &lt;/simpleContent&gt;
      * &lt;/complexType&gt;
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "value"
+            "value"
     })
     public static class RegNumber {
 
@@ -156,11 +166,11 @@ public class CompanyStatusRequestType {
 
         /**
          * Gets the value of the value property.
-         * 
+         *
          * @return
          *     possible object is
          *     {@link String }
-         *     
+         *
          */
         public String getValue() {
             return value;
@@ -168,11 +178,11 @@ public class CompanyStatusRequestType {
 
         /**
          * Sets the value of the value property.
-         * 
+         *
          * @param value
          *     allowed object is
          *     {@link String }
-         *     
+         *
          */
         public void setValue(String value) {
             this.value = value;
@@ -180,11 +190,11 @@ public class CompanyStatusRequestType {
 
         /**
          * Gets the value of the countryCode property.
-         * 
+         *
          * @return
          *     possible object is
          *     {@link String }
-         *     
+         *
          */
         public String getCountryCode() {
             return countryCode;
@@ -192,16 +202,23 @@ public class CompanyStatusRequestType {
 
         /**
          * Sets the value of the countryCode property.
-         * 
+         *
          * @param value
          *     allowed object is
          *     {@link String }
-         *     
+         *
          */
         public void setCountryCode(String value) {
             this.countryCode = value;
         }
 
+        @Override
+        public String toString() {
+            return "RegNumber{" +
+                    "value='" + value + '\'' +
+                    ", countryCode='" + countryCode + '\'' +
+                    '}';
+        }
     }
 
 }

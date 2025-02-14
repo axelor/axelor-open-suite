@@ -1,7 +1,7 @@
 
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;

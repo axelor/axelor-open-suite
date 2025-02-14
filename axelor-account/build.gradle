@@ -34,6 +34,7 @@ dependencies {
 	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.1'
 
 	implementation 'com.sun.xml.ws:jaxws-rt:4.0.3'
+	implementation 'jakarta.xml.ws:jakarta.xml.ws-api:3.0.0'
 
 //	implementation libs.jaxb_xjc
 //	implementation libs.jaxws_api

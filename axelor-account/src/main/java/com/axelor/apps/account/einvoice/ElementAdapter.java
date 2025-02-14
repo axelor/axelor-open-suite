@@ -1,15 +1,16 @@
 package com.axelor.apps.account.einvoice;
 
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import org.w3c.dom.Element;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import java.io.StringWriter;
+import org.w3c.dom.Document;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 
 public class ElementAdapter extends XmlAdapter<String, Element> {

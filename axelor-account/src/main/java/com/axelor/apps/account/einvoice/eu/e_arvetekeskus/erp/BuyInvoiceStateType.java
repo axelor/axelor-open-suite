@@ -1,8 +1,8 @@
 
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlType;
 
 
 /**

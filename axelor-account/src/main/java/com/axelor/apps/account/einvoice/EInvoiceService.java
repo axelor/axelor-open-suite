@@ -6,7 +6,9 @@ import com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp.*;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.i18n.I18n;
+import jakarta.xml.ws.Binding;
 import jakarta.xml.ws.BindingProvider;
+import jakarta.xml.ws.handler.Handler;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -62,10 +64,16 @@ public class EInvoiceService {
         requestType.setAuthPhrase(apiKey);
         requestType.getRegNumber().add(regNumber);
 
-        System.out.println(regNumber.getValue());
 
         System.out.println("Используемый endpoint: " + ((BindingProvider) port).getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY));
         System.out.println("Отправленный authPhrase: " + requestType.getAuthPhrase());
+        System.out.println(requestType.toString());
+
+
+        Binding binding = ((BindingProvider) port).getBinding();
+        List<Handler> handlerChain = binding.getHandlerChain();
+        handlerChain.add(new LoggingHandler());
+        binding.setHandlerChain(handlerChain);
 
         CompanyStatusResponseType responseType = port.companyStatus(requestType);
         List<CompanyActiveType> companyActive = responseType.getCompanyActive();
@@ -138,7 +146,7 @@ public class EInvoiceService {
         ContactDataRecord sellerContactDataRecord = new ContactDataRecord();
 //        contactDataRecord.setContactName("Kirill Krabu");
         sellerContactDataRecord.setPhoneNumber(seller.getFixedPhone());
-        sellerContactDataRecord.setEMailAddress(seller.getEmailAddress().getAddress());
+        sellerContactDataRecord.setEMailAddress(seller.getEmailAddress() == null? null : seller.getEmailAddress().getAddress());
         sellerContactDataRecord.setURL(seller.getWebSite());
         sellerContactDataRecord.setLegalAddress(sellerAddressRecord);
 
