@@ -57,9 +57,8 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
             globalDiscounterLine -> {
               globalDiscounterLine.setDiscountTypeSelect(
                   PriceListLineRepository.AMOUNT_TYPE_PERCENT);
-              globalDiscounterLine.setDiscountAmount(globalDiscounterLine.getDiscountAmount());
+              globalDiscounterLine.setDiscountAmount(globalDiscounter.getDiscountAmount());
             });
-    adjustPercentageDiscountOnLastLine(globalDiscounter);
   }
 
   protected void applyFixedGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
@@ -71,7 +70,7 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
                     .equals(globalDiscounterLine.getTypeSelectNormal()))
         .forEach(
             globalDiscounterLine -> {
-              globalDiscounterLine.setDiscountTypeSelect(globalDiscounter.getDiscountTypeSelect());
+              globalDiscounterLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_FIXED);
               globalDiscounterLine.setDiscountAmount(
                   globalDiscounterLine
                       .getPrice()
