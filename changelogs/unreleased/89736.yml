@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed the issue where batch accounting cut-off does not link anomaly."
+module: axelor-account
