@@ -6,7 +6,7 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrder"
-    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.ShippableOrder">
 
     <string name="fullName" namecolumn="true">
   	<![CDATA[
@@ -96,6 +96,14 @@
       return company != null ? company.getCurrency() : null;
 	    ]]>
     </many-to-one>
+
+    <many-to-one name="temporaryLineHolder" transient="true"
+      ref="com.axelor.apps.base.db.TemporaryLineHolder">
+      <![CDATA[
+          return new TemporaryLineHolder(new ArrayList<>(purchaseOrderLineList));
+	  ]]>
+    </many-to-one>
+
 
     <integer name="typeSelect" title="Type" selection="purchase.purchase.order.type.select"
       default="1"/>

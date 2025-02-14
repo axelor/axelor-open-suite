@@ -21,11 +21,10 @@ package com.axelor.apps.supplychain.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.interfaces.PricedOrder;
+import com.axelor.apps.base.interfaces.ShippableOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
@@ -37,7 +36,6 @@ import com.axelor.apps.supplychain.service.ShippingService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +46,6 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
-  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
@@ -56,35 +53,18 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
     super(shippingService);
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
-    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
-  protected boolean isThresholdUsedAndExceeded(
-      PricedOrder pricedOrder,
-      ShipmentMode shipmentMode,
-      CustomerShippingCarriagePaid customerShippingCarriagePaid) {
-    SaleOrder saleOrder = getSaleOrder(pricedOrder);
-    if (saleOrder == null) {
-      return false;
-    }
-    BigDecimal carriagePaidThreshold =
-        getCarriagePaidThreshold(shipmentMode, customerShippingCarriagePaid);
-    return carriagePaidThreshold != null
-        && shipmentMode.getHasCarriagePaidPossibility()
-        && computeExTaxTotalWithoutShippingLines(saleOrder).compareTo(carriagePaidThreshold) >= 0;
-  }
-
-  protected void addLineAndComputeOrder(PricedOrder pricedOrder, Product shippingCostProduct)
+  protected void addLineAndComputeOrder(ShippableOrder shippableOrder, Product shippingCostProduct)
       throws AxelorException {
-    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+    SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {
       return;
     }
@@ -93,8 +73,9 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     computeSaleOrder(saleOrder);
   }
 
-  protected String removeLineAndComputeOrder(PricedOrder pricedOrder) throws AxelorException {
-    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+  @Override
+  protected String removeLineAndComputeOrder(ShippableOrder shippableOrder) throws AxelorException {
+    SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {
       return null;
     }
@@ -108,9 +89,10 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
   }
 
+  @Override
   protected CustomerShippingCarriagePaid getShippingCarriagePaid(
-      PricedOrder pricedOrder, ShipmentMode shipmentMode) {
-    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+      ShippableOrder shippableOrder, ShipmentMode shipmentMode) {
+    SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {
       return null;
     }
@@ -122,28 +104,9 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   }
 
   @Override
-  protected boolean alreadyHasShippingCostLine(
-      PricedOrder pricedOrder, Product shippingCostProduct) {
-    SaleOrder saleOrder = getSaleOrder(pricedOrder);
-    if (saleOrder == null) {
-      return false;
-    }
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    if (saleOrderLines == null) {
-      return false;
-    }
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (shippingCostProduct.equals(saleOrderLine.getProduct())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
   protected SaleOrderLine createShippingCostLine(
-      PricedOrder pricedOrder, Product shippingCostProduct) throws AxelorException {
-    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException {
+    SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {
       return null;
     }
@@ -179,25 +142,10 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
   }
 
-  protected BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    if (saleOrderLines == null) {
-      return BigDecimal.ZERO;
-    }
-
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (!saleOrderLine.getProduct().getIsShippingCostsProduct()) {
-        exTaxTotal = exTaxTotal.add(saleOrderLine.getExTaxTotal());
-      }
-    }
-    return exTaxTotal;
-  }
-
-  protected SaleOrder getSaleOrder(PricedOrder pricedOrder) {
+  protected SaleOrder getSaleOrder(ShippableOrder shippableOrder) {
     SaleOrder saleOrder = null;
-    if (pricedOrder instanceof SaleOrder) {
-      saleOrder = (SaleOrder) pricedOrder;
+    if (shippableOrder instanceof SaleOrder) {
+      saleOrder = (SaleOrder) shippableOrder;
     }
     return saleOrder;
   }

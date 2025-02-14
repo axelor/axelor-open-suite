@@ -2,12 +2,14 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.interfaces.PricedOrder;
-import com.axelor.apps.base.interfaces.PricedOrderLine;
+import com.axelor.apps.base.interfaces.ShippableOrder;
+import com.axelor.apps.base.interfaces.ShippableOrderLine;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public abstract class ShippingAbstractService {
 
@@ -18,29 +20,29 @@ public abstract class ShippingAbstractService {
     this.shippingService = shippingService;
   }
 
-  public String createShipmentCostLine(PricedOrder pricedOrder, ShipmentMode shipmentMode)
+  public String createShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
       throws AxelorException {
     if (shipmentMode == null) {
       return null;
     }
 
     CustomerShippingCarriagePaid supplierShippingCarriagePaid =
-        getShippingCarriagePaid(pricedOrder, shipmentMode);
+        getShippingCarriagePaid(shippableOrder, shipmentMode);
     Product shippingCostProduct =
         shippingService.getShippingCostProduct(shipmentMode, supplierShippingCarriagePaid);
     if (shippingCostProduct == null) {
       return null;
     }
 
-    if (isThresholdUsedAndExceeded(pricedOrder, shipmentMode, supplierShippingCarriagePaid)) {
-      return removeLineAndComputeOrder(pricedOrder);
+    if (isThresholdUsedAndExceeded(shippableOrder, shipmentMode, supplierShippingCarriagePaid)) {
+      return removeLineAndComputeOrder(shippableOrder);
     }
 
-    if (alreadyHasShippingCostLine(pricedOrder, shippingCostProduct)) {
+    if (alreadyHasShippingCostLine(shippableOrder, shippingCostProduct)) {
       return null;
     }
 
-    addLineAndComputeOrder(pricedOrder, shippingCostProduct);
+    addLineAndComputeOrder(shippableOrder, shippingCostProduct);
     return null;
   }
 
@@ -53,23 +55,67 @@ public abstract class ShippingAbstractService {
     return carriagePaidThreshold;
   }
 
-  protected abstract CustomerShippingCarriagePaid getShippingCarriagePaid(
-      PricedOrder pricedOrder, ShipmentMode shipmentMode);
+  protected boolean alreadyHasShippingCostLine(
+      ShippableOrder shippableOrder, Product shippingCostProduct) {
+    if (shippableOrder == null) {
+      return false;
+    }
+    List<ShippableOrderLine> shippableOrderLineList =
+        shippableOrder.getTemporaryLineHolder().getShippableOrderLineList();
+    if (CollectionUtils.isEmpty(shippableOrderLineList)) {
+      return false;
+    }
 
-  protected abstract boolean alreadyHasShippingCostLine(
-      PricedOrder pricedOrder, Product shippingCostProduct);
+    return shippableOrder.getTemporaryLineHolder().getShippableOrderLineList().stream()
+        .anyMatch(line -> shippingCostProduct.equals(line.getProduct()));
+  }
 
-  protected abstract boolean isThresholdUsedAndExceeded(
-      PricedOrder pricedOrder,
+  protected boolean isThresholdUsedAndExceeded(
+      ShippableOrder shippableOrder,
       ShipmentMode shipmentMode,
-      CustomerShippingCarriagePaid customerShippingCarriagePaid);
+      CustomerShippingCarriagePaid customerShippingCarriagePaid) {
 
-  protected abstract String removeLineAndComputeOrder(PricedOrder pricedOrder)
+    if (shippableOrder == null) {
+      return false;
+    }
+
+    BigDecimal carriagePaidThreshold =
+        getCarriagePaidThreshold(shipmentMode, customerShippingCarriagePaid);
+    return carriagePaidThreshold != null
+        && shipmentMode.getHasCarriagePaidPossibility()
+        && computeExTaxTotalWithoutShippingLines(shippableOrder).compareTo(carriagePaidThreshold)
+            >= 0;
+  }
+
+  protected BigDecimal computeExTaxTotalWithoutShippingLines(ShippableOrder shippableOrder) {
+    if (shippableOrder == null) {
+      return BigDecimal.ZERO;
+    }
+    List<ShippableOrderLine> shippableOrderLineList =
+        shippableOrder.getTemporaryLineHolder().getShippableOrderLineList();
+    if (CollectionUtils.isEmpty(shippableOrderLineList)) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    for (ShippableOrderLine shippableOrderLine : shippableOrderLineList) {
+      if (shippableOrderLine.getProduct() != null
+          && !shippableOrderLine.getProduct().getIsShippingCostsProduct()) {
+        exTaxTotal = exTaxTotal.add(shippableOrderLine.getExTaxTotal());
+      }
+    }
+    return exTaxTotal;
+  }
+
+  protected abstract CustomerShippingCarriagePaid getShippingCarriagePaid(
+      ShippableOrder shippableOrder, ShipmentMode shipmentMode);
+
+  protected abstract String removeLineAndComputeOrder(ShippableOrder shippableOrder)
       throws AxelorException;
 
-  protected abstract PricedOrderLine createShippingCostLine(
-      PricedOrder pricedOrder, Product shippingCostProduct) throws AxelorException;
+  protected abstract ShippableOrderLine createShippingCostLine(
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
 
   protected abstract void addLineAndComputeOrder(
-      PricedOrder pricedOrder, Product shippingCostProduct) throws AxelorException;
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
 }

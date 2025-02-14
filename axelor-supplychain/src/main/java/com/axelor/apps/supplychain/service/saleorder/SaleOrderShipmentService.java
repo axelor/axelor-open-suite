@@ -19,10 +19,10 @@
 package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.interfaces.PricedOrder;
+import com.axelor.apps.base.interfaces.ShippableOrder;
 import com.axelor.apps.stock.db.ShipmentMode;
 
 public interface SaleOrderShipmentService {
-  String createShipmentCostLine(PricedOrder pricedOrder, ShipmentMode shipmentMode)
+  String createShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
       throws AxelorException;
 }
