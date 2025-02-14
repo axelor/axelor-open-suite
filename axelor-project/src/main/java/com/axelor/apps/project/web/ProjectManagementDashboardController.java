@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class ProjectManagementDashboardController {
 
-  public void getDate(ActionRequest request, ActionResponse response) {
+  public void getDates(ActionRequest request, ActionResponse response) {
 
     try {
       response.setValues(Beans.get(ProjectManagementDashboardService.class).getDate());
