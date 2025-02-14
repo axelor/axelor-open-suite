@@ -1,17 +1,143 @@
 package com.axelor.apps.base.service.discount;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.interfaces.GlobalDiscounter;
+import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GlobalDiscountServiceImpl implements GlobalDiscountService {
+public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService {
+
+  protected abstract void compute(GlobalDiscounter globalDiscounter) throws AxelorException;
 
   @Override
-  public BigDecimal computeDiscountFixedEquivalence(
-      BigDecimal exTaxTotal, BigDecimal priceBeforeGlobalDiscount) {
+  public void applyGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) throws AxelorException {
+    if (globalDiscounter == null
+        || globalDiscounter.getTemporaryLineHolder().getLines() == null
+        || globalDiscounter.getTemporaryLineHolder().getLines().isEmpty()) {
+      return;
+    }
+    computePriceBeforeGlobalDiscount(globalDiscounter);
+    switch (globalDiscounter.getDiscountTypeSelect()) {
+      case PriceListLineRepository.AMOUNT_TYPE_PERCENT:
+        applyPercentageGlobalDiscountOnLines(globalDiscounter);
+        compute(globalDiscounter);
+        adjustPercentageDiscountOnLastLine(globalDiscounter);
+        break;
+      case PriceListLineRepository.AMOUNT_TYPE_FIXED:
+        applyFixedGlobalDiscountOnLines(globalDiscounter);
+        compute(globalDiscounter);
+        adjustFixedDiscountOnLastLine(globalDiscounter);
+        break;
+    }
+  }
+
+  protected void computePriceBeforeGlobalDiscount(GlobalDiscounter globalDiscounter) {
+    globalDiscounter.setPriceBeforeGlobalDiscount(
+        globalDiscounter.getTemporaryLineHolder().getLines().stream()
+            .map(
+                globalDiscounterLine ->
+                    globalDiscounterLine.getPrice().multiply(globalDiscounterLine.getQty()))
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO));
+  }
+
+  protected void applyPercentageGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
+    globalDiscounter.getTemporaryLineHolder().getLines().stream()
+        .filter(
+            globalDiscounterLine ->
+                globalDiscounterLine
+                    .getTypeSelect()
+                    .equals(globalDiscounterLine.getTypeSelectNormal()))
+        .forEach(
+            globalDiscounterLine -> {
+              globalDiscounterLine.setDiscountTypeSelect(
+                  PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+              globalDiscounterLine.setDiscountAmount(globalDiscounterLine.getDiscountAmount());
+            });
+    adjustPercentageDiscountOnLastLine(globalDiscounter);
+  }
+
+  protected void applyFixedGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
+    globalDiscounter.getTemporaryLineHolder().getLines().stream()
+        .filter(
+            globalDiscounterLine ->
+                globalDiscounterLine
+                    .getTypeSelect()
+                    .equals(globalDiscounterLine.getTypeSelectNormal()))
+        .forEach(
+            globalDiscounterLine -> {
+              globalDiscounterLine.setDiscountTypeSelect(globalDiscounter.getDiscountTypeSelect());
+              globalDiscounterLine.setDiscountAmount(
+                  globalDiscounterLine
+                      .getPrice()
+                      .divide(globalDiscounter.getPriceBeforeGlobalDiscount(), RoundingMode.HALF_UP)
+                      .multiply(globalDiscounter.getDiscountAmount()));
+            });
+  }
+
+  protected void adjustPercentageDiscountOnLastLine(GlobalDiscounter globalDiscounter) {
+    BigDecimal priceDiscountedByLine = globalDiscounter.getExTaxTotal();
+    BigDecimal priceDiscountedOnTotal =
+        globalDiscounter
+            .getPriceBeforeGlobalDiscount()
+            .multiply(BigDecimal.valueOf(100).subtract(globalDiscounter.getDiscountAmount()))
+            .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+    if (priceDiscountedByLine.compareTo(priceDiscountedOnTotal) == 0) {
+      return;
+    }
+    BigDecimal differenceInDiscount = priceDiscountedOnTotal.subtract(priceDiscountedByLine);
+
+    GlobalDiscounterLine lastLine =
+        globalDiscounter
+            .getTemporaryLineHolder()
+            .getLines()
+            .get(globalDiscounter.getTemporaryLineHolder().getLines().size() - 1);
+
+    lastLine.setDiscountAmount(
+        BigDecimal.ONE
+            .subtract(
+                lastLine
+                    .getPriceDiscounted()
+                    .add(differenceInDiscount)
+                    .divide(lastLine.getPrice(), RoundingMode.HALF_UP))
+            .multiply(BigDecimal.valueOf(100)));
+  }
+
+  protected void adjustFixedDiscountOnLastLine(GlobalDiscounter globalDiscounter) {
+    BigDecimal priceDiscountedByLine = globalDiscounter.getExTaxTotal();
+
+    BigDecimal priceDiscountedOnTotal =
+        globalDiscounter
+            .getPriceBeforeGlobalDiscount()
+            .subtract(globalDiscounter.getDiscountAmount());
+    if (priceDiscountedByLine.compareTo(priceDiscountedOnTotal) == 0) {
+      return;
+    }
+
+    BigDecimal differenceInDiscount = priceDiscountedOnTotal.subtract(priceDiscountedByLine);
+    GlobalDiscounterLine lastLine =
+        globalDiscounter
+            .getTemporaryLineHolder()
+            .getLines()
+            .get(globalDiscounter.getTemporaryLineHolder().getLines().size() - 1);
+    lastLine.setDiscountAmount(
+        lastLine
+            .getDiscountAmount()
+            .subtract(differenceInDiscount.divide(lastLine.getQty(), RoundingMode.HALF_UP)));
+  }
+
+  @Override
+  public BigDecimal computeDiscountFixedEquivalence(GlobalDiscounter globalDiscounter) {
+    if (globalDiscounter == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal exTaxTotal = globalDiscounter.getExTaxTotal();
+    BigDecimal priceBeforeGlobalDiscount = globalDiscounter.getPriceBeforeGlobalDiscount();
     if (exTaxTotal == null || priceBeforeGlobalDiscount == null) {
       return BigDecimal.ZERO;
     }
@@ -19,8 +145,12 @@ public class GlobalDiscountServiceImpl implements GlobalDiscountService {
   }
 
   @Override
-  public BigDecimal computeDiscountPercentageEquivalence(
-      BigDecimal exTaxTotal, BigDecimal priceBeforeGlobalDiscount) {
+  public BigDecimal computeDiscountPercentageEquivalence(GlobalDiscounter globalDiscounter) {
+    if (globalDiscounter == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal exTaxTotal = globalDiscounter.getExTaxTotal();
+    BigDecimal priceBeforeGlobalDiscount = globalDiscounter.getPriceBeforeGlobalDiscount();
     if (exTaxTotal == null || priceBeforeGlobalDiscount == null) {
       return BigDecimal.ZERO;
     }
@@ -31,33 +161,29 @@ public class GlobalDiscountServiceImpl implements GlobalDiscountService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> setDiscountDummies(
-      Integer discountTypeSelect,
-      Currency currency,
-      BigDecimal exTaxTotal,
-      BigDecimal priceBeforeGlobalDiscount) {
+  public Map<String, Map<String, Object>> setDiscountDummies(GlobalDiscounter globalDiscounter) {
+    if (globalDiscounter == null) {
+      return null;
+    }
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-    switch (discountTypeSelect) {
+    switch (globalDiscounter.getDiscountTypeSelect()) {
       case PriceListLineRepository.AMOUNT_TYPE_PERCENT:
-        setPercentageGlobalDiscountDummies(
-            currency, exTaxTotal, priceBeforeGlobalDiscount, attrsMap);
+        setPercentageGlobalDiscountDummies(globalDiscounter, attrsMap);
         break;
       case PriceListLineRepository.AMOUNT_TYPE_FIXED:
-        setFixedGlobalDiscountDummies(currency, exTaxTotal, priceBeforeGlobalDiscount, attrsMap);
+        setFixedGlobalDiscountDummies(globalDiscounter, attrsMap);
         break;
     }
     return attrsMap;
   }
 
   protected void setPercentageGlobalDiscountDummies(
-      Currency currency,
-      BigDecimal exTaxTotal,
-      BigDecimal priceBeforeGlobalDiscount,
-      Map<String, Map<String, Object>> attrsMap) {
+      GlobalDiscounter globalDiscounter, Map<String, Map<String, Object>> attrsMap) {
+    Currency currency = globalDiscounter.getCurrency();
     if (currency == null) {
       return;
     }
-    BigDecimal equivalence = computeDiscountFixedEquivalence(exTaxTotal, priceBeforeGlobalDiscount);
+    BigDecimal equivalence = computeDiscountFixedEquivalence(globalDiscounter);
     this.addAttr("discountCurrency", "value", "%", attrsMap);
     this.addAttr("discountScale", "value", 2, attrsMap);
     this.addAttr("$discountEquivalence", "value", equivalence, attrsMap);
@@ -69,15 +195,12 @@ public class GlobalDiscountServiceImpl implements GlobalDiscountService {
   }
 
   protected void setFixedGlobalDiscountDummies(
-      Currency currency,
-      BigDecimal exTaxTotal,
-      BigDecimal priceBeforeGlobalDiscount,
-      Map<String, Map<String, Object>> attrsMap) {
+      GlobalDiscounter globalDiscounter, Map<String, Map<String, Object>> attrsMap) {
+    Currency currency = globalDiscounter.getCurrency();
     if (currency == null) {
       return;
     }
-    BigDecimal equivalence =
-        computeDiscountPercentageEquivalence(exTaxTotal, priceBeforeGlobalDiscount);
+    BigDecimal equivalence = computeDiscountPercentageEquivalence(globalDiscounter);
     this.addAttr("discountCurrency", "value", currency.getSymbol(), attrsMap);
     this.addAttr("discountScale", "value", currency.getNumberOfDecimals(), attrsMap);
     this.addAttr("$discountEquivalence", "value", equivalence, attrsMap);

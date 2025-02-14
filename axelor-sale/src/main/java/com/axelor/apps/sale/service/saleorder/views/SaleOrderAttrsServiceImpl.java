@@ -19,8 +19,8 @@
 package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.discount.GlobalDiscountService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -30,16 +30,16 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
 
   protected CurrencyScaleService currencyScaleService;
   protected SaleOrderService saleOrderService;
-  protected GlobalDiscountService globalDiscountService;
+  protected SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService;
 
   @Inject
   public SaleOrderAttrsServiceImpl(
       CurrencyScaleService currencyScaleService,
       SaleOrderService saleOrderService,
-      GlobalDiscountService globalDiscountService) {
+      SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService) {
     this.currencyScaleService = currencyScaleService;
     this.saleOrderService = saleOrderService;
-    this.globalDiscountService = globalDiscountService;
+    this.saleOrderGlobalDiscountService = saleOrderGlobalDiscountService;
   }
 
   protected void addAttr(
@@ -81,11 +81,6 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
     if (saleOrder == null) {
       return;
     }
-    attrsMap.putAll(
-        globalDiscountService.setDiscountDummies(
-            saleOrder.getDiscountTypeSelect(),
-            saleOrder.getCurrency(),
-            saleOrder.getExTaxTotal(),
-            saleOrder.getPriceBeforeGlobalDiscount()));
+    attrsMap.putAll(saleOrderGlobalDiscountService.setDiscountDummies(saleOrder));
   }
 }
