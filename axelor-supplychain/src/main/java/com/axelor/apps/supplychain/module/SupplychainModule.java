@@ -129,6 +129,8 @@ import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImp
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.FreightCarrierModeService;
+import com.axelor.apps.supplychain.service.FreightCarrierModeServiceImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
@@ -493,5 +495,6 @@ public class SupplychainModule extends AxelorModule {
         .to(TrackingNumberCompanySupplychainServiceImpl.class);
     bind(PurchaseOrderShipmentService.class).to(PurchaseOrderShipmentServiceImpl.class);
     bind(ShippingService.class).to(ShippingServiceImpl.class);
+    bind(FreightCarrierModeService.class).to(FreightCarrierModeServiceImpl.class);
   }
 }

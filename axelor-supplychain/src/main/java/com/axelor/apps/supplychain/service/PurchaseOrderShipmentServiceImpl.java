@@ -3,6 +3,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -10,6 +11,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -17,57 +19,35 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PurchaseOrderShipmentServiceImpl implements PurchaseOrderShipmentService {
+public class PurchaseOrderShipmentServiceImpl extends ShippingAbstractService
+    implements PurchaseOrderShipmentService {
 
   protected final PurchaseOrderService purchaseOrderService;
   protected final PurchaseOrderLineService purchaseOrderLineService;
   protected final PurchaseOrderLineRepository purchaseOrderLineRepository;
-  protected final ShippingService shippingService;
 
   @Inject
   public PurchaseOrderShipmentServiceImpl(
+      ShippingService shippingService,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
-      ShippingService shippingService) {
+      ShippingService shippingService1) {
+    super(shippingService);
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
-    this.shippingService = shippingService;
   }
 
   @Override
-  public String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
-    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
-    ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
-    if (shipmentMode == null) {
-      return null;
-    }
-
-    CustomerShippingCarriagePaid supplierShippingCarriagePaid =
-        getSupplierShippingCarriagePaid(purchaseOrder, shipmentMode);
-    Product shippingCostProduct =
-        shippingService.getShippingCostProduct(shipmentMode, supplierShippingCarriagePaid);
-    if (shippingCostProduct == null) {
-      return null;
-    }
-
-    if (isThresholdUsedAndExceeded(purchaseOrder, shipmentMode, supplierShippingCarriagePaid)) {
-      return removeLineAndComputeOrder(purchaseOrder);
-    }
-
-    if (alreadyHasShippingCostLine(purchaseOrder, shippingCostProduct)) {
-      return null;
-    }
-
-    addLineAndComputeOrder(purchaseOrder, shippingCostProduct, purchaseOrderLines);
-    return null;
-  }
-
   protected boolean isThresholdUsedAndExceeded(
-      PurchaseOrder purchaseOrder,
+      PricedOrder pricedOrder,
       ShipmentMode shipmentMode,
       CustomerShippingCarriagePaid customerShippingCarriagePaid) {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(pricedOrder);
+    if (purchaseOrder == null) {
+      return false;
+    }
     BigDecimal carriagePaidThreshold =
         getCarriagePaidThreshold(shipmentMode, customerShippingCarriagePaid);
     return carriagePaidThreshold != null
@@ -76,33 +56,35 @@ public class PurchaseOrderShipmentServiceImpl implements PurchaseOrderShipmentSe
             >= 0;
   }
 
-  protected BigDecimal getCarriagePaidThreshold(
-      ShipmentMode shipmentMode, CustomerShippingCarriagePaid customerShippingCarriagePaid) {
-    BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
-    if (customerShippingCarriagePaid != null) {
-      carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
-    }
-    return carriagePaidThreshold;
-  }
-
-  protected void addLineAndComputeOrder(
-      PurchaseOrder purchaseOrder,
-      Product shippingCostProduct,
-      List<PurchaseOrderLine> purchaseOrderLines)
+  protected void addLineAndComputeOrder(PricedOrder pricedOrder, Product shippingCostProduct)
       throws AxelorException {
-    PurchaseOrderLine shippingCostLine = createShippingCostLine(purchaseOrder, shippingCostProduct);
-    purchaseOrderLines.add(shippingCostLine);
+    PurchaseOrder purchaseOrder = getPurchaseOrder(pricedOrder);
+    if (purchaseOrder == null) {
+      return;
+    }
+    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
+    purchaseOrderLines.add(createShippingCostLine(purchaseOrder, shippingCostProduct));
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
   }
 
-  protected String removeLineAndComputeOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+  @Override
+  protected String removeLineAndComputeOrder(PricedOrder pricedOrder) throws AxelorException {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(pricedOrder);
+    if (purchaseOrder == null) {
+      return null;
+    }
     String message = removeShipmentCostLine(purchaseOrder);
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
     return message;
   }
 
-  protected CustomerShippingCarriagePaid getSupplierShippingCarriagePaid(
-      PurchaseOrder purchaseOrder, ShipmentMode shipmentMode) {
+  @Override
+  protected CustomerShippingCarriagePaid getShippingCarriagePaid(
+      PricedOrder pricedOrder, ShipmentMode shipmentMode) {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(pricedOrder);
+    if (purchaseOrder == null) {
+      return null;
+    }
     Partner client = purchaseOrder.getSupplierPartner();
     return client.getSupplierShippingCarriagePaidList().stream()
         .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
@@ -110,8 +92,13 @@ public class PurchaseOrderShipmentServiceImpl implements PurchaseOrderShipmentSe
         .orElse(null);
   }
 
+  @Override
   protected boolean alreadyHasShippingCostLine(
-      PurchaseOrder purchaseOrder, Product shippingCostProduct) {
+      PricedOrder pricedOrder, Product shippingCostProduct) {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(pricedOrder);
+    if (purchaseOrder == null) {
+      return false;
+    }
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     if (purchaseOrderLines == null) {
       return false;
@@ -124,8 +111,13 @@ public class PurchaseOrderShipmentServiceImpl implements PurchaseOrderShipmentSe
     return false;
   }
 
+  @Override
   protected PurchaseOrderLine createShippingCostLine(
-      PurchaseOrder purchaseOrder, Product shippingCostProduct) throws AxelorException {
+      PricedOrder pricedOrder, Product shippingCostProduct) throws AxelorException {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(pricedOrder);
+    if (purchaseOrder == null) {
+      return null;
+    }
     PurchaseOrderLine shippingCostLine = new PurchaseOrderLine();
     shippingCostLine.setPurchaseOrder(purchaseOrder);
     shippingCostLine.setProduct(shippingCostProduct);
@@ -135,7 +127,11 @@ public class PurchaseOrderShipmentServiceImpl implements PurchaseOrderShipmentSe
   }
 
   @Transactional(rollbackOn = Exception.class)
-  protected String removeShipmentCostLine(PurchaseOrder purchaseOrder) {
+  protected String removeShipmentCostLine(PricedOrder pricedOrder) {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(pricedOrder);
+    if (purchaseOrder == null) {
+      return null;
+    }
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     if (purchaseOrderLines == null) {
       return null;
@@ -157,7 +153,7 @@ public class PurchaseOrderShipmentServiceImpl implements PurchaseOrderShipmentSe
       }
     }
     purchaseOrder.setPurchaseOrderLineList(purchaseOrderLines);
-    return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
+    return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
   }
 
   protected BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder) {
@@ -173,5 +169,13 @@ public class PurchaseOrderShipmentServiceImpl implements PurchaseOrderShipmentSe
       }
     }
     return exTaxTotal;
+  }
+
+  protected PurchaseOrder getPurchaseOrder(PricedOrder pricedOrder) {
+    PurchaseOrder purchaseOrder = null;
+    if (pricedOrder instanceof PurchaseOrder) {
+      purchaseOrder = (PurchaseOrder) pricedOrder;
+    }
+    return purchaseOrder;
   }
 }

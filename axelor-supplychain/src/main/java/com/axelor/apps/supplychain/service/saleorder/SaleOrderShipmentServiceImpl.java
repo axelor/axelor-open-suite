@@ -21,7 +21,7 @@ package com.axelor.apps.supplychain.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -29,10 +29,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
-import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.ShippingAbstractService;
 import com.axelor.apps.supplychain.service.ShippingService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -41,62 +41,40 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
+public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
+    implements SaleOrderShipmentService {
 
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderRepository saleOrderRepository;
-  protected ShippingService shippingService;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
+      ShippingService shippingService,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderRepository saleOrderRepository,
-      ShippingService shippingService) {
+      SaleOrderRepository saleOrderRepository) {
+    super(shippingService);
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderRepository = saleOrderRepository;
-    this.shippingService = shippingService;
   }
 
   @Override
-  public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
-    ShipmentMode shipmentMode = saleOrder.getShipmentMode();
-    if (shipmentMode == null) {
-      return null;
-    }
-
-    CustomerShippingCarriagePaid customerShippingCarriagePaid =
-        getClientCustomerShippingCarriagePaid(saleOrder, shipmentMode);
-    Product shippingCostProduct =
-        shippingService.getShippingCostProduct(shipmentMode, customerShippingCarriagePaid);
-    if (shippingCostProduct == null) {
-      return null;
-    }
-
-    if (isThresholdUsedAndExceeded(saleOrder, shipmentMode, customerShippingCarriagePaid)) {
-      return removeLineAndComputeOrder(saleOrder);
-    }
-
-    if (alreadyHasShippingCostLine(saleOrder, shippingCostProduct)) {
-      return null;
-    }
-
-    addLineAndComputeOrder(saleOrder, shippingCostProduct);
-    return null;
-  }
-
   protected boolean isThresholdUsedAndExceeded(
-      SaleOrder saleOrder,
+      PricedOrder pricedOrder,
       ShipmentMode shipmentMode,
       CustomerShippingCarriagePaid customerShippingCarriagePaid) {
+    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+    if (saleOrder == null) {
+      return false;
+    }
     BigDecimal carriagePaidThreshold =
         getCarriagePaidThreshold(shipmentMode, customerShippingCarriagePaid);
     return carriagePaidThreshold != null
@@ -104,14 +82,22 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
         && computeExTaxTotalWithoutShippingLines(saleOrder).compareTo(carriagePaidThreshold) >= 0;
   }
 
-  protected void addLineAndComputeOrder(SaleOrder saleOrder, Product shippingCostProduct)
+  protected void addLineAndComputeOrder(PricedOrder pricedOrder, Product shippingCostProduct)
       throws AxelorException {
+    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+    if (saleOrder == null) {
+      return;
+    }
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     saleOrderLines.add(createShippingCostLine(saleOrder, shippingCostProduct));
     computeSaleOrder(saleOrder);
   }
 
-  protected String removeLineAndComputeOrder(SaleOrder saleOrder) throws AxelorException {
+  protected String removeLineAndComputeOrder(PricedOrder pricedOrder) throws AxelorException {
+    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+    if (saleOrder == null) {
+      return null;
+    }
     String message = removeShipmentCostLine(saleOrder);
     computeSaleOrder(saleOrder);
     return message;
@@ -122,17 +108,12 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
   }
 
-  protected BigDecimal getCarriagePaidThreshold(
-      ShipmentMode shipmentMode, CustomerShippingCarriagePaid customerShippingCarriagePaid) {
-    BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
-    if (customerShippingCarriagePaid != null) {
-      carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
+  protected CustomerShippingCarriagePaid getShippingCarriagePaid(
+      PricedOrder pricedOrder, ShipmentMode shipmentMode) {
+    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+    if (saleOrder == null) {
+      return null;
     }
-    return carriagePaidThreshold;
-  }
-
-  protected CustomerShippingCarriagePaid getClientCustomerShippingCarriagePaid(
-      SaleOrder saleOrder, ShipmentMode shipmentMode) {
     Partner client = saleOrder.getClientPartner();
     return client.getCustomerShippingCarriagePaidList().stream()
         .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
@@ -140,7 +121,13 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
         .orElse(null);
   }
 
-  protected boolean alreadyHasShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct) {
+  @Override
+  protected boolean alreadyHasShippingCostLine(
+      PricedOrder pricedOrder, Product shippingCostProduct) {
+    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+    if (saleOrder == null) {
+      return false;
+    }
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     if (saleOrderLines == null) {
       return false;
@@ -153,8 +140,13 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
     return false;
   }
 
-  protected SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
-      throws AxelorException {
+  @Override
+  protected SaleOrderLine createShippingCostLine(
+      PricedOrder pricedOrder, Product shippingCostProduct) throws AxelorException {
+    SaleOrder saleOrder = getSaleOrder(pricedOrder);
+    if (saleOrder == null) {
+      return null;
+    }
     SaleOrderLine shippingCostLine = new SaleOrderLine();
     shippingCostLine.setSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
@@ -184,7 +176,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
       }
     }
     saleOrder.setSaleOrderLineList(saleOrderLines);
-    return I18n.get(SupplychainExceptionMessage.SALE_SHIPMENT_THRESHOLD_EXCEEDED);
+    return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
   }
 
   protected BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder) {
@@ -202,37 +194,11 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
     return exTaxTotal;
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  public void computeFreightCarrierMode(
-      List<FreightCarrierMode> freightCarrierModeList, Long saleOrderId) throws AxelorException {
-    SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
-    if (saleOrder != null) {
-      this.checkSelectedFreightCarrierMode(freightCarrierModeList);
-      FreightCarrierMode freightCarrierMode = freightCarrierModeList.get(0);
-      saleOrder.setFreightCarrierMode(freightCarrierMode);
-      saleOrder.setCarrierPartner(freightCarrierMode.getCarrierPartner());
-
-      saleOrderRepository.save(saleOrder);
+  protected SaleOrder getSaleOrder(PricedOrder pricedOrder) {
+    SaleOrder saleOrder = null;
+    if (pricedOrder instanceof SaleOrder) {
+      saleOrder = (SaleOrder) pricedOrder;
     }
-  }
-
-  protected void checkSelectedFreightCarrierMode(List<FreightCarrierMode> freightCarrierModeList)
-      throws AxelorException {
-    if (freightCarrierModeList.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(
-                  SupplychainExceptionMessage.SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED)));
-    }
-
-    if (freightCarrierModeList.size() > 1) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(
-                  SupplychainExceptionMessage
-                      .SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED)));
-    }
+    return saleOrder;
   }
 }

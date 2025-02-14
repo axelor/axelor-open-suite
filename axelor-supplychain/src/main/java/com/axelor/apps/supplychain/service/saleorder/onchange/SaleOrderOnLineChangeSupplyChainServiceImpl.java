@@ -73,7 +73,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
     saleOrderSupplychainService.setAdvancePayment(saleOrder);
     message = saleOrderSupplychainService.updateTimetableAmounts(saleOrder);
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
-    saleOrderShipmentService.createShipmentCostLine(saleOrder);
+    saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
     return message;
   }
 }
