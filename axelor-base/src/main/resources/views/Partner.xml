@@ -1072,7 +1072,8 @@
     <action name="action-partner-record-partner-type-select"/>
     <action name="action-partner-record-set-default"/>
     <action name="action-partner-attrs-set-default"/>
-    <action name="action-partner-record-set-default-cash-management"/>
+    <action name="action-partner-record-set-default-cash-management"
+      if="__config__.app.isApp('cash-management')"/>
     <action name="action-partner-record-set-payment-modes"/>
     <action name="action-partner-record-payment-condition"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
@@ -1402,7 +1403,7 @@
       if="_isSupplier || (__user__?.activeCompany?.defaultPartnerCategorySelect == 2 &amp;&amp; !_isCustomer &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
     <field name="isCarrier" expr="true" if="_isCarrier"/>
     <field name="isSubcontractor" expr="true" if="_isSubcontractor"/>
-    <field name="partnerTypeSelect" expr="#{2}" if="created_from_user_id"/>
+    <field name="partnerTypeSelect" expr="#{2}"/>
     <field name="agency" expr="eval:__user__.activeAgency"/>
   </action-record>
 
