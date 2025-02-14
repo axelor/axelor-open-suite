@@ -86,18 +86,20 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
     Product product = saleOrderLineDetails.getProduct();
     BigDecimal qty = saleOrderLineDetails.getQty();
     int saleOrderLineDetailsTypeSelect = saleOrderLineDetails.getTypeSelect();
+    BigDecimal costPrice;
     if (product != null
         && company != null
-        && saleOrderLineDetailsTypeSelect != SaleOrderLineDetailsRepository.TYPE_OPERATION) {
-      BigDecimal costPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
-      BigDecimal totalCostPrice =
-          costPrice
-              .multiply(qty)
-              .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-      saleOrderLineDetails.setCostPrice(costPrice);
-      saleOrderLineDetails.setSubTotalCostPrice(totalCostPrice);
+        && saleOrderLineDetailsTypeSelect == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
+      costPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    } else {
+      costPrice = saleOrderLineDetails.getCostPrice();
     }
-
+    BigDecimal totalCostPrice =
+        costPrice
+            .multiply(qty)
+            .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    saleOrderLineDetails.setCostPrice(costPrice);
+    saleOrderLineDetails.setSubTotalCostPrice(totalCostPrice);
     lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
     lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
     return lineMap;
