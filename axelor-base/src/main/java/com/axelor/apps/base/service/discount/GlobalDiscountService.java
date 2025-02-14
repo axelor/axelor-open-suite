@@ -1,19 +1,16 @@
 package com.axelor.apps.base.service.discount;
 
-import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.interfaces.GlobalDiscounter;
 import java.math.BigDecimal;
 import java.util.Map;
 
 public interface GlobalDiscountService {
-  BigDecimal computeDiscountFixedEquivalence(
-      BigDecimal exTaxTotal, BigDecimal priceBeforeGlobalDiscount);
+  void applyGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) throws AxelorException;
 
-  BigDecimal computeDiscountPercentageEquivalence(
-      BigDecimal exTaxTotal, BigDecimal priceBeforeGlobalDiscount);
+  BigDecimal computeDiscountFixedEquivalence(GlobalDiscounter globalDiscounter);
 
-  Map<String, Map<String, Object>> setDiscountDummies(
-      Integer discountTypeSelect,
-      Currency currency,
-      BigDecimal exTaxTotal,
-      BigDecimal priceBeforeGlobalDiscount);
+  BigDecimal computeDiscountPercentageEquivalence(GlobalDiscounter globalDiscounter);
+
+  Map<String, Map<String, Object>> setDiscountDummies(GlobalDiscounter globalDiscounter);
 }

@@ -26,7 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -46,7 +46,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLinePackService saleOrderLinePackService;
   protected SaleOrderComplementaryProductService saleOrderComplementaryProductService;
-  protected SaleOrderDiscountService saleOrderDiscountService;
+  protected SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService;
 
   @Inject
   public SaleOrderOnLineChangeServiceImpl(
@@ -58,7 +58,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
-      SaleOrderDiscountService saleOrderDiscountService) {
+      SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService) {
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderMarginService = saleOrderMarginService;
@@ -67,7 +67,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLinePackService = saleOrderLinePackService;
     this.saleOrderComplementaryProductService = saleOrderComplementaryProductService;
-    this.saleOrderDiscountService = saleOrderDiscountService;
+    this.saleOrderGlobalDiscountService = saleOrderGlobalDiscountService;
   }
 
   @Override
@@ -114,7 +114,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
         this.updateProductQtyWithPackHeaderQty(saleOrder);
       }
       if (appSaleService.getAppBase().getIsGlobalDiscountEnabled()) {
-        saleOrderDiscountService.applyGlobalDiscountOnLines(saleOrder);
+        saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
       }
     } else {
       saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
