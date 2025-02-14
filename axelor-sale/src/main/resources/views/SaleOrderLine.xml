@@ -15,7 +15,7 @@
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
     <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
+      onClick="action-sale-order-line-group-on-configurator-edit"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
       icon="fa-pen-to-square"/>
     <button name="configuratorDuplicateBtn"
@@ -72,7 +72,7 @@
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
     <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
+      onClick="action-sale-order-line-group-on-configurator-edit"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
       icon="fa-pen-to-square"/>
     <button name="configuratorDuplicateBtn"
@@ -822,4 +822,16 @@
     <action name="action-sale-order-line-method-check-duplication-sale-order-line"/>
     <action name="action-sale-order-line-method-configurator-duplicate"/>
   </action-group>
+
+  <action-group name="action-sale-order-line-group-on-configurator-edit">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-edit-configurator-sale-order-line"/>
+    <action name="action-sale-order-line-view-regenerate-line"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-check-edit-configurator-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkEditConfiguratorSaleOrderLine"/>
+  </action-method>
 </object-views>

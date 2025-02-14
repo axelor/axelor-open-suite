@@ -395,4 +395,13 @@ public class SaleOrderLineController {
       response.setAlert(I18n.get(ITranslation.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
   }
+
+  public void checkEditConfiguratorSaleOrderLine(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    if (Beans.get(ConfiguratorCheckService.class)
+        .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
+      response.setError(I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
+    }
+  }
 }
