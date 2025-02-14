@@ -144,6 +144,7 @@
     <panel showIf="nextProjectTask">
       <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
       <field name="project.taskStatusManagementSelect" hidden="true"/>
+      <field name="project.isShowPlanning" hidden="true"/>
     </panel>
 
     <panel name="mainPanel" colSpan="12">
