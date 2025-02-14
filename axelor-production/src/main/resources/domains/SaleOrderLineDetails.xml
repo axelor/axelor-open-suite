@@ -27,6 +27,8 @@
       scale="3"/>
     <decimal name="subMarginRate" title="Sub margin rate"/>
     <decimal name="subTotalMarkup" title="Sub Total markup"/>
+    <decimal name="costPrice" title="Cost price" precision="20" scale="3"/>
+    <decimal name="marginCoefficient" title="Margin coefficient" default="1"/>
 
     <extra-code>
             <![CDATA[
