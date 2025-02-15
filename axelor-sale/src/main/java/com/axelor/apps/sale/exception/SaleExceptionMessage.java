@@ -178,4 +178,7 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR = /*$$(*/
       "Sale order does not have configurator to duplicate." /*)*/;
+
+  public static final String CONFIGURATOR_PRODUCT_GENERATION_ERROR = /*$$(*/
+      "An error occurred during the generation of the product with configurator, please see tracebacks for more details." /*)*/;
 }

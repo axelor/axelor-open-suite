@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
@@ -229,7 +230,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void generateProduct(
       Configurator configurator,
       JsonContext jsonAttributes,
@@ -238,13 +238,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       throws AxelorException {
 
     Product product = new Product();
-    fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
-    configurator.setProduct(product);
-    product.setConfigurator(configurator);
+    processGenerationProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void regenerateProduct(
       Configurator configurator,
       Product product,
@@ -255,6 +252,17 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Objects.requireNonNull(configurator);
     Objects.requireNonNull(configurator.getProduct());
 
+    processGenerationProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void processGenerationProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
     fillProductFields(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
     configurator.setProduct(product);
     product.setConfigurator(configurator);
@@ -374,7 +382,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     return qty;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void regenerateSaleOrderLine(
       Configurator configurator,
@@ -384,7 +391,26 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    // Product has been generated with configurator
+    try {
+      // Product has been generated with configurator
+      processRegenerationSaleOrderLine(
+          configurator, saleOrder, jsonAttributes, jsonIndicators, saleOrderLine);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_PRODUCT_GENERATION_ERROR));
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void processRegenerationSaleOrderLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrderLine saleOrderLine)
+      throws AxelorException {
     if (configurator.getConfiguratorCreator().getGenerateProduct()) {
 
       var product = configurator.getProduct();

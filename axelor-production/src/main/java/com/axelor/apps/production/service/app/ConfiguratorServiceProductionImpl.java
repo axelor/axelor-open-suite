@@ -123,7 +123,6 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void regenerateProduct(
       Configurator configurator,
       Product product,
@@ -131,21 +130,32 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       JsonContext jsonIndicators,
       Long saleOrderId)
       throws AxelorException {
+    BillOfMaterial oldBillOfMaterial = product.getDefaultBillOfMaterial();
     super.regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
-    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
-    BillOfMaterial oldBillOfMaterial = null;
-    if (configuratorBOM != null) {
-      oldBillOfMaterial = product.getDefaultBillOfMaterial();
-      configuratorBomService
-          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, product, configurator)
-          .ifPresent(product::setDefaultBillOfMaterial);
-    }
-
     // Removing
     try {
       billOfMaterialRemoveService.removeBomAndProdProcess(oldBillOfMaterial);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  protected void processGenerationProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
+    super.processGenerationProduct(
+        configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
+    if (configuratorBOM != null) {
+      configuratorBomService
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, product, configurator)
+          .ifPresent(product::setDefaultBillOfMaterial);
     }
   }
 
