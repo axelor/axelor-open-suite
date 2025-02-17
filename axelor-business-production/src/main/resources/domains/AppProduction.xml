@@ -14,7 +14,7 @@
       title="Generate timesheet line on manufacturing operation stop"/>
     <integer name="updateProjectSolDetailsLineTypeSelect"
       title="Sale order line details modification configuration"
-      help="When editing a confirmed sale order, update the sale order line details in business project or not."
+      help="When editing a confirmed sale order, update or not the sale order line details in business project with sale order changes. Modifications done in business project will be overwritten."
       selection="business.production.app.production.update.project.sol.details.type.select"/>
 
     <extra-code><![CDATA[

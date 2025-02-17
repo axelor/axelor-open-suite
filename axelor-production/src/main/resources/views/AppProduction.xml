@@ -44,6 +44,7 @@
           <field name="allowPersonalizedProdProcess" widget="boolean-switch"/>
           <field name="operationContinuitySelect"/>
           <field name="updateProjectSolDetailsLineTypeSelect"
+            if="__config__.app.getApp('sale')?.allowPendingOrderModification &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
             if-module="axelor-business-production"/>
         </panel>
 

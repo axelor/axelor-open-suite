@@ -48,6 +48,6 @@
 "To invoice","A facturer",,
 "Warning, this manuforder is finished","Attention, cet OF est terminé",,
 "Warning, this manuforder is from another company.","Attention, cet OF appartient à une autre société.",,
-"When editing a confirmed sale order, update the sale order line details in business project or not.","Lors de l'édition d'une commande confirmée, mettre à jour ou non les lignes de détails.",,
+"When editing a confirmed sale order, update or not the sale order line details in business project with sale order changes. Modifications done in business project will be overwritten.","Lors de l'édition d'une commande confirmée, mettre à jour ou non les lignes de détails au niveau de l'affaire avec les changements de la commande. Dans ce cas, les modifications portées dans l'affaire seront écrasées.",,
 "Work center",,,
 "You can not edit a confirmed sale order linked to a project.","Vous ne pouvez pas modifier une commande confirmée liée à une affaire.",,
