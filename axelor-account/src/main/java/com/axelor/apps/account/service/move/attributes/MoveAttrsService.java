@@ -73,4 +73,6 @@ public interface MoveAttrsService {
   void addThirdPartyPayerPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addCompanyBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 }

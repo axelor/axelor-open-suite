@@ -366,6 +366,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveRecordSetService.setCurrencyByPartner(move);
     moveRecordSetService.setPaymentMode(move);
+    moveRecordSetService.setCompanyBankDetails(move);
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordSetService.setThirdPartyPayerPartner(move);
@@ -779,6 +780,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addCompanyDomain(move, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getCompanyBankDetailsOnSelectAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addCompanyBankDetailsDomain(move, attrsMap);
 
     return attrsMap;
   }
