@@ -103,13 +103,16 @@ public class TimesheetLineBusinessProductionServiceImpl
             .map(OperationOrder::getManufOrder)
             .orElse(null));
 
-    tsl.setDuration(
-        computeDuration(
-            timesheet,
-            DurationHelper.getSecondsDuration(
-                Duration.between(
-                    operationOrderDuration.getStartingDateTime(),
-                    operationOrderDuration.getStoppingDateTime()))));
+    Duration duration =
+        Duration.between(
+            operationOrderDuration.getStartingDateTime(),
+            operationOrderDuration.getStoppingDateTime());
+    tsl.setDuration(computeDuration(timesheet, DurationHelper.getSecondsDuration(duration)));
+    BigDecimal hoursDuration =
+        BigDecimal.valueOf((double) duration.getSeconds() / (double) 3600)
+            .setScale(2, RoundingMode.HALF_UP);
+
+    tsl.setHoursDuration(hoursDuration);
 
     tsl.setDate(operationOrderDuration.getStartingDateTime().toLocalDate());
     tsl.setEmployee(timesheet.getEmployee());
