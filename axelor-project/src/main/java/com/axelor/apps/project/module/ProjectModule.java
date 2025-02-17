@@ -27,8 +27,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
-import com.axelor.apps.project.db.repo.SprintManagementRepository;
-import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateManagementRepository;
 import com.axelor.apps.project.db.repo.TaskTemplateRepository;
 import com.axelor.apps.project.db.repo.TeamProjectRepository;
@@ -143,6 +141,5 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectVersionService.class).to(ProjectVersionServiceImpl.class);
     bind(ProjectBatchInitService.class).to(ProjectBatchInitServiceImpl.class);
     bind(ProjectManagementDashboardService.class).to(ProjectManagementDashboardServiceImpl.class);
-    bind(SprintRepository.class).to(SprintManagementRepository.class);
   }
 }

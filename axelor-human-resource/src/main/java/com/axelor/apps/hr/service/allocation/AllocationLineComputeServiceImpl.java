@@ -217,7 +217,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   @Override
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
     List<AllocationLine> allocationLineList = allocationLineRepo.findByProject(project).fetch();
-
     BigDecimal allocatedTime = BigDecimal.ZERO;
 
     if (ObjectUtils.isEmpty(allocationLineList)) {
