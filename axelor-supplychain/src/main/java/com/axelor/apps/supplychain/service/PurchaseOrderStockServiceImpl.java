@@ -66,6 +66,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected ProductCompanyService productCompanyService;
   protected TaxService taxService;
   protected AppStockService appStockService;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -109,7 +111,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockConfigService stockConfigService,
       ProductCompanyService productCompanyService,
       TaxService taxService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      AppSupplychainService appSupplychainService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -123,6 +126,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.productCompanyService = productCompanyService;
     this.taxService = taxService;
     this.appStockService = appStockService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   /**
@@ -151,6 +155,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Map<Pair<StockLocation, LocalDate>, List<PurchaseOrderLine>> purchaseOrderLineMap =
         getPurchaseOrderLineMap(purchaseOrder);
 
+    boolean isTitleLine = purchaseOrderLineMap.entrySet().size() == 1 ? true : false;
+
     for (Entry<Pair<StockLocation, LocalDate>, List<PurchaseOrderLine>> entry :
         purchaseOrderLineMap.entrySet()) {
 
@@ -161,7 +167,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
       List<Long> stockMoveId =
           createStockMove(
-              purchaseOrder, stockLocation, estimatedDeliveryDate, purchaseOrderLineList);
+              purchaseOrder,
+              stockLocation,
+              estimatedDeliveryDate,
+              purchaseOrderLineList,
+              isTitleLine);
 
       if (stockMoveId != null && !stockMoveId.isEmpty()) {
 
@@ -175,7 +185,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PurchaseOrder purchaseOrder,
       StockLocation stockLocation,
       LocalDate estimatedDeliveryDate,
-      List<PurchaseOrderLine> purchaseOrderLineList)
+      List<PurchaseOrderLine> purchaseOrderLineList,
+      boolean isTitleLine)
       throws AxelorException {
 
     List<Long> stockMoveIdList = new ArrayList<>();
@@ -265,15 +276,33 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .plusDays(supplychainConfig.getNumberOfDaysForPurchaseOrder().longValue()));
     }
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      BigDecimal qty =
-          purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
+    List<PurchaseOrderLine> purchaseOrderLines = new ArrayList<>(purchaseOrderLineList);
 
-      if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
-        this.createStockMoveLine(
-            stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+    if (isTitleLine && appSupplychainService.getAppSupplychain().getIsTitleLineManaged()) {
+      purchaseOrderLines.addAll(
+          purchaseOrder.getPurchaseOrderLineList().stream()
+              .filter(line -> line.getIsTitleLine())
+              .collect(Collectors.toList()));
+    }
+    purchaseOrderLines.sort(Comparator.comparing(PurchaseOrderLine::getId));
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      if (existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
+        continue;
+      }
+      if (purchaseOrderLine.getProduct() != null) {
+        BigDecimal qty =
+            purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
+        if (qty.signum() > 0) {
+          createStockMoveLine(
+              stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+        }
+      } else if (purchaseOrderLine.getIsTitleLine()) {
+        stockMoveLineServiceSupplychain.createStockMoveTitleLine(
+            stockMove, null, purchaseOrderLine);
       }
     }
+
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
       stockMoveService.plan(stockMove);
       stockMoveIdList.add(stockMove.getId());
