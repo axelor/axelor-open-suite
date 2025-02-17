@@ -20,8 +20,10 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountEquiv;
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +34,12 @@ public class AccountEquivServiceImpl implements AccountEquivService {
 
   @Override
   public String getFromAccountDomain(AccountEquiv accountEquiv, FiscalPosition fiscalPosition) {
+    List<AccountEquiv> accountEquivList = fiscalPosition.getAccountEquivList();
+    if (ObjectUtils.isEmpty(accountEquivList)) {
+      return null;
+    }
     String idListStr =
-        fiscalPosition.getAccountEquivList().stream()
+        accountEquivList.stream()
             .filter(ae -> !accountEquiv.equals(ae))
             .map(ae -> ae.getFromAccount().getId().toString())
             .collect(Collectors.joining(","));
