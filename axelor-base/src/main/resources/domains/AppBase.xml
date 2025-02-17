@@ -188,8 +188,9 @@
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
       min="0"/>
 
-    <boolean name="isRegistrationCodeCheckBlocking"
-      title="Restrict duplicate registration codes" default="false"/>
+    <boolean name="isRegistrationCodeCheckBlocking" title="Check duplicate registration"
+      default="false"
+      help="This configuration add a warning when a partner is created if the registration codes entered already exists in the database."/>
 
     <extra-code>
 	   		<![CDATA[
@@ -274,6 +275,7 @@
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="isPricingComputingOrder" on="UPDATE"/>
       <field name="defaultBatchFetchLimit" on="UPDATE"/>
+      <field name="isRegistrationCodeCheckBlocking" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 
