@@ -1,0 +1,3 @@
+---
+title: "Timesheet : Fix an issue in lines generation from project planning where end date was not taken into account"
+module: axelor-human-resource
