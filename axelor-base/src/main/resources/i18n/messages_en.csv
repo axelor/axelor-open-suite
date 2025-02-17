@@ -1870,7 +1870,7 @@
 "Region code",,,
 "Region name",,,
 "Regions",,,
-"Registration code already exists.",,,
+"Registration code already exists for partner %s.",,,
 "Registration code is invalid.",,,
 "Registration code is required for companies",,,
 "Registration code is required.",,,
