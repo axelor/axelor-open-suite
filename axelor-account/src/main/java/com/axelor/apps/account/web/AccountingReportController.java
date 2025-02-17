@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -329,5 +330,22 @@ public class AccountingReportController {
         String.format(
             "self.id IN (%s)",
             StringUtils.notEmpty(accountingReportTypeIds) ? accountingReportTypeIds : "0"));
+  }
+
+  public void setAccountingReportPartnerTagDomain(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+
+      if (accountingReport == null) {
+        return;
+      }
+
+      response.setAttr(
+          "partnerTagSet",
+          "domain",
+          Beans.get(TagService.class).getTagDomain("Partner", accountingReport.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

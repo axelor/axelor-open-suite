@@ -19,6 +19,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
@@ -346,5 +348,37 @@ public class AccountController {
     actionViewBuilder.context("moveTemplateIds", moveTemplateIdList);
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void setAccountTagDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      String fullNameModel = null;
+      String fieldName = null;
+      Account account;
+      AccountingReport accountingReport;
+      Company company = null;
+
+      if (context != null && context.get("_model") != null) {
+        fullNameModel = context.get("_model").toString();
+      }
+
+      if (fullNameModel.contains("AccountingReport")) {
+        accountingReport = context.asType(AccountingReport.class);
+        company = accountingReport != null ? accountingReport.getCompany() : null;
+      } else if (fullNameModel.contains("Account")) {
+        account = context.asType(Account.class);
+        company = account != null ? account.getCompany() : null;
+      }
+
+      if (context.get("_source") != null) {
+        fieldName = request.getContext().get("_source").toString();
+      }
+
+      response.setAttr(
+          fieldName, "domain", Beans.get(TagService.class).getTagDomain("Account", company));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
