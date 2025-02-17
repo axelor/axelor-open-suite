@@ -23,6 +23,8 @@ import com.axelor.apps.quality.db.repo.ControlEntryManagementRepository;
 import com.axelor.apps.quality.db.repo.ControlEntryPlanLineManagementRepository;
 import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
+import com.axelor.apps.quality.db.repo.ControlPlanFrequencyManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlPlanFrequencyRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanManagementRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertManagementRepository;
@@ -41,6 +43,10 @@ import com.axelor.apps.quality.service.ControlEntrySampleUpdateService;
 import com.axelor.apps.quality.service.ControlEntrySampleUpdateServiceImpl;
 import com.axelor.apps.quality.service.ControlEntryService;
 import com.axelor.apps.quality.service.ControlEntryServiceImpl;
+import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameService;
+import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameServiceImpl;
+import com.axelor.apps.quality.service.ControlPlanFrequencyService;
+import com.axelor.apps.quality.service.ControlPlanFrequencyServiceImpl;
 import com.axelor.apps.quality.service.QIAnalysisService;
 import com.axelor.apps.quality.service.QIAnalysisServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationService;
@@ -82,5 +88,9 @@ public class QualityModule extends AxelorModule {
     bind(ControlEntryRepository.class).to(ControlEntryManagementRepository.class);
     bind(ControlPlanRepository.class).to(ControlPlanManagementRepository.class);
     bind(ControlEntryPlanLineRepository.class).to(ControlEntryPlanLineManagementRepository.class);
+    bind(ControlPlanFrequencyRepository.class).to(ControlPlanFrequencyManagementRepository.class);
+    bind(ControlPlanFrequencyService.class).to(ControlPlanFrequencyServiceImpl.class);
+    bind(ControlPlanFrequencyComputeNameService.class)
+        .to(ControlPlanFrequencyComputeNameServiceImpl.class);
   }
 }

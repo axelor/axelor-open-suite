@@ -28,16 +28,20 @@ import com.axelor.apps.base.service.localization.LocalizationService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.I18nBundle;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.service.TranslationService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.ws.rs.NotFoundException;
 
 public class TranslationBaseServiceImpl implements TranslationBaseService {
+
+  protected static final String VALUE_KEY_PREFIX = "value:";
 
   protected UserService userService;
   protected TranslationService translationService;
@@ -117,5 +121,32 @@ public class TranslationBaseServiceImpl implements TranslationBaseService {
     }
 
     return metaTranslationList;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void createValueTranslation(String language, String key, String message) {
+    MetaTranslation metaTranslation = new MetaTranslation();
+    metaTranslation.setLanguage(language);
+    metaTranslation.setKey(VALUE_KEY_PREFIX + key);
+    metaTranslation.setMessage(message);
+    metaTranslationRepository.save(metaTranslation);
+    I18nBundle.invalidate();
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateValueTranslation(
+      String language, String oldKey, String newKey, String message) {
+    MetaTranslation metaTranslation =
+        metaTranslationRepository.findByKey(VALUE_KEY_PREFIX + oldKey, language);
+    if (metaTranslation != null) {
+      metaTranslation.setKey(VALUE_KEY_PREFIX + newKey);
+      metaTranslation.setMessage(message);
+      metaTranslationRepository.save(metaTranslation);
+      I18nBundle.invalidate();
+    } else {
+      createValueTranslation(language, newKey, message);
+    }
   }
 }

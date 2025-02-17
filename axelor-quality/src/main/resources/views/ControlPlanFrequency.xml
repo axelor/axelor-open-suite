@@ -9,8 +9,10 @@
   </grid>
 
   <form name="control-plan-frequency-form" title="Control plan frequency"
-    model="com.axelor.apps.quality.db.ControlPlanFrequency">
+    model="com.axelor.apps.quality.db.ControlPlanFrequency"
+    onSave="action-control-plan-frequency-method-create-or-update-value-translations">
     <panel name="mainPanel" colSpan="12">
+      <field name="name" colSpan="12"/>
       <field name="sampleTypeSelect" colSpan="2"/>
       <field name="sampleQty" colSpan="2"/>
       <field name="sampleQtyUnit" colSpan="2"/>
@@ -19,4 +21,11 @@
       <field name="sampleFrequencyUnit" colSpan="2"/>
     </panel>
   </form>
+
+  <action-method
+    name="action-control-plan-frequency-method-create-or-update-value-translations">
+    <call class="com.axelor.apps.quality.web.ControlPlanFrequencyController"
+      method="createOrUpdateValueTranslations"/>
+  </action-method>
+
 </object-views>

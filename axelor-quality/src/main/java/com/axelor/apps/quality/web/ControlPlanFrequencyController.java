@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.utils.service.translation;
+package com.axelor.apps.quality.web;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.meta.db.MetaTranslation;
-import java.util.List;
+import com.axelor.apps.quality.db.ControlPlanFrequency;
+import com.axelor.apps.quality.service.ControlPlanFrequencyService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public interface TranslationBaseService {
+public class ControlPlanFrequencyController {
 
-  public String getValueTranslation(String key);
-
-  List<MetaTranslation> getLocalizationTranslations(String language, String key)
-      throws AxelorException;
-
-  void createValueTranslation(String language, String key, String message);
-
-  void updateValueTranslation(String language, String oldKey, String newKey, String message);
+  public void createOrUpdateValueTranslations(ActionRequest request, ActionResponse response) {
+    ControlPlanFrequency controlPlanFrequency =
+        request.getContext().asType(ControlPlanFrequency.class);
+    Beans.get(ControlPlanFrequencyService.class)
+        .createOrUpdateValueTranslations(controlPlanFrequency);
+  }
 }
