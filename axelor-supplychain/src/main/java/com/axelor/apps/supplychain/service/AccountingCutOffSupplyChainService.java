@@ -30,6 +30,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.db.Query;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -78,4 +79,12 @@ public interface AccountingCutOffSupplyChainService extends AccountingCutOffServ
 
   @CallMethod
   List<Long> getStockMoveLines(Batch batch);
+
+  boolean checkPriceLimit(
+      StockMove stockMove,
+      BigDecimal lowerAmountLimit,
+      BigDecimal upperAmountLimit,
+      int accountingCutOffTypeSelect,
+      boolean ati)
+      throws AxelorException;
 }
