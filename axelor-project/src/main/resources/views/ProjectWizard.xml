@@ -4,7 +4,9 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
-    width="large" onNew="action-method-project-set-date" canNew="false" canDelete="false">
+    width="large"
+    onNew="action-method-project-set-date"
+    canNew="false" canDelete="false">
     <panel name="filtersPanel">
       <field name="$project" title="Project" colSpan="12" type="many-to-one"
         onChange="action-project-group-onchange-project" target="com.axelor.apps.project.db.Project"/>
@@ -130,6 +132,7 @@
     <attribute name="refresh" expr="eval: true"
       for="project-allocation-line-action-dashlet"/>
     <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
+    <attribute for="sprintComputedPanel" name="refresh" expr="eval: true"/>
   </action-attrs>
 
   <action-method name="action-project-method-compute-sprint-dashlet">
