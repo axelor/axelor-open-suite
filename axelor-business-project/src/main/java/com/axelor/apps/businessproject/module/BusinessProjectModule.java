@@ -22,6 +22,8 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
@@ -46,8 +48,11 @@ import com.axelor.apps.businessproject.service.InvoicePaymentValidateProjectServ
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.InvoiceTermDateComputeProjectServiceImpl;
+import com.axelor.apps.businessproject.service.InvoiceTermPaymentServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectStockMovesService;
 import com.axelor.apps.businessproject.service.InvoicingProjectStockMovesServiceImpl;
+import com.axelor.apps.businessproject.service.MoveLineCreateServiceBusinessProjectImpl;
+import com.axelor.apps.businessproject.service.MoveValidateServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
@@ -103,6 +108,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
+import com.axelor.apps.businessproject.service.invoice.InvoicePaymentToolServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.observer.SaleOrderLineProjectObserver;
@@ -128,6 +134,7 @@ import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
+import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateServiceImpl;
 import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
@@ -143,6 +150,7 @@ import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
+import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
@@ -244,5 +252,11 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectGeneratorSaleService.class).to(ProjectGeneratorSaleServiceImpl.class);
     bind(InvoiceTermDateComputeServiceImpl.class)
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
+    bind(InvoicePaymentToolServiceSupplychainImpl.class)
+        .to(InvoicePaymentToolServiceBusinessProjectImpl.class);
+    bind(MoveLineCreateServiceImpl.class).to(MoveLineCreateServiceBusinessProjectImpl.class);
+    bind(MoveValidateHRServiceImpl.class).to(MoveValidateServiceBusinessProjectImpl.class);
+    bind(InvoiceTermPaymentServiceImpl.class)
+        .to(InvoiceTermPaymentServiceBusinessProjectImpl.class);
   }
 }
