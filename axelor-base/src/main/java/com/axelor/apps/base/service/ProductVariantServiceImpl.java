@@ -18,15 +18,12 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantValue;
-import com.axelor.apps.base.db.repo.ProductMultipleQtyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -789,42 +786,5 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     return false;
-  }
-
-  public Product copyAdditionalFields(Product product, Product productModel) {
-    product.setProductSubTypeSelect(productModel.getProductSubTypeSelect());
-    product.setAllowToForceSaleQty(productModel.getAllowToForceSaleQty());
-
-    ProductMultipleQtyRepository productMultipleQtyRepository =
-        Beans.get(ProductMultipleQtyRepository.class);
-    productModel
-        .getSaleProductMultipleQtyList()
-        .forEach(
-            saleProductMultipleQty ->
-                product.addSaleProductMultipleQtyListItem(
-                    productMultipleQtyRepository.copy(saleProductMultipleQty, false)));
-    productModel
-        .getPurchaseProductMultipleQtyList()
-        .forEach(
-            purchaseProductMultipleQty ->
-                product.addPurchaseProductMultipleQtyListItem(
-                    productMultipleQtyRepository.copy(purchaseProductMultipleQty, false)));
-    product.setPurchasePrice(productModel.getPurchasePrice());
-    product.setPurchasable(productModel.getPurchasable());
-    product.setPurchaseCurrency(productModel.getPurchaseCurrency());
-    product.setDefaultSupplierPartner(productModel.getDefaultSupplierPartner());
-    product.setSupplierDeliveryTime(productModel.getSupplierDeliveryTime());
-    product.setAllowToForcePurchaseQty(productModel.getAllowToForcePurchaseQty());
-
-    AccountManagementRepository accountManagementRepository =
-        Beans.get(AccountManagementRepository.class);
-    productModel
-        .getAccountManagementList()
-        .forEach(
-            accountManagement ->
-                product.addAccountManagementListItem(
-                    accountManagementRepository.copy(accountManagement, false)));
-    product.setInventoryTypeSelect(productModel.getInventoryTypeSelect());
-    return product;
   }
 }
