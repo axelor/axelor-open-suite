@@ -84,7 +84,8 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
     Objects.requireNonNull(prodProcessLine);
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN) {
+    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
+        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
       return Optional.ofNullable(prodProcessLine.getHumanDurationDecimal())
           .orElse(BigDecimal.ZERO)
           .multiply(nbCycles);
