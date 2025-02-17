@@ -13,8 +13,10 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.StringHelper;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -120,8 +122,9 @@ public class SprintController {
   public void computeSprintDomainDashboard(ActionRequest request, ActionResponse response) {
     Long projectId = Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
     ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    String domain =
+    List<Sprint> sprintList =
         Beans.get(SprintGeneratorService.class).getSprintDomain(projectRepo.find(projectId));
+    String domain = String.format("self.id in (%s)", StringHelper.getIdListString(sprintList));
 
     response.setAttr("$sprint", "domain", domain);
   }
