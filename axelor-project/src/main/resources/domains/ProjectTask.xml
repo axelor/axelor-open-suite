@@ -101,6 +101,7 @@
       ref="com.axelor.apps.project.db.Sprint"/>
     <many-to-one name="oldActiveSprint" title="Old sprint"
       ref="com.axelor.apps.project.db.Sprint" transient="true"/>
+    <decimal name="oldBudgetedTime" title="Old budgeted time" transient="true"/>
 
     <extra-code>
 
