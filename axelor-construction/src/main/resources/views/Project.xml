@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form id="btp-project-form" name="project-form" title="Project"
+    model="com.axelor.apps.project.db.Project" extension="true">
+
+    <extend target="/">
+      <attribute name="width" value="large"/>
+    </extend>
+
+    <extend target="//field[@name='$viewerProjectTags']">
+      <replace/>
+    </extend>
+    <extend target="//button[@name='showExpenseLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//button[@name='addTicketBtn']">
+      <replace/>
+    </extend>
+    <extend target="//panel-dashlet[@name='expenseLinePanel']">
+      <replace/>
+    </extend>
+
+    <extend target="//button[@name='selectNewSOLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//button[@name='manageSOLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//panel-dashlet[@name='saleOrderLinePanel']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='$salesOrderLineSet']">
+      <replace/>
+    </extend>
+
+    <extend target="//button[@name='selectNewPOLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//button[@name='managePOLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//panel-dashlet[@name='purchaseOrderLinePanel']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='$purchaseOrderLineSet']">
+      <replace/>
+    </extend>
+
+    <extend target="//button[@name='selectNewCustomerInvoiceLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//button[@name='manageCustomerInvoiceLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='$customerInvoiceLineSet']">
+      <replace/>
+    </extend>
+
+    <extend target="//button[@name='selectNewSupplierInvoiceLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//button[@name='manageSupplierInvoiceLinesBtn']">
+      <replace/>
+    </extend>
+
+    <extend target="//field[@name='$supplierInvoiceLineSet']">
+      <replace/>
+    </extend>
+
+    <extend target="//panel-dashlet[@name='customerInvoiceLinePanel']">
+      <replace/>
+    </extend>
+
+    <extend target="//panel-dashlet[@name='supplierInvoiceLinePanel']">
+      <replace/>
+    </extend>
+
+    <extend target="//button[@name='selectNewExpenseLinesBtn']">
+      <replace/>
+    </extend>
+    <extend target="//button[@name='manageExpenseLinesBtn']">
+      <replace/>
+    </extend>
+
+    <extend target="//panel[@name='actionsPanel']">
+      <replace/>
+    </extend>
+
+    <extend target="//field[@name='fullName']">
+      <move source="//field[@name='clientPartner']" position="after"/>
+    </extend>
+
+    <extend target="//panel[@name='statusPanel']">
+      <insert position="inside">
+        <field name="projectStatus.isCompleted" hidden="true"/>
+        <field name="projectStatus.isDefaultCompleted" hidden="true"/>
+      </insert>
+    </extend>
+
+    <extend target="//menu[@name='projectToolsMenu']">
+      <insert position="inside">
+        <item name="finishItem" title="Finish" showIf="!projectStatus.isCompleted"
+          action="action-project-record-status-finish,save" hideIf="true"/>
+        <item name="cancelItem" title="Cancel"
+          hideIf="projectStatus.isCompleted &amp;&amp; !projectStatus.isDefaultCompleted"
+          action="action-project-record-status-canceled,save"/>
+        <item name="resetItem" title="Reset" hideIf="true"
+          showIf="projectStatus.isCompleted &amp;&amp; !projectStatus.isDefaultCompleted"
+          action="action-project-record-status-new,save"/>
+      </insert>
+    </extend>
+
+    <!-- Reporting panel -->
+    <extend target="//panel[@name='taskTreePanel']">
+      <move source="//panel[@name='reportingPanel']" position="before"/>
+    </extend>
+
+    <extend target="//panel[@name='reportingPanel']">
+      <attribute name="title" value="General"/>
+      <attribute name="showIf" value="id &amp;&amp; isBusinessProject"/>
+    </extend>
+
+    <!-- Project task tree panel -->
+    <extend target="//panel[@name='taskTreePanel']">
+      <attribute name="title" value="Works"/>
+      <attribute name="showIf" value="id"/>
+    </extend>
+
+    <extend target="//panel-dashlet[@name='projectTaskTreeDashletPanel']">
+      <attribute name="title" value="Works"/>
+    </extend>
+
+    <!-- Planning panel -->
+    <extend target="//panel[@name='planningPanel']">
+      <attribute name="title" value="Time"/>
+      <attribute name="hideIf" value="!isShowPlanning || !id"/>
+      <move source="//panel[@name='logTimesPanel']" position="inside"/>
+    </extend>
+
+    <extend target="//panel[@name='projectHoldBacksPanel']">
+      <attribute name="showIf" value="id"/>
+    </extend>
+
+    <extend target="//panel[@name='logTimesPanel']">
+      <attribute name="colSpan" value="12"/>
+    </extend>
+
+    <extend target="//panel[@name='salesPanel']">
+      <attribute name="showIf" value="id"/>
+    </extend>
+
+    <extend target="//panel[@name='purchasesPanel']">
+      <attribute name="showIf" value="id &amp;&amp; isBusinessProject"/>
+    </extend>
+
+    <extend target="//panel[@name='resourceBookingListPanel']">
+      <attribute name="showIf" value="id"/>
+    </extend>
+
+    <extend target="//panel[@name='expensesPanel']">
+      <attribute name="showIf" value="id &amp;&amp; isBusinessProject"/>
+    </extend>
+
+    <extend target="//panel[@name='productionPanel']">
+      <attribute name="showIf" value="id &amp;&amp; isBusinessProject"/>
+    </extend>
+
+    <extend target="//panel-tabs[@name='mainPanelTab']/panel[@name='invoicingPanel']">
+      <attribute name="showIf" value="id &amp;&amp; isBusinessProject"/>
+    </extend>
+
+    <extend target="//panel[@name='contractPanel']">
+      <attribute name="showIf" value="id &amp;&amp; isBusinessProject"/>
+    </extend>
+
+    <extend target="//panel[@name='$projectPlanningTimeSet']">
+      <move source="//panel[@name='taskInvoicingDashletPanel']" position="before"/>
+    </extend>
+
+    <!-- Invoicing panel -->
+    <extend target="//panel-dashlet[@name='allinvoicingProjectsPanel']">
+      <attribute name="title" value="Situations"/>
+    </extend>
+
+    <extend target="//panel-related[@name='manualElementListPanel']">
+      <move source="//panel-dashlet[@name='taskInvoicingDashletPanel']" position="before"/>
+    </extend>
+
+    <extend target="//panel-dashlet[@name='taskInvoicingDashletPanel']">
+      <attribute name="title" value="To invoice"/>
+    </extend>
+
+    <!-- Tools panel -->
+    <extend target="//panel[@name='analyticPanel']">
+      <attribute name="showIf" value="id &amp;&amp; isBusinessProject"/>
+      <insert position="after">
+        <panel name="toolsPanel" title="Tools" showIf="id" itemSpan="12">
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='toolsPanel']">
+      <move source="//panel[@name='wikiPanel']" position="inside"/>
+      <move source="//panel[@name='roadmapPanel']" position="inside"/>
+      <move source="//panel[@name='announcementPanel']" position="inside"/>
+    </extend>
+
+    <!-- Configuration panel -->
+    <extend target="/panel[@name='detailsPanel']">
+      <attribute name="colSpan" value="12"/>
+    </extend>
+    <extend target="//panel[@name='configurationsPanel']">
+      <move source="/panel[@name='detailsPanel']" position="inside"/>
+    </extend>
+
+    <extend target="//panel[@name='configurationsPanel']">
+      <insert position="inside">
+        <panel name="configurationTasksPanel" title="Tasks" colSpan="12">
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='configurationTasksPanel']">
+      <move source="//field[@name='productSet']" position="inside"/>
+      <move source="//field[@name='projectFolderSet']" position="inside"/>
+      <move source="//field[@name='numberHoursADay']" position="inside"/>
+      <move source="//field[@name='projectTimeUnit']" position="inside"/>
+      <move source="//field[@name='spentTimeCostComputationMethod']" position="inside"/>
+      <move source="//field[@name='excludeTimesheetEditor']" position="inside"/>
+      <move source="//field[@name='childProjectList']" position="inside"/>
+      <move source="//field[@name='sequence']" position="inside"/>
+      <move source="//field[@name='imputable']" position="inside"/>
+      <move source="//panel[@name='fieldsToDisplay']" position="inside"/>
+    </extend>
+
+    <extend target="//panel[@name='customFieldConfigPanel']">
+      <attribute name="colSpan" value="12"/>
+    </extend>
+
+    <extend target="//panel[@name='membersPanel']">
+      <attribute name="colSpan" value="12"/>
+      <attribute name="showIf" value="id"/>
+    </extend>
+
+    <extend target="//panel[@name='invoicingConfigPanel']">
+      <attribute name="colSpan" value="12"/>
+      <attribute name="title" value="Invoicing"/>
+    </extend>
+
+    <extend target="//panel[@name='configurationsPanel']">
+      <insert position="inside">
+        <panel name="invoicingConfigPanel" title="Invoicing" colSpan="12">
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='invoicingConfigPanel']">
+      <move source="//help[@name='invoicingHelp']" position="inside"/>
+      <move source="//field[@name='toInvoice']" position="inside"/>
+      <move source="//field[@name='isInvoicingTimesheet']" position="inside"/>
+      <move source="//field[@name='isInvoicingExpenses']" position="inside"/>
+      <move source="//field[@name='isInvoicingPurchases']" position="inside"/>
+      <move source="//field[@name='invoicingSequenceSelect']" position="inside"/>
+      <move source="//field[@name='consolidatePhaseWhenInvoicing']" position="inside"/>
+      <move source="//spacer[@name='invoicingSequenceSelectSpacer']" position="inside"/>
+      <move source="//field[@name='invoicingComment']" position="inside"/>
+    </extend>
+
+    <extend target="//panel[@name='configurationsPanel']">
+      <move source="//panel[@name='invoicingConfigPanel']" position="inside"/>
+      <move source="//panel[@name='membersPanel']" position="inside"/>
+      <move source="//panel[@name='customFieldConfigPanel']" position="inside"/>
+      <move source="//panel[@name='characteristicsPanel']" position="inside"/>
+      <move source="//panel[@name='followUpPanel']" position="inside"/>
+      <move source="//panel[@name='datePanel']" position="inside"/>
+    </extend>
+
+    <extend target="//panel[@name='activityPanel']">
+      <move source="//panel[@name='configurationsPanel']" position="after"/>
+    </extend>
+
+  </form>
+
+
+  <tree id="btp-project-project-task-tree" name="project-project-task-tree" title="Tasks">
+
+    <column name="name" type="string"/>
+    <column name="taskDate" type="date"/>
+    <column name="assignedTo" type="reference"/>
+    <column name="progress" type="string"/>
+
+    <node model="com.axelor.apps.project.db.ProjectTask" domain="self.project.id = :_id"
+      onClick="action-project-task-view-task" orderBy="taskDate">
+      <field name="name" as="name"/>
+      <field name="taskDate" as="taskDate"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="progress" as="progress"/>
+    </node>
+
+    <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
+      onClick="action-project-task-view-task" orderBy="taskDate">
+      <field name="name" as="name"/>
+      <field name="taskDate" as="taskDate"/>
+      <field name="assignedTo" as="assignedTo"/>
+      <field name="progress" as="progress"/>
+    </node>
+
+  </tree>
+
+</object-views>
