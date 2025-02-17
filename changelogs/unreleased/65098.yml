@@ -1,0 +1,3 @@
+---
+title: "Move : Fix when we change journal, functional origin isn't reset if we change to journal without authorized functional origin"
+module: axelor-account
