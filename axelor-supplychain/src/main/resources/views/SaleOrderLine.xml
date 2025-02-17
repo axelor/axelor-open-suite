@@ -12,6 +12,12 @@
       </insert>
     </extend>
 
+    <extend
+      target="//panel-tabs[@name='mainPanelTab']/panel[@name='informationsPanel']/panel[@name='taxPanel']/field[@name='taxLineSet']">
+      <attribute name="domain"
+        value="(self.endDate = null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
+    </extend>
+
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
       <insert position="after">
         <panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false"
@@ -71,6 +77,11 @@
 
   <form name="sale-order-line-template-form" id="supplychain-sale-order-line-template-form"
     title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
+    <extend target="//panel[@name='product2Panel']/field[@name='taxLineSet']">
+      <attribute name="domain"
+        value="(self.endDate = null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
+    </extend>
+
     <extend target="//panel-tabs[@name='allPanelTab']/*[last()]">
       <insert position="after">
         <panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false"
@@ -128,6 +139,15 @@
       <field name="qty" hidden="true"/>
     </panel>
   </form>
+
+  <grid name="supplychain-sale-order-line-editable-grid"
+    model="com.axelor.apps.sale.db.SaleOrderLine" title="SO lines"
+    id="sale-order-line-editable-grid" extension="true">
+    <extend target="//field[@name='taxLineSet']">
+      <attribute name="domain"
+        value="(self.endDate = null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
+    </extend>
+  </grid>
 
   <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
     model="com.axelor.apps.sale.db.SaleOrderLine" edit-icon="false" groupBy="saleOrder"
