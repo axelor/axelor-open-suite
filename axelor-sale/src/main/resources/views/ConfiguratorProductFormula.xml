@@ -30,7 +30,7 @@
         </panel>
         <panel name="actionPanel">
           <button name="checkScriptsBtn" title="Check the script"
-            onClick="action-configurator-formula-method-check-script"/>
+            onClick="action-configurator-formula-method-check-script" readonlyIf="!formula"/>
         </panel>
       </panel>
       <panel-include view="incl-help-configurator-formula"/>
