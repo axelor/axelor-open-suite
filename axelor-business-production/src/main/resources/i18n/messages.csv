@@ -48,6 +48,6 @@
 "To invoice",,,
 "Warning, this manuforder is finished",,,
 "Warning, this manuforder is from another company.",,,
-"When editing a confirmed sale order, update the sale order line details in business project or not.",,,
+"When editing a confirmed sale order, update or not the sale order line details in business project with sale order changes. Modifications done in business project will be overwritten.",,,
 "Work center",,,
 "You can not edit a confirmed sale order linked to a project.",,,

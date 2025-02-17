@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -84,7 +85,7 @@ public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncServ
                         .equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT))
             .collect(Collectors.toSet());
     if (CollectionUtils.isEmpty(saleOrderLineDetailsList)) {
-      return new ArrayList<>(billOfMaterialLineList);
+      return Collections.emptyList();
     }
     Set<BillOfMaterialLine> soDetailsBillOfMaterialLineList =
         saleOrderLineDetailsList.stream()
