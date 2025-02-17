@@ -84,7 +84,7 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
     final String trackingNumberConfiguration = "$trackingNumberConfiguration";
 
     TrackingNumberConfiguration trackingNumberConfig = null;
-    if (stockMoveLine != null) {
+    if (stockMoveLine != null && stockMoveLine.getProduct() != null) {
       Product product = stockMoveLine.getProduct();
       Company company =
           Optional.ofNullable(stockMoveLine.getStockMove()).map(StockMove::getCompany).orElse(null);

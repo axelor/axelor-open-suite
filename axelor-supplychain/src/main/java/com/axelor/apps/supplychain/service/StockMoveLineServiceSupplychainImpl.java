@@ -713,4 +713,13 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       }
     }
   }
+
+  @Override
+  public StockMoveLine createStockMoveTitleLine(StockMove stockMove, SaleOrderLine saleOrderLine) {
+    StockMoveLine stockMoveLine =
+        createStockMoveLine(
+            saleOrderLine.getProductName(), StockMoveLineRepository.TYPE_TITLE, stockMove);
+    stockMoveLine.setSaleOrderLine(saleOrderLine);
+    return stockMoveLine;
+  }
 }

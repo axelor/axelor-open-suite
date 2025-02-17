@@ -264,6 +264,7 @@
 "Include in DEB","Inclure dans la DEB",,
 "Include late sales","Inclure les commandes en retard",,
 "Include sales with a planned delivery date in the past but which have not yet been delivered.","Inclure les commandes avec une date de livraison estimée passée mais qui n'ont pas encore été livrées.",,
+"Include title lines on stock move","Inclure les lignes de titre dans les mouvements de stock",,
 "Incorrect product in the stock move %s","Produit incorrect dans le mouvement de stock %s",,
 "Incoterm","Incoterm",,
 "Incoterm must be filled",,,
