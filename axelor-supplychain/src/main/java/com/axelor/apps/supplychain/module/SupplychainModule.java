@@ -41,7 +41,7 @@ import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
-import com.axelor.apps.purchase.service.PurchaseOrderLineTaxServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
@@ -169,7 +169,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineTaxSupplychainServiceImp;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineTaxComputeSupplychainServiceImp;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingViewServiceSupplyChainImpl;
@@ -489,6 +489,7 @@ public class SupplychainModule extends AxelorModule {
     bind(ConfiguratorCheckServiceImpl.class).to(ConfiguratorCheckServiceSupplychainImpl.class);
     bind(TrackingNumberCompanyServiceImpl.class)
         .to(TrackingNumberCompanySupplychainServiceImpl.class);
-    bind(PurchaseOrderLineTaxServiceImpl.class).to(PurchaseOrderLineTaxSupplychainServiceImp.class);
+    bind(PurchaseOrderLineTaxComputeServiceImpl.class)
+        .to(PurchaseOrderLineTaxComputeSupplychainServiceImp.class);
   }
 }

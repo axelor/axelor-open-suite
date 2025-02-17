@@ -4,10 +4,8 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.OrderLineTaxService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
-import com.axelor.apps.purchase.service.PurchaseOrderLineTaxServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeServiceImpl;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,19 +14,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class PurchaseOrderLineTaxSupplychainServiceImp extends PurchaseOrderLineTaxServiceImpl {
+public class PurchaseOrderLineTaxComputeSupplychainServiceImp
+    extends PurchaseOrderLineTaxComputeServiceImpl {
 
   @Inject
-  public PurchaseOrderLineTaxSupplychainServiceImp(
-      OrderLineTaxService orderLineTaxService,
-      TaxService taxService,
-      AppBaseService appBaseService,
+  public PurchaseOrderLineTaxComputeSupplychainServiceImp(
       CurrencyScaleService currencyScaleService) {
-    super(orderLineTaxService, taxService, appBaseService, currencyScaleService);
+    super(currencyScaleService);
   }
 
   @Override
-  protected void computeAndAddTaxToList(
+  public void computeAndAddTaxToList(
       Map<TaxLine, PurchaseOrderLineTax> map,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
