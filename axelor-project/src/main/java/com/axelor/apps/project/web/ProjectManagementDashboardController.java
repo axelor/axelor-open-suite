@@ -19,9 +19,7 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
-import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -29,8 +27,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-
-import java.util.Map;
 
 @Singleton
 public class ProjectManagementDashboardController {
@@ -44,27 +40,4 @@ public class ProjectManagementDashboardController {
     }
   }
 
-  public void setSprintDashlet(ActionRequest request, ActionResponse response) {
-    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Sprint"));
-    ActionView.ActionViewBuilder model = actionViewBuilder.model(Sprint.class.getName());
-    actionViewBuilder.name("Sprint-resume");
-    actionViewBuilder.add("grid", "project-sprint-grid");
-    actionViewBuilder.add("form", "sprint-form");
-    actionViewBuilder.context("$totalAllocatedTime", "1");
-    actionViewBuilder.context("totalEstimatedTime", "2");
-    //  actionViewBuilder.domain("self.project.id ="+ids);
-    // actionViewBuilder.context("_projectId", projectId);
-    response.setView(actionViewBuilder.map());
-  }
-
-  public void getData(ActionRequest request, ActionResponse response) {
-    Long projectId = Long.valueOf(( (Map<String, Object>) request.getContext().get("project")).get("id").toString());
-    ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    Project project = projectRepo.find(projectId);
-    if (project == null) {
-      return;
-    }
-
-    response.setValues(Beans.get(ProjectManagementDashboardService.class).getData(project));
-  }
 }

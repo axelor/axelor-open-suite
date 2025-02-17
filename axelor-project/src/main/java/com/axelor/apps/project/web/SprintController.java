@@ -160,4 +160,15 @@ public class SprintController {
 
     response.setView(actionViewBuilder.map());
   }
+
+  @CallMethod
+  public List<Long> computeSprintDomain(Long projectId) {
+    ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
+    Project project = projectRepo.find(1L);
+    if (projectId != null) {
+      project = projectRepo.find(projectId);
+    }
+    List<Sprint> sprintList = Beans.get(SprintGeneratorService.class).getSprintDomain(project);
+    return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
+  }
 }
