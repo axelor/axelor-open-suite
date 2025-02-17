@@ -44,7 +44,8 @@ public class SprintManagementRepository extends SprintRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
-
+      Long projectId = Long.valueOf(((Map) context.get("importFile")).get("id").toString());
+     Project project= projectRepository.find(projectId);
       Long sprintId = (Long) json.get("id");
       Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
       final String totalEstimatedTime = "$totalEstimatedTime";
