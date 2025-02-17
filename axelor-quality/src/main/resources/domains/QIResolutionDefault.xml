@@ -10,7 +10,7 @@
     <string name="name" title="Name" required="true"/>
     <many-to-one name="qiResolution" title="Resolution"
       ref="com.axelor.apps.quality.db.QIResolution" required="true" readonly="true"/>
-    <many-to-one name="qiDefault" title="Default"
+    <many-to-one name="qiDefault" title="Defect"
       ref="com.axelor.apps.quality.db.QIDefault" required="true"/>
     <string name="description" title="Description" large="true"/>
     <decimal name="quantity" title="Quantity"/>

@@ -17,7 +17,7 @@
     <decimal name="fixedAmount" title="Fixed amount"/>
     <decimal name="directCost" title="Direct cost"/>
     <decimal name="totalCost" title="Total Cost"/>
-    <many-to-many name="qiResolutionDefaultsSet" title="Defaults"
+    <many-to-many name="qiResolutionDefaultsSet" title="Defects"
       ref="com.axelor.apps.quality.db.QIResolutionDefault" required="true"/>
     <many-to-one name="qiAnalysis" ref="com.axelor.apps.quality.db.QIAnalysis"
       title="Analysis"/>
