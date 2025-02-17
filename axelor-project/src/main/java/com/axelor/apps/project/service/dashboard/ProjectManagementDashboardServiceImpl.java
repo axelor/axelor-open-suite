@@ -18,35 +18,11 @@
  */
 package com.axelor.apps.project.service.dashboard;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.Sprint;
-import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
-import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProjectManagementDashboardServiceImpl implements ProjectManagementDashboardService {
-  protected ProjectTaskRepository projectTaskRepo;
-  protected ProjectRepository projectRepo;
-  protected SprintGeneratorService sprintGeneratorService;
-
-  @Inject
-  public ProjectManagementDashboardServiceImpl(
-      ProjectTaskRepository projectTaskRepo,
-      ProjectRepository projectRepo,
-      SprintGeneratorService sprintGeneratorService) {
-    this.projectTaskRepo = projectTaskRepo;
-    this.projectRepo = projectRepo;
-    this.sprintGeneratorService = sprintGeneratorService;
-  }
-
   @Override
   public Map<String, Object> getDate() {
     Map<String, Object> dataMap = new HashMap<>();
@@ -55,32 +31,5 @@ public class ProjectManagementDashboardServiceImpl implements ProjectManagementD
     dataMap.put("$toDate", todayDate.plusDays(7));
 
     return dataMap;
-  }
-
-  @Override
-  public Map<String, Object> getData(Project project) {
-    Map<String, Object> dataMap = new HashMap<>();
-    dataMap.put("$sprintComputedList", getSprintComputedList(project));
-    return dataMap;
-  }
-
-  protected List<Map<String, Object>> getSprintComputedList(Project project) {
-    List<Sprint> sprintList = sprintGeneratorService.getSprintDomain(project);
-    List<Map<String, Object>> mapList = new ArrayList<>();
-
-    for (Sprint sprint : sprintList) {
-      BigDecimal budgetedTime =
-          sprint.getProjectTaskList().stream()
-              .map(ProjectTask::getBudgetedTime)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-      Map<String, Object> map = new HashMap<>();
-      map.put("sprintId",sprint.getId());
-      map.put("sprint", sprint.getName());
-      map.put("budgetedTime", budgetedTime);
-      mapList.add(map);
-    }
-
-    return mapList;
   }
 }
