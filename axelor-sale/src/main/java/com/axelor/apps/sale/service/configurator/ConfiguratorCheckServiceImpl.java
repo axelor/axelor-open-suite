@@ -55,4 +55,15 @@ public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
         .getConfiguratorVersion()
         .equals(configurator.getConfiguratorCreator().getConfiguratorVersion());
   }
+
+  @Override
+  public void checkConfiguratorActivated(Configurator configurator) throws AxelorException {
+    if (configurator != null) {
+      if (!configurator.getConfiguratorCreator().getIsActive()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SaleExceptionMessage.CONFIGURATOR_IS_NOT_ACTIVATED));
+      }
+    }
+  }
 }
