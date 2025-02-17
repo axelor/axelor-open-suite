@@ -9,10 +9,10 @@
 
     <one-to-one name="qi" ref="com.axelor.apps.quality.db.QualityImprovement"
       title="Quality improvement" mappedBy="qiResolution" required="true" readonly="true"/>
-    <many-to-one name="defaultWrittenBy" title="Default written by"
+    <many-to-one name="defaultWrittenBy" title="Defect written by"
       ref="com.axelor.auth.db.User"/>
-    <datetime name="defaultWrittenOn" title="Default written on"/>
-    <one-to-many name="qiResolutionDefaultsList" title="Defaults"
+    <datetime name="defaultWrittenOn" title="Defect written on"/>
+    <one-to-many name="qiResolutionDefaultsList" title="Defects"
       ref="com.axelor.apps.quality.db.QIResolutionDefault" mappedBy="qiResolution"/>
     <many-to-one name="decisionsWrittenBy" title="Decisions written by"
       ref="com.axelor.auth.db.User"/>
