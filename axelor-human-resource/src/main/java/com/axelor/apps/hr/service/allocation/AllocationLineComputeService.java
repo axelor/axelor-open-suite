@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.Sprint;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -24,4 +25,6 @@ public interface AllocationLineComputeService {
   BigDecimal computePlannedTime(
       LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
       throws AxelorException;
+
+  BigDecimal getAllocatedTime(Project project, Sprint sprint);
 }

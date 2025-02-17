@@ -214,7 +214,8 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return prorata;
   }
 
-  protected BigDecimal getAllocatedTime(Project project, Sprint sprint) {
+  @Override
+  public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
     List<AllocationLine> allocationLineList =
         allocationLineRepo.all().fetch().stream()
             .filter(allocationLine -> allocationLine.getProject().equals(project))
@@ -226,26 +227,25 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       LocalDate sprintFromDate = sprint.getFromDate();
       LocalDate sprintToDate = sprint.getToDate();
 
-      int sprintPeriod=0;
+      int sprintPeriod = 0;
       if (allocationLineFromDate.isAfter(sprintFromDate)
           && allocationLineToDate.isBefore(sprintToDate)) {
         sprintPeriod = getWeekDaysNumber(sprintFromDate, sprintToDate);
       }
 
       if (allocationLineFromDate.isAfter(sprintFromDate)
-              && !allocationLineToDate.isBefore(sprintToDate)) {
-         sprintPeriod = getWeekDaysNumber(sprintFromDate, allocationLineToDate);
+          && !allocationLineToDate.isBefore(sprintToDate)) {
+        sprintPeriod = getWeekDaysNumber(sprintFromDate, allocationLineToDate);
       }
 
       if (!allocationLineFromDate.isAfter(sprintFromDate)
-              && allocationLineToDate.isBefore(sprintToDate)) {
+          && allocationLineToDate.isBefore(sprintToDate)) {
         sprintPeriod = getWeekDaysNumber(allocationLineFromDate, sprintToDate);
       }
 
       int allocationPeriod = getWeekDaysNumber(allocationLineFromDate, allocationLineToDate);
       BigDecimal allocation = allocationLine.getAllocated();
       allocatedTime = allocatedTime.add(getProrata(allocationPeriod, sprintPeriod, allocation));
-
     }
     return allocatedTime;
   }
