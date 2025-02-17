@@ -21,17 +21,15 @@
         onSelect="action-project-method-compute-sprint-domain"
         target="com.axelor.apps.project.db.Sprint"/>
     </panel>
-    <panel-dashlet  name="project-project-task-action-dashlet"
-       colSpan="12"
+    <panel-dashlet name="project-project-task-action-dashlet" colSpan="12"
       height="350" action="
-      action-project-view-project-task" canSearch="true" />
+      action-project-view-project-task" canSearch="true"/>
     <panel-dashlet
       if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
       if-module="axelor-human-resource" name="project-planning-time-dashboard-action-dashlet"
       colSpan="12" height="350" action="action-project-view-planning-time-dashboard"
       canSearch="true"/>
-    <panel-dashlet
-      name="project-allocation-line-action-dashlet"colSpan="12"
+    <panel-dashlet name="project-allocation-line-action-dashlet" colSpan="12"
       height="350" action="action-project-view-allocation-line" canSearch="true"/>
     <panel-dashlet name="project-sprint-panel" colSpan="12" height="350"
       action="action-project-view-project-sprint"/>
@@ -108,6 +106,19 @@
       expr="call: com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl:getSprintList(project.id)"/>
   </action-view>
 
+
+  <action-view name="action-project-sprint" model="com.axelor.apps.project.db.Sprint"
+    title="Sprints">
+    <view name="project-sprint-grid" type="grid"/>
+    <view name="sprint-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.id in :ids and ((date(self.fromDate) &gt;= date(:fromDate) and date(self.fromDate)
+      &lt;= date(:toDate)) or
+      (date(self.toDate) &gt;= date(:fromDate) and date(self.toDate) &lt;=
+      date(:toDate)) )</domain>
+    <context name="ids"
+      expr="call: com.axelor.apps.project.web.SprintController:computeSprintDomain(project.id)"/>
+  </action-view>
   <action-record name="action-project-record-empty-sprint"
     model="com.axelor.apps.project.db.Project">
     <field name="$sprint" expr="eval: null"/>
