@@ -6,22 +6,6 @@
   <input file="studio_appEmployee.csv" separator=";" type="com.axelor.studio.db.AppEmployee"
     search="self.app.code = :code" update="true"/>
 
-  <input file="hr_weeklyPlanning.csv" separator=";"
-    type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
-
-  <input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning"
-    search="self.importId  = :importId"/>
-
-  <input file="hr_eventsPlanning.csv" type="com.axelor.apps.base.db.EventsPlanning"
-    separator=";" search="self.importId = :importId"/>
-
-  <input file="hr_eventsPlanningLine.csv" type="com.axelor.apps.base.db.EventsPlanningLine"
-    separator=";" search="self.importId = :importId">
-    <bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"
-      column="date"/>
-    <bind to="year" eval="java.time.Year.now().getValue() + year.toInteger()" column="year"/>
-  </input>
-
   <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"
     search="self.importId  = :importId">
     <bind to="recoveryLeaveReason" column="recoveryLeaveReason_importId"

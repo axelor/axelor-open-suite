@@ -731,7 +731,8 @@
       expr="eval:__config__.app.getApp('leave')?.getAllowNegativeLeaveEmployees()"
       if="__config__.app.isApp('leave')"/>
     <field name="publicHolidayEventsPlanning"
-      expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
+      expr="eval: __user__.activeCompany?.publicHolidayEventsPlanning"/>
+    <field name="weeklyPlanning" expr="eval: __user__.activeCompany?.weeklyPlanning"/>
   </action-record>
 
   <action-record name="action-hr-record-reset-company-cb-details"

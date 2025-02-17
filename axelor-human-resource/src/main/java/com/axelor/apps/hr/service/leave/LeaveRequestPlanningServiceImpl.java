@@ -6,7 +6,6 @@ import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -25,10 +24,7 @@ public class LeaveRequestPlanningServiceImpl implements LeaveRequestPlanningServ
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
     if (weeklyPlanning == null) {
       if (comp != null) {
-        HRConfig conf = comp.getHrConfig();
-        if (conf != null) {
-          weeklyPlanning = conf.getWeeklyPlanning();
-        }
+        weeklyPlanning = comp.getWeeklyPlanning();
       }
     }
     if (weeklyPlanning == null) {
@@ -49,8 +45,8 @@ public class LeaveRequestPlanningServiceImpl implements LeaveRequestPlanningServ
   @Override
   public EventsPlanning getPublicHolidayEventsPlanning(Employee employee, Company company) {
     EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
-    if (publicHolidayPlanning == null && company != null && company.getHrConfig() != null) {
-      publicHolidayPlanning = company.getHrConfig().getPublicHolidayEventsPlanning();
+    if (publicHolidayPlanning == null && company != null) {
+      publicHolidayPlanning = company.getPublicHolidayEventsPlanning();
     }
     return publicHolidayPlanning;
   }

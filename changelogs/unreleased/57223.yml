@@ -1,0 +1,3 @@
+---
+title: "HR config : removed weekly planning and events planning to avoid duplicate configurations for a company."
+module: axelor-human-resource

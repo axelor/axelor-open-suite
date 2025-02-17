@@ -107,10 +107,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
     if (weeklyPlanning == null) {
-      HRConfig conf = company.getHrConfig();
-      if (conf != null) {
-        weeklyPlanning = conf.getWeeklyPlanning();
-      }
+      weeklyPlanning = company.getWeeklyPlanning();
     }
 
     if (weeklyPlanning == null) {
@@ -123,10 +120,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
     EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
     if (publicHolidayPlanning == null) {
-      HRConfig conf = company.getHrConfig();
-      if (conf != null) {
-        publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
-      }
+      publicHolidayPlanning = company.getPublicHolidayEventsPlanning();
     }
 
     if (publicHolidayPlanning == null) {
