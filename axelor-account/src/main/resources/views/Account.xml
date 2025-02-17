@@ -118,8 +118,10 @@
           hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
             onChange="action-group-account-is-tax-authorized-onchange"/>
-          <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
-            widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
+          <field name="isTaxRequiredOnMoveLine"
+            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; accountType.technicalTypeSelect != 'tax'"
+            colSpan="4" widget="boolean-switch"
+            onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTaxSet" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="TagSelect"/>
           <field name="vatSystemSelect" colSpan="4"
