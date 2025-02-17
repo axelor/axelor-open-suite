@@ -297,7 +297,7 @@ public class InvoiceController {
     try {
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       invoiceTermService.computeInvoiceTermsDueDates(invoice);
-      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      response.setValues(invoice);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

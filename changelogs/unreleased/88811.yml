@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed bad error handling when skipping validation is active."
+module: axelor-account
