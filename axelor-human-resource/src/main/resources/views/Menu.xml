@@ -112,9 +112,12 @@
     <view name="ts-multi-timer-form" type="form"/>
   </action-view>
 
+  <menuitem name="edit-extra-hours" parent="my-hr-root" title="Extra hours request"
+    action="edit.extra.hours" order="500" if="__config__.app.isApp('exthrs')"
+    icon="hourglass-bottom" icon-background="#84429f"/>
 
-  <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
-    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="hourglass-top"
+  <menuitem name="all-extra-hours" parent="my-hr-root" title="All extra hours"
+    action="extra.hours.all" order="550" if="__config__.app.isApp('exthrs')" icon="list-task"
     icon-background="#84429f"/>
 
   <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"

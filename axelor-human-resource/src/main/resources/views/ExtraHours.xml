@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
-    canNew="true" orderBy="-sentDate">
+    orderBy="-sentDate">
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -16,7 +16,7 @@
   </grid>
 
   <grid name="extra-hours-validate-grid" title="Extra Hours"
-    model="com.axelor.apps.hr.db.ExtraHours" canNew="true" orderBy="-sentDate">
+    model="com.axelor.apps.hr.db.ExtraHours" orderBy="-sentDate">
     <toolbar>
       <button name="showSubordinateExtraHoursToValidateBtn"
         title="Show extra hours to be validated by my subordinates"
@@ -33,7 +33,7 @@
 
   <form name="extra-hours-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
     width="large" onNew="action-group-extra-hours-onnew" onLoad="action-group-extra-hours-onload"
-    canNew="false" canCopy="false">
+    canCopy="false">
     <panel name="mainPanel" colSpan="12">
       <panel colSpan="9" name="statusPanel">
         <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
@@ -94,6 +94,12 @@
       <button name="editExtraHoursSelectedBtn" title="Edit extra hours selected"
         onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected,close"/>
     </panel>
+  </form>
+
+  <form name="extra-hours-request-form" title="Extra Hours"
+    model="com.axelor.apps.hr.db.ExtraHours" width="large" onNew="action-group-extra-hours-onnew"
+    onLoad="action-group-extra-hours-onload" canCopy="false" canNew="false">
+    <panel-include view="extra-hours-form"/>
   </form>
 
   <action-group name="action-group-extra-hours-onnew">
@@ -211,6 +217,6 @@
 
   <action-attrs name="action-extra-hours-attrs-employee-readonly">
     <attribute for="employee" name="readonly"
-      expr="eval: !__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0"/>
+      expr="eval: (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0) || _isEmployeeReadOnly"/>
   </action-attrs>
 </object-views>
