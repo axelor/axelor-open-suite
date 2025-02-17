@@ -19,11 +19,8 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -39,5 +36,4 @@ public class ProjectManagementDashboardController {
       TraceBackService.trace(response, e);
     }
   }
-
 }
