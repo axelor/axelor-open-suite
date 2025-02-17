@@ -4,9 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
-    width="large"
-    onNew="action-method-project-set-date"
-    canNew="false" canDelete="false"
+    width="large" onNew="action-method-project-set-date" canNew="false" canDelete="false"
     canSave="false">
     <panel name="filtersPanel">
       <field name="$project" title="Project" colSpan="12" type="many-to-one"
@@ -147,7 +145,7 @@
     <attribute name="refresh" expr="eval: true"
       for="project-allocation-line-action-dashlet"/>
     <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
-    <attribute for="sprintComputedPanel" name="refresh" expr="eval: true"/>
+    <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
   </action-attrs>
 
   <action-method name="action-project-method-compute-sprint-dashlet">
@@ -185,14 +183,14 @@
     <action name="action-attrs-refresh-dashlets"/>
   </action-group>
 
-  <action-view name="project-sprint-action" model="com.axelor.apps.project.db.Sprint"
+  <action-view name="action-project-sprint" model="com.axelor.apps.project.db.Sprint"
     title="Sprints">
     <view name="project-sprint-grid" type="grid"/>
     <view name="sprint-form" type="form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.id in (:ids)</domain>
+    <domain>self.id in :ids</domain>
     <context name="ids"
-      expr="call: com.axelor.apps.project.web.SprintController:computeSprintDomainDashboard(2)"/>
+      expr="call: com.axelor.apps.project.web.SprintController:computeSprintDomain(project.id)"/>
   </action-view>
 
   <action-method name="action-project-method-compute-sprint-dashlet">
