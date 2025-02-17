@@ -11,7 +11,6 @@ import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
-import java.util.Optional;
 
 public class ProdProcessLineComputationServiceImpl implements ProdProcessLineComputationService {
   @Override
@@ -70,9 +69,8 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
             workCenter.getName());
       }
 
-      return Optional.ofNullable(prodProcessLine.getDurationPerCycleDecimal())
-          .orElse(BigDecimal.ZERO)
-          .multiply(nbCycles)
+      return nbCycles
+          .multiply(BigDecimal.valueOf(prodProcessLine.getDurationPerCycle()))
           .add(getMachineInstallingDuration(prodProcessLine, nbCycles));
     }
 
@@ -86,9 +84,7 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
     if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
         || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      return Optional.ofNullable(prodProcessLine.getHumanDurationDecimal())
-          .orElse(BigDecimal.ZERO)
-          .multiply(nbCycles);
+      return nbCycles.multiply(BigDecimal.valueOf(prodProcessLine.getHumanDuration()));
     }
 
     return BigDecimal.ZERO;
