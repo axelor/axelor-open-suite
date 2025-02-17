@@ -1,0 +1,5 @@
+---
+title: "Cost sheet: fixed production process line cost computation."
+module: axelor-production
+developer: |
+  Added 'ProdProcessLineComputeService' to 'CostSheetServiceImpl' constructor.

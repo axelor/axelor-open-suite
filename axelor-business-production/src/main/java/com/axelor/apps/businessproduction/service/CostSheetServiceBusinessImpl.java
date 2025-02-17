@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
+import com.axelor.apps.production.service.ProdProcessLineComputeService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
@@ -42,18 +43,19 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
   @Inject
   public CostSheetServiceBusinessImpl(
-      AppProductionService appProductionService,
       UnitConversionService unitConversionService,
       CostSheetLineService costSheetLineService,
+      BillOfMaterialRepository billOfMaterialRepo,
       AppBaseService appBaseService,
-      BillOfMaterialRepository billOfMaterialRepo) {
-
+      ProdProcessLineComputeService prodProcessLineComputeService,
+      AppProductionService appProductionService) {
     super(
-        appProductionService,
         unitConversionService,
         costSheetLineService,
+        billOfMaterialRepo,
         appBaseService,
-        billOfMaterialRepo);
+        prodProcessLineComputeService,
+        appProductionService);
   }
 
   @Override
