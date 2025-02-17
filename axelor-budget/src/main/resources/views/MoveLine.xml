@@ -26,15 +26,14 @@
             </viewer>
           </field>
           <field name="budget" onChange="action-reset-budget-distribution-list-method"
-            readonlyIf="isBudgetImputed || move.statusSelect == 2"
+            readonlyIf="isBudgetImputed"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel" title="Budget"
             field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            onChange="action-group-budget-move-line-budget-distribution-onchange"
-            readonlyIf="move.statusSelect == 2"/>
+            onChange="action-group-budget-move-line-budget-distribution-onchange"/>
         </panel>
       </insert>
     </extend>
@@ -43,6 +42,7 @@
   <action-group name="action-group-budget-move-line-budget-distribution-onchange">
     <action name="action-method-move-line-budget-distribution-validate-amount"/>
     <action name="action-move-line-method-compute-budget-remaining-amount"/>
+    <action name="action-move-line-method-update-budget-amounts"/>
   </action-group>
 
   <action-method name="action-method-move-line-budget-distribution-validate-amount">
@@ -57,5 +57,9 @@
 
   <action-method name="action-move-line-method-set-budget-domain">
     <call class="com.axelor.apps.budget.web.MoveLineController" method="setBudgetDomain"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-update-budget-amounts">
+    <call class="com.axelor.apps.budget.web.MoveLineController" method="updateBudgetAmounts"/>
   </action-method>
 </object-views>
