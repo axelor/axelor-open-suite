@@ -21,28 +21,14 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
-import java.math.BigDecimal;
 
 public interface PurchaseOrderSupplychainService {
 
   void updateToValidatedStatus(PurchaseOrder purchaseOrder) throws AxelorException;
 
   void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder);
-
-  String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
-
-  PurchaseOrderLine createShippingCostLine(PurchaseOrder purchaseOrder, Product shippingCostProduct)
-      throws AxelorException;
-
-  boolean alreadyHasShippingCostLine(PurchaseOrder purchaseOrder, Product shippingCostProduct);
-
-  String removeShipmentCostLine(PurchaseOrder purchaseOrder);
-
-  BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
 
   StockLocation getStockLocation(Partner supplierPartner, Company company) throws AxelorException;
 

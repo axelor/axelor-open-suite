@@ -30,6 +30,14 @@
           form-view="customer-shipping-carriage-paid-form" colSpan="12"/>
       </insert>
     </extend>
+
+    <extend target="//field[@name='purchasePartnerPriceList']">
+      <insert position="after">
+        <field name="supplierShippingCarriagePaidList"
+          grid-view="customer-shipping-carriage-paid-grid"
+          form-view="customer-shipping-carriage-paid-form" colSpan="12"/>
+      </insert>
+    </extend>
   </form>
 
   <form name="incl-purchases-partner-form" title="Partner"
