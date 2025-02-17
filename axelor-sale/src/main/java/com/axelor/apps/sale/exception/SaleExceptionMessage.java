@@ -178,4 +178,9 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR = /*$$(*/
       "Sale order does not have configurator to duplicate." /*)*/;
+  public static final String CONFIGURATOR_VERSION_IS_DIFFERENT = /*$$(*/
+      "Configurator version is different than its configurator creator." /*)*/;
+
+  public static final String CONFIGURATOR_IS_NOT_ACTIVATED = /*$$(*/
+      "Configurator is not activated." /*)*/;
 }

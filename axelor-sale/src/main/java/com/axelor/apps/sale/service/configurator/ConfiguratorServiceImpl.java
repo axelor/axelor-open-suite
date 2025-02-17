@@ -270,7 +270,13 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       Long saleOrderId)
       throws AxelorException {
 
+    configuratorCheckService.checkConfiguratorActivated(configurator);
     configuratorCheckService.checkLinkedSaleOrderLine(configurator, product);
+    if (configuratorCheckService.isConfiguratorVersionDifferent(configurator)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
+    }
 
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
 
@@ -412,6 +418,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       JsonContext jsonAttributes,
       JsonContext jsonIndicators)
       throws AxelorException {
+    configuratorCheckService.checkConfiguratorActivated(configurator);
     var newSaleOrderLine =
         generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     saleOrderLineRepository.save(newSaleOrderLine);
