@@ -127,6 +127,7 @@
 "Configurator creator name",,,
 "Configurator creators",,,
 "Configurator formula list","Liste des formules",,
+"Configurator is not activated.","Le configurator n'est pas activé.",,
 "Configurator model","Modèle de configurateur",,
 "Configurator version is different than its configurator creator.","La version du configurateur est différente de celle de son modèle.",,
 "Configurator version is different than the version of its configurator creator, therefore only a simple duplicate will be created, proceed ?","La version du configurateur est différente de celle de son modèle, une simple copie sera générer, confirmer ? ",,

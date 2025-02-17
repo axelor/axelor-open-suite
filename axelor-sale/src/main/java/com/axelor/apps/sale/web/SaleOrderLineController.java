@@ -387,8 +387,13 @@ public class SaleOrderLineController {
     }
   }
 
-  public void checkDuplicationSaleOrderLine(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void checkDuplicationSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    Beans.get(ConfiguratorCheckService.class)
+        .checkConfiguratorActivated(saleOrderLine.getConfigurator());
 
     if (Beans.get(ConfiguratorCheckService.class)
         .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
@@ -396,8 +401,13 @@ public class SaleOrderLineController {
     }
   }
 
-  public void checkEditConfiguratorSaleOrderLine(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void checkEditConfiguratorSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    Beans.get(ConfiguratorCheckService.class)
+        .checkConfiguratorActivated(saleOrderLine.getConfigurator());
 
     if (Beans.get(ConfiguratorCheckService.class)
         .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {

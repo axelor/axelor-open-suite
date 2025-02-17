@@ -14,4 +14,6 @@ public interface ConfiguratorCheckService {
   void checkHaveConfigurator(SaleOrder saleOrder) throws AxelorException;
 
   boolean isConfiguratorVersionDifferent(Configurator configurator);
+
+  void checkConfiguratorActivated(Configurator configurator) throws AxelorException;
 }
