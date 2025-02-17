@@ -424,12 +424,11 @@ public class StockMoveLineController {
   public void splitIntoFulfilledMoveLineAndUnfulfilledOne(
       ActionRequest request, ActionResponse response) {
     try {
-      StockMoveLine stockMoveLine =
-          Beans.get(StockMoveLineRepository.class)
-              .find(request.getContext().asType(StockMoveLine.class).getId());
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
       if (stockMoveLine != null) {
         Beans.get(StockMoveLineService.class)
-            .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockMoveLine);
+            .splitIntoFulfilledMoveLineAndUnfulfilledOne(
+                Mapper.toBean(StockMoveLine.class, Mapper.toMap(stockMoveLine)));
         response.setReload(true);
       }
     } catch (Exception e) {
