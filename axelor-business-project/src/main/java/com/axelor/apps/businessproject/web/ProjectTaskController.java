@@ -266,4 +266,12 @@ public class ProjectTaskController {
 
     response.setValues(Beans.get(ProjectTaskGroupService.class).updateFinancialDatas(projectTask));
   }
+
+  @ErrorException
+  public void recomputeTotalAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setValues(Beans.get(ProjectTaskGroupService.class).recomputeTotalAmounts(projectTask));
+  }
 }
