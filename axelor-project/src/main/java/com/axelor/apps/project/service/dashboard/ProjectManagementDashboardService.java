@@ -18,12 +18,9 @@
  */
 package com.axelor.apps.project.service.dashboard;
 
-import com.axelor.apps.project.db.Project;
 import java.util.Map;
 
 public interface ProjectManagementDashboardService {
 
   Map<String, Object> getDate();
-
-  Map<String, Object> getData(Project project);
 }
