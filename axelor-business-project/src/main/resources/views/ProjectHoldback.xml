@@ -6,6 +6,7 @@
   <grid name="project-hold-back-grid" title="HoldBacks"
     model="com.axelor.apps.businessproject.db.ProjectHoldBack">
     <field name="name"/>
+    <field name="holdBackTypeSelect"/>
     <field name="defaultPercentage"/>
     <field name="projectHoldBackProduct"/>
   </grid>
@@ -23,6 +24,7 @@
           <label title="%" colSpan="3"/>
         </editor>
       </field>
+      <field name="holdBackTypeSelect"/>
       <field name="projectHoldBackProduct"/>
       <panel-related field="productsHeldBackSet" form-view="product-form" colSpan="12"
         grid-view="product-project-hold-back-grid" canNew="false"/>
