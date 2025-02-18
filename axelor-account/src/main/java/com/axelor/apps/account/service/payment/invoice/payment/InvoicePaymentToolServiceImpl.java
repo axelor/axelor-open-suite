@@ -146,7 +146,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   @Override
   @Transactional
-  public void updateHasPendingPayments(Invoice invoice) {
+  public void updateHasPendingPayments(Invoice invoice) throws AxelorException {
     invoice.setHasPendingPayments(checkPendingPayments(invoice));
   }
 
@@ -229,7 +229,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
    * @param invoice
    * @return
    */
-  protected boolean checkPendingPayments(Invoice invoice) {
+  protected boolean checkPendingPayments(Invoice invoice) throws AxelorException {
     BigDecimal pendingAmount = BigDecimal.ZERO;
 
     if (invoice.getInvoicePaymentList() != null) {

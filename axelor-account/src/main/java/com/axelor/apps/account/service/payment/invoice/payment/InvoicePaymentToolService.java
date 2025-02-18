@@ -35,7 +35,7 @@ public interface InvoicePaymentToolService {
 
   public void updateAmountPaid(Invoice invoice) throws AxelorException;
 
-  void updateHasPendingPayments(Invoice invoice);
+  void updateHasPendingPayments(Invoice invoice) throws AxelorException;
 
   public void updatePaymentProgress(Invoice invoice);
 

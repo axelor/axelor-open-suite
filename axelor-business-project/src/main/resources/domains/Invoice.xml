@@ -14,8 +14,12 @@
       help="This configuration allows you to group expenses by period on the project's invoice and to attach separate receipts for these expenses."/>
     <string name="groupingPeriodSelect" title="Grouping period"
       selection="business.project.invoice.grouping.period.select" default="month"/>
-
-
+    <one-to-many name="projectHoldBackATIList" mappedBy="invoice"
+      ref="com.axelor.apps.businessproject.db.ProjectHoldBackATI" title="HoldBacks ATIs"/>
+    <many-to-many name="projectHoldBackLineSet"
+      ref="com.axelor.apps.businessproject.db.ProjectHoldBackLine" title="HoldBacks lines"/>
+    <decimal name="holdBacksTotal" title=" HoldBacks ATI"/>
+    <decimal name="companyHoldBacksTotal" title=" HoldBacks ATI"/>
     <extra-code>
       <![CDATA[
           public static final int OPERATION_SUB_TYPE_IN_PROGRESS_INVOICE = 8;
@@ -23,6 +27,11 @@
           // GROUPING PERIOD SELECT
           public static final String GROUPING_PERIOD_MONTH = "month";
 	      public static final String GROUPING_PERIOD_WEEK = "week";
+
+	      // REPORT TYPE
+          public static final int REPORT_TYPE_INVOICE_WITH_HOLD_BACKS_DETAILS= 5;
+          public static final int REPORT_TYPE_INVOICE_WITH_PAYMENTS_AND_HOLD_BACKS_DETAILS= 6;
+
       ]]>
     </extra-code>
 
