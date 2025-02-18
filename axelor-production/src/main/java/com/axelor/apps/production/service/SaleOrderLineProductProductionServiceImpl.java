@@ -134,15 +134,17 @@ public class SaleOrderLineProductProductionServiceImpl
         } else if (product.getParentProduct() != null) {
           saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
         }
+        BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
         if (saleOrderLine.getIsToProduce() && !saleOrderLineBomService.isUpdated(saleOrderLine)) {
-          saleOrderLineBomService
-              .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
-              .stream()
+          saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
               .filter(Objects::nonNull)
               .forEach(saleOrderLine::addSubSaleOrderLineListItem);
         }
 
-        saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
+        saleOrderLineMap.put("billOfMaterial", billOfMaterial);
+        if (billOfMaterial != null) {
+          saleOrderLineMap.put("prodProcess", billOfMaterial.getProdProcess());
+        }
       }
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
     }
