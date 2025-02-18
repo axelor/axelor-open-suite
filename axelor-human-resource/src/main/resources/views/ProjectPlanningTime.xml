@@ -234,6 +234,10 @@
       method="removeProjectPlanningTime"/>
   </action-method>
 
+  <action-validate name="action-project-validate-remove-project-planning-time">
+    <alert message="Are you sure wants to remove selected lines?"/>
+  </action-validate>
+
   <action-group name="action-project-planning-time-group-project-task-on-change">
     <action name="action-project-planning-time-attrs-project-task-onChange"/>
     <action name="action-project-planning-time-method-compute-planned-time"/>
