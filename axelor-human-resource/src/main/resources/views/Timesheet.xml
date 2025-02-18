@@ -21,6 +21,7 @@
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="all-timesheet-grid" title="All timesheets"
@@ -42,6 +43,7 @@
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
@@ -61,6 +63,7 @@
     <field name="toDate"/>
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-validate-grid" title="Timesheet"
@@ -85,6 +88,7 @@
     <field name="periodTotal"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
@@ -114,6 +118,18 @@
           readonlyIf="statusSelect != 1 || (timesheetLineList &amp;&amp; timesheetLineList.length != 0)"
           onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
           canEdit="false" canView="false"/>
+        <field name="$isCompleted" showTitle="false" readonly="true" colSpan="2"
+          if="!__config__.app.getApp('timesheet')?.needValidation">
+          <viewer>
+              <![CDATA[
+                  <>
+                      <Box d="flex" justifyContent="flex-end">
+                          {isCompleted && <Badge bg="success">{_t('Completed')}</Badge>}
+                      </Box>
+                  </>
+              ]]>
+          </viewer>
+        </field>
         <field if-module="axelor-business-production"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="employee.timesheetImputationSelect" hidden="true"/>
@@ -124,8 +140,7 @@
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
         <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="5"/>
-        <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"
-          readonly="true"/>
+        <field name="isCompleted" hidden="true"/>
         <field name="employee.user" hidden="true"/>
         <field name="employee.user.code" hidden="true"/>
       </panel>
