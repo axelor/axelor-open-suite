@@ -19,6 +19,7 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
@@ -30,10 +31,13 @@ import java.util.Optional;
 
 public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
 
+  protected AppBaseService appBaseService;
   protected MetaModelRepository metaModelRepository;
 
   @Inject
-  public ProjectTaskAttrsServiceImpl(MetaModelRepository metaModelRepository) {
+  public ProjectTaskAttrsServiceImpl(
+      AppBaseService appBaseService, MetaModelRepository metaModelRepository) {
+    this.appBaseService = appBaseService;
     this.metaModelRepository = metaModelRepository;
   }
 
@@ -75,10 +79,20 @@ public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
     }
 
     if (ProjectRepository.SPRINT_MANAGEMENT_VERSION.equals(sprintManagementSelect)) {
-      domain = "self.targetVersion = :targetVersion";
+      domain = "(self.targetVersion = :targetVersion";
     } else {
-      domain = "self.project = :project";
+      domain = "(self.project = :project";
     }
+
+    domain =
+        domain.concat(
+            String.format(
+                " AND self.toDate > '%s')",
+                appBaseService.getTodayDate(
+                    Optional.of(projectTask)
+                        .map(ProjectTask::getProject)
+                        .map(Project::getCompany)
+                        .orElse(null))));
 
     domain =
         domain.concat(
