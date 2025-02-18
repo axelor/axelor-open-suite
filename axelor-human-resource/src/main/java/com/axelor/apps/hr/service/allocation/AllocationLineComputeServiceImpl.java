@@ -228,19 +228,19 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       LocalDate sprintToDate = sprint.getToDate();
 
       int sprintPeriod = 0;
-      if (allocationLineFromDate.isAfter(sprintFromDate)
-          && allocationLineToDate.isBefore(sprintToDate)) {
+      if (sprintFromDate.isAfter(allocationLineFromDate)
+          && sprintToDate.isBefore(allocationLineToDate)) {
         sprintPeriod = getWeekDaysNumber(sprintFromDate, sprintToDate);
       }
 
-      if (allocationLineFromDate.isAfter(sprintFromDate)
-          && !allocationLineToDate.isBefore(sprintToDate)) {
-        sprintPeriod = getWeekDaysNumber(sprintFromDate, allocationLineToDate);
+      if (!sprintFromDate.isAfter(allocationLineFromDate)
+              && sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWeekDaysNumber(allocationLineFromDate, sprintToDate);
       }
 
-      if (!allocationLineFromDate.isAfter(sprintFromDate)
-          && allocationLineToDate.isBefore(sprintToDate)) {
-        sprintPeriod = getWeekDaysNumber(allocationLineFromDate, sprintToDate);
+      if (sprintFromDate.isAfter(allocationLineFromDate)
+              && !sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWeekDaysNumber(sprintFromDate, allocationLineToDate);
       }
 
       int allocationPeriod = getWeekDaysNumber(allocationLineFromDate, allocationLineToDate);
