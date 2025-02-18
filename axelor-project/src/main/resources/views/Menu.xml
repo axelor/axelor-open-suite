@@ -251,16 +251,7 @@
     title="Projects and resources management" action="project.wizard.form" order="1820"/>
 
   <action-view name="project.wizard.form"
-    title="Projects and resources management wizard" model="com.axelor.utils.db.Wizard">
+    title="Projects and resources management" model="com.axelor.utils.db.Wizard">
     <view type="form" name="project-wizard-form"/>
   </action-view>
-
-  <menuitem name="project.dashboard.sample" parent="project-reporting"
-    title="Projects and resources management" action="project.dashboard" order="1800"/>
-
-  <action-view name="project.dashboard" title="Projects and resources management">
-    <view type="dashboard" name="project.dashboard.sample"/>
-
-  </action-view>
-
 </object-views>
