@@ -90,6 +90,8 @@
 "Calculation date",,,
 "Calculation in progress",,,
 "Calculation number",,,
+"Calculation quantity",,,
+"Calculation quantity should not be zero.",,,
 "Calculation type",,,
 "Calendars",,,
 "Cancel",,,

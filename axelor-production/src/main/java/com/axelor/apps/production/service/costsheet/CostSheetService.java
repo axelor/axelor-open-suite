@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.UnitCostCalculation;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface CostSheetService {
@@ -46,4 +47,6 @@ public interface CostSheetService {
   public CostSheet computeCostPrice(
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException;
+
+  BigDecimal getQtyRatio(BillOfMaterial billOfMaterial);
 }

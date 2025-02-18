@@ -399,4 +399,7 @@ public final class ProductionExceptionMessage {
 
   public static final String CAN_NOT_REGENERATE_BOM_AS_ALREADY_IN_PRODUCTION = /*$$(*/
       "Cannot regenerate because the bill of material is in use in production (one manuf order exist)" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY = /*$$(*/
+      "Calculation quantity should not be zero." /*)*/;
 }
