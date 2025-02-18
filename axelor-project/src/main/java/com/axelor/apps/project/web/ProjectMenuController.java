@@ -137,8 +137,6 @@ public class ProjectMenuController {
       sprintIdList = sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
     }
 
-    response.setAttr("sprintDashletPanel.allSprintsBtn", "hidden", "false");
-
     ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Sprints"));
     actionViewBuilder.model(Sprint.class.getName());
     actionViewBuilder.add("grid", "sprint-grid");

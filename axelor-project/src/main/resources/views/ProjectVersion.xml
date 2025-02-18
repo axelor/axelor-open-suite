@@ -27,7 +27,7 @@
         onClick="save,action-sprint-generator-version-view-wizard-mass-generate"/>
       <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
         colSpan="12" action="action-project-version-method-show-sprint-list" height="200%"
-        canSearch="true" editable="true" canNew="true" canDelete="true"/>
+        canSearch="true" editable="true" canNew="id" canDelete="true"/>
     </panel>
     <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
       <panel-dashlet name="taskDashletPanel" title="Ticket associated"

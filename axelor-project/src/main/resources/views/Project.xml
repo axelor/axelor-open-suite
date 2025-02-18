@@ -396,8 +396,7 @@
 
   <form name="incl-project-roadmap-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Roadmap" name="roadmapPanel"
-      onTabSelect="action-project-attrs-hide-project-version-on-sprint">
+    <panel title="Roadmap" name="roadmapPanel">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
       <panel name="sprintPanel" title="Sprints" colSpan="12"
@@ -414,7 +413,8 @@
           onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
         <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
           colSpan="12" action="action-project-method-show-sprint-list" height="200%"
-          canSearch="true" editable="true" canNew="sprintManagementSelect == 'project'"
+          canSearch="true" editable="true"
+          canNew="id &amp;&amp; sprintManagementSelect == 'project'"
           canDelete="sprintManagementSelect == 'project'"/>
         <field name="sprintManagementSelect" hidden="true"/>
       </panel>
@@ -522,7 +522,6 @@
     <action name="action-project-activity-dashboard-method-on-new"/>
     <action name="action-project-dashboard-method-on-new"/>
     <action name="action-attrs-project-show-log-time-panel"/>
-    <action name="action-project-attrs-hide-project-version-on-sprint"/>
   </action-group>
 
   <action-group name="action-project-group-on-new-project">
@@ -629,10 +628,6 @@
   <action-attrs name="action-project-attrs-set-time-unit-domain">
     <attribute name="domain" for="projectTimeUnit"
       expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
-  </action-attrs>
-
-  <action-attrs name="action-project-attrs-hide-project-version-on-sprint">
-    <attribute for="sprintList.targetVersion" name="hidden" expr="eval: true"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-status-to-add-domain">
