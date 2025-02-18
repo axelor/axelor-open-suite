@@ -9,4 +9,6 @@ public interface SolBomCustomizationService {
   void customizeBomOf(
       SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetailsList)
       throws AxelorException;
+
+  void customSaleOrderLineList(List<SaleOrderLine> saleOrderLineList) throws AxelorException;
 }

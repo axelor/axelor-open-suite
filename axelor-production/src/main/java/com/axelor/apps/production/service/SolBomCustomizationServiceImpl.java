@@ -6,10 +6,13 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -18,15 +21,24 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
   protected final BillOfMaterialService billOfMaterialService;
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BomLineCreationService bomLineCreationService;
+  protected final AppProductionService appProductionService;
+  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
+  protected final SolBomUpdateService solBomUpdateService;
 
   @Inject
   public SolBomCustomizationServiceImpl(
       BillOfMaterialService billOfMaterialService,
       BillOfMaterialRepository billOfMaterialRepository,
-      BomLineCreationService bomLineCreationService) {
+      BomLineCreationService bomLineCreationService,
+      AppProductionService appProductionService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService,
+      SolBomUpdateService solBomUpdateService) {
     this.billOfMaterialService = billOfMaterialService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.bomLineCreationService = bomLineCreationService;
+    this.appProductionService = appProductionService;
+    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
+    this.solBomUpdateService = solBomUpdateService;
   }
 
   @Override
@@ -91,6 +103,57 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
           personalizedBOM.addBillOfMaterialLineListItem(bomLine);
         }
       }
+    }
+  }
+
+  @Override
+  public void customSaleOrderLineList(List<SaleOrderLine> saleOrderLineList)
+      throws AxelorException {
+    AppProduction appProduction = appProductionService.getAppProduction();
+
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+
+    if (!appProduction.getAllowPersonalizedBOM()
+        || appProduction.getIsBomLineGenerationInSODisabled()) {
+      return;
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      customSaleOrderLine(saleOrderLine);
+    }
+  }
+
+  protected void customSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
+    Objects.requireNonNull(saleOrderLine);
+    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()
+        || !saleOrderLine.getIsToProduce()) {
+      return;
+    }
+
+    if (saleOrderLine.getSubSaleOrderLineList() != null) {
+      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
+        customSaleOrderLine(subSaleOrderLine);
+      }
+    }
+
+    customizeBomOf(saleOrderLine);
+  }
+
+  protected void customizeBomOf(SaleOrderLine saleOrderLine) throws AxelorException {
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList();
+    var isUpdated = solBomUpdateService.isUpdated(saleOrderLine);
+    var isSolDetailsUpdated =
+        solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine, saleOrderLineDetailsList);
+
+    if (isUpdated && isSolDetailsUpdated) {
+      return;
+    }
+
+    if (!isSolDetailsUpdated || !isUpdated) {
+      customizeBomOf(saleOrderLine, saleOrderLineDetailsList);
     }
   }
 }

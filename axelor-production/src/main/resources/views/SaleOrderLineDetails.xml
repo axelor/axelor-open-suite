@@ -5,6 +5,8 @@
 
   <grid name="sale-order-line-details-grid" title="Sale order lines details"
     model="com.axelor.apps.production.db.SaleOrderLineDetails">
+    <field name="billOfMaterialLine"/>
+    <field name="billOfMaterialLine.id"/>
     <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
       widget="ImageSelect" title=""/>
     <field name="product" form-view="product-form" grid-view="product-grid"
@@ -25,6 +27,8 @@
 
   <grid name="sale-order-line-details-readonly-grid" title="Sale order lines details"
     model="com.axelor.apps.production.db.SaleOrderLineDetails">
+    <field name="billOfMaterialLine.id"/>
+    <field name="billOfMaterialLine"/>
     <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
       widget="ImageSelect"/>
     <field name="title"/>
