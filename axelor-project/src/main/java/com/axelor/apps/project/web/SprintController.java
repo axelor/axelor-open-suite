@@ -129,7 +129,7 @@ public class SprintController {
     String domain =
         Beans.get(SprintGeneratorService.class).getSprintDomain(projectRepo.find(projectId));
 
-    response.setAttr("sprint", "domain", domain);
+    response.setAttr("$sprint", "domain", domain);
   }
 
   public void showAllSprints(ActionRequest request, ActionResponse response) {
