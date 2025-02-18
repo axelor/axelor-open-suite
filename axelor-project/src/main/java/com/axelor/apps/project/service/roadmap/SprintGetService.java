@@ -5,7 +5,9 @@ import com.axelor.apps.project.db.Sprint;
 import java.util.List;
 
 public interface SprintGetService {
-  List<Sprint> getSprintToDisplay(Project project);
+  List<Sprint> getSprintToDisplay(Project project, boolean includeBacklog);
+
+  List<Sprint> getSprintList(Project project);
 
   String getSprintIdsToExclude(List<Sprint> sprintList);
 }
