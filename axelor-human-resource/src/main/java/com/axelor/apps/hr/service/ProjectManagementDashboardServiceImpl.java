@@ -16,24 +16,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service.dashboard;
+package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProjectManagementDashboardServiceImpl implements ProjectManagementDashboardService {
   protected ProjectTaskRepository projectTaskRepo;
   protected ProjectRepository projectRepo;
+  protected EmployeeRepository employeeRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ProjectManagementDashboardServiceImpl(
-      ProjectTaskRepository projectTaskRepo, ProjectRepository projectRepo) {
+      ProjectTaskRepository projectTaskRepo,
+      ProjectRepository projectRepo,
+      EmployeeRepository employeeRepository,
+      AppBaseService appBaseService) {
     this.projectTaskRepo = projectTaskRepo;
     this.projectRepo = projectRepo;
+    this.employeeRepository = employeeRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -44,5 +61,27 @@ public class ProjectManagementDashboardServiceImpl implements ProjectManagementD
     dataMap.put("$toDate", todayDate.plusDays(7));
 
     return dataMap;
+  }
+
+  @Override
+  public List<Long> getFilteredEmployeeIds(Project project) {
+    List<Long> idList = new ArrayList<>();
+    if (project != null) {
+      LocalDate localDate =
+          appBaseService.getTodayDate(
+              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+      List<Employee> employeeList =
+          project.getMembersUserSet().stream().map(User::getEmployee).collect(Collectors.toList());
+      idList =
+          employeeList.stream()
+              .filter(
+                  e ->
+                      !e.getHireDate().isAfter(localDate)
+                          && (!e.getLeavingDate().isBefore(localDate)
+                              || e.getLeavingDate() == null))
+              .map(Employee::getId)
+              .collect(Collectors.toList());
+    }
+    return idList;
   }
 }
