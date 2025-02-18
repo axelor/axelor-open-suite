@@ -8,6 +8,9 @@
     <panel name="filtersPanel">
       <field name="$project" title="Project" colSpan="12" type="many-to-one"
         onChange="action-project-group-onchange-project" target="com.axelor.apps.project.db.Project"/>
+      <field name="employee" target="com.axelor.apps.hr.db.Employee" title="Employee"
+        type="many-to-one" colSpan="12"
+        domain="date(self.hireDate) &lt;= date(CURRENT_DATE()) and( date(self.leavingDate) &gt;= date(CURRENT_DATE())  or self.leavingDate is NULL )"/>
       <field name="$fromDate" title="From Date" colSpan="3" type="date"
         onChange="action-project-group-onchange-from-date" required="true"/>
       <field name="$toDate" title="To Date" colSpan="3" type="date"
@@ -44,9 +47,15 @@
     <view name="project-task-dashboard-grid" type="grid"/>
     <view name="project-task-form" type="form"/>
     <view-param name="popup" value="true"/>
-    <domain> (self.taskDate &lt;= :toDate and self.taskDate &gt;= :fromDate )
+    <domain> (date(self.taskDate) &lt;= date(:toDate) and date(self.taskDate) &gt;= date(:fromDate)
+      )
       and
-      (self.project=:project OR :project IS NULL)</domain>
+      (self.project=:project OR :project IS NULL) and
+      (self.assignedTo.employee =:employee OR
+      :employee IS
+      NULL)
+
+    </domain>
   </action-view>
   <action-view name="action-project-view-planning-time-dashboard"
     model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning tasks">
@@ -58,7 +67,11 @@
       (date(self.endDateTime) &lt;= date(:toDate) and date(self.endDateTime)
       &gt;= date(:fromDate) ))
       and
-      (self.project=:project OR :project IS NULL)</domain>
+      (self.project=:project OR :project IS NULL)
+      and
+      (self.employee
+      =:employee OR :employee IS
+      NULL)</domain>
   </action-view>
   <action-view name="action-project-view-allocation-line"
     model="com.axelor.apps.hr.db.AllocationLine" title="Project allocation lines">
@@ -72,7 +85,11 @@
       date(self.period.toDate)
       &gt;= date(:fromDate) ))
       and
-      (self.project=:project OR :project IS NULL)</domain>
+      (self.project=:project OR :project IS NULL)
+      and
+      (self.employee
+      =:employee OR :employee IS
+      NULL)</domain>
   </action-view>
 
   <action-view name="action-project-view-project-sprint"
