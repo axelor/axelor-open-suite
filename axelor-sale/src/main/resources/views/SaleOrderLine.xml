@@ -50,18 +50,20 @@
     </field>
     <button name="configuratorEditBtn"
       onClick="save,action-sale-order-line-view-regenerate-line"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="pencil-square" title="Configurator edit button"/>
+      if="__config__.app.getApp('sale')?.getEnableConfigurator() &amp;&amp; __config__.app.getApp('sale')?.getEnableConfiguratorEdition()"
+      readonlyIf="configurator == null" icon="pencil-square" title="Configurator edit button"/>
     <button name="configuratorDuplicateBtn"
       onClick="save,action-sale-order-line-method-configurator-duplicate"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-copy" title="Configurator duplicate button"/>
+      if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
+      readonlyIf="saleOrder.id == null" icon="fa-copy" title="Duplicate line"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
@@ -129,12 +131,12 @@
     </field>
     <button name="configuratorEditBtn"
       onClick="save,action-sale-order-line-view-regenerate-line"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="pencil-square" title="Configurator edit button"/>
+      if="__config__.app.getApp('sale')?.getEnableConfigurator() &amp;&amp; __config__.app.getApp('sale')?.getEnableConfiguratorEdition()"
+      readonlyIf="configurator == null" icon="pencil-square" title="Configurator edit button"/>
     <button name="configuratorDuplicateBtn"
       onClick="save,action-sale-order-line-method-configurator-duplicate"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-copy" title="Configurator duplicate button"/>
+      if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
+      readonlyIf="saleOrder.id == null" icon="fa-copy" title="Duplicate line"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -143,6 +145,8 @@
     <field name="$isParentTitleLine" hidden="true"/>
     <field name="$computeWithSOL" hidden="true"/>
     <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"

@@ -56,8 +56,14 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       throws AxelorException, JsonProcessingException {
 
     var saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrderLine.getConfigurator() == null) {
+      // Copy
+      var copy = saleOrderLineRepository.save(saleOrderLineRepository.copy(saleOrderLine, false));
+      saleOrder.addSaleOrderLineListItem(copy);
+    } else {
+      duplicateLineWithoutCompute(saleOrderLine);
+    }
 
-    duplicateLineWithoutCompute(saleOrderLine);
     computeSaleOrder(saleOrder);
   }
 
@@ -67,7 +73,6 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
     Objects.requireNonNull(saleOrderLine);
     var configurator = saleOrderLine.getConfigurator();
     var context = new Context(Configurator.class);
-
     var saleOrder = saleOrderLine.getSaleOrder();
     var duplicatedConfigurator = configuratorRepository.copy(configurator, false);
     var jsonAttributes =

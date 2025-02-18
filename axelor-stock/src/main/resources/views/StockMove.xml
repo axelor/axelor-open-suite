@@ -1415,6 +1415,7 @@
       expr="eval: supplierArrivalCancellationAutomaticMail"/>
     <context name="_supplierArrivalCancellationMessageTemplate"
       expr="eval: supplierArrivalCancellationMessageTemplate"/>
+    <context name="_contextParent" expr="eval: __parent__"/>
   </action-view>
 
   <form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove"
@@ -1423,10 +1424,14 @@
       <field name="cancelReason" domain="self.applicationType = :_xApplicationType"
         colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
       <button readonlyIf="cancelReason == null" name="cancelConfirmBtn"
-        title="Confirm cancellation" onClick="action-stock-move-method-cancel" colOffset="4"
+        title="Confirm cancellation" onClick="action-stock-move-group-cancel" colOffset="4"
         colSpan="4"/>
     </panel>
   </form>
+
+  <action-group name="action-stock-move-group-cancel">
+    <action name="action-stock-move-method-cancel"/>
+  </action-group>
 
   <action-record name="action-stock-move-record-update-info-company"
     model="com.axelor.apps.stock.db.StockMove">
