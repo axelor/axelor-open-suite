@@ -107,8 +107,8 @@
   </action-view>
 
 
-  <action-view name="action-project-view-project-sprint" model="com.axelor.apps.project.db.Sprint"
-    title="Sprints">
+  <action-view name="action-project-view-project-sprint"
+    model="com.axelor.apps.project.db.Sprint" title="Sprints">
     <view name="project-sprint-grid" type="grid"/>
     <view name="sprint-form" type="form"/>
     <view-param name="popup" value="true"/>
