@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
+import com.axelor.apps.businessproject.service.ProjectHoldBackLineService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.common.StringUtils;
@@ -109,5 +110,15 @@ public class InvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateHoldBackATI(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(ProjectHoldBackLineService.class).updateHoldBackATI(invoice);
+    response.setValue("projectHoldBackATIList", invoice.getProjectHoldBackATIList());
+    response.setValue("holdBacksTotal", invoice.getHoldBacksTotal());
+    response.setValue("companyHoldBacksTotal", invoice.getCompanyHoldBacksTotal());
   }
 }
