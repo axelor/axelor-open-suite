@@ -14,6 +14,7 @@ import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AllocationLineComputeServiceImpl implements AllocationLineComputeService {
 
@@ -210,5 +212,61 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     }
 
     return prorata;
+  }
+
+  @Override
+  public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
+    List<AllocationLine> allocationLineList =
+        allocationLineRepo.all().fetch().stream()
+            .filter(allocationLine -> allocationLine.getProject().equals(project))
+            .collect(Collectors.toList());
+    BigDecimal allocatedTime = BigDecimal.ZERO;
+    for (AllocationLine allocationLine : allocationLineList) {
+      LocalDate allocationLineFromDate = allocationLine.getPeriod().getFromDate();
+      LocalDate allocationLineToDate = allocationLine.getPeriod().getToDate();
+      LocalDate sprintFromDate = sprint.getFromDate();
+      LocalDate sprintToDate = sprint.getToDate();
+
+      int sprintPeriod = 0;
+      if (sprintFromDate.isAfter(allocationLineFromDate)
+          && sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWeekDaysNumber(sprintFromDate, sprintToDate);
+      }
+
+      if (!sprintFromDate.isAfter(allocationLineFromDate)
+          && sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWeekDaysNumber(allocationLineFromDate, sprintToDate);
+      }
+
+      if (sprintFromDate.isAfter(allocationLineFromDate)
+          && !sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWeekDaysNumber(sprintFromDate, allocationLineToDate);
+      }
+
+      int allocationPeriod = getWeekDaysNumber(allocationLineFromDate, allocationLineToDate);
+      BigDecimal allocation = allocationLine.getAllocated();
+      allocatedTime = allocatedTime.add(getProrata(allocationPeriod, sprintPeriod, allocation));
+    }
+    return allocatedTime;
+  }
+
+  int getWeekDaysNumber(LocalDate startDate, LocalDate toDate) {
+    int i = 0;
+    LocalDate temp = startDate;
+    while (!temp.isAfter(toDate)) {
+      if (temp.getDayOfWeek().getValue() < 6) {
+        i++;
+      }
+      temp = temp.plusDays(1);
+    }
+    return i;
+  }
+
+  BigDecimal getProrata(int allocationPeriod, int sprintPeriod, BigDecimal allocation) {
+    if (allocationPeriod != 0)
+      return allocation
+          .multiply(BigDecimal.valueOf(sprintPeriod))
+          .divide(BigDecimal.valueOf(allocationPeriod), 2, RoundingMode.HALF_UP);
+    return BigDecimal.ZERO;
   }
 }
