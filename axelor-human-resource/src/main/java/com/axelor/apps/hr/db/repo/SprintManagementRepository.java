@@ -18,10 +18,11 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
@@ -29,19 +30,23 @@ import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardServi
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {
-
+  AppBaseService appBaseService;
   ProjectRepository projectRepository;
   ProjectManagementDashboardService projectManagementDashboardService;
   AllocationLineComputeService allocationLineComputeService;
+  static final int DAY_HOURS_NUMBER = 24;
 
   @Inject
   public SprintManagementRepository(
+      AppBaseService appBaseService,
       ProjectRepository projectRepository,
       ProjectManagementDashboardService projectManagementDashboardService,
       AllocationLineComputeService allocationLineComputeService) {
+    this.appBaseService = appBaseService;
     this.projectRepository = projectRepository;
     this.projectManagementDashboardService = projectManagementDashboardService;
     this.allocationLineComputeService = allocationLineComputeService;
@@ -68,12 +73,21 @@ public class SprintManagementRepository extends SprintRepository {
     return super.populate(json, context);
   }
 
-  protected BigDecimal getBudgetedTime(Sprint sprint) {
-    BigDecimal budgetedTime =
-        sprint.getProjectTaskList().stream()
-            .map(ProjectTask::getBudgetedTime)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    return budgetedTime;
+  protected BigDecimal getBudgetedTime(Sprint sprint) throws AxelorException {
+
+    Long unitHoursId = appBaseService.getUnitHours().getId();
+    return sprint.getProjectTaskList().stream()
+        .map(
+            projectTask -> {
+              if (projectTask.getTimeUnit().getId().equals(unitHoursId)) {
+
+                return projectTask
+                    .getBudgetedTime()
+                    .divide(BigDecimal.valueOf(DAY_HOURS_NUMBER), 2, RoundingMode.HALF_UP);
+              }
+              return projectTask.getBudgetedTime();
+            })
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 }

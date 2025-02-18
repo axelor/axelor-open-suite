@@ -266,7 +266,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     if (allocationPeriod != 0)
       return allocation
           .multiply(BigDecimal.valueOf(sprintPeriod))
-          .divide(BigDecimal.valueOf(allocationPeriod));
+          .divide(BigDecimal.valueOf(allocationPeriod), 2, RoundingMode.HALF_UP);
     return BigDecimal.ZERO;
   }
 }
