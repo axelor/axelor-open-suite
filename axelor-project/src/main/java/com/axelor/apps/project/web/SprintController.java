@@ -164,11 +164,11 @@ public class SprintController {
   @CallMethod
   public List<Long> computeSprintDomain(Long projectId) {
     ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    Project project = projectRepo.find(1L);
+    List<Sprint> sprintList = new ArrayList<>();
     if (projectId != null) {
-      project = projectRepo.find(projectId);
+      Project project = projectRepo.find(projectId);
+      sprintList = Beans.get(SprintGeneratorService.class).getSprintDomain(project);
     }
-    List<Sprint> sprintList = Beans.get(SprintGeneratorService.class).getSprintDomain(project);
     return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }
 }
