@@ -21,6 +21,7 @@
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="all-timesheet-grid" title="All timesheets"
@@ -41,6 +42,7 @@
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
@@ -60,6 +62,7 @@
     <field name="toDate"/>
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-validate-grid" title="Timesheet"
@@ -84,6 +87,7 @@
     <field name="periodTotal"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
@@ -122,13 +126,18 @@
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
         <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="5"/>
-        <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"
-          readonly="true"/>
+        <field name="isCompleted" hidden="true"/>
         <field name="employee.user" hidden="true"/>
         <field name="employee.user.code" hidden="true"/>
       </panel>
 
       <panel name="actionsPanel" colSpan="3" itemSpan="12">
+        <field name="$isCompleted" showTitle="false" readonly="true"
+          if="!__config__.app.getApp('timesheet')?.needValidation">
+          <viewer>
+              <![CDATA[<>{isCompleted && <Badge bg="success">{_t('Completed')}</Badge>}</>]]>
+          </viewer>
+        </field>
         <button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
