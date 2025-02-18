@@ -16,6 +16,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.StringHelper;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,11 +135,11 @@ public class SprintController {
   @CallMethod
   public List<Long> computeSprintDomain(Long projectId) {
     ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    Project project = projectRepo.find(1L);
+    List<Sprint> sprintList = new ArrayList<>();
     if (projectId != null) {
-      project = projectRepo.find(projectId);
+      Project project = projectRepo.find(projectId);
+      sprintList = Beans.get(SprintGeneratorService.class).getSprintDomain(project);
     }
-    List<Sprint> sprintList = Beans.get(SprintGeneratorService.class).getSprintDomain(project);
     return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }
 }

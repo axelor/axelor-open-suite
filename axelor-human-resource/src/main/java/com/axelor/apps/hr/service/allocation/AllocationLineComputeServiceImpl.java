@@ -234,12 +234,12 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       }
 
       if (!sprintFromDate.isAfter(allocationLineFromDate)
-              && sprintToDate.isBefore(allocationLineToDate)) {
+          && sprintToDate.isBefore(allocationLineToDate)) {
         sprintPeriod = getWeekDaysNumber(allocationLineFromDate, sprintToDate);
       }
 
       if (sprintFromDate.isAfter(allocationLineFromDate)
-              && !sprintToDate.isBefore(allocationLineToDate)) {
+          && !sprintToDate.isBefore(allocationLineToDate)) {
         sprintPeriod = getWeekDaysNumber(sprintFromDate, allocationLineToDate);
       }
 
