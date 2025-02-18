@@ -88,15 +88,17 @@ public class LeaveController {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())
-                .add("form", "leave-request-form")
+                .add("form", "complete-my-leave-request-form")
+                .context("_isEmployeeReadOnly", true)
                 .map());
       } else if (leaveList.size() == 1) {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())
-                .add("form", "leave-request-form")
+                .add("form", "complete-my-leave-request-form")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(leaveList.get(0).getId()))
+                .context("_isEmployeeReadOnly", true)
                 .map());
       } else {
         response.setView(
@@ -128,10 +130,11 @@ public class LeaveController {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())
-                .add("form", "leave-request-form")
+                .add("form", "complete-my-leave-request-form")
                 .param("forceEdit", "true")
                 .domain("self.id = " + leaveId)
                 .context("_showRecord", leaveId)
+                .context("_isEmployeeReadOnly", true)
                 .map());
       }
     } catch (Exception e) {
