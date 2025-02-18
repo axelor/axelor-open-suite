@@ -48,9 +48,7 @@ public class ConfiguratorInitServiceImpl implements ConfiguratorInitService {
   }
 
   protected JSONObject getJsonDefaultValues(ConfiguratorCreator configuratorCreator) {
-    // Récuperer la liste des attributs.
     List<MetaJsonField> attributes = configuratorCreator.getAttributes();
-    // Construire un json avec champs attributs: defaultValue
     JSONObject attributesJson = new JSONObject();
     for (MetaJsonField attribute : attributes) {
       try {
