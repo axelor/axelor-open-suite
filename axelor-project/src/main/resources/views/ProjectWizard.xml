@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
-    width="large" onNew="action-method-project-set-date" canNew="false" canDelete="false">
+    width="large" onNew="action-method-project-set-date" canNew="false" canDelete="false"
+    canSave="false">
     <panel name="filtersPanel">
       <field name="$project" title="Project" colSpan="12" type="many-to-one"
         onChange="action-project-group-onchange-project" target="com.axelor.apps.project.db.Project"/>
-      <field name="employee" target="com.axelor.apps.hr.db.Employee" title="Employee"
-        type="many-to-one" colSpan="12"
-        domain="date(self.hireDate) &lt;= date(CURRENT_DATE()) and( date(self.leavingDate) &gt;= date(CURRENT_DATE())  or self.leavingDate is NULL )"/>
+      <field name="$employee" target="com.axelor.apps.hr.db.Employee" title="Employee"
+        type="many-to-one" colSpan="12" onSelect="action-project-method-compute-employee-domain"/>
       <field name="$fromDate" title="From Date" colSpan="3" type="date"
         onChange="action-project-group-onchange-from-date" required="true"/>
       <field name="$toDate" title="To Date" colSpan="3" type="date"
@@ -182,4 +182,8 @@
     <action name="action-attrs-refresh-dashlets"/>
   </action-group>
 
+  <action-method name="action-project-method-compute-employee-domain">
+    <call class="com.axelor.apps.hr.web.ProjectManagementDashboardController"
+      method="computeEmployeeDomainDashboard"/>
+  </action-method>
 </object-views>
