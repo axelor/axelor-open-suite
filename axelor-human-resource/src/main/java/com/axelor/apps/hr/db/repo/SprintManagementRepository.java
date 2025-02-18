@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
@@ -27,6 +29,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {
