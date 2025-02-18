@@ -46,6 +46,8 @@
 
     <string name="note" large="true"/>
 
+    <decimal name="calculationQty" title="Calculation quantity"/>
+
     <extra-code><![CDATA[
 
     	// STATUS SELECT
