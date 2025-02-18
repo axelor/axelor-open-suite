@@ -39,10 +39,6 @@
     <boolean name="enableStatusManagementByTaskCategory"
       title="Enable status management by task category"/>
 
-    <boolean name="isActivateProjectChangeShortcut" default="false"
-      title="Activate the project change shortcut"
-      help="This configuration allows quick access to the active project change"/>
-
     <track>
       <field name="projectLabel" on="UPDATE"/>
       <field name="resourceManagement" on="UPDATE"/>
