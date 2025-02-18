@@ -62,7 +62,9 @@ import com.axelor.apps.contract.service.IndexRevaluationServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLinePricingService;
 import com.axelor.apps.contract.service.InvoiceLinePricingServiceImpl;
+import com.axelor.apps.contract.service.InvoicePaymentToolServiceContractImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
+import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
 import com.axelor.apps.contract.service.pricing.ContractPricingService;
@@ -72,8 +74,10 @@ import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
 import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
 public class ContractModule extends AxelorModule {
 
@@ -110,5 +114,9 @@ public class ContractModule extends AxelorModule {
     bind(AccountManagementContractService.class).to(AccountManagementContractServiceImpl.class);
     bind(ContractLineContextToolService.class).to(ContractLineContextToolServiceImpl.class);
     bind(ContractInvoicingService.class).to(ContractInvoicingServiceImpl.class);
+    bind(WorkflowVentilationServiceSupplychainImpl.class)
+        .to(WorkflowVentilationContractServiceImpl.class);
+    bind(InvoicePaymentToolServiceSupplychainImpl.class)
+        .to(InvoicePaymentToolServiceContractImpl.class);
   }
 }

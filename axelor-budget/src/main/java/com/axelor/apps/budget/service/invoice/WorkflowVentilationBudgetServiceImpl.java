@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
+import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -75,7 +76,8 @@ public class WorkflowVentilationBudgetServiceImpl extends WorkflowVentilationPro
       InvoiceFinancialDiscountService invoiceFinancialDiscountService,
       InvoiceTermService invoiceTermService,
       AppBudgetService appBudgetService,
-      BudgetInvoiceService budgetInvoiceService) {
+      BudgetInvoiceService budgetInvoiceService,
+      ContractVersionService contractVersionService) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -96,7 +98,8 @@ public class WorkflowVentilationBudgetServiceImpl extends WorkflowVentilationPro
         stockMoveLineRepository,
         appAccountService,
         invoiceFinancialDiscountService,
-        invoiceTermService);
+        invoiceTermService,
+        contractVersionService);
     this.appBudgetService = appBudgetService;
     this.budgetInvoiceService = budgetInvoiceService;
   }

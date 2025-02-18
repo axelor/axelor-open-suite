@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractVersionServiceImpl implements ContractVersionService {
 
@@ -218,26 +219,48 @@ public class ContractVersionServiceImpl implements ContractVersionService {
     }
     contractVersion.setInitialExTaxTotalPerYear(initialExTaxTotalPerYear);
     contractVersion.setYearlyExTaxTotalRevalued(yearlyExTaxTotalRevalued);
+    computeTotalInvoicedAmount(contractVersion);
+    computeTotalPaidAmount(contractVersion);
+  }
 
+  @Override
+  public ContractVersion getContractVersion(Invoice invoice) {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return null;
+    }
+    return invoiceLineList.stream()
+        .filter(invoiceLine -> invoiceLine.getContractLine() != null)
+        .map(InvoiceLine::getContractLine)
+        .map(ContractLine::getContractVersion)
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
+  public void computeTotalInvoicedAmount(ContractVersion contractVersion) {
     List<InvoiceLine> invoiceLineList =
         invoiceLineRepository
             .all()
             .filter("self.contractLine.contractVersion = :contractVersion")
             .bind("contractVersion", contractVersion)
             .fetch();
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return;
+    }
     contractVersion.setTotalInvoicedAmount(
         invoiceLineList.stream()
             .filter(
-                invoiceLine -> {
-                  if (invoiceLine != null && invoiceLine.getInvoice() != null) {
-                    return invoiceLine.getInvoice().getStatusSelect()
-                        == InvoiceRepository.STATUS_VENTILATED;
-                  }
-                  return false;
-                })
+                invoiceLine ->
+                    invoiceLine.getInvoice().getStatusSelect()
+                        == InvoiceRepository.STATUS_VENTILATED)
             .map(InvoiceLine::getInTaxTotal)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO));
+  }
+
+  @Override
+  public void computeTotalPaidAmount(ContractVersion contractVersion) {
     List<Invoice> invoiceList =
         invoiceRepository
             .all()
@@ -246,6 +269,9 @@ public class ContractVersionServiceImpl implements ContractVersionService {
             .bind("contractVersion", contractVersion)
             .bind("ventilatedStatus", InvoiceRepository.STATUS_VENTILATED)
             .fetch();
+    if (CollectionUtils.isEmpty(invoiceList)) {
+      return;
+    }
     contractVersion.setTotalPaidAmount(
         invoiceList.stream()
             .map(Invoice::getAmountPaid)
