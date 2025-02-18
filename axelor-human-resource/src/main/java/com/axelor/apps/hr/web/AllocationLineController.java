@@ -51,11 +51,11 @@ public class AllocationLineController {
 
   @SuppressWarnings("unchecked")
   public void setEmployeeSetDomain(ActionRequest request, ActionResponse response) {
-    if (request.getContext().get("project") == null) {
+    if (request.getContext().get("_project") == null) {
       return;
     }
     LinkedHashMap<String, Object> projectMap =
-        (LinkedHashMap<String, Object>) request.getContext().get("project");
+        (LinkedHashMap<String, Object>) request.getContext().get("_project");
     Project project =
         Beans.get(ProjectRepository.class).find(Long.parseLong(projectMap.get("id").toString()));
     response.setAttr(
@@ -64,32 +64,15 @@ public class AllocationLineController {
         Beans.get(AllocationLineService.class).getEmployeeDomain(project));
   }
 
-  public void addAllocationLine(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    AllocationLine allocationLine = request.getContext().asType(AllocationLine.class);
-    boolean initWithPlanningTime =
-        Optional.ofNullable(request.getContext().get("initWithPlanningTime"))
-            .map(it -> ((boolean) it))
-            .orElse(false);
-    Beans.get(AllocationLineService.class)
-        .createOrUpdateAllocationLine(
-            allocationLine.getProject(),
-            allocationLine.getEmployee(),
-            allocationLine.getPeriod(),
-            allocationLine.getAllocated(),
-            initWithPlanningTime);
-    response.setCanClose(true);
-  }
-
   @SuppressWarnings("unchecked")
   public void addAllocationLines(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
-    if (context.get("project") == null) {
+    if (context.get("_project") == null) {
       return;
     }
     LinkedHashMap<String, Object> projectMap =
-        (LinkedHashMap<String, Object>) context.get("project");
+        (LinkedHashMap<String, Object>) context.get("_project");
     Project project =
         Beans.get(ProjectRepository.class).find(Long.parseLong(projectMap.get("id").toString()));
 
@@ -125,12 +108,5 @@ public class AllocationLineController {
     Beans.get(AllocationLineService.class)
         .addAllocationLines(project, employeeList, periodList, allocated, initWithPlanningTime);
     response.setCanClose(true);
-  }
-
-  @SuppressWarnings("unchecked")
-  public void removeAllocationLines(ActionRequest request, ActionResponse response) {
-    List<Integer> allocationLineIds = (List<Integer>) request.getContext().get("_ids");
-    Beans.get(AllocationLineService.class).removeAllocationLines(allocationLineIds);
-    response.setReload(true);
   }
 }

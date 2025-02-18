@@ -14,6 +14,8 @@
     <string name="description" title="Description" large="true" multiline="true"/>
 
     <finder-method name="findByPeriodAndEmployee" using="period,employee" all="true"/>
+    <finder-method name="findByPeriodAndProjectAndEmployee"
+      using="period, project, employee"/>
 
   </entity>
 

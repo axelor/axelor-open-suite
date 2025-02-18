@@ -37,8 +37,6 @@ public interface AllocationLineService {
       boolean initWithPlanningTime)
       throws AxelorException;
 
-  void removeAllocationLines(List<Integer> allocationLineIds);
-
   void createOrUpdateAllocationLine(
       Project project,
       Employee employee,
