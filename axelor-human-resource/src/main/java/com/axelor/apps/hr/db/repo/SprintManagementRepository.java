@@ -51,7 +51,7 @@ public class SprintManagementRepository extends SprintRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
-     Project project= projectRepository.find(projectId);
+      Project project = projectRepository.find(projectId);
       Long sprintId = (Long) json.get("id");
       Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
 
@@ -59,7 +59,7 @@ public class SprintManagementRepository extends SprintRepository {
       final String totalAllocatedTime = "$totalAllocatedTime";
       BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
       BigDecimal budgetedTime = getBudgetedTime(sprint);
-   json.put(totalAllocatedTime, allocatedTime);
+      json.put(totalAllocatedTime, allocatedTime);
       json.put(totalEstimatedTime, budgetedTime);
 
     } catch (Exception e) {
