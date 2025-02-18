@@ -38,7 +38,6 @@ public class SprintManagementRepository extends SprintRepository {
       }
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
       Project project = Beans.get(ProjectRepository.class).find(projectId);
-
       Long sprintId = (Long) json.get("id");
       Sprint sprint = this.find(sprintId);
 
