@@ -1,6 +1,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 
@@ -14,4 +15,6 @@ public interface StockMoveProductionService extends StockMoveService {
    * @throws AxelorException
    */
   void cancelFromManufOrder(StockMove stockMove) throws AxelorException;
+
+  void cancelFromManufOrder(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 }

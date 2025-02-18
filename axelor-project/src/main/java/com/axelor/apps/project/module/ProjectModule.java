@@ -79,6 +79,8 @@ import com.axelor.apps.project.service.batch.ProjectBatchInitService;
 import com.axelor.apps.project.service.batch.ProjectBatchInitServiceImpl;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.apps.project.service.config.ProjectConfigServiceImpl;
+import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardService;
+import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardServiceImpl;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveServiceImpl;
 import com.axelor.apps.project.service.roadmap.ProjectVersionService;
@@ -138,5 +140,6 @@ public class ProjectModule extends AxelorModule {
     bind(SprintGetService.class).to(SprintGetServiceImpl.class);
     bind(ProjectVersionService.class).to(ProjectVersionServiceImpl.class);
     bind(ProjectBatchInitService.class).to(ProjectBatchInitServiceImpl.class);
+    bind(ProjectManagementDashboardService.class).to(ProjectManagementDashboardServiceImpl.class);
   }
 }

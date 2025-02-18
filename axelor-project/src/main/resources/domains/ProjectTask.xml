@@ -99,6 +99,8 @@
       ref="com.axelor.apps.project.db.ProjectVersion"/>
     <many-to-one name="activeSprint" title="Active sprint"
       ref="com.axelor.apps.project.db.Sprint"/>
+    <many-to-one name="oldActiveSprint" title="Old sprint"
+      ref="com.axelor.apps.project.db.Sprint" transient="true"/>
 
     <extra-code>
 
@@ -121,6 +123,9 @@
       <field name="targetVersion"/>
       <field name="activeSprint"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.project.db.repo.ProjectTaskListener"/>
+
 
   </entity>
 
