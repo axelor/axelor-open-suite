@@ -53,7 +53,7 @@
     <boolean name="enableConfiguratorEdition" title="Enable edition of configurators"
       help="Allow to edit configurator values inside the generated sale order line. Product will then be modified and line regenerated."/>
     <boolean name="enableLineDuplication" title="Enable line duplication"
-      help="Allow the duplication of sale quotation line. If the line is linked to a configurator, this one will be relunch if possible."/>
+      help="Allow the duplication of sale quotation line. The line will be recomputed from its configurator if possible."/>
 
     <extra-code>
       <![CDATA[
