@@ -2,6 +2,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
+import com.axelor.apps.production.service.SaleOrderLineDetailsPriceService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -17,8 +18,14 @@ public class SaleOrderLineDetailsBusinessServiceImpl extends SaleOrderLineDetail
       ProductCompanyService productCompanyService,
       AppSaleService appSaleService,
       SaleOrderLineProductService saleOrderLineProductService,
-      MarginComputeService marginComputeService) {
-    super(productCompanyService, appSaleService, saleOrderLineProductService, marginComputeService);
+      MarginComputeService marginComputeService,
+      SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService) {
+    super(
+        productCompanyService,
+        appSaleService,
+        saleOrderLineProductService,
+        marginComputeService,
+        saleOrderLineDetailsPriceService);
   }
 
   @Override

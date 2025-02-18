@@ -486,6 +486,7 @@
 "Manufacturing periods",,,
 "Manufacturing proposal",,,
 "Margin",,,
+"Margin coefficient",,,
 "Mark",,,
 "Master Production Scheduling Charge",,,
 "Max call reached when trying to find a time slot for operation %s.",,,
