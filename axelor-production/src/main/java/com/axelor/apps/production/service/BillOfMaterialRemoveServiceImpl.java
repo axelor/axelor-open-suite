@@ -6,6 +6,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class BillOfMaterialRemoveServiceImpl implements BillOfMaterialRemoveService {
 
@@ -24,6 +25,7 @@ public class BillOfMaterialRemoveServiceImpl implements BillOfMaterialRemoveServ
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void removeBomAndProdProcess(BillOfMaterial oldBillOfMaterial) throws AxelorException {
     ProdProcess oldProdProcess;
     if (oldBillOfMaterial != null) {

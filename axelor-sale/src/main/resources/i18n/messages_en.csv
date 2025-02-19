@@ -47,6 +47,7 @@
 "Amount to be spread over the timetable",,,
 "An attribute with the same name already exists.",,,
 "An error occured during the duplication of sale order line. Therefore, only a simple copy has been made, please see tracebacks for more details.",,,
+"An error occurred during the generation of the product with configurator, please see tracebacks for more details.",,,
 "Analytic distribution",,,
 "Analytic distribution required on sale order line",,,
 "App",,,
