@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
+    extension="true" id="project-wizard-hr-form">
+    <extend target="//panel[@name='filtersPanel']/field[@name='$project']">
+      <insert position="after">
+        <field name="$employee" target="com.axelor.apps.hr.db.Employee" title="Employee"
+          type="many-to-one" colSpan="12"
+          onSelect="action-project-method-compute-employee-domain,action-attrs-refresh-dashlets"/>
+      </insert>
+    </extend>
+
+  </form>
+  <action-method name="action-project-method-compute-employee-domain">
+    <call class="com.axelor.apps.hr.web.EmployeeDashboardController"
+      method="computeEmployeeDomainDashboard"/>
+  </action-method>
+</object-views>

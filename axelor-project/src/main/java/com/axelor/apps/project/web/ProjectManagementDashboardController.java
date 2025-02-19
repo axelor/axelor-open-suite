@@ -16,15 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service;
+package com.axelor.apps.project.web;
 
-import com.axelor.apps.project.db.Project;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public interface ProjectManagementDashboardService {
+@Singleton
+public class ProjectManagementDashboardController {
 
-  Map<String, Object> getDate();
+  public void getDates(ActionRequest request, ActionResponse response) {
 
-  List<Long> getFilteredEmployeeIds(Project project);
+    try {
+      response.setValues(Beans.get(ProjectManagementDashboardService.class).getDate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

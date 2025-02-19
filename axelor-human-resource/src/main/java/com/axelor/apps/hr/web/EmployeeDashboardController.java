@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.web.project;
+package com.axelor.apps.hr.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.hr.service.ProjectManagementDashboardService;
+import com.axelor.apps.hr.service.EmployeeDashboardService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.inject.Beans;
@@ -31,17 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 @Singleton
-public class ProjectManagementDashboardController {
-
-  public void getDates(ActionRequest request, ActionResponse response) {
-
-    try {
-      response.setValues(Beans.get(ProjectManagementDashboardService.class).getDate());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
+public class EmployeeDashboardController {
   public void computeEmployeeDomainDashboard(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().get("project") != null) {
@@ -49,7 +39,7 @@ public class ProjectManagementDashboardController {
             Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
         Project project = Beans.get(ProjectRepository.class).find(projectId);
         List<Long> idList =
-            Beans.get(ProjectManagementDashboardService.class).getFilteredEmployeeIds(project);
+            Beans.get(EmployeeDashboardService.class).getFilteredEmployeeIds(project);
         String domain = "self.id in (" + Joiner.on(",").join(idList) + ")";
         response.setAttr("$employee", "domain", domain);
       }

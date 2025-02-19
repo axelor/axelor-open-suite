@@ -68,6 +68,8 @@ import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
 import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
 import com.axelor.apps.hr.service.EmployeeComputeStatusServiceImpl;
+import com.axelor.apps.hr.service.EmployeeDashboardService;
+import com.axelor.apps.hr.service.EmployeeDashboardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.hr.service.EmployeeFileDMSServiceImpl;
 import com.axelor.apps.hr.service.HRDashboardService;
@@ -79,8 +81,6 @@ import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
 import com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl;
 import com.axelor.apps.hr.service.PayrollPreparationExportService;
 import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
-import com.axelor.apps.hr.service.ProjectManagementDashboardService;
-import com.axelor.apps.hr.service.ProjectManagementDashboardServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
@@ -476,6 +476,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectTaskSprintService.class).to(ProjectTaskSprintServiceImpl.class);
     bind(LeaveRequestCheckResponseService.class).to(LeaveRequestCheckResponseServiceImpl.class);
     bind(SprintRepository.class).to(SprintManagementRepository.class);
-    bind(ProjectManagementDashboardService.class).to(ProjectManagementDashboardServiceImpl.class);
+    bind(EmployeeDashboardService.class).to(EmployeeDashboardServiceImpl.class);
   }
 }
