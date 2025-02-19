@@ -216,7 +216,9 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
   @Override
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
-    List<AllocationLine> allocationLineList = allocationLineRepo.findByProject(project).fetch();
+
+    List<AllocationLine> allocationLineList =
+        allocationLineRepo.findByProject(project).fetch();
     BigDecimal allocatedTime = BigDecimal.ZERO;
 
     if (ObjectUtils.isEmpty(allocationLineList)) {
@@ -247,7 +249,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       BigDecimal sprintPeriod = BigDecimal.ZERO;
       if (sprintFromDate.isAfter(allocationLineFromDate)
           && sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, employee);
+        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, allocationLine.getEmployee());
       }
 
       if (!sprintFromDate.isAfter(allocationLineFromDate)
