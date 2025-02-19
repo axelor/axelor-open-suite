@@ -7,6 +7,7 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.MarginComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -26,18 +27,10 @@ public class SaleOrderLineDetailsController {
         saleOrderLineDetailsService.productOnChange(saleOrderLineDetails, saleOrder));
   }
 
-  protected SaleOrder getSaleOrder(Context context) {
-    SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
-    if (saleOrder == null) {
-      saleOrder = context.getParent().asType(SaleOrderLine.class).getSaleOrder();
-    }
-    return saleOrder;
-  }
-
   public void computePrices(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
-    SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
+    SaleOrder saleOrder = getSaleOrder(context);
     response.setValues(
         Beans.get(SaleOrderLineDetailsPriceService.class)
             .computePrices(saleOrderLineDetails, saleOrder));
@@ -46,10 +39,20 @@ public class SaleOrderLineDetailsController {
   public void computeMargin(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
-    SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
+    SaleOrder saleOrder = getSaleOrder(context);
     response.setValues(
         Beans.get(MarginComputeService.class)
             .getComputedMarginInfo(
                 saleOrder, saleOrderLineDetails, saleOrderLineDetails.getTotalPrice()));
+  }
+
+  protected SaleOrder getSaleOrder(Context context) {
+    SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
+    if (saleOrder == null) {
+      saleOrder =
+          SaleOrderLineUtils.getParentSol(context.getParent().asType(SaleOrderLine.class))
+              .getSaleOrder();
+    }
+    return saleOrder;
   }
 }
