@@ -84,6 +84,7 @@
 
   <action-group name="action-sale-order-line-details-group-onnew">
     <action name="action-sale-order-line-details-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-details-attrs-default-value"/>
   </action-group>
 
   <action-group name="action-sale-order-line-details-group-onload">
@@ -117,7 +118,11 @@
     <attribute for="subMarginRate" name="value" expr="eval: 0"/>
     <attribute for="subTotalMarkup" name="value" expr="eval: 0"/>
     <attribute for="costPrice" name="value" expr="eval: 0"/>
-    <attribute for="marginCoefficient" name="value" expr="eval: 0"/>
+    <attribute for="marginCoefficient" name="value" expr="eval: 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-details-attrs-default-value">
+    <attribute for="marginCoefficient" name="value" expr="1"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-details-attrs-focus">
