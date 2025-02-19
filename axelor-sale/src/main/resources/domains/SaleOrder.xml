@@ -177,14 +177,6 @@
 	    ]]>
     </many-to-one>
 
-    <many-to-one name="temporaryLineHolder" transient="true"
-      ref="com.axelor.apps.base.db.TemporaryLineHolder">
-      <![CDATA[
-          return new TemporaryLineHolder(new ArrayList<>(saleOrderLineList));
-	  ]]>
-    </many-to-one>
-
-
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>

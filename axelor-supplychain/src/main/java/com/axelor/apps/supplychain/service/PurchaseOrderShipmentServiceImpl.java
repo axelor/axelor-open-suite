@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.interfaces.ShippableOrder;
+import com.axelor.apps.base.interfaces.ShippableOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -44,8 +45,8 @@ public class PurchaseOrderShipmentServiceImpl extends ShippingAbstractService
     if (purchaseOrder == null) {
       return;
     }
-    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
-    purchaseOrderLines.add(createShippingCostLine(purchaseOrder, shippingCostProduct));
+    purchaseOrder.addPurchaseOrderLineListItem(
+        createShippingCostLine(purchaseOrder, shippingCostProduct));
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
   }
 
@@ -74,7 +75,6 @@ public class PurchaseOrderShipmentServiceImpl extends ShippingAbstractService
         .orElse(null);
   }
 
-  @Override
   protected PurchaseOrderLine createShippingCostLine(
       ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException {
     PurchaseOrder purchaseOrder = getPurchaseOrder(shippableOrder);
@@ -117,6 +117,15 @@ public class PurchaseOrderShipmentServiceImpl extends ShippingAbstractService
     }
     purchaseOrder.setPurchaseOrderLineList(purchaseOrderLines);
     return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
+  }
+
+  protected List<? extends ShippableOrderLine> getShippableOrderLineList(
+      ShippableOrder shippableOrder) {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(shippableOrder);
+    if (purchaseOrder == null) {
+      return null;
+    }
+    return purchaseOrder.getPurchaseOrderLineList();
   }
 
   protected PurchaseOrder getPurchaseOrder(ShippableOrder shippableOrder) {

@@ -60,13 +60,13 @@ public abstract class ShippingAbstractService {
     if (shippableOrder == null) {
       return false;
     }
-    List<ShippableOrderLine> shippableOrderLineList =
-        shippableOrder.getTemporaryLineHolder().getShippableOrderLineList();
+    List<? extends ShippableOrderLine> shippableOrderLineList =
+        getShippableOrderLineList(shippableOrder);
     if (CollectionUtils.isEmpty(shippableOrderLineList)) {
       return false;
     }
 
-    return shippableOrder.getTemporaryLineHolder().getShippableOrderLineList().stream()
+    return shippableOrderLineList.stream()
         .anyMatch(line -> shippingCostProduct.equals(line.getProduct()));
   }
 
@@ -91,8 +91,10 @@ public abstract class ShippingAbstractService {
     if (shippableOrder == null) {
       return BigDecimal.ZERO;
     }
-    List<ShippableOrderLine> shippableOrderLineList =
-        shippableOrder.getTemporaryLineHolder().getShippableOrderLineList();
+
+    List<? extends ShippableOrderLine> shippableOrderLineList =
+        getShippableOrderLineList(shippableOrder);
+
     if (CollectionUtils.isEmpty(shippableOrderLineList)) {
       return BigDecimal.ZERO;
     }
@@ -107,14 +109,14 @@ public abstract class ShippingAbstractService {
     return exTaxTotal;
   }
 
+  protected abstract List<? extends ShippableOrderLine> getShippableOrderLineList(
+      ShippableOrder shippableOrder);
+
   protected abstract CustomerShippingCarriagePaid getShippingCarriagePaid(
       ShippableOrder shippableOrder, ShipmentMode shipmentMode);
 
   protected abstract String removeLineAndComputeOrder(ShippableOrder shippableOrder)
       throws AxelorException;
-
-  protected abstract ShippableOrderLine createShippingCostLine(
-      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
 
   protected abstract void addLineAndComputeOrder(
       ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
