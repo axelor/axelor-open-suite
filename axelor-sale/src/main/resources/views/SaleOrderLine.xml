@@ -49,13 +49,13 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
     <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator() &amp;&amp; __config__.app.getApp('sale')?.getEnableConfiguratorEdition()"
-      readonlyIf="configurator == null" icon="pencil-square" title="Configurator edit button"/>
+      onClick="action-sale-order-line-group-on-configurator-edit"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
     <button name="configuratorDuplicateBtn"
-      onClick="save,action-sale-order-line-method-configurator-duplicate"
-      if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
-      readonlyIf="saleOrder.id == null" icon="fa-copy" title="Duplicate line"/>
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
@@ -130,13 +130,13 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
     <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator() &amp;&amp; __config__.app.getApp('sale')?.getEnableConfiguratorEdition()"
-      readonlyIf="configurator == null" icon="pencil-square" title="Configurator edit button"/>
+      onClick="action-sale-order-line-group-on-configurator-edit"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
     <button name="configuratorDuplicateBtn"
-      onClick="save,action-sale-order-line-method-configurator-duplicate"
-      if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
-      readonlyIf="saleOrder.id == null" icon="fa-copy" title="Duplicate line"/>
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -814,5 +814,29 @@
   <action-method name="action-sale-order-line-method-configurator-duplicate">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="configuratorDuplicateSaleOrderLine"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-check-duplication-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkDuplicationSaleOrderLine"/>
+  </action-method>
+
+  <action-group name="action-sale-order-line-group-on-configurator-duplicate">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-duplication-sale-order-line"/>
+    <action name="action-sale-order-line-method-configurator-duplicate"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-group-on-configurator-edit">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-edit-configurator-sale-order-line"/>
+    <action name="action-sale-order-line-view-regenerate-line"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-check-edit-configurator-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkEditConfiguratorSaleOrderLine"/>
   </action-method>
 </object-views>

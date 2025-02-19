@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -8,8 +9,10 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.axelor.utils.helpers.json.JsonHelper;
@@ -72,6 +75,13 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       throws AxelorException, JsonProcessingException {
     Objects.requireNonNull(saleOrderLine);
     var configurator = saleOrderLine.getConfigurator();
+
+    if (configuratorCheckService.isConfiguratorVersionDifferent(configurator)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
+    }
+
     var context = new Context(Configurator.class);
     var saleOrder = saleOrderLine.getSaleOrder();
     var duplicatedConfigurator = configuratorRepository.copy(configurator, false);
