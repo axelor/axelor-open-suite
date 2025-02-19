@@ -26,7 +26,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -59,6 +61,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   protected SaleOrderLineDiscountService saleOrderLineDiscountService;
   protected SaleOrderLinePriceService saleOrderLinePriceService;
   protected SaleOrderLineTaxService saleOrderLineTaxService;
+  protected ProductCompanyService productCompanyService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public SaleOrderLineProductServiceImpl(
@@ -71,7 +75,9 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       SaleOrderLinePricingService saleOrderLinePricingService,
       SaleOrderLineDiscountService saleOrderLineDiscountService,
       SaleOrderLinePriceService saleOrderLinePriceService,
-      SaleOrderLineTaxService saleOrderLineTaxService) {
+      SaleOrderLineTaxService saleOrderLineTaxService,
+      ProductCompanyService productCompanyService,
+      CurrencyScaleService currencyScaleService) {
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
     this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
@@ -82,6 +88,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     this.saleOrderLineDiscountService = saleOrderLineDiscountService;
     this.saleOrderLinePriceService = saleOrderLinePriceService;
     this.saleOrderLineTaxService = saleOrderLineTaxService;
+    this.productCompanyService = productCompanyService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
@@ -115,6 +123,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.putAll(
         saleOrderLineComplementaryProductService.setIsComplementaryProductsUnhandledYet(
             saleOrderLine));
+    saleOrderLineMap.putAll(fillCostPrice(saleOrderLine, saleOrder));
 
     return saleOrderLineMap;
   }
@@ -142,6 +151,24 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
         saleOrderLineMap.put("productName", productName);
       }
     }
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> fillCostPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+
+    Product product = saleOrderLine.getProduct();
+    BigDecimal costPrice =
+        ((BigDecimal)
+            productCompanyService.get(
+                saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()));
+    if (product != null && costPrice.compareTo(BigDecimal.ZERO) != 0) {
+      saleOrderLine.setSubTotalCostPrice(
+          currencyScaleService.getCompanyScaledValue(
+              saleOrder, costPrice.multiply(saleOrderLine.getQty())));
+    }
+    saleOrderLineMap.put("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
     return saleOrderLineMap;
   }
 

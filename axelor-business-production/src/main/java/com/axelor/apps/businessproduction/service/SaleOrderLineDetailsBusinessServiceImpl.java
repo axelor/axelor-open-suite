@@ -5,6 +5,7 @@ import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.google.inject.Inject;
@@ -15,8 +16,9 @@ public class SaleOrderLineDetailsBusinessServiceImpl extends SaleOrderLineDetail
   public SaleOrderLineDetailsBusinessServiceImpl(
       ProductCompanyService productCompanyService,
       AppSaleService appSaleService,
-      SaleOrderLineProductService saleOrderLineProductService) {
-    super(productCompanyService, appSaleService, saleOrderLineProductService);
+      SaleOrderLineProductService saleOrderLineProductService,
+      MarginComputeService marginComputeService) {
+    super(productCompanyService, appSaleService, saleOrderLineProductService, marginComputeService);
   }
 
   @Override

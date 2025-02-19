@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrderLine"
-    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable, com.axelor.apps.sale.interfaces.MarginLine">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -113,6 +113,7 @@
       ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentSaleOrderLine"/>
     <many-to-one name="parentSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Parent sale order line"/>
+    <string name="levelIndicator" title="Level"/>
 
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[

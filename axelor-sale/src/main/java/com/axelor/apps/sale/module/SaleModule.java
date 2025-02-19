@@ -47,6 +47,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.sale.service.MarginComputeService;
+import com.axelor.apps.sale.service.MarginComputeServiceImpl;
 import com.axelor.apps.sale.service.PackLineService;
 import com.axelor.apps.sale.service.PackLineServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
@@ -173,6 +175,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
@@ -317,5 +321,8 @@ public class SaleModule extends AxelorModule {
     bind(ConfiguratorRepository.class).to(ConfiguratorManagementRepository.class);
     bind(ConfiguratorSaleOrderDuplicateService.class)
         .to(ConfiguratorSaleOrderDuplicateServiceImpl.class);
+    bind(SaleOrderLineCostPriceComputeService.class)
+        .to(SaleOrderLineCostPriceComputeServiceImpl.class);
+    bind(MarginComputeService.class).to(MarginComputeServiceImpl.class);
   }
 }

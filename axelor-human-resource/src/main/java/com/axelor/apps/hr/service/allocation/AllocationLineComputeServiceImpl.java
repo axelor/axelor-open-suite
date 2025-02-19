@@ -58,28 +58,29 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   @Override
-  public BigDecimal getLeaves(Period period, Employee employee) throws AxelorException {
+  public BigDecimal getLeaves(LocalDate fromDate, LocalDate toDate, Employee employee)
+      throws AxelorException {
     BigDecimal leaveDayCount = BigDecimal.ZERO;
-    if (period != null && employee != null) {
-      LocalDate toDate = period.getToDate();
-      LocalDate fromDate = period.getFromDate();
-      List<LeaveRequest> leaveRequestList =
-          leaveRequestRepo
-              .all()
-              .filter(
-                  "self.statusSelect = :statusValidated AND self.employee = :employee AND ((self.fromDateT BETWEEN :fromDate AND :toDate OR self.toDateT BETWEEN :fromDate AND :toDate) OR (:toDate BETWEEN self.fromDateT AND self.toDateT OR :fromDate BETWEEN self.fromDateT AND self.toDateT))")
-              .bind("statusValidated", LeaveRequestRepository.STATUS_VALIDATED)
-              .bind("employee", employee)
-              .bind("fromDate", fromDate)
-              .bind("toDate", toDate)
-              .fetch();
-      if (ObjectUtils.notEmpty(leaveRequestList)) {
-        for (LeaveRequest leaveRequest : leaveRequestList) {
-          leaveDayCount =
-              leaveDayCount.add(
-                  leaveRequestComputeLeaveDaysService.computeLeaveDaysByLeaveRequest(
-                      fromDate, toDate, leaveRequest, employee));
-        }
+    if (fromDate == null || toDate == null || employee == null) {
+      return leaveDayCount;
+    }
+
+    List<LeaveRequest> leaveRequestList =
+        leaveRequestRepo
+            .all()
+            .filter(
+                "self.statusSelect = :statusValidated AND self.employee = :employee AND ((self.fromDateT BETWEEN :fromDate AND :toDate OR self.toDateT BETWEEN :fromDate AND :toDate) OR (:toDate BETWEEN self.fromDateT AND self.toDateT OR :fromDate BETWEEN self.fromDateT AND self.toDateT))")
+            .bind("statusValidated", LeaveRequestRepository.STATUS_VALIDATED)
+            .bind("employee", employee)
+            .bind("fromDate", fromDate)
+            .bind("toDate", toDate)
+            .fetch();
+    if (ObjectUtils.notEmpty(leaveRequestList)) {
+      for (LeaveRequest leaveRequest : leaveRequestList) {
+        leaveDayCount =
+            leaveDayCount.add(
+                leaveRequestComputeLeaveDaysService.computeLeaveDaysByLeaveRequest(
+                    fromDate, toDate, leaveRequest, employee));
       }
     }
     return leaveDayCount.setScale(2, RoundingMode.HALF_UP);
@@ -89,36 +90,45 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   public BigDecimal getAlreadyAllocated(
       AllocationLine allocationLine, Period period, Employee employee) {
     BigDecimal alreadyAllocated = BigDecimal.ZERO;
-    if (period != null) {
-      List<AllocationLine> allocationLineList =
-          allocationLineRepo.findByPeriodAndEmployee(period, employee).fetch();
-      if (ObjectUtils.notEmpty(allocationLineList)) {
-        alreadyAllocated =
-            allocationLineList.stream()
-                .filter(line -> !line.equals(allocationLine))
-                .map(AllocationLine::getAllocated)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-      }
+    if (period == null) {
+      return alreadyAllocated;
     }
+
+    List<AllocationLine> allocationLineList =
+        allocationLineRepo.findByPeriodAndEmployee(period, employee).fetch();
+    if (ObjectUtils.notEmpty(allocationLineList)) {
+      alreadyAllocated =
+          allocationLineList.stream()
+              .filter(line -> !line.equals(allocationLine))
+              .map(AllocationLine::getAllocated)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     return alreadyAllocated.setScale(2, RoundingMode.HALF_UP);
   }
 
   @Override
   public BigDecimal getAvailableAllocation(
-      Period period, Employee employee, BigDecimal leaves, BigDecimal alreadyAllocated) {
+      LocalDate fromDate,
+      LocalDate toDate,
+      Employee employee,
+      BigDecimal leaves,
+      BigDecimal alreadyAllocated) {
     BigDecimal availableAllocation = BigDecimal.ZERO;
-    if (period != null && employee != null) {
-      BigDecimal workingDays = getWorkingDays(period.getFromDate(), period.getToDate(), employee);
+    if (fromDate != null && toDate != null && employee != null) {
+      BigDecimal workingDays = getWorkingDays(fromDate, toDate, employee);
       availableAllocation = workingDays.subtract(leaves).subtract(alreadyAllocated);
     }
     return availableAllocation.setScale(2, RoundingMode.HALF_UP);
   }
 
   @Override
-  public BigDecimal computePlannedTime(Period period, Employee employee, Project project)
+  public BigDecimal computePlannedTime(
+      LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
       throws AxelorException {
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
-    if (period == null
+    if (fromDate == null
+        || toDate == null
         || employee == null
         || project == null
         || !project.getIsShowPlanning()
@@ -130,8 +140,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
     List<ProjectPlanningTime> projectPlanningTimeList =
         planningTimeRepo
-            .findByEmployeeProjectAndPeriod(
-                employee, project, period.getFromDate(), period.getToDate())
+            .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
             .fetch();
 
     if (ObjectUtils.notEmpty(projectPlanningTimeList)) {
@@ -145,7 +154,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
                 projectPlanningTime.getPlannedTime(),
                 projectPlanningTime.getProject());
 
-        BigDecimal prorata = computeProrata(projectPlanningTime, period, employee);
+        BigDecimal prorata = computeProrata(projectPlanningTime, fromDate, toDate, employee);
 
         totalPlannedTime = totalPlannedTime.add(plannedTime.multiply(prorata));
       }
@@ -174,23 +183,25 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   protected BigDecimal computeProrata(
-      ProjectPlanningTime projectPlanningTime, Period period, Employee employee) {
-    if (period.getFromDate() == null || period.getToDate() == null) {
+      ProjectPlanningTime projectPlanningTime,
+      LocalDate fromDate,
+      LocalDate toDate,
+      Employee employee) {
+    if (fromDate == null || toDate == null) {
       return BigDecimal.ONE;
     }
     LocalDate startDate =
         Optional.of(projectPlanningTime)
             .map(ProjectPlanningTime::getStartDateTime)
             .map(LocalDateTime::toLocalDate)
-            .orElse(period.getFromDate());
+            .orElse(fromDate);
     LocalDate endDate =
         Optional.of(projectPlanningTime)
             .map(ProjectPlanningTime::getEndDateTime)
             .map(LocalDateTime::toLocalDate)
-            .orElse(period.getToDate());
-    LocalDate maxFromDate =
-        period.getFromDate().isAfter(startDate) ? period.getFromDate() : startDate;
-    LocalDate minToDate = period.getToDate().isBefore(endDate) ? period.getToDate() : endDate;
+            .orElse(toDate);
+    LocalDate maxFromDate = fromDate.isAfter(startDate) ? fromDate : startDate;
+    LocalDate minToDate = toDate.isBefore(endDate) ? toDate : endDate;
     BigDecimal jointDays = getWorkingDays(maxFromDate, minToDate, employee);
     BigDecimal totalDays = getWorkingDays(startDate, endDate, employee);
     BigDecimal prorata = BigDecimal.ONE;

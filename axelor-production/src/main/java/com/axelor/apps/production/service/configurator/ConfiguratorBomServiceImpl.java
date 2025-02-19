@@ -30,6 +30,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
+import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.i18n.I18n;
@@ -67,7 +68,11 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<BillOfMaterial> generateBillOfMaterial(
-      ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
+      ConfiguratorBOM configuratorBOM,
+      JsonContext attributes,
+      int level,
+      Product generatedProduct,
+      Configurator configurator)
       throws AxelorException {
     level++;
     if (level > MAX_LEVEL) {
@@ -170,7 +175,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
-        generateBillOfMaterial(confBomChild, attributes, level, generatedProduct)
+        generateBillOfMaterial(confBomChild, attributes, level, generatedProduct, configurator)
             .ifPresent(
                 childBom ->
                     billOfMaterial.addBillOfMaterialLineListItem(

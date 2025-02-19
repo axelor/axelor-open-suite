@@ -21,7 +21,9 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -71,6 +73,8 @@ public class SaleOrderLineProductProductionServiceImpl
       SaleOrderLineDiscountService saleOrderLineDiscountService,
       SaleOrderLinePriceService saleOrderLinePriceService,
       SaleOrderLineTaxService saleOrderLineTaxService,
+      ProductCompanyService productCompanyService,
+      CurrencyScaleService currencyScaleService,
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
@@ -91,6 +95,8 @@ public class SaleOrderLineProductProductionServiceImpl
         saleOrderLineDiscountService,
         saleOrderLinePriceService,
         saleOrderLineTaxService,
+        productCompanyService,
+        currencyScaleService,
         blockingService,
         analyticLineModelService,
         appSupplychainService,
@@ -146,9 +152,13 @@ public class SaleOrderLineProductProductionServiceImpl
         } else if (product.getParentProduct() != null) {
           saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
         }
+        BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
         generateLines(saleOrderLine, saleOrder);
 
         saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
+        if (billOfMaterial != null) {
+          saleOrderLineMap.put("prodProcess", billOfMaterial.getProdProcess());
+        }
       }
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
       saleOrderLineMap.put("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());

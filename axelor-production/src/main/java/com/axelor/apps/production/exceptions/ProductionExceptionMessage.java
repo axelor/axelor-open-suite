@@ -393,4 +393,10 @@ public final class ProductionExceptionMessage {
 
   public static final String CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER = /*$$(*/
       "This stock move is linked to a manufacturing order and can't be canceled." /*)*/;
+
+  public static final String CAN_NOT_RENGENERATE_PRODUCT_LINKED_TO_MO = /*$$(*/
+      "Cannot regenerate because the product is already in production (one manuf order exist)" /*)*/;
+
+  public static final String CAN_NOT_REGENERATE_BOM_AS_ALREADY_IN_PRODUCTION = /*$$(*/
+      "Cannot regenerate because the bill of material is in use in production (one manuf order exist)" /*)*/;
 }

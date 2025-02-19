@@ -16,17 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.project.web;
 
-import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardService;
 import com.axelor.inject.Beans;
-import javax.persistence.PostUpdate;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public class SaleOrderProductionListener {
+@Singleton
+public class ProjectManagementDashboardController {
 
-  @PostUpdate
-  public void saleOrderPostUpdate(SaleOrder saleOrder) {
-    Beans.get(SaleOrderLineBomSyncService.class).syncSaleOrderLineBom(saleOrder);
+  public void getDates(ActionRequest request, ActionResponse response) {
+
+    try {
+      response.setValues(Beans.get(ProjectManagementDashboardService.class).getDate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

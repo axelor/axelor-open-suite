@@ -19,7 +19,7 @@
       <field name="fileType" colSpan="3"
         onChange="action-base-file-record-set-expiration-date"/>
       <field name="metaFile" widget="binary-link" colSpan="3"
-        onChange="action-base-file-group-file-onchange"/>
+        onChange="action-base-file-group-file-onchange" required="true"/>
       <field name="recordDate" colSpan="3" readonly="true"/>
       <field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>
       <field name="fileType.hasExpirationDate" hidden="true"/>

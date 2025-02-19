@@ -182,7 +182,7 @@
       help="This configuration allows quick access to the type of environment and the configured date and time"/>
     <string name="shortcutMultiSelect" title="Activate changes shortcut for"
       selection="base.change.shortcut.select"
-      help="This configuration allows to display a shortcut to switch active company/trading name of the current user."/>
+      help="This configuration allows to display a shortcut to switch active company/trading name/project of the current user."/>
 
     <integer name="defaultBatchFetchLimit" title="Default batch fetch limit"
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."

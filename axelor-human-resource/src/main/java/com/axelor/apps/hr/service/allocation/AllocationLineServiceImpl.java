@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.hr.service.allocation;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.AllocationLineRepository;
@@ -34,10 +36,17 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class AllocationLineServiceImpl implements AllocationLineService {
 
+  protected AllocationLineComputeService allocationLineComputeService;
+  protected AppBaseService appBaseService;
   protected AllocationLineRepository allocationLineRepository;
 
   @Inject
-  public AllocationLineServiceImpl(AllocationLineRepository allocationLineRepository) {
+  public AllocationLineServiceImpl(
+      AllocationLineComputeService allocationLineComputeService,
+      AppBaseService appBaseService,
+      AllocationLineRepository allocationLineRepository) {
+    this.allocationLineComputeService = allocationLineComputeService;
+    this.appBaseService = appBaseService;
     this.allocationLineRepository = allocationLineRepository;
   }
 
@@ -56,30 +65,30 @@ public class AllocationLineServiceImpl implements AllocationLineService {
 
   @Override
   public void addAllocationLines(
-      Project project, List<Employee> employeeList, List<Period> periodList, BigDecimal allocated) {
+      Project project,
+      List<Employee> employeeList,
+      List<Period> periodList,
+      BigDecimal allocated,
+      boolean initWithPlanningTime)
+      throws AxelorException {
     for (Employee employee : employeeList) {
       for (Period period : periodList) {
-        createOrUpdateAllocationLine(project, employee, period, allocated);
+        createOrUpdateAllocationLine(project, employee, period, allocated, initWithPlanningTime);
       }
     }
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void removeAllocationLines(List<Integer> allocationLineIds) {
-    if (CollectionUtils.isEmpty(allocationLineIds)) {
-      return;
-    }
-    for (Integer id : allocationLineIds) {
-      allocationLineRepository.remove(allocationLineRepository.find(Long.valueOf(id)));
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
   public void createOrUpdateAllocationLine(
-      Project project, Employee employee, Period period, BigDecimal allocated) {
-    AllocationLine allocationLine = getAllocationLine(project, employee, period);
+      Project project,
+      Employee employee,
+      Period period,
+      BigDecimal allocated,
+      boolean initWithPlanningTime)
+      throws AxelorException {
+    AllocationLine allocationLine =
+        allocationLineRepository.findByPeriodAndProjectAndEmployee(period, project, employee);
     if (allocationLine == null) {
       allocationLine = new AllocationLine();
       allocationLine.setEmployee(employee);
@@ -87,16 +96,12 @@ public class AllocationLineServiceImpl implements AllocationLineService {
       allocationLine.setProject(project);
     }
     allocationLine.setAllocated(allocated);
-    allocationLineRepository.save(allocationLine);
-  }
 
-  protected AllocationLine getAllocationLine(Project project, Employee employee, Period period) {
-    return allocationLineRepository
-        .all()
-        .filter("self.project = :project AND self.employee = :employee AND self.period = :period")
-        .bind("project", project)
-        .bind("employee", employee)
-        .bind("period", period)
-        .fetchOne();
+    if (initWithPlanningTime) {
+      allocationLine.setAllocated(
+          allocationLineComputeService.computePlannedTime(
+              period.getFromDate(), period.getToDate(), employee, project));
+    }
+    allocationLineRepository.save(allocationLine);
   }
 }
