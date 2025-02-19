@@ -38,7 +38,7 @@
   </form>
   <action-method model="com.axelor.utils.db.Wizard"
     name="action-method-project-set-date">
-    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
+    <call class="com.axelor.apps.hr.web.project.ProjectManagementDashboardController"
       method="getDates"/>
   </action-method>
 
@@ -183,7 +183,7 @@
   </action-group>
 
   <action-method name="action-project-method-compute-employee-domain">
-    <call class="com.axelor.apps.hr.web.ProjectManagementDashboardController"
+    <call class="com.axelor.apps.hr.web.project.ProjectManagementDashboardController"
       method="computeEmployeeDomainDashboard"/>
   </action-method>
 </object-views>

@@ -76,9 +76,10 @@ public class ProjectManagementDashboardServiceImpl implements ProjectManagementD
           employeeList.stream()
               .filter(
                   e ->
-                      !e.getHireDate().isAfter(localDate)
-                          && (!e.getLeavingDate().isBefore(localDate)
-                              || e.getLeavingDate() == null))
+                      (e != null)
+                          && (e.getHireDate() != null && !e.getHireDate().isAfter(localDate))
+                          && (e.getLeavingDate() == null
+                              || !e.getLeavingDate().isBefore(localDate)))
               .map(Employee::getId)
               .collect(Collectors.toList());
     }
