@@ -8,17 +8,20 @@ import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
-public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService {
+public abstract class GlobalDiscountAbstractService {
 
   protected abstract void compute(GlobalDiscounter globalDiscounter) throws AxelorException;
 
-  @Override
+  protected abstract List<? extends GlobalDiscounterLine> getGlobalDiscounterLines(
+      GlobalDiscounter globalDiscounter);
+
   public void applyGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) throws AxelorException {
     if (globalDiscounter == null
-        || globalDiscounter.getTemporaryLineHolder().getLines() == null
-        || globalDiscounter.getTemporaryLineHolder().getLines().isEmpty()) {
+        || CollectionUtils.isEmpty(getGlobalDiscounterLines(globalDiscounter))) {
       return;
     }
     computePriceBeforeGlobalDiscount(globalDiscounter);
@@ -38,7 +41,7 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
 
   protected void computePriceBeforeGlobalDiscount(GlobalDiscounter globalDiscounter) {
     globalDiscounter.setPriceBeforeGlobalDiscount(
-        globalDiscounter.getTemporaryLineHolder().getLines().stream()
+        getGlobalDiscounterLines(globalDiscounter).stream()
             .map(
                 globalDiscounterLine ->
                     globalDiscounterLine.getPrice().multiply(globalDiscounterLine.getQty()))
@@ -47,7 +50,7 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
   }
 
   protected void applyPercentageGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
-    globalDiscounter.getTemporaryLineHolder().getLines().stream()
+    getGlobalDiscounterLines(globalDiscounter).stream()
         .filter(
             globalDiscounterLine ->
                 globalDiscounterLine
@@ -62,7 +65,7 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
   }
 
   protected void applyFixedGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
-    globalDiscounter.getTemporaryLineHolder().getLines().stream()
+    getGlobalDiscounterLines(globalDiscounter).stream()
         .filter(
             globalDiscounterLine ->
                 globalDiscounterLine
@@ -92,10 +95,8 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
     BigDecimal differenceInDiscount = priceDiscountedOnTotal.subtract(priceDiscountedByLine);
 
     GlobalDiscounterLine lastLine =
-        globalDiscounter
-            .getTemporaryLineHolder()
-            .getLines()
-            .get(globalDiscounter.getTemporaryLineHolder().getLines().size() - 1);
+        getGlobalDiscounterLines(globalDiscounter)
+            .get(getGlobalDiscounterLines(globalDiscounter).size() - 1);
 
     lastLine.setDiscountAmount(
         BigDecimal.ONE
@@ -120,17 +121,14 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
 
     BigDecimal differenceInDiscount = priceDiscountedOnTotal.subtract(priceDiscountedByLine);
     GlobalDiscounterLine lastLine =
-        globalDiscounter
-            .getTemporaryLineHolder()
-            .getLines()
-            .get(globalDiscounter.getTemporaryLineHolder().getLines().size() - 1);
+        getGlobalDiscounterLines(globalDiscounter)
+            .get(getGlobalDiscounterLines(globalDiscounter).size() - 1);
     lastLine.setDiscountAmount(
         lastLine
             .getDiscountAmount()
             .subtract(differenceInDiscount.divide(lastLine.getQty(), RoundingMode.HALF_UP)));
   }
 
-  @Override
   public BigDecimal computeDiscountFixedEquivalence(GlobalDiscounter globalDiscounter) {
     if (globalDiscounter == null) {
       return BigDecimal.ZERO;
@@ -143,7 +141,6 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
     return priceBeforeGlobalDiscount.subtract(exTaxTotal);
   }
 
-  @Override
   public BigDecimal computeDiscountPercentageEquivalence(GlobalDiscounter globalDiscounter) {
     if (globalDiscounter == null) {
       return BigDecimal.ZERO;
@@ -159,7 +156,6 @@ public abstract class GlobalDiscountServiceImpl implements GlobalDiscountService
         .divide(priceBeforeGlobalDiscount, RoundingMode.HALF_UP);
   }
 
-  @Override
   public Map<String, Map<String, Object>> setDiscountDummies(GlobalDiscounter globalDiscounter) {
     if (globalDiscounter == null) {
       return null;

@@ -18,6 +18,7 @@ import com.axelor.apps.sale.service.MarginComputeServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
@@ -44,7 +45,7 @@ class TestSaleOrderDiscountService extends BaseTest {
   protected final PriceListService priceListService;
   protected final CurrencyService currencyService;
   protected final CurrencyScaleService currencyScaleService;
-  protected SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService;
+  protected SaleOrderGlobalDiscountService saleOrderGlobalDiscountService;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrder saleOrder;
 
@@ -53,7 +54,7 @@ class TestSaleOrderDiscountService extends BaseTest {
       PriceListService priceListService,
       CurrencyService currencyService,
       CurrencyScaleService currencyScaleService,
-      SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService) {
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService) {
     this.priceListService = priceListService;
     this.currencyService = currencyService;
     this.currencyScaleService = currencyScaleService;

@@ -26,7 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -46,7 +46,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLinePackService saleOrderLinePackService;
   protected SaleOrderComplementaryProductService saleOrderComplementaryProductService;
-  protected SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService;
+  protected SaleOrderGlobalDiscountService saleOrderGlobalDiscountService;
 
   @Inject
   public SaleOrderOnLineChangeServiceImpl(
@@ -58,7 +58,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
-      SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService) {
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService) {
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderMarginService = saleOrderMarginService;

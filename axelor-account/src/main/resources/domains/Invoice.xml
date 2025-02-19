@@ -269,14 +269,6 @@
 	    ]]>
     </many-to-one>
 
-    <many-to-one name="temporaryLineHolder" transient="true"
-      ref="com.axelor.apps.base.db.TemporaryLineHolder">
-      <![CDATA[
-          return new TemporaryLineHolder(new ArrayList<>(invoiceLineList));
-	  ]]>
-    </many-to-one>
-
-
     <unique-constraint columns="invoiceId,company"/>
 
     <finder-method name="findByMove" using="move"/>

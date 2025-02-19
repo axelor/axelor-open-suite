@@ -20,7 +20,7 @@ package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -30,13 +30,13 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
 
   protected CurrencyScaleService currencyScaleService;
   protected SaleOrderService saleOrderService;
-  protected SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService;
+  protected SaleOrderGlobalDiscountService saleOrderGlobalDiscountService;
 
   @Inject
   public SaleOrderAttrsServiceImpl(
       CurrencyScaleService currencyScaleService,
       SaleOrderService saleOrderService,
-      SaleOrderGlobalDiscountServiceImpl saleOrderGlobalDiscountService) {
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService) {
     this.currencyScaleService = currencyScaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderGlobalDiscountService = saleOrderGlobalDiscountService;
