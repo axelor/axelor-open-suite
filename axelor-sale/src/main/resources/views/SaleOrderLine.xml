@@ -14,14 +14,6 @@
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
-    <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-pen-to-square"/>
-    <button name="configuratorDuplicateBtn"
-      onClick="save,action-sale-order-line-method-configurator-duplicate"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-copy"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -56,12 +48,22 @@
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
+    <button name="configuratorEditBtn"
+      onClick="action-sale-order-line-group-on-configurator-edit"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
@@ -71,14 +73,6 @@
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
-    <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-pen-to-square"/>
-    <button name="configuratorDuplicateBtn"
-      onClick="save,action-sale-order-line-method-configurator-duplicate"
-      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-copy"/>
     <button name="addToCartBtn" title="Add to cart"
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
@@ -135,6 +129,14 @@
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
+    <button name="configuratorEditBtn"
+      onClick="action-sale-order-line-group-on-configurator-edit"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-pen-to-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="fa-copy"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -143,6 +145,8 @@
     <field name="$isParentTitleLine" hidden="true"/>
     <field name="$computeWithSOL" hidden="true"/>
     <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -810,5 +814,29 @@
   <action-method name="action-sale-order-line-method-configurator-duplicate">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="configuratorDuplicateSaleOrderLine"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-check-duplication-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkDuplicationSaleOrderLine"/>
+  </action-method>
+
+  <action-group name="action-sale-order-line-group-on-configurator-duplicate">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-duplication-sale-order-line"/>
+    <action name="action-sale-order-line-method-configurator-duplicate"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-group-on-configurator-edit">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-edit-configurator-sale-order-line"/>
+    <action name="action-sale-order-line-view-regenerate-line"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-check-edit-configurator-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkEditConfiguratorSaleOrderLine"/>
   </action-method>
 </object-views>

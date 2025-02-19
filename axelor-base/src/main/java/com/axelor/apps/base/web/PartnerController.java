@@ -443,8 +443,14 @@ public class PartnerController {
     RegistrationNumberValidator validator =
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
-    if (validator != null && !validator.isRegistrationCodeValid(partner)) {
-      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    boolean notValidRegistrationCode =
+        validator != null && !validator.isRegistrationCodeValid(partner);
+    response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
+    if (notValidRegistrationCode) {
+      response.setAttr(
+          "isValidRegistrationCode",
+          "title",
+          I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 

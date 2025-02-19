@@ -15,7 +15,6 @@
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
       <field name="defaultPrioritySet" widget="TagSelect" canEdit="false"/>
       <field name="selectAutoProgressOnProjectTask"/>
-      <field name="isActivateProjectChangeShortcut"/>
       <field name="fullNameGroovyFormula"/>
       <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12" showIf="id">
         <panel-related field="taskCustomFieldsList" colSpan="6"

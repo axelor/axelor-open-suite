@@ -7,7 +7,7 @@
 
   <entity name="AlternativeBarcodeType">
 
-    <string name="name" title="Name"/>
+    <string name="name" title="Name" required="true"/>
 
   </entity>
 

@@ -51,7 +51,6 @@ public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
     extends ProjectPlanningTimeCreateServiceImpl {
 
   protected AppBusinessProjectService appBusinessProjectService;
-  protected AppBaseService appBaseService;
 
   @Inject
   public ProjectPlanningTimeCreateBusinessProjectServiceImpl(

@@ -13,6 +13,7 @@
     <many-to-one name="alternativeBarcodeType" title="Type"
       ref="com.axelor.apps.base.db.AlternativeBarcodeType"/>
     <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
   </entity>
 

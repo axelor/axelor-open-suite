@@ -279,6 +279,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       throws AxelorException {
 
     configuratorCheckService.checkLinkedSaleOrderLine(configurator, product);
+    if (configuratorCheckService.isConfiguratorVersionDifferent(configurator)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
+    }
 
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
 

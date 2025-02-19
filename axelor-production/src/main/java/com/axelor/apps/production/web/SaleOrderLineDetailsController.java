@@ -2,9 +2,11 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
+import com.axelor.apps.production.service.SaleOrderLineDetailsPriceService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -30,5 +32,24 @@ public class SaleOrderLineDetailsController {
       saleOrder = context.getParent().asType(SaleOrderLine.class).getSaleOrder();
     }
     return saleOrder;
+  }
+
+  public void computePrices(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
+    response.setValues(
+        Beans.get(SaleOrderLineDetailsPriceService.class)
+            .computePrices(saleOrderLineDetails, saleOrder));
+  }
+
+  public void computeMargin(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
+    response.setValues(
+        Beans.get(MarginComputeService.class)
+            .getComputedMarginInfo(
+                saleOrder, saleOrderLineDetails, saleOrderLineDetails.getTotalPrice()));
   }
 }

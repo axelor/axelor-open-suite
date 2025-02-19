@@ -1,0 +1,3 @@
+---
+title: "Bill of materials: fixed BOM name in demo data, causing an issue when customizing the BOM."
+module: axelor-production

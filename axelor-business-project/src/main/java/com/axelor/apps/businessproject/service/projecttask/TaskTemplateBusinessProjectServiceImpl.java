@@ -62,7 +62,6 @@ public class TaskTemplateBusinessProjectServiceImpl extends TaskTemplateHrServic
       task.setCurrency(
           (Currency) productCompanyService.get(product, "saleCurrency", project.getCompany()));
       task.setUnitCost(product.getCostPrice());
-      task.setTimeUnit(appBaseService.getAppBase().getUnitHours());
       projectTaskBusinessProjectService.compute(task);
       task.setSoldTime(task.getBudgetedTime());
       task.setUpdatedTime(task.getBudgetedTime());

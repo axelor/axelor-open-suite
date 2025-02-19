@@ -25,10 +25,10 @@
       <field name="partnerApiConfiguration" title="API config"
         target="com.axelor.apps.base.db.PartnerApiConfiguration" type="many-to-one" required="true"
         canNew="false" colSpan="5"/>
-      <field name="siret number" title="Siret number" type="string" required="true"
-        colSpan="5"/>
+      <field name="siretNumber" title="Siret number" type="string" required="true" colSpan="5"/>
       <button name="executeApiBtn" title="Fetch data"
-        onClick="action-api-configuration-method-fetch-data" colSpan="2"/>
+        onClick="action-api-configuration-method-fetch-data" colSpan="2"
+        readonlyIf="partnerApiConfiguration == null || siretNumber == null"/>
     </panel>
   </form>
 

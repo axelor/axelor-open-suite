@@ -217,7 +217,7 @@ public class ProjectController {
 
       ProjectBatch projectBatch =
           Beans.get(ProjectBatchInitService.class)
-              .initializeProjectBatch(
+              .initializeProjectBatchWithProjects(
                   ProjectBatchRepository.ACTION_REMOVE_TASK_STATUS, projectSet, taskStatusSet);
       ProjectBatchControllerTool.runBatch(projectBatch, response);
     }

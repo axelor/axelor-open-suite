@@ -13,13 +13,13 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.MarginComputeService;
+import com.axelor.apps.sale.service.MarginComputeServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
@@ -93,9 +93,8 @@ class TestSaleOrderDiscountService extends BaseTest {
         createSaleOrderLineCostPriceComputeService(appSaleService));
   }
 
-  protected SaleOrderMarginService createSaleOrderMarginService(AppSaleService appSaleService) {
-    return new SaleOrderMarginServiceImpl(
-        appSaleService, currencyService, mock(ProductCompanyService.class), currencyScaleService);
+  protected MarginComputeService createSaleOrderMarginService(AppSaleService appSaleService) {
+    return new MarginComputeServiceImpl(appSaleService, currencyService, currencyScaleService);
   }
 
   protected SaleOrderLineCostPriceComputeService createSaleOrderLineCostPriceComputeService(

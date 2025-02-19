@@ -74,6 +74,8 @@ import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AlternativeBarcodeService;
+import com.axelor.apps.base.service.AlternativeBarcodeServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.AnonymizerLineService;
@@ -249,6 +251,8 @@ import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateService;
@@ -530,8 +534,10 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
     bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
+    bind(PartnerGenerateService.class).to(PartnerGenerateServiceImpl.class);
     bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
+    bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
   }
 }

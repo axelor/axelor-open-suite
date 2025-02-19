@@ -43,6 +43,7 @@ public class TaskTemplateHrServiceImpl extends TaskTemplateServiceImpl {
   public void manageTemplateFields(ProjectTask task, TaskTemplate taskTemplate, Project project)
       throws AxelorException {
     super.manageTemplateFields(task, taskTemplate, project);
+    task.setTimeUnit(appBaseService.getUnitHours());
 
     if (Optional.ofNullable(appProjectService.getAppProject())
         .map(AppProject::getEnablePlanification)
