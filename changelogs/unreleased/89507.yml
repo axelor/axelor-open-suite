@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed missing field partner.partnerTypeSelect in form view."
+module: axelor-account
