@@ -34,15 +34,15 @@ import java.util.Map;
 public class EmployeeDashboardController {
   public void computeEmployeeDomainDashboard(ActionRequest request, ActionResponse response) {
     try {
+      Project project = null;
       if (request.getContext().get("project") != null) {
         Long projectId =
             Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
-        Project project = Beans.get(ProjectRepository.class).find(projectId);
-        List<Long> idList =
-            Beans.get(EmployeeDashboardService.class).getFilteredEmployeeIds(project);
-        String domain = "self.id in (" + Joiner.on(",").join(idList) + ")";
-        response.setAttr("$employee", "domain", domain);
+        project = Beans.get(ProjectRepository.class).find(projectId);
       }
+      List<Long> idList = Beans.get(EmployeeDashboardService.class).getFilteredEmployeeIds(project);
+      String domain = "self.id in (" + Joiner.on(",").join(idList) + ")";
+      response.setAttr("$employee", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

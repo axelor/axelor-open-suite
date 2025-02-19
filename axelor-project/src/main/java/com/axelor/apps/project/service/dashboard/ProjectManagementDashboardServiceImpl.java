@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.project.service.dashboard;
 
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.google.inject.Inject;
@@ -29,17 +28,12 @@ import java.util.Map;
 public class ProjectManagementDashboardServiceImpl implements ProjectManagementDashboardService {
   protected ProjectTaskRepository projectTaskRepo;
   protected ProjectRepository projectRepo;
-  protected AppBaseService appBaseService;
 
   @Inject
   public ProjectManagementDashboardServiceImpl(
-      ProjectTaskRepository projectTaskRepo,
-      ProjectRepository projectRepo,
-      AppBaseService appBaseService) {
+      ProjectTaskRepository projectTaskRepo, ProjectRepository projectRepo) {
     this.projectTaskRepo = projectTaskRepo;
     this.projectRepo = projectRepo;
-
-    this.appBaseService = appBaseService;
   }
 
   @Override

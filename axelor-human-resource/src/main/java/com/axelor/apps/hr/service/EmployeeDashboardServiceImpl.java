@@ -53,24 +53,23 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
 
   @Override
   public List<Long> getFilteredEmployeeIds(Project project) {
-    List<Long> idList = new ArrayList<>();
+    List<Employee> employeeList = new ArrayList<>();
     if (project != null) {
-      LocalDate localDate =
-          appBaseService.getTodayDate(
-              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
-      List<Employee> employeeList =
+      employeeList =
           project.getMembersUserSet().stream().map(User::getEmployee).collect(Collectors.toList());
-      idList =
-          employeeList.stream()
-              .filter(
-                  e ->
-                      (e != null)
-                          && (e.getHireDate() != null && !e.getHireDate().isAfter(localDate))
-                          && (e.getLeavingDate() == null
-                              || !e.getLeavingDate().isBefore(localDate)))
-              .map(Employee::getId)
-              .collect(Collectors.toList());
+    } else {
+      employeeList = employeeRepository.all().fetch();
     }
-    return idList;
+    LocalDate localDate =
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+    return employeeList.stream()
+        .filter(
+            e ->
+                (e != null)
+                    && (e.getHireDate() != null && !e.getHireDate().isAfter(localDate))
+                    && (e.getLeavingDate() == null || !e.getLeavingDate().isBefore(localDate)))
+        .map(Employee::getId)
+        .collect(Collectors.toList());
   }
 }
