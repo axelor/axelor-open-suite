@@ -6,15 +6,22 @@ import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface AllocationLineComputeService {
-  BigDecimal getLeaves(Period period, Employee employee) throws AxelorException;
+  BigDecimal getLeaves(LocalDate fromDate, LocalDate toDate, Employee employee)
+      throws AxelorException;
 
   BigDecimal getAlreadyAllocated(AllocationLine allocationLine, Period period, Employee employee);
 
   BigDecimal getAvailableAllocation(
-      Period period, Employee employee, BigDecimal leaves, BigDecimal alreadyAllocated);
+      LocalDate fromDate,
+      LocalDate toDate,
+      Employee employee,
+      BigDecimal leaves,
+      BigDecimal alreadyAllocated);
 
-  BigDecimal computePlannedTime(Period period, Employee employee, Project project)
+  BigDecimal computePlannedTime(
+      LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
       throws AxelorException;
 }

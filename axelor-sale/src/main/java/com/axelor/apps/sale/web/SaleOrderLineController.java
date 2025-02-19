@@ -30,11 +30,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
@@ -65,8 +65,14 @@ public class SaleOrderLineController {
 
   public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
+
     response.setAttrs(
         Beans.get(SaleOrderLineFireService.class).getOnNewAttrs(saleOrderLine, saleOrder));
 
@@ -74,7 +80,8 @@ public class SaleOrderLineController {
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).getOnNewDummies(saleOrderLine, saleOrder));
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineInitValueService.class).onNewInitValues(saleOrder, saleOrderLine));
+        Beans.get(SaleOrderLineInitValueService.class)
+            .onNewInitValues(saleOrder, saleOrderLine, parentSol));
     response.setValues(saleOrderLineMap);
   }
 
@@ -114,7 +121,7 @@ public class SaleOrderLineController {
             .getOnNewEditableDummies(saleOrderLine, saleOrder, parentSol));
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineInitValueService.class)
-            .onNewEditableInitValues(saleOrder, saleOrderLine));
+            .onNewEditableInitValues(saleOrder, saleOrderLine, parentSol));
     response.setValues(saleOrderLineMap);
   }
 
@@ -125,8 +132,8 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, BigDecimal> map =
-        Beans.get(SaleOrderMarginService.class)
-            .getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine);
+        Beans.get(MarginComputeService.class)
+            .getComputedMarginInfo(saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal());
 
     response.setValues(map);
   }
@@ -272,12 +279,18 @@ public class SaleOrderLineController {
   @ErrorException
   public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder));
+        Beans.get(SaleOrderLineOnChangeService.class)
+            .qtyOnChange(saleOrderLine, saleOrder, parentSol));
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).checkMultipleQty(saleOrderLine));
     response.setAttrs(

@@ -14,6 +14,17 @@
     </extend>
   </form>
 
+  <form name="incl-project-config-panel-form" id="hr-incl-project-config-panel-form"
+    title="Project" model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="//field[@name='isShowPlanning']">
+      <insert position="after">
+        <field name="allowAllocatedInit" colSpan="4" widget="inline-checkbox"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+          showIf="isShowPlanning"/>
+      </insert>
+    </extend>
+  </form>
+
   <action-view name="action-project-view-related-allocation-lines"
     title="Allocation lines" model="com.axelor.apps.hr.db.AllocationLine">
     <view type="grid" name="allocation-line-grid"/>

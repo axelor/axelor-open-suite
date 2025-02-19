@@ -9,4 +9,6 @@ public interface SaleOrderLineDetailsService {
 
   Map<String, Object> productOnChange(
       SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException;
+
+  SaleOrder getParentSaleOrder(SaleOrderLineDetails saleOrderLineDetails);
 }

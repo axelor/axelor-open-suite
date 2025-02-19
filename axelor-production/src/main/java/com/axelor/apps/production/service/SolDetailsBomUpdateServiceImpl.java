@@ -41,19 +41,20 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void updateSolDetailslWithBillOfMaterial(SaleOrderLine saleOrderLine)
+  public void updateSolDetailslWithBillOfMaterial(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetailsList)
       throws AxelorException {
     // Easiest cases where a line has been added or modified.
     logger.debug("Updating {}", saleOrderLine);
 
     var bom = saleOrderLine.getBillOfMaterial();
-    List<SaleOrderLineDetails> saleOrderLineDetailsList =
-        saleOrderLine.getSaleOrderLineDetailsList().stream()
+    List<SaleOrderLineDetails> filteredSaleOrderLineDetailsList =
+        saleOrderLineDetailsList.stream()
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .collect(Collectors.toList());
 
-    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
-      for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
+    if (CollectionUtils.isNotEmpty(filteredSaleOrderLineDetailsList)) {
+      for (SaleOrderLineDetails saleOrderLineDetails : filteredSaleOrderLineDetailsList) {
         updateBomLineSolDetails(saleOrderLineDetails, bom);
       }
     }
@@ -96,29 +97,28 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   }
 
   @Override
-  public boolean isSolDetailsUpdated(SaleOrderLine saleOrderLine) {
-
-    if (saleOrderLine.getBillOfMaterial() == null) {
+  public boolean isSolDetailsUpdated(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetails) {
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+    if (billOfMaterial == null) {
       return true;
     }
 
     var nbBomLinesAccountable =
-        saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream()
+        billOfMaterial.getBillOfMaterialLineList().stream()
             .map(BillOfMaterialLine::getProduct)
             .map(Product::getProductSubTypeSelect)
             .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT))
             .count();
 
     var nbSaleOrderLineDetails =
-        Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList()).orElse(List.of()).stream()
+        Optional.ofNullable(saleOrderLineDetails).orElse(List.of()).stream()
             .map(SaleOrderLineDetails::getTypeSelect)
             .filter(type -> type == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .count();
 
     return nbBomLinesAccountable == nbSaleOrderLineDetails
-        && Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList())
-            .orElse(List.of())
-            .stream()
+        && Optional.ofNullable(saleOrderLineDetails).orElse(List.of()).stream()
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .allMatch(this::isSolDetailsSyncWithBomLine);
   }

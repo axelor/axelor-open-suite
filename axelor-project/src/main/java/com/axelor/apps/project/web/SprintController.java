@@ -15,6 +15,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -114,5 +115,14 @@ public class SprintController {
 
     response.setValues(
         Beans.get(SprintGeneratorService.class).initDefaultValues(project, projectVersion));
+  }
+
+  public void computeSprintDomainDashboard(ActionRequest request, ActionResponse response) {
+    Long projectId = Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
+    ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
+    String domain =
+        Beans.get(SprintGeneratorService.class).getSprintDomain(projectRepo.find(projectId));
+
+    response.setAttr("$sprint", "domain", domain);
   }
 }

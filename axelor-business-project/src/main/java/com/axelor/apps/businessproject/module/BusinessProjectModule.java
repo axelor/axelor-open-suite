@@ -106,6 +106,8 @@ import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusi
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.observer.SaleOrderLineProjectObserver;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleService;
+import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeService;
@@ -239,6 +241,7 @@ public class BusinessProjectModule extends AxelorModule {
 
     bind(ProjectToolServiceImpl.class).to(ProjectToolBusinessProjectServiceImpl.class);
     bind(TaskTemplateHrServiceImpl.class).to(TaskTemplateBusinessProjectServiceImpl.class);
+    bind(ProjectGeneratorSaleService.class).to(ProjectGeneratorSaleServiceImpl.class);
     bind(InvoiceTermDateComputeServiceImpl.class)
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
   }

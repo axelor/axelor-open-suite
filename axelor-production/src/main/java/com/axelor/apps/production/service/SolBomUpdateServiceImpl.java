@@ -142,10 +142,11 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
         && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .filter(
                 subSaleOrderLine ->
-                    subSaleOrderLine
-                        .getProduct()
-                        .getProductSubTypeSelect()
-                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+                    subSaleOrderLine != null
+                        && subSaleOrderLine
+                            .getProduct()
+                            .getProductSubTypeSelect()
+                            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine)
         && bomLineWithBom == subLineWithProduceSaleSupply;
   }

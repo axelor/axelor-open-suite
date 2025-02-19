@@ -90,4 +90,9 @@
     <option value="project">Project</option>
     <option value="version">Version</option>
   </selection>
+
+  <selection id="projct.base.change.shortcut.select" name="base.change.shortcut.select">
+    <option value="2">Active project</option>
+  </selection>
+
 </object-views>
