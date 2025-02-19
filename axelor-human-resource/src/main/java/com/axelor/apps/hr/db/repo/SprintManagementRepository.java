@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
@@ -65,18 +64,12 @@ public class SprintManagementRepository extends SprintRepository {
     try {
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
       Project project = projectRepository.find(projectId);
-      Employee employee = null;
-      if (context.get("employee") != null) {
-        Long emplyeeId = Long.valueOf(((Map) context.get("employee")).get("id").toString());
-        employee = employeeRepository.find(emplyeeId);
-      }
       Long sprintId = (Long) json.get("id");
       Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
 
       final String totalEstimatedTime = "$totalEstimatedTime";
       final String totalAllocatedTime = "$totalAllocatedTime";
-      BigDecimal allocatedTime =
-          allocationLineComputeService.getAllocatedTime(project, sprint, employee);
+      BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
       BigDecimal budgetedTime = getBudgetedTime(sprint, project);
       json.put(totalAllocatedTime, allocatedTime);
       json.put(totalEstimatedTime, budgetedTime);

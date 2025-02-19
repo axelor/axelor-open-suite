@@ -215,10 +215,8 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   @Override
-  public BigDecimal getAllocatedTime(Project project, Sprint sprint, Employee employee) {
-    if (employee == null) {
-      employee = project.getAssignedTo().getEmployee();
-    }
+  public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
+
     List<AllocationLine> allocationLineList =
         allocationLineRepo.all().fetch().stream()
             .filter(
@@ -228,6 +226,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
             .collect(Collectors.toList());
     BigDecimal allocatedTime = BigDecimal.ZERO;
     for (AllocationLine allocationLine : allocationLineList) {
+      Employee employee = allocationLine.getEmployee();
       LocalDate allocationLineFromDate =
           allocationLine.getPeriod() != null ? allocationLine.getPeriod().getFromDate() : null;
       LocalDate allocationLineToDate =
@@ -237,13 +236,14 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       if (allocationLineFromDate == null
           || allocationLineToDate == null
           || sprintFromDate == null
-          || sprintToDate == null) {
+          || sprintToDate == null
+          || employee == null) {
         continue;
       }
       BigDecimal sprintPeriod = BigDecimal.ZERO;
       if (sprintFromDate.isAfter(allocationLineFromDate)
           && sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, employee);
+        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, allocationLine.getEmployee());
       }
 
       if (!sprintFromDate.isAfter(allocationLineFromDate)
@@ -262,18 +262,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       allocatedTime = allocatedTime.add(getProrata(allocationPeriod, sprintPeriod, allocation));
     }
     return allocatedTime;
-  }
-
-  int getWeekDaysNumber(LocalDate startDate, LocalDate toDate) {
-    int i = 0;
-    LocalDate temp = startDate;
-    while (!temp.isAfter(toDate)) {
-      if (temp.getDayOfWeek().getValue() < 6) {
-        i++;
-      }
-      temp = temp.plusDays(1);
-    }
-    return i;
   }
 
   BigDecimal getProrata(
