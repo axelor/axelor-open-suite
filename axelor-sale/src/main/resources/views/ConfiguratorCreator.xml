@@ -142,6 +142,10 @@
         </editor>
       </field>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
   <form name="import-configurator-creator-form" title="Import configurator creators"
