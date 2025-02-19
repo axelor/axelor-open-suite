@@ -16,8 +16,6 @@
         grid-view="company-grid"/>
     </panel>
     <panel name="generalPanel" title="General">
-      <field name="publicHolidayEventsPlanning" canNew="true"/>
-      <field name="weeklyPlanning" canNew="true"/>
       <field name="healthService"/>
       <field name="healthServiceAddress"/>
     </panel>
