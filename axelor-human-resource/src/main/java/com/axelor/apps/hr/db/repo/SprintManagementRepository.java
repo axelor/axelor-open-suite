@@ -19,8 +19,11 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
@@ -28,7 +31,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {
@@ -41,13 +43,19 @@ public class SprintManagementRepository extends SprintRepository {
       }
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
       Project project = Beans.get(ProjectRepository.class).find(projectId);
+      Employee employee = null;
+      if (context.get("employee") != null) {
+        Long emplyeeId = Long.valueOf(((Map) context.get("employee")).get("id").toString());
+        employee = employeeRepository.find(emplyeeId);
+      }
       Long sprintId = (Long) json.get("id");
       Sprint sprint = this.find(sprintId);
 
       AllocationLineComputeService allocationLineComputeService =
           Beans.get(AllocationLineComputeService.class);
 
-      BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
+      BigDecimal allocatedTime =
+          allocationLineComputeService.getAllocatedTime(project, sprint, employee);
       BigDecimal budgetedTime = allocationLineComputeService.getBudgetedTime(sprint, project);
       json.put("$totalAllocatedTime", allocatedTime);
       json.put("$totalEstimatedTime", budgetedTime);
@@ -58,17 +66,24 @@ public class SprintManagementRepository extends SprintRepository {
     return super.populate(json, context);
   }
 
-  protected BigDecimal getBudgetedTime(Sprint sprint) throws AxelorException {
+  protected BigDecimal getBudgetedTime(Sprint sprint, Project project) throws AxelorException {
 
-    Long unitHoursId = appBaseService.getUnitHours().getId();
+    Unit unitHours = appBaseService.getUnitHours();
+    Unit unitDays = appBaseService.getUnitDays();
     return sprint.getProjectTaskList().stream()
         .map(
             projectTask -> {
-              if (projectTask.getTimeUnit().getId().equals(unitHoursId)) {
-
-                return projectTask
-                    .getBudgetedTime()
-                    .divide(BigDecimal.valueOf(DAY_HOURS_NUMBER), 2, RoundingMode.HALF_UP);
+              if (projectTask.getTimeUnit().equals(unitHours)) {
+                try {
+                  return unitConversionForProjectService.convert(
+                      unitHours,
+                      unitDays,
+                      projectTask.getBudgetedTime(),
+                      projectTask.getBudgetedTime().scale(),
+                      project);
+                } catch (AxelorException e) {
+                  throw new RuntimeException(e);
+                }
               }
               return projectTask.getBudgetedTime();
             })
