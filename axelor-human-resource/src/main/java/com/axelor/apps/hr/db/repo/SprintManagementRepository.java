@@ -19,8 +19,11 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
@@ -30,7 +33,6 @@ import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardServi
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {
@@ -38,6 +40,8 @@ public class SprintManagementRepository extends SprintRepository {
   ProjectRepository projectRepository;
   ProjectManagementDashboardService projectManagementDashboardService;
   AllocationLineComputeService allocationLineComputeService;
+  UnitConversionForProjectService unitConversionForProjectService;
+  EmployeeRepository employeeRepository;
   static final int DAY_HOURS_NUMBER = 24;
 
   @Inject
@@ -45,11 +49,15 @@ public class SprintManagementRepository extends SprintRepository {
       AppBaseService appBaseService,
       ProjectRepository projectRepository,
       ProjectManagementDashboardService projectManagementDashboardService,
-      AllocationLineComputeService allocationLineComputeService) {
+      AllocationLineComputeService allocationLineComputeService,
+      UnitConversionForProjectService unitConversionForProjectService,
+      EmployeeRepository employeeRepository) {
     this.appBaseService = appBaseService;
     this.projectRepository = projectRepository;
     this.projectManagementDashboardService = projectManagementDashboardService;
     this.allocationLineComputeService = allocationLineComputeService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
+    this.employeeRepository = employeeRepository;
   }
 
   @Override
@@ -57,13 +65,19 @@ public class SprintManagementRepository extends SprintRepository {
     try {
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
       Project project = projectRepository.find(projectId);
+      Employee employee = null;
+      if (context.get("employee") != null) {
+        Long emplyeeId = Long.valueOf(((Map) context.get("employee")).get("id").toString());
+        employee = employeeRepository.find(emplyeeId);
+      }
       Long sprintId = (Long) json.get("id");
       Sprint sprint = Beans.get(SprintRepository.class).find(sprintId);
 
       final String totalEstimatedTime = "$totalEstimatedTime";
       final String totalAllocatedTime = "$totalAllocatedTime";
-      BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
-      BigDecimal budgetedTime = getBudgetedTime(sprint);
+      BigDecimal allocatedTime =
+          allocationLineComputeService.getAllocatedTime(project, sprint, employee);
+      BigDecimal budgetedTime = getBudgetedTime(sprint, project);
       json.put(totalAllocatedTime, allocatedTime);
       json.put(totalEstimatedTime, budgetedTime);
 
@@ -73,17 +87,24 @@ public class SprintManagementRepository extends SprintRepository {
     return super.populate(json, context);
   }
 
-  protected BigDecimal getBudgetedTime(Sprint sprint) throws AxelorException {
+  protected BigDecimal getBudgetedTime(Sprint sprint, Project project) throws AxelorException {
 
-    Long unitHoursId = appBaseService.getUnitHours().getId();
+    Unit unitHours = appBaseService.getUnitHours();
+    Unit unitDays = appBaseService.getUnitDays();
     return sprint.getProjectTaskList().stream()
         .map(
             projectTask -> {
-              if (projectTask.getTimeUnit().getId().equals(unitHoursId)) {
-
-                return projectTask
-                    .getBudgetedTime()
-                    .divide(BigDecimal.valueOf(DAY_HOURS_NUMBER), 2, RoundingMode.HALF_UP);
+              if (projectTask.getTimeUnit().equals(unitHours)) {
+                try {
+                  return unitConversionForProjectService.convert(
+                      unitHours,
+                      unitDays,
+                      projectTask.getBudgetedTime(),
+                      projectTask.getBudgetedTime().scale(),
+                      project);
+                } catch (AxelorException e) {
+                  throw new RuntimeException(e);
+                }
               }
               return projectTask.getBudgetedTime();
             })

@@ -11,6 +11,7 @@ import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -208,5 +209,15 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
             + DATE_FORMATTER.format(toDate));
 
     return sprintRepository.save(sprint);
+  }
+
+  @CallMethod
+  public List<Long> computeSprintDomain(Long projectId) {
+    List<Sprint> sprintList = new ArrayList<>();
+    if (projectId != null) {
+      Project project = projectRepository.find(projectId);
+      sprintList = getSprintDomain(project);
+    }
+    return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }
 }

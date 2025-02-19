@@ -10,19 +10,16 @@ import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.StringHelper;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SprintController {
@@ -130,16 +127,5 @@ public class SprintController {
     String domain = String.format("self.id in (%s)", StringHelper.getIdListString(sprintList));
 
     response.setAttr("$sprint", "domain", domain);
-  }
-
-  @CallMethod
-  public List<Long> computeSprintDomain(Long projectId) {
-    ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    List<Sprint> sprintList = new ArrayList<>();
-    if (projectId != null) {
-      Project project = projectRepo.find(projectId);
-      sprintList = Beans.get(SprintGeneratorService.class).getSprintDomain(project);
-    }
-    return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }
 }

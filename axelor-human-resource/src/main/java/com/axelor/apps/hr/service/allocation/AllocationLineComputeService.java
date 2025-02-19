@@ -26,5 +26,5 @@ public interface AllocationLineComputeService {
       LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
       throws AxelorException;
 
-  BigDecimal getAllocatedTime(Project project, Sprint sprint);
+  BigDecimal getAllocatedTime(Project project, Sprint sprint, Employee employee);
 }

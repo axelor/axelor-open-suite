@@ -215,35 +215,49 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   @Override
-  public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
+  public BigDecimal getAllocatedTime(Project project, Sprint sprint, Employee employee) {
+    if (employee == null) {
+      employee = project.getAssignedTo().getEmployee();
+    }
     List<AllocationLine> allocationLineList =
         allocationLineRepo.all().fetch().stream()
-            .filter(allocationLine -> allocationLine.getProject().equals(project))
+            .filter(
+                allocationLine ->
+                    allocationLine.getProject() != null
+                        && allocationLine.getProject().equals(project))
             .collect(Collectors.toList());
     BigDecimal allocatedTime = BigDecimal.ZERO;
     for (AllocationLine allocationLine : allocationLineList) {
-      LocalDate allocationLineFromDate = allocationLine.getPeriod().getFromDate();
-      LocalDate allocationLineToDate = allocationLine.getPeriod().getToDate();
+      LocalDate allocationLineFromDate =
+          allocationLine.getPeriod() != null ? allocationLine.getPeriod().getFromDate() : null;
+      LocalDate allocationLineToDate =
+          allocationLine.getPeriod() != null ? allocationLine.getPeriod().getToDate() : null;
       LocalDate sprintFromDate = sprint.getFromDate();
       LocalDate sprintToDate = sprint.getToDate();
-
-      int sprintPeriod = 0;
+      if (allocationLineFromDate == null
+          || allocationLineToDate == null
+          || sprintFromDate == null
+          || sprintToDate == null) {
+        continue;
+      }
+      BigDecimal sprintPeriod = BigDecimal.ZERO;
       if (sprintFromDate.isAfter(allocationLineFromDate)
           && sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWeekDaysNumber(sprintFromDate, sprintToDate);
+        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, employee);
       }
 
       if (!sprintFromDate.isAfter(allocationLineFromDate)
           && sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWeekDaysNumber(allocationLineFromDate, sprintToDate);
+        sprintPeriod = getWorkingDays(allocationLineFromDate, sprintToDate, employee);
       }
 
       if (sprintFromDate.isAfter(allocationLineFromDate)
           && !sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWeekDaysNumber(sprintFromDate, allocationLineToDate);
+        sprintPeriod = getWorkingDays(sprintFromDate, allocationLineToDate, employee);
       }
 
-      int allocationPeriod = getWeekDaysNumber(allocationLineFromDate, allocationLineToDate);
+      BigDecimal allocationPeriod =
+          getWorkingDays(allocationLineFromDate, allocationLineToDate, employee);
       BigDecimal allocation = allocationLine.getAllocated();
       allocatedTime = allocatedTime.add(getProrata(allocationPeriod, sprintPeriod, allocation));
     }
@@ -262,11 +276,10 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return i;
   }
 
-  BigDecimal getProrata(int allocationPeriod, int sprintPeriod, BigDecimal allocation) {
-    if (allocationPeriod != 0)
-      return allocation
-          .multiply(BigDecimal.valueOf(sprintPeriod))
-          .divide(BigDecimal.valueOf(allocationPeriod), 2, RoundingMode.HALF_UP);
+  BigDecimal getProrata(
+      BigDecimal allocationPeriod, BigDecimal sprintPeriod, BigDecimal allocation) {
+    if (!allocationPeriod.equals(BigDecimal.ZERO))
+      return allocation.multiply(sprintPeriod).divide(allocationPeriod, 2, RoundingMode.HALF_UP);
     return BigDecimal.ZERO;
   }
 }
