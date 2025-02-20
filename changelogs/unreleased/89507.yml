@@ -1,3 +1,3 @@
 ---
-title: "Invoice: fixed missing field partner.partnerTypeSelect in form view."
+title: "Invoice: fixed contact being readonly when the partner is an individual."
 module: axelor-account
