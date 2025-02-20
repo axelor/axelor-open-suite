@@ -1,3 +1,40 @@
+## [8.1.18] (2025-02-20)
+
+### Fixes
+
+#### Account
+
+* Invoice: fixed contact being readonly when the partner is an individual.
+* Invoice payment: forbid the creation of a 0 amount payment.
+* Payment session: fixed infinite loop when searching eligible invoice terms.
+* Fiscal position: fixed NPE on adding account equivalence on new record.
+* Move: fixed company bank details domain when no payment mode is selected.
+* Invoice: fixed wrong default payment condition.
+* Journal: fixed error while importing france chart of accounts.
+* Move: fixed the transactional error at move delete.
+
+#### Contract
+
+* Contract: fixed no analytic move lines on contract duplication.
+* Contract version: fixed file link is lost when creating a new amendment.
+
+#### Human Resource
+
+* Timesheet: fixed an issue in lines generation from project planning where end date was not taken into account.
+
+#### Marketing
+
+* Campaign: fixed FR translation for 'Event start'.
+
+#### Quality
+
+* QI Resolution: fixed wrong translation in English for the term default.
+
+#### Sale
+
+* Configurator: fixed default value that was not set with configurators
+* Configurator product formula: disabled test button if formula is empty.
+
 ## [8.1.17] (2025-02-06)
 
 ### Fixes
@@ -1176,6 +1213,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.18]: https://github.com/axelor/axelor-open-suite/compare/v8.1.17...v8.1.18
 [8.1.17]: https://github.com/axelor/axelor-open-suite/compare/v8.1.16...v8.1.17
 [8.1.16]: https://github.com/axelor/axelor-open-suite/compare/v8.1.15...v8.1.16
 [8.1.15]: https://github.com/axelor/axelor-open-suite/compare/v8.1.14...v8.1.15

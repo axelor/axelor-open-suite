@@ -1,3 +1,0 @@
----
-title: "Payment Session: fixed infinite loop when searching eligible invoice terms."
-module: axelor-account
