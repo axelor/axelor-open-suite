@@ -19,6 +19,8 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
@@ -26,6 +28,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {
@@ -44,10 +47,17 @@ public class SprintManagementRepository extends SprintRepository {
       AllocationLineComputeService allocationLineComputeService =
           Beans.get(AllocationLineComputeService.class);
 
+      final String totalEstimatedTime = "$totalEstimatedTime";
+      final String totalAllocatedTime = "$totalAllocatedTime";
+      final String totalPlannedTime = "$totalPlannedTime";
+      BigDecimal plannedTime =
+              allocationLineComputeService.computePlannedTime(fromDate, toDate, employee, project);
       BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
       BigDecimal budgetedTime = allocationLineComputeService.getBudgetedTime(sprint, project);
+
       json.put("$totalAllocatedTime", allocatedTime);
       json.put("$totalEstimatedTime", budgetedTime);
+      json.put(totalPlannedTime,plannedTime);
 
     } catch (Exception e) {
       TraceBackService.trace(e);

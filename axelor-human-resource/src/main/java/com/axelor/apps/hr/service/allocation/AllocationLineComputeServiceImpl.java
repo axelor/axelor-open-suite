@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -131,7 +132,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
     if (fromDate == null
         || toDate == null
-        || employee == null
         || project == null
         || !project.getIsShowPlanning()
         || !Optional.ofNullable(appProjectService.getAppProject())
@@ -140,10 +140,15 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       return totalPlannedTime;
     }
 
-    List<ProjectPlanningTime> projectPlanningTimeList =
-        planningTimeRepo
-            .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
-            .fetch();
+    List<ProjectPlanningTime> projectPlanningTimeList = new ArrayList<>();
+    if (employee == null) {
+      planningTimeRepo.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+    } else {
+      projectPlanningTimeList =
+          planningTimeRepo
+              .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
+              .fetch();
+    }
 
     if (ObjectUtils.notEmpty(projectPlanningTimeList)) {
       Unit dayUnit = appBaseService.getAppBase().getUnitDays();
@@ -155,7 +160,9 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
                 dayUnit,
                 projectPlanningTime.getPlannedTime(),
                 projectPlanningTime.getProject());
-
+        if (employee == null) {
+          employee = projectPlanningTime.getEmployee();
+        }
         BigDecimal prorata = computeProrata(projectPlanningTime, fromDate, toDate, employee);
 
         totalPlannedTime = totalPlannedTime.add(plannedTime.multiply(prorata));
