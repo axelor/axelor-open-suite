@@ -594,6 +594,7 @@
         </field>
       </panel>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
+      <field name="partner.partnerTypeSelect" hidden="true"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
@@ -1214,6 +1215,7 @@ InvoiceSet.length > 0))"
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
       <field name="paymentMode.typeSelect" hidden="true"/>
+      <field name="partner.partnerTypeSelect" hidden="true"/>
     </panel>
 
     <panel-tabs name="invoiceDetails">
