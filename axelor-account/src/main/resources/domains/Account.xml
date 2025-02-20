@@ -102,6 +102,8 @@
       <field name="vatSystemSelect"/>
     </track>
 
+    <entity-listener
+      class="com.axelor.apps.account.db.repo.listener.AccountListener"/>
   </entity>
 
 </domain-models>

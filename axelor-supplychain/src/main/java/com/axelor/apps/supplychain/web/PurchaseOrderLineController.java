@@ -201,7 +201,7 @@ public class PurchaseOrderLineController {
       if (purchaseOrderLine != null && purchaseOrderLine.getTaxLineSet() != null) {
         TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
         taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(purchaseOrderLine.getTaxLineSet());
-        taxAccountService.checkSumOfNonDeductibleTaxes(purchaseOrderLine.getTaxLineSet());
+        taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(purchaseOrderLine.getTaxLineSet());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
