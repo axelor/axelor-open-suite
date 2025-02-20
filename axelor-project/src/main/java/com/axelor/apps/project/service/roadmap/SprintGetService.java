@@ -5,7 +5,9 @@ import com.axelor.apps.project.db.Sprint;
 import java.util.List;
 
 public interface SprintGetService {
-  List<Sprint> getSprintToDisplay(Project project, boolean includeBacklog);
+  List<Sprint> getSprintToDisplay(Project project);
+
+  List<Sprint> getSprintToDisplayIncludingBacklog(Project project);
 
   List<Sprint> getSprintList(Project project);
 

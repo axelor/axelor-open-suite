@@ -110,7 +110,7 @@ public class ProjectMenuController {
   public void viewTasksPerSprint(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
     SprintGetService sprintGetService = Beans.get(SprintGetService.class);
-    List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project, true);
+    List<Sprint> sprintList = sprintGetService.getSprintToDisplayIncludingBacklog(project);
 
     if (ObjectUtils.notEmpty(sprintList)) {
       String sprintIdsToExclude = sprintGetService.getSprintIdsToExclude(sprintList);
@@ -131,7 +131,7 @@ public class ProjectMenuController {
   public void viewSprints(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
     SprintGetService sprintGetService = Beans.get(SprintGetService.class);
-    List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project, false);
+    List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
     List<Long> sprintIdList = List.of(0L);
     if (ObjectUtils.notEmpty(sprintList)) {
       sprintIdList = sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
