@@ -22,6 +22,7 @@
       <field name="configuratorCreator" form-view="configurator-creator-form"
         grid-view="configurator-creator-grid" onSelect="action-configurator-method-creator-domain"
         onChange="action-configurator-group-creator-onchange"/>
+      <field name="configuratorVersion"/>
       <field name="configuratorCreatorName"/>
       <field name="attributes" colSpan="12"/>
     </panel>
@@ -50,6 +51,7 @@
       <field name="configuratorCreator" form-view="configurator-creator-form"
         grid-view="configurator-creator-grid" onSelect="action-configurator-method-creator-domain"
         onChange="action-configurator-group-creator-onchange"/>
+      <field name="configuratorVersion" readonly="true"/>
       <field name="configuratorCreatorName"/>
       <field name="attributes" colSpan="12"/>
     </panel>
@@ -77,6 +79,7 @@
     <panel name="configuratorPanel" hidden="true" colSpan="12">
       <field name="configuratorCreator" readonly="true" showTitle="false" css="bold large"
         canView="false"/>
+      <field name="configuratorVersion" readonly="true"/>
       <button name="validateBtn" title="Validate and generate the line" colSpan="4"
         colOffset="2" onClick="save,action-configurator-method-generate"/>
     </panel>

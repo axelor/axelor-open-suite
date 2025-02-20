@@ -18,15 +18,17 @@
  */
 package com.axelor.apps.project.quickmenu;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.web.UserController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
-import com.axelor.studio.db.AppProject;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
@@ -40,11 +42,11 @@ import java.util.Set;
 
 public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
 
-  protected AppProjectService appProjectService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public ActiveProjectQuickMenuCreator(AppProjectService appProjectService) {
-    this.appProjectService = appProjectService;
+  public ActiveProjectQuickMenuCreator(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -65,8 +67,9 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
   }
 
   protected boolean hasConfigEnabled() {
-    AppProject appProject = appProjectService.getAppProject();
-    return !appProject.getIsActivateProjectChangeShortcut();
+    AppBase appBase = appBaseService.getAppBase();
+    return StringUtils.isBlank(appBase.getShortcutMultiSelect())
+        || !appBase.getShortcutMultiSelect().contains(AppBaseRepository.SHORTCUT_ACTIVE_PROJECT);
   }
 
   protected List<QuickMenuItem> getItems() {

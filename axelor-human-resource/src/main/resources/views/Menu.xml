@@ -17,8 +17,12 @@
     <view type="dashboard" name="my.hr.dashboard"/>
   </action-view>
 
+  <menuitem name="edit-leave-request" parent="my-hr-root" title="Complete my leave request"
+    action="edit.leave.request" order="200" if="__config__.app.isApp('leave')" icon="airplane"
+    icon-background="#84429f"/>
+
   <menuitem name="all-leave-request" parent="my-hr-root" title="Leave Requests"
-    action="leave.all" order="200" if="__config__.app.isApp('leave')" icon="airplane"
+    action="leave.all" order="250" if="__config__.app.isApp('leave')" icon="list-task"
     icon-background="#84429f"/>
 
   <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
@@ -78,9 +82,13 @@
     <domain>self.expense IS NULL</domain>
   </action-view>
 
+  <menuitem name="edit-timesheet" parent="my-hr-root" title="Complete my timesheet"
+    action="edit.timesheet" order="400" if="__config__.app.isApp('timesheet')" icon="clock"
+    icon-background="#84429f"/>
+
   <menuitem name="all-my-timesheet" parent="my-hr-root" title="Timesheets"
-    action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"
-    icon="clock" icon-background="#84429f"/>
+    action="action.timesheet.view.my.timesheet" order="410" if="__config__.app.isApp('timesheet')"
+    icon="list-task" icon-background="#84429f"/>
 
   <action-view name="action.timesheet.view.my.timesheet"
     model="com.axelor.apps.hr.db.Timesheet" title="My Timesheets">

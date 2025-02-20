@@ -38,6 +38,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProjectMenuController {
 
@@ -109,7 +110,7 @@ public class ProjectMenuController {
   public void viewTasksPerSprint(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
     SprintGetService sprintGetService = Beans.get(SprintGetService.class);
-    List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
+    List<Sprint> sprintList = sprintGetService.getSprintToDisplayIncludingBacklog(project);
 
     if (ObjectUtils.notEmpty(sprintList)) {
       String sprintIdsToExclude = sprintGetService.getSprintIdsToExclude(sprintList);
@@ -125,5 +126,24 @@ public class ProjectMenuController {
 
       response.setView(actionViewBuilder.map());
     }
+  }
+
+  public void viewSprints(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    SprintGetService sprintGetService = Beans.get(SprintGetService.class);
+    List<Sprint> sprintList = sprintGetService.getSprintToDisplay(project);
+    List<Long> sprintIdList = List.of(0L);
+    if (ObjectUtils.notEmpty(sprintList)) {
+      sprintIdList = sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
+    }
+
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Sprints"));
+    actionViewBuilder.model(Sprint.class.getName());
+    actionViewBuilder.add("grid", "sprint-grid");
+    actionViewBuilder.add("form", "sprint-form");
+    actionViewBuilder.domain("self.id IN (:sprintIds)");
+    actionViewBuilder.context("sprintIds", sprintIdList);
+
+    response.setView(actionViewBuilder.map());
   }
 }
