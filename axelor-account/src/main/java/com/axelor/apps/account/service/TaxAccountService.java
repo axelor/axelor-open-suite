@@ -32,11 +32,14 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class TaxAccountService extends TaxService {
@@ -110,8 +113,16 @@ public class TaxAccountService extends TaxService {
       return;
     }
 
-    if (!checkTaxesNotOnlyNonDeductibleTaxes(
-        taxLines.stream().map(TaxLine::getTax).collect(Collectors.toList()))) {
+    this.checkTaxesNotOnlyNonDeductibleTaxes(
+        taxLines.stream().map(TaxLine::getTax).collect(Collectors.toSet()));
+  }
+
+  public void checkTaxesNotOnlyNonDeductibleTaxes(Set<Tax> taxes) throws AxelorException {
+    if (ObjectUtils.isEmpty(taxes)) {
+      return;
+    }
+
+    if (!checkTaxesNotOnlyNonDeductibleTaxes(new ArrayList<>(taxes))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR));
@@ -127,6 +138,10 @@ public class TaxAccountService extends TaxService {
   }
 
   public Set<TaxLine> getNotNonDeductibleTaxesSet(Set<TaxLine> taxesLineSet) {
+    if (ObjectUtils.isEmpty(taxesLineSet)) {
+      return new HashSet<>();
+    }
+
     return taxesLineSet.stream()
         .filter(Objects::nonNull)
         .filter(it -> !ObjectUtils.isEmpty(it.getTax()) && !it.getTax().getIsNonDeductibleTax())
@@ -144,7 +159,7 @@ public class TaxAccountService extends TaxService {
         .anyMatch(Tax::getIsNonDeductibleTax);
   }
 
-  public void checkSumOfNonDeductibleTaxes(Set<TaxLine> taxLines) throws AxelorException {
+  public void checkSumOfNonDeductibleTaxesOnTaxLines(Set<TaxLine> taxLines) throws AxelorException {
     if (CollectionUtils.isEmpty(taxLines)) {
       return;
     }
@@ -164,6 +179,27 @@ public class TaxAccountService extends TaxService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED));
     }
+  }
+
+  public void checkSumOfNonDeductibleTaxes(Set<Tax> taxes) throws AxelorException {
+    if (CollectionUtils.isEmpty(taxes)) {
+      return;
+    }
+
+    Stream<Tax> taxLineStream =
+        taxes.stream()
+            .filter(taxLine -> Optional.of(taxLine).map(Tax::getIsNonDeductibleTax).orElse(false));
+    this.checkSumOfNonDeductibleTaxesOnTaxLines(
+        taxLineStream
+            .map(
+                tax -> {
+                  try {
+                    return this.getTaxLine(tax, null);
+                  } catch (AxelorException e) {
+                    throw new RuntimeException(e);
+                  }
+                })
+            .collect(Collectors.toSet()));
   }
 
   @Override

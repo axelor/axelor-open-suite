@@ -219,7 +219,6 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
-          JPA.flush();
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
           this.archiveDaybookMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
@@ -239,5 +238,6 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Transactional
   public void deleteMove(Move move) {
     moveRepo.remove(move);
+    JPA.flush();
   }
 }

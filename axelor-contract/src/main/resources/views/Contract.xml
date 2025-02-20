@@ -730,6 +730,10 @@
             showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
         </panel>
       </panel>
+      <panel name="contractVersionFileListPanel" title="Files">
+        <field name="contractFileList" form-view="file-form" grid-view="contract-file-grid"
+          readonlyIf="statusSelect != 1" domain="self.fileTypeSelect = 1" colSpan="12"/>
+      </panel>
     </panel-tabs>
   </form>
 

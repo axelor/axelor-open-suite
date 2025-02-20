@@ -45,6 +45,7 @@ import com.axelor.apps.businessproduction.service.SaleOrderLineBomSyncServiceBus
 import com.axelor.apps.businessproduction.service.SaleOrderLineBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineDetailsBomSyncBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderLineDetailsBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.SaleOrderLineInitValueBusinessProductionServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderProductionSyncBusinessService;
 import com.axelor.apps.businessproduction.service.SaleOrderProductionSyncBusinessServiceImpl;
 import com.axelor.apps.businessproduction.service.SaleOrderServiceBusinessProductionImpl;
@@ -58,6 +59,7 @@ import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessSer
 import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessServiceImpl;
 import com.axelor.apps.businessproduction.service.saleorder.status.SaleOrderWorkflowServiceBusinessProductionImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
+import com.axelor.apps.businessproject.service.SaleOrderLineInitValueProjectServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
@@ -123,5 +125,7 @@ public class BusinessProductionModule extends AxelorModule {
     bind(SaleOrderProductionSyncBusinessService.class)
         .to(SaleOrderProductionSyncBusinessServiceImpl.class);
     bind(SaleOrderLineBomSyncServiceImpl.class).to(SaleOrderLineBomSyncServiceBusinessImpl.class);
+    bind(SaleOrderLineInitValueProjectServiceImpl.class)
+        .to(SaleOrderLineInitValueBusinessProductionServiceImpl.class);
   }
 }
