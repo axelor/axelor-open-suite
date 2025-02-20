@@ -49,10 +49,11 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
   public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)
-        && appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
-      for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-        computeSumSubLineList(subSaleOrderLine, saleOrder);
+    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
+        }
       }
 
       saleOrderLine.setPrice(
@@ -65,10 +66,7 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
               subSaleOrderLineList.stream()
                   .map(SaleOrderLine::getSubTotalCostPrice)
                   .reduce(BigDecimal.ZERO, BigDecimal::add)));
-
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-    } else {
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
+    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
   }
 }
