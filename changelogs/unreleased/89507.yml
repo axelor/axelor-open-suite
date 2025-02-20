@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed contact being readonly when the partner is an individual."
+module: axelor-account
