@@ -57,11 +57,24 @@ public class InvoiceToolService {
   public static LocalDate getDueDate(Invoice invoice) throws AxelorException {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
-    return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
-            || PaymentConditionToolService.isFreePaymentCondition(invoice.getPaymentCondition())
-        ? PaymentConditionToolService.getMaxDueDate(
-            invoice.getPaymentCondition(), invoiceDate, invoice.getDueDate())
-        : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+    LocalDate dueDate;
+    if (ObjectUtils.isEmpty(invoice.getInvoiceTermList())
+        || PaymentConditionToolService.isFreePaymentCondition(invoice.getPaymentCondition())) {
+      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)
+          && PaymentConditionToolService.allowToComputeDueDateFreePaymentCondition(
+              invoice.getPaymentCondition(), invoice.getDueDate())) {
+        dueDate = invoiceDate;
+      } else {
+        dueDate =
+            PaymentConditionToolService.getMaxDueDate(
+                invoice.getPaymentCondition(), invoiceDate, invoice.getDueDate());
+      }
+    } else {
+      dueDate =
+          Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+    }
+
+    return dueDate;
   }
 
   @CallMethod
