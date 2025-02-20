@@ -18,11 +18,7 @@
  */
 package com.axelor.apps.hr.db.repo;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
@@ -57,30 +53,5 @@ public class SprintManagementRepository extends SprintRepository {
       TraceBackService.trace(e);
     }
     return super.populate(json, context);
-  }
-
-  protected BigDecimal getBudgetedTime(Sprint sprint, Project project) throws AxelorException {
-
-    Unit unitHours = appBaseService.getUnitHours();
-    Unit unitDays = appBaseService.getUnitDays();
-    return sprint.getProjectTaskList().stream()
-        .map(
-            projectTask -> {
-              if (projectTask.getTimeUnit().equals(unitHours)) {
-                try {
-                  return unitConversionForProjectService.convert(
-                      unitHours,
-                      unitDays,
-                      projectTask.getBudgetedTime(),
-                      projectTask.getBudgetedTime().scale(),
-                      project);
-                } catch (AxelorException e) {
-                  throw new RuntimeException(e);
-                }
-              }
-              return projectTask.getBudgetedTime();
-            })
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
   }
 }
