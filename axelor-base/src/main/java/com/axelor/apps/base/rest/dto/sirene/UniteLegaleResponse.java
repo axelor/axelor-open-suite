@@ -10,6 +10,11 @@ public class UniteLegaleResponse {
   private String prenom1UniteLegale;
   private String sexeUniteLegale;
   private String denominationUniteLegale;
+  private String activitePrincipaleUniteLegale;
+
+  public String getActivitePrincipaleUniteLegale() {
+    return activitePrincipaleUniteLegale;
+  }
 
   public String getCategorieEntreprise() {
     return categorieEntreprise;
