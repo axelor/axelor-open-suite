@@ -1,3 +1,0 @@
----
-title: "Accounting batch: fixed the issue where batch accounting cut-off does not link generated tracebacks."
-module: axelor-account
