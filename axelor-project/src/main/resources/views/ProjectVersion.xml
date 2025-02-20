@@ -25,8 +25,9 @@
         onChange="action-project-version-method-show-sprints"/>
       <button name="generateSprintsBtn" title="Generate sprints" showIf="id"
         onClick="save,action-sprint-generator-version-view-wizard-mass-generate"/>
-      <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
-        canSelect="false"/>
+      <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
+        colSpan="12" action="action-project-version-method-show-sprint-list" height="200%"
+        canSearch="true" editable="true" canNew="id" canDelete="true"/>
     </panel>
     <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
       <panel-dashlet name="taskDashletPanel" title="Ticket associated"
@@ -55,6 +56,13 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <view-param name="popup" value="true"/>
+    <domain>self.targetVersion.id = :id</domain>
+  </action-view>
+
+  <action-view name="action-project-version-method-show-sprint-list" title="Sprints"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-grid"/>
+    <view type="form" name="sprint-form"/>
     <domain>self.targetVersion.id = :id</domain>
   </action-view>
 

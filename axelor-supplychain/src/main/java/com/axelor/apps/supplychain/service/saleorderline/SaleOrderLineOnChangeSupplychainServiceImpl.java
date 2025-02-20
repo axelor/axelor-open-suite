@@ -67,10 +67,11 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
   }
 
   @Override
-  public Map<String, Object> qtyOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public Map<String, Object> qtyOnChange(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSol)
       throws AxelorException {
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
-    Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder, parentSol);
     if (appSupplychain.getManageStockReservation()) {
       saleOrderLineMap.putAll(
           saleOrderLineServiceSupplyChain.updateRequestedReservedQty(saleOrderLine));

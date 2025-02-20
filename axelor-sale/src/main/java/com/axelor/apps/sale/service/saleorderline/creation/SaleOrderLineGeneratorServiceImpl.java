@@ -95,7 +95,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
-    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
+    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, null);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
     if (appSaleService.getAppSale().getManageMultipleSaleQuantity()) {

@@ -162,15 +162,17 @@ public class TimesheetController {
       response.setView(
           ActionView.define(I18n.get("Timesheet"))
               .model(Timesheet.class.getName())
-              .add("form", "timesheet-form")
+              .add("form", "complete-my-timesheet-form")
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else if (timesheetList.size() == 1) {
       response.setView(
           ActionView.define(I18n.get("Timesheet"))
               .model(Timesheet.class.getName())
-              .add("form", "timesheet-form")
+              .add("form", "complete-my-timesheet-form")
               .param("forceEdit", "true")
               .context("_showRecord", String.valueOf(timesheetList.get(0).getId()))
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else {
       response.setView(
@@ -274,10 +276,11 @@ public class TimesheetController {
     response.setView(
         ActionView.define(I18n.get("Timesheet"))
             .model(Timesheet.class.getName())
-            .add("form", "timesheet-form")
+            .add("form", "complete-my-timesheet-form")
             .param("forceEdit", "true")
             .domain("self.id = " + timesheetMap.get("id"))
             .context("_showRecord", String.valueOf(timesheet.getId()))
+            .context("_isEmployeeReadOnly", true)
             .map());
   }
 

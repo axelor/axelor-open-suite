@@ -1816,4 +1816,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_LINE_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
       "Non-deductible tax only authorized when functional origin is purchase. Please remove the non-deductible tax on move line." /*)*/;
+
+  public static final String INVOICE_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
+      "Non-deductible tax not authorized for customer invoice. Please remove the non-deductible tax on product." /*)*/;
 }

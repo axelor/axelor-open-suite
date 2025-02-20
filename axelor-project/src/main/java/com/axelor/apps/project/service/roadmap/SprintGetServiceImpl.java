@@ -34,16 +34,23 @@ public class SprintGetServiceImpl implements SprintGetService {
       return sprintList;
     }
 
-    if (project.getBacklogSprint() != null) {
-      sprintList.add(project.getBacklogSprint());
-    }
-
     sprintList.addAll(filterSprintsWithCurrentDate(getSprintList(project), project.getCompany()));
 
     return sprintList;
   }
 
-  protected List<Sprint> getSprintList(Project project) {
+  @Override
+  public List<Sprint> getSprintToDisplayIncludingBacklog(Project project) {
+    List<Sprint> sprintList = getSprintToDisplay(project);
+
+    if (project.getBacklogSprint() != null) {
+      sprintList.add(project.getBacklogSprint());
+    }
+    return sprintList;
+  }
+
+  @Override
+  public List<Sprint> getSprintList(Project project) {
     List<Sprint> slist = new ArrayList<>();
     if (Objects.equals(
             ProjectRepository.SPRINT_MANAGEMENT_PROJECT, project.getSprintManagementSelect())

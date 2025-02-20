@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineCheckService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -64,6 +65,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       CurrencyScaleService currencyScaleService,
       ProductPriceService productPriceService,
       FiscalPositionService fiscalPositionService,
+      InvoiceLineCheckService invoiceLineCheckService,
       InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService) {
     super(
         currencyService,
@@ -82,6 +84,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         currencyScaleService,
         productPriceService,
         fiscalPositionService,
+        invoiceLineCheckService,
         invoiceLineSupplierCatalogService);
   }
 
