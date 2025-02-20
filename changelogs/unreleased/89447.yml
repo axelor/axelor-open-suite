@@ -1,3 +1,0 @@
----
-title: "Contract version: fixed the issue where the file was being duplicated during updates."
-module: axelor-contract
