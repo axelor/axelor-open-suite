@@ -18,9 +18,6 @@
  */
 package com.axelor.apps.hr.db.repo;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
@@ -42,7 +39,7 @@ public class SprintManagementRepository extends SprintRepository {
       }
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
       Project project = Beans.get(ProjectRepository.class).find(projectId);
-      Employee employee = null;
+Employee employee = null;
       if (context.get("employee") != null) {
         Long employeeId = Long.valueOf(((Map) context.get("employee")).get("id").toString());
         employee = Beans.get(EmployeeRepository.class).find(employeeId);
