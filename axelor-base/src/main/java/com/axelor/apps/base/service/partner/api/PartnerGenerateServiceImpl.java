@@ -4,12 +4,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.MainActivity;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.db.PartnerCategory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
+import com.axelor.apps.base.db.repo.MainActivityRepository;
 import com.axelor.apps.base.db.repo.PartnerCategoryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -36,6 +38,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
   protected final CountryRepository countryRepository;
   protected final CityRepository cityRepository;
   protected final PartnerApiFetchService partnerApiFetchService;
+  protected final MainActivityRepository mainActivityRepository;
 
   @Inject
   public PartnerGenerateServiceImpl(
@@ -43,12 +46,14 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       PartnerCategoryRepository partnerCategoryRepository,
       CountryRepository countryRepository,
       CityRepository cityRepository,
-      PartnerApiFetchService partnerApiFetchService) {
+      PartnerApiFetchService partnerApiFetchService,
+      MainActivityRepository mainActivityRepository) {
     this.partnerRepository = partnerRepository;
     this.partnerCategoryRepository = partnerCategoryRepository;
     this.countryRepository = countryRepository;
     this.cityRepository = cityRepository;
     this.partnerApiFetchService = partnerApiFetchService;
+    this.mainActivityRepository = mainActivityRepository;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -85,6 +90,13 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     PartnerCategory partnerCategory = partnerCategoryRepository.findByCode(partnerCategoryCode);
     if (partnerCategory != null) {
       partner.setPartnerCategory(partnerCategory);
+    }
+
+    String nafCode = uniteLegale.getActivitePrincipaleUniteLegale();
+    nafCode = nafCode != null ? nafCode.replace(".", "") : nafCode;
+    MainActivity mainActivity = mainActivityRepository.findByCode(nafCode);
+    if (mainActivity != null) {
+      partner.setMainActivity(mainActivity);
     }
 
     String categorieJuridique = uniteLegale.getCategorieJuridiqueUniteLegale();
