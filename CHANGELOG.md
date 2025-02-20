@@ -1,3 +1,39 @@
+## [8.0.26] (2025-02-20)
+
+### Fixes
+#### Base
+
+* Invoice payment: forbid the creation of a 0 amount payment.
+
+#### Account
+
+* Invoice: fixed contact being readonly when the partner is an individual.
+* Payment session: fixed infinite loop when searching eligible invoice terms.
+* Fiscal position: fixed NPE on adding account equivalence on new record.
+* Invoice: fixed wrong default payment condition.
+* Move: fixed the transactional error at move delete.
+
+#### Contract
+
+* Contract: fixed no analytic move lines on contract duplication.
+
+#### Human Resource
+
+* Timesheet: fixed an issue in lines generation from project planning where end date was not taken into account.
+
+#### Marketing
+
+* Campaign: fixed FR translation for 'Event start'.
+
+#### Quality
+
+* QI Resolution: fixed wrong translation in English for the term default.
+
+#### Sale
+
+* Configurator: fixed default value that was not set with configurators
+* Configurator product formula: disabled test button if formula is empty.
+
 ## [8.0.25] (2025-02-06)
 
 ### Fixes
@@ -1511,6 +1547,7 @@ The resulting locale will be used for translation, date and currency formats.
 * Authentication: add a new API to fetch user permissions.
 * HR: add new configuration to manage timesheets from the mobile application.
 
+[8.0.26]: https://github.com/axelor/axelor-open-suite/compare/v8.0.25...v8.0.26
 [8.0.25]: https://github.com/axelor/axelor-open-suite/compare/v8.0.24...v8.0.25
 [8.0.24]: https://github.com/axelor/axelor-open-suite/compare/v8.0.23...v8.0.24
 [8.0.23]: https://github.com/axelor/axelor-open-suite/compare/v8.0.22...v8.0.23
