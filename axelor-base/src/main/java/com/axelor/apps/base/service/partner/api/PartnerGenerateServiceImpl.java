@@ -74,6 +74,19 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
   protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData) {
     safeSetString(
         partner::setRegistrationCode, partner::getRegistrationCode, partnerData.getSiret());
+
+    String sirenNb = partnerData.getSiren();
+    if (sirenNb != null) {
+      partner.setSiren(sirenNb);
+      setPartnerTaxNumber(sirenNb, partner);
+    }
+  }
+
+  protected void setPartnerTaxNumber(String sirenNb, Partner partner) {
+    int sirenInt = Integer.parseInt(sirenNb);
+    int keyTVA = (12 + 3 * (sirenInt % 97)) % 97;
+    String taxNbr = "FR" + keyTVA + sirenInt;
+    safeSetString(partner::setTaxNbr, partner::getTaxNbr, taxNbr);
   }
 
   protected void setPartnerCategoryAndType(Partner partner, UniteLegaleResponse uniteLegale) {
