@@ -90,10 +90,12 @@
 
   <grid name="project-sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint">
     <field name="name" title="Name"/>
+    <field name="$totalPlannedTime" title="Total planned time"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sequence" hidden="true"/>
     <field name="sprintManagementSelect" hidden="true"/>
+    <field name="$totalSpentTime" title="Total spent time"/>
   </grid>
 
 </object-views>

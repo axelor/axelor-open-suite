@@ -159,6 +159,15 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
               .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
               .fetch();
     }
+    List<ProjectPlanningTime> projectPlanningTimeList = new ArrayList<>();
+    if (employee == null) {
+      planningTimeRepo.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+    } else {
+      projectPlanningTimeList =
+          planningTimeRepo
+              .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
+              .fetch();
+    }
 
     if (ObjectUtils.notEmpty(projectPlanningTimeList)) {
       Unit dayUnit = appBaseService.getAppBase().getUnitDays();
