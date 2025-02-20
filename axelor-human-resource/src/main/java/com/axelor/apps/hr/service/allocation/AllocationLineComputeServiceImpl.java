@@ -216,23 +216,25 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
   @Override
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
-
     List<AllocationLine> allocationLineList =
         allocationLineRepo.all().fetch().stream()
-            .filter(
-                allocationLine ->
-                    allocationLine.getProject() != null
-                        && allocationLine.getProject().equals(project))
+            .filter(allocationLine -> project.equals(allocationLine.getProject()))
             .collect(Collectors.toList());
+
     BigDecimal allocatedTime = BigDecimal.ZERO;
     for (AllocationLine allocationLine : allocationLineList) {
       Employee employee = allocationLine.getEmployee();
-      LocalDate allocationLineFromDate =
-          allocationLine.getPeriod() != null ? allocationLine.getPeriod().getFromDate() : null;
-      LocalDate allocationLineToDate =
-          allocationLine.getPeriod() != null ? allocationLine.getPeriod().getToDate() : null;
+      Period period = allocationLine.getPeriod();
+
+      if (period == null) {
+        continue;
+      }
+
+      LocalDate allocationLineFromDate = period.getFromDate();
+      LocalDate allocationLineToDate = period.getToDate();
       LocalDate sprintFromDate = sprint.getFromDate();
       LocalDate sprintToDate = sprint.getToDate();
+
       if (allocationLineFromDate == null
           || allocationLineToDate == null
           || sprintFromDate == null
@@ -240,10 +242,11 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
           || employee == null) {
         continue;
       }
+
       BigDecimal sprintPeriod = BigDecimal.ZERO;
       if (sprintFromDate.isAfter(allocationLineFromDate)
           && sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, allocationLine.getEmployee());
+        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, employee);
       }
 
       if (!sprintFromDate.isAfter(allocationLineFromDate)
@@ -264,10 +267,44 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return allocatedTime;
   }
 
-  BigDecimal getProrata(
+  @Override
+  public BigDecimal getBudgetedTime(Sprint sprint, Project project) throws AxelorException {
+    if (sprint == null || ObjectUtils.isEmpty(sprint.getProjectTaskList())) {
+      return BigDecimal.ZERO;
+    }
+
+    Unit unitHours = appBaseService.getUnitHours();
+    Unit unitDays = appBaseService.getUnitDays();
+
+    return sprint.getProjectTaskList().stream()
+        .map(
+            projectTask -> {
+              if (unitHours.equals(projectTask.getTimeUnit())
+                  && projectTask.getBudgetedTime().signum() != 0) {
+                try {
+                  return unitConversionForProjectService.convert(
+                      unitHours,
+                      unitDays,
+                      projectTask.getBudgetedTime(),
+                      projectTask.getBudgetedTime().scale(),
+                      project);
+                } catch (AxelorException e) {
+                  throw new RuntimeException(e);
+                }
+              }
+              return projectTask.getBudgetedTime();
+            })
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
+  }
+
+  protected BigDecimal getProrata(
       BigDecimal allocationPeriod, BigDecimal sprintPeriod, BigDecimal allocation) {
-    if (!allocationPeriod.equals(BigDecimal.ZERO))
-      return allocation.multiply(sprintPeriod).divide(allocationPeriod, 2, RoundingMode.HALF_UP);
-    return BigDecimal.ZERO;
+    if (allocationPeriod.signum() != 0) {
+      return allocation
+          .multiply(sprintPeriod)
+          .divide(allocationPeriod, allocation.scale(), RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ONE;
   }
 }

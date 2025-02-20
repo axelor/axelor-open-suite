@@ -27,4 +27,6 @@ public interface AllocationLineComputeService {
       throws AxelorException;
 
   BigDecimal getAllocatedTime(Project project, Sprint sprint);
+
+  BigDecimal getBudgetedTime(Sprint sprint, Project project) throws AxelorException;
 }

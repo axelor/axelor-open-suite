@@ -148,11 +148,6 @@
     <action name="action-attrs-refresh-dashlets"/>
   </action-group>
 
-  <action-group name="action-project-group-onchange-to-date">
-    <action name="action-project-record-empty-sprint-period"/>
-    <action name="action-attrs-refresh-dashlets"/>
-  </action-group>
-
   <action-group name="action-project-group-onchange-period">
     <action name="action-project-record-set-period-date"/>
     <action name="action-attrs-refresh-dashlets"/>
