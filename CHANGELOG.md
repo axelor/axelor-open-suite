@@ -1,3 +1,30 @@
+## [7.2.33] (2025-02-20)
+
+### Fixes
+#### Account
+
+* Invoice: fixed contact being readonly when the partner is an individual.
+* Payment session: fixed infinite loop when searching eligible invoice terms.
+* Fiscal position: fixed NPE on adding account equivalence on new record.
+* Invoice: fixed wrong default payment condition.
+* Move: fixed the transactional error at move delete.
+
+#### Contract
+
+* Contract: fixed no analytic move lines on contract duplication.
+
+#### Marketing
+
+* Campaign: fixed FR translation for 'Event start'.
+
+#### Quality
+
+* QI Resolution: fixed wrong translation in English for the term default.
+
+#### Sale
+
+* Configurator product formula: disabled test button if formula is empty.
+
 ## [7.2.32] (2025-02-06)
 
 ### Fixes
@@ -1541,6 +1568,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.33]: https://github.com/axelor/axelor-open-suite/compare/v7.2.32...v7.2.33
 [7.2.32]: https://github.com/axelor/axelor-open-suite/compare/v7.2.31...v7.2.32
 [7.2.31]: https://github.com/axelor/axelor-open-suite/compare/v7.2.30...v7.2.31
 [7.2.30]: https://github.com/axelor/axelor-open-suite/compare/v7.2.29...v7.2.30
