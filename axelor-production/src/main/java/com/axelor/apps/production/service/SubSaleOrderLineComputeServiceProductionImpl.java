@@ -27,47 +27,73 @@ public class SubSaleOrderLineComputeServiceProductionImpl
   public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
+        }
+      }
+      computePrices(saleOrderLine, saleOrder);
+    }
+    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+  }
+
+  protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
     List<SaleOrderLineDetails> saleOrderLineDetailsList =
         saleOrderLine.getSaleOrderLineDetailsList();
+    if (CollectionUtils.isEmpty(subSaleOrderLineList)
+        && CollectionUtils.isEmpty(saleOrderLineDetailsList)) {
+      return;
+    }
+    saleOrderLine.setPrice(computeTotalPrice(saleOrderLine));
+    saleOrderLine.setSubTotalCostPrice(
+        currencyScaleService.getCompanyScaledValue(
+            saleOrder, computeTotalCostPrice(saleOrderLine)));
+  }
+
+  protected BigDecimal computeTotalPrice(SaleOrderLine saleOrderLine) {
     BigDecimal totalPrice = BigDecimal.ZERO;
-    BigDecimal totalCostPrice = BigDecimal.ZERO;
-    BigDecimal subDetailsTotalCostPrice;
-    BigDecimal subDetailsTotal;
-    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()
-        && (CollectionUtils.isNotEmpty(subSaleOrderLineList))) {
-      for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-        computeSumSubLineList(subSaleOrderLine, saleOrder);
-      }
-      if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
-        subDetailsTotal =
-            saleOrderLineDetailsList.stream()
-                .map(SaleOrderLineDetails::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        subDetailsTotalCostPrice =
-            saleOrderLineDetailsList.stream()
-                .map(SaleOrderLineDetails::getSubTotalCostPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        totalPrice = totalPrice.add(subDetailsTotal);
-        totalCostPrice = totalCostPrice.add(subDetailsTotalCostPrice);
-        saleOrderLine.setPrice(totalPrice);
-        saleOrderLine.setSubTotalCostPrice(
-            currencyScaleService.getCompanyScaledValue(saleOrder, totalCostPrice));
-      }
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList();
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
       totalPrice =
           totalPrice.add(
               subSaleOrderLineList.stream()
                   .map(SaleOrderLine::getExTaxTotal)
                   .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      totalPrice =
+          totalPrice.add(
+              saleOrderLineDetailsList.stream()
+                  .map(SaleOrderLineDetails::getTotalPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+    return totalPrice;
+  }
+
+  protected BigDecimal computeTotalCostPrice(SaleOrderLine saleOrderLine) {
+    BigDecimal totalCostPrice = BigDecimal.ZERO;
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList();
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
       totalCostPrice =
           totalCostPrice.add(
               subSaleOrderLineList.stream()
                   .map(SaleOrderLine::getSubTotalCostPrice)
                   .reduce(BigDecimal.ZERO, BigDecimal::add));
-      saleOrderLine.setPrice(totalPrice);
-      saleOrderLine.setSubTotalCostPrice(totalCostPrice);
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-    } else {
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      totalCostPrice =
+          totalCostPrice.add(
+              saleOrderLineDetailsList.stream()
+                  .map(SaleOrderLineDetails::getSubTotalCostPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+    return totalCostPrice;
   }
 }

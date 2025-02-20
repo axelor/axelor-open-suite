@@ -99,11 +99,11 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"
       readonlyIf="$isParentTitleLine"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || $isParentTitleLine || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || $isParentTitleLine || ((subSaleOrderLineList.length &gt; 0 || saleOrderLineDetailsList.length &gt; 0) &amp;&amp; $computeWithSOL)"
       onChange="action-sale-order-line-method-onchange-price" hidden="true"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="inTaxPrice"
-      readonlyIf="$isReadOnly !== false || deliveryState == 3 || $isParentTitleLine"
+      readonlyIf="$isReadOnly !== false || deliveryState == 3 || $isParentTitleLine || ((subSaleOrderLineList.length &gt; 0 || saleOrderLineDetailsList.length &gt; 0) &amp;&amp; $computeWithSOL)"
       onChange="action-sale-order-line-method-onchange-intaxprice"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="discountTypeSelect" colSpan="3"
@@ -121,9 +121,9 @@
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="TagSelect"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
-      readonlyIf="$isParentTitleLine"/>
+      readonly="true"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
-      readonlyIf="$isParentTitleLine"/>
+      readonly="true"/>
     <field name="description" readonlyIf="$isParentTitleLine"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -147,6 +147,8 @@
     <field name="configurator" hidden="true"/>
     <field name="saleOrder" hidden="true"/>
     <field name="saleOrder.id" hidden="true"/>
+    <field name="subSaleOrderLineList" hidden="true"/>
+    <field name="saleOrderLineDetailsList" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -317,7 +319,7 @@
             onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || (subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL)"
+            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || ((subSaleOrderLineList.length &gt; 0 || saleOrderLineDetailsList.length &gt; 0) &amp;&amp; $computeWithSOL)"
             onChange="action-sale-order-line-method-onchange-price" hidden="true"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
@@ -504,6 +506,7 @@
       <field name="product.isPrototype"/>
       <field name="saleOrder"/>
       <field name="subSaleOrderLineList"/>
+      <field name="saleOrderLineDetailsList"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>
