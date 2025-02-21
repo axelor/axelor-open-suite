@@ -219,7 +219,10 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
         }
         BigDecimal prorata = computeProrata(fromDate, toDate, employee);
 
-        totalPlannedTime = totalPlannedTime.add(spentTime.multiply(prorata)).setScale(spentTime.scale(),RoundingMode.HALF_UP);
+        totalPlannedTime =
+            totalPlannedTime
+                .add(spentTime.multiply(prorata))
+                .setScale(spentTime.scale(), RoundingMode.HALF_UP);
       }
     }
 
@@ -283,7 +286,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     BigDecimal totalDays = getWorkingDays(fromDate, toDate, employee);
     BigDecimal prorata = BigDecimal.ONE;
     if (totalDays.signum() > 0) {
-      prorata = jointDays.divide(totalDays,totalDays.scale(),RoundingMode.HALF_UP);
+      prorata = jointDays.divide(totalDays, totalDays.scale(), RoundingMode.HALF_UP);
     }
 
     return prorata;
