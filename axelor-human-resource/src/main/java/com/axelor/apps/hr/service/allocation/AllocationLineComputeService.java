@@ -27,8 +27,8 @@ public interface AllocationLineComputeService {
       throws AxelorException;
 
   BigDecimal computeSpentTime(
-          LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
-          throws AxelorException;
+      LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
+      throws AxelorException;
 
   BigDecimal getAllocatedTime(Project project, Sprint sprint);
 

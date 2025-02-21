@@ -20,7 +20,6 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
@@ -28,7 +27,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {
@@ -41,24 +39,30 @@ public class SprintManagementRepository extends SprintRepository {
       }
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
       Project project = Beans.get(ProjectRepository.class).find(projectId);
+      Employee employee = null;
+      if (context.get("employee") != null) {
+        Long employeeId = Long.valueOf(((Map) context.get("employee")).get("id").toString());
+        employee = Beans.get(EmployeeRepository.class).find(employeeId);
+      }
       Long sprintId = (Long) json.get("id");
       Sprint sprint = this.find(sprintId);
 
       AllocationLineComputeService allocationLineComputeService =
           Beans.get(AllocationLineComputeService.class);
 
-      final String totalEstimatedTime = "$totalEstimatedTime";
-      final String totalAllocatedTime = "$totalAllocatedTime";
-      final String totalPlannedTime = "$totalPlannedTime";
       BigDecimal plannedTime =
           allocationLineComputeService.computePlannedTime(
               sprint.getFromDate(), sprint.getToDate(), employee, project);
       BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
       BigDecimal budgetedTime = allocationLineComputeService.getBudgetedTime(sprint, project);
+      BigDecimal spentTime =
+          allocationLineComputeService.computeSpentTime(
+              sprint.getFromDate(), sprint.getToDate(), employee, project);
 
       json.put("$totalAllocatedTime", allocatedTime);
       json.put("$totalEstimatedTime", budgetedTime);
-      json.put(totalPlannedTime, plannedTime);
+      json.put("$totalPlannedTime", plannedTime);
+      json.put("$totalSpentTime", spentTime);
 
     } catch (Exception e) {
       TraceBackService.trace(e);

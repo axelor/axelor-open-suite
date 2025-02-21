@@ -11,7 +11,6 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.AllocationLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
@@ -53,7 +52,8 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       AppProjectService appProjectService,
       LeaveRequestRepository leaveRequestRepo,
       AllocationLineRepository allocationLineRepo,
-      ProjectPlanningTimeRepository planningTimeRepo) {
+      ProjectPlanningTimeRepository planningTimeRepo,
+      TimesheetLineRepository timesheetLineRepository) {
     this.leaveRequestComputeLeaveDaysService = leaveRequestComputeLeaveDaysService;
     this.weeklyPlanningService = weeklyPlanningService;
     this.appBaseService = appBaseService;
@@ -62,6 +62,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     this.leaveRequestRepo = leaveRequestRepo;
     this.allocationLineRepo = allocationLineRepo;
     this.planningTimeRepo = planningTimeRepo;
+    this.timesheetLineRepository = timesheetLineRepository;
   }
 
   @Override
@@ -178,13 +179,15 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   @Override
-  public BigDecimal computeSpentTime(LocalDate fromDate, LocalDate toDate, Employee employee, Project project) throws AxelorException {
+  public BigDecimal computeSpentTime(
+      LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
+      throws AxelorException {
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
     if (fromDate == null
-            || toDate == null
-            || project == null
-            || !project.getIsShowPlanning()
-            || !Optional.ofNullable(appProjectService.getAppProject())
+        || toDate == null
+        || project == null
+        || !project.getIsShowPlanning()
+        || !Optional.ofNullable(appProjectService.getAppProject())
             .map(AppProject::getEnablePlanification)
             .orElse(false)) {
       return totalPlannedTime;
@@ -193,30 +196,30 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     List<TimesheetLine> timesheetLineList = new ArrayList<>();
     if (employee == null) {
       timesheetLineList =
-         timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+          timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
     } else {
       timesheetLineList =
-              timesheetLineRepository
-                      .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
-                      .fetch();
+          timesheetLineRepository
+              .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
+              .fetch();
     }
 
     if (ObjectUtils.notEmpty(timesheetLineList)) {
       Unit dayUnit = appBaseService.getAppBase().getUnitDays();
 
-      for (TimesheetLine  timesheetLine : timesheetLineList) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
         BigDecimal spentTime =
-                getPlannedTimeInTargetUnit(
-                        appBaseService.getAppBase().getUnitHours(),
-                        dayUnit,
-                        timesheetLine.getDuration(),
-                        timesheetLine.getProject());
+            getPlannedTimeInTargetUnit(
+                appBaseService.getAppBase().getUnitHours(),
+                dayUnit,
+                timesheetLine.getHoursDuration(),
+                timesheetLine.getProject());
         if (employee == null) {
           employee = timesheetLine.getEmployee();
         }
-        BigDecimal prorata = computeProrata(projectPlanningTime, fromDate, toDate, employee);
+        BigDecimal prorata = computeProrata(fromDate, toDate, employee);
 
-        totalPlannedTime = totalPlannedTime.add(spentTime.multiply(prorata));
+        totalPlannedTime = totalPlannedTime.add(spentTime.multiply(prorata)).setScale(spentTime.scale(),RoundingMode.HALF_UP);
       }
     }
 
@@ -271,35 +274,21 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
     return prorata;
   }
-  protected BigDecimal computeProrata(
-          TimesheetLine timesheetLine,
-          LocalDate fromDate,
-          LocalDate toDate,
-          Employee employee) {
+
+  protected BigDecimal computeProrata(LocalDate fromDate, LocalDate toDate, Employee employee) {
     if (fromDate == null || toDate == null) {
       return BigDecimal.ONE;
     }
-    LocalDate startDate =
-            Optional.of(timesheetLine)
-                    .map(TimesheetLine::getd)
-                    .map(LocalDateTime::toLocalDate)
-                    .orElse(fromDate);
-    LocalDate endDate =
-            Optional.of(timesheetLine)
-                    .map(ProjectPlanningTime::getEndDateTime)
-                    .map(LocalDateTime::toLocalDate)
-                    .orElse(toDate);
-    LocalDate maxFromDate = fromDate.isAfter(startDate) ? fromDate : startDate;
-    LocalDate minToDate = toDate.isBefore(endDate) ? toDate : endDate;
-    BigDecimal jointDays = getWorkingDays(maxFromDate, minToDate, employee);
-    BigDecimal totalDays = getWorkingDays(startDate, endDate, employee);
+    BigDecimal jointDays = BigDecimal.ONE;
+    BigDecimal totalDays = getWorkingDays(fromDate, toDate, employee);
     BigDecimal prorata = BigDecimal.ONE;
     if (totalDays.signum() > 0) {
-      prorata = jointDays.divide(totalDays, 2, RoundingMode.HALF_UP);
+      prorata = jointDays.divide(totalDays,totalDays.scale(),RoundingMode.HALF_UP);
     }
 
     return prorata;
   }
+
   @Override
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
     List<AllocationLine> allocationLineList =
