@@ -27,7 +27,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Map;
 
 public class SprintManagementRepository extends SprintRepository {

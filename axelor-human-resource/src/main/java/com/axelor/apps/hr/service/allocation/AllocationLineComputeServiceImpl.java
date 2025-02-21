@@ -286,35 +286,21 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
     return prorata;
   }
-  protected BigDecimal computeProrata(
-          TimesheetLine timesheetLine,
-          LocalDate fromDate,
-          LocalDate toDate,
-          Employee employee) {
+
+  protected BigDecimal computeProrata(LocalDate fromDate, LocalDate toDate, Employee employee) {
     if (fromDate == null || toDate == null) {
       return BigDecimal.ONE;
     }
-    LocalDate startDate =
-            Optional.of(timesheetLine)
-                    .map(TimesheetLine::getd)
-                    .map(LocalDateTime::toLocalDate)
-                    .orElse(fromDate);
-    LocalDate endDate =
-            Optional.of(timesheetLine)
-                    .map(ProjectPlanningTime::getEndDateTime)
-                    .map(LocalDateTime::toLocalDate)
-                    .orElse(toDate);
-    LocalDate maxFromDate = fromDate.isAfter(startDate) ? fromDate : startDate;
-    LocalDate minToDate = toDate.isBefore(endDate) ? toDate : endDate;
-    BigDecimal jointDays = getWorkingDays(maxFromDate, minToDate, employee);
-    BigDecimal totalDays = getWorkingDays(startDate, endDate, employee);
+    BigDecimal jointDays = BigDecimal.ONE;
+    BigDecimal totalDays = getWorkingDays(fromDate, toDate, employee);
     BigDecimal prorata = BigDecimal.ONE;
     if (totalDays.signum() > 0) {
-      prorata = jointDays.divide(totalDays, 2, RoundingMode.HALF_UP);
+      prorata = jointDays.divide(totalDays,totalDays.scale(),RoundingMode.HALF_UP);
     }
 
     return prorata;
   }
+
   @Override
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
     List<AllocationLine> allocationLineList =
