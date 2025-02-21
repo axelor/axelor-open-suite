@@ -90,6 +90,8 @@
 "Calculation date","Date du calcul",,
 "Calculation in progress",,,
 "Calculation number","N° de calcul",,
+"Calculation quantity","Quantité de calcul",,
+"Calculation quantity should not be zero.","La quantité de calcul ne doit pas être zéro.",,
 "Calculation type","Type de calcul",,
 "Calendars",,,
 "Cancel","Annuler",,
