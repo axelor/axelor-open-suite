@@ -33,6 +33,11 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLineChangeServiceImpl {
 
@@ -69,11 +74,15 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
   @Override
   public String onLineChange(SaleOrder saleOrder) throws AxelorException {
     super.onLineChange(saleOrder);
-    String message;
+    List<String> messages = new ArrayList<>();
     saleOrderSupplychainService.setAdvancePayment(saleOrder);
-    message = saleOrderSupplychainService.updateTimetableAmounts(saleOrder);
+    messages.add(saleOrderSupplychainService.updateTimetableAmounts(saleOrder));
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
-    saleOrderShipmentService.createShipmentCostLine(saleOrder);
-    return message;
+    messages.add(
+        saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode()));
+    return messages.stream()
+        .filter(Objects::nonNull)
+        .filter(Predicate.not(String::isEmpty))
+        .collect(Collectors.joining("<br>"));
   }
 }

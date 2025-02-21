@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrder"
-    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.ShippableOrder">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
