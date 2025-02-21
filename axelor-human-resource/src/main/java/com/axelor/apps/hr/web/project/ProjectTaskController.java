@@ -27,6 +27,7 @@ public class ProjectTaskController {
 
     Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
     response.setValue("oldActiveSprint", projectTask.getActiveSprint());
+    response.setValue("oldBudgetedTime", projectTask.getBudgetedTime());
     response.setValue("projectPlanningTimeList", projectTask.getProjectPlanningTimeList());
   }
 }

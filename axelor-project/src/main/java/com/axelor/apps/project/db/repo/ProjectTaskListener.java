@@ -7,6 +7,8 @@ public class ProjectTaskListener {
 
   @PostLoad
   public void postLoad(ProjectTask projectTask) {
+
     projectTask.setOldActiveSprint(projectTask.getActiveSprint());
+    projectTask.setOldBudgetedTime(projectTask.getBudgetedTime());
   }
 }
