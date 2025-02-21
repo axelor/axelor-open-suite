@@ -87,4 +87,13 @@
     <field name="period.name" title="Period" type="com.axelor.apps.base.db.Period"/>
     <field name="allocated" title="Allocated" aggregate="sum" type="String"/>
   </grid>
+
+  <grid name="project-sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint">
+    <field name="name" title="Name"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="sequence" hidden="true"/>
+    <field name="sprintManagementSelect" hidden="true"/>
+  </grid>
+
 </object-views>
