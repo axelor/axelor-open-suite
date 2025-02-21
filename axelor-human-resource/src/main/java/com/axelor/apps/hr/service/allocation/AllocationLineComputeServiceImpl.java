@@ -238,7 +238,9 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
           employee = timesheetLine.getEmployee();
         }
         totalSpentTime =
-            totalSpentTime.add(spentTime).setScale(spentTime.scale(), RoundingMode.HALF_UP);
+            totalSpentTime
+                .add(spentTime)
+                .setScale(spentTime.scale(), RoundingMode.HALF_UP);
       }
     }
 
@@ -295,7 +297,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     BigDecimal totalDays = getWorkingDays(fromDate, toDate, employee);
     BigDecimal prorata = BigDecimal.ONE;
     if (totalDays.signum() > 0) {
-      prorata = jointDays.divide(totalDays,totalDays.scale(),RoundingMode.HALF_UP);
+      prorata = jointDays.divide(totalDays, totalDays.scale(), RoundingMode.HALF_UP);
     }
 
     return prorata;
