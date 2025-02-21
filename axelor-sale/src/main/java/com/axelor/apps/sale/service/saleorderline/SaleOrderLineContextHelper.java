@@ -55,21 +55,9 @@ public class SaleOrderLineContextHelper {
     }
 
     // Is a subline
-    SaleOrderLine parentSol = getParentSol(saleOrderLine);
+    SaleOrderLine parentSol = SaleOrderLineUtils.getParentSol(saleOrderLine);
     parentSol = saleOrderLineRepository.find(parentSol.getId());
     saleOrder = parentSol.getSaleOrder();
     return saleOrder;
-  }
-
-  protected static SaleOrderLine getParentSol(SaleOrderLine saleOrderLine) {
-    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
-    if (parentSaleOrderLine != null) {
-      return getParentSol(parentSaleOrderLine);
-    } else {
-      if (saleOrderLine.getSaleOrder() != null) {
-        return saleOrderLine;
-      }
-    }
-    return saleOrderLine;
   }
 }

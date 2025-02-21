@@ -83,9 +83,4 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
     lineMap.put("unit", saleOrderLineDetails.getUnit());
     lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
   }
-
-  @Override
-  public SaleOrder getParentSaleOrder(SaleOrderLineDetails saleOrderLineDetails) {
-    return saleOrderLineDetails.getSaleOrderLine().getSaleOrder();
-  }
 }
