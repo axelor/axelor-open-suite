@@ -7,8 +7,8 @@
     <extend target="//panel[@name='filtersPanel']/field[@name='$project']">
       <insert position="after">
         <field name="$employee" target="com.axelor.apps.hr.db.Employee" title="Employee"
-          type="many-to-one" colSpan="12"
-          onSelect="action-project-method-compute-employee-domain,action-attrs-refresh-dashlets"/>
+          onChange="action-attrs-refresh-dashlets" type="many-to-one" colSpan="12"
+          onSelect="action-project-method-compute-employee-domain"/>
       </insert>
     </extend>
 
