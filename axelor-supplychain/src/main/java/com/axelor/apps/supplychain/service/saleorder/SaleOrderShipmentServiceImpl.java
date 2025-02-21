@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.service.ShippingAbstractService;
@@ -42,6 +43,7 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   protected SaleOrderMarginService saleOrderMarginService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected SaleOrderLineInitValueService saleOrderLineInitValueService;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
@@ -49,12 +51,14 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      SaleOrderLineInitValueService saleOrderLineInitValueService) {
     super(shippingService);
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.saleOrderLineInitValueService = saleOrderLineInitValueService;
   }
 
   @Override
@@ -101,6 +105,7 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
       return null;
     }
     SaleOrderLine shippingCostLine = new SaleOrderLine();
+    saleOrderLineInitValueService.onNewInitValues(saleOrder, shippingCostLine, null);
     shippingCostLine.setSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
     saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, shippingCostLine);
