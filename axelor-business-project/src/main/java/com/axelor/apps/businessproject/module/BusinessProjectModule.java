@@ -122,6 +122,7 @@ import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessP
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
+import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
@@ -152,7 +153,6 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 
 public class BusinessProjectModule extends AxelorModule {
@@ -183,7 +183,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ExpenseLineProjectService.class).to(ExpenseLineProjectServiceImpl.class);
     bind(InvoiceLineProjectService.class).to(InvoiceLineProjectServiceImpl.class);
     bind(InvoiceSupplychainRepository.class).to(InvoiceProjectRepository.class);
-    bind(WorkflowVentilationServiceSupplychainImpl.class)
+    bind(WorkflowVentilationContractServiceImpl.class)
         .to(WorkflowVentilationProjectServiceImpl.class);
     bind(TimesheetLineBusinessService.class).to(TimesheetLineProjectServiceImpl.class);
     bind(WorkflowValidationServiceImpl.class).to(WorkflowValidationServiceProjectImpl.class);
