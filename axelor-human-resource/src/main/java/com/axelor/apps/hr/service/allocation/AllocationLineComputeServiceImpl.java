@@ -142,7 +142,8 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
     List<ProjectPlanningTime> projectPlanningTimeList = new ArrayList<>();
     if (employee == null) {
-      projectPlanningTimeList= planningTimeRepo.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+      projectPlanningTimeList =
+          planningTimeRepo.findByProjectAndPeriod(project, fromDate, toDate).fetch();
     } else {
       projectPlanningTimeList =
           planningTimeRepo

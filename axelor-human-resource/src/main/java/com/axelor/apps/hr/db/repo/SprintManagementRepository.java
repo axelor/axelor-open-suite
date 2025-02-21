@@ -20,7 +20,6 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.service.PlanningTimeComputeService;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
@@ -52,7 +51,8 @@ public class SprintManagementRepository extends SprintRepository {
       final String totalAllocatedTime = "$totalAllocatedTime";
       final String totalPlannedTime = "$totalPlannedTime";
       BigDecimal plannedTime =
-              allocationLineComputeService.computePlannedTime(sprint.getFromDate(), sprint.getToDate(), employee, project);
+          allocationLineComputeService.computePlannedTime(
+              sprint.getFromDate(), sprint.getToDate(), employee, project);
       BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
       BigDecimal budgetedTime = allocationLineComputeService.getBudgetedTime(sprint, project);
 
