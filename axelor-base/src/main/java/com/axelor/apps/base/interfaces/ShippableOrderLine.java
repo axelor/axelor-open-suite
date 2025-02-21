@@ -7,4 +7,6 @@ public interface ShippableOrderLine {
   Product getProduct();
 
   BigDecimal getExTaxTotal();
+
+  Long getId();
 }

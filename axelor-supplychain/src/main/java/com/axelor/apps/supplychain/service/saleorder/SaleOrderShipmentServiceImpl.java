@@ -19,7 +19,6 @@
 package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.interfaces.ShippableOrder;
 import com.axelor.apps.base.interfaces.ShippableOrderLine;
@@ -29,14 +28,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
-import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
-import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ShippingAbstractService;
 import com.axelor.apps.supplychain.service.ShippingService;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,17 +85,13 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   }
 
   @Override
-  protected CustomerShippingCarriagePaid getShippingCarriagePaid(
-      ShippableOrder shippableOrder, ShipmentMode shipmentMode) {
+  protected List<CustomerShippingCarriagePaid> getShippingCarriagePaidList(
+      ShippableOrder shippableOrder) {
     SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {
-      return null;
+      return new ArrayList<>();
     }
-    Partner client = saleOrder.getClientPartner();
-    return client.getCustomerShippingCarriagePaidList().stream()
-        .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
-        .findFirst()
-        .orElse(null);
+    return saleOrder.getClientPartner().getCustomerShippingCarriagePaidList();
   }
 
   protected SaleOrderLine createShippingCostLine(
@@ -116,29 +107,16 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     return shippingCostLine;
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  protected String removeShipmentCostLine(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    if (saleOrderLines == null) {
-      return null;
-    }
-    List<SaleOrderLine> linesToRemove = new ArrayList<>();
-    for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (saleOrderLine.getProduct().getIsShippingCostsProduct()) {
-        linesToRemove.add(saleOrderLine);
-      }
-    }
-    if (linesToRemove.isEmpty()) {
-      return null;
-    }
-    for (SaleOrderLine lineToRemove : linesToRemove) {
-      saleOrderLines.remove(lineToRemove);
+  @Override
+  protected void removeShippableOrderLineList(
+      ShippableOrder shippableOrder, List<ShippableOrderLine> shippableOrderLinesToRemove) {
+    SaleOrder saleOrder = getSaleOrder(shippableOrder);
+    for (ShippableOrderLine lineToRemove : shippableOrderLinesToRemove) {
+      saleOrder.removeSaleOrderLineListItem((SaleOrderLine) lineToRemove);
       if (lineToRemove.getId() != null) {
-        saleOrderLineRepo.remove(lineToRemove);
+        saleOrderLineRepo.remove(saleOrderLineRepo.find(lineToRemove.getId()));
       }
     }
-    saleOrder.setSaleOrderLineList(saleOrderLines);
-    return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
   }
 
   protected List<? extends ShippableOrderLine> getShippableOrderLineList(

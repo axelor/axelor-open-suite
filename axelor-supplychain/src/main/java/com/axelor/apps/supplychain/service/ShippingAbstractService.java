@@ -6,8 +6,12 @@ import com.axelor.apps.base.interfaces.ShippableOrder;
 import com.axelor.apps.base.interfaces.ShippableOrderLine;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -26,8 +30,15 @@ public abstract class ShippingAbstractService {
       return null;
     }
 
+    List<CustomerShippingCarriagePaid> customerShippingCarriagePaidList =
+        getShippingCarriagePaidList(shippableOrder);
+
     CustomerShippingCarriagePaid supplierShippingCarriagePaid =
-        getShippingCarriagePaid(shippableOrder, shipmentMode);
+        customerShippingCarriagePaidList.stream()
+            .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
+            .findFirst()
+            .orElse(null);
+
     Product shippingCostProduct =
         shippingService.getShippingCostProduct(shipmentMode, supplierShippingCarriagePaid);
     if (shippingCostProduct == null) {
@@ -109,11 +120,30 @@ public abstract class ShippingAbstractService {
     return exTaxTotal;
   }
 
-  protected abstract List<? extends ShippableOrderLine> getShippableOrderLineList(
+  @Transactional(rollbackOn = Exception.class)
+  protected String removeShipmentCostLine(ShippableOrder shippableOrder) {
+    List<ShippableOrderLine> linesToRemove = new ArrayList<>();
+    for (ShippableOrderLine shippableOrderLine : getShippableOrderLineList(shippableOrder)) {
+      if (shippableOrderLine.getProduct() != null
+          && shippableOrderLine.getProduct().getIsShippingCostsProduct()) {
+        linesToRemove.add(shippableOrderLine);
+      }
+    }
+    if (linesToRemove.isEmpty()) {
+      return null;
+    }
+    removeShippableOrderLineList(shippableOrder, linesToRemove);
+    return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
+  }
+
+  protected abstract void removeShippableOrderLineList(
+      ShippableOrder shippableOrder, List<ShippableOrderLine> shippableOrderLinesToRemove);
+
+  protected abstract List<CustomerShippingCarriagePaid> getShippingCarriagePaidList(
       ShippableOrder shippableOrder);
 
-  protected abstract CustomerShippingCarriagePaid getShippingCarriagePaid(
-      ShippableOrder shippableOrder, ShipmentMode shipmentMode);
+  protected abstract List<? extends ShippableOrderLine> getShippableOrderLineList(
+      ShippableOrder shippableOrder);
 
   protected abstract String removeLineAndComputeOrder(ShippableOrder shippableOrder)
       throws AxelorException;
