@@ -4,7 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint"
-    orderBy="sequence" canMove="true" editable="true" onNew="action-sprint-group-onnew">
+    orderBy="sequence" editable="true" groupBy="project, targetVersion"
+    onNew="action-sprint-group-onnew">
+    <toolbar>
+      <button name="allSprintsBtn" title="All sprints" colSpan="2" css="btn-custom text-left"
+        icon="bar-chart-steps" onClick="save,action-sprint-method-show-all-sprints"/>
+    </toolbar>
     <field name="name" required="true"/>
     <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
     <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
@@ -78,6 +83,10 @@
 
   <action-method name="action-sprint-generator-method-generate-sprints">
     <call class="com.axelor.apps.project.web.SprintController" method="generateSprints"/>
+  </action-method>
+
+  <action-method name="action-sprint-method-show-all-sprints">
+    <call class="com.axelor.apps.project.web.SprintController" method="showAllSprints"/>
   </action-method>
 
   <action-validate name="action-sprint-generator-validate-dates">

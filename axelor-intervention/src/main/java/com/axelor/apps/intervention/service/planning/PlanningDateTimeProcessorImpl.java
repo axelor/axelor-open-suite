@@ -130,11 +130,8 @@ public class PlanningDateTimeProcessorImpl implements PlanningDateTimeProcessor 
     if (company == null) {
       return false;
     }
-    if (company.getHrConfig() == null) {
-      return false;
-    }
     return publicHolidayService.checkPublicHolidayDay(
-        date, company.getHrConfig().getPublicHolidayEventsPlanning());
+        date, company.getPublicHolidayEventsPlanning());
   }
 
   protected <T> T postProcess(T t) {

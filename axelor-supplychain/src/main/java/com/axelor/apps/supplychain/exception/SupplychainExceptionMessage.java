@@ -407,4 +407,8 @@ public final class SupplychainExceptionMessage {
 
   public static final String CONFIGURATOR_CAN_NOT_REGENERATE_PRODUCT = /*$$(*/
       "Product cannot be regenerated because delivered / invoiced sale order lines are using it." /*)*/;
+
+  public static final String
+      SALE_ORDER_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
+          "Non-deductible tax not authorized for sale orders. Please remove the non-deductible tax on product." /*)*/;
 }

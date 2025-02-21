@@ -66,7 +66,7 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
     newVersion.setDoNotRenew(currentVersion.getDoNotRenew());
 
     List<ContractLine> lines =
-        ModelHelper.copy(contractLineRepository, currentVersion.getContractLineList(), false);
+        ModelHelper.copy(contractLineRepository, currentVersion.getContractLineList(), true);
 
     for (ContractLine line : lines) {
       newVersion.addContractLineListItem(line);

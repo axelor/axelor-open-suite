@@ -177,6 +177,8 @@
 	    ]]>
     </many-to-one>
 
+    <boolean name="isDisplaySubLinesOnReport" title="Display sublines on report"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>

@@ -89,6 +89,9 @@
     <finder-method name="find" using="paymentMode,bankDetails,company"
       cacheable="true"/>
 
+    <entity-listener
+      class="com.axelor.apps.account.db.repo.listener.AccountManagementAccountListener"/>
+
   </entity>
 
 </domain-models>

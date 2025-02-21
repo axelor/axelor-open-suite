@@ -421,6 +421,12 @@ public final class HumanResourceExceptionMessage {
   public static final String API_LEAVE_REQUEST_NONE_CREATED = /*$$(*/
       "No leave requests were created." /*)*/;
 
+  public static final String PROJECT_PLANNING_TIME_REQUEST = /*$$(*/
+      "Do you want to create project planning time ?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT = /*$$(*/
+      "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?" /*)*/;
+
   public static final String LEAVE_REQUEST_NOT_ENOUGH_DAYS = /*$$(*/
       "You will not have enough leaves available for this request." /*)*/;
 }
