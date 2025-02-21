@@ -6,6 +6,7 @@ import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
 import com.axelor.apps.base.service.discount.GlobalDiscountAbstractService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SaleOrderGlobalDiscountServiceImpl extends GlobalDiscountAbstractService
@@ -20,13 +21,21 @@ public class SaleOrderGlobalDiscountServiceImpl extends GlobalDiscountAbstractSe
 
   @Override
   protected void compute(GlobalDiscounter globalDiscounter) throws AxelorException {
-    saleOrderComputeService.computeSaleOrder(getSaleOrder(globalDiscounter));
+    SaleOrder saleOrder = getSaleOrder(globalDiscounter);
+    if (saleOrder == null) {
+      return;
+    }
+    saleOrderComputeService.computeSaleOrder(saleOrder);
   }
 
   @Override
   protected List<? extends GlobalDiscounterLine> getGlobalDiscounterLines(
       GlobalDiscounter globalDiscounter) {
-    return getSaleOrder(globalDiscounter).getSaleOrderLineList();
+    SaleOrder saleOrder = getSaleOrder(globalDiscounter);
+    if (saleOrder == null) {
+      return new ArrayList<>();
+    }
+    return saleOrder.getSaleOrderLineList();
   }
 
   protected SaleOrder getSaleOrder(GlobalDiscounter globalDiscounter) {
