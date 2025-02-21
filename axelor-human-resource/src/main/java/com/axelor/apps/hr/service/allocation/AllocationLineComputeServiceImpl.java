@@ -299,7 +299,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     if (totalDays.signum() > 0) {
       prorata = jointDays.divide(totalDays, totalDays.scale(), RoundingMode.HALF_UP);
     }
-
     return prorata;
   }
 
