@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="InvoiceLine"
-    implements="com.axelor.apps.account.db.repo.AnalyticLine,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.account.db.repo.AnalyticLine,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.GlobalDiscounterLine">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -70,6 +70,11 @@
       ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
 
     <integer name="typeSelect" title="Type" selection="line.type.select"/>
+    <integer name="typeSelectNormal" title="Type select normal">
+      <![CDATA[
+        return InvoiceLineRepository.TYPE_NORMAL;
+	  ]]>
+    </integer>
 
     <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
@@ -113,6 +118,10 @@
 
     <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
       min="0" max="1" nullable="true"/>
+
+    <extra-imports>
+      import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+    </extra-imports>
 
     <extra-code>
 		<![CDATA[

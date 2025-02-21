@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrder"
-    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.ShippableOrder">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.ShippableOrder,com.axelor.apps.base.interfaces.GlobalDiscounter">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
@@ -182,6 +182,10 @@
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
+
+    <extra-imports>
+      import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
+    </extra-imports>
 
     <extra-code>
    		<![CDATA[

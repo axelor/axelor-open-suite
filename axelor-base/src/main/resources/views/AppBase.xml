@@ -43,6 +43,8 @@
         <field name="draftPrefix" colSpan="3"/>
         <field name="defaultBatchFetchLimit"/>
         <field name="isRegistrationCodeCheckBlocking" widget="boolean-switch"/>
+        <field name="isGlobalDiscountEnabled" widget="boolean-switch"
+          if="['sale','invoice'].any{module -> __config__.app.isApp(module)}"/>
         <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="enableMultiBarcodeOnProducts" widget="boolean-switch"
