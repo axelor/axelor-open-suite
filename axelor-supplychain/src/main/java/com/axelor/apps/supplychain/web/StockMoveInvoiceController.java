@@ -240,7 +240,7 @@ public class StockMoveInvoiceController {
             ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-cust-invoice-confirm-form")
-                .param("popup", "true")
+                .param("popup", "reload")
                 .param("show-toolbar", "false")
                 .param("show-confirm", "false")
                 .param("popup-save", "false")
@@ -286,6 +286,7 @@ public class StockMoveInvoiceController {
                                 .getTodayDate(stockMove.getCompany()))
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .map());
+                response.setReload(true);
               } catch (Exception e) {
                 TraceBackService.trace(response, e);
               }
@@ -412,7 +413,7 @@ public class StockMoveInvoiceController {
             ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-suppl-invoice-confirm-form")
-                .param("popup", "true")
+                .param("popup", "reload")
                 .param("show-toolbar", "false")
                 .param("show-confirm", "false")
                 .param("popup-save", "false")
@@ -458,6 +459,7 @@ public class StockMoveInvoiceController {
                             "todayDate",
                             Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
                         .map());
+                response.setReload(true);
               } catch (Exception e) {
                 TraceBackService.trace(response, e);
               }
@@ -584,6 +586,7 @@ public class StockMoveInvoiceController {
                             .orElse(null)));
 
         response.setView(viewBuilder.map());
+        response.setReload(true);
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
         response.setInfo(warningMessage);
@@ -634,6 +637,7 @@ public class StockMoveInvoiceController {
                             .orElse(null)));
 
         response.setView(viewBuilder.map());
+        response.setReload(true);
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
         response.setInfo(warningMessage);
