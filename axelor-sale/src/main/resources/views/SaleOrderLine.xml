@@ -277,6 +277,21 @@
               </viewer>
             </field>
 
+            <field name="$productionStatus" showTitle="false" colSpan="2"
+              showIf="$productionStatus" if-module="axelor-production"
+              if="__config__.app.isApp('production')">
+              <viewer>
+                <![CDATA[<>
+                      {$productionStatus == 'FINISHED' && <Badge bg="success">{_t('Production finished')}</Badge>}
+                      {$productionStatus == 'STANDBY' && <Badge bg="warning">{_t('Production on standby')}</Badge>}
+                      {$productionStatus == 'IN_PROGRESS' && <Badge bg="primary">{_t('Production in progress')}</Badge>}
+                      {$productionStatus == 'PLANNED' && <Badge bg="warning">{_t('Production planned')}</Badge>}
+                      {$productionStatus == 'CANCELED' && <Badge bg="danger">{_t('Production canceled')}</Badge>}
+                      {$productionStatus == 'DRAFT' && <Badge bg="danger">{_t('Production in draft')}</Badge>}
+                </>]]>
+              </viewer>
+            </field>
+
           </panel>
           <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-sale-order-line-method-get-product-information"
