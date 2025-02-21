@@ -158,4 +158,14 @@ public class SprintController {
 
     response.setView(actionViewBuilder.map());
   }
+
+  public void test(ActionRequest request, ActionResponse response) {
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("total", "123");
+
+    // This data will be put into dataset.
+    // For report-box, we send a list with a single item accessible as `first`.
+    response.setData(List.of(data));
+  }
 }

@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.hr.service.allocation.AllocationLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -32,8 +33,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,5 +111,23 @@ public class AllocationLineController {
     Beans.get(AllocationLineService.class)
         .addAllocationLines(project, employeeList, periodList, allocated, initWithPlanningTime);
     response.setCanClose(true);
+  }
+
+  public void getTotalAllocatedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Long projectId = Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
+    Project project = Beans.get(ProjectRepository.class).find(1L);
+    LocalDate fromDate = LocalDate.parse((CharSequence) request.getContext().get("fromDate"));
+    LocalDate toDate = LocalDate.parse((CharSequence) request.getContext().get("toDate"));
+    AllocationLineComputeService allocationLineComputeService =
+        Beans.get(AllocationLineComputeService.class);
+
+    BigDecimal plannedTime =
+        allocationLineComputeService.computePlannedTime(fromDate, toDate, null, project);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("plannedTime", plannedTime);
+
+    response.setData(List.of(data));
   }
 }
