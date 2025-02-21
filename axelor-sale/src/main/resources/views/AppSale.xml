@@ -31,7 +31,6 @@
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
-      <field name="isGlobalDiscountEnabledOnSaleOrder" widget="boolean-switch"/>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
 
     </panel>

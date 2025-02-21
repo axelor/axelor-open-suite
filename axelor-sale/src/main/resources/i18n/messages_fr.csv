@@ -699,6 +699,7 @@
 "Turnover per customer type","CA HT par type client",,
 "Turnover per month per salesman","CA HT par mois par commercial",,
 "Type",,,
+"Type select normal","Type normal",,
 "Unit","Unité",,
 "Unit cost price in company currency","Coût unitaire dans devise société",,
 "Unit price A.T.I.","Prix unitaire T.T.C.",,
