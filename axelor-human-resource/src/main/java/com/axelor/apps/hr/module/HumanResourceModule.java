@@ -81,8 +81,6 @@ import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
 import com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl;
 import com.axelor.apps.hr.service.PayrollPreparationExportService;
 import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
-import com.axelor.apps.hr.service.PlanningTimeComputeService;
-import com.axelor.apps.hr.service.PlanningTimeComputeServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
