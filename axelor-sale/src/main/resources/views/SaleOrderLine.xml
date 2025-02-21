@@ -278,8 +278,8 @@
             </field>
 
             <field name="$productionStatus" showTitle="false" colSpan="2"
-              showIf="$productionStatus" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')">
+              showIf="$productionStatus" if-module="axelor-production"
+              if="__config__.app.isApp('production')">
               <viewer>
                 <![CDATA[<>
                       {$productionStatus == 'FINISHED' && <Badge bg="success">{_t('Production finished')}</Badge>}
