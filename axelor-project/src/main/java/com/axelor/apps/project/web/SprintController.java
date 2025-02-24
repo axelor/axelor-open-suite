@@ -12,17 +12,20 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.StringHelper;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SprintController {
@@ -165,7 +168,7 @@ public class SprintController {
     List<Sprint> sprintList = new ArrayList<>();
     if (projectId != null) {
       Project project = projectRepo.find(projectId);
-      sprintList = Beans.get(SprintGeneratorService.class).getSprintDomain(project);
+      sprintList = Beans.get(SprintGeneratorService.class).getProjectSprintList(project);
     }
     return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }

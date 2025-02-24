@@ -13,6 +13,7 @@ import com.axelor.apps.hr.db.repo.AllocationLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -29,7 +30,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class AllocationLineComputeServiceImpl implements AllocationLineComputeService {
 
@@ -42,6 +42,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   protected AllocationLineRepository allocationLineRepo;
   protected ProjectPlanningTimeRepository planningTimeRepo;
   protected TimesheetLineRepository timesheetLineRepository;
+  protected AppHumanResourceService appHumanResourceService;
 
   @Inject
   public AllocationLineComputeServiceImpl(
@@ -53,7 +54,8 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       LeaveRequestRepository leaveRequestRepo,
       AllocationLineRepository allocationLineRepo,
       ProjectPlanningTimeRepository planningTimeRepo,
-      TimesheetLineRepository timesheetLineRepository) {
+      TimesheetLineRepository timesheetLineRepository,
+      AppHumanResourceService appHumanResourceService) {
     this.leaveRequestComputeLeaveDaysService = leaveRequestComputeLeaveDaysService;
     this.weeklyPlanningService = weeklyPlanningService;
     this.appBaseService = appBaseService;
@@ -63,6 +65,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     this.allocationLineRepo = allocationLineRepo;
     this.planningTimeRepo = planningTimeRepo;
     this.timesheetLineRepository = timesheetLineRepository;
+    this.appHumanResourceService = appHumanResourceService;
   }
 
   @Override
@@ -161,7 +164,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
       for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
         BigDecimal plannedTime =
-            getPlannedTimeInTargetUnit(
+            getTimeInTargetUnit(
                 projectPlanningTime.getTimeUnit(),
                 dayUnit,
                 projectPlanningTime.getPlannedTime(),
@@ -186,15 +189,16 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   public BigDecimal computeSpentTime(
       LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
       throws AxelorException {
-    BigDecimal totalPlannedTime = BigDecimal.ZERO;
+    BigDecimal totalSpentTime = BigDecimal.ZERO;
     if (fromDate == null
         || toDate == null
         || project == null
-        || !project.getIsShowPlanning()
+        || !project.getManageTimeSpent()
+        || appHumanResourceService.getAppTimesheet() != null
         || !Optional.ofNullable(appProjectService.getAppProject())
             .map(AppProject::getEnablePlanification)
             .orElse(false)) {
-      return totalPlannedTime;
+      return totalSpentTime;
     }
 
     List<TimesheetLine> timesheetLineList = new ArrayList<>();
@@ -213,7 +217,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
       for (TimesheetLine timesheetLine : timesheetLineList) {
         BigDecimal spentTime =
-            getPlannedTimeInTargetUnit(
+            getTimeInTargetUnit(
                 appBaseService.getAppBase().getUnitHours(),
                 dayUnit,
                 timesheetLine.getHoursDuration(),
@@ -223,14 +227,14 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
         }
         BigDecimal prorata = computeProrata(fromDate, toDate, employee);
 
-        totalPlannedTime =
-            totalPlannedTime
+        totalSpentTime =
+            totalSpentTime
                 .add(spentTime.multiply(prorata))
                 .setScale(spentTime.scale(), RoundingMode.HALF_UP);
       }
     }
 
-    return totalPlannedTime;
+    return totalSpentTime;
   }
 
   protected BigDecimal getWorkingDays(LocalDate fromDate, LocalDate toDate, Employee employee) {
@@ -245,7 +249,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return workingDays.setScale(2, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal getPlannedTimeInTargetUnit(
+  protected BigDecimal getTimeInTargetUnit(
       Unit startUnit, Unit endUnit, BigDecimal value, Project project) throws AxelorException {
 
     return unitConversionForProjectService.convert(
@@ -297,8 +301,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
   @Override
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
-    List<AllocationLine> allocationLineList =
-        allocationLineRepo.findByProject(project).fetch();
+    List<AllocationLine> allocationLineList = allocationLineRepo.findByProject(project).fetch();
     BigDecimal allocatedTime = BigDecimal.ZERO;
 
     if (ObjectUtils.isEmpty(allocationLineList)) {
