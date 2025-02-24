@@ -26,7 +26,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class AllocationLineComputeServiceImpl implements AllocationLineComputeService {
 
@@ -216,12 +215,14 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
   @Override
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
-    List<AllocationLine> allocationLineList =
-        allocationLineRepo.all().fetch().stream()
-            .filter(allocationLine -> project.equals(allocationLine.getProject()))
-            .collect(Collectors.toList());
+    List<AllocationLine> allocationLineList = allocationLineRepo.findByProject(project).fetch();
 
     BigDecimal allocatedTime = BigDecimal.ZERO;
+
+    if (ObjectUtils.isEmpty(allocationLineList)) {
+      return allocatedTime;
+    }
+
     for (AllocationLine allocationLine : allocationLineList) {
       Employee employee = allocationLine.getEmployee();
       Period period = allocationLine.getPeriod();
