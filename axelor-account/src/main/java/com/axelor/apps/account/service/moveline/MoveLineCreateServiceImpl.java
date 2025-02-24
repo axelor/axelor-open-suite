@@ -678,7 +678,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       TaxLine taxLine,
       String accountType,
       Account newAccount,
-      boolean percentMoveTemplate)
+      boolean percentMoveTemplate,
+      List<TaxLine> nonDeductibleTaxList)
       throws AxelorException {
     BigDecimal debit = moveLine.getDebit();
     BigDecimal credit = moveLine.getCredit();
@@ -760,7 +761,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 move.getJournal(), move.getOrigin(), move.getDescription())));
     moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
-    BigDecimal taxLineValue = taxLine.getValue();
+    BigDecimal taxLineValue = this.computeTaxLineValue(taxLine, nonDeductibleTaxList);
 
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
@@ -806,6 +807,51 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newMoveLineCredit);
 
     return newOrUpdatedMoveLine;
+  }
+
+  protected BigDecimal computeTaxLineValue(TaxLine taxLine, List<TaxLine> nonDeductibleTaxList) {
+    BigDecimal taxValue = taxLine.getValue();
+    if (taxLine.getTax().getIsNonDeductibleTax()) {
+      taxValue = this.getAdjustedNonDeductibleTaxValue(taxValue, nonDeductibleTaxList);
+    } else {
+      taxValue = this.getAdjustedTaxValue(taxValue, nonDeductibleTaxList);
+    }
+
+    return taxValue;
+  }
+
+  protected BigDecimal getAdjustedTaxValue(
+      BigDecimal taxValue, List<TaxLine> nonDeductibleTaxList) {
+    BigDecimal deductibleTaxValue =
+        nonDeductibleTaxList.stream()
+            .map(TaxLine::getValue)
+            .reduce(BigDecimal::multiply)
+            .orElse(BigDecimal.ZERO)
+            .divide(
+                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+    return BigDecimal.ONE
+        .subtract(deductibleTaxValue)
+        .multiply(taxValue)
+        .setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getAdjustedNonDeductibleTaxValue(
+      BigDecimal taxValue, List<TaxLine> deductibleTaxList) {
+    BigDecimal nonDeductibleTaxValue = BigDecimal.ZERO;
+
+    for (TaxLine taxLine : deductibleTaxList) {
+      nonDeductibleTaxValue =
+          nonDeductibleTaxValue.add(
+              taxValue.multiply(
+                  taxLine
+                      .getValue()
+                      .divide(
+                          BigDecimal.valueOf(100),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)));
+    }
+    return nonDeductibleTaxValue.setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 
   protected void createMoveLineRCForAutoTax(

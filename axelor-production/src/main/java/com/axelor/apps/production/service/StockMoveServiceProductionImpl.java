@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -127,6 +128,13 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
 
   @Override
   public void cancelFromManufOrder(StockMove stockMove) throws AxelorException {
+    cancelStockMoveInProduction(stockMove);
+  }
+
+  @Override
+  public void cancelFromManufOrder(StockMove stockMove, CancelReason cancelReason)
+      throws AxelorException {
+    applyCancelReason(stockMove, cancelReason);
     cancelStockMoveInProduction(stockMove);
   }
 

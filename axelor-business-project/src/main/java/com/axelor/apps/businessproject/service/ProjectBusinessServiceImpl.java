@@ -548,7 +548,23 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void backupToProjectHistory(Project project) {
+
+    project.addProjectHistoryLineListItem(createProjectHistoryLine(project));
+
+    projectRepository.save(project);
+  }
+
+  protected ProjectHistoryLine createProjectHistoryLine(Project project) {
     ProjectHistoryLine projectHistoryLine = new ProjectHistoryLine();
+
+    computeTimeFields(projectHistoryLine, project);
+    computeFinancialFields(projectHistoryLine, project);
+    computeInvoiceFields(projectHistoryLine, project);
+
+    return projectHistoryLine;
+  }
+
+  protected void computeTimeFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setSoldTime(project.getSoldTime());
     projectHistoryLine.setUpdatedTime(project.getUpdatedTime());
     projectHistoryLine.setPlannedTime(project.getPlannedTime());
@@ -556,7 +572,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setPercentageOfProgress(project.getPercentageOfProgress());
     projectHistoryLine.setPercentageOfConsumption(project.getPercentageOfConsumption());
     projectHistoryLine.setRemainingAmountToDo(project.getRemainingAmountToDo());
+  }
 
+  protected void computeFinancialFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setTurnover(project.getTurnover());
     projectHistoryLine.setInitialCosts(project.getInitialCosts());
     projectHistoryLine.setInitialMargin(project.getInitialMargin());
@@ -571,15 +589,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setLandingCosts(project.getLandingCosts());
     projectHistoryLine.setLandingMargin(project.getLandingMargin());
     projectHistoryLine.setLandingMarkup(project.getLandingMarkup());
+  }
 
+  protected void computeInvoiceFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setTotalInvoiced(project.getTotalInvoiced());
     projectHistoryLine.setInvoicedThisMonth(project.getInvoicedThisMonth());
     projectHistoryLine.setInvoicedLastMonth(project.getInvoicedLastMonth());
     projectHistoryLine.setTotalPaid(project.getTotalPaid());
-
-    project.addProjectHistoryLineListItem(projectHistoryLine);
-
-    projectRepository.save(project);
   }
 
   @Override

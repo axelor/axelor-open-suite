@@ -24,7 +24,7 @@
     <extend target="//field[@name='supplierPartner']">
       <insert position="after">
         <spacer colSpan="6"/>
-        <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
+        <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')" colSpan="4">
           <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
             colSpan="12" onChange="action-sale-order-line-method-bom-onchange"/>
@@ -32,13 +32,18 @@
             if="__config__.app.getApp('production')?.allowPersonalizedBOM"
             onClick="action-production-method-customize-bill-of-material"/>
         </panel>
-        <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
+        <panel name="prodProcessPanel" if="__config__.app.isApp('production')" colSpan="4">
           <field name="prodProcess"
             onSelect="action-sale-order-line-method-set-prod-process-domain"
             form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
             if="__config__.app.getApp('production')?.allowPersonalizedProdProcess"/>
+        </panel>
+        <panel name="qtyToProducePanel" colSpan="4"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
+          <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true"
+            colSpan="12"/>
         </panel>
       </insert>
     </extend>

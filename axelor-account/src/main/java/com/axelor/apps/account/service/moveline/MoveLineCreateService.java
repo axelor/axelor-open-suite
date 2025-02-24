@@ -132,7 +132,8 @@ public interface MoveLineCreateService {
       TaxLine taxLine,
       String accountType,
       Account newAccount,
-      boolean percentMoveTemplate)
+      boolean percentMoveTemplate,
+      List<TaxLine> nonDeductibleTaxList)
       throws AxelorException;
 
   MoveLine createTaxMoveLine(

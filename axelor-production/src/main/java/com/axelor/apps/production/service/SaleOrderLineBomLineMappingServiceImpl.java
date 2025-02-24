@@ -34,13 +34,16 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
 
   protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected final SaleOrderLineProductProductionService saleOrderLineProductProductionService;
+  protected final SaleOrderLineProductionService saleOrderLineProductionService;
 
   @Inject
   public SaleOrderLineBomLineMappingServiceImpl(
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderLineProductProductionService saleOrderLineProductProductionService) {
+      SaleOrderLineProductProductionService saleOrderLineProductProductionService,
+      SaleOrderLineProductionService saleOrderLineProductionService) {
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineProductProductionService = saleOrderLineProductProductionService;
+    this.saleOrderLineProductionService = saleOrderLineProductionService;
   }
 
   @Override
@@ -65,6 +68,10 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       if (billOfMaterial != null) {
         saleOrderLine.setSaleSupplySelect(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
       }
+
+      saleOrderLine.setQtyToProduce(
+          saleOrderLineProductionService.computeQtyToProduce(
+              saleOrderLine, saleOrderLine.getParentSaleOrderLine()));
 
       return saleOrderLine;
     }

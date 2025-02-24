@@ -51,6 +51,7 @@ import com.axelor.apps.hr.db.repo.PartnerHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.hr.db.repo.SprintManagementRepository;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
@@ -243,6 +244,8 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServ
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
+import com.axelor.apps.hr.service.project.ProjectTaskSprintServiceImpl;
 import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsServiceImpl;
@@ -303,6 +306,7 @@ import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
@@ -467,6 +471,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(AllocationLineComputeService.class).to(AllocationLineComputeServiceImpl.class);
     bind(EmployeeComputeAvailableLeaveService.class)
         .to(EmployeeComputeAvailableLeaveServiceImpl.class);
+    bind(ProjectTaskSprintService.class).to(ProjectTaskSprintServiceImpl.class);
     bind(LeaveRequestCheckResponseService.class).to(LeaveRequestCheckResponseServiceImpl.class);
+    bind(SprintRepository.class).to(SprintManagementRepository.class);
   }
 }

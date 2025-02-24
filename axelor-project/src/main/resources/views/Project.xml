@@ -332,7 +332,6 @@
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
-      <spacer colSpan="8"/>
       <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
         showIf="taskStatusManagementSelect != 1"/>
@@ -397,22 +396,26 @@
 
   <form name="incl-project-roadmap-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Roadmap" name="roadmapPanel"
-      onTabSelect="action-project-attrs-hide-project-version-on-sprint">
+    <panel title="Roadmap" name="roadmapPanel">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
-      <panel name="sprintPanel" title="Sprints" colSpan="12">
+      <panel name="sprintPanel" title="Sprints" colSpan="12"
+        hideIf="sprintManagementSelect == 'none'">
         <panel itemSpan="12">
           <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
             onClick="action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+
           <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
             showIf="backlogSprint" readonly="true"/>
         </panel>
         <button name="generateSprintsBtn" title="Generate sprints"
           showIf="sprintManagementSelect == 'project'"
           onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
-        <field name="sprintList" grid-view="sprint-grid" form-view="sprint-form" colSpan="12"
-          canNew="true" canRemove="true" showIf="sprintManagementSelect == 'project'"/>
+        <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
+          colSpan="12" action="action-project-method-show-sprint-list" height="200%"
+          canSearch="true" editable="true"
+          canNew="id &amp;&amp; sprintManagementSelect == 'project'"
+          canDelete="sprintManagementSelect == 'project'"/>
         <field name="sprintManagementSelect" hidden="true"/>
       </panel>
       <panel-dashlet action="action-project-method-tasks-per-sprint"
@@ -519,7 +522,6 @@
     <action name="action-project-activity-dashboard-method-on-new"/>
     <action name="action-project-dashboard-method-on-new"/>
     <action name="action-attrs-project-show-log-time-panel"/>
-    <action name="action-project-attrs-hide-project-version-on-sprint"/>
   </action-group>
 
   <action-group name="action-project-group-on-new-project">
@@ -626,10 +628,6 @@
   <action-attrs name="action-project-attrs-set-time-unit-domain">
     <attribute name="domain" for="projectTimeUnit"
       expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
-  </action-attrs>
-
-  <action-attrs name="action-project-attrs-hide-project-version-on-sprint">
-    <attribute for="sprintList.targetVersion" name="hidden" expr="eval: true"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-status-to-add-domain">
@@ -784,6 +782,10 @@
 
   <action-method name="action-project-method-check-sprint-overlap">
     <call class="com.axelor.apps.project.web.ProjectController" method="checkSprintOverlap"/>
+  </action-method>
+
+  <action-method name="action-project-method-show-sprint-list">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewSprints"/>
   </action-method>
 
   <!-- ACTION VIEW -->

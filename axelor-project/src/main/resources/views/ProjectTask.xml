@@ -76,6 +76,7 @@
 
     <panel showIf="nextProjectTask">
       <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
+      <field name="project.isShowPlanning" hidden="true"/>
     </panel>
 
     <panel name="mainPanel" colSpan="12">
@@ -84,6 +85,7 @@
           hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
           x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
+        <field name="project.isShowPlanning" hidden="true"/>
 
       </panel>
       <field name="$provider" hidden="true" type="string"/>
@@ -239,6 +241,7 @@
       <field name="project.isShowTaskCategory" hidden="true"/>
       <field name="project.taskStatusManagementSelect" hidden="true"/>
       <field name="project.sprintManagementSelect" hidden="true"/>
+      <field name="oldActiveSprint" hidden="true"/>
     </panel>
   </form>
 
