@@ -18,5 +18,5 @@ public interface SprintGeneratorService {
       LocalDate toDate,
       Integer numberDays);
 
-  List<Sprint> getSprintDomain(Project project);
+  List<Sprint> getProjectSprintList(Project project);
 }

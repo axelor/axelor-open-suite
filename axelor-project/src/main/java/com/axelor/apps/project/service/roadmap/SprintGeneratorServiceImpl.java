@@ -170,7 +170,7 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
   }
 
   @Override
-  public List<Sprint> getSprintDomain(Project project) {
+  public List<Sprint> getProjectSprintList(Project project) {
     List<Sprint> sprintList = new ArrayList<>();
     if (Objects.equals(
         project.getSprintManagementSelect(), ProjectRepository.SPRINT_MANAGEMENT_PROJECT)) {
@@ -212,11 +212,11 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
   }
 
   @CallMethod
-  public List<Long> computeSprintDomain(Long projectId) {
+  public List<Long> getSprintList(Long projectId) {
     List<Sprint> sprintList = new ArrayList<>();
     if (projectId != null) {
       Project project = projectRepository.find(projectId);
-      sprintList = getSprintDomain(project);
+      sprintList = getProjectSprintList(project);
     }
     return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }

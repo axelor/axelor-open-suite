@@ -289,7 +289,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
                       projectTask.getBudgetedTime().scale(),
                       project);
                 } catch (AxelorException e) {
-                  throw new RuntimeException(e);
+                  throw new RuntimeException(e.getMessage(), e);
                 }
               }
               return projectTask.getBudgetedTime();

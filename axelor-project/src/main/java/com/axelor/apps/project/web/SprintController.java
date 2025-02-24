@@ -128,7 +128,7 @@ public class SprintController {
     Long projectId = Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
     ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
     List<Sprint> sprintList =
-        Beans.get(SprintGeneratorService.class).getSprintDomain(projectRepo.find(projectId));
+        Beans.get(SprintGeneratorService.class).getProjectSprintList(projectRepo.find(projectId));
     String domain = String.format("self.id in (%s)", StringHelper.getIdListString(sprintList));
 
     response.setAttr("$sprint", "domain", domain);

@@ -75,23 +75,27 @@
       (self.project=:project OR :project IS NULL)</domain>
   </action-view>
 
-
   <action-view name="action-project-view-project-sprint"
     model="com.axelor.apps.project.db.Sprint" title="Sprints">
     <view name="project-sprint-grid" type="grid"/>
     <view name="sprint-form" type="form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.id in :ids and ((date(self.fromDate) &gt;= date(:fromDate) and date(self.fromDate)
-      &lt;= date(:toDate)) or
-      (date(self.toDate) &gt;= date(:fromDate) and date(self.toDate) &lt;=
-      date(:toDate)) )</domain>
+    <domain><![CDATA[
+    self.id in :ids AND
+    ((date(:fromDate) <= date(self.fromDate) AND
+    date(self.fromDate) <= date(:toDate)) OR
+    (date(:fromDate) <= date(self.toDate) AND
+    date(self.toDate) <= date(:toDate)))
+    ]]></domain>
     <context name="ids"
-      expr="call: com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl:computeSprintDomain(project.id)"/>
+      expr="call: com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl:getSprintList(project.id)"/>
   </action-view>
+
   <action-record name="action-project-record-empty-sprint"
     model="com.axelor.apps.project.db.Project">
     <field name="$sprint" expr="eval: null"/>
   </action-record>
+
   <action-record name="action-project-record-empty-sprint-period"
     model="com.axelor.apps.project.db.Project">
     <field name="$sprint" expr="eval: null"/>
@@ -104,16 +108,19 @@
     <field name="$toDate" expr="eval: __repo__(Period).find(period.id).toDate" if="period"/>
     <field name="$sprint" expr="eval: null"/>
   </action-record>
+
   <action-record model="com.axelor.apps.project.db.Sprint"
     name="action-project-record-set-sprint-date">
     <field name="$fromDate" expr="eval:__repo__(Sprint).find(sprint.id).fromDate" if="sprint"/>
     <field name="$toDate" expr="eval: __repo__(Sprint).find(sprint.id).toDate" if="sprint"/>
     <field name="$period" expr="eval: null"/>
   </action-record>
+
   <action-method name="action-project-method-compute-sprint-domain">
     <call class="com.axelor.apps.project.web.SprintController"
       method="computeSprintDomainDashboard"/>
   </action-method>
+
   <action-attrs name="action-attrs-refresh-dashlets">
     <attribute name="refresh" expr="eval: true" for="project-project-task-action-dashlet"/>
     <attribute name="refresh" expr="eval: true"
