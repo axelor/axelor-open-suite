@@ -38,7 +38,8 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
     Integer sizeSelect = null;
 
     if (partnerData.getAdresseEtablissement() != null) {
-      String trancheEffectif = partnerData.getAdresseEtablissement().getTrancheEffectifsEtablissement();
+      String trancheEffectif =
+          partnerData.getAdresseEtablissement().getTrancheEffectifsEtablissement();
 
       if (trancheEffectif != null) {
         sizeSelect = getEmployeeCountCode(Integer.parseInt(trancheEffectif));
