@@ -70,8 +70,16 @@ public class InvoiceToolService {
                 invoice.getPaymentCondition(), invoiceDate, invoice.getDueDate());
       }
     } else {
-      dueDate =
-          Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.INVOICE_TERM_ALREADY_CUSTOMIZED));
+      } else {
+        dueDate =
+            Beans.get(InvoiceTermService.class)
+                .getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+      }
     }
 
     return dueDate;

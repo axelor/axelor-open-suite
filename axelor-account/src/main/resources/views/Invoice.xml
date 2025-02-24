@@ -1785,6 +1785,7 @@
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
