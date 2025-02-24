@@ -141,10 +141,9 @@
   </selection>
 
   <selection name="crm.lead.size.select">
-    <option value="00">0</option>
-    <option value="01">1 to 2</option>
-    <option value="02">3 to 5</option>
-    <option value="03">6 to 9</option>
+    <option value="1">1 to 2</option>
+    <option value="2">3 to 5</option>
+    <option value="3">6 to 9</option>
     <option value="11">10 to 19</option>
     <option value="12">20 to 49</option>
     <option value="21">50 to 99</option>
