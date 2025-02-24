@@ -1953,6 +1953,7 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-menu-grid"/>
     <view type="form" name="sale-order-line-all-form"/>
+    <view-param name="search-filters" value="sale-order-lines-filter"/>
     <domain>self.saleOrder.statusSelect in (1,2)</domain>
   </action-view>
 
@@ -1960,6 +1961,7 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-menu-grid"/>
     <view type="form" name="sale-order-line-all-form"/>
+    <view-param name="search-filters" value="sale-order-lines-filter"/>
     <domain>self.saleOrder.statusSelect IN (:_status)</domain>
     <context name="_status" expr="eval: status"/>
   </action-view>
