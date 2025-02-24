@@ -26,9 +26,9 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,23 +53,25 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
 
   @Override
   public List<Long> getFilteredEmployeeIds(Project project) {
-    List<Employee> employeeList = new ArrayList<>();
+    String filter =
+        " (self.hireDate is not null and self.hireDate <= :todayDate) "
+            + "and (self.leavingDate is null or self.leavingDate >= :todayDate)";
+    List<Employee> projectEmployeeList = null;
     if (project != null) {
-      employeeList =
+      projectEmployeeList =
           project.getMembersUserSet().stream().map(User::getEmployee).collect(Collectors.toList());
-    } else {
-      employeeList = employeeRepository.all().fetch();
+      filter = filter + " and self in :projectEmployeeList";
     }
-    LocalDate localDate =
+    LocalDate todayDate =
         appBaseService.getTodayDate(
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
-    return employeeList.stream()
-        .filter(
-            e ->
-                (e != null)
-                    && (e.getHireDate() != null && !e.getHireDate().isAfter(localDate))
-                    && (e.getLeavingDate() == null || !e.getLeavingDate().isBefore(localDate)))
-        .map(Employee::getId)
-        .collect(Collectors.toList());
+
+    Query<Employee> employeeQuery =
+        employeeRepository.all().filter(filter).bind("todayDate", todayDate);
+
+    if (projectEmployeeList != null) {
+      employeeQuery.bind("projectEmployeeList", projectEmployeeList);
+    }
+    return employeeQuery.fetch().stream().map(Employee::getId).collect(Collectors.toList());
   }
 }
