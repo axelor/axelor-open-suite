@@ -1872,7 +1872,7 @@
 "Region code","Code Région",,
 "Region name","Nom Région",,
 "Regions","Régions",,
-"Registration code already exists.",,,
+"Registration code already exists for partner %s.","Le numéro SIRET existe déjà pour le tiers %s.",,
 "Registration code is invalid.","N° SIRET invalide.",,
 "Registration code is required for companies","N° SIRET requis pour les sociétés",,
 "Registration code is required.","N° SIRET requis.",,
