@@ -35,53 +35,54 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
   @Override
   protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData) {
     super.setPartnerBasicDetails(partner, partnerData);
-    String sizeSelect = null;
+    Integer sizeSelect = null;
 
     if (partnerData.getAdresseEtablissement() != null) {
-      sizeSelect = getEmployeeCountCode(
-              Integer.parseInt(partnerData
-                  .getAdresseEtablissement()
-                  .getTrancheEffectifsEtablissement()));
-    } else if (partnerData.getUniteLegale() != null) {
-      sizeSelect = partnerData.getUniteLegale().getTrancheEffectifsUniteLegale();
+      String trancheEffectif = partnerData.getAdresseEtablissement().getTrancheEffectifsEtablissement();
+
+      if (trancheEffectif != null) {
+        sizeSelect = getEmployeeCountCode(Integer.parseInt(trancheEffectif));
+      }
+    }
+
+    if (sizeSelect == null && partnerData.getUniteLegale() != null) {
+      sizeSelect = Integer.valueOf(partnerData.getUniteLegale().getTrancheEffectifsUniteLegale());
     }
 
     if (sizeSelect != null) {
-      partner.setSizeSelect(Integer.parseInt(sizeSelect));
+      partner.setSizeSelect(sizeSelect);
     }
   }
 
-  private String getEmployeeCountCode(int employeeCount) {
-    if ((employeeCount == 0)) {
-      return "00";
-    } else if ((employeeCount <= 2)) {
-      return "01";
+  private int getEmployeeCountCode(int employeeCount) {
+    if ((employeeCount <= 2)) {
+      return 1;
     } else if ((employeeCount <= 5)) {
-      return "02";
+      return 2;
     } else if ((employeeCount <= 9)) {
-      return "03";
+      return 3;
     } else if ((employeeCount <= 19)) {
-      return "11";
+      return 11;
     } else if ((employeeCount <= 49)) {
-      return "12";
+      return 12;
     } else if ((employeeCount <= 99)) {
-      return "21";
+      return 21;
     } else if ((employeeCount <= 199)) {
-      return "22";
+      return 22;
     } else if ((employeeCount <= 249)) {
-      return "31";
+      return 31;
     } else if ((employeeCount <= 499)) {
-      return "32";
+      return 32;
     } else if ((employeeCount <= 999)) {
-      return "41";
+      return 41;
     } else if ((employeeCount <= 1999)) {
-      return "42";
+      return 42;
     } else if ((employeeCount <= 4999)) {
-      return "51";
+      return 51;
     } else if ((employeeCount <= 9999)) {
-      return "52";
+      return 52;
     } else {
-      return "53";
+      return 53;
     }
   }
 }
