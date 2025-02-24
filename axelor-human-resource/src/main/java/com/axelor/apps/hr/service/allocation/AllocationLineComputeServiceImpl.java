@@ -14,6 +14,7 @@ import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
@@ -210,5 +211,101 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     }
 
     return prorata;
+  }
+
+  @Override
+  public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
+    List<AllocationLine> allocationLineList = allocationLineRepo.findByProject(project).fetch();
+
+    BigDecimal allocatedTime = BigDecimal.ZERO;
+
+    if (ObjectUtils.isEmpty(allocationLineList)) {
+      return allocatedTime;
+    }
+
+    for (AllocationLine allocationLine : allocationLineList) {
+      Employee employee = allocationLine.getEmployee();
+      Period period = allocationLine.getPeriod();
+
+      if (period == null) {
+        continue;
+      }
+
+      LocalDate allocationLineFromDate = period.getFromDate();
+      LocalDate allocationLineToDate = period.getToDate();
+      LocalDate sprintFromDate = sprint.getFromDate();
+      LocalDate sprintToDate = sprint.getToDate();
+
+      if (allocationLineFromDate == null
+          || allocationLineToDate == null
+          || sprintFromDate == null
+          || sprintToDate == null
+          || employee == null) {
+        continue;
+      }
+
+      BigDecimal sprintPeriod = BigDecimal.ZERO;
+      if (sprintFromDate.isAfter(allocationLineFromDate)
+          && sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, employee);
+      }
+
+      if (!sprintFromDate.isAfter(allocationLineFromDate)
+          && sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWorkingDays(allocationLineFromDate, sprintToDate, employee);
+      }
+
+      if (sprintFromDate.isAfter(allocationLineFromDate)
+          && !sprintToDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWorkingDays(sprintFromDate, allocationLineToDate, employee);
+      }
+
+      BigDecimal allocationPeriod =
+          getWorkingDays(allocationLineFromDate, allocationLineToDate, employee);
+      BigDecimal allocation = allocationLine.getAllocated();
+      allocatedTime = allocatedTime.add(getProrata(allocationPeriod, sprintPeriod, allocation));
+    }
+    return allocatedTime;
+  }
+
+  @Override
+  public BigDecimal getBudgetedTime(Sprint sprint, Project project) throws AxelorException {
+    if (sprint == null || ObjectUtils.isEmpty(sprint.getProjectTaskList())) {
+      return BigDecimal.ZERO;
+    }
+
+    Unit unitHours = appBaseService.getUnitHours();
+    Unit unitDays = appBaseService.getUnitDays();
+
+    return sprint.getProjectTaskList().stream()
+        .map(
+            projectTask -> {
+              if (unitHours.equals(projectTask.getTimeUnit())
+                  && projectTask.getBudgetedTime().signum() != 0) {
+                try {
+                  return unitConversionForProjectService.convert(
+                      unitHours,
+                      unitDays,
+                      projectTask.getBudgetedTime(),
+                      projectTask.getBudgetedTime().scale(),
+                      project);
+                } catch (AxelorException e) {
+                  throw new RuntimeException(e.getMessage(), e);
+                }
+              }
+              return projectTask.getBudgetedTime();
+            })
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
+  }
+
+  protected BigDecimal getProrata(
+      BigDecimal allocationPeriod, BigDecimal sprintPeriod, BigDecimal allocation) {
+    if (allocationPeriod.signum() != 0) {
+      return allocation
+          .multiply(sprintPeriod)
+          .divide(allocationPeriod, allocation.scale(), RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ONE;
   }
 }
