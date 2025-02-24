@@ -12,6 +12,7 @@ public class AdresseEtablissementResponse {
   private String numeroVoieEtablissement;
   private String typeVoieEtablissement;
   private String libelleVoieEtablissement;
+  private String trancheEffectifsEtablissement;
 
   public String getCodePostalEtablissement() {
     return codePostalEtablissement;
@@ -43,5 +44,9 @@ public class AdresseEtablissementResponse {
 
   public String getLibelleVoieEtablissement() {
     return libelleVoieEtablissement;
+  }
+
+  public String getTrancheEffectifsEtablissement() {
+    return trancheEffectifsEtablissement;
   }
 }
