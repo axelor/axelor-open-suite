@@ -183,4 +183,7 @@ public final class SaleExceptionMessage {
 
   public static final String CONFIGURATOR_PRODUCT_GENERATION_ERROR = /*$$(*/
       "An error occurred during the generation of the product with configurator, please see tracebacks for more details." /*)*/;
+
+  public static final String CONFIGURATOR_IS_NOT_ACTIVATED = /*$$(*/
+      "Configurator is not activated." /*)*/;
 }

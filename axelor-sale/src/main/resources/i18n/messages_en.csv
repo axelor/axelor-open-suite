@@ -131,6 +131,7 @@
 "Configurator creators",,,
 "Configurator edit button",,,
 "Configurator formula list",,,
+"Configurator is not activated.",,,
 "Configurator model",,,
 "Configurator version is different than its configurator creator.",,,
 "Configurator version is different than the version of its configurator creator, therefore only a simple duplicate will be created, proceed ?",,,
