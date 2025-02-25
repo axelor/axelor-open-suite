@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
@@ -85,7 +86,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
-import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
@@ -129,6 +129,8 @@ import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImp
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.FreightCarrierModeService;
+import com.axelor.apps.supplychain.service.FreightCarrierModeServiceImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
@@ -157,7 +159,6 @@ import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
-import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateServiceSupplychainImpl;
@@ -168,10 +169,13 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineTaxComputeSupplychainServiceImp;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingViewServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderShipmentService;
+import com.axelor.apps.supplychain.service.PurchaseOrderShipmentServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -181,6 +185,8 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateServiceImpl;
+import com.axelor.apps.supplychain.service.ShippingService;
+import com.axelor.apps.supplychain.service.ShippingServiceImpl;
 import com.axelor.apps.supplychain.service.StockCorrectionServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockHistoryServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineFetchServiceSupplychainImpl;
@@ -398,7 +404,6 @@ public class SupplychainModule extends AxelorModule {
         .to(OpportunitySaleOrderSupplychainServiceImpl.class);
     bind(PartnerSaleServiceImpl.class).to(PartnerSupplychainServiceImpl.class);
     bind(PartnerSupplychainService.class).to(PartnerSupplychainServiceImpl.class);
-    bind(ProductVariantServiceStockImpl.class).to(ProductVariantServiceSupplyChainImpl.class);
     bind(StockHistoryServiceImpl.class).to(StockHistoryServiceSupplyChainImpl.class);
     bind(AccountingSituationInitServiceImpl.class)
         .to(AccountingSituationInitSupplychainServiceImpl.class);
@@ -487,5 +492,10 @@ public class SupplychainModule extends AxelorModule {
     bind(ConfiguratorCheckServiceImpl.class).to(ConfiguratorCheckServiceSupplychainImpl.class);
     bind(TrackingNumberCompanyServiceImpl.class)
         .to(TrackingNumberCompanySupplychainServiceImpl.class);
+    bind(PurchaseOrderLineTaxComputeServiceImpl.class)
+        .to(PurchaseOrderLineTaxComputeSupplychainServiceImp.class);
+    bind(PurchaseOrderShipmentService.class).to(PurchaseOrderShipmentServiceImpl.class);
+    bind(ShippingService.class).to(ShippingServiceImpl.class);
+    bind(FreightCarrierModeService.class).to(FreightCarrierModeServiceImpl.class);
   }
 }

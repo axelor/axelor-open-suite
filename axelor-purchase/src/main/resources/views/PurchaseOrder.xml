@@ -483,23 +483,14 @@
 					</Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" mt={1}>
-					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
-						{amountInvoiced == 0 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
-						{amountInvoiced > 0 && (amountInvoiced < exTaxTotal) && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
-						{amountInvoiced > 0 && (amountInvoiced == exTaxTotal) && <Badge bg="success">{_t('Invoiced')}</Badge>}
-
-	                	{receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
-	                	{receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
-	                	{receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
-		            </Box>
-		            <Box>
-			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
-		            </Box>
-				</Box>
-				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(company.name)}</Badge>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					<Box>
+						<Badge style={{ backgroundColor: "#2185D0" }}>{_t(company.name)}</Badge> <Box/>
+						<Badge mt={1} style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					</Box>
+					<Box>
+						<strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+						<strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
+					</Box>
 				</Box>
 			</>
 		]]>

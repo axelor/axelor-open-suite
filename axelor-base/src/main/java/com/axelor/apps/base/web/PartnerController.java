@@ -47,6 +47,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -443,8 +444,14 @@ public class PartnerController {
     RegistrationNumberValidator validator =
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
-    if (validator != null && !validator.isRegistrationCodeValid(partner)) {
-      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    boolean notValidRegistrationCode =
+        validator != null && !validator.isRegistrationCodeValid(partner);
+    response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
+    if (notValidRegistrationCode) {
+      response.setAttr(
+          "isValidRegistrationCode",
+          "title",
+          I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 
@@ -480,10 +487,10 @@ public class PartnerController {
 
   public void checkIfRegistrationCodeExists(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
-    if (!Beans.get(PartnerService.class).checkIfRegistrationCodeExists(partner)) {
+    String message = Beans.get(PartnerService.class).checkIfRegistrationCodeExists(partner);
+    if (StringUtils.isEmpty(message)) {
       return;
     }
-    String message = I18n.get(BaseExceptionMessage.PARTNER_REGISTRATION_CODE_ALREADY_EXISTS);
     if (Beans.get(AppBaseService.class).getAppBase().getIsRegistrationCodeCheckBlocking()) {
       response.setError(message);
     } else {

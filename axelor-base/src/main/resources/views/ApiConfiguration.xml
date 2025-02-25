@@ -20,20 +20,37 @@
   </form>
 
   <form name="partner-api-configuration-wizard-form" title="Partner API configuration"
-    model="com.axelor.utils.db.Wizard">
+    model="com.axelor.utils.db.Wizard" onNew="action-api-configuration-group-on-new">
     <panel name="mainPanel">
       <field name="partnerApiConfiguration" title="API config"
         target="com.axelor.apps.base.db.PartnerApiConfiguration" type="many-to-one" required="true"
         canNew="false" colSpan="5"/>
-      <field name="siret number" title="Siret number" type="string" required="true"
-        colSpan="5"/>
+      <field name="siretNumber" title="Siret number" type="string" required="true" colSpan="5"
+        readonlyIf="$parentSiret"/>
       <button name="executeApiBtn" title="Fetch data"
-        onClick="action-api-configuration-method-fetch-data" colSpan="2"/>
+        onClick="action-api-configuration-method-fetch-data" colSpan="2"
+        readonlyIf="partnerApiConfiguration == null || siretNumber == null"/>
+      <field name="$parentSiret" type="string" hidden="true"/>
     </panel>
   </form>
 
   <action-method name="action-api-configuration-method-fetch-data">
     <call class="com.axelor.apps.base.web.PartnerApiConfigurationController" method="fetchData"/>
   </action-method>
+
+  <action-group name="action-api-configuration-group-on-new">
+    <action name="action-api-configuration-record-set-parent-siret"/>
+    <action name="action-api-configuration-record-set-siret-number" if="parentSiret"/>
+  </action-group>
+
+  <action-record name="action-api-configuration-record-set-parent-siret"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$parentSiret" expr="eval: _parentSiret"/>
+  </action-record>
+
+  <action-record name="action-api-configuration-record-set-siret-number"
+    model="com.axelor.utils.db.Wizard">
+    <field name="siretNumber" expr="eval: parentSiret"/>
+  </action-record>
 
 </object-views>

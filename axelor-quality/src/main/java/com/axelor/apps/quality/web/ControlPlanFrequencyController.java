@@ -16,17 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.quality.web;
 
-import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.quality.db.ControlPlanFrequency;
+import com.axelor.apps.quality.service.ControlPlanFrequencyService;
 import com.axelor.inject.Beans;
-import javax.persistence.PostUpdate;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public class SaleOrderProductionListener {
+public class ControlPlanFrequencyController {
 
-  @PostUpdate
-  public void saleOrderPostUpdate(SaleOrder saleOrder) {
-    Beans.get(SaleOrderLineBomSyncService.class).syncSaleOrderLineBom(saleOrder);
+  public void createOrUpdateValueTranslations(ActionRequest request, ActionResponse response) {
+    ControlPlanFrequency controlPlanFrequency =
+        request.getContext().asType(ControlPlanFrequency.class);
+    Beans.get(ControlPlanFrequencyService.class)
+        .createOrUpdateValueTranslations(controlPlanFrequency);
   }
 }

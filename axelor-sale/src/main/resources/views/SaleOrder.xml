@@ -516,6 +516,10 @@
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
+        <panel name="subLinePanel" colSpan="12"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
+          <field name="isDisplaySubLinesOnReport" widget="boolean-switch"/>
+        </panel>
       </panel>
       <panel name="taxPanel" title="Tax" readonlyIf="statusSelect != 1">
         <panel-related name="saleOrderLineTaxListPanel" colSpan="12"
@@ -772,7 +776,7 @@
       </field>
     </panel>
     <panel name="globalDiscountPanel" title="Global discount"
-      if="__config__.app.getApp('sale')?.getIsGlobalDiscountEnabledOnSaleOrder()"
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
       sidebar="true">
       <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>

@@ -152,9 +152,13 @@ public class SaleOrderLineProductProductionServiceImpl
         } else if (product.getParentProduct() != null) {
           saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
         }
+        BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
         generateLines(saleOrderLine, saleOrder);
 
         saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
+        if (billOfMaterial != null) {
+          saleOrderLineMap.put("prodProcess", billOfMaterial.getProdProcess());
+        }
       }
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
       saleOrderLineMap.put("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());

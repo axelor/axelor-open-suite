@@ -247,12 +247,11 @@
     <view type="form" name="project-version-form"/>
   </action-view>
 
-  <menuitem name="project.dashboard.sample" parent="project-reporting"
-    title="Projects and resources management" action="project.dashboard" order="1800"/>
+  <menuitem name="project-dashboard-wizard" parent="project-reporting"
+    title="Projects and resources management" action="project.wizard.form" order="1820"/>
 
-  <action-view name="project.dashboard" title="Projects and resources management">
-    <view type="dashboard" name="project.dashboard.sample"/>
-
+  <action-view name="project.wizard.form" title="Projects and resources management"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="project-wizard-form"/>
   </action-view>
-
 </object-views>

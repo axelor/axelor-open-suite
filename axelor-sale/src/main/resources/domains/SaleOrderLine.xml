@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrderLine"
-    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable, com.axelor.apps.sale.interfaces.MarginLine">
+    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.sale.interfaces.MarginLine,com.axelor.apps.base.interfaces.ShippableOrderLine,com.axelor.apps.base.interfaces.GlobalDiscounterLine">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -98,6 +98,11 @@
     <decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"
       precision="20" scale="3" readonly="true"/>
     <integer name="typeSelect" title="Type" selection="line.type.select"/>
+    <integer name="typeSelectNormal" title="Type select normal">
+      <![CDATA[
+        return SaleOrderLineRepository.TYPE_NORMAL;
+	  ]]>
+    </integer>
 
     <boolean name="isShowTotal" title="Show Total"/>
     <boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
@@ -113,6 +118,7 @@
       ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentSaleOrderLine"/>
     <many-to-one name="parentSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Parent sale order line"/>
+    <string name="levelIndicator" title="Level"/>
 
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">
       <![CDATA[
@@ -133,6 +139,10 @@
       title="Configurator"/>
 
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
+
+    <extra-imports>
+      import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+    </extra-imports>
 
     <extra-code>
 		<![CDATA[

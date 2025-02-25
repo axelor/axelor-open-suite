@@ -45,4 +45,23 @@ public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
           I18n.get(SaleExceptionMessage.SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR));
     }
   }
+
+  @Override
+  public boolean isConfiguratorVersionDifferent(Configurator configurator) {
+
+    Objects.requireNonNull(configurator);
+
+    return !configurator
+        .getConfiguratorVersion()
+        .equals(configurator.getConfiguratorCreator().getConfiguratorVersion());
+  }
+
+  @Override
+  public void checkConfiguratorActivated(Configurator configurator) throws AxelorException {
+    if (configurator != null && !configurator.getConfiguratorCreator().getIsActive()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_IS_NOT_ACTIVATED));
+    }
+  }
 }
