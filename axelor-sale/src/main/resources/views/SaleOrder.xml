@@ -1360,7 +1360,7 @@
     <field name="saleOrderSeq"/>
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
-    <field name="orderDate"/>
+    <field name="creationDate"/>
     <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
@@ -1378,7 +1378,7 @@
 					<span>{_t('Sale quotation')}</span> {saleOrderSeq}
 					{externalReference && <span> ( {externalReference} )</span>}
 				</strong>
-				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('orderDate')}</Box>
+				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('creationDate')}</Box>
 				<Box d="grid" gridTemplateColumns="67% 33%">
 					<Box>
 						<Icon icon="people-fill"/> {clientPartner.fullName}
