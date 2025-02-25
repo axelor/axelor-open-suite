@@ -10,6 +10,8 @@ import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,35 +54,30 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
     }
   }
 
-  private int getEmployeeCountCode(int employeeCount) {
-    if ((employeeCount <= 2)) {
-      return 1;
-    } else if ((employeeCount <= 5)) {
-      return 2;
-    } else if ((employeeCount <= 9)) {
-      return 3;
-    } else if ((employeeCount <= 19)) {
-      return 11;
-    } else if ((employeeCount <= 49)) {
-      return 12;
-    } else if ((employeeCount <= 99)) {
-      return 21;
-    } else if ((employeeCount <= 199)) {
-      return 22;
-    } else if ((employeeCount <= 249)) {
-      return 31;
-    } else if ((employeeCount <= 499)) {
-      return 32;
-    } else if ((employeeCount <= 999)) {
-      return 41;
-    } else if ((employeeCount <= 1999)) {
-      return 42;
-    } else if ((employeeCount <= 4999)) {
-      return 51;
-    } else if ((employeeCount <= 9999)) {
-      return 52;
-    } else {
-      return 53;
+  protected int getEmployeeCountCode(int employeeCount) {
+    Map<Integer, Integer> employeeCodeMap = new LinkedHashMap<>();
+
+    employeeCodeMap.put(2, 1);
+    employeeCodeMap.put(5, 2);
+    employeeCodeMap.put(9, 3);
+    employeeCodeMap.put(19, 11);
+    employeeCodeMap.put(49, 12);
+    employeeCodeMap.put(99, 21);
+    employeeCodeMap.put(199, 22);
+    employeeCodeMap.put(249, 31);
+    employeeCodeMap.put(499, 32);
+    employeeCodeMap.put(999, 41);
+    employeeCodeMap.put(1999, 42);
+    employeeCodeMap.put(4999, 51);
+    employeeCodeMap.put(9999, 52);
+    employeeCodeMap.put(Integer.MAX_VALUE, 53);
+
+    for (Map.Entry<Integer, Integer> entry : employeeCodeMap.entrySet()) {
+      if (employeeCount <= entry.getKey()) {
+        return entry.getValue();
+      }
     }
+
+    return 53;
   }
 }
