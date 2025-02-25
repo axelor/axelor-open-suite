@@ -180,8 +180,4 @@
     <action name="action-attrs-refresh-dashlets"/>
   </action-group>
 
-  <action-method name="action-project-method-compute-employee-domain">
-    <call class="com.axelor.apps.hr.web.project.ProjectManagementDashboardController"
-      method="computeEmployeeDomainDashboard"/>
-  </action-method>
 </object-views>
