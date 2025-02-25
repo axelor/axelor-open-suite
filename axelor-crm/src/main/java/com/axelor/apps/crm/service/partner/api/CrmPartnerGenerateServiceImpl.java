@@ -3,6 +3,7 @@ package com.axelor.apps.crm.service.partner.api;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
+import com.axelor.apps.base.db.repo.MainActivityRepository;
 import com.axelor.apps.base.db.repo.PartnerCategoryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
@@ -25,13 +26,15 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
       PartnerCategoryRepository partnerCategoryRepository,
       CountryRepository countryRepository,
       CityRepository cityRepository,
-      PartnerApiFetchService partnerApiFetchService) {
+      PartnerApiFetchService partnerApiFetchService,
+      MainActivityRepository mainActivityRepository) {
     super(
         partnerRepository,
         partnerCategoryRepository,
         countryRepository,
         cityRepository,
-        partnerApiFetchService);
+        partnerApiFetchService,
+        mainActivityRepository);
   }
 
   @Override
