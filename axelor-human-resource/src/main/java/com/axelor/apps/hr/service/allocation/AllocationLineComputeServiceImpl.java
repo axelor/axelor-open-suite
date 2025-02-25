@@ -194,7 +194,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
         || toDate == null
         || project == null
         || !project.getManageTimeSpent()
-        || appHumanResourceService.getAppTimesheet() != null
+        || appHumanResourceService.getAppTimesheet() == null
         || !Optional.ofNullable(appProjectService.getAppProject())
             .map(AppProject::getEnablePlanification)
             .orElse(false)) {
@@ -225,12 +225,8 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
         if (employee == null) {
           employee = timesheetLine.getEmployee();
         }
-        BigDecimal prorata = computeProrata(fromDate, toDate, employee);
-
         totalSpentTime =
-            totalSpentTime
-                .add(spentTime.multiply(prorata))
-                .setScale(spentTime.scale(), RoundingMode.HALF_UP);
+            totalSpentTime.add(spentTime).setScale(spentTime.scale(), RoundingMode.HALF_UP);
       }
     }
 
@@ -283,19 +279,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       prorata = jointDays.divide(totalDays, 2, RoundingMode.HALF_UP);
     }
 
-    return prorata;
-  }
-
-  protected BigDecimal computeProrata(LocalDate fromDate, LocalDate toDate, Employee employee) {
-    if (fromDate == null || toDate == null) {
-      return BigDecimal.ONE;
-    }
-    BigDecimal jointDays = BigDecimal.ONE;
-    BigDecimal totalDays = getWorkingDays(fromDate, toDate, employee);
-    BigDecimal prorata = BigDecimal.ONE;
-    if (totalDays.signum() > 0) {
-      prorata = jointDays.divide(totalDays, totalDays.scale(), RoundingMode.HALF_UP);
-    }
     return prorata;
   }
 
