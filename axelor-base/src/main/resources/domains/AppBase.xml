@@ -188,8 +188,9 @@
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
       min="0"/>
 
-    <boolean name="isRegistrationCodeCheckBlocking"
-      title="Restrict duplicate registration codes" default="false"/>
+    <boolean name="isRegistrationCodeCheckBlocking" title="Check duplicate registration"
+      default="false"
+      help="This configuration adds a warning when a partner is created if the registration code entered already exists in the database."/>
     <boolean name="isGlobalDiscountEnabled" title="Enable global discount"
       help="Allow the user to apply a global discount on a sale order or invoice. Global discount and discount per line are not cumulative."/>
 
@@ -276,6 +277,7 @@
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="isPricingComputingOrder" on="UPDATE"/>
       <field name="defaultBatchFetchLimit" on="UPDATE"/>
+      <field name="isRegistrationCodeCheckBlocking" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 
