@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
-    width="large" onNew="action-method-project-set-date" canNew="false" canDelete="false">
+    width="large" onNew="action-method-project-set-date" canNew="false" canDelete="false"
+    canSave="false">
     <panel name="filtersPanel">
       <field name="$project" title="Project" colSpan="12" type="many-to-one"
         onChange="action-project-group-onchange-project" target="com.axelor.apps.project.db.Project"/>
@@ -44,9 +45,15 @@
     <view name="project-task-dashboard-grid" type="grid"/>
     <view name="project-task-form" type="form"/>
     <view-param name="popup" value="true"/>
-    <domain> (self.taskDate &lt;= :toDate and self.taskDate &gt;= :fromDate )
+    <domain> (date(self.taskDate) &lt;= date(:toDate) and date(self.taskDate) &gt;= date(:fromDate)
+      )
       and
-      (self.project=:project OR :project IS NULL)</domain>
+      (self.project=:project OR :project IS NULL) and
+      (self.assignedTo.employee =:employee OR
+      :employee IS
+      NULL)
+
+    </domain>
   </action-view>
   <action-view name="action-project-view-planning-time-dashboard"
     model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project planning tasks">
@@ -58,7 +65,11 @@
       (date(self.endDateTime) &lt;= date(:toDate) and date(self.endDateTime)
       &gt;= date(:fromDate) ))
       and
-      (self.project=:project OR :project IS NULL)</domain>
+      (self.project=:project OR :project IS NULL)
+      and
+      (self.employee
+      =:employee OR :employee IS
+      NULL)</domain>
   </action-view>
   <action-view name="action-project-view-allocation-line"
     model="com.axelor.apps.hr.db.AllocationLine" title="Project allocation lines">
@@ -72,7 +83,11 @@
       date(self.period.toDate)
       &gt;= date(:fromDate) ))
       and
-      (self.project=:project OR :project IS NULL)</domain>
+      (self.project=:project OR :project IS NULL)
+      and
+      (self.employee
+      =:employee OR :employee IS
+      NULL)</domain>
   </action-view>
 
   <action-view name="action-project-view-project-sprint"
