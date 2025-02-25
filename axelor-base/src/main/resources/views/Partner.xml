@@ -1790,6 +1790,7 @@
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
+    <context name="_parentSiret" expr="eval: __this__.registrationCode"/>
   </action-view>
 
 </object-views>
