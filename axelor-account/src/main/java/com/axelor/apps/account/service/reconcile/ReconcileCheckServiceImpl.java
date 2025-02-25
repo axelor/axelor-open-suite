@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
@@ -35,6 +36,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -192,7 +194,8 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
+    if (!move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
+        && move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
@@ -204,6 +207,12 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
     return ObjectUtils.isEmpty(it.getTaxLineSet())
         && moveLineToolService.isMoveLineTaxAccount(it)
         && it.getAccount().getIsTaxAuthorizedOnMoveLine();
+  }
+
+  protected boolean hasPayableReceivableAccount(MoveLine it) {
+    return Lists.newArrayList(
+            AccountTypeRepository.TYPE_RECEIVABLE, AccountTypeRepository.TYPE_PAYABLE)
+        .contains(it.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 
   protected boolean checkMoveLineAmount(

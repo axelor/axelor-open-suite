@@ -1,0 +1,2 @@
+title: "AccountingBatch : Ignore check at reconcile when move only contains tax account"
+module: axelor-account
