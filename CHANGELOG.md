@@ -1,3 +1,48 @@
+## [8.2.9] (2025-02-20)
+
+### Fixes
+#### Account
+
+* Invoice payment: forbid the creation of a 0 amount payment.
+* Invoice: fixed contact being readonly when the partner is an individual.
+* Payment session: fixed infinite loop when searching eligible invoice terms.
+* Fiscal position: fixed NPE on adding account equivalence on new record.
+* Move: fixed company bank details domain when no payment mode is selected.
+* Product: added product demo data for late payement invoice.
+* Invoice: fixed the issue that required saving before applying cutoff dates.
+* Journal: fixed error while importing france chart of accounts.
+* Move: fixed the transactional error at move delete.
+* Accounting batch: fixed the issue where batch accounting cut-off does not link generated tracebacks.
+
+#### Contract
+
+* Contract: fixed no analytic move lines on contract duplication.
+* Contract version: fixed the issue where the file was being duplicated during updates.
+* Contract version: fixed file link is lost when creating a new amendment.
+
+#### Human Resource
+
+* Timesheet: fixed an issue in lines generation from project planning where end date was not taken into account.
+
+#### Marketing
+
+* Campaign: fixed FR translation for 'Event start'.
+
+#### Production
+
+* Sale order: fixed an issue occurring when adding a title subline.
+* Bill of materials: fixed BOM name in demo data, causing an issue when customizing the BOM.
+
+#### Quality
+
+* QI Resolution: fixed wrong translation in English for the term default.
+
+#### Sale
+
+* Configurator: fixed default value that was not set with configurators
+* Configurator product formula: disabled test button if formula is empty.
+* Sale order line: fixed default value for prodProcess.
+
 ## [8.2.8] (2025-02-06)
 
 ### Fixes
@@ -708,6 +753,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.9]: https://github.com/axelor/axelor-open-suite/compare/v8.2.8...v8.2.9
 [8.2.8]: https://github.com/axelor/axelor-open-suite/compare/v8.2.7...v8.2.8
 [8.2.7]: https://github.com/axelor/axelor-open-suite/compare/v8.2.6...v8.2.7
 [8.2.6]: https://github.com/axelor/axelor-open-suite/compare/v8.2.5...v8.2.6
