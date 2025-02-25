@@ -157,6 +157,7 @@
       for="project-allocation-line-action-dashlet"/>
     <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
     <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-allocated-time-panel" name="refresh" expr="eval: true"/>
   </action-attrs>
 
   <action-method name="action-project-method-compute-sprint-dashlet">

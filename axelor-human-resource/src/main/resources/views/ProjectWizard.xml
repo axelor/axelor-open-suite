@@ -15,7 +15,7 @@
       <insert position="after">
         <panel name="indicators">
         </panel>
-        <panel-dashlet colSpan="4" height="175" action="action-project-allocated-time"/>
+        <panel-dashlet colSpan="4" height="175" action="action-project-allocated-time" name="project-allocated-time-panel"/>
       </insert>
     </extend>
   </form>
@@ -31,7 +31,7 @@
   <custom name="project.allocated.time" title="Allocated time" css="report-box">
     <dataset type="rpc">com.axelor.apps.hr.web.AllocationLineController:getTotalAllocatedTime</dataset>
     <template>  <![CDATA[
-  <report-box icon='search' label='Total allocated time' value='first.plannedTime'/>
+<report-box icon='search' label='Total allocated time' value='first.total'/>
   ]]></template>
   </custom>
 </object-views>
