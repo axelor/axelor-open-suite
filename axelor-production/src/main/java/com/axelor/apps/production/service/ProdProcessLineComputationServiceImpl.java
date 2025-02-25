@@ -2,6 +2,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
@@ -17,7 +18,11 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   public BigDecimal getNbCycle(ProdProcessLine prodProcessLine, BigDecimal qty) {
     Objects.requireNonNull(prodProcessLine);
     BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
+    return computeNbCycle(qty, maxCapacityPerCycle);
+  }
 
+  @Override
+  public BigDecimal computeNbCycle(BigDecimal qty, BigDecimal maxCapacityPerCycle) {
     BigDecimal nbCycles;
     if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
       nbCycles = qty;
@@ -39,6 +44,13 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
     return BigDecimal.valueOf(
             prodProcessLine.getStartingDuration() + prodProcessLine.getEndingDuration())
         .add(setupDuration);
+  }
+
+  @Override
+  public BigDecimal getHourMachineDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException {
+    return getMachineDuration(prodProcessLine, nbCycles)
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 
   @Override
