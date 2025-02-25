@@ -12,7 +12,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -160,16 +159,5 @@ public class SprintController {
     actionViewBuilder.context("sprintIds", sprintIdList);
 
     response.setView(actionViewBuilder.map());
-  }
-
-  @CallMethod
-  public List<Long> computeSprintDomain(Long projectId) {
-    ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    List<Sprint> sprintList = new ArrayList<>();
-    if (projectId != null) {
-      Project project = projectRepo.find(projectId);
-      sprintList = Beans.get(SprintGeneratorService.class).getProjectSprintList(project);
-    }
-    return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }
 }

@@ -164,10 +164,11 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
       for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
         BigDecimal plannedTime =
-            getTimeInTargetUnit(
+            unitConversionForProjectService.convert(
                 projectPlanningTime.getTimeUnit(),
                 dayUnit,
                 projectPlanningTime.getPlannedTime(),
+                projectPlanningTime.getPlannedTime().scale(),
                 projectPlanningTime.getProject());
         if (employee == null) {
           employee = projectPlanningTime.getEmployee();
@@ -178,7 +179,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
             totalPlannedTime
                 .add(plannedTime.multiply(prorata))
                 .setScale(plannedTime.scale(), RoundingMode.HALF_UP);
-        ;
       }
     }
 
@@ -217,10 +217,11 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
       for (TimesheetLine timesheetLine : timesheetLineList) {
         BigDecimal spentTime =
-            getTimeInTargetUnit(
+            unitConversionForProjectService.convert(
                 appBaseService.getAppBase().getUnitHours(),
                 dayUnit,
                 timesheetLine.getHoursDuration(),
+                timesheetLine.getHoursDuration().scale(),
                 timesheetLine.getProject());
         if (employee == null) {
           employee = timesheetLine.getEmployee();
@@ -243,13 +244,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       }
     }
     return workingDays.setScale(2, RoundingMode.HALF_UP);
-  }
-
-  protected BigDecimal getTimeInTargetUnit(
-      Unit startUnit, Unit endUnit, BigDecimal value, Project project) throws AxelorException {
-
-    return unitConversionForProjectService.convert(
-        startUnit, endUnit, value, value.scale(), project);
   }
 
   protected BigDecimal computeProrata(
@@ -286,7 +280,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
     List<AllocationLine> allocationLineList = allocationLineRepo.findByProject(project).fetch();
     BigDecimal allocatedTime = BigDecimal.ZERO;
-
     if (ObjectUtils.isEmpty(allocationLineList)) {
       return allocatedTime;
     }
@@ -348,20 +341,21 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return sprint.getProjectTaskList().stream()
         .map(
             projectTask -> {
+              BigDecimal budgetedTime=projectTask.getBudgetedTime();
               if (unitHours.equals(projectTask.getTimeUnit())
-                  && projectTask.getBudgetedTime().signum() != 0) {
+                  && budgetedTime.signum() != 0) {
                 try {
                   return unitConversionForProjectService.convert(
                       unitHours,
                       unitDays,
-                      projectTask.getBudgetedTime(),
-                      projectTask.getBudgetedTime().scale(),
+                          budgetedTime,
+                          budgetedTime.scale(),
                       project);
                 } catch (AxelorException e) {
                   throw new RuntimeException(e.getMessage(), e);
                 }
               }
-              return projectTask.getBudgetedTime();
+              return budgetedTime;
             })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
