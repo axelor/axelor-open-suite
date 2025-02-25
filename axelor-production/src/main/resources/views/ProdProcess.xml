@@ -77,7 +77,7 @@
 
       <panel-related title="Phases" name="prodProcessLineListPanel"
         field="prodProcessLineList" colSpan="12" height="15"
-        onChange="action-prod-process-record-count-number-of-phases"
+        onChange="action-prod-process-record-count-number-of-phases,action-prod-process-method-recompute-lead-time"
         grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 
       <panel title="Details" name="detailsPanel">
@@ -92,7 +92,7 @@
         <field name="producedProductStockLocation" canEdit="false"
           grid-view="stock-location-grid" form-view="stock-location-form"
           onSelect="action-prod-process-attrs-produced-product-stocklocation-domain" colSpan="4"/>
-        <field name="launchQty"/>
+        <field name="launchQty" onChange="action-prod-process-method-recompute-lead-time"/>
         <field name="stockMoveRealizeOrderSelect"/>
         <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"
           readonlyIf="isEnabledForAllProducts"/>
@@ -329,4 +329,10 @@
     <call class="com.axelor.apps.production.web.ProdProcessController"
       method="setObsoleteStatus"/>
   </action-method>
+
+  <action-method name="action-prod-process-method-recompute-lead-time">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="recomputeLeadTime"/>
+  </action-method>
+
 </object-views>

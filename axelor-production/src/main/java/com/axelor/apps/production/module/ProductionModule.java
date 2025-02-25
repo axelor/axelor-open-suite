@@ -72,6 +72,8 @@ import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
+import com.axelor.apps.production.service.ProdProcessComputationService;
+import com.axelor.apps.production.service.ProdProcessComputationServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineComputationServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceService;
@@ -411,5 +413,6 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineOnChangeSupplychainServiceImpl.class)
         .to(SaleOrderLineOnChangeProductionServiceImpl.class);
     bind(SaleOrderLineProductionService.class).to(SaleOrderLineProductionServiceImpl.class);
+    bind(ProdProcessComputationService.class).to(ProdProcessComputationServiceImpl.class);
   }
 }
