@@ -41,6 +41,9 @@ public class EmployeeDashboardController {
         project = Beans.get(ProjectRepository.class).find(projectId);
       }
       List<Long> idList = Beans.get(EmployeeDashboardService.class).getFilteredEmployeeIds(project);
+      if (idList.isEmpty()) {
+        idList.add(0L);
+      }
       String domain = "self.id in (" + Joiner.on(",").join(idList) + ")";
       response.setAttr("$employee", "domain", domain);
     } catch (Exception e) {

@@ -72,6 +72,8 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
     if (projectEmployeeList != null) {
       employeeQuery.bind("projectEmployeeList", projectEmployeeList);
     }
-    return employeeQuery.fetch().stream().map(Employee::getId).collect(Collectors.toList());
+    return employeeQuery.select("id").fetch(0, 0).stream()
+        .map(m -> (Long) m.get("id"))
+        .collect(Collectors.toList());
   }
 }
