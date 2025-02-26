@@ -1,9 +1,10 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproduction.exception.BusinessProductionExceptionMessage;
+import com.axelor.apps.production.service.SaleOrderProductionSyncService;
+import com.axelor.apps.production.service.SolBomCustomizationService;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -21,7 +22,8 @@ import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
-import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppProduction;
+import com.axelor.studio.db.repo.AppProductionRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -29,6 +31,10 @@ import com.google.inject.persist.Transactional;
 public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupplychainImpl {
 
   protected final AppSaleService appSaleService;
+  protected final AppProductionService appProductionService;
+  protected final SaleOrderProductionSyncService saleOrderProductionSyncService;
+  protected final SolDetailsBusinessProductionService solDetailsBusinessProductionService;
+  protected final SolBomCustomizationService solBomCustomizationService;
 
   @Inject
   public SaleOrderServiceBusinessProductionImpl(
@@ -47,7 +53,11 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      AppProductionService appProductionService,
+      SaleOrderProductionSyncService saleOrderProductionSyncService,
+      SolDetailsBusinessProductionService solDetailsBusinessProductionService,
+      SolBomCustomizationService solBomCustomizationService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -65,18 +75,27 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
         trackingNumberSupplychainService,
         partnerLinkSupplychainService);
     this.appSaleService = appSaleService;
+    this.appProductionService = appProductionService;
+    this.saleOrderProductionSyncService = saleOrderProductionSyncService;
+    this.solDetailsBusinessProductionService = solDetailsBusinessProductionService;
+    this.solBomCustomizationService = solBomCustomizationService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
-    if (saleOrder.getProject() != null
+  public void validateChanges(SaleOrder saleOrder) throws AxelorException {
+    AppProduction appProduction = appProductionService.getAppProduction();
+    int updateProjectSolDetailsLineTypeSelect =
+        appProduction.getUpdateProjectSolDetailsLineTypeSelect();
+    if (updateProjectSolDetailsLineTypeSelect
+            == AppProductionRepository.UPDATE_PROJECT_SOL_DETAILS_TYPE_SELECT_UPDATE
         && appSaleService.getAppSale().getListDisplayTypeSelect()
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BusinessProductionExceptionMessage.SALE_ORDER_EDIT_SO_LINK_TO_PROJECT_ERROR));
+      solDetailsBusinessProductionService.deleteSolDetailsList(saleOrder);
+      solBomCustomizationService.customSaleOrderLineList(saleOrder.getSaleOrderLineList());
+      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder.getSaleOrderLineList());
+      solDetailsBusinessProductionService.copySolDetailsList(saleOrder);
     }
-    return super.enableEditOrder(saleOrder);
+    super.validateChanges(saleOrder);
   }
 }
