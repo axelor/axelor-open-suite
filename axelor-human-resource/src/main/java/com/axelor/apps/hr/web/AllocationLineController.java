@@ -28,7 +28,6 @@ import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.hr.service.allocation.AllocationLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -116,20 +115,28 @@ public class AllocationLineController {
 
   public void getTotalAllocatedTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    if(request.getData().get("project")!=null){
-      Long projectId = Long.valueOf(((Map) request.getData().get("project")).get("id").toString());
-    Project project = Beans.get(ProjectRepository.class).find(projectId);
-    LocalDate fromDate = LocalDate.parse((CharSequence)request.getData().get("fromDate"));
-   LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
-  AllocationLineComputeService allocationLineComputeService =
-        Beans.get(AllocationLineComputeService.class);
+    Map<String,Object> data=request.getData();
+    if (data.get("project") != null) {
+      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
+      Project project = Beans.get(ProjectRepository.class).find(projectId);
+      Employee employee = null;
+      if (data.get("employee") != null) {
+        Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
+        employee = Beans.get(EmployeeRepository.class).find(employeeId);
+      }
+      LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
+      LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
+      AllocationLineComputeService allocationLineComputeService =
+          Beans.get(AllocationLineComputeService.class);
 
-    BigDecimal plannedTime =
-        allocationLineComputeService.computePlannedTime(fromDate, toDate, null, project);
+  //    BigDecimal plannedTime =
+  //        allocationLineComputeService.computePlannedTime(fromDate, toDate, null, project);
+      BigDecimal allocatedTime =
+              allocationLineComputeService.getAllocatedTime(project,fromDate, toDate, employee);
+      Map<String, Object> dataResponse = new HashMap<>();
+      dataResponse.put("total",allocatedTime);
 
-    Map<String, Object> data = new HashMap<>();
-    data.put("total", plannedTime);
-
-    response.setData(List.of(data));
-  }}
+      response.setData(List.of(dataResponse));
+    }
+  }
 }

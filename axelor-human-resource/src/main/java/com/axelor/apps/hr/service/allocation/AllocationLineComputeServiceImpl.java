@@ -303,9 +303,18 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   @Override
-  public BigDecimal getAllocatedTime(Project project, LocalDate fromDate, LocalDate toDate) {
+  public BigDecimal getAllocatedTime(
+      Project project, LocalDate fromDate, LocalDate toDate, Employee employeeFilter) {
     List<AllocationLine> allocationLineList =
         allocationLineRepo.findByProject(project).fetch();
+        allocationLineRepo.all().fetch().stream()
+            .filter(
+                allocationLine ->
+                    (project.equals(allocationLine.getProject())
+                        && (employeeFilter == null
+                            || allocationLine.getEmployee().equals(employeeFilter))))
+            .collect(Collectors.toList());
+
     BigDecimal allocatedTime = BigDecimal.ZERO;
     if (ObjectUtils.isEmpty(allocationLineList)) {
       return allocatedTime;

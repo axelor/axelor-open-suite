@@ -15,7 +15,8 @@
       <insert position="after">
         <panel name="indicators">
         </panel>
-        <panel-dashlet colSpan="4" height="175" action="action-project-allocated-time" name="project-allocated-time-panel"/>
+        <panel-dashlet colSpan="4" height="175" action="action-project-allocated-time"
+          name="project-allocated-time-panel"/>
       </insert>
     </extend>
   </form>

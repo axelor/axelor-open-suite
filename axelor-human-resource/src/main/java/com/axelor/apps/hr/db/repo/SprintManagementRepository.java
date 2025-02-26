@@ -55,7 +55,7 @@ Employee employee = null;
               sprint.getFromDate(), sprint.getToDate(), employee, project);
       BigDecimal allocatedTime =
           allocationLineComputeService.getAllocatedTime(
-              project, sprint.getFromDate(), sprint.getToDate());
+              project, sprint.getFromDate(), sprint.getToDate(), employee);
       BigDecimal budgetedTime = allocationLineComputeService.getBudgetedTime(sprint, project);
       BigDecimal spentTime =
           allocationLineComputeService.computeSpentTime(
