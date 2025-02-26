@@ -59,7 +59,7 @@ public class SaleOrderLineCostPriceComputeProductionServiceImpl
 
     saleOrderLine.setSubTotalCostPrice(
         currencyScaleService.getCompanyScaledValue(
-            saleOrder.getCompany(), costPriceTotal.multiply(saleOrderLine.getQty())));
+            saleOrder, costPriceTotal.multiply(saleOrderLine.getQty())));
     map.put("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
     return map;
   }
