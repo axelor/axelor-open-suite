@@ -7,8 +7,10 @@
     id="hr-project-sprint-grid" extension="true">
     <extend target="//field[@name='name']">
       <insert position="after">
+        <field name="$totalPlannedTime" title="Total planned time"/>
         <field name="$totalAllocatedTime" title="Total allocated time"/>
         <field name="$totalEstimatedTime" title="Total estimated time"/>
+        <field name="$totalSpentTime" title="Total spent time"/>
       </insert>
     </extend>
 
