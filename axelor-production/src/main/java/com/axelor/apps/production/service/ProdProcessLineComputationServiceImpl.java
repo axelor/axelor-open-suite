@@ -103,6 +103,12 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   }
 
   @Override
+  public BigDecimal getHourHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles) {
+    return getHumanDuration(prodProcessLine, nbCycles)
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
+
+  @Override
   public BigDecimal getTotalDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
@@ -114,5 +120,12 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
       return humanDuration;
     }
     return machineDuration;
+  }
+
+  @Override
+  public BigDecimal getHourTotalDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException {
+    return getTotalDuration(prodProcessLine, nbCycles)
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 }

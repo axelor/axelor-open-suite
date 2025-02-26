@@ -74,6 +74,8 @@ import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineComputationServiceImpl;
+import com.axelor.apps.production.service.ProdProcessLineCostComputeService;
+import com.axelor.apps.production.service.ProdProcessLineCostComputeServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceService;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;
@@ -109,6 +111,8 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsPriceService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsPriceServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
@@ -129,6 +133,8 @@ import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolBomUpdateServiceImpl;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateServiceImpl;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingService;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingServiceImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
@@ -412,5 +418,10 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineProductionService.class).to(SaleOrderLineProductionServiceImpl.class);
     bind(SaleOrderLineDummySupplychainServiceImpl.class)
         .to(SaleOrderLineDummyProductionServiceImpl.class);
+    bind(SaleOrderLineDetailsProdProcessService.class)
+        .to(SaleOrderLineDetailsProdProcessServiceImpl.class);
+    bind(SolDetailsProdProcessLineMappingService.class)
+        .to(SolDetailsProdProcessLineMappingServiceImpl.class);
+    bind(ProdProcessLineCostComputeService.class).to(ProdProcessLineCostComputeServiceImpl.class);
   }
 }

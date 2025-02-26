@@ -17,8 +17,6 @@
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Sale order line"/>
     <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
-    <many-to-one name="workCenter" title="Work center"
-      ref="com.axelor.apps.production.db.WorkCenter"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="billOfMaterialLine"
       ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
@@ -29,6 +27,8 @@
     <decimal name="subTotalMarkup" title="Sub Total markup"/>
     <decimal name="costPrice" title="Cost price" precision="20" scale="3"/>
     <decimal name="marginCoefficient" title="Margin coefficient" default="1"/>
+    <many-to-one name="prodProcessLine"
+      ref="com.axelor.apps.production.db.ProdProcessLine" title="Operation"/>
 
     <extra-code>
             <![CDATA[

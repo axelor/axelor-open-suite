@@ -35,7 +35,8 @@
         <panel name="prodProcessPanel" if="__config__.app.isApp('production')" colSpan="4">
           <field name="prodProcess"
             onSelect="action-sale-order-line-method-set-prod-process-domain"
-            form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
+            form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"
+            onChange="action-sale-order-line-method-prod-process-onchange"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
             if="__config__.app.getApp('production')?.allowPersonalizedProdProcess"/>
@@ -111,6 +112,11 @@
   <action-method name="action-sale-order-line-method-set-prod-process-domain">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="setProdProcessDomain"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-prod-process-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="prodProcessOnChange"/>
   </action-method>
 
 </object-views>
