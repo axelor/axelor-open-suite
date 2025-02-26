@@ -107,4 +107,15 @@ public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Object> recomputeTotalAmounts(ProjectTask projectTask) {
+    Map<String, Object> valuesMap = new HashMap<>();
+    projectTaskBusinessProjectService.compute(projectTask);
+
+    valuesMap.put("exTaxTotal", projectTask.getExTaxTotal());
+    valuesMap.put("totalCosts", projectTask.getTotalCosts());
+
+    return valuesMap;
+  }
 }
