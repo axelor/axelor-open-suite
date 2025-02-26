@@ -115,7 +115,7 @@ public class AllocationLineController {
 
   public void getTotalAllocatedTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Map<String,Object> data=request.getData();
+    Map<String, Object> data = request.getData();
     if (data.get("project") != null) {
       Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
       Project project = Beans.get(ProjectRepository.class).find(projectId);
@@ -129,12 +129,12 @@ public class AllocationLineController {
       AllocationLineComputeService allocationLineComputeService =
           Beans.get(AllocationLineComputeService.class);
 
-  //    BigDecimal plannedTime =
-  //        allocationLineComputeService.computePlannedTime(fromDate, toDate, null, project);
+      //    BigDecimal plannedTime =
+      //        allocationLineComputeService.computePlannedTime(fromDate, toDate, null, project);
       BigDecimal allocatedTime =
-              allocationLineComputeService.getAllocatedTime(project,fromDate, toDate, employee);
+          allocationLineComputeService.getAllocatedTime(project, fromDate, toDate, employee);
       Map<String, Object> dataResponse = new HashMap<>();
-      dataResponse.put("total",allocatedTime);
+      dataResponse.put("total", allocatedTime);
 
       response.setData(List.of(dataResponse));
     }

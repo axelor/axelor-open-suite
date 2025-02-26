@@ -17,6 +17,8 @@
         </panel>
         <panel-dashlet colSpan="4" height="175" action="action-project-allocated-time"
           name="project-allocated-time-panel"/>
+        <panel-dashlet colSpan="4" height="175" action="action-project-planned-time"
+          name="project-planned-time-panel"/>
       </insert>
     </extend>
   </form>
@@ -33,6 +35,16 @@
     <dataset type="rpc">com.axelor.apps.hr.web.AllocationLineController:getTotalAllocatedTime</dataset>
     <template>  <![CDATA[
 <report-box icon='search' label='Total allocated time' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-planned-time" title="Planned time">
+    <view type="custom" name="project.planned.time"/>
+  </action-view>
+  <custom name="project.planned.time" title="Planned time" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.project.ProjectPlanningTimeController:getTotalPlannedTime</dataset>
+    <template>  <![CDATA[
+<report-box icon='search' label='Total planned time' value='first.total'/>
   ]]></template>
   </custom>
 </object-views>
