@@ -57,7 +57,9 @@ public class SaleOrderLineCostPriceComputeProductionServiceImpl
                   .reduce(BigDecimal.ZERO, BigDecimal::add));
     }
 
-    saleOrderLine.setSubTotalCostPrice(costPriceTotal.multiply(saleOrderLine.getQty()));
+    saleOrderLine.setSubTotalCostPrice(
+        currencyScaleService.getCompanyScaledValue(
+            saleOrder.getCompany(), costPriceTotal.multiply(saleOrderLine.getQty())));
     map.put("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
     return map;
   }

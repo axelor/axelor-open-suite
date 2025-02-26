@@ -6,7 +6,6 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsPriceService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -34,16 +33,6 @@ public class SaleOrderLineDetailsController {
     response.setValues(
         Beans.get(SaleOrderLineDetailsPriceService.class)
             .computePrices(saleOrderLineDetails, saleOrder));
-  }
-
-  public void computeMargin(ActionRequest request, ActionResponse response) throws AxelorException {
-    Context context = request.getContext();
-    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
-    SaleOrder saleOrder = getSaleOrder(context);
-    response.setValues(
-        Beans.get(MarginComputeService.class)
-            .getComputedMarginInfo(
-                saleOrder, saleOrderLineDetails, saleOrderLineDetails.getTotalPrice()));
   }
 
   protected SaleOrder getSaleOrder(Context context) {
