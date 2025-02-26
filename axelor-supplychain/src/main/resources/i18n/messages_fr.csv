@@ -615,6 +615,7 @@
 "Supplier Stock Move to invoice","BR à facturer",,
 "Supplier arrival","BR",,
 "Supplier arrivals management","Gestion des BR",,
+"Supplier shipping carriage paid configuration","Configuration des francos de port",,
 "Supply chain config","Config. Supply Chain",,
 "Supply chain config (${ name })","Config. (${ name })",,
 "Supply chain configuration","Configuration Supply Chain",,

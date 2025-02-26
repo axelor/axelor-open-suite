@@ -119,12 +119,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressServiceImpl;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
@@ -315,7 +315,6 @@ public class SaleModule extends AxelorModule {
     bind(SubSaleOrderLineComputeService.class).to(SubSaleOrderLineComputeServiceImpl.class);
     bind(SaleOrderComplementaryProductService.class)
         .to(SaleOrderComplementaryProductServiceImpl.class);
-    bind(SaleOrderDiscountService.class).to(SaleOrderDiscountServiceImpl.class);
     bind(ConfiguratorCheckService.class).to(ConfiguratorCheckServiceImpl.class);
     bind(ConfiguratorSaleOrderLineService.class).to(ConfiguratorSaleOrderLineServiceImpl.class);
     bind(ConfiguratorRepository.class).to(ConfiguratorManagementRepository.class);
@@ -324,5 +323,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineCostPriceComputeService.class)
         .to(SaleOrderLineCostPriceComputeServiceImpl.class);
     bind(MarginComputeService.class).to(MarginComputeServiceImpl.class);
+    bind(SaleOrderGlobalDiscountService.class).to(SaleOrderGlobalDiscountServiceImpl.class);
   }
 }

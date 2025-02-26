@@ -7,17 +7,24 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectVersionRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.roadmap.SprintGeneratorService;
+import com.axelor.apps.project.service.roadmap.SprintGetService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.StringHelper;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SprintController {
@@ -120,9 +127,37 @@ public class SprintController {
   public void computeSprintDomainDashboard(ActionRequest request, ActionResponse response) {
     Long projectId = Long.valueOf(((Map) request.getContext().get("project")).get("id").toString());
     ProjectRepository projectRepo = Beans.get(ProjectRepository.class);
-    String domain =
-        Beans.get(SprintGeneratorService.class).getSprintDomain(projectRepo.find(projectId));
+    List<Sprint> sprintList =
+        Beans.get(SprintGeneratorService.class).getProjectSprintList(projectRepo.find(projectId));
+    String domain = String.format("self.id in (%s)", StringHelper.getIdListString(sprintList));
 
     response.setAttr("$sprint", "domain", domain);
+  }
+
+  public void showAllSprints(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    List<Sprint> sprintList = new ArrayList<>();
+    if (parentContext != null && Project.class.equals(parentContext.getContextClass())) {
+      sprintList =
+          Beans.get(SprintGetService.class).getSprintList(parentContext.asType(Project.class));
+    } else if (parentContext != null
+        && ProjectVersion.class.equals(parentContext.getContextClass())) {
+      sprintList = parentContext.asType(ProjectVersion.class).getSprintList();
+    }
+
+    List<Long> sprintIdList = List.of(0L);
+    if (ObjectUtils.notEmpty(sprintList)) {
+      sprintIdList = sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
+    }
+
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Sprints"));
+    actionViewBuilder.model(Sprint.class.getName());
+    actionViewBuilder.add("grid", "sprint-grid");
+    actionViewBuilder.add("form", "sprint-form");
+    actionViewBuilder.param("show-toolbar", Boolean.FALSE.toString());
+    actionViewBuilder.domain("self.id IN (:sprintIds)");
+    actionViewBuilder.context("sprintIds", sprintIdList);
+
+    response.setView(actionViewBuilder.map());
   }
 }

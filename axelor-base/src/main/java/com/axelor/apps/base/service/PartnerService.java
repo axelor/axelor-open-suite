@@ -149,5 +149,5 @@ public interface PartnerService {
 
   public List<Partner> getParentPartnerList(Partner partner);
 
-  boolean checkIfRegistrationCodeExists(Partner partner);
+  String checkIfRegistrationCodeExists(Partner partner);
 }

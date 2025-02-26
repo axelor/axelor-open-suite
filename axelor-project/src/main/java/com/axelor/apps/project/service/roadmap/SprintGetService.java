@@ -7,5 +7,9 @@ import java.util.List;
 public interface SprintGetService {
   List<Sprint> getSprintToDisplay(Project project);
 
+  List<Sprint> getSprintToDisplayIncludingBacklog(Project project);
+
+  List<Sprint> getSprintList(Project project);
+
   String getSprintIdsToExclude(List<Sprint> sprintList);
 }

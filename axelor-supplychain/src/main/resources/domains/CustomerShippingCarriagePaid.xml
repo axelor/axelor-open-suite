@@ -12,6 +12,7 @@
       title="Shipping cost"/>
     <decimal name="carriagePaidThreshold" title="Carriage paid threshold"/>
     <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="supplier" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
   </entity>
 
 </domain-models>

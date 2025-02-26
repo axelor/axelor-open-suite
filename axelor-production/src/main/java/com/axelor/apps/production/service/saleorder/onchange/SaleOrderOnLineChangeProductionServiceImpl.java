@@ -27,7 +27,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderDiscountService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -56,7 +56,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
-      SaleOrderDiscountService saleOrderDiscountService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -68,7 +68,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderLineComputeService,
         saleOrderLinePackService,
         saleOrderComplementaryProductService,
-        saleOrderDiscountService,
+        saleOrderGlobalDiscountService,
         saleOrderSupplychainService,
         saleOrderShipmentService);
     this.appProductionService = appProductionService;

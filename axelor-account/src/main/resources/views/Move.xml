@@ -95,7 +95,7 @@
             grid-view="company-grid" colSpan="2" onSelect="action-move-method-company-onselect"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
-            onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+            onSelect="com.axelor.apps.account.web.MoveController:moveCompanyBankDetailsDomain"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <spacer if="!__config__.app.getApp('base')?.getManageMultiBanks()" colSpan="2"/>
           <field name="tradingName"
