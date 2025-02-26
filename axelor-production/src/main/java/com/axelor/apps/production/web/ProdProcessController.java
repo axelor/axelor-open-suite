@@ -199,8 +199,7 @@ public class ProdProcessController {
             : BigDecimal.ONE;
     if (prodProcess.getCompany() != null) {
       response.setValue(
-              "leadTime", Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
+          "leadTime", Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
     }
-
   }
 }
