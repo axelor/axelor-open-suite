@@ -341,16 +341,11 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return sprint.getProjectTaskList().stream()
         .map(
             projectTask -> {
-              BigDecimal budgetedTime=projectTask.getBudgetedTime();
-              if (unitHours.equals(projectTask.getTimeUnit())
-                  && budgetedTime.signum() != 0) {
+              BigDecimal budgetedTime = projectTask.getBudgetedTime();
+              if (unitHours.equals(projectTask.getTimeUnit()) && budgetedTime.signum() != 0) {
                 try {
                   return unitConversionForProjectService.convert(
-                      unitHours,
-                      unitDays,
-                          budgetedTime,
-                          budgetedTime.scale(),
-                      project);
+                      unitHours, unitDays, budgetedTime, budgetedTime.scale(), project);
                 } catch (AxelorException e) {
                   throw new RuntimeException(e.getMessage(), e);
                 }
