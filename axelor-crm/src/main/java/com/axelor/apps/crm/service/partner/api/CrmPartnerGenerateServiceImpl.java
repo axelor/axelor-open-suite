@@ -11,8 +11,9 @@ import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +59,7 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
   }
 
   protected int getEmployeeCountCode(int employeeCount) {
-    Map<Integer, Integer> employeeCodeMap = new LinkedHashMap<>();
+    NavigableMap<Integer, Integer> employeeCodeMap = new TreeMap<>();
 
     employeeCodeMap.put(2, 1);
     employeeCodeMap.put(5, 2);
@@ -75,12 +76,7 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
     employeeCodeMap.put(9999, 52);
     employeeCodeMap.put(Integer.MAX_VALUE, 53);
 
-    for (Map.Entry<Integer, Integer> entry : employeeCodeMap.entrySet()) {
-      if (employeeCount <= entry.getKey()) {
-        return entry.getValue();
-      }
-    }
-
-    return 53;
+    Map.Entry<Integer, Integer> entry = employeeCodeMap.ceilingEntry(employeeCount);
+    return (entry != null) ? entry.getValue() : 53;
   }
 }
