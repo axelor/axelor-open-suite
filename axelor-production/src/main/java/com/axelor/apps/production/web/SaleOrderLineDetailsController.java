@@ -13,8 +13,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SaleOrderLineDetailsController {
 
