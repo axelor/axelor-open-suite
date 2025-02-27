@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -38,14 +37,11 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
     extends ProjectPlanningTimeCreateServiceImpl {
@@ -109,27 +105,16 @@ public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
       return planningTime;
     }
 
-    if (projectTask != null) {
-      Unit timeUnit = projectTask.getTimeUnit();
-      if (Objects.isNull(timeUnit)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ProjectExceptionMessage.PROJECT_TASK_NO_UNIT_FOUND),
-            projectTask.getName());
-      }
-      planningTime.setTimeUnit(timeUnit);
-
+    if (projectTask != null && projectTask.getTimeUnit() != null) {
+      planningTime.setTimeUnit(projectTask.getTimeUnit());
+    } else if (project.getProjectTimeUnit() != null) {
+      planningTime.setTimeUnit(project.getProjectTimeUnit());
     } else {
       planningTime.setTimeUnit(appBaseService.getUnitHours());
     }
-    if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
-      BigDecimal numberHoursADay = project.getNumberHoursADay();
 
-      if (numberHoursADay.signum() <= 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
-      }
+    if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
+      BigDecimal numberHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);
       planningTime.setPlannedTime(
           planningTime.getPlannedTime().divide(numberHoursADay, 2, RoundingMode.HALF_UP));
     }
