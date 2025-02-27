@@ -115,6 +115,9 @@ public class UserHrServiceImpl implements UserHrService {
               .map(ProjectTask::getProduct)
               .orElse(employee.getProduct());
     }
+    if (product == null) {
+      product = employee.getProduct();
+    }
     return product;
   }
 
