@@ -14,11 +14,13 @@
     <extend target="//panel[@name='filtersPanel']">
       <insert position="after">
         <panel name="indicators">
+          <panel-dashlet colSpan="4" height="175"
+            action="action-project-allocated-time" name="project-allocated-time-panel"/>
+          <panel-dashlet colSpan="4" height="175" action="action-project-planned-time"
+            name="project-planned-time-panel"/>
+          <panel-dashlet colSpan="4" height="175" action="action-project-leave-days"
+            name="project-leave-days-panel"/>
         </panel>
-        <panel-dashlet colSpan="4" height="175" action="action-project-allocated-time"
-          name="project-allocated-time-panel"/>
-        <panel-dashlet colSpan="4" height="175" action="action-project-planned-time"
-          name="project-planned-time-panel"/>
       </insert>
     </extend>
   </form>
@@ -32,7 +34,7 @@
     <view type="custom" name="project.allocated.time"/>
   </action-view>
   <custom name="project.allocated.time" title="Allocated time" css="report-box">
-    <dataset type="rpc">com.axelor.apps.hr.web.AllocationLineController:getTotalAllocatedTime</dataset>
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalAllocatedTime</dataset>
     <template>  <![CDATA[
 <report-box icon='search' label='Total allocated time' value='first.total'/>
   ]]></template>
@@ -42,9 +44,19 @@
     <view type="custom" name="project.planned.time"/>
   </action-view>
   <custom name="project.planned.time" title="Planned time" css="report-box">
-    <dataset type="rpc">com.axelor.apps.hr.web.project.ProjectPlanningTimeController:getTotalPlannedTime</dataset>
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalPlannedTime</dataset>
     <template>  <![CDATA[
 <report-box icon='search' label='Total planned time' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-leave-days" title="Leave days">
+    <view type="custom" name="hr.leave.days"/>
+  </action-view>
+  <custom name="hr.leave.days" title="PLeave days" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalLeaveDays</dataset>
+    <template>  <![CDATA[
+<report-box icon='search' label='Total leave days' value='first.total'/>
   ]]></template>
   </custom>
 </object-views>

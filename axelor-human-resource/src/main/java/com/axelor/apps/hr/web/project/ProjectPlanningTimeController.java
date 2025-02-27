@@ -21,16 +21,12 @@ package com.axelor.apps.hr.web.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -38,9 +34,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -182,32 +175,5 @@ public class ProjectPlanningTimeController {
     response.setValue(
         "displayPlannedTimeRestricted",
         projectPlanningTimeService.getDefaultPlanningRestrictedTime(projectPlanningTime));
-  }
-
-  public void getTotalPlannedTime(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Map<String, Object> data = request.getData();
-    Project project = null;
-    if (data.get("project") != null) {
-      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
-      project = Beans.get(ProjectRepository.class).find(projectId);
-    }
-    Employee employee = null;
-    if (data.get("employee") != null) {
-      Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
-      employee = Beans.get(EmployeeRepository.class).find(employeeId);
-    }
-    LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
-    LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
-    AllocationLineComputeService allocationLineComputeService =
-        Beans.get(AllocationLineComputeService.class);
-
-    BigDecimal plannedTime =
-        allocationLineComputeService.computePlannedTime(fromDate, toDate, employee, project);
-
-    Map<String, Object> dataResponse = new HashMap<>();
-    dataResponse.put("total", plannedTime);
-
-    response.setData(List.of(dataResponse));
   }
 }
