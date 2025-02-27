@@ -19,14 +19,11 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
@@ -43,51 +40,14 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   }
 
   @Override
-  public long computeEntireCycleDuration(
-      OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
-      throws AxelorException {
-    BigDecimal nbCycles = prodProcessLineComputationService.getNbCycle(prodProcessLine, qty);
-    BigDecimal humanDuration =
-        prodProcessLineComputationService.getHumanDuration(prodProcessLine, nbCycles);
-    BigDecimal machineDuration =
-        prodProcessLineComputationService.getMachineDuration(prodProcessLine, nbCycles);
-    BigDecimal totalDuration =
-        prodProcessLineComputationService.getTotalDuration(prodProcessLine, nbCycles);
-
-    if (operationOrder != null) {
-      operationOrder.setPlannedMachineDuration(machineDuration.longValue());
-      operationOrder.setPlannedHumanDuration(humanDuration.longValue());
-    }
-
-    return totalDuration.longValue();
-  }
-
-  @Override
   public long computeEntireDuration(ProdProcess prodProcess, BigDecimal qty)
       throws AxelorException {
     long totalDuration = 0;
     for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
-      totalDuration += this.computeEntireCycleDuration(null, prodProcessLine, qty);
+      totalDuration +=
+          prodProcessLineComputationService.computeEntireCycleDuration(null, prodProcessLine, qty);
     }
     return totalDuration;
-  }
-
-  @Override
-  public long computeLeadTimeDuration(ProdProcess prodProcess, BigDecimal qty)
-      throws AxelorException {
-
-    Map<Integer, Long> maxDurationPerPriority = new HashMap<>();
-    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
-      Integer priority = prodProcessLine.getPriority();
-      Long duration = maxDurationPerPriority.get(priority);
-      Long computedDuration = this.computeEntireCycleDuration(null, prodProcessLine, qty);
-
-      if (duration == null || computedDuration > duration) {
-        maxDurationPerPriority.put(priority, computedDuration);
-      }
-    }
-
-    return maxDurationPerPriority.values().stream().mapToLong(l -> l).sum();
   }
 
   @Override
