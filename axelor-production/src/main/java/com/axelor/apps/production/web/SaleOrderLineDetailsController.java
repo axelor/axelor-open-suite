@@ -12,6 +12,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SaleOrderLineDetailsController {
 
@@ -33,6 +35,20 @@ public class SaleOrderLineDetailsController {
     response.setValues(
         Beans.get(SaleOrderLineDetailsPriceService.class)
             .computePrices(saleOrderLineDetails, saleOrder));
+  }
+
+  public void marginCoefOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService =
+        Beans.get(SaleOrderLineDetailsPriceService.class);
+    SaleOrder saleOrder = getSaleOrder(context);
+    Map<String, Object> values = new HashMap<>();
+    values.putAll(saleOrderLineDetailsPriceService.computePrice(saleOrderLineDetails));
+    values.putAll(
+        saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
+    response.setValues(values);
   }
 
   protected SaleOrder getSaleOrder(Context context) {
