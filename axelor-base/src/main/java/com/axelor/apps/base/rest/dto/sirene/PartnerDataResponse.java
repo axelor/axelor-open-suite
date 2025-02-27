@@ -8,6 +8,7 @@ public class PartnerDataResponse {
   private String siren;
   private UniteLegaleResponse uniteLegale;
   private AdresseEtablissementResponse adresseEtablissement;
+  private String trancheEffectifsEtablissement;
 
   public String getSiret() {
     return siret;
@@ -23,5 +24,9 @@ public class PartnerDataResponse {
 
   public AdresseEtablissementResponse getAdresseEtablissement() {
     return adresseEtablissement;
+  }
+
+  public String getTrancheEffectifsEtablissement() {
+    return trancheEffectifsEtablissement;
   }
 }

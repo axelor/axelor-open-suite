@@ -213,7 +213,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     return address.getStreetName() != null && address.getCity() != null && address.getZip() != null;
   }
 
-  private void safeSetString(
+  protected void safeSetString(
       Consumer<String> setter, Supplier<String> currentGetter, String newValue) {
     if (newValue != null && (currentGetter == null || currentGetter.get() == null)) {
       setter.accept(newValue);

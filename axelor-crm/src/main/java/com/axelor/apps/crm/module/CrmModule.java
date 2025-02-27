@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarEventFactory;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
@@ -68,6 +69,7 @@ import com.axelor.apps.crm.service.TourService;
 import com.axelor.apps.crm.service.TourServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
+import com.axelor.apps.crm.service.partner.api.CrmPartnerGenerateServiceImpl;
 
 public class CrmModule extends AxelorModule {
 
@@ -97,5 +99,6 @@ public class CrmModule extends AxelorModule {
     bind(TourRepository.class).to(TourManagementRepository.class);
     bind(LeadComputeNameService.class).to(LeadComputeNameServiceImpl.class);
     bind(OpportunitySequenceService.class).to(OpportunitySequenceServiceImpl.class);
+    bind(PartnerGenerateServiceImpl.class).to(CrmPartnerGenerateServiceImpl.class);
   }
 }
