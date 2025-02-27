@@ -19,9 +19,12 @@
 package com.axelor.apps.base.module;
 
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.contextholder.AxelorContextHolder;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -31,8 +34,10 @@ public class ControllerMethodInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
+    ActionRequest actionRequest = getActionRequest(invocation);
     ActionResponse response = getActionResponse(invocation);
     try {
+      AxelorContextHolder.setContext(extractContext(actionRequest));
       return invocation.proceed();
     } catch (Exception e) {
       if (response == null) {
@@ -42,6 +47,8 @@ public class ControllerMethodInterceptor implements MethodInterceptor {
       } else {
         TraceBackService.trace(response, e);
       }
+    } finally {
+      AxelorContextHolder.cleanContext();
     }
     return null;
   }
@@ -61,5 +68,23 @@ public class ControllerMethodInterceptor implements MethodInterceptor {
       }
     }
     return response;
+  }
+
+  protected ActionRequest getActionRequest(MethodInvocation invocation) {
+    Object[] arguments = invocation.getArguments();
+    ActionRequest request = null;
+    for (Object argument : arguments) {
+      if (argument instanceof ActionRequest) {
+        request = (ActionRequest) argument;
+      }
+    }
+    return request;
+  }
+
+  protected Context extractContext(ActionRequest actionRequest) {
+    if (actionRequest != null && actionRequest.getContext() != null) {
+      return actionRequest.getContext();
+    }
+    return null;
   }
 }

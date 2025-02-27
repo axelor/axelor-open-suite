@@ -204,6 +204,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveSe
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.message.StockLineCheckExceptionMessageServiceProductionImpl;
 import com.axelor.apps.production.service.observer.SaleOrderLineProductionObserver;
 import com.axelor.apps.production.service.observer.SaleOrderProductionObserver;
 import com.axelor.apps.production.service.operationorder.OperationOrderChartService;
@@ -240,6 +241,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeS
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.service.message.StockLineCheckExceptionMessageServiceImpl;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
@@ -412,5 +414,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineProductionService.class).to(SaleOrderLineProductionServiceImpl.class);
     bind(SaleOrderLineDummySupplychainServiceImpl.class)
         .to(SaleOrderLineDummyProductionServiceImpl.class);
+    bind(StockLineCheckExceptionMessageServiceImpl.class)
+        .to(StockLineCheckExceptionMessageServiceProductionImpl.class);
   }
 }

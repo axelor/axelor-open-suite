@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.message.StockLineCheckExceptionMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -73,6 +74,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
 
   protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected final StockLineCheckExceptionMessageService stockLineCheckExceptionMessageService;
 
   @Inject
   public StockLocationLineServiceImpl(
@@ -82,7 +84,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       AppBaseService appBaseService,
       UnitConversionService unitConversionService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      StockLocationLineFetchService stockLocationLineFetchService,
+      StockLineCheckExceptionMessageService stockLineCheckExceptionMessageService) {
     this.stockLocationLineRepo = stockLocationLineRepo;
     this.stockRulesService = stockRulesService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -90,6 +93,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     this.unitConversionService = unitConversionService;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.stockLineCheckExceptionMessageService = stockLineCheckExceptionMessageService;
   }
 
   @Override
@@ -368,7 +372,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.LOCATION_LINE_1),
+          stockLineCheckExceptionMessageService.getCheckMinMessageExceptionMessage(),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode());
 
@@ -389,7 +393,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.LOCATION_LINE_2),
+          stockLineCheckExceptionMessageService.getCheckMinMessageExceptionMessage2(),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode(),
           trackingNumber);
