@@ -39,7 +39,7 @@ public class SprintManagementRepository extends SprintRepository {
       }
       Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
       Project project = Beans.get(ProjectRepository.class).find(projectId);
-Employee employee = null;
+      Employee employee = null;
       if (context.get("employee") != null) {
         Long employeeId = Long.valueOf(((Map) context.get("employee")).get("id").toString());
         employee = Beans.get(EmployeeRepository.class).find(employeeId);

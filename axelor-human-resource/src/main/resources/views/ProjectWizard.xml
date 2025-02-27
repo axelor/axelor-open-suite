@@ -24,10 +24,10 @@
   </form>
 
 
-    <action-method name="action-project-method-compute-employee-domain">
-        <call class="com.axelor.apps.hr.web.EmployeeDashboardController"
-              method="computeEmployeeDomainDashboard"/>
-    </action-method>
+  <action-method name="action-project-method-compute-employee-domain">
+    <call class="com.axelor.apps.hr.web.EmployeeDashboardController"
+      method="computeEmployeeDomainDashboard"/>
+  </action-method>
   <action-view name="action-project-allocated-time" title="Allocated time">
     <view type="custom" name="project.allocated.time"/>
   </action-view>

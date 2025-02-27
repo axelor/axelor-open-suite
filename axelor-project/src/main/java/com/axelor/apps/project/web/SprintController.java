@@ -18,11 +18,13 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.StringHelper;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SprintController {
@@ -157,15 +159,5 @@ public class SprintController {
     actionViewBuilder.context("sprintIds", sprintIdList);
 
     response.setView(actionViewBuilder.map());
-  }
-
-  public void test(ActionRequest request, ActionResponse response) {
-
-    Map<String, Object> data = new HashMap<>();
-    data.put("total", "123");
-
-    // This data will be put into dataset.
-    // For report-box, we send a list with a single item accessible as `first`.
-    response.setData(List.of(data));
   }
 }

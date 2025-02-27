@@ -474,6 +474,5 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestCheckResponseService.class).to(LeaveRequestCheckResponseServiceImpl.class);
     bind(SprintRepository.class).to(SprintManagementRepository.class);
     bind(EmployeeDashboardService.class).to(EmployeeDashboardServiceImpl.class);
-    bind(PlanningTimeComputeService.class).to(PlanningTimeComputeServiceImpl.class);
   }
 }
