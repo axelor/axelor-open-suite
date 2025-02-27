@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.inject.Beans;
@@ -44,7 +45,7 @@ public class ProdProcessManagementRepository extends ProdProcessRepository {
             Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
 
     return super.populate(json, context);
