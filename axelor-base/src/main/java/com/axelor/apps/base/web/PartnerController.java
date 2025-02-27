@@ -397,8 +397,8 @@ public class PartnerController {
   }
 
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
     try {
-      Partner partner = request.getContext().asType(Partner.class);
       RegistrationNumberValidator validator =
           Beans.get(PartnerRegistrationValidatorFactoryService.class)
               .getRegistrationNumberValidator(partner);
@@ -409,6 +409,7 @@ public class PartnerController {
       response.setValues(partner);
     } catch (Exception e) {
       TraceBackService.trace(e);
+      response.setValues(partner);
     }
   }
 
