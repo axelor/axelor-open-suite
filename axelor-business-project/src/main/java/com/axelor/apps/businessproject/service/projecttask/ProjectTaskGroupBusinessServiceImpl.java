@@ -22,22 +22,27 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTaskComputeService;
+import com.axelor.apps.project.service.ProjectTaskGroupServiceImpl;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
+public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupServiceImpl
+    implements ProjectTaskGroupBusinessService {
 
-  protected ProjectTaskComputeService projectTaskComputeService;
+  protected ProjectTaskComputeBusinessService projectTaskComputeBusinessService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject
-  public ProjectTaskGroupServiceImpl(
+  public ProjectTaskGroupBusinessServiceImpl(
       ProjectTaskComputeService projectTaskComputeService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
-    this.projectTaskComputeService = projectTaskComputeService;
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTaskComputeBusinessService projectTaskComputeBusinessService) {
+    super(projectTaskComputeService);
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskComputeBusinessService = projectTaskComputeBusinessService;
   }
 
   @Override
@@ -82,7 +87,7 @@ public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
 
   @Override
   public Map<String, Object> updateQuantity(ProjectTask projectTask) throws AxelorException {
-    projectTaskComputeService.computeQuantity(projectTask);
+    projectTaskComputeBusinessService.computeQuantity(projectTask);
 
     Map<String, Object> valuesMap = new HashMap<>(updateFinancialDatas(projectTask));
     valuesMap.put("quantity", projectTask.getQuantity());
@@ -93,7 +98,7 @@ public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
   @Override
   public Map<String, Object> updateFinancialDatas(ProjectTask projectTask) throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
-    projectTaskComputeService.computeFinancialDatas(projectTask);
+    projectTaskComputeBusinessService.computeFinancialDatas(projectTask);
     projectTaskBusinessProjectService.updateDiscount(projectTask);
     projectTaskBusinessProjectService.compute(projectTask);
 

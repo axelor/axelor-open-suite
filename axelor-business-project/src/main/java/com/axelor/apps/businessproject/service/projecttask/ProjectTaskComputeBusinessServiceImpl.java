@@ -21,30 +21,33 @@ package com.axelor.apps.businessproject.service.projecttask;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
-public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService {
+public class ProjectTaskComputeBusinessServiceImpl extends ProjectTaskComputeServiceImpl
+    implements ProjectTaskComputeBusinessService {
 
   protected UnitConversionForProjectService unitConversionForProjectService;
   protected ProjectFrameworkContractService projectFrameworkContractService;
-  protected ProjectTimeUnitService projectTimeUnitService;
   public static final int COMPUTE_SCALE = 5;
 
   @Inject
-  public ProjectTaskComputeServiceImpl(
+  public ProjectTaskComputeBusinessServiceImpl(
+      ProjectTimeUnitService projectTimeUnitService,
+      UnitConversionService unitConversionService,
       UnitConversionForProjectService unitConversionForProjectService,
-      ProjectFrameworkContractService projectFrameworkContractService,
-      ProjectTimeUnitService projectTimeUnitService) {
+      ProjectFrameworkContractService projectFrameworkContractService) {
+    super(projectTimeUnitService, unitConversionService);
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.projectFrameworkContractService = projectFrameworkContractService;
-    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
