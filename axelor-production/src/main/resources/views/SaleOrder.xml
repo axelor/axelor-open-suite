@@ -29,7 +29,8 @@
 
   <form id="sale-order-editable-multi-lines-production-form"
     name="sale-order-editable-multi-lines-form" title="Sale order"
-    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+    model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
+    extension="true">
 
     <extend target="//panel-related[@name='saleOrderLineEditableTreePanel']">
       <replace>

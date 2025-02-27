@@ -482,9 +482,9 @@
         <panel name="displayMultiLinesButtonPanel"
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
           colSpan="12">
-          <spacer colSpan="6"/>
+          <spacer colSpan="8"/>
           <button name="displayLinesBtn" onClick="action-sale-order-view-display-multi-lines"
-            title="Display lines" colSpan="6" readonlyIf="id == null"/>
+            title="Display lines" colSpan="4" readonlyIf="id == null"/>
         </panel>
 
         <panel-related name="detailLinesPanel" title="Details Lines"
@@ -1224,7 +1224,8 @@
   </form>
 
   <form name="sale-order-editable-multi-lines-form" title="Sale orders"
-    model="com.axelor.apps.sale.db.SaleOrder" width="large" canNew="false" canDelete="false">
+    model="com.axelor.apps.sale.db.SaleOrder" width="large" canNew="false" canDelete="false"
+    onLoad="action-group-sale-saleorder-onload">
     <panel name="mainPanel" colSpan="12">
       <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
         title="Details Lines" field="saleOrderLineList" orderBy="sequence" canMove="true"
