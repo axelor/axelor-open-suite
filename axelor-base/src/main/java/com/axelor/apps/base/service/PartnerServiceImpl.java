@@ -737,16 +737,28 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public boolean checkIfRegistrationCodeExists(Partner partner) {
+  public String checkIfRegistrationCodeExists(Partner partner) {
+    String message = "";
     String registrationCode = partner.getRegistrationCode();
     if (StringUtils.isEmpty(registrationCode)) {
-      return false;
+      return message;
     }
-    return partnerRepo
-            .all()
-            .filter("self.registrationCode = :registrationCode")
-            .bind("registrationCode", registrationCode)
-            .count()
-        > 0;
+    Query<Partner> query = partnerRepo.all();
+    StringBuilder filter = new StringBuilder("self.registrationCode = :registrationCode");
+
+    if (partner.getId() != null) {
+      filter.append(" AND self.id != :id");
+      query = query.bind("id", partner.getId());
+    }
+    Partner existingPartner =
+        query.filter(filter.toString()).bind("registrationCode", registrationCode).fetchOne();
+
+    if (existingPartner != null) {
+      message =
+          String.format(
+              I18n.get(BaseExceptionMessage.PARTNER_REGISTRATION_CODE_ALREADY_EXISTS),
+              existingPartner.getFullName());
+    }
+    return message;
   }
 }

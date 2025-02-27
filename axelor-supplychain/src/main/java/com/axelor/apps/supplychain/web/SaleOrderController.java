@@ -38,11 +38,13 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.FreightCarrierModeRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.FreightCarrierModeService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
@@ -693,7 +695,9 @@ public class SaleOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      String message = Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder);
+      ShipmentMode shipmentMode = saleOrder.getShipmentMode();
+      String message =
+          Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder, shipmentMode);
       if (message != null) {
         response.setInfo(message);
       }
@@ -837,7 +841,7 @@ public class SaleOrderController {
                   .collect(Collectors.toList());
 
       if (context.get("_id") != null) {
-        Beans.get(SaleOrderShipmentService.class)
+        Beans.get(FreightCarrierModeService.class)
             .computeFreightCarrierMode(
                 freightCarrierModeList, Long.valueOf(context.get("_id").toString()));
         response.setCanClose(true);

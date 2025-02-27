@@ -10,6 +10,12 @@ public class UniteLegaleResponse {
   private String prenom1UniteLegale;
   private String sexeUniteLegale;
   private String denominationUniteLegale;
+  private String trancheEffectifsUniteLegale;
+  private String activitePrincipaleUniteLegale;
+
+  public String getActivitePrincipaleUniteLegale() {
+    return activitePrincipaleUniteLegale;
+  }
 
   public String getCategorieEntreprise() {
     return categorieEntreprise;
@@ -33,5 +39,9 @@ public class UniteLegaleResponse {
 
   public String getDenominationUniteLegale() {
     return denominationUniteLegale;
+  }
+
+  public String getTrancheEffectifsUniteLegale() {
+    return trancheEffectifsUniteLegale;
   }
 }

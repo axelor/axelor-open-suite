@@ -1,0 +1,4 @@
+"importId";"name";"code";"fromDate";"toDate";"company_importId";"statusSelect";"typeSelect";"periodDurationSelect";"reportedBalanceDate"
+100;"AA";"AA";"TODAY[-1y=1M=1d]";"TODAY[-1y=12M=31d]";1;1;4;"week";"TODAY[=1M=1d]"
+101;"AA";"AA";"TODAY[=1M=1d]";"TODAY[=12M=31d]";1;1;4;"week";"TODAY[+1y=1M=1d]"
+102;"AA";"AA";"TODAY[+1y=1M=1d]";"TODAY[+1y=12M=31d]";1;1;4;"week";"TODAY[+2y=1M=1d]"

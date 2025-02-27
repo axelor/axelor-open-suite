@@ -16,6 +16,8 @@ public interface ProdProcessLineComputationService {
    */
   BigDecimal getNbCycle(ProdProcessLine prodProcessLine, BigDecimal qty);
 
+  BigDecimal computeNbCycle(BigDecimal qty, BigDecimal maxCapacityPerCycle);
+
   /**
    * Compute and return the installing duration which is: <br>
    * setup duration * (nbCycle - 1) + starting duration + ending duration
@@ -24,6 +26,9 @@ public interface ProdProcessLineComputationService {
    * @return installing duration
    */
   BigDecimal getMachineInstallingDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
+
+  BigDecimal getHourMachineDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException;
 
   /**
