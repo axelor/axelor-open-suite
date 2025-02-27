@@ -323,7 +323,7 @@
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
             onChange="action-sale-order-line-method-onchange-intaxprice" hidden="true"/>
           <panel name="discountPanel" colSpan="12"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3">
+            readonlyIf="$isGlobalDiscount || $isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
               onChange="action-sale-order-line-method-discount-type-onchange"/>
             <!--This panel purpose is to avoid issues with permission by field -->
@@ -332,7 +332,7 @@
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
                 onChange="action-sale-order-line-method-discount-amount-onchange"
                 x-scale="saleOrder.currency.numberOfDecimals"/>
-              <field name="discountDerogation" colSpan="3"
+              <field name="discountDerogation" colSpan="3" hideIf="$isGlobalDiscount"
                 onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-method-discount-amount-onchange"/>
             </panel>
             <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
