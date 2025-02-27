@@ -402,4 +402,10 @@ public final class ProductionExceptionMessage {
 
   public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY = /*$$(*/
       "Calculation quantity should not be zero." /*)*/;
+
+  public static final String LOCATION_LINE_PRODUCTION_1 = /*$$(*/
+      "Product's stocks %s (%s) are not in sufficient quantity to realize the order" /*)*/;
+
+  public static final String LOCATION_LINE_PRODUCTION_2 = /*$$(*/
+      "Product's stocks %s (%s), tracking number %s are not in sufficient quantity to realize the order" /*)*/;
 }

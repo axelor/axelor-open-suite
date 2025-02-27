@@ -138,6 +138,8 @@ import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductAttrsServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.StoredProductService;
 import com.axelor.apps.stock.service.massstockmove.StoredProductServiceImpl;
+import com.axelor.apps.stock.service.message.StockLineCheckExceptionMessageService;
+import com.axelor.apps.stock.service.message.StockLineCheckExceptionMessageServiceImpl;
 import com.axelor.apps.stock.service.observer.ProductPopulateStockObserver;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintServiceImpl;
@@ -221,5 +223,7 @@ public class StockModule extends AxelorModule {
     bind(StoredProductService.class).to(StoredProductServiceImpl.class);
     bind(LogisticalFormSequenceService.class).to(LogisticalFormSequenceServiceImpl.class);
     bind(TrackingNumberCompanyService.class).to(TrackingNumberCompanyServiceImpl.class);
+    bind(StockLineCheckExceptionMessageService.class)
+        .to(StockLineCheckExceptionMessageServiceImpl.class);
   }
 }

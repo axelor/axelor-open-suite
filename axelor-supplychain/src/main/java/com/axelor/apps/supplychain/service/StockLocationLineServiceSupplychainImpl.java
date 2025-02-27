@@ -32,6 +32,7 @@ import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
+import com.axelor.apps.stock.service.message.StockLineCheckExceptionMessageService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
@@ -54,7 +55,8 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       UnitConversionService unitConversionService,
       AppSupplychainService appSupplychainService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      StockLocationLineFetchService stockLocationLineFetchService,
+      StockLineCheckExceptionMessageService stockLineCheckExceptionMessageService) {
     super(
         stockLocationLineRepo,
         stockRulesService,
@@ -62,7 +64,8 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         appBaseService,
         unitConversionService,
         stockLocationLineHistoryService,
-        stockLocationLineFetchService);
+        stockLocationLineFetchService,
+        stockLineCheckExceptionMessageService);
     this.appSupplychainService = appSupplychainService;
   }
 
