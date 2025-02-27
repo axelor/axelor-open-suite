@@ -64,10 +64,15 @@ public class SaleOrderLineDetailsController {
 
   public void computePrices(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass() == SaleOrderLine.class) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
     SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
     SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
     response.setValues(
         Beans.get(SaleOrderLineDetailsPriceService.class)
-            .computePrices(saleOrderLineDetails, saleOrder));
+            .computePrices(saleOrderLineDetails, saleOrder, parentSol));
   }
 }
