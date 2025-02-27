@@ -33,7 +33,7 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
     BigDecimal machineCostAmount = computeMachineCostAmount(prodProcessLine, qtyToProduce);
-    BigDecimal humanCostAmount = computeHumanCostAmount(prodProcessLine, qtyToProduce);
+    BigDecimal humanCostAmount = computeHumanCostAmount(prodProcessLine);
     BigDecimal nbCycles =
         prodProcessLineComputationService.getNbCycle(prodProcessLine, qtyToProduce);
     BigDecimal costAmount;
@@ -59,18 +59,17 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
     return costAmount;
   }
 
-  protected BigDecimal computeHumanCostAmount(
-      ProdProcessLine prodProcessLine, BigDecimal qtyToProduce) {
+  protected BigDecimal computeHumanCostAmount(ProdProcessLine prodProcessLine) {
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
     BigDecimal costAmount =
         appProductionService.getIsCostPerProcessLine()
-            ? prodProcessLine.getCostAmount()
-            : workCenter.getCostAmount();
+            ? prodProcessLine.getHrCostAmount()
+            : workCenter.getHrCostAmount();
     int costTypeSelect =
         appProductionService.getIsCostPerProcessLine()
-            ? prodProcessLine.getCostTypeSelect()
-            : workCenter.getCostTypeSelect();
-    BigDecimal humanCostAmount = BigDecimal.ZERO;
+            ? prodProcessLine.getHrCostTypeSelect()
+            : workCenter.getHrCostTypeSelect();
+    BigDecimal humanCostAmount;
     switch (costTypeSelect) {
       case WorkCenterRepository.COST_TYPE_PER_HOUR:
         humanCostAmount = costAmount;
@@ -84,6 +83,7 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
                 RoundingMode.HALF_UP);
         break;
       default:
+        humanCostAmount = costAmount;
     }
     return humanCostAmount;
   }
@@ -101,7 +101,7 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
             : workCenter.getCostTypeSelect();
     BigDecimal nbCycles =
         prodProcessLineComputationService.getNbCycle(prodProcessLine, qtyToProduce);
-    BigDecimal machineCostAmount = BigDecimal.ZERO;
+    BigDecimal machineCostAmount;
 
     switch (costTypeSelect) {
       case WorkCenterRepository.COST_TYPE_PER_HOUR:
@@ -120,6 +120,7 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
                 RoundingMode.HALF_UP);
         break;
       default:
+        machineCostAmount = costAmount;
     }
     return machineCostAmount;
   }

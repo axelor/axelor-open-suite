@@ -16,7 +16,7 @@
       x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"
       readonlyIf="typeSelect == 2"/>
     <field name="costPrice" x-scale="$nbDecimalDigitForUnitPrice"
-      onChange="action-sale-order-line-details-method-compute-price" readonlyIf="typeSelect == 1"/>
+      onChange="action-sale-order-line-details-method-compute-price" readonlyIf="typeSelect == 2"/>
     <field name="marginCoefficient" x-scale="$nbDecimalDigitForUnitPrice"
       onChange="action-sale-order-line-details-method-margin-coef-onchange"/>
     <field name="price" onChange="action-sale-order-line-details-method-price-onchange"
@@ -60,7 +60,7 @@
         <spacer colSpan="8"/>
         <field name="costPrice" colSpan="6"
           onChange="action-sale-order-line-details-method-compute-price"
-          readonlyIf="typeSelect == 1 || typeSelect == 2"/>
+          readonlyIf="typeSelect == 2"/>
         <field name="marginCoefficient" x-scale="$nbDecimalDigitForUnitPrice"
           onChange="action-sale-order-line-details-method-margin-coef-onchange"/>
         <field name="price" colSpan="6"
