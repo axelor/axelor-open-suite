@@ -920,29 +920,38 @@
     <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
       <field name="hasPendingPayments" hidden="true"/>
       <button name="validateBtn" hidden="true" title="Validate"
-        onClick="action-invoice-group-on-validate"/>
+        onClick="action-invoice-group-on-validate" icon="check" css="btn-success"
+        readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate"
-        prompt="Are you sure you want to ventilate the invoice ?"/>
+        prompt="Are you sure you want to ventilate the invoice ?" icon="check-all" css="btn-success"
+        readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
-        onClick="action-invoice-group-validate-and-ventilate-onclick"/>
+        onClick="action-invoice-group-validate-and-ventilate-onclick" icon="check" css="btn-success"
+        readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="passedForPaymentValidationBtn" css="btn-success" hidden="true"
           title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
-          if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-        <button name="refusalToPayBtn" css="btn-danger" hidden="true" title="Refusal to pay"
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
+          icon="person-check-fill" readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
+        <button name="refusalToPayBtn" css="btn-danger" title="Refusal to pay"
           onClick="save,action-invoice-view-refusal-to-pay"
-          if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-        <button name="cancelBtn" css="btn-warning" hidden="true" title="Cancel"
+          if="__config__.app.getApp('account')?.getActivatePassedForPayment()" icon="person-x-fill"
+          readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
+        <button name="cancelBtn" css="btn-danger" hidden="true" title="Cancel"
           onClick="save,action-invoice-method-cancel,save"
-          prompt="Are you sure you want to cancel the invoice ?"/>
+          prompt="Are you sure you want to cancel the invoice ?" icon="x"
+          readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
-          onClick="action-invoice-group-draft-button,action-account-invoice-onload-group"/>
+          onClick="action-invoice-group-draft-button,action-account-invoice-onload-group"
+          icon="reply-fill" readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
         <button name="addPaymentBtn" title="Register payment" colSpan="12"
-          onClick="action-invoice-group-add-invoice-payment" hidden="true"/>
+          onClick="action-invoice-group-add-invoice-payment" hidden="true" icon="credit-card"
+          readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
         <button name="registerPaymentBtn" title="Register payment" colSpan="12"
-          onClick="save,action-invoice-view-register-payment-voucher" hidden="true"/>
+          onClick="save,action-invoice-view-register-payment-voucher" hidden="true"
+          icon="credit-card" readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
         <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
         <field name="validatedDateTime" hidden="true" showIf="validatedDateTime" colSpan="6"/>
         <field name="pfpValidatorUser" hidden="true"
@@ -954,7 +963,8 @@
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()" colSpan="6">
           <field name="decisionPfpTakenDateTime" colSpan="12" hidden="true"/>
           <button name="sendPfpNotifyEmailBtn" colSpan="12" title="Send a notify email"
-            hidden="true" onClick="save,action-send-by-email-with-template"/>
+            hidden="true" onClick="save,action-send-by-email-with-template" icon="send"
+            readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
         </panel>
         <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
           canView="false"/>
