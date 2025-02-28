@@ -49,9 +49,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
 
   @Override
   public String getSprintOnChangeWarning(ProjectTask projectTask) {
-    String warning = "";
     if (validateConfigAndSprint(projectTask) == null) {
-      return warning;
+      return "";
     }
 
     Sprint savedSprint = getOldActiveSprint(projectTask);
@@ -64,13 +63,14 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             .orElse(null);
 
     if (projectTask.getActiveSprint().equals(backlogSprint)) {
-      return warning;
+      return "";
     }
 
     Set<ProjectPlanningTime> projectPlanningTimeSet =
         getProjectPlanningTimeOnOldSprint(projectTask, savedSprint);
 
-    warning = getBudgetedTimeOnChangeWarning(projectPlanningTimeSet, oldBudgetedTime, projectTask);
+    String warning =
+        getBudgetedTimeOnChangeWarning(projectPlanningTimeSet, oldBudgetedTime, projectTask);
     if (StringUtils.notEmpty(warning)) {
       return warning;
     }
