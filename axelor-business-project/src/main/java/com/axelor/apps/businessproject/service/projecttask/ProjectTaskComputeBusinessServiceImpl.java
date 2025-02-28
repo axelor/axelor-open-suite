@@ -22,49 +22,30 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
-public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService {
+public class ProjectTaskComputeBusinessServiceImpl implements ProjectTaskComputeBusinessService {
 
-  protected UnitConversionForProjectService unitConversionForProjectService;
   protected ProjectFrameworkContractService projectFrameworkContractService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
   protected ProjectTimeUnitService projectTimeUnitService;
   public static final int COMPUTE_SCALE = 5;
 
   @Inject
-  public ProjectTaskComputeServiceImpl(
-      UnitConversionForProjectService unitConversionForProjectService,
+  public ProjectTaskComputeBusinessServiceImpl(
       ProjectFrameworkContractService projectFrameworkContractService,
+      UnitConversionForProjectService unitConversionForProjectService,
       ProjectTimeUnitService projectTimeUnitService) {
-    this.unitConversionForProjectService = unitConversionForProjectService;
     this.projectFrameworkContractService = projectFrameworkContractService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
     this.projectTimeUnitService = projectTimeUnitService;
-  }
-
-  @Override
-  public void computeBudgetedTime(ProjectTask projectTask, Unit oldTimeUnit)
-      throws AxelorException {
-    Unit unit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
-    if (projectTask == null
-        || oldTimeUnit == null
-        || unit == null
-        || projectTask.getProject() == null) {
-      return;
-    }
-
-    projectTask.setBudgetedTime(
-        unitConversionForProjectService.convert(
-            oldTimeUnit,
-            unit,
-            projectTask.getBudgetedTime(),
-            COMPUTE_SCALE,
-            projectTask.getProject()));
   }
 
   @Override

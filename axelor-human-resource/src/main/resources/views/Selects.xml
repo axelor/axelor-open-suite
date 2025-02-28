@@ -255,11 +255,6 @@
     <option value="2">Expense declaration</option>
   </selection>
 
-  <selection name="unit.conversion.entity.select"
-    id="project.unit.conversion.entity.select">
-    <option value="1">Project</option>
-  </selection>
-
   <selection name="message.related.to.select" id="hr.message.related.to.select">
     <option value="com.axelor.apps.hr.db.Employee" data-grid="employee-grid"
       data-form="employee-form">Employee</option>

@@ -110,10 +110,10 @@ import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectG
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeService;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeServiceImpl;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupService;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeBusinessService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeBusinessServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupBusinessService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
@@ -137,6 +137,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskGroupServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
 import com.axelor.apps.project.service.ProjectToolServiceImpl;
@@ -236,8 +238,9 @@ public class BusinessProjectModule extends AxelorModule {
     bind(BusinessProjectService.class).to(BusinessProjectServiceImpl.class);
     bind(ProjectRestService.class).to(ProjectRestServiceImpl.class);
 
-    bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
-    bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
+    bind(ProjectTaskGroupBusinessService.class).to(ProjectTaskGroupBusinessServiceImpl.class);
+    bind(ProjectTaskGroupServiceImpl.class).to(ProjectTaskGroupBusinessServiceImpl.class);
+    bind(ProjectTaskComputeBusinessService.class).to(ProjectTaskComputeBusinessServiceImpl.class);
 
     bind(ProjectToolServiceImpl.class).to(ProjectToolBusinessProjectServiceImpl.class);
     bind(TaskTemplateHrServiceImpl.class).to(TaskTemplateBusinessProjectServiceImpl.class);
