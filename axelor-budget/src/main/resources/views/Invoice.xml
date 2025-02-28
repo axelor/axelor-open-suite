@@ -47,7 +47,8 @@
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-compute-budget-distribution" hidden="true"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"
+          icon="clipboard2-data-fill" readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
       </insert>
     </extend>
 
