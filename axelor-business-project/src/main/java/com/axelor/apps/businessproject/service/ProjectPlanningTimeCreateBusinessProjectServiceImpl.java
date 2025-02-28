@@ -105,13 +105,25 @@ public class ProjectPlanningTimeCreateBusinessProjectServiceImpl
       return planningTime;
     }
 
+    Unit unit = null;
     if (projectTask != null && projectTask.getTimeUnit() != null) {
-      planningTime.setTimeUnit(projectTask.getTimeUnit());
+      unit = projectTask.getTimeUnit();
     } else if (project.getProjectTimeUnit() != null) {
-      planningTime.setTimeUnit(project.getProjectTimeUnit());
+      unit = project.getProjectTimeUnit();
     } else {
-      planningTime.setTimeUnit(appBaseService.getUnitHours());
+      if (EmployeeRepository.TIME_PREFERENCE_HOURS.equals(
+          employee.getTimeLoggingPreferenceSelect())) {
+        unit = appBaseService.getUnitHours();
+      } else if (EmployeeRepository.TIME_PREFERENCE_DAYS.equals(
+          employee.getTimeLoggingPreferenceSelect())) {
+        unit = appBaseService.getUnitDays();
+      } else {
+        unit = appBaseService.getUnitMinutes();
+        planningTime.setPlannedTime(planningTime.getPlannedTime().multiply(new BigDecimal(60)));
+      }
     }
+
+    planningTime.setTimeUnit(unit);
 
     if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
       BigDecimal numberHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);

@@ -271,6 +271,19 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
+  public Unit getUnitMinutes() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit minuteUnit = appBase.getUnitMinutes();
+    if (Objects.isNull(minuteUnit)) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_MINUTES));
+    }
+    return minuteUnit;
+  }
+
+  @Override
   public BigDecimal getDailyWorkHours() throws AxelorException {
     AppBase appBase = getAppBase();
     BigDecimal dailyWorkHours = appBase.getDailyWorkHours();
