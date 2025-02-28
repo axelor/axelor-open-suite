@@ -2,21 +2,21 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
 
 public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService {
 
   protected ProjectTimeUnitService projectTimeUnitService;
-  protected UnitConversionService unitConversionService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
   public static final int COMPUTE_SCALE = 5;
 
   @Inject
   public ProjectTaskComputeServiceImpl(
-      ProjectTimeUnitService projectTimeUnitService, UnitConversionService unitConversionService) {
+      ProjectTimeUnitService projectTimeUnitService,
+      UnitConversionForProjectService unitConversionForProjectService) {
     this.projectTimeUnitService = projectTimeUnitService;
-    this.unitConversionService = unitConversionService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -30,7 +30,11 @@ public class ProjectTaskComputeServiceImpl implements ProjectTaskComputeService 
       return;
     }
     projectTask.setBudgetedTime(
-        unitConversionService.convert(
-            oldTimeUnit, unit, projectTask.getBudgetedTime(), COMPUTE_SCALE, null));
+        unitConversionForProjectService.convert(
+            oldTimeUnit,
+            unit,
+            projectTask.getBudgetedTime(),
+            COMPUTE_SCALE,
+            projectTask.getProject()));
   }
 }

@@ -241,7 +241,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectTaskGroupBusinessService.class).to(ProjectTaskGroupBusinessServiceImpl.class);
     bind(ProjectTaskGroupServiceImpl.class).to(ProjectTaskGroupBusinessServiceImpl.class);
     bind(ProjectTaskComputeBusinessService.class).to(ProjectTaskComputeBusinessServiceImpl.class);
-    bind(ProjectTaskComputeServiceImpl.class).to(ProjectTaskComputeBusinessServiceImpl.class);
 
     bind(ProjectToolServiceImpl.class).to(ProjectToolBusinessProjectServiceImpl.class);
     bind(TaskTemplateHrServiceImpl.class).to(TaskTemplateBusinessProjectServiceImpl.class);

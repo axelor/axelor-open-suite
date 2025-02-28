@@ -32,8 +32,6 @@
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
-  <input file="base_unitConversion.csv" separator=";"
-    type="com.axelor.apps.base.db.UnitConversion" search="self.importId = :importId"/>
 
   <input file="project_project_config.csv" type="com.axelor.apps.project.db.ProjectConfig"
     separator=";" update="true" search="self.importId = :importId"/>
