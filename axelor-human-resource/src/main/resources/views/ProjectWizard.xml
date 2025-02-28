@@ -14,14 +14,18 @@
     <extend target="//panel[@name='filtersPanel']">
       <insert position="after">
         <panel name="indicators">
-          <panel-dashlet colSpan="3" height="175"
+          <panel-dashlet colSpan="2" height="175"
             action="action-project-allocated-time" name="project-allocated-time-panel"/>
-          <panel-dashlet colSpan="3" height="175" action="action-project-planned-time"
+          <panel-dashlet colSpan="2" height="175" action="action-project-planned-time"
             name="project-planned-time-panel"/>
-          <panel-dashlet colSpan="3" height="175" action="action-project-leave-days"
-                         name="project-leave-days-panel"/>
-          <panel-dashlet colSpan="3" height="175"
+          <panel-dashlet colSpan="2" height="175" action="action-project-leave-days"
+            name="project-leave-days-panel"/>
+          <panel-dashlet colSpan="2" height="175"
             action="action-project-available-days" name="project-available-days-panel"/>
+          <panel-dashlet colSpan="2" height="175"
+            action="action-project-estimated-time" name="project-estimated-time-panel"/>
+          <panel-dashlet colSpan="2" height="175" action="action-project-spent-time"
+            name="project-spent-time-panel"/>
         </panel>
       </insert>
     </extend>
@@ -38,7 +42,7 @@
   <custom name="project.allocated.time" title="Allocated time" css="report-box">
     <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalAllocatedTime</dataset>
     <template>  <![CDATA[
-<report-box icon='search' label='Total allocated time' value='first.total'/>
+<report-box label='Total allocated time' value='first.total'/>
   ]]></template>
   </custom>
 
@@ -48,7 +52,7 @@
   <custom name="project.planned.time" title="Planned time" css="report-box">
     <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalPlannedTime</dataset>
     <template>  <![CDATA[
-<report-box icon='search' label='Total planned time' value='first.total'/>
+<report-box label='Total planned time' value='first.total'/>
   ]]></template>
   </custom>
 
@@ -58,7 +62,7 @@
   <custom name="hr.leave.days" title="PLeave days" css="report-box">
     <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalLeaveDays</dataset>
     <template>  <![CDATA[
-<report-box icon='search' label='Total leave days' value='first.total'/>
+<report-box label='Total leave days' value='first.total'/>
   ]]></template>
   </custom>
 
@@ -69,7 +73,27 @@
   <custom name="hr.available.days" title="Available days" css="report-box">
     <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalAvailableDays</dataset>
     <template>  <![CDATA[
-<report-box icon='search' label='Total available days' value='first.total'/>
+<report-box label='Total available days' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-estimated-time" title="Estimated time">
+    <view type="custom" name="hr.estimated.days"/>
+  </action-view>
+  <custom name="hr.estimated.days" title="Estimated time" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalEstimatedTime</dataset>
+    <template>  <![CDATA[
+<report-box label='Total estimated time' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-spent-time" title="Spent time">
+    <view type="custom" name="hr.spent.days"/>
+  </action-view>
+  <custom name="hr.spent.days" title="Spent time" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalSpentTime</dataset>
+    <template>  <![CDATA[
+<report-box label='Total spent time' value='first.total'/>
   ]]></template>
   </custom>
 </object-views>

@@ -16,6 +16,7 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
@@ -199,8 +200,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     BigDecimal totalSpentTime = BigDecimal.ZERO;
     if (fromDate == null
         || toDate == null
-        || project == null
-        || !project.getManageTimeSpent()
         || appHumanResourceService.getAppTimesheet() == null
         || !Optional.ofNullable(appProjectService.getAppProject())
             .map(AppProject::getEnablePlanification)
@@ -208,16 +207,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       return totalSpentTime;
     }
 
-    List<TimesheetLine> timesheetLineList = new ArrayList<>();
-    if (employee == null) {
-      timesheetLineList =
-          timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
-    } else {
-      timesheetLineList =
-          timesheetLineRepository
-              .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
-              .fetch();
-    }
+    List<TimesheetLine> timesheetLineList = getTimesheetLines(fromDate, toDate, employee, project);
 
     if (ObjectUtils.notEmpty(timesheetLineList)) {
       Unit dayUnit = appBaseService.getAppBase().getUnitDays();
@@ -239,6 +229,21 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     }
 
     return totalSpentTime;
+  }
+
+  private List<TimesheetLine> getTimesheetLines(
+      LocalDate fromDate, LocalDate toDate, Employee employee, Project project) {
+    List<TimesheetLine> timesheetLineList = new ArrayList<>();
+    if (project != null && employee != null && project.getManageTimeSpent()) {
+      return timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+    }
+    if (project != null && project.getManageTimeSpent()) {
+      return timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+    }
+    if (employee != null) {
+      return timesheetLineRepository.findByEmployeeAndPeriod(employee, fromDate, toDate).fetch();
+    }
+    return timesheetLineList;
   }
 
   protected BigDecimal getWorkingDays(LocalDate fromDate, LocalDate toDate, Employee employee) {
@@ -372,11 +377,17 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     if (sprint == null || ObjectUtils.isEmpty(sprint.getProjectTaskList())) {
       return BigDecimal.ZERO;
     }
+    return getBudgetedTime(sprint.getProjectTaskList(), project);
+  }
+
+  @Override
+  public BigDecimal getBudgetedTime(List<ProjectTask> projectTaskList, Project project)
+      throws AxelorException {
 
     Unit unitHours = appBaseService.getUnitHours();
     Unit unitDays = appBaseService.getUnitDays();
 
-    return sprint.getProjectTaskList().stream()
+    return projectTaskList.stream()
         .map(
             projectTask -> {
               BigDecimal budgetedTime = projectTask.getBudgetedTime();
