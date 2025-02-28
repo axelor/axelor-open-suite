@@ -19,6 +19,17 @@
     <extend target="//field[@name='activeSprint']">
       <attribute name="onChange" value="action-project-task-group-sprint-onchange"/>
     </extend>
+    <extend target="//field[@name='budgetedTime']">
+      <attribute name="onChange" value="action-project-task-group-sprint-onchange"/>
+    </extend>
+
+    <extend target="//field[@name='timeUnit']">
+      <insert position="after">
+        <field name="projectPlanningTimeList" hidden="true"/>
+        <field name="oldActiveSprint" hidden="true"/>
+        <field name="oldBudgetedTime" hidden="true"/>
+      </insert>
+    </extend>
   </form>
 
   <form name="incl-planning-panel-task-form" title="Planning"
