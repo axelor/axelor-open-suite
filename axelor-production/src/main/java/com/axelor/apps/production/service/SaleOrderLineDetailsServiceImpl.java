@@ -90,9 +90,4 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
     lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
     lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
   }
-
-  @Override
-  public SaleOrder getParentSaleOrder(SaleOrderLineDetails saleOrderLineDetails) {
-    return saleOrderLineDetails.getSaleOrderLine().getSaleOrder();
-  }
 }

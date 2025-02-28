@@ -39,10 +39,6 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
       SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> lineMap = new HashMap<>();
 
-    if (saleOrder == null) {
-      saleOrder = saleOrderLineDetailsService.getParentSaleOrder(saleOrderLineDetails);
-    }
-
     lineMap.putAll(computeSubTotalCostPrice(saleOrderLineDetails, saleOrder));
     lineMap.putAll(computePrice(saleOrderLineDetails));
     lineMap.putAll(computeTotalPrice(saleOrderLineDetails, saleOrder));
