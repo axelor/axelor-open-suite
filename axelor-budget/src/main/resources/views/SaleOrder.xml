@@ -10,7 +10,7 @@
       <attribute name="onSave" value="action-budget-sale-order-group-on-save"/>
     </extend>
 
-    <extend target="//button[@name='cancelBtn']">
+    <extend target="//button[@name='addPackBtn']">
       <attribute name="onClick"
         value="save,action-sale-order-view-cancel,action-budget-sale-order-method-update-budget-lines"/>
 
@@ -18,7 +18,9 @@
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-sale-order-compute-budget-distribution"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
+          icon="clipboard2-data-fill"
+          readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       </insert>
     </extend>
 
