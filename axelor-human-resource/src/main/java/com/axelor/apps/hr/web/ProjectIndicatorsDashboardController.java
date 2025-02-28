@@ -23,7 +23,11 @@ public class ProjectIndicatorsDashboardController {
     AllocationLineComputeService allocationLineComputeService =
         Beans.get(AllocationLineComputeService.class);
     BigDecimal allocatedTime =
-        allocationLineComputeService.getAllocatedTime((Project) map.get("project"),(LocalDate) map.get("fromDate"), (LocalDate) map.get("toDate"),  (Employee) map.get("employee"));
+        allocationLineComputeService.getAllocatedTime(
+            (Project) map.get("project"),
+            (LocalDate) map.get("fromDate"),
+            (LocalDate) map.get("toDate"),
+            (Employee) map.get("employee"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", allocatedTime);
 
@@ -36,7 +40,11 @@ public class ProjectIndicatorsDashboardController {
     AllocationLineComputeService allocationLineComputeService =
         Beans.get(AllocationLineComputeService.class);
     BigDecimal plannedTime =
-        allocationLineComputeService.computePlannedTime((LocalDate) map.get("fromDate"), (LocalDate) map.get("toDate"),  (Employee) map.get("employee") ,(Project) map.get("project"));
+        allocationLineComputeService.computePlannedTime(
+            (LocalDate) map.get("fromDate"),
+            (LocalDate) map.get("toDate"),
+            (Employee) map.get("employee"),
+            (Project) map.get("project"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", plannedTime);
 
@@ -48,8 +56,11 @@ public class ProjectIndicatorsDashboardController {
     Map<String, Object> map = getRequestMap(request);
     ProjectIndicatorsService projectIndicatorsService = Beans.get(ProjectIndicatorsService.class);
     BigDecimal leaveDays =
-        projectIndicatorsService.getProjectOrEmployeeLeaveDays((Project) map.get("project"),   (Employee) map.get("employee") ,(LocalDate) map.get("fromDate"),
-                (LocalDate) map.get("toDate"));
+        projectIndicatorsService.getProjectOrEmployeeLeaveDays(
+            (Project) map.get("project"),
+            (Employee) map.get("employee"),
+            (LocalDate) map.get("fromDate"),
+            (LocalDate) map.get("toDate"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", leaveDays);
 
@@ -61,8 +72,11 @@ public class ProjectIndicatorsDashboardController {
     Map<String, Object> map = getRequestMap(request);
     ProjectIndicatorsService projectIndicatorsService = Beans.get(ProjectIndicatorsService.class);
     BigDecimal availableDays =
-        projectIndicatorsService.getAvailableDays((Project) map.get("project"),   (Employee) map.get("employee") ,(LocalDate) map.get("fromDate"),
-                (LocalDate) map.get("toDate"));
+        projectIndicatorsService.getAvailableDays(
+            (Project) map.get("project"),
+            (Employee) map.get("employee"),
+            (LocalDate) map.get("fromDate"),
+            (LocalDate) map.get("toDate"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", availableDays);
 
@@ -74,8 +88,11 @@ public class ProjectIndicatorsDashboardController {
     Map<String, Object> map = getRequestMap(request);
     ProjectIndicatorsService projectIndicatorsService = Beans.get(ProjectIndicatorsService.class);
     BigDecimal estimatedTime =
-        projectIndicatorsService.getEstimatedTime( (Project) map.get("project"),   (Employee) map.get("employee") ,(LocalDate) map.get("fromDate"),
-                (LocalDate) map.get("toDate"));
+        projectIndicatorsService.getEstimatedTime(
+            (Project) map.get("project"),
+            (Employee) map.get("employee"),
+            (LocalDate) map.get("fromDate"),
+            (LocalDate) map.get("toDate"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", estimatedTime);
 

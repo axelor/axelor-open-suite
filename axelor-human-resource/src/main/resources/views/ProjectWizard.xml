@@ -96,4 +96,19 @@
 <report-box label='Total spent time' value='first.total'/>
   ]]></template>
   </custom>
+  <action-attrs name="action-attrs-refresh-dashlets"
+    id="hr-action-attrs-refresh-dashlets">
+    <attribute name="refresh" expr="eval: true" for="project-project-task-action-dashlet"/>
+    <attribute name="refresh" expr="eval: true"
+      for="project-planning-time-dashboard-action-dashlet"/>
+    <attribute name="refresh" expr="eval: true"
+      for="project-allocation-line-action-dashlet"/>
+    <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-allocated-time-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-planned-time-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-leave-days-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-available-days-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-estimated-time-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-spent-time-panel" name="refresh" expr="eval: true"/>
+  </action-attrs>
 </object-views>
