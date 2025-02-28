@@ -988,7 +988,7 @@
 "Project planning time lines","Lignes de temps planifiés projet",,
 "Project planning time on the duration","Lignes de temps planifiés sur la durée",,
 "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?","Des lignes de planification existent sur les dates de l'ancien sprint, voulez-vous le déplacer vers la nouvelle période ?",,
-"Project planning time on the sprint's dates are existing, do you want to update these with the new budgeted time ?","Des lignes de temps planifié existent sur les dates du sprint, voulez-vous le mettre à jour avec le nouveau temps estimé ?",,
+"Project planning time on the sprint dates are existing, do you want to update these with the new budgeted time?","Des lignes de temps planifié existent sur les dates du sprint, voulez-vous le mettre à jour avec le nouveau temps estimé ?",,
 "Project planning time unit not matching with time units in base configuration.","L'unité de temps de la planification de projet ne correspond pas aux unités de temps de la configuration de base.",,
 "Project task","Tâche",,
 "ProjectPlanningTime.Activity","Prestation",,

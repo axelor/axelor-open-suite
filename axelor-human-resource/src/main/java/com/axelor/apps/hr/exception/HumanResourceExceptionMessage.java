@@ -428,7 +428,7 @@ public final class HumanResourceExceptionMessage {
       "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?" /*)*/;
 
   public static final String PROJECT_PLANNING_TIME_EXISTING_WITH_OLD_DURATION = /*$$(*/
-      "Project planning time on the sprint's dates are existing, do you want to update these with the new budgeted time ?" /*)*/;
+      "Project planning time on the sprint dates are existing, do you want to update these with the new budgeted time?" /*)*/;
 
   public static final String LEAVE_REQUEST_NOT_ENOUGH_DAYS = /*$$(*/
       "You will not have enough leaves available for this request." /*)*/;
