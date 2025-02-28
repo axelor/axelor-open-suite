@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.google.inject.Inject;
