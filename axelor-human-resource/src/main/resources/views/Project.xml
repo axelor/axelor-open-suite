@@ -33,9 +33,9 @@
     title="Project" model="com.axelor.apps.project.db.Project" extension="true">
     <extend target="//panel[@name='sprintPanel']">
       <insert position="after">
-        <panel-dashlet name="allocationLinePanel" title="Allocation lines"
+        <panel-dashlet name="allocationLinePanel" title="Allocation lines" showIf="id"
           height="200%" x-show-bars="true" action="action-project-view-related-allocation-lines"
-          colSpan="12"/>
+          colSpan="12" editable="true" canSearch="true" canNew="true" canDelete="true"/>
       </insert>
     </extend>
   </form>
@@ -56,7 +56,7 @@
     <view type="grid" name="allocation-line-grid"/>
     <view type="form" name="allocation-line-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.project.id = :_id</domain>
+    <domain>self.project.id = :_id AND self.period.toDate &gt; :__date__</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 

@@ -49,19 +49,21 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
     <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
+      onClick="action-sale-order-line-group-on-configurator-edit"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="pencil-square" title="Configurator edit button"/>
+      icon="fa-pen-to-square"/>
     <button name="configuratorDuplicateBtn"
-      onClick="save,action-sale-order-line-method-configurator-duplicate"
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-copy" title="Configurator duplicate button"/>
+      icon="fa-copy"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
@@ -128,13 +130,13 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
     <button name="configuratorEditBtn"
-      onClick="save,action-sale-order-line-view-regenerate-line"
+      onClick="action-sale-order-line-group-on-configurator-edit"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="pencil-square" title="Configurator edit button"/>
+      icon="fa-pen-to-square"/>
     <button name="configuratorDuplicateBtn"
-      onClick="save,action-sale-order-line-method-configurator-duplicate"
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-copy" title="Configurator duplicate button"/>
+      icon="fa-copy"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -143,6 +145,8 @@
     <field name="$isParentTitleLine" hidden="true"/>
     <field name="$computeWithSOL" hidden="true"/>
     <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -273,6 +277,21 @@
               </viewer>
             </field>
 
+            <field name="$productionStatus" showTitle="false" colSpan="2"
+              showIf="$productionStatus" if-module="axelor-production"
+              if="__config__.app.isApp('production')">
+              <viewer>
+                <![CDATA[<>
+                      {$productionStatus == 'FINISHED' && <Badge bg="success">{_t('Production finished')}</Badge>}
+                      {$productionStatus == 'STANDBY' && <Badge bg="warning">{_t('Production on standby')}</Badge>}
+                      {$productionStatus == 'IN_PROGRESS' && <Badge bg="primary">{_t('Production in progress')}</Badge>}
+                      {$productionStatus == 'PLANNED' && <Badge bg="warning">{_t('Production planned')}</Badge>}
+                      {$productionStatus == 'CANCELED' && <Badge bg="danger">{_t('Production canceled')}</Badge>}
+                      {$productionStatus == 'DRAFT' && <Badge bg="danger">{_t('Production in draft')}</Badge>}
+                </>]]>
+              </viewer>
+            </field>
+
           </panel>
           <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-sale-order-line-method-get-product-information"
@@ -304,7 +323,7 @@
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
             onChange="action-sale-order-line-method-onchange-intaxprice" hidden="true"/>
           <panel name="discountPanel" colSpan="12"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3">
+            readonlyIf="$isGlobalDiscount || $isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
               onChange="action-sale-order-line-method-discount-type-onchange"/>
             <!--This panel purpose is to avoid issues with permission by field -->
@@ -313,7 +332,7 @@
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
                 onChange="action-sale-order-line-method-discount-amount-onchange"
                 x-scale="saleOrder.currency.numberOfDecimals"/>
-              <field name="discountDerogation" colSpan="3"
+              <field name="discountDerogation" colSpan="3" hideIf="$isGlobalDiscount"
                 onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-method-discount-amount-onchange"/>
             </panel>
             <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
@@ -810,5 +829,29 @@
   <action-method name="action-sale-order-line-method-configurator-duplicate">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="configuratorDuplicateSaleOrderLine"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-check-duplication-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkDuplicationSaleOrderLine"/>
+  </action-method>
+
+  <action-group name="action-sale-order-line-group-on-configurator-duplicate">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-duplication-sale-order-line"/>
+    <action name="action-sale-order-line-method-configurator-duplicate"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-group-on-configurator-edit">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-edit-configurator-sale-order-line"/>
+    <action name="action-sale-order-line-view-regenerate-line"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-check-edit-configurator-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkEditConfiguratorSaleOrderLine"/>
   </action-method>
 </object-views>

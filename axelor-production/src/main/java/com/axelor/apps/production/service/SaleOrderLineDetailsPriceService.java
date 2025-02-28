@@ -8,4 +8,11 @@ import java.util.Map;
 public interface SaleOrderLineDetailsPriceService {
   Map<String, Object> computePrices(SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder)
       throws AxelorException;
+
+  Map<String, Object> computePrice(SaleOrderLineDetails saleOrderLineDetails);
+
+  Map<String, Object> computeTotalPrice(
+      SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> computeMarginCoef(SaleOrderLineDetails saleOrderLineDetails);
 }

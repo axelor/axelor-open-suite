@@ -12,11 +12,21 @@
       default="false"/>
     <boolean name="autoGenerateTimesheetLine"
       title="Generate timesheet line on manufacturing operation stop"/>
+    <integer name="updateProjectSolDetailsLineTypeSelect"
+      title="Sale order line details modification configuration"
+      help="When editing a confirmed sale order, update or not the sale order line details in business project with sale order changes. Modifications done in business project will be overwritten."
+      selection="business.production.app.production.update.project.sol.details.type.select"/>
+
+    <extra-code><![CDATA[
+        public static final int UPDATE_PROJECT_SOL_DETAILS_TYPE_SELECT_NO_UPDATE = 0;
+		public static final int UPDATE_PROJECT_SOL_DETAILS_TYPE_SELECT_UPDATE = 1;
+    ]]></extra-code>
 
     <track>
       <field name="manageBusinessProduction" on="UPDATE"/>
       <field name="enableTimesheetOnManufOrder" on="UPDATE"/>
       <field name="autoGenerateTimesheetLine" on="UPDATE"/>
+      <field name="updateProjectSolDetailsLineTypeSelect" on="UPDATE"/>
     </track>
   </entity>
 

@@ -604,6 +604,7 @@
         </field>
       </panel>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
+      <field name="partner.partnerTypeSelect" hidden="true"/>
     </panel>
 
     <panel name="subscriptionPanel" title="Subscription period"
@@ -621,8 +622,8 @@
           <field name="$cutOffEndDate" type="date" title="To date"
             validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
-            onClick="action-invoice-method-apply-cut-off-dates"
-            readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
+            onClick="action-invoice-method-apply-cut-off-dates,save"
+            readonlyIf="!id || $cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
@@ -971,10 +972,15 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal">
+        <viewer
+          depends="exTaxTotal,taxTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,discountCurrency,discountScale">
         	<![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T. before discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{$fmt('priceBeforeGlobalDiscount')}</Box>}
+                             {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{'-' + $fmt('discountAmount')}</Box>}
 	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
@@ -1097,6 +1103,23 @@
     </panel>
 
     <panel-stack name="otherDetailsPanel" sidebar="true" hideIf="partner == null">
+      <panel name="globalDiscountPanel" title="Global discount"
+        if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
+        showIf="partner &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0"
+        canCollapse="true" collapseIf="true">
+        <field name="discountTypeSelect" colSpan="12"
+          onChange="action-invoice-group-invoice-line-list-on-change"/>
+        <field name="discountAmount" showIf="discountTypeSelect != 0"
+          x-currency="discountCurrency" x-scale="discountScale"
+          onChange="action-invoice-group-invoice-line-list-on-change"/>
+        <button name="$swapDiscountTypeBtn" title="Swap discount type" widget="info-button"
+          showIf="discountTypeSelect != 0" icon="arrow-left-right"
+          onClick="action-invoice-attrs-swap-discount-type, action-invoice-group-invoice-line-list-on-change"/>
+        <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
+          x-scale="currency.numberOfDecimals" hidden="true"/>
+        <field name="discountCurrency" hidden="true" x-dirty="false"/>
+        <field name="discountScale" hidden="true" x-dirty="false"/>
+      </panel>
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
         <field name="internalReference" widget="string"/>
@@ -1249,6 +1272,7 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
       <field name="paymentMode.typeSelect" hidden="true"/>
+      <field name="partner.partnerTypeSelect" hidden="true"/>
     </panel>
 
     <panel-tabs name="invoiceDetails">
@@ -1623,6 +1647,7 @@
     <action name="action-invoice-attrs-set-subrogation-partner-readonly"/>
     <action name="action-invoice-method-set-invoice-line-list-scale"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
+    <action name="action-invoice-method-set-discount-dummies"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1749,6 +1774,10 @@
   <action-group name="action-invoice-group-invoice-line-list-on-change">
     <action name="action-invoice-method-update-product-qty-with-pack-header-qty"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-invoice-method-apply-global-discount"
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"/>
+    <action name="action-invoice-method-set-discount-dummies"
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
@@ -1910,6 +1939,14 @@
   <action-attrs name="action-invoice-attrs-set-subrogation-partner-readonly">
     <attribute name="readonly" for="thirdPartyPayerPartner"
       expr="eval: invoiceTermList.every{it -> it.isPaid}"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-attrs-swap-discount-type">
+    <attribute for="discountTypeSelect" name="value" expr="eval: 1"
+      if="discountTypeSelect == 2"/>
+    <attribute for="discountTypeSelect" name="value" expr="eval: 2"
+      if="discountTypeSelect == 1"/>
+    <attribute for="discountAmount" name="value" expr="eval: discountEquivalence"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -2517,6 +2554,14 @@
     name="action-invoice-method-set-supplier-invoice-number-and-origin-date">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="setSupplierInvoiceNbAndOriginDate"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-apply-global-discount">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="applyGlobalDiscount"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-set-discount-dummies">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="setDiscountDummies"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

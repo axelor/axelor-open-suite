@@ -516,6 +516,10 @@
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
+        <panel name="subLinePanel" colSpan="12"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
+          <field name="isDisplaySubLinesOnReport" widget="boolean-switch"/>
+        </panel>
       </panel>
       <panel name="taxPanel" title="Tax" readonlyIf="statusSelect != 1">
         <panel-related name="saleOrderLineTaxListPanel" colSpan="12"
@@ -772,7 +776,7 @@
       </field>
     </panel>
     <panel name="globalDiscountPanel" title="Global discount"
-      if="__config__.app.getApp('sale')?.getIsGlobalDiscountEnabledOnSaleOrder()"
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
       sidebar="true">
       <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
@@ -1356,7 +1360,7 @@
     <field name="saleOrderSeq"/>
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
-    <field name="orderDate"/>
+    <field name="creationDate"/>
     <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
@@ -1374,7 +1378,7 @@
 					<span>{_t('Sale quotation')}</span> {saleOrderSeq}
 					{externalReference && <span> ( {externalReference} )</span>}
 				</strong>
-				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('orderDate')}</Box>
+				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('creationDate')}</Box>
 				<Box d="grid" gridTemplateColumns="67% 33%">
 					<Box>
 						<Icon icon="people-fill"/> {clientPartner.fullName}
@@ -1736,10 +1740,6 @@
 
   <action-method name="action-sale-order-method-compute">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>
-  </action-method>
-
-  <action-method name="action-sale-order-method-compute-margin">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
   </action-method>
 
   <action-attrs name="action-sale-order-attrs-collapse-specific-settings-group">

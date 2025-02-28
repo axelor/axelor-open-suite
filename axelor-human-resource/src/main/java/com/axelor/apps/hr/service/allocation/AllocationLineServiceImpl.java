@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.allocation;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.AllocationLineRepository;
@@ -36,13 +37,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class AllocationLineServiceImpl implements AllocationLineService {
 
   protected AllocationLineComputeService allocationLineComputeService;
+  protected AppBaseService appBaseService;
   protected AllocationLineRepository allocationLineRepository;
 
   @Inject
   public AllocationLineServiceImpl(
       AllocationLineComputeService allocationLineComputeService,
+      AppBaseService appBaseService,
       AllocationLineRepository allocationLineRepository) {
     this.allocationLineComputeService = allocationLineComputeService;
+    this.appBaseService = appBaseService;
     this.allocationLineRepository = allocationLineRepository;
   }
 
@@ -76,17 +80,6 @@ public class AllocationLineServiceImpl implements AllocationLineService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void removeAllocationLines(List<Integer> allocationLineIds) {
-    if (CollectionUtils.isEmpty(allocationLineIds)) {
-      return;
-    }
-    for (Integer id : allocationLineIds) {
-      allocationLineRepository.remove(allocationLineRepository.find(Long.valueOf(id)));
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
   public void createOrUpdateAllocationLine(
       Project project,
       Employee employee,
@@ -94,7 +87,8 @@ public class AllocationLineServiceImpl implements AllocationLineService {
       BigDecimal allocated,
       boolean initWithPlanningTime)
       throws AxelorException {
-    AllocationLine allocationLine = getAllocationLine(project, employee, period);
+    AllocationLine allocationLine =
+        allocationLineRepository.findByPeriodAndProjectAndEmployee(period, project, employee);
     if (allocationLine == null) {
       allocationLine = new AllocationLine();
       allocationLine.setEmployee(employee);
@@ -109,15 +103,5 @@ public class AllocationLineServiceImpl implements AllocationLineService {
               period.getFromDate(), period.getToDate(), employee, project));
     }
     allocationLineRepository.save(allocationLine);
-  }
-
-  protected AllocationLine getAllocationLine(Project project, Employee employee, Period period) {
-    return allocationLineRepository
-        .all()
-        .filter("self.project = :project AND self.employee = :employee AND self.period = :period")
-        .bind("project", project)
-        .bind("employee", employee)
-        .bind("period", period)
-        .fetchOne();
   }
 }

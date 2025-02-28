@@ -332,7 +332,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       }
 
       taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(taxLineSet);
-      taxAccountService.checkSumOfNonDeductibleTaxes(taxLineSet);
+      taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(taxLineSet);
       if (CollectionUtils.isNotEmpty(taxLineSet)) {
         List<TaxLine> deductibleTaxList =
             moveLineList.stream()

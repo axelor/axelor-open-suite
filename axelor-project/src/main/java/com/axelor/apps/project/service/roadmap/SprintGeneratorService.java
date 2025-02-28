@@ -4,6 +4,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.Sprint;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,5 +18,5 @@ public interface SprintGeneratorService {
       LocalDate toDate,
       Integer numberDays);
 
-  String getSprintDomain(Project project);
+  List<Sprint> getProjectSprintList(Project project);
 }

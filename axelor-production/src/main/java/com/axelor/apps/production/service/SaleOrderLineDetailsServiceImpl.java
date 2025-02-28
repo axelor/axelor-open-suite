@@ -20,17 +20,20 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
   protected final AppSaleService appSaleService;
   protected final SaleOrderLineProductService saleOrderLineProductService;
   protected final MarginComputeService marginComputeService;
+  protected final SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService;
 
   @Inject
   public SaleOrderLineDetailsServiceImpl(
       ProductCompanyService productCompanyService,
       AppSaleService appSaleService,
       SaleOrderLineProductService saleOrderLineProductService,
-      MarginComputeService marginComputeService) {
+      MarginComputeService marginComputeService,
+      SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService) {
     this.productCompanyService = productCompanyService;
     this.appSaleService = appSaleService;
     this.saleOrderLineProductService = saleOrderLineProductService;
     this.marginComputeService = marginComputeService;
+    this.saleOrderLineDetailsPriceService = saleOrderLineDetailsPriceService;
   }
 
   @Override
@@ -53,17 +56,20 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
             .multiply(saleOrderLineDetails.getQty())
             .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
-    setLineInfo(saleOrderLineDetails, price, totalPrice, totalCostPrice, product);
+    setLineInfo(saleOrderLineDetails, costPrice, price, totalPrice, totalCostPrice, product);
+    lineMap.putAll(saleOrderLineDetailsPriceService.computeMarginCoef(saleOrderLineDetails));
     setMapInfo(saleOrderLineDetails, saleOrder, lineMap);
     return lineMap;
   }
 
   protected void setLineInfo(
       SaleOrderLineDetails saleOrderLineDetails,
+      BigDecimal costPrice,
       BigDecimal price,
       BigDecimal totalPrice,
       BigDecimal totalCostPrice,
       Product product) {
+    saleOrderLineDetails.setCostPrice(costPrice);
     saleOrderLineDetails.setPrice(price);
     saleOrderLineDetails.setTotalPrice(totalPrice);
     saleOrderLineDetails.setSubTotalCostPrice(totalCostPrice);
@@ -82,10 +88,6 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
     lineMap.put("title", saleOrderLineDetails.getTitle());
     lineMap.put("unit", saleOrderLineDetails.getUnit());
     lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
-  }
-
-  @Override
-  public SaleOrder getParentSaleOrder(SaleOrderLineDetails saleOrderLineDetails) {
-    return saleOrderLineDetails.getSaleOrderLine().getSaleOrder();
+    lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
   }
 }

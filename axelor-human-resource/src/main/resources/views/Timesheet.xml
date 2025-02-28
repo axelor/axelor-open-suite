@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
-    canNew="false" groupBy="employee" orderBy="employee,-fromDate">
+    groupBy="employee" orderBy="employee,-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem"
@@ -21,11 +21,11 @@
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="all-timesheet-grid" title="All timesheets"
-    model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="employee"
-    orderBy="employee,-fromDate">
+    model="com.axelor.apps.hr.db.Timesheet" groupBy="employee" orderBy="employee,-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-method-all-timesheet-line"
@@ -42,10 +42,11 @@
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
-    canNew="true" orderBy="-fromDate">
+    orderBy="-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-see-timesheet-lines"
@@ -61,10 +62,11 @@
     <field name="toDate"/>
     <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-validate-grid" title="Timesheet"
-    model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="employee,-fromDate">
+    model="com.axelor.apps.hr.db.Timesheet" orderBy="employee,-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="timesheetValidatedBySubordinatesItem"
@@ -85,11 +87,12 @@
     <field name="periodTotal"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
     width="large" onNew="action-group-timesheet-onnew" onLoad="action-timesheet-group-onload"
-    canNew="false" onSave="action-timesheet-group-onsave" canCopy="false">
+    onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
       <menu title="Tools" icon="fa-wrench">
         <item title="Lines Generation Wizard" showIf="statusSelect == 1"
@@ -111,7 +114,6 @@
           onChange="action-hr-record-empty-user"/>
         <field name="employee" colSpan="5" form-view="employee-form"
           onChange="action-timesheet-group-employee-onchange"
-          readonlyIf="statusSelect != 1 || (timesheetLineList &amp;&amp; timesheetLineList.length != 0)"
           onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
           canEdit="false" canView="false"/>
         <field if-module="axelor-business-production"
@@ -124,13 +126,18 @@
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
         <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="5"/>
-        <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"
-          readonly="true"/>
+        <field name="isCompleted" hidden="true"/>
         <field name="employee.user" hidden="true"/>
         <field name="employee.user.code" hidden="true"/>
       </panel>
 
       <panel name="actionsPanel" colSpan="3" itemSpan="12">
+        <field name="$isCompleted" showTitle="false" readonly="true"
+          if="!__config__.app.getApp('timesheet')?.needValidation">
+          <viewer>
+              <![CDATA[<>{isCompleted && <Badge bg="success">{_t('Completed')}</Badge>}</>]]>
+          </viewer>
+        </field>
         <button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
@@ -184,7 +191,8 @@
     </panel>
 
     <panel name="projectPlanningTimePanel" title="Project planning time on the duration"
-      collapseIf="true">
+      collapseIf="true"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification">
       <panel-related field="$projectPlanningTimeList" showTitle="false"
         target="com.axelor.apps.project.db.ProjectPlanningTime" type="one-to-many" canRemove="false"
         canNew="false" canView="false" grid-view="project-planning-timesheet-grid"
@@ -280,6 +288,13 @@
       <button name="editTimesheetSelectedBtn" title="Edit Timesheet Selected"
         onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
     </panel>
+  </form>
+
+  <form name="complete-my-timesheet-form" title="Timesheet"
+    model="com.axelor.apps.hr.db.Timesheet" width="large" onNew="action-group-timesheet-onnew"
+    onLoad="action-timesheet-group-onload" onSave="action-timesheet-group-onsave" canCopy="false"
+    canNew="false">
+    <panel-include view="timesheet-form"/>
   </form>
 
   <action-group name="action-timesheet-group-employee-onchange">
@@ -477,7 +492,7 @@
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
     <attribute name="readonly" for="employee"
-      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0) || _isEmployeeReadOnly || (timesheetLineList &amp;&amp; timesheetLineList.length != 0)"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-if-need-validation-enabled">

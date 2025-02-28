@@ -11,7 +11,7 @@ import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.helpers.StringHelper;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -170,7 +170,7 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
   }
 
   @Override
-  public String getSprintDomain(Project project) {
+  public List<Sprint> getProjectSprintList(Project project) {
     List<Sprint> sprintList = new ArrayList<>();
     if (Objects.equals(
         project.getSprintManagementSelect(), ProjectRepository.SPRINT_MANAGEMENT_PROJECT)) {
@@ -184,7 +184,7 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
               .flatMap(Collection::stream)
               .collect(Collectors.toList());
     }
-    return String.format("self.id in (%s)", StringHelper.getIdListString(sprintList));
+    return sprintList;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -209,5 +209,15 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
             + DATE_FORMATTER.format(toDate));
 
     return sprintRepository.save(sprint);
+  }
+
+  @CallMethod
+  public List<Long> getSprintList(Long projectId) {
+    List<Sprint> sprintList = new ArrayList<>();
+    if (projectId != null) {
+      Project project = projectRepository.find(projectId);
+      sprintList = getProjectSprintList(project);
+    }
+    return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }
 }

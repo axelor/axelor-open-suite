@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface SaleOrderLineComputeService {
@@ -62,4 +63,6 @@ public interface SaleOrderLineComputeService {
   Map<String, Object> updateProductQty(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
       throws AxelorException;
+
+  void computeLevels(List<SaleOrderLine> saleOrderLineList, String parentLevel);
 }

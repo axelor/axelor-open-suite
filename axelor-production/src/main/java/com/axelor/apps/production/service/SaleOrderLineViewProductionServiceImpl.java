@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -98,6 +99,9 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
     attrs.put("customizeBOMBtn", Map.of(HIDDEN_ATTR, hideBom));
     attrs.put("prodProcess", Map.of(HIDDEN_ATTR, hideProdProcess));
     attrs.put("customizeProdProcessBtn", Map.of(HIDDEN_ATTR, hideProdProcess));
+    attrs.put(
+        "qtyToProduce",
+        Map.of(HIDDEN_ATTR, saleSupplySelect != SaleOrderLineRepository.SALE_SUPPLY_PRODUCE));
     return attrs;
   }
 }
