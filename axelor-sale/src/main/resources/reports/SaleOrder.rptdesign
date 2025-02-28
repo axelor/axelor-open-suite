@@ -184,6 +184,36 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="PrimaryColor" id="5833">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">#D3D3D3</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="SecondaryColor" id="5834">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">#E6E6E6</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -6988,6 +7018,19 @@ for (var i = 0; i &lt; levels.length; i++) {
                             </list-property>
                             <header>
                                 <row id="4553">
+                                    <method name="onRender"><![CDATA[var isDisplaySubLinesOnReport = row._outer["isDisplaySubLinesOnReport"];
+var listDisplayTypeSelect = row._outer["listDisplayTypeSelect"];
+var levelIndicator = row["levelIndicator"];
+var level = levelIndicator.split(".").length;
+
+if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
+	if (level == 1) {
+		this.getStyle().backgroundColor = params["PrimaryColor"].value;
+	}
+	else if (level == 2) {
+		this.getStyle().backgroundColor = params["SecondaryColor"].value;
+	}
+}]]></method>
                                     <cell id="5827">
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -7757,6 +7800,19 @@ else {
                                     </cell>
                                 </row>
                                 <row id="4585">
+                                    <method name="onRender"><![CDATA[var isDisplaySubLinesOnReport = row._outer["isDisplaySubLinesOnReport"];
+var listDisplayTypeSelect = row._outer["listDisplayTypeSelect"];
+var levelIndicator = row["levelIndicator"];
+var level = levelIndicator.split(".").length;
+
+if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
+	if (level == 1) {
+		this.getStyle().backgroundColor = params["PrimaryColor"].value;
+	}
+	else if (level == 2) {
+		this.getStyle().backgroundColor = params["SecondaryColor"].value;
+	}
+}]]></method>
                                     <cell id="5828">
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>

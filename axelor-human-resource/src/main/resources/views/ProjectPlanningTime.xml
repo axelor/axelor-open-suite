@@ -70,8 +70,7 @@
         form-view="employee-form"/>
       <field name="product" canEdit="false"
         onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox"
-        form-view="product-form" grid-view="product-grid" required="true"
-        title="ProjectPlanningTime.Activity"/>
+        form-view="product-form" grid-view="product-grid" title="ProjectPlanningTime.Activity"/>
       <field name="startDateTime"
         onChange="action-project-planning-time-method-compute-planned-time"/>
       <field name="endDateTime" readonly="true"/>
@@ -102,7 +101,7 @@
         onChange="action-project-planning-time-attrs-employee-change"/>
       <field name="product" canEdit="false" title="ProjectPlanningTime.Activity"
         type="many-to-one" target="com.axelor.apps.base.db.Product" target-name="name"
-        onSelect="action-project-planning-time-attrs-domain-product" required="true"
+        onSelect="action-project-planning-time-attrs-domain-product"
         help="The field Activity is filled automatically from the field &quot;Default Activity Product&quot; from the employee form, on the timesheets panel. You can still modify for each task though"/>
       <field name="timepercent" title="Time%" widget="SelectProgress" type="integer"
         selection="project.task.progress.select"/>

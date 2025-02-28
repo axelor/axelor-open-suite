@@ -1,6 +1,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import java.math.BigDecimal;
 
@@ -57,5 +58,17 @@ public interface ProdProcessLineComputationService {
    * @return total duration
    */
   BigDecimal getTotalDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
+
+  /**
+   * Compute the entire cycle duration of the prod process line with qty given.
+   *
+   * @param operationOrder
+   * @param prodProcessLine
+   * @param qty
+   * @throws AxelorException
+   */
+  long computeEntireCycleDuration(
+      OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException;
 }

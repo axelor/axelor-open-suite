@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.Machine;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
@@ -114,5 +115,22 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
       return humanDuration;
     }
     return machineDuration;
+  }
+
+  @Override
+  public long computeEntireCycleDuration(
+      OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
+      throws AxelorException {
+    BigDecimal nbCycles = this.getNbCycle(prodProcessLine, qty);
+    BigDecimal humanDuration = this.getHumanDuration(prodProcessLine, nbCycles);
+    BigDecimal machineDuration = this.getMachineDuration(prodProcessLine, nbCycles);
+    BigDecimal totalDuration = this.getTotalDuration(prodProcessLine, nbCycles);
+
+    if (operationOrder != null) {
+      operationOrder.setPlannedMachineDuration(machineDuration.longValue());
+      operationOrder.setPlannedHumanDuration(humanDuration.longValue());
+    }
+
+    return totalDuration.longValue();
   }
 }
