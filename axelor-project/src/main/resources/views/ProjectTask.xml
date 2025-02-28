@@ -60,10 +60,6 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
-      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-task-view-show-planning"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-        if-module="axelor-human-resource" showIf="project.isShowPlanning"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -115,23 +111,11 @@
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
         <panel-include view="incl-log-times-projec-task-panel-form"/>
-
         <field name="project.manageTimeSpent" hidden="true"/>
-        <panel name="timerPanel" title="Timer" showIf="id" if-module="axelor-helpdesk"
-          if="__config__.app.isApp('helpdesk')" canCollapse="true" collapseIf="false">
-          <panel name="actionsPanel" title="Actions">
-            <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
-              hidden="true" onClick="action-project-task-method-start-timer"/>
-            <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12"
-              hidden="true" onClick="action-project-task-method-stop-timer"/>
-            <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
-              hidden="true" onClick="action-project-task-method-cancel-timer"/>
-          </panel>
-          <panel name="durationPanel">
-            <field name="$_totalTimerDuration" type="decimal" readonly="true"
-              title="Total duration (Hours)" colSpan="12"/>
-          </panel>
-        </panel>
+      </panel>
+
+      <panel name="timeFollowUpPanel" title="Time follow-up">
+        <panel-include view="incl-time-follow-task-panel-form"/>
       </panel>
 
       <panel name="taskPanel" title="Tasks" colSpan="12" showIf="id">
@@ -304,25 +288,6 @@
     </panel>
   </form>
 
-  <form name="incl-planning-panel-task-form" title="Planning"
-    model="com.axelor.apps.project.db.ProjectTask" width="large">
-    <panel name="fullNamePanel" readonly="true">
-      <field name="fullName"/>
-    </panel>
-    <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
-      if-module="axelor-human-resource" showIf="project.isShowPlanning">
-      <field name="budgetedTime" colSpan="4"/>
-      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
-        onSelect="action-project-task-attrs-set-time-unit-domain"/>
-      <spacer name="budgetedTimeSpacer" colSpan="4"/>
-      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
-        canSearch="true"/>
-      <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
-      <field name="project.isShowPlanning" hidden="true"/>
-    </panel>
-  </form>
-
   <form name="incl-checklist-task-panel-form" title="Check list"
     model="com.axelor.apps.project.db.ProjectTask">
     <panel name="templatePanel" title="Check list" colSpan="12">
@@ -337,6 +302,34 @@
         form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
         widget="tree-grid" x-tree-field="projectCheckListItemList"
         x-tree-field-title="Add a new check list item" editable="true"/>
+    </panel>
+  </form>
+
+  <form name="incl-time-follow-task-panel-form" title="Time follow up"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel name="timesPanel" colSpan="12">
+      <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
+        onSelect="action-project-task-attrs-set-time-unit-domain"
+        onChange="action-project-task-method-update-budgeted-time, save"/>
+      <field name="budgetedTime" colSpan="4"/>
+      <field name="plannedTime" readonly="true" colSpan="4"/>
+      <field name="spentTime" readonly="true" colSpan="4"/>
+    </panel>
+    <panel name="timerPanel" title="Timer" showIf="id" colSpan="12"
+      if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')" canCollapse="true"
+      collapseIf="false">
+      <panel name="actionsPanel" title="Actions">
+        <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
+          onClick="action-project-task-method-start-timer"/>
+        <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
+          onClick="action-project-task-method-stop-timer"/>
+        <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
+          hidden="true" onClick="action-project-task-method-cancel-timer"/>
+      </panel>
+      <panel name="durationPanel">
+        <field name="$_totalTimerDuration" type="decimal" readonly="true"
+          title="Total duration (Hours)" colSpan="12"/>
+      </panel>
     </panel>
   </form>
 
@@ -604,6 +597,10 @@
       method="generateCheckListFromTemplate"/>
   </action-method>
 
+  <action-method name="action-project-task-method-update-budgeted-time">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="updateBudgetedTime"/>
+  </action-method>
+
   <action-group name="action-project-task-group-click-done">
     <action name="action-project-task-method-validate-finish-status"/>
     <action name="action-project-task-method-change-status"/>
@@ -653,12 +650,6 @@
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.Project'"/>
-  </action-view>
-
-  <action-view name="action-project-task-view-show-planning" title="Planning"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="form" name="incl-planning-panel-task-form"/>
-    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <action-record name="action-project-task-record-set-default"
@@ -858,14 +849,6 @@
   <action-method name="action-project-task-method-delete-project-tasks">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTasks"/>
   </action-method>
-
-  <action-view name="action-project-task-dashlet-project-planning-time"
-    title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
-    <view type="grid" name="project-planning-time-grid"/>
-    <view type="form" name="project-planning-time-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.projectTask.id = :id</domain>
-  </action-view>
 
   <action-view name="dashlet.task" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">

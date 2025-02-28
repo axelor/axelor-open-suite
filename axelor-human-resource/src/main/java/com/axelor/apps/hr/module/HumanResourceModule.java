@@ -84,8 +84,6 @@ import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
-import com.axelor.apps.hr.service.UnitConversionForProjectServiceImpl;
 import com.axelor.apps.hr.service.WorkingDayService;
 import com.axelor.apps.hr.service.WorkingDayServiceImpl;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
@@ -427,7 +425,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(BankOrderValidationServiceImpl.class).to(BankOrderValidationServiceHRImpl.class);
     bind(ICalendarEventObserver.class);
     bind(BankCardService.class).to(BankCardServiceImpl.class);
-    bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
     bind(TimesheetLeaveService.class).to(TimesheetLeaveServiceImpl.class);
     bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
     bind(ProjectPlanningTimeResponseComputeService.class)

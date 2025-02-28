@@ -1742,10 +1742,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-compute-margin">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
-  </action-method>
-
   <action-attrs name="action-sale-order-attrs-collapse-specific-settings-group">
     <attribute name="collapse" for="specificSettings" expr="eval: true"/>
   </action-attrs>

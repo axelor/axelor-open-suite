@@ -42,12 +42,6 @@
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-group-on-save" width="large">
-    <toolbar>
-      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-        if-module="axelor-human-resource" showIf="isShowPlanning"/>
-    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -221,18 +215,6 @@
           form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
           height="200%" colSpan="12"/>
       </panel>
-    </panel>
-  </form>
-
-  <form name="incl-planning-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project" width="large">
-    <panel name="fullNamePanel" readonly="true">
-      <field name="fullName"/>
-    </panel>
-    <panel title="Planning" name="planningPanel" colSpan="12">
-      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
-        canSearch="true" height="200%"/>
     </panel>
   </form>
 
@@ -905,12 +887,6 @@
     <view type="form" name="project-task-form"/>
     <domain>self.project.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
-  </action-view>
-
-  <action-view name="action-project-view-show-planning-panel" title="Planning"
-    model="com.axelor.apps.project.db.Project">
-    <view type="form" name="incl-planning-panel-form"/>
-    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <!-- ACTION VALIDATE -->
