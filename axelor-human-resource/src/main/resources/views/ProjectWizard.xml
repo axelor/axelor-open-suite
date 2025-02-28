@@ -59,7 +59,7 @@
   <action-view name="action-project-leave-days" title="Leave days">
     <view type="custom" name="hr.leave.days"/>
   </action-view>
-  <custom name="hr.leave.days" title="PLeave days" css="report-box">
+  <custom name="hr.leave.days" title="Leave days" css="report-box">
     <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalLeaveDays</dataset>
     <template>  <![CDATA[
 <report-box label='Total leave days' value='first.total'/>

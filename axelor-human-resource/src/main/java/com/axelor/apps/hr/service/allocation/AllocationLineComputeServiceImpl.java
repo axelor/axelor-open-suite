@@ -290,19 +290,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return prorata;
   }
 
-  protected BigDecimal computeProrata(LocalDate fromDate, LocalDate toDate, Employee employee) {
-    if (fromDate == null || toDate == null) {
-      return BigDecimal.ONE;
-    }
-    BigDecimal jointDays = BigDecimal.ONE;
-    BigDecimal totalDays = getWorkingDays(fromDate, toDate, employee);
-    BigDecimal prorata = BigDecimal.ONE;
-    if (totalDays.signum() > 0) {
-      prorata = jointDays.divide(totalDays, totalDays.scale(), RoundingMode.HALF_UP);
-    }
-    return prorata;
-  }
-
   @Override
   public BigDecimal getAllocatedTime(
       Project project, LocalDate fromDate, LocalDate toDate, Employee employeeFilter) {
