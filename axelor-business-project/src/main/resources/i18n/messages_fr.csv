@@ -596,7 +596,7 @@
 "With percentage","Avec pourcentage",,
 "With price list","Avec liste de prix",,
 "Workflow management",,,
-"You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has ""Produce"" as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration.",,,
+"You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has ""Produce"" as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration.","Vous pouvez générer un projet vide, un projet avec des sous-projets ou un projet avec des tâches. Pour la génération de sous-projets ou de tâches, un élément sera créé pour chaque ligne de commande avec un produit de type ""Prestation"" et un mode d'approvisionnement ""Produire"" (onglet Configuration). Les modèles de sous-tâches sont renseignés sur la fiche Produit quand la configuration correspondante est activée dans la configuration du module Gestion à l'affaire.",,
 "You can not close this project :","Vous ne pouvez pas clore le projet :",,
 "You can't fill a project with the strategy Project Alone.","Vous ne pouvez pas remplir un projet avec la stratégie Projet seul",,
 "You haven't select a company on the main project","Vous n'avez pas sélectionné de compagnie sur le projet racine",,
