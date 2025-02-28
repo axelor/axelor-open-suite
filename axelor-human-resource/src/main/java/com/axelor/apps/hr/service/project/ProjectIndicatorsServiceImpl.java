@@ -37,4 +37,34 @@ public class ProjectIndicatorsServiceImpl implements ProjectIndicatorsService {
     }
     return leaveDaysSum;
   }
+
+  @Override
+  public BigDecimal getAvailableDays(
+      Project project, Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException {
+    BigDecimal availableAllocation = BigDecimal.ZERO;
+    if (employee != null) {
+      BigDecimal leave = allocationLineComputeService.getLeaves(fromDate, toDate, employee);
+      BigDecimal allocatedTime =
+          allocationLineComputeService.getAllocatedTime(null, fromDate, toDate, employee);
+      return allocationLineComputeService.getAvailableAllocation(
+          fromDate, toDate, employee, leave, allocatedTime);
+    }
+    if (project != null) {
+      for (User user : project.getMembersUserSet()) {
+
+        if (user != null) {
+          Employee userEmployee = user.getEmployee();
+          BigDecimal leave = allocationLineComputeService.getLeaves(fromDate, toDate, userEmployee);
+          BigDecimal allocatedTime =
+              allocationLineComputeService.getAllocatedTime(null, fromDate, toDate, userEmployee);
+          availableAllocation =
+              availableAllocation.add(
+                  allocationLineComputeService.getAvailableAllocation(
+                      fromDate, toDate, userEmployee, leave, allocatedTime));
+        }
+      }
+    }
+    return availableAllocation;
+  }
 }

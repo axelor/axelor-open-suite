@@ -159,7 +159,7 @@
     <attribute for="project-allocated-time-panel" name="refresh" expr="eval: true"/>
     <attribute for="project-planned-time-panel" name="refresh" expr="eval: true"/>
     <attribute for="project-leave-days-panel" name="refresh" expr="eval: true"/>
-
+    <attribute for="project-available-days-panel" name="refresh" expr="eval: true"/>
   </action-attrs>
 
   <action-method name="action-project-method-compute-sprint-dashlet">
@@ -167,10 +167,6 @@
       method="setSprintDashlet"/>
   </action-method>
 
-  <action-method name="action-project-management-dashboard-method-on-new">
-    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
-      method="getData"/>
-  </action-method>
 
   <action-group name="action-project-group-onchange-project">
     <action name="action-project-record-empty-sprint"/>
@@ -206,40 +202,9 @@
     <context name="ids"
       expr="call: com.axelor.apps.project.web.SprintController:computeSprintDomain(project.id)"/>
   </action-view>
-
   <action-method name="action-project-method-compute-sprint-dashlet">
     <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
       method="setSprintDashlet"/>
   </action-method>
-
-  <action-method name="action-project-management-dashboard-method-on-new">
-    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
-      method="getData"/>
-  </action-method>
-
-  <action-group name="action-project-group-onchange-project">
-    <action name="action-project-record-empty-sprint"/>
-    <action name="action-attrs-refresh-dashlets"/>
-  </action-group>
-
-  <action-group name="action-project-group-onchange-from-date">
-    <action name="action-project-record-empty-sprint-period"/>
-    <action name="action-attrs-refresh-dashlets"/>
-  </action-group>
-
-  <action-group name="action-project-group-onchange-to-date">
-    <action name="action-project-record-empty-sprint-period"/>
-    <action name="action-attrs-refresh-dashlets"/>
-  </action-group>
-
-  <action-group name="action-project-group-onchange-period">
-    <action name="action-project-record-set-period-date"/>
-    <action name="action-attrs-refresh-dashlets"/>
-  </action-group>
-
-  <action-group name="action-project-group-onchange-sprint">
-    <action name="action-project-record-set-sprint-date"/>
-    <action name="action-attrs-refresh-dashlets"/>
-  </action-group>
 
 </object-views>

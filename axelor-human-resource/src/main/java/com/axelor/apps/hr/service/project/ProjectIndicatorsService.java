@@ -11,4 +11,8 @@ public interface ProjectIndicatorsService {
   BigDecimal getProjectOrEmployeeLeaveDays(
       Project project, Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
+
+  BigDecimal getAvailableDays(
+      Project project, Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 }

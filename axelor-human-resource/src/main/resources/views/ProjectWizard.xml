@@ -14,12 +14,14 @@
     <extend target="//panel[@name='filtersPanel']">
       <insert position="after">
         <panel name="indicators">
-          <panel-dashlet colSpan="4" height="175"
+          <panel-dashlet colSpan="3" height="175"
             action="action-project-allocated-time" name="project-allocated-time-panel"/>
-          <panel-dashlet colSpan="4" height="175" action="action-project-planned-time"
+          <panel-dashlet colSpan="3" height="175" action="action-project-planned-time"
             name="project-planned-time-panel"/>
-          <panel-dashlet colSpan="4" height="175" action="action-project-leave-days"
-            name="project-leave-days-panel"/>
+          <panel-dashlet colSpan="3" height="175" action="action-project-leave-days"
+                         name="project-leave-days-panel"/>
+          <panel-dashlet colSpan="3" height="175"
+            action="action-project-available-days" name="project-available-days-panel"/>
         </panel>
       </insert>
     </extend>
@@ -57,6 +59,17 @@
     <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalLeaveDays</dataset>
     <template>  <![CDATA[
 <report-box icon='search' label='Total leave days' value='first.total'/>
+  ]]></template>
+  </custom>
+
+
+  <action-view name="action-project-available-days" title="Available days">
+    <view type="custom" name="hr.available.days"/>
+  </action-view>
+  <custom name="hr.available.days" title="Available days" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalAvailableDays</dataset>
+    <template>  <![CDATA[
+<report-box icon='search' label='Total available days' value='first.total'/>
   ]]></template>
   </custom>
 </object-views>

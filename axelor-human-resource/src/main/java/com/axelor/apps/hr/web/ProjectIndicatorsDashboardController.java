@@ -92,4 +92,28 @@ public class ProjectIndicatorsDashboardController {
 
     response.setData(List.of(dataResponse));
   }
+
+  public void getTotalAvailableDays(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Map<String, Object> data = request.getData();
+    Project project = null;
+    if (data.get("project") != null) {
+      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
+      project = Beans.get(ProjectRepository.class).find(projectId);
+    }
+    Employee employee = null;
+    if (data.get("employee") != null) {
+      Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
+      employee = Beans.get(EmployeeRepository.class).find(employeeId);
+    }
+    LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
+    LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
+    ProjectIndicatorsService projectIndicatorsService = Beans.get(ProjectIndicatorsService.class);
+    BigDecimal availableDays =
+        projectIndicatorsService.getAvailableDays(project, employee, fromDate, toDate);
+    Map<String, Object> dataResponse = new HashMap<>();
+    dataResponse.put("total", availableDays);
+
+    response.setData(List.of(dataResponse));
+  }
 }
