@@ -19,23 +19,11 @@ import java.util.Map;
 public class ProjectIndicatorsDashboardController {
   public void getTotalAllocatedTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Map<String, Object> data = request.getData();
-    Project project = null;
-    if (data.get("project") != null) {
-      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
-      project = Beans.get(ProjectRepository.class).find(projectId);
-    }
-    Employee employee = null;
-    if (data.get("employee") != null) {
-      Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
-      employee = Beans.get(EmployeeRepository.class).find(employeeId);
-    }
-    LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
-    LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
+    Map<String, Object> map = getRequestMap(request);
     AllocationLineComputeService allocationLineComputeService =
         Beans.get(AllocationLineComputeService.class);
     BigDecimal allocatedTime =
-        allocationLineComputeService.getAllocatedTime(project, fromDate, toDate, employee);
+        allocationLineComputeService.getAllocatedTime((Project) map.get("project"),(LocalDate) map.get("fromDate"), (LocalDate) map.get("toDate"),  (Employee) map.get("employee"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", allocatedTime);
 
@@ -44,25 +32,11 @@ public class ProjectIndicatorsDashboardController {
 
   public void getTotalPlannedTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Map<String, Object> data = request.getData();
-    Project project = null;
-    if (data.get("project") != null) {
-      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
-      project = Beans.get(ProjectRepository.class).find(projectId);
-    }
-    Employee employee = null;
-    if (data.get("employee") != null) {
-      Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
-      employee = Beans.get(EmployeeRepository.class).find(employeeId);
-    }
-    LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
-    LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
+    Map<String, Object> map = getRequestMap(request);
     AllocationLineComputeService allocationLineComputeService =
         Beans.get(AllocationLineComputeService.class);
-
     BigDecimal plannedTime =
-        allocationLineComputeService.computePlannedTime(fromDate, toDate, employee, project);
-
+        allocationLineComputeService.computePlannedTime((LocalDate) map.get("fromDate"), (LocalDate) map.get("toDate"),  (Employee) map.get("employee") ,(Project) map.get("project"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", plannedTime);
 
@@ -71,22 +45,11 @@ public class ProjectIndicatorsDashboardController {
 
   public void getTotalLeaveDays(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Map<String, Object> data = request.getData();
-    Project project = null;
-    if (data.get("project") != null) {
-      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
-      project = Beans.get(ProjectRepository.class).find(projectId);
-    }
-    Employee employee = null;
-    if (data.get("employee") != null) {
-      Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
-      employee = Beans.get(EmployeeRepository.class).find(employeeId);
-    }
-    LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
-    LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
+    Map<String, Object> map = getRequestMap(request);
     ProjectIndicatorsService projectIndicatorsService = Beans.get(ProjectIndicatorsService.class);
     BigDecimal leaveDays =
-        projectIndicatorsService.getProjectOrEmployeeLeaveDays(project, employee, fromDate, toDate);
+        projectIndicatorsService.getProjectOrEmployeeLeaveDays((Project) map.get("project"),   (Employee) map.get("employee") ,(LocalDate) map.get("fromDate"),
+                (LocalDate) map.get("toDate"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", leaveDays);
 
@@ -95,22 +58,11 @@ public class ProjectIndicatorsDashboardController {
 
   public void getTotalAvailableDays(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Map<String, Object> data = request.getData();
-    Project project = null;
-    if (data.get("project") != null) {
-      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
-      project = Beans.get(ProjectRepository.class).find(projectId);
-    }
-    Employee employee = null;
-    if (data.get("employee") != null) {
-      Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
-      employee = Beans.get(EmployeeRepository.class).find(employeeId);
-    }
-    LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
-    LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
+    Map<String, Object> map = getRequestMap(request);
     ProjectIndicatorsService projectIndicatorsService = Beans.get(ProjectIndicatorsService.class);
     BigDecimal availableDays =
-        projectIndicatorsService.getAvailableDays(project, employee, fromDate, toDate);
+        projectIndicatorsService.getAvailableDays((Project) map.get("project"),   (Employee) map.get("employee") ,(LocalDate) map.get("fromDate"),
+                (LocalDate) map.get("toDate"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", availableDays);
 
@@ -119,22 +71,11 @@ public class ProjectIndicatorsDashboardController {
 
   public void getTotalEstimatedTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Map<String, Object> data = request.getData();
-    Project project = null;
-    if (data.get("project") != null) {
-      Long projectId = Long.valueOf(((Map) data.get("project")).get("id").toString());
-      project = Beans.get(ProjectRepository.class).find(projectId);
-    }
-    Employee employee = null;
-    if (data.get("employee") != null) {
-      Long employeeId = Long.valueOf(((Map) data.get("employee")).get("id").toString());
-      employee = Beans.get(EmployeeRepository.class).find(employeeId);
-    }
-    LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
-    LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
+    Map<String, Object> map = getRequestMap(request);
     ProjectIndicatorsService projectIndicatorsService = Beans.get(ProjectIndicatorsService.class);
     BigDecimal estimatedTime =
-        projectIndicatorsService.getEstimatedTime(project, employee, fromDate, toDate);
+        projectIndicatorsService.getEstimatedTime( (Project) map.get("project"),   (Employee) map.get("employee") ,(LocalDate) map.get("fromDate"),
+                (LocalDate) map.get("toDate"));
     Map<String, Object> dataResponse = new HashMap<>();
     dataResponse.put("total", estimatedTime);
 
@@ -143,6 +84,23 @@ public class ProjectIndicatorsDashboardController {
 
   public void getTotalSpentTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
+    Map<String, Object> map = getRequestMap(request);
+    AllocationLineComputeService allocationLineComputeService =
+        Beans.get(AllocationLineComputeService.class);
+
+    BigDecimal spentTime =
+        allocationLineComputeService.computeSpentTime(
+            (LocalDate) map.get("fromDate"),
+            (LocalDate) map.get("toDate"),
+            (Employee) map.get("employee"),
+            (Project) map.get("project"));
+    Map<String, Object> dataResponse = new HashMap<>();
+    dataResponse.put("total", spentTime);
+
+    response.setData(List.of(dataResponse));
+  }
+
+  protected Map<String, Object> getRequestMap(ActionRequest request) {
     Map<String, Object> data = request.getData();
     Project project = null;
     if (data.get("project") != null) {
@@ -156,14 +114,11 @@ public class ProjectIndicatorsDashboardController {
     }
     LocalDate fromDate = LocalDate.parse((CharSequence) request.getData().get("fromDate"));
     LocalDate toDate = LocalDate.parse((CharSequence) request.getData().get("toDate"));
-    AllocationLineComputeService allocationLineComputeService =
-        Beans.get(AllocationLineComputeService.class);
-
-    BigDecimal spentTime =
-        allocationLineComputeService.computeSpentTime(fromDate, toDate, employee, project);
-    Map<String, Object> dataResponse = new HashMap<>();
-    dataResponse.put("total", spentTime);
-
-    response.setData(List.of(dataResponse));
+    Map<String, Object> map = new HashMap<>();
+    map.put("project", project);
+    map.put("employee", employee);
+    map.put("fromDate", fromDate);
+    map.put("toDate", toDate);
+    return map;
   }
 }

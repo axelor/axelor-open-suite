@@ -13,7 +13,7 @@
     </extend>
     <extend target="//panel[@name='filtersPanel']">
       <insert position="after">
-        <panel name="indicators">
+        <panel name="indicators" showIf="$project!=null || $employee!=null">
           <panel-dashlet colSpan="2" height="175"
             action="action-project-allocated-time" name="project-allocated-time-panel"/>
           <panel-dashlet colSpan="2" height="175" action="action-project-planned-time"

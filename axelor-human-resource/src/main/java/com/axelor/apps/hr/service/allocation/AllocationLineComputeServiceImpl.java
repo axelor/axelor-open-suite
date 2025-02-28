@@ -235,7 +235,9 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       LocalDate fromDate, LocalDate toDate, Employee employee, Project project) {
     List<TimesheetLine> timesheetLineList = new ArrayList<>();
     if (project != null && employee != null && project.getManageTimeSpent()) {
-      return timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+      return timesheetLineRepository
+          .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
+          .fetch();
     }
     if (project != null && project.getManageTimeSpent()) {
       return timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();

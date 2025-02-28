@@ -161,7 +161,8 @@
     <attribute for="project-leave-days-panel" name="refresh" expr="eval: true"/>
     <attribute for="project-available-days-panel" name="refresh" expr="eval: true"/>
     <attribute for="project-estimated-time-panel" name="refresh" expr="eval: true"/>
-    <attribute for="project-spent-time-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-spent-time-panel" name="refresh" expr="eval: true"
+      if="__config__.app.isApp('human-resources')"/>
   </action-attrs>
 
   <action-method name="action-project-method-compute-sprint-dashlet">
