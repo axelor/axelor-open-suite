@@ -21,7 +21,7 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
-    <datetime name="startDateTime" title="Start date time" required="true"/>
+    <datetime name="startDateTime" title="Start date/time" required="true"/>
     <datetime name="endDateTime" title="End date time" required="true"/>
     <many-to-one name="timeUnit" title="Time unit" ref="com.axelor.apps.base.db.Unit"
       required="true"/>
