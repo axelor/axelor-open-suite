@@ -226,23 +226,21 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   }
 
   protected void multiplyLineBy(FixedAssetDerogatoryLine line, BigDecimal prorata) {
-    FixedAsset fixedAsset = line.getFixedAsset();
-
     line.setDepreciationAmount(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getDepreciationAmount(), prorata, fixedAsset, BigDecimal::multiply));
+        fixedAssetLineToolService.getCurrenciesMaxScaledValue(
+            prorata, line.getDepreciationAmount(), BigDecimal::multiply));
     line.setFiscalDepreciationAmount(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getFiscalDepreciationAmount(), prorata, fixedAsset, BigDecimal::multiply));
+        fixedAssetLineToolService.getCurrenciesMaxScaledValue(
+            prorata, line.getFiscalDepreciationAmount(), BigDecimal::multiply));
     line.setDerogatoryAmount(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getDerogatoryAmount(), prorata, fixedAsset, BigDecimal::multiply));
+        fixedAssetLineToolService.getCurrenciesMaxScaledValue(
+            prorata, line.getDerogatoryAmount(), BigDecimal::multiply));
     line.setIncomeDepreciationAmount(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getIncomeDepreciationAmount(), prorata, fixedAsset, BigDecimal::multiply));
+        fixedAssetLineToolService.getCurrenciesMaxScaledValue(
+            prorata, line.getIncomeDepreciationAmount(), BigDecimal::multiply));
     line.setDerogatoryBalanceAmount(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getDerogatoryBalanceAmount(), prorata, fixedAsset, BigDecimal::multiply));
+        fixedAssetLineToolService.getCurrenciesMaxScaledValue(
+            prorata, line.getDerogatoryBalanceAmount(), BigDecimal::multiply));
   }
 
   /**
