@@ -1,6 +1,5 @@
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -24,20 +23,6 @@ public class SubSaleOrderLineComputeServiceProductionImpl
   }
 
   @Override
-  public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
-      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
-        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-          computeSumSubLineList(subSaleOrderLine, saleOrder);
-        }
-      }
-      computePrices(saleOrderLine, saleOrder);
-    }
-    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-  }
-
   protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
     List<SaleOrderLineDetails> saleOrderLineDetailsList =

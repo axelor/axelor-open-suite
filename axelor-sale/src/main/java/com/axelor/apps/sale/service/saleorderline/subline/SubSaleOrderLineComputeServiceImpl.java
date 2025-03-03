@@ -55,18 +55,22 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
           computeSumSubLineList(subSaleOrderLine, saleOrder);
         }
       }
-
-      saleOrderLine.setPrice(
-          subSaleOrderLineList.stream()
-              .map(SaleOrderLine::getExTaxTotal)
-              .reduce(BigDecimal.ZERO, BigDecimal::add));
-      saleOrderLine.setSubTotalCostPrice(
-          currencyScaleService.getCompanyScaledValue(
-              saleOrder,
-              subSaleOrderLineList.stream()
-                  .map(SaleOrderLine::getSubTotalCostPrice)
-                  .reduce(BigDecimal.ZERO, BigDecimal::add)));
+      computePrices(saleOrderLine, saleOrder);
     }
     saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+  }
+
+  protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    saleOrderLine.setPrice(
+        subSaleOrderLineList.stream()
+            .map(SaleOrderLine::getExTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add));
+    saleOrderLine.setSubTotalCostPrice(
+        currencyScaleService.getCompanyScaledValue(
+            saleOrder,
+            subSaleOrderLineList.stream()
+                .map(SaleOrderLine::getSubTotalCostPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)));
   }
 }
