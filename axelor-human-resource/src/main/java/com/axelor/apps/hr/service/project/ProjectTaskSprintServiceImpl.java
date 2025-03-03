@@ -13,15 +13,16 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
@@ -52,10 +53,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
       return "";
     }
 
-    Sprint savedSprint = projectTask.getOldActiveSprint();
-    if (savedSprint == null && projectTask.getId() != null) {
-      savedSprint = projectTaskRepository.find(projectTask.getId()).getActiveSprint();
-    }
+    Sprint savedSprint = getOldActiveSprint(projectTask);
+    BigDecimal oldBudgetedTime = getOldBudgetedTime(projectTask);
 
     Sprint backlogSprint =
         Optional.of(projectTask)
@@ -67,9 +66,16 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
       return "";
     }
 
-    List<ProjectPlanningTime> projectPlanningTimeList =
+    Set<ProjectPlanningTime> projectPlanningTimeSet =
         getProjectPlanningTimeOnOldSprint(projectTask, savedSprint);
-    if (ObjectUtils.isEmpty(projectPlanningTimeList)
+
+    String warning =
+        getBudgetedTimeOnChangeWarning(projectPlanningTimeSet, oldBudgetedTime, projectTask);
+    if (StringUtils.notEmpty(warning)) {
+      return warning;
+    }
+
+    if (ObjectUtils.isEmpty(projectPlanningTimeSet)
         || savedSprint == null
         || savedSprint.equals(backlogSprint)
         || savedSprint.equals(projectTask.getActiveSprint())) {
@@ -79,13 +85,37 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
   }
 
+  protected String getBudgetedTimeOnChangeWarning(
+      Set<ProjectPlanningTime> projectPlanningTimeSet,
+      BigDecimal oldBudgetedTime,
+      ProjectTask projectTask) {
+    if (projectTask.getBudgetedTime().signum() == 0
+        || projectTask.getBudgetedTime().compareTo(oldBudgetedTime) == 0
+        || ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+      return "";
+    }
+
+    projectPlanningTimeSet =
+        projectPlanningTimeSet.stream()
+            .filter(ppt -> ppt.getDisplayPlannedTime().compareTo(oldBudgetedTime) == 0)
+            .collect(Collectors.toSet());
+
+    if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+      return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_REQUEST);
+    } else {
+      return I18n.get(
+          HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_WITH_OLD_DURATION);
+    }
+  }
+
   @Override
   public void createOrMovePlanification(ProjectTask projectTask) throws AxelorException {
     if (validateConfigAndSprint(projectTask) == null) {
       return;
     }
 
-    Sprint savedSprint = projectTask.getOldActiveSprint();
+    Sprint savedSprint = getOldActiveSprint(projectTask);
+    BigDecimal oldBudgetedTime = getOldBudgetedTime(projectTask);
 
     Sprint backlogSprint =
         Optional.of(projectTask)
@@ -93,16 +123,24 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             .map(Project::getBacklogSprint)
             .orElse(null);
 
-    if (projectTask.getActiveSprint().equals(backlogSprint)
-        || projectTask.getActiveSprint().equals(savedSprint)) {
+    if (projectTask.getActiveSprint().equals(backlogSprint)) {
       return;
     }
 
+    Set<ProjectPlanningTime> projectPlanningTimeSet =
+        getProjectPlanningTimeOnOldSprint(projectTask, savedSprint);
+
+    if (projectTask.getActiveSprint().equals(savedSprint)
+        && projectTask.getBudgetedTime().compareTo(oldBudgetedTime) != 0) {
+      projectPlanningTimeSet =
+          projectPlanningTimeSet.stream()
+              .filter(ppt -> ppt.getDisplayPlannedTime().compareTo(oldBudgetedTime) == 0)
+              .collect(Collectors.toSet());
+    }
+
     if (savedSprint != null && !savedSprint.equals(backlogSprint)) {
-      List<ProjectPlanningTime> projectPlanningTimeList =
-          getProjectPlanningTimeOnOldSprint(projectTask, savedSprint);
-      if (!ObjectUtils.isEmpty(projectPlanningTimeList)) {
-        for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
+      if (!ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+        for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeSet) {
           moveProjectPlanningTime(projectPlanningTime, projectTask);
         }
 
@@ -127,9 +165,9 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
         : null;
   }
 
-  protected List<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
+  protected Set<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
       ProjectTask projectTask, Sprint savedSprint) {
-    List<ProjectPlanningTime> projectPlanningTimeList = new ArrayList<>();
+    Set<ProjectPlanningTime> projectPlanningTimeSet = new HashSet<>();
     if (savedSprint != null && !ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
       LocalDate fromDate = savedSprint.getFromDate();
       LocalDate toDate = savedSprint.getToDate();
@@ -139,11 +177,11 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
                 ppt ->
                     ppt.getStartDateTime().toLocalDate().equals(fromDate)
                         && ppt.getEndDateTime().toLocalDate().equals(toDate))
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
       }
     }
 
-    return projectPlanningTimeList;
+    return projectPlanningTimeSet;
   }
 
   protected void moveProjectPlanningTime(
@@ -225,5 +263,23 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
 
     projectPlanningTimeComputeService.computePlannedTimeValues(projectPlanningTime);
     projectPlanningTime.setEndDateTime(activeSprint.getToDate().atTime(23, 59));
+  }
+
+  protected Sprint getOldActiveSprint(ProjectTask projectTask) {
+    Sprint savedSprint = projectTask.getOldActiveSprint();
+    if (savedSprint == null && projectTask.getId() != null) {
+      savedSprint = projectTaskRepository.find(projectTask.getId()).getActiveSprint();
+    }
+
+    return savedSprint;
+  }
+
+  protected BigDecimal getOldBudgetedTime(ProjectTask projectTask) {
+    BigDecimal oldBudgetedTime = projectTask.getOldBudgetedTime();
+    if ((oldBudgetedTime == null || oldBudgetedTime.signum() == 0) && projectTask.getId() != null) {
+      oldBudgetedTime = projectTaskRepository.find(projectTask.getId()).getBudgetedTime();
+    }
+
+    return oldBudgetedTime;
   }
 }

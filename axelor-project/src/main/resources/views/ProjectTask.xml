@@ -60,10 +60,6 @@
         onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
-      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-task-view-show-planning"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-        if-module="axelor-human-resource" showIf="project.isShowPlanning"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -220,9 +216,6 @@
         showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
         onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
         form-view="sprint-form" grid-view="sprint-grid"/>
-      <field name="budgetedTime" colSpan="4"/>
-      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
-        onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
@@ -289,25 +282,6 @@
         <field name="attrs" colSpan="12"/>
       </panel>
       <field name="project.customFieldManagementSelect" hidden="true"/>
-    </panel>
-  </form>
-
-  <form name="incl-planning-panel-task-form" title="Planning"
-    model="com.axelor.apps.project.db.ProjectTask" width="large">
-    <panel name="fullNamePanel" readonly="true">
-      <field name="fullName"/>
-    </panel>
-    <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
-      if-module="axelor-human-resource" showIf="project.isShowPlanning">
-      <field name="budgetedTime" colSpan="4"/>
-      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
-        onSelect="action-project-task-attrs-set-time-unit-domain"/>
-      <spacer name="budgetedTimeSpacer" colSpan="4"/>
-      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
-        canSearch="true"/>
-      <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
-      <field name="project.isShowPlanning" hidden="true"/>
     </panel>
   </form>
 
@@ -675,12 +649,6 @@
       if="_model == 'com.axelor.apps.project.db.Project'"/>
   </action-view>
 
-  <action-view name="action-project-task-view-show-planning" title="Planning"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="form" name="incl-planning-panel-task-form"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
-
   <action-record name="action-project-task-record-set-default"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="isFirst" expr="true"/>
@@ -878,14 +846,6 @@
   <action-method name="action-project-task-method-delete-project-tasks">
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTasks"/>
   </action-method>
-
-  <action-view name="action-project-task-dashlet-project-planning-time"
-    title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
-    <view type="grid" name="project-planning-time-grid"/>
-    <view type="form" name="project-planning-time-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.projectTask.id = :id</domain>
-  </action-view>
 
   <action-view name="dashlet.task" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
