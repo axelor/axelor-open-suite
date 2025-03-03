@@ -744,7 +744,7 @@
 "You can not choose this product for this order: %s","Vous ne pouvez pas choisir ce produit pour cette commande: %s",,
 "You can not create sale order as some products are not in stock.","Vous ne pouvez pas créer de commande de vente car certains produits ne sont pas en stock.",,
 "You can only add a line to a draft sale order.","Vous ne pouvez ajouter une ligne qu'à une commande en brouillon.",,
-"You cannot bill together lines that do not have the same delivery address. Please use partial billing for lines with the same delivery address.","Vous ne pouvez pas facturer ensemble des lignes qui n'ont pas la même adresse de livraison. Merci de passer par une facturation partielle de ligne ayant la même adresse de livraison.",,
+"You cannot bill together lines that do not have the same delivery address. Please use partial billing for lines with the same delivery address.","Vous ne pouvez pas facturer ensemble des lignes qui n'ont pas la même adresse de livraison. Merci de passer par une facturation partielle de lignes ayant la même adresse de livraison.",,
 "You have to choose at least one sale order","Vous devez choisir au moins une commande client",,
 "You have to choose at least one sale quotation","Vous devez choisir au moins un devis client",,
 "You must configure a script to fill the created product code.","Veuillez configurer un script pour renseigner le code du produit créé.",,
