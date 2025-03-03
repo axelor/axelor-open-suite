@@ -153,15 +153,17 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       return totalPlannedTime;
     }
     Unit dayUnit = appBaseService.getAppBase().getUnitDays();
-
+    BigDecimal plannedTime = BigDecimal.ZERO;
     for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
-      BigDecimal plannedTime =
-          unitConversionForProjectService.convert(
-              projectPlanningTime.getTimeUnit(),
-              dayUnit,
-              projectPlanningTime.getPlannedTime(),
-              projectPlanningTime.getPlannedTime().scale(),
-              projectPlanningTime.getProject());
+      if (projectPlanningTime.getProject().getNumberHoursADay().signum() > 0) {
+        plannedTime =
+            unitConversionForProjectService.convert(
+                projectPlanningTime.getTimeUnit(),
+                dayUnit,
+                projectPlanningTime.getPlannedTime(),
+                projectPlanningTime.getPlannedTime().scale(),
+                projectPlanningTime.getProject());
+      }
       if (employee == null) {
         employee = projectPlanningTime.getEmployee();
       }

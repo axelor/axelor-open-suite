@@ -95,23 +95,6 @@
     <view name="project-sprint-grid" type="grid"/>
     <view name="sprint-form" type="form"/>
     <view-param name="popup" value="true"/>
-    <domain><![CDATA[
-    self.id in :ids AND
-    ((date(:fromDate) <= date(self.fromDate) AND
-    date(self.fromDate) <= date(:toDate)) OR
-    (date(:fromDate) <= date(self.toDate) AND
-    date(self.toDate) <= date(:toDate)))
-    ]]></domain>
-    <context name="ids"
-      expr="call: com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl:getSprintList(project.id)"/>
-  </action-view>
-
-
-  <action-view name="action-project-view-project-sprint"
-    model="com.axelor.apps.project.db.Sprint" title="Sprints">
-    <view name="project-sprint-grid" type="grid"/>
-    <view name="sprint-form" type="form"/>
-    <view-param name="popup" value="true"/>
     <domain>self.id in :ids and ((date(self.fromDate) &gt;= date(:fromDate) and date(self.fromDate)
       &lt;= date(:toDate)) or
       (date(self.toDate) &gt;= date(:fromDate) and date(self.toDate) &lt;=

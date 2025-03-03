@@ -38,8 +38,9 @@ public class ProjectIndicatorsServiceImpl implements ProjectIndicatorsService {
       Set<User> userSet = project.getMembersUserSet();
       for (User user : userSet) {
         if (user.getEmployee() != null) {
-          leaveDaysSum.add(
-              allocationLineComputeService.getLeaves(fromDate, toDate, user.getEmployee()));
+          leaveDaysSum =
+              leaveDaysSum.add(
+                  allocationLineComputeService.getLeaves(fromDate, toDate, user.getEmployee()));
         }
       }
     }
