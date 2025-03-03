@@ -479,6 +479,13 @@
       hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
 
       <panel name="contentPanel" title="Content">
+        <panel name="displayMultiLinesButtonPanel"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+          colSpan="12">
+          <spacer colSpan="8"/>
+          <button name="displayLinesBtn" onClick="action-sale-order-view-display-multi-lines"
+            title="Display lines" colSpan="4" readonlyIf="id == null"/>
+        </panel>
 
         <panel-related name="detailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
@@ -1213,6 +1220,29 @@
       <button name="generateAdvancePaymentInvoiceBtn"
         title="Generate advance payment invoice"
         onClick="action-sale-order-method-generate-advance-payment"/>
+    </panel>
+  </form>
+
+  <form name="sale-order-editable-multi-lines-form" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder" width="large" canNew="false" canDelete="false"
+    onLoad="action-group-sale-saleorder-onload">
+    <panel name="mainPanel" colSpan="12">
+      <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
+        title="Details Lines" field="saleOrderLineList" orderBy="sequence" canMove="true"
+        form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
+        widget="tree-grid" x-tree-field="subSaleOrderLineList"
+        x-tree-field-title="Add a new sale order line"
+        readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"
+        onNew="action-sale-order-line-method-onnew-editable"
+        onChange="action-sale-order-method-on-line-change"
+        canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+        canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+        if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+        editable="true">
+      </panel-related>
+      <field name="clientPartner" hidden="true"/>
+      <field name="statusSelect" hidden="true"/>
+      <field name="orderBeingEdited" hidden="true"/>
     </panel>
   </form>
 
@@ -2249,5 +2279,11 @@
     <action name="action-sale-order-validate-duplicate-lines"/>
     <action name="action-sale-order-duplicate-sale-order-with-configurator"/>
   </action-group>
+
+  <action-view name="action-sale-order-view-display-multi-lines"
+    title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-editable-multi-lines-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>
