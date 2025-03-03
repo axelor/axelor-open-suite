@@ -141,12 +141,6 @@
     <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
   </action-attrs>
 
-  <action-method name="action-project-method-compute-sprint-dashlet">
-    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
-      method="setSprintDashlet"/>
-  </action-method>
-
-
   <action-group name="action-project-group-onchange-project">
     <action name="action-project-record-empty-sprint"/>
     <action name="action-attrs-refresh-dashlets"/>
@@ -181,9 +175,5 @@
     <context name="ids"
       expr="call: com.axelor.apps.project.web.SprintController:computeSprintDomain(project.id)"/>
   </action-view>
-  <action-method name="action-project-method-compute-sprint-dashlet">
-    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
-      method="setSprintDashlet"/>
-  </action-method>
 
 </object-views>
