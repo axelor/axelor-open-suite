@@ -100,7 +100,7 @@
       (date(self.toDate) &gt;= date(:fromDate) and date(self.toDate) &lt;=
       date(:toDate)) )</domain>
     <context name="ids"
-      expr="call: com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl:computeSprintDomain(project.id)"/>
+      expr="call: com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl:getSprintList(project.id)"/>
   </action-view>
   <action-record name="action-project-record-empty-sprint"
     model="com.axelor.apps.project.db.Project">
