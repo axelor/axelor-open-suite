@@ -12,6 +12,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,12 +33,10 @@ public class BillOfMaterialLineListener {
       if (CollectionUtils.isNotEmpty(saleOrderSet)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_LINE_DELETE_ERROR_1),
+            I18n.get(ProductionExceptionMessage.BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_1),
             billOfMaterialLine.getProduct().getFullName(),
-            saleOrderSet.stream()
-                .map(SaleOrder::getFullName)
-                .distinct()
-                .collect(Collectors.joining("<br>")));
+            StringHtmlListBuilder.formatMessage(
+                saleOrderSet.stream().map(SaleOrder::getFullName).collect(Collectors.toList())));
       }
     } else {
       List<SaleOrder> filteredSaleOrders =
@@ -45,12 +44,12 @@ public class BillOfMaterialLineListener {
       if (CollectionUtils.isNotEmpty(filteredSaleOrders)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_LINE_DELETE_ERROR_2),
+            I18n.get(ProductionExceptionMessage.BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_2),
             billOfMaterialLine.getProduct().getFullName(),
-            filteredSaleOrders.stream()
-                .map(SaleOrder::getFullName)
-                .distinct()
-                .collect(Collectors.joining("<br>")),
+            StringHtmlListBuilder.formatMessage(
+                filteredSaleOrders.stream()
+                    .map(SaleOrder::getFullName)
+                    .collect(Collectors.toList())),
             saleOrdersCount - DISPLAY_LIMIT);
       }
     }
