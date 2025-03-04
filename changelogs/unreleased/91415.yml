@@ -1,0 +1,2 @@
+title: "Inventory: gap and real values computation now correctly takes into account company product cost/sale/purchase price."
+module: axelor-stock
