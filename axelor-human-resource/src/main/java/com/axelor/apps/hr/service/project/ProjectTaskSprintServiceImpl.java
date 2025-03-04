@@ -79,10 +79,22 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
         || savedSprint == null
         || savedSprint.equals(backlogSprint)
         || savedSprint.equals(projectTask.getActiveSprint())) {
-      return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
+      projectPlanningTimeSet =
+          getProjectPlanningTimeOnOldSprint(projectTask, projectTask.getActiveSprint());
+      if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
+      }
+      projectPlanningTimeSet =
+          projectPlanningTimeSet.stream()
+              .filter(ppt -> ppt.getDisplayPlannedTime().compareTo(oldBudgetedTime) != 0)
+              .collect(Collectors.toSet());
+      if (!ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
+      }
     } else {
       return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT);
     }
+    return "";
   }
 
   protected String getBudgetedTimeOnChangeWarning(
