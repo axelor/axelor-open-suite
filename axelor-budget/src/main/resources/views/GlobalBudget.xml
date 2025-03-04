@@ -21,7 +21,7 @@
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
     name="global-budget-form" width="large" onNew="action-global-budget-group-onnew"
-    onSave="action-global-budget-group-onsave">
+    onLoad="action-account-attrs-simulated-amounts" onSave="action-global-budget-group-onsave">
 
     <menubar>
       <menu title="See detail" name="seeDetailBtn">
@@ -125,8 +125,10 @@
         title="Total amounts" showIf="id">
         <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
         <field name="totalAmountAvailable" x-scale="company.currency.numberOfDecimals"/>
-        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"/>
-        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"
+          hidden="true"/>
+        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"
+          hidden="true"/>
         <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
         <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
         <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
@@ -393,5 +395,10 @@
     <context name="_globalBudget" expr="eval: __this__"/>
   </action-view>
 
+  <action-attrs name="action-account-attrs-simulated-amounts"
+    model="com.axelor.apps.budget.db.GlobalBudget">
+    <attribute name="hidden" for="availableAmountWithSimulated,simulatedAmount"
+      expr="eval:!__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isActivateSimulatedMove"/>
 
+  </action-attrs>
 </object-views>
