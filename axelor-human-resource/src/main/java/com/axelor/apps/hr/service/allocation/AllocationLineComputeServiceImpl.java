@@ -233,7 +233,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     return totalSpentTime;
   }
 
-  private List<TimesheetLine> getTimesheetLines(
+  protected List<TimesheetLine> getTimesheetLines(
       LocalDate fromDate, LocalDate toDate, Employee employee, Project project) {
     List<TimesheetLine> timesheetLineList = new ArrayList<>();
     if (project != null && employee != null && project.getManageTimeSpent()) {
