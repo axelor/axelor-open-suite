@@ -33,7 +33,7 @@ public class BillOfMaterialLineListener {
       if (CollectionUtils.isNotEmpty(saleOrderSet)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(ProductionExceptionMessage.BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_1),
+            I18n.get(ProductionExceptionMessage.BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR),
             billOfMaterialLine.getProduct().getFullName(),
             StringHtmlListBuilder.formatMessage(
                 saleOrderSet.stream().map(SaleOrder::getFullName).collect(Collectors.toList())));
@@ -44,7 +44,7 @@ public class BillOfMaterialLineListener {
       if (CollectionUtils.isNotEmpty(filteredSaleOrders)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(ProductionExceptionMessage.BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_2),
+            I18n.get(ProductionExceptionMessage.BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE),
             billOfMaterialLine.getProduct().getFullName(),
             StringHtmlListBuilder.formatMessage(
                 filteredSaleOrders.stream()
