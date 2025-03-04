@@ -217,7 +217,6 @@
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' || _projectTask"/>
     <attribute name="value" for="product" expr="eval: __user__.employee.product"
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet &amp;&amp; __user__.employee"/>
-    <attribute name="value" for="displayTimeUnit" expr="eval: _project.projectTimeUnit"/>
   </action-attrs>
 
   <action-method name="action-project-planning-time-method-get-company-config">
@@ -253,14 +252,6 @@
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
-    <attribute for="timeUnit" name="value" expr="eval: projectTask.timeUnit"
-      if="projectTask?.timeUnit"/>
-    <attribute for="timeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask?.timeUnit"/>
-    <attribute for="displayTimeUnit" name="value" expr="eval: projectTask?.timeUnit"
-      if="projectTask?.timeUnit"/>
-    <attribute for="displayTimeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask?.timeUnit"/>
     <attribute for="site" name="value" expr="eval: projectTask?.site"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>

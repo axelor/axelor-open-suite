@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.PlannedTimeValue;
@@ -40,6 +41,7 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
   protected PlannedTimeValueService plannedTimeValueService;
   protected AppBaseService appBaseService;
   protected UnitConversionForProjectService unitConversionForProjectService;
+  protected ProjectPlanningTimeToolService projectPlanningTimeToolService;
 
   @Inject
   public ProjectPlanningTimeComputeServiceImpl(
@@ -47,12 +49,14 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
       ProjectConfigService projectConfigService,
       PlannedTimeValueService plannedTimeValueService,
       AppBaseService appBaseService,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      UnitConversionForProjectService unitConversionForProjectService,
+      ProjectPlanningTimeToolService projectPlanningTimeToolService) {
     this.projectPlanningTimeService = projectPlanningTimeService;
     this.projectConfigService = projectConfigService;
     this.plannedTimeValueService = plannedTimeValueService;
     this.appBaseService = appBaseService;
     this.unitConversionForProjectService = unitConversionForProjectService;
+    this.projectPlanningTimeToolService = projectPlanningTimeToolService;
   }
 
   @Override
@@ -61,6 +65,10 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
     if (projectPlanningTime == null) {
       return;
     }
+
+    Unit timeUnit = projectPlanningTimeToolService.getDefaultTimeUnit(projectPlanningTime);
+    projectPlanningTime.setTimeUnit(timeUnit);
+    projectPlanningTime.setDisplayTimeUnit(timeUnit);
 
     projectPlanningTime.setPlannedTime(
         projectPlanningTimeService.computePlannedTime(projectPlanningTime));

@@ -46,6 +46,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
   protected TimesheetLineRepository timesheetLineRepository;
   protected AppBaseService appBaseService;
   protected ProjectTimeUnitService projectTimeUnitService;
+  protected ProjectPlanningTimeToolService projectPlanningTimeToolService;
 
   @Inject
   public ProjectPlanningTimeCreateServiceImpl(
@@ -58,7 +59,8 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       EmployeeRepository employeeRepo,
       TimesheetLineRepository timesheetLineRepository,
       AppBaseService appBaseService,
-      ProjectTimeUnitService projectTimeUnitService) {
+      ProjectTimeUnitService projectTimeUnitService,
+      ProjectPlanningTimeToolService projectPlanningTimeToolService) {
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskRepo;
@@ -69,6 +71,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBaseService = appBaseService;
     this.projectTimeUnitService = projectTimeUnitService;
+    this.projectPlanningTimeToolService = projectPlanningTimeToolService;
   }
 
   @Override
@@ -189,14 +192,33 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     if (defaultTimeUnit != null) {
       planningTime.setTimeUnit(defaultTimeUnit);
     } else {
-      planningTime.setTimeUnit(projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask));
+      planningTime.setTimeUnit(projectPlanningTimeToolService.getDefaultTimeUnit(planningTime));
     }
+    planningTime.setDisplayTimeUnit(planningTime.getTimeUnit());
+
+    if (planningTime.getTimeUnit() == null) {
+      return planningTime;
+    }
+
+    computePlannedTime(planningTime, totalHours);
+
+    return planningTime;
+  }
+
+  protected void computePlannedTime(ProjectPlanningTime planningTime, BigDecimal totalHours)
+      throws AxelorException {
+    if (planningTime.getTimeUnit() == null) {
+      return;
+    }
+
     if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
-      BigDecimal numberHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);
+      BigDecimal numberHoursADay =
+          projectTimeUnitService.getDefaultNumberHoursADay(planningTime.getProject());
       planningTime.setPlannedTime(totalHours.divide(numberHoursADay, 2, RoundingMode.HALF_UP));
+    } else if (planningTime.getTimeUnit().equals(appBaseService.getUnitMinutes())) {
+      planningTime.setPlannedTime(totalHours.multiply(new BigDecimal(60)));
     } else {
       planningTime.setPlannedTime(totalHours);
     }
-    return planningTime;
   }
 }
