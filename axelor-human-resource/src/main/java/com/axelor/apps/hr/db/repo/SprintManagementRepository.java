@@ -53,7 +53,9 @@ public class SprintManagementRepository extends SprintRepository {
       BigDecimal plannedTime =
           allocationLineComputeService.computePlannedTime(
               sprint.getFromDate(), sprint.getToDate(), employee, project);
-      BigDecimal allocatedTime = allocationLineComputeService.getAllocatedTime(project, sprint);
+      BigDecimal allocatedTime =
+          allocationLineComputeService.getAllocatedTime(
+              project, sprint.getFromDate(), sprint.getToDate(), employee);
       BigDecimal budgetedTime = allocationLineComputeService.getBudgetedTime(sprint, project);
       BigDecimal spentTime =
           allocationLineComputeService.computeSpentTime(
