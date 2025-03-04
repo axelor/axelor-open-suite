@@ -23,7 +23,6 @@ public class ProjectTaskController {
 
   public void createSprintPlanification(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    // ProjectTask projectTask = EntityMergingHelper.merge(request.getContext(), ProjectTask.class);
     ProjectTask projectTask =
         EntityHelper.getEntity(request.getContext().asType(ProjectTask.class));
     Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
