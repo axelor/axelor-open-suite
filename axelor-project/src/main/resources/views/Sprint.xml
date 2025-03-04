@@ -20,6 +20,21 @@
     <field name="sprintManagementSelect" hidden="true"/>
   </grid>
 
+  <grid name="sprint-dashlet-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint"
+    orderBy="sequence" editable="true" onNew="action-sprint-group-onnew">
+    <toolbar>
+      <button name="allSprintsBtn" title="All sprints" colSpan="2" css="btn-custom text-left"
+        icon="bar-chart-steps" onClick="save,action-sprint-method-show-all-sprints"/>
+    </toolbar>
+    <field name="name" required="true"/>
+    <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="project" readonly="true"/>
+    <field name="targetVersion" readonly="true" if="sprintManagementSelect == 'version'"/>
+    <field name="description"/>
+    <field name="sequence" hidden="true"/>
+  </grid>
+
   <form name="sprint-form" title="Sprint" model="com.axelor.apps.project.db.Sprint"
     width="large" onNew="action-sprint-group-onnew"
     onLoad="action-sprint-attrs-manage-hide-project-version">
