@@ -5,9 +5,11 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.AllocationLine;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface AllocationLineComputeService {
   BigDecimal getLeaves(LocalDate fromDate, LocalDate toDate, Employee employee)
@@ -30,7 +32,11 @@ public interface AllocationLineComputeService {
       LocalDate fromDate, LocalDate toDate, Employee employee, Project project)
       throws AxelorException;
 
-  BigDecimal getAllocatedTime(Project project, Sprint sprint);
+  BigDecimal getAllocatedTime(
+      Project project, LocalDate fromDate, LocalDate toDate, Employee employee);
 
   BigDecimal getBudgetedTime(Sprint sprint, Project project) throws AxelorException;
+
+  BigDecimal getBudgetedTime(List<ProjectTask> projectTaskList, Project project)
+      throws AxelorException;
 }
