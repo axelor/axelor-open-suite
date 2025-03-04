@@ -79,12 +79,10 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
         || savedSprint == null
         || savedSprint.equals(backlogSprint)
         || savedSprint.equals(projectTask.getActiveSprint())) {
-      projectPlanningTimeSet =
-          getProjectPlanningTimeOnOldSprint(projectTask, projectTask.getActiveSprint());
-      if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+      if (ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
         return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
       } else {
-        return I18n.get("Update record");
+        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
       }
     } else {
       return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT);
@@ -101,28 +99,22 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
       return "";
     }
 
+    projectPlanningTimeSet =
+        projectPlanningTimeSet.stream()
+            .filter(ppt -> ppt.getDisplayPlannedTime().compareTo(oldBudgetedTime) == 0)
+            .collect(Collectors.toSet());
+
     if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
-      return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
-    }
-    Set<ProjectPlanningTime> modifiedTimes = new HashSet<>();
-    Set<ProjectPlanningTime> unchangedTimes = new HashSet<>();
-
-    for (ProjectPlanningTime ppt : projectPlanningTimeSet) {
-      if (ppt.getDisplayPlannedTime().compareTo(oldBudgetedTime) != 0) {
-        modifiedTimes.add(ppt);
+      if (ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
+        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
       } else {
-        unchangedTimes.add(ppt);
+        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
       }
-    }
-    if (!ObjectUtils.isEmpty(modifiedTimes)) {
-      return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
-    }
 
-    if (!ObjectUtils.isEmpty(unchangedTimes)) {
+    } else {
       return I18n.get(
           HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_WITH_OLD_DURATION);
     }
-    return "";
   }
 
   @Override
