@@ -253,9 +253,6 @@
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
     onNew="action-sale-order-method-onnew">
     <toolbar>
-      <button name="duplicateWithConfiguratorBtn" title="Duplicate with configurator"
-        onClick="action-sale-order-group-on-duplicate-with-configurator"
-        if="__config__.app.getApp('sale')?.getEnableConfigurator()" icon="fa-copy"/>
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -264,7 +261,6 @@
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
         if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
-
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
@@ -286,6 +282,9 @@
           action="save,action-sale-order-method-cancel-reservation"
           showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
           if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item name="duplicateWithConfiguratorBtn" title="Duplicate with configurator"
+          action="action-sale-order-group-on-duplicate-with-configurator"
+          if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
