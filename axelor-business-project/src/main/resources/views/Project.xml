@@ -276,7 +276,7 @@
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
           onChange="action-project-attrs-set-invoicing-sequence"/>
-        <field name="isInvoicingTimesheet" colSpan="3" showIf="manageTimeSpent"/>
+        <field name="isInvoicingTimesheet" colSpan="3" hidden="true"/>
         <field name="isInvoicingExpenses" colSpan="3"/>
         <field name="isInvoicingPurchases" colSpan="3"/>
         <field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice"
@@ -317,7 +317,7 @@
 
   <form title="Business project" model="com.axelor.apps.project.db.Project" width="large"
     name="business-project-financial-datas-form"
-    onLoad="action-business-project-method-set-analytic-distribution-template-required">
+    onLoad="action-business-project-group-financial-datas-form-onload">
     <panel-tabs>
       <panel title="Sales" name="salesPanel"
         if="__config__.app.isApp('business-project')
@@ -469,7 +469,7 @@
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
           onChange="action-project-attrs-set-invoicing-sequence"/>
-        <field name="isInvoicingTimesheet" colSpan="3" showIf="manageTimeSpent"/>
+        <field name="isInvoicingTimesheet" colSpan="3" hidden="true"/>
         <field name="isInvoicingExpenses" colSpan="3"/>
         <field name="isInvoicingPurchases" colSpan="3"/>
         <field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice"
@@ -615,6 +615,7 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-business-project-attrs-show-is-invoicing-timesheet"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -1335,6 +1336,10 @@
     <action name="action-business-project-method-get-analytic-distribution-template"/>
   </action-group>
 
+  <action-group name="action-business-project-group-financial-datas-form-onload">
+    <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-business-project-attrs-show-is-invoicing-timesheet"/>
+  </action-group>
   <!-- Action method -->
   <action-method
     name="action-business-project-method-set-analytic-distribution-template-required">
@@ -1348,4 +1353,7 @@
       method="getAnalyticDistributionTemplate"/>
   </action-method>
 
+  <action-attrs name="action-business-project-attrs-show-is-invoicing-timesheet">
+    <attribute for="isInvoicingTimesheet" name="hidden" expr="!manageTimeSpent"/>
+  </action-attrs>
 </object-views>
