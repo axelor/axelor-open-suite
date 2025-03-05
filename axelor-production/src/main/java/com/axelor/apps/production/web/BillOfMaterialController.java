@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.service.BillOfMaterialDummyService;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -245,5 +246,13 @@ public class BillOfMaterialController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setIsUsedInSaleOrder(ActionRequest request, ActionResponse response) {
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+    response.setValue(
+        "$isUsedInSaleOrder",
+        Beans.get(BillOfMaterialDummyService.class).getIsUsedInSaleOrder(billOfMaterial));
   }
 }

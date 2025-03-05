@@ -54,6 +54,8 @@ import com.axelor.apps.production.service.BillOfMaterialCheckService;
 import com.axelor.apps.production.service.BillOfMaterialCheckServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialDummyService;
+import com.axelor.apps.production.service.BillOfMaterialDummyServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
@@ -415,5 +417,6 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineDummySupplychainServiceImpl.class)
         .to(SaleOrderLineDummyProductionServiceImpl.class);
     bind(ProdProcessComputationService.class).to(ProdProcessComputationServiceImpl.class);
+    bind(BillOfMaterialDummyService.class).to(BillOfMaterialDummyServiceImpl.class);
   }
 }
