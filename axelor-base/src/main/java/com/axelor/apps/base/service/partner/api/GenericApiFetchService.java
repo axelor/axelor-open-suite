@@ -1,9 +1,10 @@
 package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.common.net.HttpHeaders;
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,31 +18,36 @@ import wslite.json.JSONException;
 
 public abstract class GenericApiFetchService {
 
-  protected abstract String fetch(PartnerApiConfiguration configuration, String identifier)
-      throws AxelorException;
+  protected final AppBaseService appBaseService;
 
-  protected String getUrl(PartnerApiConfiguration configuration, String identifier) {
-    return configuration.getApiUrl() + "/" + identifier;
+  @Inject
+  protected GenericApiFetchService(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
+  protected abstract String fetch(String identifier) throws AxelorException;
+
+  protected String getUrl(String identifier) throws AxelorException {
+    return appBaseService.getSireneApiUrl() + "/" + identifier;
   }
 
   protected abstract String treatResponse(HttpResponse<String> response, String identifier)
       throws JSONException;
 
-  protected Map<String, String> getHeaders(PartnerApiConfiguration configuration) {
+  protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
     return headers;
   }
 
-  public String getData(PartnerApiConfiguration configuration, String identifier)
-      throws AxelorException {
+  public String getData(String identifier) throws AxelorException {
     try {
       HttpClient client = HttpClient.newBuilder().build();
 
       HttpRequest.Builder requestBuilder =
-          HttpRequest.newBuilder().uri(new URI(getUrl(configuration, identifier))).GET();
+          HttpRequest.newBuilder().uri(new URI(getUrl(identifier))).GET();
 
-      getHeaders(configuration).forEach(requestBuilder::header);
+      getHeaders().forEach(requestBuilder::header);
 
       HttpRequest request = requestBuilder.build();
 

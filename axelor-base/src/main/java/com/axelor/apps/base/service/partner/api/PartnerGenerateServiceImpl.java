@@ -7,7 +7,6 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.MainActivity;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.db.PartnerCategory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
@@ -58,10 +57,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
 
   @Transactional(rollbackOn = Exception.class)
   @Override
-  public void configurePartner(
-      Partner partner, PartnerApiConfiguration partnerApiConfiguration, String siret)
-      throws AxelorException {
-    String result = partnerApiFetchService.fetch(partnerApiConfiguration, siret);
+  public void configurePartner(Partner partner, String siret) throws AxelorException {
+    String result = partnerApiFetchService.fetch(siret);
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       PartnerDataResponse partnerData = objectMapper.readValue(result, PartnerDataResponse.class);
