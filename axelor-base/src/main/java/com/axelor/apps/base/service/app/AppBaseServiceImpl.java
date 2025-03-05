@@ -49,7 +49,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Objects;
 import javax.inject.Singleton;
 
 @Singleton
@@ -261,7 +260,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public Unit getUnitHours() throws AxelorException {
     AppBase appBase = getAppBase();
     Unit hoursUnit = appBase.getUnitHours();
-    if (Objects.isNull(hoursUnit)) {
+    if (hoursUnit == null) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -274,7 +273,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public Unit getUnitMinutes() throws AxelorException {
     AppBase appBase = getAppBase();
     Unit minuteUnit = appBase.getUnitMinutes();
-    if (Objects.isNull(minuteUnit)) {
+    if (minuteUnit == null) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -287,7 +286,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public BigDecimal getDailyWorkHours() throws AxelorException {
     AppBase appBase = getAppBase();
     BigDecimal dailyWorkHours = appBase.getDailyWorkHours();
-    if (Objects.isNull(dailyWorkHours) || dailyWorkHours.signum() <= 0) {
+    if (dailyWorkHours == null || dailyWorkHours.signum() <= 0) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
