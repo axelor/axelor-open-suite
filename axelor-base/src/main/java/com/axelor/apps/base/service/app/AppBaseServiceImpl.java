@@ -248,7 +248,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public Unit getUnitDays() throws AxelorException {
     AppBase appBase = getAppBase();
     Unit daysUnit = appBase.getUnitDays();
-    if (Objects.isNull(daysUnit)) {
+    if (daysUnit == null) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
