@@ -1,0 +1,3 @@
+---
+title: "StockLocation: Added a condition to fill the site field from the parent stock location."
+module: axelor-stock
