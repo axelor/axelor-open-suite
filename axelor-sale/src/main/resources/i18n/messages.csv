@@ -213,6 +213,7 @@
 "Display customer code on printing",,,
 "Display delivery condition on printing",,,
 "Display estimated shipping dates on printing",,,
+"Display lines",,,
 "Display product code on printing",,,
 "Display product picture on printing",,,
 "Display sale order line number",,,

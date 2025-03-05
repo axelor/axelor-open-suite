@@ -32,7 +32,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -46,6 +45,7 @@ import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.ResourceBookingService;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -192,6 +192,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                 saleOrder.getCompany(),
                 saleOrder.getClientPartner())
             : project;
+    saleOrder.setProject(project);
     project.setDescription(saleOrder.getDescription());
     return project;
   }

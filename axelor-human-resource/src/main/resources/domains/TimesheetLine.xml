@@ -39,6 +39,11 @@
       filter="self.employee = :employee AND ((self.project IS NOT NULL AND self.project = :project) OR (self.projectTask IS NOT NULL AND self.projectTask.project = :project))
                    AND (self.date BETWEEN :fromDate AND :toDate)"
       all="true"/>
+    <finder-method name="findByEmployeeAndPeriod"
+      using="employee,LocalDate:fromDate,LocalDate:toDate"
+      filter="self.employee = :employee
+                   AND (self.date BETWEEN :fromDate AND :toDate)"
+      all="true"/>
 
     <finder-method name="findByProjectAndPeriod"
       using="project,LocalDate:fromDate,LocalDate:toDate"

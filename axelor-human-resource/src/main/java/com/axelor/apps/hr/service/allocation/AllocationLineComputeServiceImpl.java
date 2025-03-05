@@ -12,13 +12,14 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.AllocationLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.db.AppProject;
@@ -140,49 +141,58 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
     if (fromDate == null
         || toDate == null
-        || project == null
-        || !project.getIsShowPlanning()
         || !Optional.ofNullable(appProjectService.getAppProject())
             .map(AppProject::getEnablePlanification)
             .orElse(false)) {
       return totalPlannedTime;
     }
-
     List<ProjectPlanningTime> projectPlanningTimeList = new ArrayList<>();
-    if (employee == null) {
-      projectPlanningTimeList =
-          planningTimeRepo.findByProjectAndPeriod(project, fromDate, toDate).fetch();
-    } else {
-      projectPlanningTimeList =
-          planningTimeRepo
-              .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
-              .fetch();
+    projectPlanningTimeList = getProjectPlanningTimeList(fromDate, toDate, employee, project);
+
+    if (ObjectUtils.isEmpty(projectPlanningTimeList)) {
+      return totalPlannedTime;
     }
-
-    if (ObjectUtils.notEmpty(projectPlanningTimeList)) {
-      Unit dayUnit = appBaseService.getAppBase().getUnitDays();
-
-      for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
-        BigDecimal plannedTime =
+    Unit dayUnit = appBaseService.getAppBase().getUnitDays();
+    BigDecimal plannedTime = BigDecimal.ZERO;
+    for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
+      if (projectPlanningTime.getProject().getNumberHoursADay().signum() > 0) {
+        plannedTime =
             unitConversionForProjectService.convert(
                 projectPlanningTime.getTimeUnit(),
                 dayUnit,
                 projectPlanningTime.getPlannedTime(),
                 projectPlanningTime.getPlannedTime().scale(),
                 projectPlanningTime.getProject());
-        if (employee == null) {
-          employee = projectPlanningTime.getEmployee();
-        }
-        BigDecimal prorata = computeProrata(projectPlanningTime, fromDate, toDate, employee);
-
-        totalPlannedTime =
-            totalPlannedTime
-                .add(plannedTime.multiply(prorata))
-                .setScale(plannedTime.scale(), RoundingMode.HALF_UP);
       }
+      if (employee == null) {
+        employee = projectPlanningTime.getEmployee();
+      }
+      BigDecimal prorata = computeProrata(projectPlanningTime, fromDate, toDate, employee);
+
+      totalPlannedTime =
+          totalPlannedTime
+              .add(plannedTime.multiply(prorata))
+              .setScale(plannedTime.scale(), RoundingMode.HALF_UP);
     }
 
     return totalPlannedTime;
+  }
+
+  protected List<ProjectPlanningTime> getProjectPlanningTimeList(
+      LocalDate fromDate, LocalDate toDate, Employee employee, Project project) {
+    if (employee != null && project != null && project.getIsShowPlanning()) {
+      return planningTimeRepo
+          .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
+          .fetch();
+    }
+    if (project != null && project.getIsShowPlanning()) {
+      return planningTimeRepo.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+    }
+    if (employee != null) {
+      return planningTimeRepo.findByEmployeeAndPeriod(employee, fromDate, toDate).fetch();
+    }
+
+    return new ArrayList<>();
   }
 
   @Override
@@ -192,8 +202,6 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     BigDecimal totalSpentTime = BigDecimal.ZERO;
     if (fromDate == null
         || toDate == null
-        || project == null
-        || !project.getManageTimeSpent()
         || appHumanResourceService.getAppTimesheet() == null
         || !Optional.ofNullable(appProjectService.getAppProject())
             .map(AppProject::getEnablePlanification)
@@ -201,16 +209,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
       return totalSpentTime;
     }
 
-    List<TimesheetLine> timesheetLineList = new ArrayList<>();
-    if (employee == null) {
-      timesheetLineList =
-          timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
-    } else {
-      timesheetLineList =
-          timesheetLineRepository
-              .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
-              .fetch();
-    }
+    List<TimesheetLine> timesheetLineList = getTimesheetLines(fromDate, toDate, employee, project);
 
     if (ObjectUtils.notEmpty(timesheetLineList)) {
       Unit dayUnit = appBaseService.getAppBase().getUnitDays();
@@ -232,6 +231,23 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     }
 
     return totalSpentTime;
+  }
+
+  protected List<TimesheetLine> getTimesheetLines(
+      LocalDate fromDate, LocalDate toDate, Employee employee, Project project) {
+    List<TimesheetLine> timesheetLineList = new ArrayList<>();
+    if (project != null && employee != null && project.getManageTimeSpent()) {
+      return timesheetLineRepository
+          .findByEmployeeProjectAndPeriod(employee, project, fromDate, toDate)
+          .fetch();
+    }
+    if (project != null && project.getManageTimeSpent()) {
+      return timesheetLineRepository.findByProjectAndPeriod(project, fromDate, toDate).fetch();
+    }
+    if (employee != null) {
+      return timesheetLineRepository.findByEmployeeAndPeriod(employee, fromDate, toDate).fetch();
+    }
+    return timesheetLineList;
   }
 
   protected BigDecimal getWorkingDays(LocalDate fromDate, LocalDate toDate, Employee employee) {
@@ -277,8 +293,11 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   @Override
-  public BigDecimal getAllocatedTime(Project project, Sprint sprint) {
-    List<AllocationLine> allocationLineList = allocationLineRepo.findByProject(project).fetch();
+  public BigDecimal getAllocatedTime(
+      Project project, LocalDate fromDate, LocalDate toDate, Employee employeeFilter) {
+    List<AllocationLine> allocationLineList = new ArrayList<>();
+    allocationLineList = getAllocationLineList(project, employeeFilter, fromDate, toDate);
+
     BigDecimal allocatedTime = BigDecimal.ZERO;
     if (ObjectUtils.isEmpty(allocationLineList)) {
       return allocatedTime;
@@ -294,39 +313,54 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
 
       LocalDate allocationLineFromDate = period.getFromDate();
       LocalDate allocationLineToDate = period.getToDate();
-      LocalDate sprintFromDate = sprint.getFromDate();
-      LocalDate sprintToDate = sprint.getToDate();
 
       if (allocationLineFromDate == null
           || allocationLineToDate == null
-          || sprintFromDate == null
-          || sprintToDate == null
+          || fromDate == null
+          || toDate == null
           || employee == null) {
         continue;
       }
 
       BigDecimal sprintPeriod = BigDecimal.ZERO;
-      if (sprintFromDate.isAfter(allocationLineFromDate)
-          && sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWorkingDays(sprintFromDate, sprintToDate, employee);
+      if (!fromDate.isBefore(allocationLineFromDate) && !toDate.isAfter(allocationLineToDate)) {
+        sprintPeriod = getWorkingDays(fromDate, toDate, employee);
       }
 
-      if (!sprintFromDate.isAfter(allocationLineFromDate)
-          && sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWorkingDays(allocationLineFromDate, sprintToDate, employee);
+      if (!fromDate.isAfter(allocationLineFromDate) && !toDate.isAfter(allocationLineToDate)) {
+        sprintPeriod = getWorkingDays(allocationLineFromDate, toDate, employee);
       }
 
-      if (sprintFromDate.isAfter(allocationLineFromDate)
-          && !sprintToDate.isBefore(allocationLineToDate)) {
-        sprintPeriod = getWorkingDays(sprintFromDate, allocationLineToDate, employee);
+      if (!fromDate.isBefore(allocationLineFromDate) && !toDate.isBefore(allocationLineToDate)) {
+        sprintPeriod = getWorkingDays(fromDate, allocationLineToDate, employee);
       }
 
       BigDecimal allocationPeriod =
           getWorkingDays(allocationLineFromDate, allocationLineToDate, employee);
       BigDecimal allocation = allocationLine.getAllocated();
-      allocatedTime = allocatedTime.add(getProrata(allocationPeriod, sprintPeriod, allocation));
+      BigDecimal prorata = getProrata(allocationPeriod, sprintPeriod, allocation);
+      if (fromDate.isBefore(allocationLineFromDate) && toDate.isAfter(allocationLineToDate)) {
+        prorata = allocation;
+      }
+      allocatedTime = allocatedTime.add(prorata);
     }
     return allocatedTime;
+  }
+
+  protected List<AllocationLine> getAllocationLineList(
+      Project project, Employee employee, LocalDate fromDate, LocalDate toDate) {
+    if (employee != null && project != null) {
+      return allocationLineRepo
+          .findByProjectAndEmployeeAndDates(project, employee, fromDate, toDate)
+          .fetch();
+    }
+    if (employee != null) {
+      return allocationLineRepo.findByEmployeeAndDates(employee, fromDate, toDate).fetch();
+    }
+    if (project != null) {
+      return allocationLineRepo.findByProjectAndDates(project, fromDate, toDate).fetch();
+    }
+    return new ArrayList<>();
   }
 
   @Override
@@ -334,11 +368,17 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
     if (sprint == null || ObjectUtils.isEmpty(sprint.getProjectTaskList())) {
       return BigDecimal.ZERO;
     }
+    return getBudgetedTime(sprint.getProjectTaskList(), project);
+  }
+
+  @Override
+  public BigDecimal getBudgetedTime(List<ProjectTask> projectTaskList, Project project)
+      throws AxelorException {
 
     Unit unitHours = appBaseService.getUnitHours();
     Unit unitDays = appBaseService.getUnitDays();
 
-    return sprint.getProjectTaskList().stream()
+    return projectTaskList.stream()
         .map(
             projectTask -> {
               BigDecimal budgetedTime = projectTask.getBudgetedTime();

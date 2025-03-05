@@ -5,9 +5,14 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PartnerApiConfiguration">
-    <string name="apiName" title="Api name" required="true" namecolumn="true"/>
-    <string name="apiUrl" title="Api url"/>
-    <string name="apiKey" title="Api key" encrypted="true"/>
+  <entity name="UnitConversion" cacheable="true">
+
+    <extra-code>
+            <![CDATA[
+			public static final int ENTITY_PROJECT = 1;
+    	]]>
+    </extra-code>
+
   </entity>
+
 </domain-models>

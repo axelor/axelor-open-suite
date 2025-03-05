@@ -18,6 +18,50 @@
     extension="true">
     <extend target="//field[@name='activeSprint']">
       <attribute name="onChange" value="action-project-task-group-sprint-onchange"/>
+
+      <insert position="after">
+        <field name="projectPlanningTimeList" hidden="true"/>
+        <field name="oldActiveSprint" hidden="true"/>
+        <field name="oldBudgetedTime" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="incl-time-follow-task-panel-form" id="hr-incl-time-follow-task-panel-form"
+    title="Time follow up" model="com.axelor.apps.project.db.ProjectTask" extension="true">
+    <extend target="//field[@name='budgetedTime']">
+      <attribute name="onChange" value="action-project-task-group-sprint-onchange"/>
+    </extend>
+  </form>
+
+  <form name="incl-planning-panel-task-form" title="Planning"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
+    <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
+      showIf="project.isShowPlanning">
+      <field name="budgetedTime" colSpan="4"/>
+      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
+      <spacer name="budgetedTimeSpacer" colSpan="4"/>
+      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
+        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        canSearch="true"/>
+      <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
+      <field name="project.isShowPlanning" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="project-task-form" id="hr-project-task-form" extension="true" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <extend target="//button[@name='doneBtn']">
+      <insert position="after">
+        <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+          onClick="save,action-project-task-view-show-planning"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+          showIf="project.isShowPlanning"/>
+      </insert>
     </extend>
   </form>
 
@@ -60,5 +104,11 @@
     <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
       method="saveProjectPlanning"/>
   </action-method>
+
+  <action-view name="action-project-task-view-show-planning" title="Planning"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="incl-planning-panel-task-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>

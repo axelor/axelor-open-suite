@@ -49,26 +49,28 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
   public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)
-        && appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
-      for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-        computeSumSubLineList(subSaleOrderLine, saleOrder);
+    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
+        }
       }
-
-      saleOrderLine.setPrice(
-          subSaleOrderLineList.stream()
-              .map(SaleOrderLine::getExTaxTotal)
-              .reduce(BigDecimal.ZERO, BigDecimal::add));
-      saleOrderLine.setSubTotalCostPrice(
-          currencyScaleService.getCompanyScaledValue(
-              saleOrder,
-              subSaleOrderLineList.stream()
-                  .map(SaleOrderLine::getSubTotalCostPrice)
-                  .reduce(BigDecimal.ZERO, BigDecimal::add)));
-
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-    } else {
-      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+      computePrices(saleOrderLine, saleOrder);
     }
+    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+  }
+
+  protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    saleOrderLine.setPrice(
+        subSaleOrderLineList.stream()
+            .map(SaleOrderLine::getExTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add));
+    saleOrderLine.setSubTotalCostPrice(
+        currencyScaleService.getCompanyScaledValue(
+            saleOrder,
+            subSaleOrderLineList.stream()
+                .map(SaleOrderLine::getSubTotalCostPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)));
   }
 }

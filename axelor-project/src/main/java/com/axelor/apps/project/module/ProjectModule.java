@@ -51,6 +51,10 @@ import com.axelor.apps.project.service.ProjectTaskAttrsService;
 import com.axelor.apps.project.service.ProjectTaskAttrsServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskCategoryService;
 import com.axelor.apps.project.service.ProjectTaskCategoryServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskComputeService;
+import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskGroupService;
+import com.axelor.apps.project.service.ProjectTaskGroupServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskToolService;
@@ -71,6 +75,8 @@ import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.TimerProjectTaskServiceImpl;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
+import com.axelor.apps.project.service.UnitConversionForProjectServiceImpl;
 import com.axelor.apps.project.service.UserProjectService;
 import com.axelor.apps.project.service.UserProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -141,5 +147,8 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectVersionService.class).to(ProjectVersionServiceImpl.class);
     bind(ProjectBatchInitService.class).to(ProjectBatchInitServiceImpl.class);
     bind(ProjectManagementDashboardService.class).to(ProjectManagementDashboardServiceImpl.class);
+    bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
+    bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
+    bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
   }
 }

@@ -206,16 +206,14 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       duration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
       Employee employee = timesheet.getEmployee();
       ProjectTask projectTask = projectPlanningTime.getProjectTask();
+      Product product = projectPlanningTime.getProduct();
+      if (product == null) {
+        product = userHrService.getTimesheetProduct(employee, projectTask);
+      }
 
       TimesheetLine timesheetLine =
           createTimesheetLine(
-              projectPlanningTime.getProject(),
-              userHrService.getTimesheetProduct(employee, projectTask),
-              employee,
-              date,
-              timesheet,
-              duration,
-              "");
+              projectPlanningTime.getProject(), product, employee, date, timesheet, duration, "");
       timesheetLine.setProjectTask(projectTask);
     }
   }

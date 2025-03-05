@@ -121,7 +121,6 @@ public class BusinessProductionModule extends AxelorModule {
     bind(SaleOrderBusinessProdObserver.class);
     bind(SolDetailsBusinessProductionService.class)
         .to(SolDetailsBusinessProductionServiceImpl.class);
-    bind(SaleOrderLineDetailsServiceImpl.class).to(SaleOrderLineDetailsBusinessServiceImpl.class);
     bind(SaleOrderLineDetailsBomSyncServiceImpl.class)
         .to(SaleOrderLineDetailsBomSyncBusinessProductionServiceImpl.class);
     bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceBusinessProductionImpl.class);
@@ -132,5 +131,6 @@ public class BusinessProductionModule extends AxelorModule {
         .to(SaleOrderLineInitValueBusinessProductionServiceImpl.class);
     bind(SolDetailsRemoveBusinessProductionService.class)
         .to(SolDetailsRemoveBusinessProductionServiceImpl.class);
+    bind(SaleOrderLineDetailsServiceImpl.class).to(SaleOrderLineDetailsBusinessServiceImpl.class);
   }
 }

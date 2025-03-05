@@ -722,4 +722,10 @@ public final class BaseExceptionMessage {
 
   public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
       "Registration code already exists for partner %s." /*)*/;
+
+  public static final String APP_BASE_API_URL_MISSING = /*$$(*/
+      "Please fil API Sirene url in app base." /*)*/;
+
+  public static final String APP_BASE_API_KEY_MISSING = /*$$(*/
+      "Please fil API Sirene key in app base." /*)*/;
 }

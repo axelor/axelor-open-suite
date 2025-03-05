@@ -118,4 +118,8 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  String getSireneApiUrl() throws AxelorException;
+
+  String getSireneApiKey() throws AxelorException;
 }

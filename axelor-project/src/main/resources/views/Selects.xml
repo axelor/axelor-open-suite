@@ -95,4 +95,9 @@
     <option value="2">Active project</option>
   </selection>
 
+  <selection name="unit.conversion.entity.select"
+    id="project.unit.conversion.entity.select">
+    <option value="1">Project</option>
+  </selection>
+
 </object-views>

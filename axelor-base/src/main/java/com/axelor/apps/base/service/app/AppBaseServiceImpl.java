@@ -312,4 +312,32 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       return processTimeout;
     }
   }
+
+  @Override
+  public String getSireneApiUrl() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String apiUrl = appBase.getApiUrl();
+    if (apiUrl != null) {
+      return apiUrl;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_API_URL_MISSING));
+    }
+  }
+
+  @Override
+  public String getSireneApiKey() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String apiKey = appBase.getApiKey();
+    if (apiKey != null) {
+      return apiKey;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_API_KEY_MISSING));
+    }
+  }
 }
