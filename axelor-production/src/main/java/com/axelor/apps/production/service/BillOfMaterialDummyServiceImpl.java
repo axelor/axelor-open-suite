@@ -5,6 +5,7 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BillOfMaterialDummyServiceImpl implements BillOfMaterialDummyService {
@@ -22,18 +23,18 @@ public class BillOfMaterialDummyServiceImpl implements BillOfMaterialDummyServic
     if (CollectionUtils.isEmpty(billOfMaterialLineList)) {
       return false;
     }
-
-    for (BillOfMaterialLine billOfMaterialLine : billOfMaterialLineList) {
-      if (CollectionUtils.isNotEmpty(
-          saleOrderLineRepository
-              .all()
-              .filter(
-                  "self.billOfMaterialLine IS NOT NULL AND self.billOfMaterialLine = :billOfMaterialLine")
-              .bind("billOfMaterialLine", billOfMaterialLine)
-              .fetch())) {
-        return true;
-      }
-    }
-    return false;
+    String idList =
+        billOfMaterialLineList.stream()
+            .map(BillOfMaterialLine::getId)
+            .map(Object::toString)
+            .collect(Collectors.joining(","));
+    return CollectionUtils.isNotEmpty(
+        saleOrderLineRepository
+            .all()
+            .filter(
+                "self.billOfMaterialLine IS NOT NULL AND self.billOfMaterialLine IN ("
+                    + idList
+                    + ")")
+            .fetch());
   }
 }
