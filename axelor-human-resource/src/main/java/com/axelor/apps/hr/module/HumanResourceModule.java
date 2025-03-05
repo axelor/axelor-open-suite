@@ -84,8 +84,6 @@ import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
-import com.axelor.apps.hr.service.UnitConversionForProjectServiceImpl;
 import com.axelor.apps.hr.service.WorkingDayService;
 import com.axelor.apps.hr.service.WorkingDayServiceImpl;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
@@ -236,6 +234,8 @@ import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.PlannedTimeValueServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectIndicatorsService;
+import com.axelor.apps.hr.service.project.ProjectIndicatorsServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
@@ -427,7 +427,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(BankOrderValidationServiceImpl.class).to(BankOrderValidationServiceHRImpl.class);
     bind(ICalendarEventObserver.class);
     bind(BankCardService.class).to(BankCardServiceImpl.class);
-    bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
     bind(TimesheetLeaveService.class).to(TimesheetLeaveServiceImpl.class);
     bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
     bind(ProjectPlanningTimeResponseComputeService.class)
@@ -477,5 +476,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestCheckResponseService.class).to(LeaveRequestCheckResponseServiceImpl.class);
     bind(SprintRepository.class).to(SprintManagementRepository.class);
     bind(EmployeeDashboardService.class).to(EmployeeDashboardServiceImpl.class);
+    bind(ProjectIndicatorsService.class).to(ProjectIndicatorsServiceImpl.class);
   }
 }

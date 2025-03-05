@@ -7,6 +7,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
@@ -54,7 +55,7 @@ public class SaleOrderDeliveryAddressServiceImpl implements SaleOrderDeliveryAdd
         > 1) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          SaleExceptionMessage.DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES);
+          I18n.get(SaleExceptionMessage.DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES));
     }
   }
 }

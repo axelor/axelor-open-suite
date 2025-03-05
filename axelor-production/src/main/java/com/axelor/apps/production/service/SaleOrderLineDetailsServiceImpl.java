@@ -8,6 +8,7 @@ import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -93,6 +94,6 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
 
   @Override
   public SaleOrder getParentSaleOrder(SaleOrderLineDetails saleOrderLineDetails) {
-    return saleOrderLineDetails.getSaleOrderLine().getSaleOrder();
+    return SaleOrderLineUtils.getParentSol(saleOrderLineDetails.getSaleOrderLine()).getSaleOrder();
   }
 }

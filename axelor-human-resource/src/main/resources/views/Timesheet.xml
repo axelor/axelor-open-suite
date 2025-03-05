@@ -191,7 +191,8 @@
     </panel>
 
     <panel name="projectPlanningTimePanel" title="Project planning time on the duration"
-      collapseIf="true">
+      collapseIf="true"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification">
       <panel-related field="$projectPlanningTimeList" showTitle="false"
         target="com.axelor.apps.project.db.ProjectPlanningTime" type="one-to-many" canRemove="false"
         canNew="false" canView="false" grid-view="project-planning-timesheet-grid"

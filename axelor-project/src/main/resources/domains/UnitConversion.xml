@@ -8,7 +8,7 @@
   <entity name="UnitConversion" cacheable="true">
 
     <extra-code>
-   		<![CDATA[
+            <![CDATA[
 			public static final int ENTITY_PROJECT = 1;
     	]]>
     </extra-code>

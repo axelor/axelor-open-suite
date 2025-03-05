@@ -69,6 +69,7 @@ public class ProjectGeneratorSaleServiceImpl implements ProjectGeneratorSaleServ
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       saleOrderLine.setProject(project);
     }
+    project = projectRepository.save(project);
     try {
       if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
         project.setCode(sequenceService.getDraftSequenceNumber(project));
@@ -76,7 +77,7 @@ public class ProjectGeneratorSaleServiceImpl implements ProjectGeneratorSaleServ
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
-    return projectRepository.save(project);
+    return project;
   }
 
   protected Project generateProject(SaleOrder saleOrder, ProjectTemplate projectTemplate)

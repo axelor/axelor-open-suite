@@ -701,20 +701,6 @@
     <context name="_projectIds" expr="eval: projectId" if="projectId"/>
   </action-view>
 
-  <menuitem name="project-unit-conversion" parent="project-configurations"
-    title="Unit conversions" action="project.unit.conversion" order="1300"
-    if-module="axelor-human-resource"/>
-
-  <action-view name="project.unit.conversion" title="Unit conversions"
-    model="com.axelor.apps.base.db.UnitConversion">
-    <view type="grid" name="unit-conversion-grid"/>
-    <view type="form" name="unit-conversion-form"/>
-    <domain>self.entitySelect = 1</domain>
-    <context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
-    <context name="_entitySelect" expr="eval: 1"/>
-    <context name="_forceTimeUnit" expr="eval: true"/>
-  </action-view>
-
   <menuitem name="project-allocation-years" parent="project-configurations"
     title="Allocation years" action="project.allocation.years" order="1700"/>
 

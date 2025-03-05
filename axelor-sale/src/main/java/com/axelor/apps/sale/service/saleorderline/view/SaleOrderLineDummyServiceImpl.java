@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -72,6 +73,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     dummyFields.putAll(initCompanyCurrency(saleOrder, saleOrderLine));
     dummyFields.putAll(initReadonlyDummy(saleOrder, saleOrderLine));
     dummyFields.putAll(initCurrencySymbol(saleOrder));
+    dummyFields.putAll(initIsGlobalDiscount(saleOrder));
     return dummyFields;
   }
 
@@ -87,6 +89,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     dummyFields.putAll(initReadonlyDummy(saleOrder, saleOrderLine));
     dummyFields.putAll(checkMultipleQty(saleOrderLine));
     dummyFields.putAll(initCurrencySymbol(saleOrder));
+    dummyFields.putAll(initIsGlobalDiscount(saleOrder));
     return dummyFields;
   }
 
@@ -249,6 +252,14 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     }
     dummyFields.put(
         "$isParentTitleLine", parentSol.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
+    return dummyFields;
+  }
+
+  protected Map<String, Object> initIsGlobalDiscount(SaleOrder saleOrder) {
+    Map<String, Object> dummyFields = new HashMap<>();
+    dummyFields.put(
+        "$isGlobalDiscount",
+        saleOrder.getDiscountTypeSelect() != PriceListLineRepository.AMOUNT_TYPE_NONE);
     return dummyFields;
   }
 }

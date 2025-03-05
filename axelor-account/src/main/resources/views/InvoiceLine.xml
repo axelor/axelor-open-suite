@@ -112,7 +112,7 @@
         <field name="inTaxPrice" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           hidden="true"/>
-        <panel name="discountPanel" colSpan="12">
+        <panel name="discountPanel" colSpan="12" readonlyIf="$isGlobalDiscount">
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
@@ -137,6 +137,7 @@
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
+        <field name="$isGlobalDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
@@ -314,6 +315,7 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
+    <action name="action-invoice-line-attrs-compute-is-global-discount"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -327,6 +329,7 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
+    <action name="action-invoice-line-attrs-compute-is-global-discount"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -754,6 +757,11 @@
   <action-attrs name="action-invoice-line-attrs-display-coefficient">
     <attribute for="coefficient" name="hidden"
       expr="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-line-attrs-compute-is-global-discount">
+    <attribute for="$isGlobalDiscount" name="value"
+      expr="eval: __parent__?.discountTypeSelect != 0"/>
   </action-attrs>
 
   <action-view name="action-invoice-line-view-project-tasks" title="Related tasks"
