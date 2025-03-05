@@ -52,21 +52,19 @@ public abstract class GenericApiFetchService {
 
       if (accessToken == null) {
         getApiSireneAccessToken(
-                appBaseService.getSireneSecret(),
-                appBaseService.getSireneKey(),
-                appBaseService.getSireneTokenGeneratorUrl()
-        );
+            appBaseService.getSireneSecret(),
+            appBaseService.getSireneKey(),
+            appBaseService.getSireneTokenGeneratorUrl());
       }
 
       HttpResponse<String> response = getApiSireneData(identifier);
 
-      if(response.statusCode() == HttpStatus.SC_UNAUTHORIZED){
+      if (response.statusCode() == HttpStatus.SC_UNAUTHORIZED) {
         getApiSireneAccessToken(
-                appBaseService.getSireneSecret(),
-                appBaseService.getSireneKey(),
-                appBaseService.getSireneTokenGeneratorUrl()
-        );
-       response = getApiSireneData(identifier);
+            appBaseService.getSireneSecret(),
+            appBaseService.getSireneKey(),
+            appBaseService.getSireneTokenGeneratorUrl());
+        response = getApiSireneData(identifier);
       }
       return treatResponse(response, identifier);
     } catch (URISyntaxException | IOException | JSONException e) {
@@ -77,7 +75,8 @@ public abstract class GenericApiFetchService {
     }
   }
 
-  protected HttpResponse<String> getApiSireneData(String identifier) throws URISyntaxException, AxelorException, IOException, InterruptedException {
+  protected HttpResponse<String> getApiSireneData(String identifier)
+      throws URISyntaxException, AxelorException, IOException, InterruptedException {
     HttpClient client = HttpClient.newBuilder().build();
 
     HttpRequest.Builder requestBuilder =
@@ -91,17 +90,18 @@ public abstract class GenericApiFetchService {
   }
 
   protected void getApiSireneAccessToken(String secret, String key, String tokenGeneratorUrl)
-          throws URISyntaxException, IOException, InterruptedException, JSONException, AxelorException {
+      throws URISyntaxException, IOException, InterruptedException, JSONException, AxelorException {
 
     String auth =
-            String.format(
-                    "%s %s",
-                    "Basic",
-                    new String(Base64.encodeBase64((key + ":" + secret).getBytes(StandardCharsets.UTF_8))));
+        String.format(
+            "%s %s",
+            "Basic",
+            new String(Base64.encodeBase64((key + ":" + secret).getBytes(StandardCharsets.UTF_8))));
 
     String requestBody = "grant_type=client_credentials";
 
-    HttpRequest request = HttpRequest.newBuilder()
+    HttpRequest request =
+        HttpRequest.newBuilder()
             .uri(new URI(tokenGeneratorUrl))
             .header(HttpHeaders.AUTHORIZATION, auth)
             .header("Content-Type", "application/x-www-form-urlencoded")
@@ -112,10 +112,12 @@ public abstract class GenericApiFetchService {
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
     JSONObject jsonObject = new JSONObject(response.body());
-    String accessToken =jsonObject.getString("access_token");
+    String accessToken = jsonObject.getString("access_token");
 
     if (accessToken == null) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(BaseExceptionMessage.API_BAD_REQUEST));
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.API_BAD_REQUEST));
     }
     appBaseService.getAppBase().setSireneAccessToken(accessToken);
   }

@@ -350,9 +350,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       return sireneSecret;
     } else {
       throw new AxelorException(
-              appBase,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_SECRET_MISSING));
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_SECRET_MISSING));
     }
   }
 }

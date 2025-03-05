@@ -52,7 +52,8 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
   protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-    headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getAppBase().getSireneAccessToken());
+    headers.put(
+        HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getAppBase().getSireneAccessToken());
     return headers;
   }
 
