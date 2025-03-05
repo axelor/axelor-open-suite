@@ -723,9 +723,18 @@ public final class BaseExceptionMessage {
   public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
       "Registration code already exists for partner %s." /*)*/;
 
-  public static final String APP_BASE_API_URL_MISSING = /*$$(*/
-      "Please fil API Sirene url in app base." /*)*/;
+  public static final String APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING = /*$$(*/
+      "Please fill API Sirene token generator url in app base." /*)*/;
 
-  public static final String APP_BASE_API_KEY_MISSING = /*$$(*/
-      "Please fil API Sirene key in app base." /*)*/;
+  public static final String APP_BASE_SIRENE_API_URL_MISSING = /*$$(*/
+      "Please fill API Sirene url in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_KEY_MISSING = /*$$(*/
+      "Please fill API Sirene key in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_SECRET_MISSING = /*$$(*/
+      "Please fill API Sirene secret in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_ACCESS_TOKEN_MISSING = /*$$(*/
+      "Please fill API Sirene access token in app base." /*)*/;
 }

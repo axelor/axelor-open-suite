@@ -121,9 +121,13 @@
           <field name="geoNamesZipUrl" colSpan="6"/>
         </panel>
         <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
-          <field name="apiUrl" widget="url"/>
-          <field name="apiKey" widget="password"/>
+          <field name="sireneTokenGeneratorUrl"/>
+          <field name="sireneUrl" widget="url"/>
+          <field name="sireneKey"/>
+          <field name="sireneSecret"/>
+          <field name="sireneAccessToken" widget="password" hidden="true"/>
         </panel>
+
 
       </panel>
       <panel name="currencyConversionPanel" title="Currency conversion" colSpan="12">

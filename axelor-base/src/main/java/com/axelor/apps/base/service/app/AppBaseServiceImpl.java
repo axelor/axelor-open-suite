@@ -313,30 +313,58 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public String getSireneApiUrl() throws AxelorException {
+  public String getSireneTokenGeneratorUrl() throws AxelorException {
     AppBase appBase = getAppBase();
-    String apiUrl = appBase.getApiUrl();
-    if (apiUrl != null) {
-      return apiUrl;
+    String tokenGeneratorUrl = appBase.getSireneTokenGeneratorUrl();
+    if (tokenGeneratorUrl != null) {
+      return tokenGeneratorUrl;
     } else {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_API_URL_MISSING));
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING));
     }
   }
 
   @Override
-  public String getSireneApiKey() throws AxelorException {
+  public String getSireneUrl() throws AxelorException {
     AppBase appBase = getAppBase();
-    String apiKey = appBase.getApiKey();
-    if (apiKey != null) {
-      return apiKey;
+    String sireneUrl = appBase.getSireneUrl();
+    if (sireneUrl != null) {
+      return sireneUrl;
     } else {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_API_KEY_MISSING));
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_URL_MISSING));
+    }
+  }
+
+  @Override
+  public String getSireneKey() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String sireneKey = appBase.getSireneKey();
+    if (sireneKey != null) {
+      return sireneKey;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_KEY_MISSING));
+    }
+  }
+
+  @Override
+  public String getSireneSecret() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String sireneSecret = appBase.getSireneSecret();
+    if (sireneSecret != null) {
+      return sireneSecret;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_SECRET_MISSING));
     }
   }
 }

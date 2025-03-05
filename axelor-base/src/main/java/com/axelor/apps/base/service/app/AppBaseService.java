@@ -119,7 +119,11 @@ public interface AppBaseService extends AppService {
    */
   int getProcessTimeout();
 
-  String getSireneApiUrl() throws AxelorException;
+  String getSireneTokenGeneratorUrl() throws AxelorException;
 
-  String getSireneApiKey() throws AxelorException;
+  String getSireneUrl() throws AxelorException;
+
+  String getSireneKey() throws AxelorException;
+
+  String getSireneSecret() throws AxelorException;
 }
