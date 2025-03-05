@@ -422,7 +422,7 @@ public final class HumanResourceExceptionMessage {
       "No leave requests were created." /*)*/;
 
   public static final String PROJECT_PLANNING_TIME_FIRST_REQUEST = /*$$(*/
-      "No project planning time exists for this task. Do you want to create project planning time?" /*)*/;
+      "No project planning time exists for this task. Do you want to create new project planning lines?" /*)*/;
   public static final String PROJECT_PLANNING_TIME_NEW_REQUEST = /*$$(*/
       "Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create a new project planning time?" /*)*/;
 

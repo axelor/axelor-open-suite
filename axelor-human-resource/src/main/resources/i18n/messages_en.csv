@@ -809,7 +809,7 @@
 "No extra hours to be validated by your subordinates",,,
 "No leave requests were created.",,,
 "No longer used",,,
-"No project planning time exists for this task. Do you want to create project planning time?",,,
+"No project planning time exists for this task. Do you want to create new project planning lines?",,,
 "No such place exists",,,
 "No time sheet found for employee %s",,,
 "No timesheet line has been created because the duration is less than 1 minute",,,
