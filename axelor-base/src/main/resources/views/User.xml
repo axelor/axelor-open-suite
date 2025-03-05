@@ -107,8 +107,8 @@
         <field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"
           onSelect="action-user-attrs-domain-active-team"/>
         <panel-related name="companySetPanel" title="Internal companies"
-          field="companySet" showTitle="false" canNew="false"
-          showIf="[2,5].indexOf(stepStatusSelect) > -1" colSpan="12"/>
+          field="companySet" canNew="false" showIf="[2,5].indexOf(stepStatusSelect) > -1"
+          colSpan="12"/>
         <field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid"
           colSpan="12"/>
       </panel>
