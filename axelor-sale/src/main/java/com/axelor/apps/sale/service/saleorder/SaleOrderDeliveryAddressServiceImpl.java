@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +47,12 @@ public class SaleOrderDeliveryAddressServiceImpl implements SaleOrderDeliveryAdd
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return;
     }
-    if (saleOrderLineList.stream().map(SaleOrderLine::getDeliveryAddress).distinct().count() > 1) {
+    if (saleOrderLineList.stream()
+            .map(SaleOrderLine::getDeliveryAddressStr)
+            .filter(StringUtils::notBlank)
+            .distinct()
+            .count()
+        > 1) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES));
