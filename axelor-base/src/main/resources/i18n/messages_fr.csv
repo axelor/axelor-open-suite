@@ -2263,6 +2263,7 @@
 "There is no configured sequence for the category","Aucune séquence configurée pour la catégorie de produits",,
 "There is no configured unit days in the app base config","Aucune unité pour les jours configurée sur la configuration de l'app Base.",,
 "There is no configured unit hours in the app base config","Aucune unité pour les heures configurée sur la configuration de l'app Base.",,
+"There is no configured unit minutes in the app base config","Aucune unité pour les minutes configurée sur la configuration de l'app Base.",,
 "There is no date to determine which rate to take for the tax. Please define a tax active version for : %s.","Aucune date ne permet de déterminer quel taux prendre pour la taxe. Merci de définir une version active pour la taxe : %s.",,
 "There is no field for tab configuration(%s)","Il n’y a aucun champ pour l’onglet configuration (%s)",,
 "There is no matching address in the QAS base","Aucune addresse correspondante dans la base QAS",,
