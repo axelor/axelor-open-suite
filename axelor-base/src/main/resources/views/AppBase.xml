@@ -166,7 +166,7 @@
       </panel>
       <panel name="signaturePanel" title="Signature">
         <field name="pfxCertificate" canNew="true" canEdit="true"
-          form-view="pfx-certificate-form"/>
+          form-view="pfx-certificate-form" grid-view="pfx-certificate-grid"/>
       </panel>
       <panel name="pricingScalePanel" colSpan="12" title="Pricings">
         <field name="enablePricingScale" widget="boolean-switch"/>
