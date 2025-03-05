@@ -424,7 +424,7 @@ public final class HumanResourceExceptionMessage {
   public static final String PROJECT_PLANNING_TIME_FIRST_REQUEST = /*$$(*/
       "No project planning time exists for this task. Do you want to create project planning time?" /*)*/;
   public static final String PROJECT_PLANNING_TIME_NEW_REQUEST = /*$$(*/
-      "Project planning time already exists for this task. Do you want to create project planning time?" /*)*/;
+      "Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create a new project planning time?" /*)*/;
 
   public static final String PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT = /*$$(*/
       "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?" /*)*/;
