@@ -121,15 +121,11 @@
           <field name="geoNamesZipUrl" colSpan="6"/>
         </panel>
         <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
-          <field name="apiUrl" widget="url"/>
-          <field name="apiKey" widget="password"/>
-        </panel>
-
-        <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
           <field name="sireneTokenGeneratorUrl"/>
           <field name="sireneUrl" widget="url"/>
           <field name="sireneKey"/>
           <field name="sireneSecret"/>
+          <field name="sireneAccessToken" widget="password" hidden="true"/>
         </panel>
 
 

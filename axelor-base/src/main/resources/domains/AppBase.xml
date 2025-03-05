@@ -198,6 +198,7 @@
     <string name="sireneUrl" title="Sirene url"/>
     <string name="sireneKey" title="Consumer key" encrypted="true"/>
     <string name="sireneSecret" title="Consumer secret" encrypted="true"/>
+    <string name="sireneAccessToken" title="Access token" encrypted="true"/>
 
     <extra-code>
 	   		<![CDATA[
