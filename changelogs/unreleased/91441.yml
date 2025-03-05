@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed the null address behavior in the delivery address check for sale order lines before invoicing."
-module: axelor-sale
