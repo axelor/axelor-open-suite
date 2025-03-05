@@ -168,7 +168,7 @@
       </panel>
       <panel name="signaturePanel" title="Signature">
         <field name="pfxCertificate" canNew="true" canEdit="true"
-          form-view="pfx-certificate-form"/>
+          form-view="pfx-certificate-form" grid-view="pfx-certificate-grid"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
