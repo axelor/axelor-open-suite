@@ -49,7 +49,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Objects;
 import javax.inject.Singleton;
 
 @Singleton
@@ -248,7 +247,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public Unit getUnitDays() throws AxelorException {
     AppBase appBase = getAppBase();
     Unit daysUnit = appBase.getUnitDays();
-    if (Objects.isNull(daysUnit)) {
+    if (daysUnit == null) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -261,7 +260,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public Unit getUnitHours() throws AxelorException {
     AppBase appBase = getAppBase();
     Unit hoursUnit = appBase.getUnitHours();
-    if (Objects.isNull(hoursUnit)) {
+    if (hoursUnit == null) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -271,10 +270,23 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
+  public Unit getUnitMinutes() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit minuteUnit = appBase.getUnitMinutes();
+    if (minuteUnit == null) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_MINUTES));
+    }
+    return minuteUnit;
+  }
+
+  @Override
   public BigDecimal getDailyWorkHours() throws AxelorException {
     AppBase appBase = getAppBase();
     BigDecimal dailyWorkHours = appBase.getDailyWorkHours();
-    if (Objects.isNull(dailyWorkHours) || dailyWorkHours.signum() <= 0) {
+    if (dailyWorkHours == null || dailyWorkHours.signum() <= 0) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -297,6 +309,34 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       return 10;
     } else {
       return processTimeout;
+    }
+  }
+
+  @Override
+  public String getSireneApiUrl() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String apiUrl = appBase.getApiUrl();
+    if (apiUrl != null) {
+      return apiUrl;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_API_URL_MISSING));
+    }
+  }
+
+  @Override
+  public String getSireneApiKey() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String apiKey = appBase.getApiKey();
+    if (apiKey != null) {
+      return apiKey;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_API_KEY_MISSING));
     }
   }
 }

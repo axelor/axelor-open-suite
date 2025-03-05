@@ -90,8 +90,11 @@
       <field name="isPayrollInput" showIf="employee.hrManager"/>
       <panel name="quantityPanel" showIf="leaveReason.leaveReasonTypeSelect != 2">
         <field name="$leavequantity" title="Available quantity (acquired)"
-          showIf="statusSelect != 3" colSpan="12" readonly="true" type="decimal"/>
+          showIf="statusSelect != 3" readonly="true" type="decimal"/>
+        <field name="leaveDaysToDate" readonly="true" x-scale="1" hideIf="statusSelect > 2"
+          x-dirty="false"/>
         <field name="quantityBeforeValidation" showIf="statusSelect == 3" colSpan="12"/>
+        <field name="leaveReason.leaveReasonTypeSelect" hidden="true"/>
       </panel>
       <field name="injectConsumeSelect" hidden="true"
         onChange="action-leave-request-attrs-inject-change"/>
@@ -124,8 +127,6 @@
         </panel>
       </panel>
       <field name="duration" readonly="true" onChange="action-leave-request-methode-duration"/>
-      <field name="leaveDaysToDate" readonly="true" x-scale="1" hideIf="statusSelect > 2"
-        x-dirty="false"/>
       <field name="leaveReason.unitSelect" readonly="true"/>
 
       <field name="comments" colSpan="12"/>

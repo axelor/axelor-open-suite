@@ -1,10 +1,11 @@
 package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,17 +18,24 @@ import wslite.json.JSONObject;
 public class PartnerApiFetchServiceImpl extends GenericApiFetchService
     implements PartnerApiFetchService {
 
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public PartnerApiFetchServiceImpl(AppBaseService appBaseService) {
+    super(appBaseService);
+    this.appBaseService = appBaseService;
+  }
+
   @Override
-  public String fetch(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
-      throws AxelorException {
-    if (partnerApiConfiguration == null || StringUtils.isEmpty(siretNumber)) {
+  public String fetch(String siretNumber) throws AxelorException {
+    if (StringUtils.isEmpty(siretNumber)) {
       return StringUtil.EMPTY_STRING;
     }
     siretNumber = cleanAndValidateSiret(siretNumber);
     if (siretNumber == null) {
       return I18n.get(BaseExceptionMessage.API_INVALID_SIRET_NUMBER);
     }
-    return getData(partnerApiConfiguration, siretNumber);
+    return getData(siretNumber);
   }
 
   protected String cleanAndValidateSiret(String siretNumber) {
@@ -41,16 +49,16 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
   }
 
   @Override
-  protected Map<String, String> getHeaders(PartnerApiConfiguration configuration) {
+  protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-    headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getApiKey());
+    headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getSireneApiKey());
     return headers;
   }
 
   @Override
-  protected String getUrl(PartnerApiConfiguration partnerApiConfiguration, String siretNumber) {
-    return partnerApiConfiguration.getApiUrl() + "/siret/" + siretNumber;
+  protected String getUrl(String siretNumber) throws AxelorException {
+    return appBaseService.getSireneApiUrl() + "/siret/" + siretNumber;
   }
 
   @Override

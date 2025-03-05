@@ -702,6 +702,9 @@ public final class BaseExceptionMessage {
   public static final String APP_BASE_NO_UNIT_HOURS = /*$$(*/
       "There is no configured unit hours in the app base config" /*)*/;
 
+  public static final String APP_BASE_NO_UNIT_MINUTES = /*$$(*/
+      "There is no configured unit minutes in the app base config" /*)*/;
+
   public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
       "There is no configured daily work hours in the app base config" /*)*/;
 
@@ -719,4 +722,10 @@ public final class BaseExceptionMessage {
 
   public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
       "Registration code already exists for partner %s." /*)*/;
+
+  public static final String APP_BASE_API_URL_MISSING = /*$$(*/
+      "Please fil API Sirene url in app base." /*)*/;
+
+  public static final String APP_BASE_API_KEY_MISSING = /*$$(*/
+      "Please fil API Sirene key in app base." /*)*/;
 }

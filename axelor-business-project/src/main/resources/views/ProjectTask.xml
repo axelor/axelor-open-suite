@@ -407,7 +407,7 @@
   <form name="incl-time-follow-task-panel-form" id="business-incl-time-follow-task-panel-form"
     title="Time follow up" model="com.axelor.apps.project.db.ProjectTask" extension="true">
     <extend target="//field[@name='budgetedTime']">
-      <attribute name="onChange" value="action-project-task-method-update-sold-time"/>
+      <attribute name="onChange" value="action-project-task-group-budgeted-time-onchange"/>
       <insert position="after">
         <field name="soldTime" readonlyIf="saleOrderLine"
           showIf="!parentTask &amp;&amp; isBusinessProject"
@@ -574,6 +574,11 @@
   <action-group name="action-project-task-group-unit-price-onchange">
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
+  </action-group>
+
+  <action-group name="action-project-task-group-budgeted-time-onchange">
+    <action name="action-project-task-group-sprint-onchange"/>
+    <action name="action-project-task-method-update-sold-time"/>
   </action-group>
 
   <action-attrs name="action-project-task-attrs-discountamount-title">

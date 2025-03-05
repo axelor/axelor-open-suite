@@ -872,6 +872,8 @@
 "The formula script to fill the unit returns null value. Please correct on prod product configurator id : %s.",,,
 "The formula script to fill the work center returns null value. Please correct on prod process line configurator id : %s.",,,
 "The last manufacturing operation planned end date will overflow beyond the manuf order planned end date, do you wish to continue?",,,
+"The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s",,,
+"The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more",,,
 "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM.",,,
 "The manufacturing operation is already finished and cannot be moved.",,,
 "The manufacturing order planned for %s can not be planned before today's date. Please adjust it. (Used date time %s)",,,

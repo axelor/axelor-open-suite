@@ -95,17 +95,13 @@
     <view name="project-sprint-grid" type="grid"/>
     <view name="sprint-form" type="form"/>
     <view-param name="popup" value="true"/>
-    <domain><![CDATA[
-    self.id in :ids AND
-    ((date(:fromDate) <= date(self.fromDate) AND
-    date(self.fromDate) <= date(:toDate)) OR
-    (date(:fromDate) <= date(self.toDate) AND
-    date(self.toDate) <= date(:toDate)))
-    ]]></domain>
+    <domain>self.id in :ids and ((date(self.fromDate) &gt;= date(:fromDate) and date(self.fromDate)
+      &lt;= date(:toDate)) or
+      (date(self.toDate) &gt;= date(:fromDate) and date(self.toDate) &lt;=
+      date(:toDate)) )</domain>
     <context name="ids"
       expr="call: com.axelor.apps.project.service.roadmap.SprintGeneratorServiceImpl:getSprintList(project.id)"/>
   </action-view>
-
   <action-record name="action-project-record-empty-sprint"
     model="com.axelor.apps.project.db.Project">
     <field name="$sprint" expr="eval: null"/>
@@ -145,16 +141,6 @@
     <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
   </action-attrs>
 
-  <action-method name="action-project-method-compute-sprint-dashlet">
-    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
-      method="setSprintDashlet"/>
-  </action-method>
-
-  <action-method name="action-project-management-dashboard-method-on-new">
-    <call class="com.axelor.apps.project.web.ProjectManagementDashboardController"
-      method="getData"/>
-  </action-method>
-
   <action-group name="action-project-group-onchange-project">
     <action name="action-project-record-empty-sprint"/>
     <action name="action-attrs-refresh-dashlets"/>
@@ -179,5 +165,15 @@
     <action name="action-project-record-set-sprint-date"/>
     <action name="action-attrs-refresh-dashlets"/>
   </action-group>
+
+  <action-view name="action-project-sprint" model="com.axelor.apps.project.db.Sprint"
+    title="Sprints">
+    <view name="project-sprint-grid" type="grid"/>
+    <view name="sprint-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.id in :ids</domain>
+    <context name="ids"
+      expr="call: com.axelor.apps.project.web.SprintController:computeSprintDomain(project.id)"/>
+  </action-view>
 
 </object-views>

@@ -102,6 +102,8 @@ public interface AppBaseService extends AppService {
 
   Unit getUnitHours() throws AxelorException;
 
+  Unit getUnitMinutes() throws AxelorException;
+
   BigDecimal getDailyWorkHours() throws AxelorException;
 
   /**
@@ -116,4 +118,8 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  String getSireneApiUrl() throws AxelorException;
+
+  String getSireneApiKey() throws AxelorException;
 }

@@ -39,6 +39,8 @@
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form">
     <menubar>
       <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+        <item name="sirenApiBtn" title="Fill from Sirene API"
+          action="save,action-partner-view-wizard-api-sirene-configuration"/>
         <item name="generateProjectItem" title="Generate Project"
           action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1"
           if-module="axelor-project" if="__config__.app.isApp('project')" hideIf="isContact"/>
@@ -452,8 +454,8 @@
         onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
-      <button name="apiBtn" title="API data import"
-        onClick="action-partner-view-wizard-api-configuration"/>
+      <button name="sirenApiBtn" title="Create from Sirene API"
+        onClick="action-partner-view-wizard-api-sirene-configuration"/>
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
