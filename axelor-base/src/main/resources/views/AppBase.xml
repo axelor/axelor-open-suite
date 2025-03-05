@@ -55,7 +55,6 @@
             requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
         </panel>
         <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
-          <field name="apiName" required="true"/>
           <field name="apiUrl" widget="url"/>
           <field name="apiKey" widget="password"/>
         </panel>
