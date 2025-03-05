@@ -139,10 +139,11 @@ public class ProjectMenuController {
 
     ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Sprints"));
     actionViewBuilder.model(Sprint.class.getName());
-    actionViewBuilder.add("grid", "sprint-grid");
+    actionViewBuilder.add("grid", "sprint-dashlet-grid");
     actionViewBuilder.add("form", "sprint-form");
     actionViewBuilder.domain("self.id IN (:sprintIds)");
     actionViewBuilder.context("sprintIds", sprintIdList);
+    actionViewBuilder.context("sprintManagementSelect", project.getSprintManagementSelect());
 
     response.setView(actionViewBuilder.map());
   }

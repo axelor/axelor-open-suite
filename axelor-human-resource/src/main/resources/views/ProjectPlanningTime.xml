@@ -243,14 +243,6 @@
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
-    <attribute for="timeUnit" name="value" expr="eval: projectTask.timeUnit"
-      if="projectTask?.timeUnit"/>
-    <attribute for="timeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask?.timeUnit"/>
-    <attribute for="displayTimeUnit" name="value" expr="eval: projectTask?.timeUnit"
-      if="projectTask?.timeUnit"/>
-    <attribute for="displayTimeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask?.timeUnit"/>
     <attribute for="site" name="value" expr="eval: projectTask?.site"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>

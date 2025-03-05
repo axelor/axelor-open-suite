@@ -102,6 +102,8 @@ public interface AppBaseService extends AppService {
 
   Unit getUnitHours() throws AxelorException;
 
+  Unit getUnitMinutes() throws AxelorException;
+
   BigDecimal getDailyWorkHours() throws AxelorException;
 
   /**
