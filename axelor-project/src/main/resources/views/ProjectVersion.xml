@@ -23,7 +23,7 @@
       <field name="projectSet" grid-view="project-grid" form-view="project-form"
         onSelect="action-version-attrs-project-domain" colSpan="12"
         onChange="action-project-version-method-show-sprints"/>
-      <button name="generateSprintsBtn" title="Generate sprints" showIf="id"
+      <button name="generateSprintsBtn" title="Generate sprints"
         onClick="save,action-sprint-generator-version-view-wizard-mass-generate"/>
       <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
         colSpan="12" action="action-project-version-method-show-sprint-list" height="200%"

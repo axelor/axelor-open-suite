@@ -58,7 +58,7 @@ public class ProjectVersionController {
       }
     }
 
-    response.setAttr("generateSprintsBtn", "hidden", isHidden);
+    response.setAttr("generateSprintsBtn", "hidden", isHidden || projectVersion.getId() == null);
     response.setAttr("sprintDashletPanel", "hidden", isHidden);
   }
 
