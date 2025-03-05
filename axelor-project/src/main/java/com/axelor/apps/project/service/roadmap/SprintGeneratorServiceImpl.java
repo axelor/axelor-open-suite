@@ -54,7 +54,7 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
 
     addDatesFields(project, projectVersion, valuesMap);
     valuesMap.put("project", project);
-    valuesMap.put("projectVersion", projectVersion);
+    valuesMap.put("targetVersion", projectVersion);
 
     return valuesMap;
   }
