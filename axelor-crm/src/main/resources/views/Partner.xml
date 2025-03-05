@@ -445,7 +445,7 @@
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
       <button name="apiBtn" title="API data import"
-        onClick="action-partner-view-wizard-api-configuration"/>
+        onClick="action-partner-view-wizard-api-sirene-configuration"/>
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
