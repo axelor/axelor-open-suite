@@ -2,9 +2,7 @@ package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.i18n.I18n;
 import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import java.io.IOException;
@@ -29,14 +27,14 @@ public abstract class GenericApiFetchService {
 
   protected abstract String fetch(String identifier) throws AxelorException;
 
-  protected String getUrl(String identifier) {
-    return appBaseService.getAppBase().getApiUrl() + "/" + identifier;
+  protected String getUrl(String identifier) throws AxelorException {
+    return appBaseService.getSireneApiUrl() + "/" + identifier;
   }
 
   protected abstract String treatResponse(HttpResponse<String> response, String identifier)
       throws JSONException;
 
-  protected Map<String, String> getHeaders() {
+  protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
     return headers;
@@ -45,18 +43,6 @@ public abstract class GenericApiFetchService {
   public String getData(String identifier) throws AxelorException {
     try {
       HttpClient client = HttpClient.newBuilder().build();
-
-      String apiUrl = appBaseService.getAppBase().getApiUrl();
-
-      if(apiUrl == null){
-        throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(I18n.get(BaseExceptionMessage.APP_BASE_API_URL_MISSING)));
-      }
-
-      String apiKey = appBaseService.getAppBase().getApiKey();
-
-      if(apiKey == null){
-        throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(I18n.get(BaseExceptionMessage.APP_BASE_API_KEY_MISSING)));
-      }
 
       HttpRequest.Builder requestBuilder =
           HttpRequest.newBuilder().uri(new URI(getUrl(identifier))).GET();

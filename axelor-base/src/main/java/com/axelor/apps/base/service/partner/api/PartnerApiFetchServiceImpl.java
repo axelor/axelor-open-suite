@@ -49,16 +49,16 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
   }
 
   @Override
-  protected Map<String, String> getHeaders() {
+  protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-    headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getAppBase().getApiKey());
+    headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getSireneApiKey());
     return headers;
   }
 
   @Override
-  protected String getUrl(String siretNumber) {
-    return appBaseService.getAppBase().getApiUrl() + "/siret/" + siretNumber;
+  protected String getUrl(String siretNumber) throws AxelorException {
+    return appBaseService.getSireneApiUrl() + "/siret/" + siretNumber;
   }
 
   @Override
