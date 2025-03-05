@@ -1307,7 +1307,7 @@
 "Waiting Timesheet lines","Ligne de feuille de temps en attente",,
 "Waiting for validation","En attente de validation",,
 "Waiting validation","Attente validation",,
-"Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create a new project planning time?","Attention : des temps planifiés existent sur cette tâche, mais ils ne peuvent pas être modifiés automatiquement. Voulez-vous créer des lignes de planification ?",,
+"Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create new project planning lines?","Attention : des temps planifiés existent sur cette tâche, mais ils ne peuvent pas être modifiés automatiquement. Voulez-vous créer des lignes de planification ?",,
 "Wednesday","Mercredi",,
 "Weekly Planning","Planning hebdomadaire",,
 "Weekly duration","Durée hebdomadaire",,
