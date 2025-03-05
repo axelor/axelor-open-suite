@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -27,6 +28,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
@@ -47,15 +49,18 @@ public class TimesheetProjectPlanningTimeServiceImpl
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
   protected TimesheetLineService timesheetLineService;
   protected AppBaseService appBaseService;
+  protected UserHrService userHrService;
 
   @Inject
   public TimesheetProjectPlanningTimeServiceImpl(
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TimesheetLineService timesheetLineService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      UserHrService userHrService) {
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.timesheetLineService = timesheetLineService;
     this.appBaseService = appBaseService;
+    this.userHrService = userHrService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -118,7 +123,13 @@ public class TimesheetProjectPlanningTimeServiceImpl
         timesheetLineService.computeHoursDuration(timesheet, plannedTime, true));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
-    timesheetLine.setProduct(projectPlanningTime.getProduct());
+    Product product = projectPlanningTime.getProduct();
+    if (product == null) {
+      product =
+          userHrService.getTimesheetProduct(
+              timesheetLine.getEmployee(), projectPlanningTime.getProjectTask());
+    }
+    timesheetLine.setProduct(product);
     if (project.getManageTimeSpent()) {
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
