@@ -3,6 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
+  <grid name="pfx-certificate-grid" title="PFX Certificate"
+    model="com.axelor.apps.base.db.PfxCertificate">
+    <field name="name"/>
+    <field name="fromValidityDate"/>
+    <field name="toValidityDate"/>
+  </grid>
+
   <form name="pfx-certificate-form" title="PFX Certificate"
     model="com.axelor.apps.base.db.PfxCertificate">
     <panel name="mainPanel">
