@@ -54,10 +54,6 @@
           <field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true"
             requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
         </panel>
-        <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
-          <field name="apiUrl" widget="url"/>
-          <field name="apiKey" widget="password"/>
-        </panel>
         <field name="generatePartnerSequence" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
         <field name="activatePartnerRelations" widget="boolean-switch"
@@ -120,10 +116,13 @@
             requiredIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"
             showIf="currencyWsURL == 'com.axelor.apps.base.service.currency.FixerCurrencyConversionService'"/>
         </panel>
-
         <panel name="geonamesPanel" title="GeoNames" colSpan="12">
           <field name="geoNamesDumpUrl" colSpan="6"/>
           <field name="geoNamesZipUrl" colSpan="6"/>
+        </panel>
+        <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
+          <field name="apiUrl" widget="url"/>
+          <field name="apiKey" widget="password"/>
         </panel>
 
       </panel>
