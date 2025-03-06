@@ -410,7 +410,7 @@
       <attribute name="onChange" value="action-project-task-group-budgeted-time-onchange"/>
       <insert position="after">
         <field name="soldTime" readonlyIf="saleOrderLine"
-          showIf="!parentTask &amp;&amp; isBusinessProject"
+          showIf="!parentTask &amp;&amp; project.isBusinessProject"
           onChange="action-project-task-method-update-updated-time" colSpan="4"/>
         <field name="updatedTime" hidden="true" colSpan="4"
           onChange="action-project-task-method-update-quantity"/>
@@ -427,6 +427,7 @@
             showTitle="false" height="125"/>
           <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
             colSpan="3" showTitle="false" height="125"/>
+          <field name="project.isBusinessProject" hidden="true"/>
         </panel>
       </insert>
     </extend>
