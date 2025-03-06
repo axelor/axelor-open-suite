@@ -260,7 +260,7 @@
 "Please select user","Veuillez sélectionner un utilisateur",,
 "Please set the completed paid project status in the project configuration.",,,
 "Please set the completed project status in the project configuration.",,,
-"Please set the default number of hours per day in the project configuration.",,,
+"Please set the default number of hours per day in the project configuration.","Veuillez remplir le nombre d'heures par jour dans la configuration du projet.",,
 "Please set the unit for the project %s.",,,
 "Please set the unit for the task %s.",,,
 "Predecessors tasks","Tâches précédentes",,
