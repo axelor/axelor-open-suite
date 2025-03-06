@@ -408,8 +408,9 @@ public class SaleOrderLineController {
     Beans.get(ConfiguratorCheckService.class)
         .checkConfiguratorActivated(saleOrderLine.getConfigurator());
 
-    if (Beans.get(ConfiguratorCheckService.class)
-        .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
+    if (saleOrderLine.getConfigurator() != null
+        && Beans.get(ConfiguratorCheckService.class)
+            .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
       response.setAlert(I18n.get(ITranslation.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
   }
