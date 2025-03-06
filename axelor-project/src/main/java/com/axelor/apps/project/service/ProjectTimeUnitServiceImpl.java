@@ -61,6 +61,7 @@ public class ProjectTimeUnitServiceImpl implements ProjectTimeUnitService {
     AppBase appBase = appBaseService.getAppBase();
     BigDecimal numberHoursADay =
         Optional.ofNullable(project)
+            .filter(p -> p.getNumberHoursADay() != null && p.getNumberHoursADay().signum() > 0)
             .map(Project::getNumberHoursADay)
             .orElse(
                 Optional.ofNullable(appBase)
@@ -89,10 +90,6 @@ public class ProjectTimeUnitServiceImpl implements ProjectTimeUnitService {
   }
 
   protected Unit getProjectDefaultTimeUnit(Project project, Unit defaultUnit) {
-    if (project == null) {
-      return null;
-    }
-
     return Optional.ofNullable(project).map(Project::getProjectTimeUnit).orElse(defaultUnit);
   }
 }
