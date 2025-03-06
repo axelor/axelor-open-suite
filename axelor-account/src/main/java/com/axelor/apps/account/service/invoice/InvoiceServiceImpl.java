@@ -1241,9 +1241,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       int paymentDelay = invoice.getPartner().getPaymentDelay().intValue();
 
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        if (invoiceTerm.getDueDate() != null && invoiceTerm.getEstimatedPaymentDate() == null) {
-          invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
-        }
+        invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
       }
     } else {
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {

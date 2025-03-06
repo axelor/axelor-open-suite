@@ -1809,4 +1809,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
       "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special or commitment should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
+
+  public static final String INVOICE_TERM_ALREADY_CUSTOMIZED = /*$$(*/
+      "The payment condition have been customized, you should update manually invoice terms due dates and due date" /*)*/;
 }

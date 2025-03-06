@@ -1443,4 +1443,15 @@ public class InvoiceController {
             .context("_showRecord", lateInvoice.getId())
             .map());
   }
+
+  public void setIsCustomizableInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    if (invoice == null) {
+      return;
+    }
+
+    Beans.get(InvoiceTermService.class).setIsCustomizedInvoiceTerms(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
 }

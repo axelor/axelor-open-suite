@@ -286,4 +286,6 @@ public interface InvoiceTermService {
 
   void updateInvoiceTermsAmountRemainingWithoutPayment(Reconcile reconcile, MoveLine moveLine)
       throws AxelorException;
+
+  void setIsCustomizedInvoiceTerms(Invoice invoice);
 }

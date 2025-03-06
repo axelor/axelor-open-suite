@@ -587,7 +587,7 @@
         <field name="originDate" colSpan="6"
           showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
           requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-          onChange="action-invoice-group-payment-condition-onchange"/>
+          readonlyIf="statusSelect > 2" onChange="action-invoice-group-payment-condition-onchange"/>
         <field name="$duplicateInvoiceNbrSameYear" hidden="true" colSpan="12"
           showTitle="false" type="boolean" readonly="true">
           <viewer depends="$supplierInvoiceNbStatic">
@@ -1112,7 +1112,7 @@
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date"/>
+          onChange="action-invoice-group-due-date-on-change"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1274,7 +1274,7 @@
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-invoice-date-on-change"/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date"/>
+          onChange="action-invoice-group-due-date-on-change"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
@@ -1787,6 +1787,7 @@
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -2940,5 +2941,16 @@
     <view type="form" name="invoice-form"/>
     <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
   </action-view>
+
+  <action-group name="action-invoice-group-due-date-on-change">
+    <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="action-invoice-method-set-is-customizable-invoice-terms"/>
+  </action-group>
+
+  <action-method name="action-invoice-method-set-is-customizable-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setIsCustomizableInvoiceTerms"/>
+  </action-method>
 
 </object-views>
