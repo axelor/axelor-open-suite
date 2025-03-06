@@ -121,6 +121,7 @@
           <field name="geoNamesZipUrl" colSpan="6"/>
         </panel>
         <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
+          <help colSpan="12"><![CDATA[Calling the Sirene API will fill following partner fields: Name, First name, Title, Type, Tax number, Category, Main activity, Address.]]></help>
           <field name="sireneTokenGeneratorUrl"/>
           <field name="sireneUrl" widget="url"/>
           <field name="sireneKey"/>

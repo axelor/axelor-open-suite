@@ -418,6 +418,7 @@
 "Calendars permissions","Permissions sur les calendriers",,
 "Call","Appel",,
 "Calling code","Indicateur téléphonique",,
+"Calling the Sirene API will fill following partner fields: Name, First name, Title, Type, Tax number, Category, Main activity, Address.","L'appel à l'API Sirene permet de renseigner les champs du tiers suivant: Nom, Prénom, Titre, Type, Numéro de TVA, Catégorie, Code NAF, Adresse.",,
 "Can not find object.","Impossible de trouver l'objet.",,
 "Can't generate draft sequence number on an unsaved record.","Impossible de générer un numéro de séquence brouillon pour un enregistrement non sauvegardé",,
 "Cancel Reason","Raison d’annulation",,

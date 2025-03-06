@@ -418,6 +418,7 @@
 "Calendars permissions",,,
 "Call",,,
 "Calling code",,,
+"Calling the Sirene API will fill following partner fields: Name, First name, Title, Type, Tax number, Category, Main activity, Address.",,,
 "Can not find object.",,,
 "Can't generate draft sequence number on an unsaved record.",,,
 "Cancel Reason",,,
