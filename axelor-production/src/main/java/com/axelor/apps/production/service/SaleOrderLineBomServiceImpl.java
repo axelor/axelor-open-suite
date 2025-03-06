@@ -227,6 +227,23 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
             .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .count();
 
+    // Checking if subBomLines are all in bom.bomLineList
+    // If it's not the case then there were changes
+    var containsAllSubBomLines =
+        Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
+            .filter(
+                line ->
+                    line.getProduct()
+                        .getProductSubTypeSelect()
+                        .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
+            .map(SaleOrderLine::getBillOfMaterialLine)
+            .allMatch(
+                subBomLine ->
+                    saleOrderLine
+                        .getBillOfMaterial()
+                        .getBillOfMaterialLineList()
+                        .contains(subBomLine));
+
     return nbBomLinesAccountable == subSaleOrderLineListSize
         && Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
             .filter(
@@ -236,6 +253,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
                             .getProduct()
                             .getProductSubTypeSelect()
                             .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
-            .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine);
+            .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine)
+        && containsAllSubBomLines;
   }
 }
