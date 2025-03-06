@@ -2942,6 +2942,7 @@
 
   <action-group name="action-invoice-group-due-date-on-change">
     <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-set-is-customizable-invoice-terms"/>
   </action-group>
 
