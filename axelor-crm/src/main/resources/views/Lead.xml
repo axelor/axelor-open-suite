@@ -568,6 +568,15 @@
     <context name="email" expr="eval: emailAddress?.address"/>
   </action-view>
 
+  <action-view name="action-lead-view-sent-emails" title="Sent emails"
+               model="com.axelor.message.db.Message">
+    <view type="cards" name="message-cards"/>
+    <view type="grid" name="message-grid"/>
+    <view type="form" name="message-form"/>
+    <domain>self.id in :_ids</domain>
+    <context name="_ids" expr="call: com.axelor.apps.account.service.PartnerAccountService:getPayedByPartner(emailAddress, id)"/>
+  </action-view>
+
   <action-view name="action-lead-view-received-emails" title="Received emails"
     model="com.axelor.message.db.Message">
     <view type="cards" name="message-cards"/>

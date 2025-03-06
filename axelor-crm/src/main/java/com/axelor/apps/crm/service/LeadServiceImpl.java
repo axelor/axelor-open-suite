@@ -19,6 +19,7 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -38,7 +39,14 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.MultiRelated;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.MultiRelatedRepository;
+import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -47,6 +55,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -58,6 +68,7 @@ public class LeadServiceImpl implements LeadService {
   protected MultiRelatedRepository multiRelatedRepository;
   protected LeadStatusRepository leadStatusRepo;
   protected AppCrmService appCrmService;
+  protected MessageRepository messageRepository;
 
   @Inject
   public LeadServiceImpl(
@@ -68,7 +79,7 @@ public class LeadServiceImpl implements LeadService {
       EventRepository eventRepo,
       MultiRelatedRepository multiRelatedRepository,
       LeadStatusRepository leadStatusRepo,
-      AppCrmService appCrmService) {
+      AppCrmService appCrmService,MessageRepository messageRepository) {
     this.sequenceService = sequenceService;
     this.userService = userService;
     this.partnerRepo = partnerRepo;
@@ -77,6 +88,7 @@ public class LeadServiceImpl implements LeadService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
     this.appCrmService = appCrmService;
+    this.messageRepository=messageRepository;
   }
 
   /**
@@ -266,4 +278,19 @@ public class LeadServiceImpl implements LeadService {
     lead.setLostReason(null);
     lead.setLostReasonStr(null);
   }
+
+  @CallMethod
+  public List<Long> getMessagesIds(EmailAddress emailAddress, long leadId)  {
+String email =emailAddress.getAddress();
+Stream<Message> lsgIds=multiRelatedRepository.all().filter("self.relatedToSelect=:leadModel and self.relatedToSelectedId==:leadId")
+        .bind(":leadModel","com.axelor.apps.crm.db.Lead")
+        .bind("::leadId",leadId).fetch().stream().map(MultiRelated::getMessage);
+List<Long> msgIds= messageRepository.all().filter(":email in  ")
+  }
+  /*
+  self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
+          WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
+          related.relatedToSelectId =
+          :id) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member of
+          self.toEmailAddressSet)))*/
 }
