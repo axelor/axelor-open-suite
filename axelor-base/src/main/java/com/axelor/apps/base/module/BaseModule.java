@@ -138,6 +138,8 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PfxCertificateCheckService;
+import com.axelor.apps.base.service.PfxCertificateCheckServiceImpl;
 import com.axelor.apps.base.service.PfxCertificateService;
 import com.axelor.apps.base.service.PfxCertificateServiceImpl;
 import com.axelor.apps.base.service.PricedOrderDomainService;
@@ -539,5 +541,6 @@ public class BaseModule extends AxelorModule {
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
     bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
+    bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
   }
 }

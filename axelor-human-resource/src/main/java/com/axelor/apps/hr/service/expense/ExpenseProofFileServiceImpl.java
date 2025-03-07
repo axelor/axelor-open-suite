@@ -107,8 +107,7 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
 
     if (pfxCertificate != null) {
       expenseLine.setIsJustificationFileDigitallySigned(true);
-      return pdfSignatureService.digitallySignPdf(
-          pdfToSign, pfxCertificate.getCertificate(), pfxCertificate.getPassword(), "Expense");
+      return pdfSignatureService.digitallySignPdf(pdfToSign, pfxCertificate, "Expense");
     }
     return pdfToSign;
   }
