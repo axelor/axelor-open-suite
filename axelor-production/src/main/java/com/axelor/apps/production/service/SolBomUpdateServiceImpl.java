@@ -129,6 +129,23 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
       return true;
     }
 
+    // Checking if subBomLines are all in bom.bomLineList
+    // If it's not the case then there were changes
+    var containsAllSubBomLines =
+        Optional.ofNullable(saleOrderLine.getSubSaleOrderLineList()).orElse(List.of()).stream()
+            .filter(
+                line ->
+                    line.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
+                        || line.getSaleSupplySelect()
+                            == SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE)
+            .map(SaleOrderLine::getBillOfMaterialLine)
+            .allMatch(
+                subBomLine ->
+                    saleOrderLine
+                        .getBillOfMaterial()
+                        .getBillOfMaterialLineList()
+                        .contains(subBomLine));
+
     var nbBomLinesAccountable =
         saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream()
             .map(BillOfMaterialLine::getProduct)
@@ -166,6 +183,7 @@ public class SolBomUpdateServiceImpl implements SolBomUpdateService {
                             .getProductSubTypeSelect()
                             .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT))
             .allMatch(saleOrderLineBomLineMappingService::isSyncWithBomLine)
-        && bomLineWithBom == subLineWithProduceSaleSupply;
+        && bomLineWithBom == subLineWithProduceSaleSupply
+        && containsAllSubBomLines;
   }
 }

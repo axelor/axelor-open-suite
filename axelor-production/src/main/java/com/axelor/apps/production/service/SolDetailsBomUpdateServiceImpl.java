@@ -122,6 +122,13 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
       return true;
     }
 
+    var containsAllSubBomLines =
+        Optional.ofNullable(saleOrderLineDetails).orElse(List.of()).stream()
+            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+            .map(SaleOrderLineDetails::getBillOfMaterialLine)
+            .allMatch(
+                subBomLine -> billOfMaterial.getBillOfMaterialLineList().contains(subBomLine));
+
     var nbBomLinesAccountable =
         billOfMaterial.getBillOfMaterialLineList().stream()
             .map(BillOfMaterialLine::getProduct)
@@ -138,7 +145,8 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
     return nbBomLinesAccountable == nbSaleOrderLineDetails
         && Optional.ofNullable(saleOrderLineDetails).orElse(List.of()).stream()
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
-            .allMatch(this::isSolDetailsSyncWithBomLine);
+            .allMatch(this::isSolDetailsSyncWithBomLine)
+        && containsAllSubBomLines;
   }
 
   protected boolean isSolDetailsSyncWithBomLine(SaleOrderLineDetails saleOrderLineDetails) {
