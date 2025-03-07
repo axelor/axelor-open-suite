@@ -326,7 +326,8 @@
 
   <action-record name="action-stock-location-record-auto-fill-site"
     model="com.axelor.apps.stock.db.StockLocation">
-    <field name="site" expr="eval: parentStockLocation.site" if="site == null"/>
+    <field name="site" expr="eval: parentStockLocation.site"
+      if="parentStockLocation!=null &amp;&amp; site == null"/>
   </action-record>
 
   <action-record name="action-stock-location-record-empty-site"
