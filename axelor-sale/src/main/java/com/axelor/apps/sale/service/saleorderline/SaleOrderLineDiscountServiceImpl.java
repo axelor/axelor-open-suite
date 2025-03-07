@@ -142,7 +142,12 @@ public class SaleOrderLineDiscountServiceImpl implements SaleOrderLineDiscountSe
     if (priceList != null) {
       PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
-
+      saleOrderLine.setDiscountAmount(
+          Optional.ofNullable((BigDecimal) discounts.get("discountAmount"))
+              .orElse(saleOrderLine.getDiscountAmount()));
+      saleOrderLine.setDiscountTypeSelect(
+          Optional.ofNullable((Integer) discounts.get("discountTypeSelect"))
+              .orElse(saleOrderLine.getDiscountTypeSelect()));
       if (saleOrder.getTemplate()) {
         Integer manualDiscountAmountType = saleOrderLine.getDiscountTypeSelect();
         BigDecimal manualDiscountAmount = saleOrderLine.getDiscountAmount();
