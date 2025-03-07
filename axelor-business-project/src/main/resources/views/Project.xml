@@ -264,13 +264,10 @@
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
       <panel title="Technical case" name="saleOrderPanel" hidden="true">
-        <panel-related name="projectSaleOrderLineEditableTreePanel"
-          field="saleOrderLineList" widget="tree-grid" canNew="false" canEdit="false"
-          canRemove="false" title="Details Lines (Tree)" orderBy="sequence"
-          form-view="sale-order-line-form" x-tree-field-title="Add a new sale order line"
-          summary-view="sale-order-line-summary-form"
-          x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
-          grid-view="sale-order-line-editable-grid" x-tree-field="subSaleOrderLineList" colSpan="12"/>
+        <button name="openLines" title="Open lines"
+          onClick="action-project-dashlet-sale-order-line"/>
+        <panel-dashlet name="saleOrderLinePanelDashlet"
+          action="action-project-dashlet-sale-order-line" colSpan="12"/>
       </panel>
       <panel-include view="incl-wiki-panel-form"/>
 
@@ -776,6 +773,15 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  </action-view>
+
+  <action-view name="action-project-dashlet-sale-order-line" title="Sale order lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <view type="grid" name="business-production-sale-order-line-editable-grid"/>
+    <view type="form" name="sale-order-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.project = :projectId AND self.saleOrder.statusSelect in (2,3)</domain>
+    <context name="projectId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-project-view-show-sale-order-lines" title="Sale Order Lines"

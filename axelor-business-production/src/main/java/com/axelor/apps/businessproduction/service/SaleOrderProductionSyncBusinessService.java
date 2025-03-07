@@ -1,8 +1,9 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.project.db.Project;
+import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface SaleOrderProductionSyncBusinessService {
-  void projectSoListOnChange(Project project) throws AxelorException;
+
+  void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
 }

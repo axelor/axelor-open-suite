@@ -10,11 +10,9 @@ import com.axelor.apps.production.service.SolBomCustomizationService;
 import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderProductionSyncBusinessServiceImpl extends SaleOrderSyncAbstractService
     implements SaleOrderProductionSyncBusinessService {
@@ -39,12 +37,8 @@ public class SaleOrderProductionSyncBusinessServiceImpl extends SaleOrderSyncAbs
   }
 
   @Override
-  public void projectSoListOnChange(Project project) throws AxelorException {
-    List<SaleOrderLine> saleOrderLines = project.getSaleOrderLineList();
-    if (CollectionUtils.isEmpty(saleOrderLines)) {
-      return;
-    }
-    syncSaleOrderLineList(saleOrderLines);
+  public void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
+    super.syncSaleOrderLine(saleOrderLine);
   }
 
   @Override
