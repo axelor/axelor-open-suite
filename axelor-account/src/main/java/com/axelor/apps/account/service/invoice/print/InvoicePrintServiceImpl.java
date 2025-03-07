@@ -247,8 +247,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     if (pfxCertificate == null) {
       return metaFile;
     }
-    return pdfSignatureService.digitallySignPdf(
-        metaFile, pfxCertificate.getCertificate(), pfxCertificate.getPassword(), "Invoice");
+    return pdfSignatureService.digitallySignPdf(metaFile, pfxCertificate, "Invoice");
   }
 
   @Override

@@ -2054,6 +2054,7 @@
 "Show the reference",,,
 "Show tracebacks","Afficher les tracebacks",,
 "Signature","Signature",,
+"Signature certificate is expired. Please change to a new certificate.","Le certificat de signature est expiré. Veuillez le changer pour un nouveau certificat.",,
 "Single tab","Onglet unique",,
 "Sirene API call","Appel à l'API Sirene",,
 "Sirene access token generation url","Url de génération du jeton d'accès Sirene",,

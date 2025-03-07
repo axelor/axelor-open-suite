@@ -19,8 +19,10 @@
 package com.axelor.apps.base.service.pdf;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PfxCertificate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.PfxCertificateCheckService;
 import com.axelor.apps.base.service.signature.SignatureService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -52,18 +54,25 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
 
   protected MetaFiles metaFiles;
   protected SignatureService signatureService;
+  protected PfxCertificateCheckService pfxCertificateCheckService;
 
   @Inject
-  public PdfSignatureServiceImpl(MetaFiles metaFiles, SignatureService signatureService) {
+  public PdfSignatureServiceImpl(
+      MetaFiles metaFiles,
+      SignatureService signatureService,
+      PfxCertificateCheckService pfxCertificateCheckService) {
     this.metaFiles = metaFiles;
     this.signatureService = signatureService;
+    this.pfxCertificateCheckService = pfxCertificateCheckService;
   }
 
   @Override
-  public MetaFile digitallySignPdf(
-      MetaFile metaFile, MetaFile certificate, String certificatePassword, String reason)
+  public MetaFile digitallySignPdf(MetaFile metaFile, PfxCertificate pfxCertificate, String reason)
       throws AxelorException {
 
+    pfxCertificateCheckService.checkValidity(pfxCertificate);
+    MetaFile certificate = pfxCertificate.getCertificate();
+    String certificatePassword = pfxCertificate.getPassword();
     try {
       File tempPdfFile =
           File.createTempFile(Files.getNameWithoutExtension(metaFile.getFileName()), ".pdf");

@@ -1,0 +1,5 @@
+---
+title: "Signature: added an error when digitally signing pdf with an expired certificate."
+module: axelor-base
+developer: |
+  Added new service 'PfxCertificateCheckService' and added it to the constructor of 'PdfSignatureServiceImpl'.
