@@ -737,4 +737,7 @@ public final class BaseExceptionMessage {
 
   public static final String APP_BASE_SIRENE_API_ACCESS_TOKEN_MISSING = /*$$(*/
       "Please fill API Sirene access token in app base." /*)*/;
+
+  public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
+      "Signature certificate is expired. Please change to a new certificate." /*)*/;
 }
