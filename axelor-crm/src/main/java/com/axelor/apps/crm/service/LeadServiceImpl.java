@@ -19,7 +19,6 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -50,8 +49,9 @@ import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.lowagie.toolbox.plugins.Concat;
+import org.apache.commons.collections.ListUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,7 +82,8 @@ public class LeadServiceImpl implements LeadService {
       EventRepository eventRepo,
       MultiRelatedRepository multiRelatedRepository,
       LeadStatusRepository leadStatusRepo,
-      AppCrmService appCrmService,MessageRepository messageRepository) {
+      AppCrmService appCrmService,
+      MessageRepository messageRepository) {
     this.sequenceService = sequenceService;
     this.userService = userService;
     this.partnerRepo = partnerRepo;
@@ -91,7 +92,7 @@ public class LeadServiceImpl implements LeadService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
     this.appCrmService = appCrmService;
-    this.messageRepository=messageRepository;
+    this.messageRepository = messageRepository;
   }
 
   /**
@@ -283,40 +284,27 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @CallMethod
-  public List<Long> getMessagesIds(EmailAddress emailAddress, long leadId)  {
-String email =emailAddress.getAddress();
-Stream<Long> lsgIds=multiRelatedRepository.all().filter("self.relatedToSelect=:leadModel" +
-                " and self.relatedToSelectedId==:leadId")
-        .bind(":leadModel","com.axelor.apps.crm.db.Lead")
-        .bind(":leadId",leadId).fetch().stream().map(MultiRelated::getMessage).collect(Collectors.toList()).stream().map(Message::getId);
-List<EmailAddress> emailmessages=Beans.get(EmailAddressRepository.class).all().fetch();
-List<Message> msgs= messageRepository.all().fetch();
-    List<Long> msgReturns = null;
-for (Message m:msgs)
-{
-  for(EmailAddress em:emailmessages) {
-    EmailAddress emailAddress1 = m.getToEmailAddressSet().stream().filter(e -> e.equals(em)).findFirst().get();
-    if (email.equals(emailAddress1.getAddress()))
-      msgReturns.add(m.getId());
-  }
+  public List<Long> getMessagesIds(EmailAddress emailAddress, long leadId) {
+    List<Message> lsgIds =
+        multiRelatedRepository
+            .all()
+            .filter("self.relatedToSelect=:leadModel" + " and self.relatedToSelectId=:leadId")
+            .bind("leadModel", "com.axelor.apps.crm.db.Lead")
+            .bind("leadId", leadId)
+            .fetch()
+            .stream()
+            .map(MultiRelated::getMessage).filter(m->m.getMediaTypeSelect().equals(MessageRepository.MEDIA_TYPE_EMAIL))
+            .collect(Collectors.toList());
+   List<Long> msgs=new ArrayList<>();
+    if(emailAddress!=null){
+      msgs=lsgIds.stream().filter(
+              m->
+                (m.getToEmailAddressSet().stream().anyMatch(emailAddress1 -> emailAddress1.getAddress().equals(emailAddress.getAddress())))
+              ).
+                      map(Message::getId).collect(Collectors.toList());
+   }
 
- if( m.getMediaTypeSelect().equals(MessageRepository.MEDIA_TYPE_EMAIL))
- {
-   msgReturns.add(m.getId());
- }
+    return msgs;
   }
-return Stream.concat(msgReturns.stream(),
-        lsgIds).distinct().collect(Collectors.toList());
 }
 
-  }
-  /*
-  self.mediaTypeSelect = 2 AND (
-  self.id IN (SELECT message.id FROM MultiRelated as related
-          WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
-          related.relatedToSelectId =:id) OR (
-          :email IN (SELECT em.address FROM EmailAddress em WHERE em member of
-          self.toEmailAddressSet)
-          )
-          )*/
-}
