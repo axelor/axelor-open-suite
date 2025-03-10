@@ -28,7 +28,9 @@ import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 public class UnitConversionForProjectServiceImpl extends UnitConversionServiceImpl
@@ -83,8 +85,14 @@ public class UnitConversionForProjectServiceImpl extends UnitConversionServiceIm
   protected List<UnitConversion> fetchUnitConversionForProjectList() {
     return unitConversionRepo
         .all()
-        .filter("self.entitySelect = :entitySelect")
-        .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
-        .fetch();
+        .filter(
+            "self.entitySelect = :entitySelectProject or (self.entitySelect = :entitySelectAll and self.typeSelect = :typeSelect)")
+        .bind("entitySelectProject", UnitConversionRepository.ENTITY_PROJECT)
+        .bind("entitySelectAll", UnitConversionRepository.ENTITY_ALL)
+        .bind("typeSelect", UnitConversionRepository.TYPE_COEFF)
+        .fetch()
+        .stream()
+        .sorted(Comparator.comparing(UnitConversion::getEntitySelect).reversed())
+        .collect(Collectors.toList());
   }
 }
