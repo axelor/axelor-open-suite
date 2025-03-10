@@ -1,0 +1,3 @@
+---
+title: "AllocationLine/Project : fix initialization with planned time in mass generation"
+module: axelor-human-resource
