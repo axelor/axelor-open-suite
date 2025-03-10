@@ -38,28 +38,22 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.MultiRelated;
-import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.collections.ListUtils;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -285,7 +279,7 @@ public class LeadServiceImpl implements LeadService {
 
   @CallMethod
   public List<Long> getMessagesIds(EmailAddress emailAddress, long leadId) {
-    List<Message> lsgIds =
+    List<Message> messages =
         multiRelatedRepository
             .all()
             .filter("self.relatedToSelect=:leadModel" + " and self.relatedToSelectId=:leadId")
@@ -293,18 +287,24 @@ public class LeadServiceImpl implements LeadService {
             .bind("leadId", leadId)
             .fetch()
             .stream()
-            .map(MultiRelated::getMessage).filter(m->m.getMediaTypeSelect().equals(MessageRepository.MEDIA_TYPE_EMAIL))
+            .map(MultiRelated::getMessage)
+            .filter(m -> m.getMediaTypeSelect().equals(MessageRepository.MEDIA_TYPE_EMAIL))
             .collect(Collectors.toList());
-   List<Long> msgs=new ArrayList<>();
-    if(emailAddress!=null){
-      msgs=lsgIds.stream().filter(
-              m->
-                (m.getToEmailAddressSet().stream().anyMatch(emailAddress1 -> emailAddress1.getAddress().equals(emailAddress.getAddress())))
-              ).
-                      map(Message::getId).collect(Collectors.toList());
-   }
-
-    return msgs;
+    List<Message> msgs = new ArrayList<>();
+    if (emailAddress != null) {
+      msgs =
+          messageRepository.all().fetch().stream()
+              .filter(
+                  m ->
+                      (m.getToEmailAddressSet() != null
+                          && m.getToEmailAddressSet().stream()
+                              .anyMatch(
+                                  emailAdd ->
+                                      emailAdd.getAddress().equals(emailAddress.getAddress()))
+                          && m.getMediaTypeSelect().equals(MessageRepository.MEDIA_TYPE_EMAIL)))
+              .collect(Collectors.toList());
+    }
+    messages.addAll(msgs);
+    return messages.stream().map(Message::getId).collect(Collectors.toList());
   }
 }
-
