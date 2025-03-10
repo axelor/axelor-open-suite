@@ -19,7 +19,6 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -108,11 +107,10 @@ public class ReconcileHRServiceImpl extends ReconcileServiceImpl {
     if (move.getMoveLineList().stream()
         .anyMatch(
             it ->
-                (move.getExpense() == null && it.getTaxLine() == null)
-                    && it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))) {
+                move.getExpense() == null
+                    && !move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
+                    && it.getTaxLine() == null
+                    && moveLineTaxService.isMoveLineTaxAccount(it))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,

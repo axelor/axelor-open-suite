@@ -56,6 +56,8 @@ public interface MoveLineTaxService {
 
   void checkDuplicateTaxMoveLines(Move move) throws AxelorException;
 
+  boolean isMoveLineTaxAccount(MoveLine moveLine);
+
   void checkEmptyTaxLines(List<MoveLine> moveLineList) throws AxelorException;
 
   boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect);

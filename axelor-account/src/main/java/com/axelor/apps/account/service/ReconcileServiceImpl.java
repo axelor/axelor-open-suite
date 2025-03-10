@@ -399,20 +399,25 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream()
-        .anyMatch(
-            it ->
-                it.getTaxLine() == null
-                    && it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX)
-                    && it.getAccount().getIsTaxAuthorizedOnMoveLine())) {
+    if (!move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
+        && move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
           move.getReference());
     }
+  }
+
+  protected boolean isMissingTax(MoveLine it) {
+    return ObjectUtils.isEmpty(it.getTaxLine())
+        && moveLineTaxService.isMoveLineTaxAccount(it)
+        && it.getAccount().getIsTaxAuthorizedOnMoveLine();
+  }
+
+  protected boolean hasPayableReceivableAccount(MoveLine it) {
+    return Lists.newArrayList(
+            AccountTypeRepository.TYPE_RECEIVABLE, AccountTypeRepository.TYPE_PAYABLE)
+        .contains(it.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 
   @Override
