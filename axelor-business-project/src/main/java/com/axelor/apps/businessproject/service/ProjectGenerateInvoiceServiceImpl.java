@@ -200,6 +200,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         Invoice invoice = super.createInvoiceHeader();
         invoice.setProject(project);
         invoice.setPriceList(project.getPriceList());
+        invoice.setFiscalPosition(invoicedPartner.getFiscalPosition());
         return invoice;
       }
     };
