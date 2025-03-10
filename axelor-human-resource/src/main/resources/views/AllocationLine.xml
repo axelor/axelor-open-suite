@@ -80,18 +80,18 @@
       <field name="$allocated" title="Allocated" type="decimal" min="0" max="5" x-scale="1"
         hideIf="$initWithPlanningTime"/>
       <field name="$initWithPlanningTime" title="Init with planning time"
-        showIf="$project.allowAllocatedInit" type="boolean"/>
+        showIf="project.allowAllocatedInit" type="boolean"/>
       <button name="addMultipleLinesBtn" title="Add lines"
         onClick="action-allocation-line-method-add-multiple-lines"/>
-      <field name="$project" title="Project" type="many-to-one"
+      <field name="project" title="Project" type="many-to-one"
         target="com.axelor.apps.project.db.Project" grid-view="project-grid"
         form-view="project-form" hidden="true"/>
-      <field name="$project.allowAllocatedInit" hidden="true"/>
+      <field name="project.allowAllocatedInit" hidden="true"/>
     </panel>
   </form>
 
   <action-attrs name="action-allocation-line-attrs-set-default-values">
-    <attribute for="project" name="value" expr="eval: __parent__" if="__parent__"/>
+    <attribute for="project" name="value" expr="eval: _project" if="_project"/>
     <attribute for="employee" name="value" expr="eval: __user__?.employee"/>
   </action-attrs>
 
