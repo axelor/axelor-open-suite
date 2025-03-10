@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -115,6 +116,11 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(move.getFunctionalOriginSelect());
 
+    Invoice invoice =
+        moveLine.getInvoiceTermList().stream()
+            .map(InvoiceTerm::getInvoice)
+            .findFirst()
+            .orElse(null);
     moveLine.clearInvoiceTermList();
 
     if (paymentCondition == null
@@ -194,7 +200,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_HOLDBACK_2));
       }
     }
-
+    moveLine.getInvoiceTermList().forEach(it -> it.setInvoice(invoice));
     this.setDueDateFromInvoiceTerms(moveLine);
   }
 
