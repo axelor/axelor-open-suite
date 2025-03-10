@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineProductProductionServiceImpl
     extends SaleOrderLineProductSupplychainServiceImpl
@@ -60,6 +61,7 @@ public class SaleOrderLineProductProductionServiceImpl
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   protected final SolBomUpdateService solBomUpdateService;
   protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
+  protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
 
   @Inject
   public SaleOrderLineProductProductionServiceImpl(
@@ -83,7 +85,8 @@ public class SaleOrderLineProductProductionServiceImpl
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
       SolBomUpdateService solBomUpdateService,
-      SolDetailsBomUpdateService solDetailsBomUpdateService) {
+      SolDetailsBomUpdateService solDetailsBomUpdateService,
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
     super(
         appSaleService,
         appBaseService,
@@ -106,6 +109,7 @@ public class SaleOrderLineProductProductionServiceImpl
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
     this.solBomUpdateService = solBomUpdateService;
     this.solDetailsBomUpdateService = solDetailsBomUpdateService;
+    this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
   }
 
   @Override
@@ -157,6 +161,7 @@ public class SaleOrderLineProductProductionServiceImpl
 
         saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
         if (billOfMaterial != null) {
+          saleOrderLine.setProdProcess(billOfMaterial.getProdProcess());
           saleOrderLineMap.put("prodProcess", billOfMaterial.getProdProcess());
         }
       }
@@ -170,24 +175,40 @@ public class SaleOrderLineProductProductionServiceImpl
       throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
     if (saleOrderLine.getIsToProduce()
         && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
         && !appProduction.getIsBomLineGenerationInSODisabled()) {
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
-        saleOrderLineBomService
-            .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
-            .stream()
+        saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSubSaleOrderLineListItem);
       }
       if (!solDetailsBomUpdateService.isSolDetailsUpdated(
           saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
         saleOrderLineDetailsBomService
-            .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+            .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine)
             .stream()
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
       }
+      saleOrderLineDetailsProdProcessService
+          .createSaleOrderLineDetailsFromProdProcess(
+              billOfMaterial.getProdProcess(), saleOrder, saleOrderLine)
+          .stream()
+          .filter(Objects::nonNull)
+          .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
     }
+  }
+
+  @Override
+  protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = super.resetProductInformationMap(line);
+    if (CollectionUtils.isNotEmpty(line.getSaleOrderLineDetailsList())) {
+      line.clearSaleOrderLineDetailsList();
+      saleOrderLineMap.put("saleOrderLineDetailsList", line.getSaleOrderLineDetailsList());
+    }
+
+    return saleOrderLineMap;
   }
 }
