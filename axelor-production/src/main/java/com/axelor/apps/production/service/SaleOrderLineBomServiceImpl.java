@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -46,6 +47,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialLineService billOfMaterialLineService;
   protected final BillOfMaterialService billOfMaterialService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -56,7 +58,8 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
       BillOfMaterialService billOfMaterialService,
-      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
@@ -64,6 +67,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.billOfMaterialService = billOfMaterialService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
   }
 
   @Override
@@ -82,12 +86,19 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       var saleOrderLine =
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
-
+        BillOfMaterial lineBom = saleOrderLine.getBillOfMaterial();
         if (saleOrderLine.getIsToProduce()) {
           saleOrderLineDetailsBomService
-              .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+              .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
               .stream()
               .filter(Objects::nonNull)
+              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+          saleOrderLineDetailsProdProcessService
+              .createSaleOrderLineDetailsFromProdProcess(
+                  lineBom.getProdProcess(), saleOrder, saleOrderLine)
+              .stream()
+              .filter(Objects::nonNull)
+              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
               .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
         }
         saleOrderLinesList.add(saleOrderLine);

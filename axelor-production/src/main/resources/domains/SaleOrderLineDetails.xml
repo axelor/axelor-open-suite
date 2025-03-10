@@ -27,12 +27,15 @@
     <decimal name="subTotalMarkup" title="Sub Total markup"/>
     <decimal name="costPrice" title="Cost price" precision="20" scale="3"/>
     <decimal name="marginCoefficient" title="Margin coefficient" default="1"/>
+    <many-to-one name="prodProcessLine"
+      ref="com.axelor.apps.production.db.ProdProcessLine" title="Operation"/>
 
     <extra-code>
             <![CDATA[
 			// TYPE SELECT
 			public static final int TYPE_COMPONENT = 1;
             public static final int TYPE_BUDGET_ITEM = 2;
+            public static final int TYPE_OPERATION = 3;
 	  	]]>
     </extra-code>
 

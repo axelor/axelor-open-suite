@@ -11,15 +11,15 @@
       onChange="action-sale-order-line-details-method-product-onchange" showIf="!$readonly()"
       readonlyIf="typeSelect != 1"/>
     <field name="title"/>
+    <field name="unit" readonlyIf="typeSelect == 3"/>
     <field name="qty" min="0" onChange="action-sale-order-line-details-method-compute-price"
-      x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"/>
+      x-scale="$nbDecimalDigitForQty" readonlyIf="typeSelect == 3"/>
     <field name="costPrice" x-scale="$nbDecimalDigitForUnitPrice"
-      onChange="action-sale-order-line-details-method-compute-price" readonlyIf="typeSelect == 1"/>
+      onChange="action-sale-order-line-details-method-compute-price" readonlyIf="typeSelect == 3"/>
     <field name="marginCoefficient" x-scale="$nbDecimalDigitForUnitPrice"
       onChange="action-sale-order-line-details-method-margin-coef-onchange"/>
     <field name="price" onChange="action-sale-order-line-details-method-price-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="unit" showIf="typeSelect == 1"/>
     <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="description"/>
   </grid>
@@ -29,11 +29,12 @@
     <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
       widget="ImageSelect"/>
     <field name="title"/>
+    <field name="unit" readonlyIf="typeSelect == 3"/>
     <field name="qty" min="0" onChange="action-sale-order-line-details-method-compute-price"
-      x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"/>
+      x-scale="$nbDecimalDigitForQty" readonlyIf="typeSelect == 3"/>
+    <field name="costPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="price" onChange="action-sale-order-line-details-method-price-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="unit" showIf="typeSelect == 1"/>
     <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="description"/>
   </grid>
@@ -58,7 +59,7 @@
         <spacer colSpan="8"/>
         <field name="costPrice" colSpan="6"
           onChange="action-sale-order-line-details-method-compute-price"
-          readonlyIf="typeSelect == 1"/>
+          readonlyIf="typeSelect == 3"/>
         <field name="marginCoefficient" x-scale="$nbDecimalDigitForUnitPrice"
           onChange="action-sale-order-line-details-method-margin-coef-onchange"/>
         <field name="price" colSpan="6"
