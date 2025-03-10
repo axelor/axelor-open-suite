@@ -1,0 +1,3 @@
+---
+title: "StockMove: fix average price not updated on product when stock move is canceled."
+module: axelor-stock
