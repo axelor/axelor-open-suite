@@ -312,7 +312,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
   }
 
-  protected boolean isMoveLineTaxAccount(MoveLine moveLine) {
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
     return moveLine.getAccount() != null
         && moveLine.getAccount().getAccountType() != null
         && AccountTypeRepository.TYPE_TAX.equals(
