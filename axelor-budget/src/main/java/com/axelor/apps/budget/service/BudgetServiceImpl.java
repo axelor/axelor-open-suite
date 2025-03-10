@@ -423,7 +423,7 @@ public class BudgetServiceImpl implements BudgetService {
               .map(BudgetLevel::getParentBudgetLevel)
               .map(BudgetLevel::getGlobalBudget)
               .orElse(null);
-      if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey()) && globalBudget != null) {
+      if (checkBudgetKey && globalBudget != null) {
         String error =
             computeBudgetKey(
                 budget,
