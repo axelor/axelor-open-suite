@@ -1,0 +1,3 @@
+---
+title: "Invoice: show 'Price excl. Tax' on invoice report even if it 0."
+module: axelor-account
