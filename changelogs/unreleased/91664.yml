@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed fiscal position when generating an invoice from an invoicing project."
+module: axelor-business-project
