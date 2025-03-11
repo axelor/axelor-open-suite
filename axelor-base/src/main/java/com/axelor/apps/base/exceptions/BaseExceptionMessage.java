@@ -721,7 +721,7 @@ public final class BaseExceptionMessage {
       "Invalid SIRET number. It must contain exactly 14 digits." /*)*/;
 
   public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
-      "Registration code already exists for partner %s." /*)*/;
+      "Registration number already exists for partner %s." /*)*/;
 
   public static final String APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING = /*$$(*/
       "Please fill API Sirene token generator url in app base." /*)*/;
