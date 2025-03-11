@@ -157,6 +157,7 @@ public class SaleOrderLineProductProductionServiceImpl
 
         saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
         if (billOfMaterial != null) {
+          saleOrderLine.setProdProcess(billOfMaterial.getProdProcess());
           saleOrderLineMap.put("prodProcess", billOfMaterial.getProdProcess());
         }
       }
