@@ -43,8 +43,8 @@
       color="orange"/>
     <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
       onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"
-      onChange="action-leave-request-create-wizard-method-leave-reason-onchange"/>
-    <field name="duration" type="decimal" min="0" x-scale="1"/>
+      onChange="action-leave-request-create-wizard-method-leave-reason-onchange" required="true"/>
+    <field name="duration" type="decimal" min="0" x-scale="1" required="true"/>
     <field name="leaveQuantity" title="Available quantity (acquired)" type="decimal"
       readonly="true"/>
     <field name="leaveDaysToDate" title="Leave available to date" type="decimal"
@@ -56,8 +56,8 @@
     model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
       <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
-        onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"/>
-      <field name="duration" type="decimal" min="0" x-scale="1"/>
+        onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain" required="true"/>
+      <field name="duration" type="decimal" min="0" x-scale="1" required="true"/>
       <field name="leaveQuantity" title="Available quantity (acquired)" type="decimal"
         readonly="true"/>
       <field name="leaveDaysToDate" title="Leave available to date" type="decimal"
