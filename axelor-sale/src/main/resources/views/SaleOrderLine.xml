@@ -51,7 +51,7 @@
     <button name="configuratorEditBtn"
       onClick="action-sale-order-line-group-on-configurator-edit"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-pen-to-square"/>
+      icon="pencil-square"/>
     <button name="configuratorDuplicateBtn"
       onClick="action-sale-order-line-group-on-configurator-duplicate"
       if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
@@ -132,7 +132,7 @@
     <button name="configuratorEditBtn"
       onClick="action-sale-order-line-group-on-configurator-edit"
       if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
-      icon="fa-pen-to-square"/>
+      icon="pencil-square"/>
     <button name="configuratorDuplicateBtn"
       onClick="action-sale-order-line-group-on-configurator-duplicate"
       if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
