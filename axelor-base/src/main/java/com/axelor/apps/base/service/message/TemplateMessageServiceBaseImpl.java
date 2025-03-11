@@ -43,8 +43,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -111,9 +109,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     logger.debug("Generate birt metafile: {}", printingTemplate.getName());
 
     String fileName =
-        printingTemplate.getName()
-            + "-"
-            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        printTemplatePrintService.getPrintFileName(printingTemplate, templatesContext);
 
     File file =
         printTemplatePrintService.getPrintFile(

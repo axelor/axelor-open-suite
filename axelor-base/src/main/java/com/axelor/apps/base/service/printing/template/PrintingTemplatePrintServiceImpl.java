@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -224,5 +225,20 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       return template.getScriptFieldName();
     }
     return template.getName();
+  }
+
+  @Override
+  public String getPrintFileName(PrintingTemplate template, Map<String, Object> context)
+      throws AxelorException {
+    try {
+      return templateComputeNameService.computeFileName(
+          getTemplateName(template), new PrintingGenFactoryContext(context));
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PRINTING_TEMPLATE_SCRIPT_ERROR),
+          template.getName(),
+          e.getMessage());
+    }
   }
 }
