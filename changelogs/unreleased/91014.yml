@@ -1,2 +1,2 @@
-title: "SaleOrderLine: fixed an issue where discount was not applied immediatly"
+title: "Sale order line: fixed an issue where discount was not applied immediatly."
 module: axelor-sale
