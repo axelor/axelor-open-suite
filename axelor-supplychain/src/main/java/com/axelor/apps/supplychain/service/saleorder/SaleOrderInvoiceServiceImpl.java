@@ -185,7 +185,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         for (Long timetableId : timetableIdList) {
           Timetable timetable = timetableRepo.find(timetableId);
           timetableList.add(timetable);
-          percentSum = percentSum.add(timetable.getPercentage());
+          percentSum =
+              percentSum.add(
+                  timetable
+                      .getAmount()
+                      .divide(
+                          saleOrder.getExTaxTotal(),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)
+                      .multiply(BigDecimal.valueOf(100)));
         }
         invoice =
             generateInvoiceFromLines(
@@ -427,7 +435,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                   .multiply(percent)
                   .divide(
                       new BigDecimal("100"),
-                      appBaseService.getNbDecimalDigitForQty(),
+                      AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP);
           qtyToInvoiceMap.put(SOrderId, realQty);
         }
