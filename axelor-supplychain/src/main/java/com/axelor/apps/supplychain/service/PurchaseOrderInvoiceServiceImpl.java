@@ -691,25 +691,14 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public void displayErrorMessageIfPurchaseOrderIsInvoiceable(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {
-    List<Invoice> invoices =
-        invoiceRepo
-            .all()
-            .filter(
-                " self.purchaseOrder.id = :purchaseOrderId "
-                    + "AND self.statusSelect != :invoiceStatus "
-                    + "AND (self.operationTypeSelect = :purchaseOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
-            .bind("purchaseOrderId", purchaseOrder.getId())
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("purchaseOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-            .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
-            .fetch();
+
     if (isPercent) {
       amountToInvoice =
           (amountToInvoice.multiply(purchaseOrder.getExTaxTotal()))
               .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
     }
-    BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
-    sumInvoices = sumInvoices.add(amountToInvoice);
+
+    BigDecimal sumInvoices = purchaseOrder.getAmountInvoiced().add(amountToInvoice);
     if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           purchaseOrder,

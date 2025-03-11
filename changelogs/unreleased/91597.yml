@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed an issue where it was possible to invoice a purchase order already invoiced."
+module: axelor-supplychain
