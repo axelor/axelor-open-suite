@@ -44,6 +44,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
 
@@ -86,7 +87,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
 
     if (expenseProduct == null) {
@@ -101,7 +103,14 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     convertJustificationFileToPdf(expenseLine);
-
+    if (expenseProduct.getDeductLunchVoucher()) {
+      if (employeeList != null) {
+        for (Employee e : employeeList) {
+          expenseLine.addInvitedCollaboratorSetItem(e);
+          expenseLine.setIsAloneMeal(false);
+        }
+      }
+    }
     return expenseLineRepository.save(expenseLine);
   }
 
