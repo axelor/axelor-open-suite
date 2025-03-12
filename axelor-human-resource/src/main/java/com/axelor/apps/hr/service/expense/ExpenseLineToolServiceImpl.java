@@ -33,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
   protected AppHumanResourceService appHumanResourceService;
@@ -113,8 +114,7 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
 
     if (expenseProduct != null) {
       checkExpenseProduct(expenseProduct);
-
-      expenseLine.setIsAloneMeal(expenseProduct.getDeductLunchVoucher());
+      expenseLine.setIsAloneMeal(CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
       expenseLine.setExpenseProduct(expenseProduct);
     }
 

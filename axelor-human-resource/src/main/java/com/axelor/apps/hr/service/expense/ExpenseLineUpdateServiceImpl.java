@@ -38,6 +38,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
 
@@ -81,7 +82,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Currency currency,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
     if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       updateKilometricExpenseLine(
@@ -99,7 +101,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           toInvoice,
           expenseProduct,
           newExpense,
-          projectTask);
+          projectTask,
+          employeeList);
     } else {
       updateGeneralExpenseLine(
           expenseLine,
@@ -114,7 +117,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           currency,
           toInvoice,
           newExpense,
-          projectTask);
+          projectTask,
+          employeeList);
     }
 
     if (newExpense != null) {
@@ -145,7 +149,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Currency currency,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
 
     checkParentStatus(expenseLine.getExpense());
@@ -159,7 +164,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseProduct,
         toInvoice,
         newExpense,
-        projectTask);
+        projectTask,
+        employeeList);
     expenseProduct = expenseProduct != null ? expenseProduct : expenseLine.getExpenseProduct();
     totalAmount = totalAmount != null ? totalAmount : expenseLine.getTotalAmount();
     totalTax = totalTax != null ? totalTax : expenseLine.getTotalTax();
@@ -184,7 +190,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Boolean toInvoice,
       Product expenseProduct,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
     checkParentStatus(expenseLine.getExpense());
     updateBasicExpenseLine(
@@ -197,7 +204,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseProduct,
         toInvoice,
         newExpense,
-        projectTask);
+        projectTask,
+        employeeList);
     updateKilometricExpenseLineInfo(
         expenseLine, kilometricAllowParam, kilometricType, fromCity, toCity, distance);
   }
@@ -252,7 +260,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Product expenseProduct,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
     updateLineCurrency(expenseLine, currency, newExpense);
     if (project != null) {
@@ -272,6 +281,15 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
     if (expenseProduct != null) {
       expenseLine.setExpenseProduct(expenseProduct);
+    }
+
+    if (expenseLine.getExpenseProduct() != null
+        && expenseLine.getExpenseProduct().getDeductLunchVoucher()
+        && employeeList != null) {
+      for (Employee e : employeeList) {
+        expenseLine.addInvitedCollaboratorSetItem(e);
+        expenseLine.setIsAloneMeal(false);
+      }
     }
     if (projectTask != null) {
       expenseLine.setProjectTask(projectTask);

@@ -38,6 +38,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServiceImpl {
   protected AppBusinessProjectService appBusinessProjectService;
@@ -69,7 +70,8 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
       Product expenseProduct,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
     super.updateBasicExpenseLine(
         expenseLine,
@@ -81,7 +83,8 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
         expenseProduct,
         toInvoice,
         newExpense,
-        projectTask);
+        projectTask,
+        employeeList);
     if (appBusinessProjectService.isApp("business-project")) {
       expenseLine.setToInvoice(getToInvoice(expenseLine, project, toInvoice));
     }
