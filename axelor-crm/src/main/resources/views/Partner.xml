@@ -691,6 +691,7 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="isProspect" expr="true" if="_isProspect"/>
     <field name="isCustomer" expr="false" if="_isProspect"/>
+    <field name="isSupplier" expr="false" if="_isProspect"/>
   </action-record>
 
   <action-record name="action-partner-record-set-partner-status"
