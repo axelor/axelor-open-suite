@@ -94,4 +94,6 @@ public interface ProdProcessLineComputationService {
   long computeEntireCycleDuration(
       OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException;
+
+  BigDecimal getHourDurationPerCycle(ProdProcessLine prodProcessLine);
 }
