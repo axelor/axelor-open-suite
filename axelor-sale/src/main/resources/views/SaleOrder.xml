@@ -717,10 +717,10 @@
         showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12"
         onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
       <button
-        if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto"
+        if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto"
         name="generateProductionOrderBtn" title="Generate production order"
-        showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
-        onClick="save,action-sale-order-method-create-production-order"/>
+        if-module="axelor-purchase" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
+        colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times"
         showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12"
         onClick="save,action-sale-order-view-cancel"/>
