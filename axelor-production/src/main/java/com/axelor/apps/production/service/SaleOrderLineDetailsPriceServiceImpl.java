@@ -38,7 +38,7 @@ import java.util.Map;
 
 public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetailsPriceService {
 
-  protected final ProdProcessLineCostComputeService prodProcessLineCostComputeService;
+  protected final ProdProcessLineHourlyCostComputeService prodProcessLineHourlyCostComputeService;
   protected final AppBaseService appBaseService;
   protected final MarginComputeService marginComputeService;
   protected final ProductCompanyService productCompanyService;
@@ -47,13 +47,13 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
 
   @Inject
   public SaleOrderLineDetailsPriceServiceImpl(
-      ProdProcessLineCostComputeService prodProcessLineCostComputeService,
+      ProdProcessLineHourlyCostComputeService prodProcessLineHourlyCostComputeService,
       AppBaseService appBaseService,
       MarginComputeService marginComputeService,
       ProductCompanyService productCompanyService,
       AppSaleService appSaleService,
       SaleOrderLineDetailsService saleOrderLineDetailsService) {
-    this.prodProcessLineCostComputeService = prodProcessLineCostComputeService;
+    this.prodProcessLineHourlyCostComputeService = prodProcessLineHourlyCostComputeService;
     this.appBaseService = appBaseService;
     this.marginComputeService = marginComputeService;
     this.productCompanyService = productCompanyService;
@@ -120,21 +120,16 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
 
     int saleOrderLineDetailsTypeSelect = saleOrderLineDetails.getTypeSelect();
     BigDecimal costPrice = BigDecimal.ZERO;
-    switch (saleOrderLineDetailsTypeSelect) {
-      case SaleOrderLineDetailsRepository.TYPE_COMPONENT:
-        if (product != null && company != null) {
-          costPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
-        }
-        break;
-      case SaleOrderLineDetailsRepository.TYPE_OPERATION:
-        ProdProcessLine prodProcessLine = saleOrderLineDetails.getProdProcessLine();
-        BigDecimal qtyToProduce = saleOrderLine.getQtyToProduce();
-        costPrice =
-            prodProcessLineCostComputeService.computeLineHourlyCost(prodProcessLine, qtyToProduce);
-        break;
-      case SaleOrderLineDetailsRepository.TYPE_BUDGET_ITEM:
-      default:
-        break;
+    if (saleOrderLineDetailsTypeSelect == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
+      if (product != null && company != null) {
+        costPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+      }
+    } else if (saleOrderLineDetailsTypeSelect == SaleOrderLineDetailsRepository.TYPE_OPERATION) {
+      ProdProcessLine prodProcessLine = saleOrderLineDetails.getProdProcessLine();
+      BigDecimal qtyToProduce = saleOrderLine.getQtyToProduce();
+      costPrice =
+          prodProcessLineHourlyCostComputeService.computeLineHourlyCost(
+              prodProcessLine, qtyToProduce);
     }
 
     saleOrderLineDetails.setCostPrice(costPrice);

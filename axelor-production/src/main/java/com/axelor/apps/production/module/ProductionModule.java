@@ -78,8 +78,8 @@ import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.apps.production.service.ProdProcessComputationServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineComputationServiceImpl;
-import com.axelor.apps.production.service.ProdProcessLineCostComputeService;
-import com.axelor.apps.production.service.ProdProcessLineCostComputeServiceImpl;
+import com.axelor.apps.production.service.ProdProcessLineHourlyCostComputeService;
+import com.axelor.apps.production.service.ProdProcessLineHourlyCostComputeServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceService;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;
@@ -428,6 +428,7 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineDetailsProdProcessServiceImpl.class);
     bind(SolDetailsProdProcessLineMappingService.class)
         .to(SolDetailsProdProcessLineMappingServiceImpl.class);
-    bind(ProdProcessLineCostComputeService.class).to(ProdProcessLineCostComputeServiceImpl.class);
+    bind(ProdProcessLineHourlyCostComputeService.class)
+        .to(ProdProcessLineHourlyCostComputeServiceImpl.class);
   }
 }

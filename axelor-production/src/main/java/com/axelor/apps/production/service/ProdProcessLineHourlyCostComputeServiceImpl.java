@@ -10,14 +10,15 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCostComputeService {
+public class ProdProcessLineHourlyCostComputeServiceImpl
+    implements ProdProcessLineHourlyCostComputeService {
 
   protected final ProdProcessLineComputationService prodProcessLineComputationService;
   protected final AppProductionService appProductionService;
   protected final AppBaseService appBaseService;
 
   @Inject
-  public ProdProcessLineCostComputeServiceImpl(
+  public ProdProcessLineHourlyCostComputeServiceImpl(
       ProdProcessLineComputationService prodProcessLineComputationService,
       AppProductionService appProductionService,
       AppBaseService appBaseService) {
@@ -37,23 +38,20 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
     BigDecimal nbCycles =
         prodProcessLineComputationService.getNbCycle(prodProcessLine, qtyToProduce);
     BigDecimal costAmount;
-    switch (workCenterTypeSelect) {
-      case WorkCenterRepository.WORK_CENTER_TYPE_HUMAN:
-        costAmount = humanCostAmount;
-        break;
-      case WorkCenterRepository.WORK_CENTER_TYPE_MACHINE:
+    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN) {
+      costAmount = humanCostAmount;
+    } else if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE) {
+      costAmount = machineCostAmount;
+    } else {
+      BigDecimal humanDuration =
+          prodProcessLineComputationService.getHourHumanDuration(prodProcessLine, nbCycles);
+      BigDecimal machineDuration =
+          prodProcessLineComputationService.getHourMachineDuration(prodProcessLine, qtyToProduce);
+      if (machineDuration.compareTo(humanDuration) > 0) {
         costAmount = machineCostAmount;
-        break;
-      default:
-        BigDecimal humanDuration =
-            prodProcessLineComputationService.getHourHumanDuration(prodProcessLine, nbCycles);
-        BigDecimal machineDuration =
-            prodProcessLineComputationService.getHourMachineDuration(prodProcessLine, qtyToProduce);
-        if (machineDuration.compareTo(humanDuration) > 0) {
-          costAmount = machineCostAmount;
-        } else {
-          costAmount = humanCostAmount;
-        }
+      } else {
+        costAmount = humanCostAmount;
+      }
     }
 
     return costAmount;
@@ -69,23 +67,17 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
         appProductionService.getIsCostPerProcessLine()
             ? prodProcessLine.getHrCostTypeSelect()
             : workCenter.getHrCostTypeSelect();
-    BigDecimal humanCostAmount;
-    switch (costTypeSelect) {
-      case WorkCenterRepository.COST_TYPE_PER_HOUR:
-        humanCostAmount = costAmount;
-        break;
-      case WorkCenterRepository.COST_TYPE_PER_PIECE:
-        BigDecimal hrDurationPerCycle = BigDecimal.valueOf(workCenter.getHrDurationPerCycle());
-        humanCostAmount =
-            costAmount.divide(
-                hrDurationPerCycle,
-                appBaseService.getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_UP);
-        break;
-      default:
-        humanCostAmount = costAmount;
+    return getHumanCostAmount(costTypeSelect, costAmount, workCenter);
+  }
+
+  protected BigDecimal getHumanCostAmount(
+      int costTypeSelect, BigDecimal costAmount, WorkCenter workCenter) {
+    if (costTypeSelect == WorkCenterRepository.COST_TYPE_PER_PIECE) {
+      BigDecimal hrDurationPerCycle = BigDecimal.valueOf(workCenter.getHrDurationPerCycle());
+      return costAmount.divide(
+          hrDurationPerCycle, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     }
-    return humanCostAmount;
+    return costAmount;
   }
 
   protected BigDecimal computeMachineCostAmount(
@@ -101,36 +93,31 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
             : workCenter.getCostTypeSelect();
     BigDecimal nbCycles =
         prodProcessLineComputationService.getNbCycle(prodProcessLine, qtyToProduce);
-    BigDecimal machineCostAmount;
-
-    switch (costTypeSelect) {
-      case WorkCenterRepository.COST_TYPE_PER_HOUR:
-        machineCostAmount = costAmount;
-        break;
-      case WorkCenterRepository.COST_TYPE_PER_CYCLE:
-        BigDecimal nbCyclePerHour = computeCycleHourlyCost(prodProcessLine, nbCycles);
-        machineCostAmount = costAmount.multiply(nbCyclePerHour);
-        break;
-      case WorkCenterRepository.COST_TYPE_PER_PIECE:
-        BigDecimal durationForOnePiece = computeDurationForOnePiece(prodProcessLine);
-        machineCostAmount =
-            costAmount.divide(
-                durationForOnePiece,
-                appBaseService.getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_UP);
-        break;
-      default:
-        machineCostAmount = costAmount;
-    }
-    return machineCostAmount;
+    return getMachineCostAmount(prodProcessLine, costTypeSelect, nbCycles, costAmount);
   }
 
-  private BigDecimal computeDurationForOnePiece(ProdProcessLine prodProcessLine) {
+  protected BigDecimal getMachineCostAmount(
+      ProdProcessLine prodProcessLine,
+      int costTypeSelect,
+      BigDecimal nbCycles,
+      BigDecimal costAmount) {
+    if (costTypeSelect == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
+      BigDecimal nbCyclePerHour = computeCycleHourlyCost(prodProcessLine, nbCycles);
+      return costAmount.multiply(nbCyclePerHour);
+    } else if (costTypeSelect == WorkCenterRepository.COST_TYPE_PER_PIECE) {
+      BigDecimal durationForOnePiece = computeDurationForOnePiece(prodProcessLine);
+      return costAmount.divide(
+          durationForOnePiece,
+          appBaseService.getNbDecimalDigitForUnitPrice(),
+          RoundingMode.HALF_UP);
+    }
+    return costAmount;
+  }
+
+  protected BigDecimal computeDurationForOnePiece(ProdProcessLine prodProcessLine) {
     BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
     BigDecimal durationPerCycle =
-        BigDecimal.valueOf(prodProcessLine.getDurationPerCycle())
-            .divide(
-                BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        prodProcessLineComputationService.getHourDurationPerCycle(prodProcessLine);
     return durationPerCycle.divide(
         maxCapacityPerCycle, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
@@ -138,9 +125,7 @@ public class ProdProcessLineCostComputeServiceImpl implements ProdProcessLineCos
   protected BigDecimal computeCycleHourlyCost(
       ProdProcessLine prodProcessLine, BigDecimal nbCycles) {
     BigDecimal durationPerCycle =
-        BigDecimal.valueOf(prodProcessLine.getDurationPerCycle())
-            .divide(
-                BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        prodProcessLineComputationService.getHourDurationPerCycle(prodProcessLine);
     return nbCycles.divide(
         durationPerCycle, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }

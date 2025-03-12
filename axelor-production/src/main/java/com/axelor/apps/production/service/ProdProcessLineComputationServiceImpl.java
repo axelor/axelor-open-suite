@@ -164,4 +164,10 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
 
     return totalDuration.longValue();
   }
+
+  @Override
+  public BigDecimal getHourDurationPerCycle(ProdProcessLine prodProcessLine) {
+    return BigDecimal.valueOf(prodProcessLine.getDurationPerCycle())
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
 }
