@@ -205,4 +205,26 @@ public class PurchaseRequestRestController {
         I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
         new PurchaseRequestResponse(purchaseRequest));
   }
+
+  @Operation(
+      summary = "Draft purchase request",
+      tags = {"Draft"})
+  @Path("/draft/{id}")
+  @PUT
+  @HttpExceptionHandler
+  public Response draftPurchaseRequest(
+      @PathParam("id") Long purchaseRequestId, RequestStructure requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(PurchaseRequest.class, purchaseRequestId).check();
+
+    PurchaseRequest purchaseRequest =
+        ObjectFinder.find(PurchaseRequest.class, purchaseRequestId, requestBody.getVersion());
+    Beans.get(PurchaseRequestWorkflowService.class).draftPurchaseRequest(purchaseRequest);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
+        new PurchaseRequestResponse(purchaseRequest));
+  }
 }
