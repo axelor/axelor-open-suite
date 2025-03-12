@@ -1,0 +1,6 @@
+---
+title: "Base: Remove API Configuration menu entry"
+module: axelor-base
+developer:
+  migration_script: |
+    DELETE FROM meta_menu WHERE name = 'referential-conf-api-configuration';
