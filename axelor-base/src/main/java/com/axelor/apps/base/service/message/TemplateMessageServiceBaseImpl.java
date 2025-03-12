@@ -43,8 +43,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -109,15 +107,13 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       throws AxelorException, IOException {
 
     logger.debug("Generate birt metafile: {}", printingTemplate.getName());
+    PrintingGenFactoryContext templatesPrintingContext =
+        new PrintingGenFactoryContext(templatesContext);
 
     String fileName =
-        printingTemplate.getName()
-            + "-"
-            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        printTemplatePrintService.getPrintFileName(printingTemplate, templatesPrintingContext);
 
-    File file =
-        printTemplatePrintService.getPrintFile(
-            printingTemplate, new PrintingGenFactoryContext(templatesContext));
+    File file = printTemplatePrintService.getPrintFile(printingTemplate, templatesPrintingContext);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class)
