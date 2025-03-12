@@ -219,7 +219,6 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     for (ContractLine line : additionalLines) {
       InvoiceLine invLine = generate(invoice, line);
       invLine.setContractLine(line);
-      setContractLineInAnalyticMoveLine(line, invLine);
       contractLineRepo.save(line);
     }
   }
@@ -263,7 +262,6 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
         AppAccount appAccount = appAccountService.getAppAccount();
         fillCutOffDate(contract, appAccount, start, invLine, end, isPeriodicInvoicing);
         invLine.setContractLine(line);
-        setContractLineInAnalyticMoveLine(line, invLine);
       }
     }
   }
@@ -622,14 +620,6 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
       return ContractInvoicingService.super.getVersions(contract);
     } else {
       return Collections.singletonList(contract.getCurrentContractVersion());
-    }
-  }
-
-  protected void setContractLineInAnalyticMoveLine(ContractLine line, InvoiceLine invLine) {
-    if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
-      for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
-        analyticMoveLine.setContractLine(line);
-      }
     }
   }
 
