@@ -45,6 +45,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
 
@@ -96,21 +97,18 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_MISSING_EXPENSE_PRODUCT));
     }
-
     ExpenseLine expenseLine =
         createBasicExpenseLine(
             project, employee, expenseDate, comments, currency, toInvoice, projectTask);
+    if (expenseProduct.getDeductLunchVoucher() && !CollectionUtils.isEmpty(employeeList)) {
+      for (Employee e : employeeList) {
+        expenseLine.addInvitedCollaboratorSetItem(e);
+        expenseLine.setIsAloneMeal(false);
+      }
+    }
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     convertJustificationFileToPdf(expenseLine);
-    if (expenseProduct.getDeductLunchVoucher()) {
-      if (employeeList != null) {
-        for (Employee e : employeeList) {
-          expenseLine.addInvitedCollaboratorSetItem(e);
-          expenseLine.setIsAloneMeal(false);
-        }
-      }
-    }
     return expenseLineRepository.save(expenseLine);
   }
 
