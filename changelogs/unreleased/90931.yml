@@ -1,0 +1,3 @@
+---
+title: "Message: fixed an issue where the attached birt document's name changed when sent via email."
+module: axelor-base
