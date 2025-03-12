@@ -107,13 +107,13 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       throws AxelorException, IOException {
 
     logger.debug("Generate birt metafile: {}", printingTemplate.getName());
+    PrintingGenFactoryContext templatesPrintingContext =
+        new PrintingGenFactoryContext(templatesContext);
 
     String fileName =
-        printTemplatePrintService.getPrintFileName(printingTemplate, templatesContext);
+        printTemplatePrintService.getPrintFileName(printingTemplate, templatesPrintingContext);
 
-    File file =
-        printTemplatePrintService.getPrintFile(
-            printingTemplate, new PrintingGenFactoryContext(templatesContext));
+    File file = printTemplatePrintService.getPrintFile(printingTemplate, templatesPrintingContext);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class)

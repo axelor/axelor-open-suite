@@ -25,7 +25,6 @@ import com.axelor.db.Model;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public interface PrintingTemplatePrintService {
 
@@ -68,6 +67,6 @@ public interface PrintingTemplatePrintService {
       List<Integer> idList, Class<T> contextClass, PrintingTemplate template)
       throws IOException, AxelorException;
 
-  String getPrintFileName(PrintingTemplate template, Map<String, Object> context)
+  String getPrintFileName(PrintingTemplate template, PrintingGenFactoryContext context)
       throws AxelorException;
 }

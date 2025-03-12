@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -183,15 +182,8 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       PrintingGenFactoryContext context,
       boolean toAttach)
       throws AxelorException {
-    try {
-      outputFileName = templateComputeNameService.computeFileName(outputFileName, context);
-    } catch (Exception e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.PRINTING_TEMPLATE_SCRIPT_ERROR),
-          template.getName(),
-          e.getMessage());
-    }
+
+    outputFileName = getPrintFileName(template, outputFileName, context);
     List<File> printFiles = getPrintFilesList(prints);
     File file = PrintingTemplateHelper.mergeToFile(printFiles, outputFileName);
     if (toAttach && context != null && context.getModel() != null) {
@@ -228,11 +220,16 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
   }
 
   @Override
-  public String getPrintFileName(PrintingTemplate template, Map<String, Object> context)
+  public String getPrintFileName(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException {
+    return getPrintFileName(template, getTemplateName(template), context);
+  }
+
+  protected String getPrintFileName(
+      PrintingTemplate template, String outputFileName, PrintingGenFactoryContext context)
       throws AxelorException {
     try {
-      return templateComputeNameService.computeFileName(
-          getTemplateName(template), new PrintingGenFactoryContext(context));
+      return templateComputeNameService.computeFileName(outputFileName, context);
     } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
