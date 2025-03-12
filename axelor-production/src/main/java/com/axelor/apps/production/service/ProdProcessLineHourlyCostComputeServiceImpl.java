@@ -73,7 +73,12 @@ public class ProdProcessLineHourlyCostComputeServiceImpl
   protected BigDecimal getHumanCostAmount(
       int costTypeSelect, BigDecimal costAmount, WorkCenter workCenter) {
     if (costTypeSelect == WorkCenterRepository.COST_TYPE_PER_PIECE) {
-      BigDecimal hrDurationPerCycle = BigDecimal.valueOf(workCenter.getHrDurationPerCycle());
+      BigDecimal hrDurationPerCycle =
+          BigDecimal.valueOf(workCenter.getHrDurationPerCycle())
+              .divide(
+                  BigDecimal.valueOf(3600),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
       return costAmount.divide(
           hrDurationPerCycle, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     }
