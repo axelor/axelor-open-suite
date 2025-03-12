@@ -23,13 +23,17 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.AuthUtils;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -90,6 +94,15 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   private Boolean toInvoice;
 
   private Long projectTaskId;
+  private List<Long> employeeIdList;
+
+  public List<Long> getEmployeeIdList() {
+    return employeeIdList;
+  }
+
+  public void setEmployeeIdList(List<Long> employeeIdList) {
+    this.employeeIdList = employeeIdList;
+  }
 
   public Long getProjectId() {
     return projectId;
@@ -290,5 +303,20 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
+  }
+
+  public List<Employee> fetchEmployeeList() {
+    if (employeeIdList == null || employeeIdList.isEmpty()) {
+      return null;
+    }
+    return Beans.get(EmployeeRepository.class)
+        .all()
+        .filter(
+            "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
+                + "AND self.mainEmploymentContract.payCompany IN :companySet ")
+        .bind("employeeIdList", employeeIdList)
+        .bind("expenseDate", expenseDate)
+        .bind("companySet", AuthUtils.getUser().getCompanySet())
+        .fetch();
   }
 }
