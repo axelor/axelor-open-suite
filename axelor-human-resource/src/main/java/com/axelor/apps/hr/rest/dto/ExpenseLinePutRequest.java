@@ -23,14 +23,19 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.AuthUtils;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.constraints.Min;
 
 public class ExpenseLinePutRequest extends RequestStructure {
@@ -81,6 +86,7 @@ public class ExpenseLinePutRequest extends RequestStructure {
   private Long expenseId;
 
   private Long projectTaskId;
+  private List<Long> employeeIdList;
 
   public Long getProjectId() {
     return projectId;
@@ -226,6 +232,14 @@ public class ExpenseLinePutRequest extends RequestStructure {
     this.projectTaskId = projectTaskId;
   }
 
+  public List<Long> getEmployeeIdList() {
+    return employeeIdList;
+  }
+
+  public void setEmployeeIdList(List<Long> employeeIdList) {
+    this.employeeIdList = employeeIdList;
+  }
+
   public Project fetchProject() {
     if (projectId == null || projectId == 0L) {
       return null;
@@ -288,5 +302,20 @@ public class ExpenseLinePutRequest extends RequestStructure {
       return null;
     }
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
+  }
+
+  public List<Employee> fetchEmployeeList(ExpenseLine expenseLine) {
+    if (employeeIdList == null || employeeIdList.isEmpty()) {
+      return null;
+    }
+    return Beans.get(EmployeeRepository.class)
+        .all()
+        .filter(
+            "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
+                + "AND self.mainEmploymentContract.payCompany IN :companySet ")
+        .bind("employeeIdList", employeeIdList)
+        .bind("expenseDate", expenseLine.getExpenseDate())
+        .bind("companySet", AuthUtils.getUser().getCompanySet())
+        .fetch();
   }
 }
