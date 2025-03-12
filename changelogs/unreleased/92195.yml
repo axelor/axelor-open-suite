@@ -1,7 +1,7 @@
 ---
 title: "Base: Remove API Configuration menu entry"
 module: axelor-base
-developer:
+developer: |
     Menu 'referential-conf-api-configuration' and action 'referential.conf.api.configuration' have been removed. 
     
     ```sql
