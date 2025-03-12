@@ -1,0 +1,10 @@
+---
+title: "Base: Remove API Configuration menu entry"
+module: axelor-base
+developer: |
+    Menu 'referential-conf-api-configuration' and action 'referential.conf.api.configuration' have been removed. 
+    
+    ```sql
+    DELETE FROM meta_menu WHERE name = 'referential-conf-api-configuration';
+    DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
+    ```
