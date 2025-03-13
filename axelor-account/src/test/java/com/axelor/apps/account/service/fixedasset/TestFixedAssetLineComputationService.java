@@ -147,6 +147,16 @@ class TestFixedAssetLineComputationService {
             (Answer<Boolean>)
                 invocation ->
                     Objects.equals(invocation.getArguments()[0], invocation.getArguments()[1]));
+    when(fixedAssetLineToolService.getCurrenciesMaxScaledValue(
+            any(), any(), any(ArithmeticOperation.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleService.getScaledValue(
+                        ((ArithmeticOperation) invocation.getArguments()[2])
+                            .operate(
+                                ((BigDecimal) invocation.getArguments()[0]),
+                                ((BigDecimal) invocation.getArguments()[1]))));
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService,
