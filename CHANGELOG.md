@@ -1,3 +1,28 @@
+## [7.2.34] (2025-03-13)
+
+### Fixes
+#### Base
+
+* Base: fixed some errors displayed as notification instead of popup.
+* Signature: fixed broken grid view when selecting a certificate.
+* User: made the title of the company set panel visible.
+
+#### Account
+
+* Accounting Batch: ignored check at reconcile when move only contains tax account.
+
+#### CRM
+
+* Partner: creating a new partner cannot create a prospect and a supplier at the same time.
+
+#### Human Resource
+
+* HR: fixed an error occurring when using 'Leave increment' batch and if employees do not have a main employment contract.
+
+#### Sale
+
+* Sale order line: fixed advanced filter not displayed unless the whole page is refreshed.
+
 ## [7.2.33] (2025-02-20)
 
 ### Fixes
@@ -1568,6 +1593,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.34]: https://github.com/axelor/axelor-open-suite/compare/v7.2.33...v7.2.34
 [7.2.33]: https://github.com/axelor/axelor-open-suite/compare/v7.2.32...v7.2.33
 [7.2.32]: https://github.com/axelor/axelor-open-suite/compare/v7.2.31...v7.2.32
 [7.2.31]: https://github.com/axelor/axelor-open-suite/compare/v7.2.30...v7.2.31
