@@ -1,3 +1,40 @@
+## [8.1.19] (2025-03-13)
+
+### Fixes
+#### Base
+
+* Base: fixed some errors displayed as notification instead of popup.
+* Signature: fixed broken grid view when selecting a certificate.
+* User: made the title of the company set panel visible.
+
+#### Account
+
+* Accounting batch: ignored check at reconcile when move only contains tax account.
+
+#### Business Project
+
+* Invoice: fixed fiscal position when generating an invoice from an invoicing project.
+
+#### CRM
+
+* Partner: creating a new partner cannot create a prospect and a supplier at the same time.
+
+#### Human Resource
+
+* HR: fixed an error occurring when using 'Leave increment' batch and if employees do not have a main employment contract.
+
+#### Sale
+
+* Sale order line: fixed advanced filter not displayed unless the whole page is refreshed.
+
+#### Stock
+
+* Stock location: fixed error when emptying parent stock location.
+
+#### Supply Chain
+
+* Purchase order: fixed an issue where it was possible to invoice a purchase order already invoiced.
+
 ## [8.1.18] (2025-02-20)
 
 ### Fixes
@@ -1213,6 +1250,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.19]: https://github.com/axelor/axelor-open-suite/compare/v8.1.18...v8.1.19
 [8.1.18]: https://github.com/axelor/axelor-open-suite/compare/v8.1.17...v8.1.18
 [8.1.17]: https://github.com/axelor/axelor-open-suite/compare/v8.1.16...v8.1.17
 [8.1.16]: https://github.com/axelor/axelor-open-suite/compare/v8.1.15...v8.1.16
