@@ -553,6 +553,8 @@
     <context name="_note" expr="eval: true"/>
   </action-view>
 
+  <!-- PORTLET -->
+
   <action-view name="action-lead-view-sent-emails" title="Sent emails"
     model="com.axelor.message.db.Message">
     <view type="cards" name="message-cards"/>
