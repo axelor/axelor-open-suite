@@ -17,4 +17,5 @@ axelor {
 dependencies {
 	api project(":modules:axelor-supplychain")
 	implementation libs.swagger_jaxrs
+	testImplementation libs.mockito
 }
