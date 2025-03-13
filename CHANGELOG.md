@@ -1,3 +1,43 @@
+## [8.2.10] (2025-03-13)
+
+### Fixes
+#### Base
+
+* App Base: added password widget for the certificate password.
+* Base: fixed some errors displayed as notification instead of popup.
+* Signature: fixed broken grid view when selecting a certificate.
+* Message: fixed an issue where the attached birt document name changed when sent via email.
+* User: made the title of the company set panel visible.
+
+#### Account
+
+* Accounting batch: ignored check at reconcile when move only contains tax account.
+
+#### Business Project
+
+* Invoice: fixed fiscal position when generating an invoice from an invoicing project.
+
+#### CRM
+
+* Partner: creating a new partner cannot create a prospect and a supplier at the same time.
+
+#### Human Resource
+
+* HR: fixed an error occurring when using 'Leave increment' batch and if employees do not have a main employment contract.
+
+#### Production
+
+* Sale order line: fixed an issue when syncing bill of materials lines dans sub sale order lines.
+
+#### Sale
+
+* Sale order line: fixed an issue where discount was not applied immediatly.
+* Sale order line: fixed advanced filter not displayed unless the whole page is refreshed.
+
+#### Stock
+
+* Stock location: fixed error when emptying parent stock location.
+
 ## [8.2.9] (2025-02-20)
 
 ### Fixes
@@ -753,6 +793,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.10]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.2.10
 [8.2.9]: https://github.com/axelor/axelor-open-suite/compare/v8.2.8...v8.2.9
 [8.2.8]: https://github.com/axelor/axelor-open-suite/compare/v8.2.7...v8.2.8
 [8.2.7]: https://github.com/axelor/axelor-open-suite/compare/v8.2.6...v8.2.7
