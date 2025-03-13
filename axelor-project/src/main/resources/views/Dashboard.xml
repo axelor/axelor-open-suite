@@ -6,8 +6,10 @@
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
     <dashlet action="action-project-db-my-tasks-due"/>
-    <dashlet action="action-project-db-my-today-planning"/>
-    <dashlet action="action-project-db-my-upcomming-planning"/>
+    <dashlet action="action-project-db-my-today-planning"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
+    <dashlet action="action-project-db-my-upcomming-planning"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
   </dashboard>
 
   <dashboard name="project-planned-charge" title="Planned charge">
@@ -25,7 +27,7 @@
       <panel name="issueTrackingPanel" title="Task tracking" icon="fa-sticky-note">
         <field name="$categoryList" showTitle="false" hideIf="$categoryList.length == 0">
           <viewer>
-					<![CDATA[
+            <![CDATA[
 						<>
 					        <Table striped>
 					            <TableHead>
@@ -78,7 +80,7 @@
         hideIf="$spentTime == 0" showIf="$manageTimeSpent">
         <field name="$spentTime" showTitle="false" colSpan="12">
           <viewer>
-						<![CDATA[
+            <![CDATA[
 				         <>
 				         	<p>{$spentTime} <span>{_t('hours')}</span></p> <Box/>
 				   	     	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-timesheet-line-log-time")}><span>{_t('Log time')}</span></Button> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={(e) => $execute("project.spent.time")}><span>{_t('Details')}</span></Button>
@@ -92,7 +94,7 @@
         hideIf="$announcementList.length == 0">
         <field name="$announcementList" showTitle="false" colSpan="12">
           <viewer>
-						<![CDATA[
+            <![CDATA[
 						 <>
 						 	 {$announcementList.map((item,index) => (
 								 <p key={index}>
@@ -112,7 +114,7 @@
         hideIf="$subprojectList.length == 0">
         <field name="$subprojectList" showTitle="false" colSpan="12">
           <viewer>
-					<![CDATA[
+            <![CDATA[
 				     <>
 				         {$subprojectList.map((item, index) => (
 				         	<span key={index}>
@@ -135,7 +137,7 @@
     <panel name="activityPanel" title="Activity">
       <field name="$dates" showTitle="false" colSpan="12" readonly="true">
         <viewer>
-			<![CDATA[
+          <![CDATA[
 			 <><i><span>{_t('From')}</span> {$startDate} <span>{_t('to')}</span> {$endDate}</i></>
 			]]>
         </viewer>
@@ -145,7 +147,7 @@
       <field name="$activities" showTitle="false" colSpan="12" readonly="true"
         showIf="$activityList">
         <viewer>
-			<![CDATA[
+          <![CDATA[
 				<>
 				    <Box>
 				        {$activityList.map((activity,activityIndex) => (

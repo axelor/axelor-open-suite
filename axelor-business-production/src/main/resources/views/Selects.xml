@@ -7,4 +7,10 @@
     <option value="1">Timesheet imputed on project</option>
     <option value="2">Timesheet imputed on manufacturing order</option>
   </selection>
+
+  <selection
+    name="business.production.app.production.update.project.sol.details.type.select">
+    <option value="0">Do not update</option>
+    <option value="1">Force update</option>
+  </selection>
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -38,7 +39,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
@@ -64,18 +64,18 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
 
-  protected TaxService taxService;
+  protected TaxAccountService taxAccountService;
   protected CurrencyService currencyService;
   protected MoveLineRepository moveLineRepository;
   protected MoveToolService moveToolService;
 
   @Inject
   public MoveLineToolServiceImpl(
-      TaxService taxService,
+      TaxAccountService taxAccountService,
       CurrencyService currencyService,
       MoveLineRepository moveLineRepository,
       MoveToolService moveToolService) {
-    this.taxService = taxService;
+    this.taxAccountService = taxAccountService;
     this.currencyService = currencyService;
     this.moveLineRepository = moveLineRepository;
     this.moveToolService = moveToolService;
@@ -458,6 +458,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
+  public boolean isMoveLineTaxAccountOrNonDeductibleTax(MoveLine moveLine) {
+    return this.isMoveLineTaxAccount(moveLine)
+        || (taxAccountService.isNonDeductibleTaxesSet(moveLine.getTaxLineSet())
+            && moveLine.getIsNonDeductibleTax());
+  }
+
+  @Override
   public void setIsNonDeductibleTax(MoveLine moveLine, Tax tax) {
     if (tax.getIsNonDeductibleTax()) {
       moveLine.setIsNonDeductibleTax(true);
@@ -473,5 +480,25 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
           ? currencyAmount
           : currencyAmount.negate();
     }
+  }
+
+  @Override
+  public boolean isMoveLineSpecialAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_SPECIAL.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
+  }
+
+  @Override
+  public boolean isMoveLineCommitmentAccount(MoveLine moveLine) {
+    return AccountTypeRepository.TYPE_COMMITMENT.equals(
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(""));
   }
 }

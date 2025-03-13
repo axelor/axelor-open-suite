@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -97,6 +97,8 @@ import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.StockMoveInvoiceBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.WorkflowCancelBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.WorkflowVentilationBudgetServiceImpl;
+import com.axelor.apps.budget.service.move.MoveBudgetDistributionService;
+import com.axelor.apps.budget.service.move.MoveBudgetDistributionServiceImpl;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
@@ -225,5 +227,7 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderLineViewBudgetService.class).to(SaleOrderLineViewBudgetServiceImpl.class);
     bind(SaleOrderLineBudgetObserver.class);
     bind(SaleOrderLineProductBudgetService.class).to(SaleOrderLineProductBudgetServiceImpl.class);
+
+    bind(MoveBudgetDistributionService.class).to(MoveBudgetDistributionServiceImpl.class);
   }
 }

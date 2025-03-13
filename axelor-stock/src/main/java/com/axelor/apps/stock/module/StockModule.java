@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package com.axelor.apps.stock.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
-import com.axelor.apps.base.service.ProductVariantServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
@@ -61,13 +60,14 @@ import com.axelor.apps.stock.service.InventoryUpdateService;
 import com.axelor.apps.stock.service.InventoryUpdateServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
+import com.axelor.apps.stock.service.LogisticalFormSequenceService;
+import com.axelor.apps.stock.service.LogisticalFormSequenceServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.PartnerStockSettingsServiceImpl;
-import com.axelor.apps.stock.service.ProductVariantServiceStockImpl;
 import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
@@ -100,6 +100,8 @@ import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.stock.service.TrackingNumberCompanyService;
+import com.axelor.apps.stock.service.TrackingNumberCompanyServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileService;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationProfileServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
@@ -178,7 +180,6 @@ public class StockModule extends AxelorModule {
     bind(StockCorrectionRepository.class).to(StockCorrectionStockRepository.class);
     bind(InventoryProductService.class).to(InventoryProductServiceImpl.class);
     bind(TrackingNumberConfigurationService.class).to(TrackingNumberConfigurationServiceImpl.class);
-    bind(ProductVariantServiceImpl.class).to(ProductVariantServiceStockImpl.class);
     bind(StockProductRestService.class).to(StockProductRestServiceImpl.class);
     bind(InventoryUpdateService.class).to(InventoryUpdateServiceImpl.class);
     bind(StockHistoryLineRepository.class).to(StockHistoryLineManagementRepository.class);
@@ -218,5 +219,7 @@ public class StockModule extends AxelorModule {
     bind(MassStockMoveNeedToPickedProductService.class)
         .to(MassStockMoveNeedToPickedProductServiceImpl.class);
     bind(StoredProductService.class).to(StoredProductServiceImpl.class);
+    bind(LogisticalFormSequenceService.class).to(LogisticalFormSequenceServiceImpl.class);
+    bind(TrackingNumberCompanyService.class).to(TrackingNumberCompanyServiceImpl.class);
   }
 }

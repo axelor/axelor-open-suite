@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderAttrsService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.google.inject.Inject;
@@ -45,9 +46,15 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
       AppSaleService appSaleService,
+      SaleOrderAttrsService saleOrderAttrsService,
       StockMoveRepository stockMoveRepository,
       CompanyRepository companyRepository) {
-    super(saleConfigService, appBaseService, saleOrderRepository, appSaleService);
+    super(
+        saleConfigService,
+        appBaseService,
+        saleOrderRepository,
+        appSaleService,
+        saleOrderAttrsService);
     this.stockMoveRepository = stockMoveRepository;
     this.companyRepository = companyRepository;
   }

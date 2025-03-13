@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -85,8 +85,6 @@ public interface PurchaseOrderLineService {
   public int getDiscountTypeSelect(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BigDecimal price);
 
-  public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
-
   public void checkMultipleQty(
       Company company,
       Partner supplierPartner,
@@ -104,4 +102,7 @@ public interface PurchaseOrderLineService {
 
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException;
+
+  public Map<String, Object> recomputeTax(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 }

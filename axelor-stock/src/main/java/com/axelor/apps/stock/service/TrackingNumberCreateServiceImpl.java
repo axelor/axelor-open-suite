@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -104,29 +104,7 @@ public class TrackingNumberCreateServiceImpl implements TrackingNumberCreateServ
     trackingNumber.setCheckExpirationDateAtStockMoveRealization(
         trackingNumberConfiguration.getCheckExpirationDateAtStockMoveRealization());
 
-    Sequence sequence = trackingNumberConfiguration.getSequence();
-    if (sequence == null) {
-      throw new AxelorException(
-          product,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.TRACKING_NUMBER_1),
-          company.getName(),
-          product.getCode());
-    }
-
-    String seq;
-    while (true) {
-      seq =
-          sequenceService.getSequenceNumber(
-              sequence, TrackingNumber.class, "trackingNumberSeq", trackingNumber);
-      if (trackingNumberRepo
-              .all()
-              .filter("self.product = ?1 AND self.trackingNumberSeq = ?2", product, seq)
-              .count()
-          == 0) {
-        break;
-      }
-    }
+    String seq = getSeq(product, company, trackingNumberConfiguration, trackingNumber);
     trackingNumber.setTrackingNumberSeq(seq);
 
     // In case of barcode generation, retrieve the one set on tracking number configuration
@@ -150,6 +128,38 @@ public class TrackingNumberCreateServiceImpl implements TrackingNumberCreateServ
     }
 
     return trackingNumber;
+  }
+
+  protected String getSeq(
+      Product product,
+      Company company,
+      TrackingNumberConfiguration trackingNumberConfiguration,
+      TrackingNumber trackingNumber)
+      throws AxelorException {
+    Sequence sequence = trackingNumberConfiguration.getSequence();
+    if (sequence == null) {
+      throw new AxelorException(
+          product,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.TRACKING_NUMBER_1),
+          company.getName(),
+          product.getCode());
+    }
+
+    String seq;
+    while (true) {
+      seq =
+          sequenceService.getSequenceNumber(
+              sequence, TrackingNumber.class, "trackingNumberSeq", trackingNumber);
+      if (trackingNumberRepo
+              .all()
+              .filter("self.product = ?1 AND self.trackingNumberSeq = ?2", product, seq)
+              .count()
+          == 0) {
+        break;
+      }
+    }
+    return seq;
   }
 
   @Override

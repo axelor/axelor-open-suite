@@ -42,6 +42,7 @@
   <action-group name="action-group-budget-move-line-budget-distribution-onchange">
     <action name="action-method-move-line-budget-distribution-validate-amount"/>
     <action name="action-move-line-method-compute-budget-remaining-amount"/>
+    <action name="action-move-line-method-update-budget-amounts"/>
   </action-group>
 
   <action-method name="action-method-move-line-budget-distribution-validate-amount">
@@ -56,5 +57,9 @@
 
   <action-method name="action-move-line-method-set-budget-domain">
     <call class="com.axelor.apps.budget.web.MoveLineController" method="setBudgetDomain"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-update-budget-amounts">
+    <call class="com.axelor.apps.budget.web.MoveLineController" method="updateBudgetAmounts"/>
   </action-method>
 </object-views>

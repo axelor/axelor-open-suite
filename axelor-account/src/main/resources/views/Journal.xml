@@ -15,6 +15,10 @@
     <field name="notExportOk"/>
     <field name="statusSelect"/>
     <field name="company" form-view="company-form" grid-view="company-grid"/>
+    <button name="inputEntryBtn" title="Input entry"
+      onClick="action-journal-view-input-entry" icon="file-plus"/>
+    <button name="massInputEntryBtn" title="Mass input entries"
+      onClick="action-journal-view-mass-input-entries" icon="journal-plus"/>
   </grid>
 
   <form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"
@@ -69,9 +73,14 @@
     </panel>
 
     <panel-tabs name="mainPanelTab">
-
-      <panel-dashlet name="viewMoveLinePanel" title="General"
-        action="action-journal-view-move-line" height="450" canSearch="true" hideIf="$popup()"/>
+      <panel name="movePanel" hideIf="$popup()" title="General">
+        <button name="inputEntryBtn" title="Input entry"
+          onClick="action-journal-view-input-entry" icon="file-plus"/>
+        <button name="massInputEntryBtn" title="Mass input entries"
+          onClick="action-journal-view-mass-input-entries" icon="journal-plus"/>
+        <panel-dashlet name="viewMoveLinePanel" title="General"
+          action="action-journal-view-move-line" height="450" canSearch="true" colSpan="12"/>
+      </panel>
 
       <panel name="configurationsPanel" title="Configurations" hideIf="$popup()">
         <panel name="moveLinePanel" title="MoveLine" colSpan="12">
@@ -132,6 +141,25 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
+  <action-view name="action-journal-view-input-entry" title="Moves"
+    model="com.axelor.apps.account.db.Move">
+    <view type="form" name="move-form"/>
+    <view type="grid" name="move-grid"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect = 0</domain>
+    <context name="_journalId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-journal-view-mass-input-entries" title="Mass entry"
+    model="com.axelor.apps.account.db.Move">
+    <view type="form" name="move-mass-entry-form"/>
+    <view type="grid" name="move-mass-entry-grid"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect != 0</domain>
+    <context name="_journalId" expr="eval: id"/>
+  </action-view>
 
   <action-record name="account-journal-record-default"
     model="com.axelor.apps.account.db.Journal">

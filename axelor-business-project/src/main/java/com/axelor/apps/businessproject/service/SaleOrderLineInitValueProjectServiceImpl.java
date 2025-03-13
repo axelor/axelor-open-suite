@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,17 +42,18 @@ public class SaleOrderLineInitValueProjectServiceImpl
   }
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol)
       throws AxelorException {
-    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine);
+    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine, parentSol);
     values.putAll(fillProject(saleOrder, saleOrderLine));
     return values;
   }
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine);
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
+    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine, parentSol);
     values.putAll(fillProject(saleOrder, saleOrderLine));
     return values;
   }

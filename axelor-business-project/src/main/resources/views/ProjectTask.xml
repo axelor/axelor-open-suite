@@ -127,7 +127,7 @@
         showIf="project.taskStatusManagementSelect != 1"/>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
         onClick="save,action-business-project-task-view-show-planning"
-        if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         showIf="project.isShowPlanning"/>
       <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
         onClick="save,action-project-task-view-show-financial-datas-panel"/>
@@ -144,6 +144,7 @@
     <panel showIf="nextProjectTask">
       <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
       <field name="project.taskStatusManagementSelect" hidden="true"/>
+      <field name="project.isShowPlanning" hidden="true"/>
     </panel>
 
     <panel name="mainPanel" colSpan="12">
@@ -185,44 +186,7 @@
       </panel>
 
       <panel name="timeFollowUpPanel" title="Time follow-up">
-        <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
-          onSelect="action-project-task-attrs-set-time-unit-domain"
-          onChange="action-project-task-method-update-budgeted-time, save"/>
-        <field name="budgetedTime" colSpan="4"
-          onChange="action-project-task-method-update-sold-time">
-        </field>
-        <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
-          onChange="action-project-task-method-update-updated-time" colSpan="4"/>
-        <field name="updatedTime" hidden="true" colSpan="4"
-          onChange="action-project-task-method-update-quantity"/>
-        <field name="plannedTime" readonly="true" colSpan="4"/>
-        <field name="spentTime" readonly="true" colSpan="4"/>
-        <panel name="reportingPanel" showIf="!parentTask" title="Reporting" colSpan="12"
-          canCollapse="true" collapseIf="false">
-          <panel-dashlet action="action-project-task-view-percentage-progress-custom"
-            colSpan="3" showTitle="false" height="125"/>
-          <panel-dashlet
-            action="action-project-task-view-percentage-consumption-custom" colSpan="3"
-            showTitle="false" height="125"/>
-          <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-            colSpan="3" showTitle="false" height="125"/>
-        </panel>
-        <panel name="timerPanel" title="Timer" showIf="id" colSpan="12"
-          if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')" canCollapse="true"
-          collapseIf="false">
-          <panel name="actionsPanel" title="Actions">
-            <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
-              hidden="true" onClick="action-project-task-method-start-timer"/>
-            <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12"
-              hidden="true" onClick="action-project-task-method-stop-timer"/>
-            <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
-              hidden="true" onClick="action-project-task-method-cancel-timer"/>
-          </panel>
-          <panel name="durationPanel">
-            <field name="$_totalTimerDuration" type="decimal" readonly="true"
-              title="Total duration (Hours)" colSpan="12"/>
-          </panel>
-        </panel>
+        <panel-include view="incl-time-follow-task-panel-form"/>
       </panel>
 
       <panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id">
@@ -236,6 +200,8 @@
       </panel>
       <panel name="financialDataPanel" title="Financial Data" colSpan="12"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+        <field name="invoicingType" onChange="action-project-task-attrs-onchange-invoice-type"
+          readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
         <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
           <field name="product" colSpan="3" canEdit="false"
             onChange="action-business-project-project-task-group-product-onchange"
@@ -255,9 +221,6 @@
             form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"/>
           <field name="totalCosts" colSpan="3"/>
-          <field name="invoicingType" colSpan="3"
-            onChange="action-project-task-attrs-onchange-invoice-type"
-            readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
           <field name="toInvoice" colSpan="2" readonly="true"
             if="__config__.app.getApp('business-project').automaticInvoicing"/>
           <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
@@ -289,7 +252,7 @@
           <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
             form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
-            width="120" widget="Image"/>
+            width="120" widget="drawing"/>
         </panel>
       </panel>
 
@@ -308,6 +271,9 @@
 
   <form title="Financial datas" name="business-project-task-financial-datas-form"
     model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel-tabs>
       <panel name="purchasePanel" title="Purchase" colSpan="12"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
@@ -380,10 +346,13 @@
 
   <form name="incl-planning-panel-business-task-form" title="Planning"
     model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       if-module="axelor-human-resource" showIf="project.isShowPlanning">
       <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
         canSearch="true"/>
       <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
       <field name="project.isShowPlanning" hidden="true"/>
@@ -433,6 +402,35 @@
 
       <panel-include view="incl-customized-field-panel-form"/>
     </panel>
+  </form>
+
+  <form name="incl-time-follow-task-panel-form" id="business-incl-time-follow-task-panel-form"
+    title="Time follow up" model="com.axelor.apps.project.db.ProjectTask" extension="true">
+    <extend target="//field[@name='budgetedTime']">
+      <attribute name="onChange" value="action-project-task-group-budgeted-time-onchange"/>
+      <insert position="after">
+        <field name="soldTime" readonlyIf="saleOrderLine"
+          showIf="!parentTask &amp;&amp; project.isBusinessProject"
+          onChange="action-project-task-method-update-updated-time" colSpan="4"/>
+        <field name="updatedTime" hidden="true" colSpan="4"
+          onChange="action-project-task-method-update-quantity"/>
+      </insert>
+    </extend>
+    <extend target="/panel[@name='timesPanel']">
+      <insert position="inside">
+        <panel name="reportingPanel" showIf="!parentTask" title="Reporting" colSpan="12"
+          canCollapse="true" collapseIf="false">
+          <panel-dashlet action="action-project-task-view-percentage-progress-custom"
+            colSpan="3" showTitle="false" height="125"/>
+          <panel-dashlet
+            action="action-project-task-view-percentage-consumption-custom" colSpan="3"
+            showTitle="false" height="125"/>
+          <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
+            colSpan="3" showTitle="false" height="125"/>
+          <field name="project.isBusinessProject" hidden="true"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <tree name="business-project-project-task-tree" title="Task">
@@ -486,11 +484,6 @@
   <action-method name="action-project-task-method-get-contract-product">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="getProductData"/>
-  </action-method>
-
-  <action-method name="action-project-task-method-update-budgeted-time">
-    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-      method="updateBudgetedTime"/>
   </action-method>
 
   <action-method name="action-project-task-method-update-sold-time">
@@ -554,7 +547,6 @@
     <action name="action-project-task-group-onnew"/>
     <action name="action-project-task-attrs-scale-and-precision"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-project-task-attrs-set-time-unit-default"/>
     <action name="action-project-task-attrs-set-framework-contracts"/>
     <action name="action-project-task-group-set-product-and-update"/>
     <action name="action-project-task-business-support-provider"
@@ -585,21 +577,10 @@
       if="__config__.app.isApp('business-project')"/>
   </action-group>
 
-  <!-- get timeUnit value from configuration -->
-  <action-attrs name="action-project-task-attrs-set-time-unit-default">
-    <attribute for="timeUnit" name="value"
-      expr="eval: __config__.app.getApp('business-project')?.daysUnit"/>
-  </action-attrs>
-
-  <!-- set timeUnit domain -->
-  <action-attrs name="action-project-task-attrs-set-time-unit-domain">
-    <attribute for="timeUnit" name="domain"
-      if="__config__.app.isApp('business-project') &amp;&amp; project?.isBusinessProject"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
-    <attribute for="timeUnit" name="domain"
-      if="!__config__.app.isApp('business-project') || !project?.isBusinessProject"
-      expr="eval: &quot;self.unitTypeSelect = 3&quot;"/>
-  </action-attrs>
+  <action-group name="action-project-task-group-budgeted-time-onchange">
+    <action name="action-project-task-group-sprint-onchange"/>
+    <action name="action-project-task-method-update-sold-time"/>
+  </action-group>
 
   <action-attrs name="action-project-task-attrs-discountamount-title">
     <attribute name="title" for="discountAmount"
@@ -607,12 +588,6 @@
     <attribute name="title" for="discountAmount"
       expr="eval: com.axelor.i18n.I18n.get('Discount amount')" if="discountTypeSelect == 2"/>
   </action-attrs>
-
-  <!-- fill timeUnit from parentTask -->
-  <action-record name="action-project-task-record-get-parent-timeunit"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
-  </action-record>
 
   <action-record name="action-project-task-record-product-selected"
     model="com.axelor.apps.project.db.ProjectTask">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,14 +22,17 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TradingNameRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -45,7 +48,7 @@ import javax.validation.ValidationException;
 @Singleton
 public class UserController {
   protected static final Map<String, String> UNIQUE_MESSAGES =
-      ImmutableMap.of("code", BaseExceptionMessage.USER_CODE_ALREADY_EXISTS);
+      ImmutableMap.of("code", I18n.get(BaseExceptionMessage.USER_CODE_ALREADY_EXISTS));
 
   public void setUserPartner(ActionRequest request, ActionResponse response) {
     try {
@@ -134,6 +137,35 @@ public class UserController {
       Beans.get(UserService.class).setActiveCompany(AuthUtils.getUser(), company);
       response.setNotify(
           String.format(I18n.get("Active company changed to %s"), company.getName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setTradingName(ActionRequest request, ActionResponse response) {
+    try {
+      TradingName tradingName = request.getContext().asType(TradingName.class);
+      tradingName = Beans.get(TradingNameRepository.class).find(tradingName.getId());
+      Beans.get(UserService.class).setTradingName(AuthUtils.getUser(), tradingName);
+      response.setNotify(
+          String.format(I18n.get("Trading name changed to %s"), tradingName.getName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateCode(ActionRequest request, ActionResponse response) {
+    try {
+      User user = request.getContext().asType(User.class);
+      Map<String, String> errors = ModelHelper.getUniqueErrors(user, UNIQUE_MESSAGES);
+
+      String code = user.getCode();
+      if (StringUtils.isEmpty(code) || code.length() < 2) {
+        errors.put(
+            "code", I18n.get(BaseExceptionMessage.USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2));
+      }
+      response.setErrors(errors);
+      response.setAttr("okBtn", "readonly", !errors.isEmpty());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,4 +28,8 @@ public interface TranslationBaseService {
 
   List<MetaTranslation> getLocalizationTranslations(String language, String key)
       throws AxelorException;
+
+  void createValueTranslation(String language, String key, String message);
+
+  void updateValueTranslation(String language, String oldKey, String newKey, String message);
 }

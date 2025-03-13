@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -201,6 +201,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         Invoice invoice = super.createInvoiceHeader();
         invoice.setProject(project);
         invoice.setPriceList(project.getPriceList());
+        invoice.setFiscalPosition(invoicedPartner.getFiscalPosition());
         return invoice;
       }
     };

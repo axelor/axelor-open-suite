@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -76,15 +76,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate) {
     Timesheet timesheet = new Timesheet();
 
-    Company company = null;
-    if (employee != null) {
-      employee = employeeRepository.find(employee.getId());
-      if (employee.getMainEmploymentContract() != null) {
-        company = employee.getMainEmploymentContract().getPayCompany();
-      } else if (employee.getUser() != null) {
-        company = employee.getUser().getActiveCompany();
-      }
-    }
+    Company company = timesheetQueryService.getDefaultCompany(employee);
 
     String timeLoggingPreferenceSelect =
         employee == null ? null : employee.getTimeLoggingPreferenceSelect();
@@ -168,6 +160,9 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     Company company = null;
     if (project != null) {
       company = project.getCompany();
+    }
+    if (company == null) {
+      company = timesheetQueryService.getDefaultCompany(employee);
     }
     Timesheet timesheet =
         timesheetQueryService.getTimesheetQuery(employee, company, date).order("id").fetchOne();

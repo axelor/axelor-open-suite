@@ -200,31 +200,47 @@
           <field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
           <field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
         </panel>
-
-        <panel name="addressPanel" title="Primary address" showIf="$readonly()" colSpan="12">
-          <field name="$address" showTitle="false">
-            <viewer
-              depends="primaryAddress,primaryPostalCode,primaryCity,primaryState,primaryCountry">
-							<![CDATA[
-								<>
-									{primaryAddress} <Box/>
-									{primaryPostalCode} {primaryCity.name} <Box/>
-									{primaryState.name} {primaryState?.name && primaryCountry?.name && <span>-</span>} {primaryCountry.name}
-								</>
-							]]>
-            </viewer>
+        <panel name="addressPanel" title="Primary address" colSpan="12">
+          <field name="address" canNew="true" canEdit="true" colSpan="12"
+            form-view="incl-address-main-panel-form" grid-view="address-grid" showTitle="false"
+            onChange="action-lead-address-get-address-fields">
+            <editor>
+              <panel name="mainPanel" colSpan="12">
+                <field name="country" colSpan="12" canEdit="false"
+                  onChange="action-group-base-address-country-change" required="true"
+                  form-view="country-form" grid-view="country-grid"/>
+                <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
+                  <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
+                  <field name="subDepartment" colSpan="12"
+                    x-bind="{{subDepartment|uppercase}}"/>
+                  <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
+                  <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
+                  <field name="buildingNumber"
+                    onChange="action-address-record-change-streetName"
+                    x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
+                  <field name="street" canNew="true" colSpan="12"
+                    onChange="action-address-record-change-streetName"
+                    onSelect="action-address-attrs-update-domain-street" form-view="street-form"
+                    grid-view="street-grid"/>
+                  <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
+                  <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
+                  <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
+                  <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
+                  <field name="townLocationName" colSpan="12"
+                    x-bind="{{townLocationName|uppercase}}"/>
+                  <field name="districtName" colSpan="12" x-bind="{{districtName|uppercase}}"/>
+                  <field name="countrySubDivision" colSpan="12"
+                    x-bind="{{countrySubDivision|uppercase}}"/>
+                  <field name="city" colSpan="12" canNew="true" canEdit="false"
+                    onChange="action-address-change-city, action-address-validate-change-city"
+                    onSelect="action-address-attrs-update-domain-city" form-view="city-form"
+                    grid-view="city-grid"/>
+                  <field name="zip" colSpan="12"
+                    onChange="action-address-method-autocomplete-address"/>
+                </panel>
+              </panel>
+            </editor>
           </field>
-        </panel>
-
-        <panel name="primaryAddress" title="Primary address" colSpan="12" hideIf="$readonly()">
-          <field name="primaryAddress" colSpan="12"/>
-          <field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid"
-            onChange="action-attrs-lead-set-primary-state-country-postal-code" canNew="true"/>
-          <field name="primaryPostalCode" colSpan="6"/>
-          <field name="primaryState" colSpan="6" form-view="region-form"
-            grid-view="region-grid" canNew="true"/>
-          <field name="primaryCountry" colSpan="6" form-view="country-form"
-            grid-view="country-grid"/>
         </panel>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
@@ -404,7 +420,12 @@
     <action name="action-crm-lead-method-check-name"/>
     <action name="action-lead-method-compute-is-lost"/>
     <action name="action-lead-attrs-display-lost-reason"/>
+    <action name="action-lead-address-get-address-fields"/>
   </action-group>
+
+  <action-method name="action-lead-address-get-address-fields">
+    <call class="com.axelor.apps.crm.web.LeadController" method="getAddressMetaField"/>
+  </action-method>
 
   <action-method name="action-lead-method-compute-is-lost">
     <call class="com.axelor.apps.crm.web.LeadController" method="computeIsLost"/>
@@ -460,20 +481,6 @@
     <field name="$leadSet" expr="eval: _leadList"/>
   </action-record>
 
-  <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
-    <attribute if="eval: primaryCity?.department?.region" name="value"
-      expr="eval: primaryCity.department.region" for="primaryState"/>
-    <attribute if="eval: primaryCity?.country" name="value"
-      expr="eval: primaryCity.country" for="primaryCountry"/>
-    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
-    <attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false"
-      for="primaryState"/>
-    <attribute name="readonly" expr="eval: primaryCity?.country ? true: false"
-      for="primaryCountry"/>
-    <attribute name="readonly" expr="eval: primaryCity?.zip ? true: false"
-      for="primaryPostalCode"/>
-  </action-attrs>
-
   <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead"
     title="Lose">
     <view type="form" name="lead-lose-wizard-form"/>
@@ -493,7 +500,6 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_lead" expr="eval: __self__"/>
-    <context name="_primaryAddress" expr="eval: primaryAddress"/>
   </action-view>
 
   <action-view name="action-lead-view-show-partner" title="Partner"

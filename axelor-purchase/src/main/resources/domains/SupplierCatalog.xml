@@ -15,6 +15,7 @@
     <string name="productSupplierCode" title="Product code on catalog"/>
     <decimal name="price" title="Unit price" precision="20" scale="10" min="0"
       nullable="true"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <date name="updateDate" title="Last update"/>
     <string name="description" title="Description" large="true"/>
     <decimal name="calculatedPrice" title="Calculated price/Qty"/>

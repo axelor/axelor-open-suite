@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint"
+    orderBy="sequence" editable="true" groupBy="project, targetVersion"
+    onNew="action-sprint-group-onnew">
+    <toolbar>
+      <button name="allSprintsBtn" title="All sprints" colSpan="2" css="btn-custom text-left"
+        icon="bar-chart-steps" onClick="save,action-sprint-method-show-all-sprints"/>
+    </toolbar>
+    <field name="name" required="true"/>
+    <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="project" readonly="true"/>
+    <field name="targetVersion" readonly="true"/>
+    <field name="description"/>
+    <field name="sequence" hidden="true"/>
+    <field name="sprintManagementSelect" hidden="true"/>
+  </grid>
+
+  <grid name="sprint-dashlet-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint"
+    orderBy="sequence" editable="true" onNew="action-sprint-group-onnew">
+    <toolbar>
+      <button name="allSprintsBtn" title="All sprints" colSpan="2" css="btn-custom text-left"
+        icon="bar-chart-steps" onClick="save,action-sprint-method-show-all-sprints"/>
+    </toolbar>
+    <field name="name" required="true"/>
+    <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="project" readonly="true"/>
+    <field name="targetVersion" readonly="true" if="sprintManagementSelect == 'version'"/>
+    <field name="description"/>
+    <field name="sequence" hidden="true"/>
+  </grid>
+
+  <form name="sprint-form" title="Sprint" model="com.axelor.apps.project.db.Sprint"
+    width="large" onNew="action-sprint-group-onnew"
+    onLoad="action-sprint-attrs-manage-hide-project-version">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <panel itemSpan="12">
+        <field name="project" readonly="true"/>
+        <field name="targetVersion" readonly="true"/>
+      </panel>
+      <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+      <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+      <field name="description" colSpan="12"/>
+      <field name="projectTaskList" canSelect="true" canNew="false" canEdit="false"
+        domain="self.project = :project" showIf="id" colSpan="12"
+        readonlyIf="!project || project.sprintManagementSelect != 'project'"/>
+      <field name="project.sprintManagementSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Sprint generator"
+    name="sprint-generator-wizard-form" width="large" onNew="action-sprint-generator-group-onnew">
+    <panel name="mainPanel">
+      <panel hidden="true" colSpan="12">
+        <field name="project" title="Project" target="com.axelor.apps.project.db.Project"
+          type="many-to-one" x-dirty="false" readonly="true" form-view="project-form"/>
+        <field name="targetVersion" title="Project version"
+          target="com.axelor.apps.project.db.ProjectVersion" type="many-to-one" x-dirty="false"
+          readonly="true" form-view="project-version-form"/>
+      </panel>
+      <field name="fromDate" title="From" type="date"
+        onChange="action-sprint-generator-validate-dates" required="true" x-dirty="false"/>
+      <field name="toDate" title="To" type="date"
+        onChange="action-sprint-generator-validate-dates" required="true" x-dirty="false"/>
+      <field name="numberDays" title="Number of days in a sprint" type="integer" min="1"/>
+      <button onClick="action-sprint-generator-method-generate-sprints" name="generate"
+        title="Generate" readonlyIf="!fromDate || !toDate"/>
+    </panel>
+  </form>
+
+  <action-group name="action-sprint-generator-group-onnew">
+    <action name="action-sprint-generator-method-init-default-values"/>
+  </action-group>
+
+  <action-group name="action-sprint-group-onnew">
+    <action name="action-sprint-method-init-default-values"/>
+    <action name="action-sprint-attrs-manage-hide-project-version"/>
+  </action-group>
+
+  <action-record name="action-sprint-record-reset-to-date"
+    model="com.axelor.apps.project.db.Sprint">
+    <field name="toDate" expr="eval: null"/>
+  </action-record>
+
+  <action-method name="action-sprint-generator-method-init-default-values">
+    <call class="com.axelor.apps.project.web.SprintController" method="initDefaultWizardValues"/>
+  </action-method>
+
+  <action-method name="action-sprint-method-init-default-values">
+    <call class="com.axelor.apps.project.web.SprintController" method="initDefaultValues"/>
+  </action-method>
+
+  <action-method name="action-sprint-generator-method-generate-sprints">
+    <call class="com.axelor.apps.project.web.SprintController" method="generateSprints"/>
+  </action-method>
+
+  <action-method name="action-sprint-method-show-all-sprints">
+    <call class="com.axelor.apps.project.web.SprintController" method="showAllSprints"/>
+  </action-method>
+
+  <action-validate name="action-sprint-generator-validate-dates">
+    <error message="Invalid date"
+      if="fromDate &amp;&amp; toDate &amp;&amp; toDate &lt; fromDate"
+      action="action-sprint-record-reset-to-date"/>
+  </action-validate>
+
+  <action-attrs name="action-sprint-attrs-manage-hide-project-version">
+    <attribute for="targetVersion" name="hidden"
+      expr="eval: __parent__?._model != 'com.axelor.apps.project.db.ProjectVersion'"/>
+    <attribute for="project" name="hidden"
+      expr="eval: __parent__?._model != 'com.axelor.apps.project.db.Project'"/>
+  </action-attrs>
+
+  <action-view name="action-sprint-generator-project-view-wizard-mass-generate"
+    title="Sprint generator" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-generator-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="project" expr="eval: __this__"/>
+  </action-view>
+
+  <action-view name="action-sprint-generator-version-view-wizard-mass-generate"
+    title="Sprint generator" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="sprint-generator-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="targetVersion" expr="eval: __this__"/>
+  </action-view>
+
+</object-views>

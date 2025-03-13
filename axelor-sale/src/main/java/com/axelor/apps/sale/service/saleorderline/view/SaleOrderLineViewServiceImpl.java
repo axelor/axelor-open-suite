@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -91,6 +91,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     MapTools.addMap(attrs, getPriceAndQtyScale());
     MapTools.addMap(attrs, getTypeSelectSelection());
     MapTools.addMap(attrs, getMultipleQtyLabel(saleOrderLine));
+    MapTools.addMap(attrs, getDeliveryAddressAttrs(saleOrder));
     return attrs;
   }
 
@@ -253,6 +254,15 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
 
     attrs.put("multipleQtyNotRespectedLabel", attrsMap);
 
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> getDeliveryAddressAttrs(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    int statusSelect = saleOrder.getStatusSelect();
+    boolean orderBeingEdited = saleOrder.getOrderBeingEdited();
+    attrs.put("deliveryAddress", Map.of(HIDDEN_ATTR, statusSelect > 1 && !orderBeingEdited));
+    attrs.put("deliveryAddressStr", Map.of(READONLY_ATTR, statusSelect > 1 && !orderBeingEdited));
     return attrs;
   }
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="project-version-grid" title="Project.version"
+    model="com.axelor.apps.project.db.ProjectVersion">
+    <field name="title"/>
+    <field name="statusSelect"/>
+    <field name="testingServerDate"/>
+  </grid>
+
+  <form name="project-version-form" title="Project.version"
+    model="com.axelor.apps.project.db.ProjectVersion" width="large"
+    onNew="action-project-version-onnew" onLoad="action-project-version-onnew"
+    onSave="action-project-version-method-check-if-project-or-version-conflicts">
+    <panel name="mainPanel">
+      <field name="title" required="true"/>
+      <field name="statusSelect"/>
+      <field name="testingServerDate"/>
+      <field name="productionServerDate"/>
+      <field name="content" widget="HTML" colSpan="12"/>
+      <field name="projectSet" grid-view="project-grid" form-view="project-form"
+        onSelect="action-version-attrs-project-domain" colSpan="12"
+        onChange="action-project-version-method-show-sprints"/>
+      <button name="generateSprintsBtn" title="Generate sprints"
+        onClick="save,action-sprint-generator-version-view-wizard-mass-generate"/>
+      <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
+        colSpan="12" action="action-project-version-method-show-sprint-list" height="200%"
+        canSearch="true" editable="true" canNew="id" canDelete="true"/>
+    </panel>
+    <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+      <panel-dashlet name="taskDashletPanel" title="Ticket associated"
+        action="action-dashlet-version-view-show-task" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-group name="action-project-version-onnew">
+    <action name="action-project-version-method-show-sprints"/>
+  </action-group>
+
+  <action-method name="action-project-version-method-show-sprints">
+    <call class="com.axelor.apps.project.web.ProjectVersionController" method="showSprints"/>
+  </action-method>
+
+  <action-attrs name="action-version-attrs-project-domain">
+    <attribute name="domain" for="projectSet"
+      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;" if="!__parent__"/>
+    <attribute name="domain" for="projectSet"
+      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet AND self.id != ${__parent__.id} &quot;"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.project.db.Project'"/>
+  </action-attrs>
+
+  <action-view name="action-dashlet-version-view-show-task" title="Tasks associated"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.targetVersion.id = :id</domain>
+  </action-view>
+
+  <action-view name="action-project-version-method-show-sprint-list" title="Sprints"
+    model="com.axelor.apps.project.db.Sprint">
+    <view type="grid" name="sprint-grid"/>
+    <view type="form" name="sprint-form"/>
+    <domain>self.targetVersion.id = :id</domain>
+  </action-view>
+
+  <action-method
+    name="action-project-version-method-check-if-project-or-version-conflicts">
+    <call class="com.axelor.apps.project.web.ProjectVersionController"
+      method="checkIfProjectOrVersionConflicts"/>
+  </action-method>
+
+</object-views>

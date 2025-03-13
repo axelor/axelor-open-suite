@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -108,7 +108,15 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsGenericProductShown(),
         appMobileSettings.getIsConfiguratorProductShown(),
         getProductTypesToDisplay(appMobileSettings),
-        getReportingTypesToDisplay(appMobileSettings));
+        getReportingTypesToDisplay(appMobileSettings),
+        appMobileSettings.getCurrentApkFile(),
+        appMobileSettings.getDefaultDmsRoot(),
+        appMobileSettings.getIsFavoritesManagementEnabled(),
+        appMobileSettings.getIsDownloadAllowed(),
+        appMobileSettings.getIsRenamingAllowed(),
+        appMobileSettings.getIsFolderCreationAllowed(),
+        appMobileSettings.getIsFileCreationAllowed(),
+        appMobileSettings.getIsFileDeletionAllowed());
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
@@ -242,7 +250,25 @@ public class MobileSettingsResponseComputeServiceImpl
                     .getAuthorizedRoles()),
             getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PROJECT)
                 .getIsCustomizeMenuEnabled(),
-            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)));
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_DMS,
+            checkConfigWithRoles(
+                appMobileSettings.getIsDMSAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_DMS)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_DMS)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_DMS)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_PURCHASE,
+            checkConfigWithRoles(
+                appMobileSettings.getIsPurchaseAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PURCHASE)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PURCHASE)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PURCHASE)));
   }
 
   protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {

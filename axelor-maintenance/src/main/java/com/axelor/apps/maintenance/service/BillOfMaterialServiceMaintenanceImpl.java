@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -52,6 +53,7 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
       BillOfMaterialService billOfMaterialService,
+      CostSheetService costSheetService,
       ProductionConfigService productionConfigService,
       PrintingTemplatePrintService printingTemplatePrintService) {
     super(
@@ -60,7 +62,8 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
         productRepo,
         productCompanyService,
         billOfMaterialLineService,
-        billOfMaterialService);
+        billOfMaterialService,
+        costSheetService);
     this.productionConfigService = productionConfigService;
     this.printingTemplatePrintService = printingTemplatePrintService;
   }

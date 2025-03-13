@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,5 +70,15 @@ public class ProjectToolServiceImpl implements ProjectToolService {
     }
     this.getChildProjectIds(projectIdsSet, project);
     return projectIdsSet;
+  }
+
+  @Override
+  public String getProjectFormName(Project project) {
+    return "project-form";
+  }
+
+  @Override
+  public String getProjectGridName(Project project) {
+    return "project-grid";
   }
 }

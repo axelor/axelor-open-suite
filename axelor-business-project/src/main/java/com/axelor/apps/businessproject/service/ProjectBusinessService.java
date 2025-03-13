@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,9 +30,9 @@ public interface ProjectBusinessService extends ProjectService {
 
   SaleOrder generateQuotation(Project project) throws AxelorException;
 
-  Project generateProject(SaleOrder saleOrder);
+  Project generateProject(SaleOrder saleOrder) throws AxelorException;
 
-  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
+  Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) throws AxelorException;
 
   void computeProjectTotals(Project project) throws AxelorException;
 

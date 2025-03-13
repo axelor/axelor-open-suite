@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -226,6 +226,8 @@ public interface BudgetService {
    * @param budget
    */
   public void computeTotalAvailableWithSimulatedAmount(Budget budget);
+
+  void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount);
 
   /**
    * If budget key is allowed (via config), check that analytic and account are filled then compute

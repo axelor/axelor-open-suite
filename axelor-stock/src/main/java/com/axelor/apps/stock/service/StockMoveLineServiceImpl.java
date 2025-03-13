@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -1857,7 +1857,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_STATUS));
       }
 
-      if (!stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INCOMING)) {
+      if (stockMove.getTypeSelect().equals(StockMoveRepository.TYPE_INTERNAL)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(StockExceptionMessage.SPLIT_MOVE_LINE_WRONG_TYPE));
@@ -1879,7 +1879,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     unfulfilledStockMoveLine.setQty(fulfilledStockMoveLine.getQty().subtract(realQty));
     fulfilledStockMoveLine.setQty(realQty);
     unfulfilledStockMoveLine.setTotalNetMass(BigDecimal.ZERO);
-    unfulfilledStockMoveLine.setNetMass(BigDecimal.ZERO);
     unfulfilledStockMoveLine.setRealQty(BigDecimal.ZERO);
     unfulfilledStockMoveLine.setStockMove(fulfilledStockMoveLine.getStockMove());
     unfulfilledStockMoveLine.setConformitySelect(0);

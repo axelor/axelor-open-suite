@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,6 +69,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   protected BillOfMaterialService billOfMaterialService;
   protected ProdProcessLineService prodProcessLineService;
   protected ProductionConfigService productionConfigService;
+  protected final ProdProcessComputationService prodProcessComputationService;
 
   @Inject
   public MrpLineServiceProductionImpl(
@@ -87,7 +88,8 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       MrpLineRepository mrpLineRepo,
       BillOfMaterialService billOfMaterialService,
       ProdProcessLineService prodProcessLineService,
-      ProductionConfigService productionConfigService) {
+      ProductionConfigService productionConfigService,
+      ProdProcessComputationService prodProcessComputationService) {
     super(
         appBaseService,
         purchaseOrderCreateSupplychainService,
@@ -105,6 +107,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     this.billOfMaterialService = billOfMaterialService;
     this.prodProcessLineService = prodProcessLineService;
     this.productionConfigService = productionConfigService;
+    this.prodProcessComputationService = prodProcessComputationService;
   }
 
   @Override
@@ -185,7 +188,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       throws AxelorException {
     long totalDuration = 0;
     if (prodProcess != null) {
-      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, qty);
+      totalDuration = prodProcessComputationService.getLeadTime(prodProcess, qty);
     }
     return TimeUnit.SECONDS.toMinutes(totalDuration);
   }

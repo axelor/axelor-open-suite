@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,6 +43,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 
   protected TaxService taxService;
   protected AccountManagementService accountManagementService;
+  protected ProductPriceListService productPriceListService;
 
   @Inject
   public ProductPriceServiceImpl(
@@ -51,14 +52,15 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       TaxService taxService,
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
-      FiscalPositionService fiscalPositionService) {
-
+      FiscalPositionService fiscalPositionService,
+      ProductPriceListService productPriceListService) {
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
     this.accountManagementService = accountManagementService;
     this.fiscalPositionService = fiscalPositionService;
+    this.productPriceListService = productPriceListService;
   }
 
   @Override
@@ -92,7 +94,10 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(todayDate, product, company, fiscalPosition, false);
 
-    return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
+    BigDecimal price = getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
+
+    return productPriceListService.applyPriceList(
+        product, partner, company, currency, price, inAti);
   }
 
   @Override

@@ -41,12 +41,7 @@
 
   <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
-    onSave="action-project-method-check-resource-availibility" width="large">
-    <toolbar>
-      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
-        if-module="axelor-human-resource" showIf="isShowPlanning"/>
-    </toolbar>
+    onSave="action-project-group-on-save" width="large">
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -77,12 +72,12 @@
         <item name="perStatusCalendar" title="Per status calendar"
           action="save,action-project-view-per-status-calendar"
           showIf="id &amp;&amp; isShowCalendarPerStatus"/>
-        <item name="perSectionKanban" title="Per section kanban"
-          action="save,action-project-view-per-section-kanban"
-          showIf="id &amp;&amp; isShowKanbanPerSection"/>
-        <item name="perSectionCalendar" title="Per section calendar"
-          action="save,action-project-view-per-section-calendar"
-          showIf="id &amp;&amp; isShowCalendarPerSection"/>
+        <item name="perCategoryKanban" title="Per category kanban"
+          action="save,action-project-view-per-category-kanban"
+          showIf="id &amp;&amp; isShowKanbanPerCategory"/>
+        <item name="perCategoryCalendar" title="Per category calendar"
+          action="save,action-project-view-per-category-calendar"
+          showIf="id &amp;&amp; isShowCalendarPerCategory"/>
         <item name="perUserCalendar" title="Per user calendar"
           action="save,action-project-view-per-user-calendar"
           showIf="id &amp;&amp; isShowCalendarPerUser"/>
@@ -110,8 +105,9 @@
       <panel name="overviewPanel" title="Overview"
         onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
-        <field name="fromDate" colSpan="3"/>
-        <field name="toDate" colSpan="3"/>
+        <field name="company" form-view="company-form" grid-view="company-grid" colSpan="2"/>
+        <field name="fromDate" colSpan="2"/>
+        <field name="toDate" colSpan="2"/>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
@@ -128,6 +124,7 @@
         if="__config__.app.isApp('timesheet')">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
+      <panel-include view="incl-project-roadmap-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
         <panel-include view="incl-project-config-panel-form"/>
@@ -221,15 +218,6 @@
     </panel>
   </form>
 
-  <form name="incl-planning-panel-form" title="Project"
-    model="com.axelor.apps.project.db.Project" width="large">
-    <panel title="Planning" name="planningPanel" colSpan="12">
-      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
-        canSearch="true" height="200%"/>
-    </panel>
-  </form>
-
   <form name="incl-log-times-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
@@ -265,12 +253,14 @@
         name="productSet" widget="TagSelect" canEdit="false"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
         grid-view="product-activity-grid"/>
-      <field name="projectTimeUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
+      <field name="numberHoursADay"/>
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource"/>
       <field name="manageTimeSpent" widget="inline-checkbox"
         onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
         if="__config__.app.isApp('timesheet')"/>
+      <field name="sprintManagementSelect" widget="RadioSelect"/>
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
       canCollapse="true" collapseIf="false">
@@ -278,12 +268,28 @@
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
       <field name="projectTaskStatusSet" widget="TagSelect"
-        showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
-        canEdit="false" onChange="action-project-method-manage-completed-task-status"/>
+        readonlyIf="projectTaskList.length &gt; 0" showIf="taskStatusManagementSelect == 2"
+        requiredIf="taskStatusManagementSelect == 2" canEdit="false"
+        onChange="action-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form" showIf="taskStatusManagementSelect == 2"
         requiredIf="taskStatusManagementSelect == 2"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
+      <panel name="taskStatusManagementPanel" colSpan="12"
+        showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
+        <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
+          title="Status to add" onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
+          target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="addStatusBtn"
+          onClick="action-project-attrs-add-task-status,action-project-method-manage-completed-task-status"
+          title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
+        <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
+          title="Status to remove" onSelect="action-project-attrs-status-to-remove-domain"
+          colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="removeStatusBtn"
+          onClick="save, action-project-method-remove-task-status" title="Remove status" colSpan="3"
+          showIf="$statusToRemoveSet.length &gt; 0"/>
+      </panel>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
       <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
@@ -304,20 +310,18 @@
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
       collapseIf="false">
-      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
+      <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
-      <field name="isShowSection" colSpan="4" widget="inline-checkbox"
-        onChange="action-project-record-section-reset-values"/>
       <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
-      <spacer colSpan="8"/>
       <field name="isShowGantt" colSpan="4" widget="inline-checkbox"/>
       <field name="isShowKanbanPerStatus" colSpan="4" widget="inline-checkbox"
         showIf="taskStatusManagementSelect != 1"/>
-      <field name="isShowKanbanPerSection" colSpan="4" widget="inline-checkbox"
-        showIf="isShowSection"/>
+      <field name="isShowKanbanPerCategory" colSpan="4" widget="inline-checkbox"
+        showIf="isShowTaskCategory"/>
       <field name="isShowCalendarPerStatus" colSpan="4" widget="inline-checkbox"/>
-      <field name="isShowCalendarPerSection" colSpan="4" widget="inline-checkbox"
-        showIf="isShowSection"/>
+      <field name="isShowCalendarPerCategory" colSpan="4" widget="inline-checkbox"
+        showIf="isShowTaskCategory"/>
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
     </panel>
     <panel-include view="incl-custom-fields-to-display-panel-form"/>
@@ -369,6 +373,36 @@
         form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
         widget="tree-grid" x-tree-field="projectCheckListItemList"
         x-tree-field-title="Add a new check list item" editable="true" x-expand-all="true"/>
+    </panel>
+  </form>
+
+  <form name="incl-project-roadmap-panel-form" title="Project"
+    model="com.axelor.apps.project.db.Project">
+    <panel title="Roadmap" name="roadmapPanel">
+      <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
+        form-view="project-version-form" grid-view="project-version-grid"/>
+      <panel name="sprintPanel" title="Sprints" colSpan="12"
+        hideIf="sprintManagementSelect == 'none'">
+        <panel itemSpan="12">
+          <button name="generateBacklogSprintBtn" title="Generate a backlog sprint"
+            onClick="action-project-method-generate-backlog-sprint" showIf="!backlogSprint"/>
+
+          <field name="backlogSprint" grid-view="sprint-grid" form-view="sprint-form"
+            showIf="backlogSprint" readonly="true"/>
+        </panel>
+        <button name="generateSprintsBtn" title="Generate sprints"
+          showIf="sprintManagementSelect == 'project'"
+          onClick="save,action-sprint-generator-project-view-wizard-mass-generate"/>
+        <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
+          colSpan="12" action="action-project-method-show-sprint-list" height="200%"
+          canSearch="true" editable="true"
+          canNew="id &amp;&amp; sprintManagementSelect == 'project'"
+          canDelete="sprintManagementSelect == 'project'"/>
+        <field name="sprintManagementSelect" hidden="true"/>
+      </panel>
+      <panel-dashlet action="action-project-method-tasks-per-sprint"
+        name="tasksPerSprintPanel" colSpan="12" height="200%"/>
+      <field name="sprintManagementSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -479,6 +513,11 @@
     <action name="action-project-method-task-status-management-selection-in"/>
   </action-group>
 
+  <action-group name="action-project-group-on-save">
+    <action name="action-project-method-check-resource-availibility"/>
+    <action name="action-project-method-check-sprint-overlap"/>
+  </action-group>
+
   <action-group name="action-project-group-finish-project">
     <action name="action-project-record-status-finish"/>
     <action name="save"/>
@@ -528,6 +567,7 @@
 
   <action-attrs name="action-project-defaults"
     model="com.axelor.apps.project.db.Project">
+    <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="fromDate" expr="eval: __datetime__"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
     <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
@@ -537,6 +577,10 @@
     <attribute name="value" for="siteSet"
       expr="eval: __config__.app.getApp('base')?.defaultSitesSet"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+    <attribute name="value" for="numberHoursADay"
+      expr="eval: __config__.app.getApp('base')?.dailyWorkHours"/>
+    <attribute name="value" for="projectTimeUnit"
+      expr="eval: __config__.app.getApp('base')?.unitDays"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-completed-task-status-domain">
@@ -560,6 +604,28 @@
 
   <action-attrs name="action-attrs-project-show-log-time-panel">
     <attribute for="logTimesPanel" name="hidden" expr="eval: !manageTimeSpent"/>
+  </action-attrs>
+
+
+  <action-attrs name="action-project-attrs-set-time-unit-domain">
+    <attribute name="domain" for="projectTimeUnit"
+      expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-status-to-add-domain">
+    <attribute for="$statusToAddSet" name="domain"
+      expr="eval: &quot; self.id NOT IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-status-to-remove-domain">
+    <attribute for="$statusToRemoveSet" name="domain"
+      expr="eval: &quot; self.id IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-add-task-status">
+    <attribute for="projectTaskStatusSet" name="value"
+      expr="eval: projectTaskStatusSet+statusToAddSet"/>
+    <attribute for="$statusToAddSet" name="value" expr="eval: null"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -599,14 +665,10 @@
   <action-record name="action-project-record-change-show-task-category"
     model="com.axelor.apps.project.db.Project">
     <field name="projectTaskCategorySet" expr="eval: null" if="!isShowTaskCategory"/>
+    <field name="isShowKanbanPerCategory" expr="eval: false" if="!isShowTaskCategory"/>
+    <field name="isShowCalendarPerCategory" expr="eval: false" if="!isShowTaskCategory"/>
     <field name="taskStatusManagementSelect" expr="2"
       if="!isShowTaskCategory &amp;&amp; taskStatusManagementSelect == 4"/>
-  </action-record>
-
-  <action-record name="action-project-record-section-reset-values"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isShowKanbanPerSection" expr="eval: false" if="!isShowSection"/>
-    <field name="isShowCalendarPerSection" expr="eval: false" if="!isShowSection"/>
   </action-record>
 
   <action-record name="action-project-record-status-finish"
@@ -686,6 +748,26 @@
   <action-method name="action-project-method-generate-checklist-items-from-template">
     <call class="com.axelor.apps.project.web.ProjectController"
       method="generateCheckListFromTemplate"/>
+  </action-method>
+
+  <action-method name="action-project-method-generate-backlog-sprint">
+    <call class="com.axelor.apps.project.web.ProjectController" method="generateBacklogSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-remove-task-status">
+    <call class="com.axelor.apps.project.web.ProjectController" method="removeTaskStatus"/>
+  </action-method>
+
+  <action-method name="action-project-method-tasks-per-sprint">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewTasksPerSprint"/>
+  </action-method>
+
+  <action-method name="action-project-method-check-sprint-overlap">
+    <call class="com.axelor.apps.project.web.ProjectController" method="checkSprintOverlap"/>
+  </action-method>
+
+  <action-method name="action-project-method-show-sprint-list">
+    <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewSprints"/>
   </action-method>
 
   <!-- ACTION VIEW -->
@@ -805,12 +887,6 @@
     <view type="form" name="project-task-form"/>
     <domain>self.project.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
-  </action-view>
-
-  <action-view name="action-project-view-show-planning-panel" title="Planning"
-    model="com.axelor.apps.project.db.Project">
-    <view type="form" name="incl-planning-panel-form"/>
-    <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
   <!-- ACTION VALIDATE -->

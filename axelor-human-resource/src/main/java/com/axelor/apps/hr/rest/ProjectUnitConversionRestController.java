@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,9 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.hr.rest.dto.ProjectUnitConversionComputeResponse;
 import com.axelor.apps.hr.rest.dto.ProjectUnitConversionFilterResponse;
 import com.axelor.apps.hr.rest.dto.ProjectUnitConversionPutRequest;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -121,7 +121,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       ProjectTask savedTask = find(Long.parseLong(json.get("id").toString()));
       if (json.get("plannedProgress") != null) {
         BigDecimal plannedProgress = new BigDecimal(json.get("plannedProgress").toString());
-        if (savedTask.getPlannedProgress().equals(plannedProgress)) {
+        if (!savedTask.getPlannedProgress().equals(plannedProgress)) {
           logger.debug("Updating progress: {}", plannedProgress);
           json.put("progress", plannedProgress);
         }

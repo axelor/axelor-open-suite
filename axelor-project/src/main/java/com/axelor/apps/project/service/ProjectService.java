@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,8 @@ public interface ProjectService {
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner);
+      Partner clientPartner)
+      throws AxelorException;
 
   /**
    * Generate a project from a partner.
@@ -41,7 +42,7 @@ public interface ProjectService {
    * @param partner
    * @return
    */
-  Project generateProject(Partner partner);
+  Project generateProject(Partner partner) throws AxelorException;
 
   public Project createProjectFromTemplate(
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)

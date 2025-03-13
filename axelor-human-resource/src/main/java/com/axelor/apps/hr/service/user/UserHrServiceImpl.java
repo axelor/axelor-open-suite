@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,10 +72,7 @@ public class UserHrServiceImpl implements UserHrService {
     EventsPlanning planning = null;
     Company company = user.getActiveCompany();
     if (company != null) {
-      HRConfig hrConfig = company.getHrConfig();
-      if (hrConfig != null) {
-        planning = hrConfig.getPublicHolidayEventsPlanning();
-      }
+      planning = company.getPublicHolidayEventsPlanning();
     }
     employee.setPublicHolidayEventsPlanning(planning);
 

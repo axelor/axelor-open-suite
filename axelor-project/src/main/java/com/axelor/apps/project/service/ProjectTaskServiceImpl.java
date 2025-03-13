@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -284,10 +284,10 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     ProjectTask parentTask = projectTaskRepo.find(projectTask.getParentTask().getId());
     projectTask.setParentTask(parentTask);
     projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
-    projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
     projectTask.setPriority(parentTask.getPriority());
     projectTask.setTagSet(parentTask.getTagSet());
     projectTask.setAssignedTo(parentTask.getAssignedTo());
+    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 
   @Override

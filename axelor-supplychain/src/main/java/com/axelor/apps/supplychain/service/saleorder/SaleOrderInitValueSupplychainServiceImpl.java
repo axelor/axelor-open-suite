@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -140,7 +140,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
 
   protected Map<String, Object> getShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
-    saleOrderShipmentService.createShipmentCostLine(saleOrder);
+    saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
     saleOrderMap.put("saleOrderLineList", saleOrder.getSaleOrderLineList());
     return saleOrderMap;
   }

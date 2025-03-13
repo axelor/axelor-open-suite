@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -94,23 +94,29 @@ public class StockMoveInvoiceController {
         Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
 
         if (ObjectUtils.notEmpty(saleOrderSet)) {
-          SaleOrderMergingResult result =
-              Beans.get(SaleOrderMergingService.class)
-                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(SaleOrderMergingViewService.class)
-                    .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
-            confirmView.context("fromStockMove", true);
+          if (saleOrderSet.size() > 1) {
+            SaleOrderMergingResult result =
+                Beans.get(SaleOrderMergingService.class)
+                    .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(SaleOrderMergingViewService.class)
+                      .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
+              confirmView.context("fromStockMove", true);
 
-            response.setView(confirmView.map());
-            return;
+              response.setView(confirmView.map());
+              return;
+            }
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                    stockMove, result.getSaleOrder(), qtyToInvoiceMap);
+          } else {
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromSaleOrder(
+                    stockMove, saleOrderSet.iterator().next(), qtyToInvoiceMap);
           }
-          invoice =
-              stockMoveInvoiceService.createInvoiceFromSaleOrder(
-                  stockMove, result.getSaleOrder(), qtyToInvoiceMap);
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
           PurchaseOrderMergingResult result =
               Beans.get(PurchaseOrderMergingService.class)
@@ -234,7 +240,7 @@ public class StockMoveInvoiceController {
             ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-cust-invoice-confirm-form")
-                .param("popup", "true")
+                .param("popup", "reload")
                 .param("show-toolbar", "false")
                 .param("show-confirm", "false")
                 .param("popup-save", "false")
@@ -280,6 +286,7 @@ public class StockMoveInvoiceController {
                                 .getTodayDate(stockMove.getCompany()))
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .map());
+                response.setReload(true);
               } catch (Exception e) {
                 TraceBackService.trace(response, e);
               }
@@ -406,7 +413,7 @@ public class StockMoveInvoiceController {
             ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-suppl-invoice-confirm-form")
-                .param("popup", "true")
+                .param("popup", "reload")
                 .param("show-toolbar", "false")
                 .param("show-confirm", "false")
                 .param("popup-save", "false")
@@ -452,6 +459,7 @@ public class StockMoveInvoiceController {
                             "todayDate",
                             Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
                         .map());
+                response.setReload(true);
               } catch (Exception e) {
                 TraceBackService.trace(response, e);
               }
@@ -578,6 +586,7 @@ public class StockMoveInvoiceController {
                             .orElse(null)));
 
         response.setView(viewBuilder.map());
+        response.setReload(true);
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
         response.setInfo(warningMessage);
@@ -628,6 +637,7 @@ public class StockMoveInvoiceController {
                             .orElse(null)));
 
         response.setView(viewBuilder.map());
+        response.setReload(true);
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
         response.setInfo(warningMessage);
@@ -697,22 +707,27 @@ public class StockMoveInvoiceController {
         Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
 
         if (ObjectUtils.notEmpty(saleOrderSet)) {
-          SaleOrderMergingResult result =
-              Beans.get(SaleOrderMergingService.class)
-                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(SaleOrderMergingViewService.class)
-                    .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("fromStockMove", true);
+          SaleOrder saleOrder = null;
+          if (saleOrderSet.size() == 1) {
+            saleOrder = saleOrderSet.iterator().next();
+          } else {
+            SaleOrderMergingResult result =
+                Beans.get(SaleOrderMergingService.class)
+                    .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
+            saleOrder = result.getSaleOrder();
 
-            response.setView(confirmView.map());
-            return;
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(SaleOrderMergingViewService.class)
+                      .buildConfirmView(result, "saleOrderToMerge", new ArrayList<>(saleOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("fromStockMove", true);
+
+              response.setView(confirmView.map());
+              return;
+            }
           }
-          invoice =
-              stockMoveInvoiceService.createInvoiceFromSaleOrder(
-                  stockMove, result.getSaleOrder(), null);
+          invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleOrder, null);
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
           PurchaseOrderMergingResult result =
               Beans.get(PurchaseOrderMergingService.class)

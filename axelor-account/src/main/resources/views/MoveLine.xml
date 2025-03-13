@@ -450,6 +450,7 @@
       <panel name="datesPanel" colSpan="12" itemSpan="3">
         <field name="date" onChange="account-move-line-method-date-onchange"/>
         <field name="dueDate" showIf="dueDate"/>
+        <field name="accountingDate" showIf="accountingDate"/>
       </panel>
       <panel name="amountPanel" colSpan="12" itemSpan="3">
         <field name="debit"
@@ -513,9 +514,9 @@
             grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
             onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
           <field name="vatSystemSelect"
-            readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt', 'tax'].includes(account.accountType.technicalTypeSelect)) || ![1,5].includes(move.statusSelect)"
-            showIf="account.accountType.technicalTypeSelect == 'tax'"
-            requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
+            validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+            readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+            requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
         </panel>
         <panel name="das2Panel" title="DAS2" colSpan="6">
           <field name="account.serviceType"/>

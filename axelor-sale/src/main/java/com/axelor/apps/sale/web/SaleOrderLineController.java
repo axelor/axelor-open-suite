@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,10 +28,13 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.cart.CartProductService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.observer.SaleOrderLineFireService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
@@ -44,6 +47,7 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService;
+import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -61,8 +65,14 @@ public class SaleOrderLineController {
 
   public void onNew(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
+
     response.setAttrs(
         Beans.get(SaleOrderLineFireService.class).getOnNewAttrs(saleOrderLine, saleOrder));
 
@@ -70,14 +80,15 @@ public class SaleOrderLineController {
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).getOnNewDummies(saleOrderLine, saleOrder));
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineInitValueService.class).onNewInitValues(saleOrder, saleOrderLine));
+        Beans.get(SaleOrderLineInitValueService.class)
+            .onNewInitValues(saleOrder, saleOrderLine, parentSol));
     response.setValues(saleOrderLineMap);
   }
 
   public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttrs(
         Beans.get(SaleOrderLineFireService.class).getOnLoadAttrs(saleOrderLine, saleOrder));
 
@@ -91,17 +102,26 @@ public class SaleOrderLineController {
 
   public void onNewEditable(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+      String parentMsg = Beans.get(SaleOrderLineCheckService.class).checkParentLineType(parentSol);
+      if (StringUtils.notEmpty(parentMsg)) {
+        response.setInfo(parentMsg);
+      }
+    }
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class)
-            .getOnNewEditableDummies(saleOrderLine, saleOrder));
+            .getOnNewEditableDummies(saleOrderLine, saleOrder, parentSol));
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineInitValueService.class)
-            .onNewEditableInitValues(saleOrder, saleOrderLine));
+            .onNewEditableInitValues(saleOrder, saleOrderLine, parentSol));
     response.setValues(saleOrderLineMap);
   }
 
@@ -110,10 +130,10 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, BigDecimal> map =
-        Beans.get(SaleOrderMarginService.class)
-            .getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine);
+        Beans.get(MarginComputeService.class)
+            .getComputedMarginInfo(saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal());
 
     response.setValues(map);
   }
@@ -129,7 +149,7 @@ public class SaleOrderLineController {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       PricingService pricingService = Beans.get(PricingService.class);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
       SaleOrderLineProductService saleOrderLineProductService =
           Beans.get(SaleOrderLineProductService.class);
 
@@ -182,7 +202,7 @@ public class SaleOrderLineController {
   public void updatePrice(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).inTaxPriceOnChange(saleOrderLine, saleOrder);
     response.setAttrs(
@@ -200,7 +220,7 @@ public class SaleOrderLineController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).priceOnChange(saleOrderLine, saleOrder);
     response.setAttrs(
@@ -231,7 +251,7 @@ public class SaleOrderLineController {
               .map(Context::getParent)
               .map(parentContext -> parentContext.getContextClass().equals(SaleOrderLine.class))
               .orElse(false);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
       response.setAttr(
           "product",
           "domain",
@@ -246,7 +266,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+      SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
       Beans.get(SaleOrderLinePricingService.class).computePricingScale(saleOrderLine, saleOrder);
 
       response.setValues(saleOrderLine);
@@ -259,12 +279,18 @@ public class SaleOrderLineController {
   @ErrorException
   public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrderLine.class)) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineOnChangeService.class).qtyOnChange(saleOrderLine, saleOrder));
+        Beans.get(SaleOrderLineOnChangeService.class)
+            .qtyOnChange(saleOrderLine, saleOrder, parentSol));
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineDummyService.class).checkMultipleQty(saleOrderLine));
     response.setAttrs(
@@ -283,7 +309,7 @@ public class SaleOrderLineController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).taxLineOnChange(saleOrderLine, saleOrder);
     response.setValues(saleOrderLineMap);
@@ -293,7 +319,7 @@ public class SaleOrderLineController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineOnChangeService.class).compute(saleOrderLine, saleOrder));
@@ -310,7 +336,7 @@ public class SaleOrderLineController {
       throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Map<String, Object> saleOrderLineMap =
         Beans.get(SaleOrderLineOnChangeService.class).compute(saleOrderLine, saleOrder);
     response.setAttrs(
@@ -334,7 +360,7 @@ public class SaleOrderLineController {
   public void unitOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
   }
 
@@ -347,6 +373,59 @@ public class SaleOrderLineController {
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void configuratorDuplicateSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine =
+        Optional.ofNullable(context.asType(SaleOrderLine.class))
+            .map(solCtx -> Beans.get(SaleOrderLineRepository.class).find(solCtx.getId()))
+            .orElse(null);
+
+    try {
+      if (saleOrderLine != null) {
+        Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+            .duplicateSaleOrderLine(saleOrderLine);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      var sol = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+          .simpleDuplicate(sol, sol.getSaleOrder());
+      response.setInfo(I18n.get(SaleExceptionMessage.ERROR_DURING_DUPLICATION_SALE_ORDER_LINE));
+      response.setReload(true);
+    }
+  }
+
+  @ErrorException
+  public void checkDuplicationSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    Beans.get(ConfiguratorCheckService.class)
+        .checkConfiguratorActivated(saleOrderLine.getConfigurator());
+
+    if (saleOrderLine.getConfigurator() != null
+        && Beans.get(ConfiguratorCheckService.class)
+            .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
+      response.setAlert(I18n.get(ITranslation.CONFIGURATOR_VERSION_IS_DIFFERENT));
+    }
+  }
+
+  @ErrorException
+  public void checkEditConfiguratorSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    Beans.get(ConfiguratorCheckService.class)
+        .checkConfiguratorActivated(saleOrderLine.getConfigurator());
+
+    if (Beans.get(ConfiguratorCheckService.class)
+        .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
+      response.setError(I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
   }
 }

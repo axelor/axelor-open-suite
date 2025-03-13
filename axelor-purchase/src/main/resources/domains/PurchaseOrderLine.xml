@@ -6,7 +6,7 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrderLine"
-    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrderLine,com.axelor.apps.base.interfaces.Currenciable, com.axelor.apps.base.interfaces.ShippableOrderLine">
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
 	  		String fullName = "";
@@ -32,7 +32,7 @@
     <string name="productCode" title="Supplier code"/>
     <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
-    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="30" scale="20"/>
     <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
       title="Taxes"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3"/>
@@ -43,7 +43,7 @@
     <string name="description" title="Description" large="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 
-    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="discountAmount" title="Discount amount" precision="30" scale="20"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
 

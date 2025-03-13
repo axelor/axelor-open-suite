@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,10 +27,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
@@ -71,6 +73,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     dummyFields.putAll(initCompanyCurrency(saleOrder, saleOrderLine));
     dummyFields.putAll(initReadonlyDummy(saleOrder, saleOrderLine));
     dummyFields.putAll(initCurrencySymbol(saleOrder));
+    dummyFields.putAll(initIsGlobalDiscount(saleOrder));
     return dummyFields;
   }
 
@@ -86,16 +89,18 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     dummyFields.putAll(initReadonlyDummy(saleOrder, saleOrderLine));
     dummyFields.putAll(checkMultipleQty(saleOrderLine));
     dummyFields.putAll(initCurrencySymbol(saleOrder));
+    dummyFields.putAll(initIsGlobalDiscount(saleOrder));
     return dummyFields;
   }
 
   @Override
   public Map<String, Object> getOnNewEditableDummies(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSaleOrderLine) {
     Map<String, Object> dummyFields = new HashMap<>();
     dummyFields.putAll(initNonNegotiable(saleOrder));
     dummyFields.putAll(initDecimals(saleOrder));
     dummyFields.putAll(checkMultipleQty(saleOrderLine));
+    dummyFields.putAll(isParentTitleLine(parentSaleOrderLine));
     return dummyFields;
   }
 
@@ -237,6 +242,24 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
 
     dummyFields.put("$currencySymbol", currencySymbol);
     dummyFields.put("$companyCurrencyScale", companyCurrencyScale);
+    return dummyFields;
+  }
+
+  protected Map<String, Object> isParentTitleLine(SaleOrderLine parentSol) {
+    Map<String, Object> dummyFields = new HashMap<>();
+    if (parentSol == null) {
+      return dummyFields;
+    }
+    dummyFields.put(
+        "$isParentTitleLine", parentSol.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
+    return dummyFields;
+  }
+
+  protected Map<String, Object> initIsGlobalDiscount(SaleOrder saleOrder) {
+    Map<String, Object> dummyFields = new HashMap<>();
+    dummyFields.put(
+        "$isGlobalDiscount",
+        saleOrder.getDiscountTypeSelect() != PriceListLineRepository.AMOUNT_TYPE_NONE);
     return dummyFields;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -380,9 +380,32 @@ public final class ProductionExceptionMessage {
   public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
       "Max loop call reached when trying to compute end date." /*)*/;
 
+  public static final String TOO_MANY_CALL_GETTING_TIME_SLOT = /*$$(*/
+      "Max call reached when trying to find a time slot for operation %s." /*)*/;
+  public static final String MANUF_ORDER_CANT_COMPUTE_NEXT_SLOT_WITH_CURRENT_CONFIG = /*$$(*/
+      "Current production configuration does not permit to have operation orders with no duration nor interoperation time on the same machine and at the same time. (Operation: %s)" /*)*/;
+
   public static final String MANUF_ORDER_MISSING_COMPONENTS = /*$$(*/
       "<b>Missing components</b> :<br/>%s" /*)*/;
 
   public static final String MANUF_ORDER_WASTE_DECLARATION_IN_PRODUCED_LIST = /*$$(*/
       "Warning: The current product exists in produced products of the manuf order." /*)*/;
+
+  public static final String CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER = /*$$(*/
+      "This stock move is linked to a manufacturing order and can't be canceled." /*)*/;
+
+  public static final String CAN_NOT_RENGENERATE_PRODUCT_LINKED_TO_MO = /*$$(*/
+      "Cannot regenerate because the product is already in production (one manuf order exist)" /*)*/;
+
+  public static final String CAN_NOT_REGENERATE_BOM_AS_ALREADY_IN_PRODUCTION = /*$$(*/
+      "Cannot regenerate because the bill of material is in use in production (one manuf order exist)" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY = /*$$(*/
+      "Calculation quantity should not be zero." /*)*/;
+
+  public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s" /*)*/;
+
+  public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more" /*)*/;
 }

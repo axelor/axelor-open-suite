@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -166,4 +166,24 @@ public final class SaleExceptionMessage {
 
   public static final String NO_ORDER_LINE_NEEDS_TO_BE_GENERATED = /*$$(*/
       "No order line needs to be generated for this cart." /*)*/;
+
+  public static final String SALE_ORDER_LINE_PARENT_WRONG_TYPE = /*$$(*/
+      "Title type line can not have sublines." /*)*/;
+
+  public static final String ERROR_DURING_DUPLICATION_SALE_ORDER_LINE = /*$$(*/
+      "An error occurred during the duplication of sale order line. Therefore, only a simple copy has been made, please see tracebacks for more details." /*)*/;
+
+  public static final String DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES = /*$$(*/
+      "You cannot bill together lines that do not have the same delivery address. Please use partial billing for lines with the same delivery address." /*)*/;
+
+  public static final String SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR = /*$$(*/
+      "Sale order does not have configurator to duplicate." /*)*/;
+  public static final String CONFIGURATOR_VERSION_IS_DIFFERENT = /*$$(*/
+      "Configurator version is different than its configurator creator." /*)*/;
+
+  public static final String CONFIGURATOR_PRODUCT_GENERATION_ERROR = /*$$(*/
+      "An error occurred during the generation of the product with configurator, please see tracebacks for more details." /*)*/;
+
+  public static final String CONFIGURATOR_IS_NOT_ACTIVATED = /*$$(*/
+      "Configurator is not activated." /*)*/;
 }

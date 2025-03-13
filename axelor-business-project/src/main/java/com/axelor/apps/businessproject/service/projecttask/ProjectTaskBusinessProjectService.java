@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,8 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   ProjectTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
       throws AxelorException;
 
-  ProjectTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
+  ProjectTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty)
+      throws AxelorException;
 
   ProjectTask updateDiscount(ProjectTask projectTask);
 
@@ -67,13 +68,19 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   @Transactional(rollbackOn = {Exception.class})
   ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException;
 
+  /**
+   * Compute plannedTime and spentTime on project task
+   *
+   * @param projectTask
+   * @throws AxelorException
+   */
   void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
 
   Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException;
 
   Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
 
-  boolean isTimeUnitValid(Unit unit);
+  boolean isTimeUnitValid(Unit unit) throws AxelorException;
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
 }

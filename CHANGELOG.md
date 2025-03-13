@@ -1,285 +1,233 @@
-## [8.2.2] (2024-11-14)
+## [8.3.1] (2025-03-13)
 
 ### Fixes
 #### Base
 
-* Updated Axelor Open Platform to 7.2.3.
-* Updated studio module to version 3.3.5.
-* Updated message module to version 3.2.2.
-* Updated utils module to version 3.3.0.
-* Partner: tax number will be displayed for suppliers too along with customers.
-* Tag: added default color tag
-* Unit conversion: fixed NPE when getting the coefficient for a unit conversion of type coeff with value zero.
-* Tag: allowed to select tag when concerned model is empty on tag.
-* Template: fixed an issue where 'Test template' button was always readonly with custom model.
-* Pricing: fixed the product category filter in pricing formula.
+* Update to Axelor Open Platform 7.3.3.
+* Fixed a critical issue preventing the application from starting.
+* Base: removed API Configuration menu entry.
+* App base: added password widget for the certificate password.
+* Base: fixed some errors displayed as notification instead of popup.
+* Signature: fixed broken grid view when selecting a certificate.
+* Message: fixed an issue where the attached birt document name changed when sent via email.
+* User: made the title of the company set panel visible.
 
 #### Account
 
-* Invoice: fixed invoice printing that does not work without business project module.
-* Analytic move line query: fixed always readonly button in 'Analytic move lines to reverse' dashlet.
-* Accounting export: fixed skipped lines on accounting export when we have more than 10 000 lines.
-* Accounting report: replaced move line partner full name with partner sequence and partner full name in reports.
-* Invoice: fixed NPE when clicking on print button on grid lines.
-* Move/Analytic: record analytic account on moveline on the reverse move
-* Partner: fixed an issue where the partner balance was wrong after an unreconcile.
-* Move: blocked generation of reverse move if reverse move date is before the date of the move to reverse.
-* FEC Import: fixed importing moves with a validation date.
-* Bank reconciliation line: fixed an issue where too much memory could be used when filtering move lines.
-* Analytic move line query: optimized filter to handle high data volumes efficiently.
+* Accounting batch: ignored check at reconcile when move only contains tax account.
 
-#### Bank Payment
+#### Business Project
 
-* Bank statement: fixed error when importing bank statement with negative final balance.
-* Move/Payment session: added bank order origin in the generated move if needed.
-
-#### Contract
-
-* Contract/Invoice: fixed analytic wrong management on contract line.
-
-#### Human Resource
-
-* Expense API: expense line creation with a manual distance is no longer overriden by computed distance.
-* Expense: fixed an error occurring when cancelling an expense payment linked to a bank order.
-
-#### Production
-
-* Sale order: no personalized BOM will be created if the option is not enabled.
-
-#### Project
-
-* Project: fixed NPE when opening project in project activity dashboard.
-
-#### Purchase
-
-* Purchase order lines: fixed an issue where the warning about default supplier was not displayed.
-
-#### Quality
-
-* Quality: fixed translation of 'Check conformity'.
-
-#### Sale
-
-* Sale order: fixed display of 'Send email' button when record is not saved.
-
-#### Stock
-
-* Stock move line: fixed tracking number domain filter.
-
-#### Supply Chain
-
-* Stock move: fixed issue where partial invoicing was not working.
-* Sale order: fixed an issue where the invoicing of sale order lines was blocked.
-
-
-### Developer
-
-#### Base
-
-- Action "action-tag-method-set-concerned-model" have been replaced by "action-tag-method-on-new".
-- And setDefaultConcernedModel method in TagController have been renamed by onNew
-
-#### Supply Chain
-
-- Added new arguments to SaleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable()
-- Updated SaleOrderInvoiceService.computeAmountToInvoice visibility to protected and removed it from interface
-
-## [8.2.1] (2024-10-31)
-
-### Fixes
-#### Base
-
-* Sequence: fixed draft prefix when checking for the draft sequence number.
-* Birt report: fixed number formatting for excel format.
-* Partner: added check on parent partner to avoid same partner as parent.
-* Partner: fixed NPE when manually adding an accounting situation.
-
-#### Account
-
-* Move: fixed blocked accounting when missing budget alert is required and account type is not one of the charge, income, immobilisation.
-* Accounting batch: fixed multiple auto lettering.
-* Accounting cut off batch: fixed wrong analytic distribution and axis on generated moves.
-* Partner:  fixed automatic account creation when partner is prospect based on 'Automatic partner account creation mode' in account config.
-* Invoice: fixed an issue where too much memory could be used when displaying customer invoice lines.
-* Invoice/Move: recompute currency rate of movelines after invoice ventilation.
-
-#### Budget
-
-* Purchase order: removed required condition on company department.
-
-#### Contract
-
-* Contract: fixed invoicing contract with revaluation and prorata enabled.
-* Contract: fixed a issue when generating a sale order from a contract
+* Invoice: fixed fiscal position when generating an invoice from an invoicing project.
 
 #### CRM
 
-* Opportunity: fixed filter on contact domain.
-* Lead: fixed an issue preventing lead conversion when having only CRM module.
-* Lead: fixed address while converting a lead to a prospect.
+* Partner: creating a new partner cannot create a prospect and a supplier at the same time.
 
 #### Human Resource
 
-* Expense: fixed an issue preventing to go to reimbursed status with a payment mode generating a bank order.
+* HR: fixed an error occurring when using 'Leave increment' batch and if employees do not have a main employment contract.
+* Timesheet: fixed error on opening a timesheet preventing employee field from being set readonly.
 
 #### Production
 
-* Prod process: added workflow buttons instead of clickable status.
-* Manufacturing order: fixed issue when updating quantity in manufacturing order.
+* Sale order line: fixed an issue when syncing bill of materials lines dans sub sale order lines.
 
 #### Purchase
 
-* Purchase order: fixed value of 'total without tax' in birt report.
+* Purchase request: added missing API endpoint to get back to draft.
 
 #### Sale
 
-* Sale order: fixed an issue preventing from editing a sale order with editable grid and pending order modification enabled
-* Sale order: fixed sale order printing when only sale module is used, without supplychain.
+* Sale order line: fixed an issue where discount was not applied immediatly.
+* Sale order line: fixed icon of edit configurator button.
+* Sale order line: fixed advanced filter not displayed unless the whole page is refreshed.
 
 #### Stock
 
-* Stock move: fixed an error occurring when splitting a stock move line.
-
-#### Supply Chain
-
-* Invoice: fixed invoice line price generated from stock move with different unit.
+* Stock location: fixed error when emptying parent stock location.
 
 
 ### Developer
 
-#### Budget
+#### Base
 
-SaleOrderDummyBudgetServiceImpl class was removed, as well as following actions:
+Menu 'referential-conf-api-configuration' and action 'referential.conf.api.configuration' have been removed. 
 
-- `action-budget-group-purchase-order-on-new-actions`
-- `action-budget-purchase-order-record-load-budget-key-config`
-- `action-group-budget-saleorder-onload`
-- `action-budget-sale-order-record-load-budget-key-config`
+```sql
+DELETE FROM meta_menu WHERE name = 'referential-conf-api-configuration';
+DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
+```
 
-## [8.2.0] (2024-10-18)
+## [8.3.0] (2025-03-07)
 
 ### Features
 #### Base
 
-* Updated Axelor Open Platform to 7.2. You can find all information on this release [here](https://github.com/axelor/axelor-open-platform/blob/7.2/CHANGELOG.md).
-* Tag: added a new Tag model to help label other elements (present in lead, partner, project tasks, accounting reports, quality alert).
-* Localization: improved localization support, managing date and numbers format.
-* Product: added the possibility to get product prices managing currency and taxes from the API.
+* Updated Axelor Open Platform to 7.3. You can find all information on this release [here](https://github.com/axelor/axelor-open-platform/blob/7.3/CHANGELOG.md).
+* Updated Axelor Studio dependency to 3.4. You can find all information on this release [here](https://github.com/axelor/axelor-studio/blob/release/3.4/CHANGELOG.md).
+* Partner: added a new connector to Sirene API to fetch partner information.
+* Price list: added currency management in price lists.
+* Product: managed multiple barcodes on product.
+
+#### HR
+
+* HR: added new menu entries to help filling existing requests.
+* Leave request: added number of days available on the requested leave date.
+* Leave request: added a new wizard to create multiple leave requests with different types.
+* Timesheet: added a new wizard to create timesheet from project planning.
+
+#### Purchase
+
+* Purchase order: added subconctractor management.
+* Purchase order: added receipt stock location by lines.
+* Supplier: added carriage paid feature on suppliers and purchase orders.
+* Supplier catalog: added unit management in supplier catalogs.
 
 #### Sale
 
-* Sale order: added a new editable tree view for sale order lines.
-
-A new configuration is now available in App Sale to choose the normal grid view or the editable tree view for sale order lines. That means that, using this view, any sale order line can be subdivised into other sale order lines. This can be used to compute a sale order line price from its children lines. Children lines can be added manually, but are also automatically generated from information in the bill of materials.
-
-* Cart: added a new cart feature, allowing an user to create a sale order by selecting products from other form.
-* Sale order: updated the API to add the possibility to create sale order including lines, and update its status.
-* Partner: added DSO (Days Sales Outstanding) in partner form. The computation is based on customer invoices.
+* Sale order: added the possibility to configure a discount on a single order that will be applied to each line.
+* Sale order line: allow to duplicate a sale order line. 
+* Sale order line: added delivery address in sale order lines.
+* Sale order line: managed multi line in sale order printings.
+* Configurator: on a sale order line, allow to modify the form values that were previously filled, and run the computation again to update sale order line values.
+* Configurator: allow tu duplicate a sale order line, using the existing configurator to generate the duplicated line.
+* Configurator: managed versioning on configurators.
 
 #### Account
 
-* Foreign exchange gains/losses: correctly generate extra accounting entries when currency rate has changed between the invoice date and the payment date.
-* Tax: managed taxe by amount. This can be useful when tax amount in supplier invoices is not equal to the tax computation done by Axelor Open Suite.
-* Invoice: added late payment interests invoice generation.
-* Fixed asset: added a new method to split fixed assets by unit.
+* Tax: changed the way non deductible taxes are configured.
+* Journal: added a button to generate accounting entries for the current journal in the form view.
 
 #### Stock
 
-* Added "Mass stock move" form view, which is an helper to manage to move products from and to multiple stock locations.
+* Stock move: added customer delivery split line support.
+
+#### Production
+
+* Sale order line: added details line on sale order. On a given sale order line, it will display information related to the bill of materials related to this line.
+* Cost sheet: managed launch quantity in cost computation.
 
 #### Project
 
-* Project task: managed task status by project category
-* Project task: added progression computation from category and/or the task status.
-* Project task: added a check list that will be available on project templates.
-* Project: managed active project per user, with a quick menu to allow a user to change their active project.
+* Project: added sprint for project management.
+* Project: added allocation management to manage resource allocation on given periods.
+* Dashboard: added a new resource management dashboard.
+* Project planning: automatic generation of project planning from project tasks.
+* Sale order: allow to generate a project from a sale order and a project template.
 
+#### Business Production
+
+* Business project: added manufacturing order generation from business project.
+ 
 #### Mobile Settings
 
-* New mobile app Sales.
-* New mobile app Project.
-* Added a new chart type.
+* APK: added possibility to upload the .apk of the current app version to manage deployment on new devices.
+* DMS: added new configuration to manage DMS on mobile application.
+* Purchase: added new configurations to manage purchase requests.
 
 ### Changes
 
 #### Base
 
-* Updated app icons on menus.
-* Printing template: added a script to configure dynamically the name of files generated by the template.
-* Data sharing: added new technical models to manage connectors configuration and synchronization.
-* Site: managed trading name on sites.
-* Address: updated our API to allow search/creation of an address.
+* Partner: added the possibility to link multiple trading names to a partner.
+* Partner: added a warning on creation if a partner with the same registration number (SIRET for France) already exists.
+* Partner: registration number check is made on change and not on save like before.
+* App base: shortcut management for active company/trading name/project is now a single configuration.
+* Year/Period: allow period generation on period of 1 or 2 weeks.
+* Address: improved address templates.
 
 #### CRM
 
-* Lead: it is now possible to change the status of a closed lead to the default status.
-* Tag: LeadTag is now replaced by Tag.
+* Lead: replaced the existing address fields by a link to a full Address object.
+
+#### HR
+
+* Timesheet: added a dashlet to see planned time from projects on a period.
+* Leave request: took into account the end date to compute quantity available.
+* Leave request: created a new API endpoint to create multiple leave requests.
+* Leave request: created a new API endpoint to fetch number of available days for a leave type.
+* Leave request: created a new API endpoint to check if requested days are available.
+* Leave request: created a new API endpoint to update leave request status.
 
 #### Purchase
 
-* Purchase order: added the possibility to split a purchase order.
+* Purchase request: created a new API endpoint to update purchase request status.
 
 #### Sale
 
-* Sale order: added a new button to recompute prices using pricing scales and price lists on the sale order.
+* Sale order: in multi line sale order, added icon to see the product type on each line.
+* Sale order: new configuration to activate or disabled price computation from sub lines.
+* Sale order: added a button to open multi lines in a separate form view.
+* Sale order: managed modifications on a sale order already partially invoiced through timetable.
 
 #### Account
 
-* Invoice: on supplier invoices, added a new wizard to fill invoice number and date before ventilation.
-* Accounting report: added filters on tags on accounting report.
-* Closure/Opening fiscal year batch: added a warning before launching the process if we have daybook entries.
+* Accounting batch: added an option to open/close every accounts instead of having to select everything.
 
 #### Bank payment
 
-* Bank reconciliation: allow users to generating accounting entries by using the button "Auto accounting".
-* Bank order: added an option to encrypt the generated the bank order file on the server.
+* Bank order: added CSV export on bank order lines.
 
 #### Stock
 
-* Stock: updated the API with a new query to manage line splitting on supplier arrivals.
-
-#### Supply Chain
-
-* Partner: it is now possible, for a partner which is both a supplier and a customer, to have different payment condition for incoming and outgoing payments.
+* Logistical form: managed different stock locations on lines.
+* Stock move: managed tracking number taking into account configuration per company.
 
 #### Production
 
-* Prod process: added workflow buttons instead of clickable status.
+* Sale order line: added a new tag to display the production status on sale order line linked to manufacturing orders.
+* Sale order line: added quantity to produce.
 
 #### Project
 
-* Tag: replaced ProjectTaskTag by Tag.
-* Project task: split personalized fields depending on where they are configured and added personalized fields for project categories.
+* Project: added link to company.
+* Batch: added new batches to update project task status.
+* App project: added a new configuration to activate/deactivate the planification.
+* Project task: generate project planning lines during task generation from template.
+* Project task: use signature widget.
 
 #### Business project
 
-* Split views between project and business projects to improve user interface.
-
-#### Mobile Settings
-
-* Mobile menu: it is now possible to manage mobile app menus from the web interface.
-* Chart: added a new "indicator" type for mobile charts.
+* Business project: New dashlet to see related purchase orders.
 
 ### Fixes
 
 #### Base
 
-* Trading name: fixed relationship between trading name and company: now a trading name only belongs to one company.
-* Site: fixed relationship between site and company: now a site only belongs to one company.
+* Product: when generating product variant, copy the product instead of only copying some fields.
 
 #### HR
 
-* Payroll preparation: multiple fixes.
+* Extra hours: fixed filter on employee selection.
+* Expense: fixed analytic accounting information display.
+* Weekly/Events planning: remove duplicated configurations in HR, the configurations in the company are now used everywhere.
+* Timesheet: in timesheet form view, displayed "is completed" in a tag.
 
 #### Sale
 
-* Sale order: technically many changes were made to refactor XML actions into single action-method.
+* Sale order: removed sale order line tree feature, it is replaced by sale order line details.
 
 #### Account
 
-* Deposit slip: manage bank details in generated accounting entries.
-* Payment: use correctly the payment date instead of today date when computing currency rate.
+* Move line: added accounting date on move line form view.
+* Move: fixed reverse charge feature on a multi tax accounting entry.
 
-[8.2.2]: https://github.com/axelor/axelor-open-suite/compare/v8.2.1...v8.2.2
-[8.2.1]: https://github.com/axelor/axelor-open-suite/compare/v8.2.0...v8.2.1
-[8.2.0]: https://github.com/axelor/axelor-open-suite/compare/v8.1.9...v8.2.0
+#### Budget
+
+* Budget distribution: added origin on budget distribution.
+
+#### Project
+
+* Project task invoicing: use the price in the task instead of the product price.
+* Task section: removed task section, it is replaced by category.
+* Project: added Time follow-up panel.
+* Project version: version name is now required and unique per project.
+
+#### Business project
+
+* App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
+* Project financial data: added a link to the project in project financial data view.
+
+[8.3.1]: https://github.com/axelor/axelor-open-suite/compare/v8.3.0...v8.3.1
+[8.3.0]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.3.0
