@@ -308,7 +308,7 @@
 
   <action-validate name="action-leave-request-validate-dates-on-save">
     <error message="Invalid dates"
-      if="toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect)"/>
+      if="toDateT!=null &amp;&amp;(toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect))"/>
     <error message="Duration equals 0" if="duration == 0"/>
   </action-validate>
 
