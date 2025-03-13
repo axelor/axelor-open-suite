@@ -60,6 +60,7 @@
       initParam="true"/>
     <boolean name="planOnlyMissingQuantities"
       title="Plan only product with missing quantities"/>
+    <boolean name="hideReportDetails" title="Hide operation details on report'"/>
 
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"
       initParam="true"/>
