@@ -466,7 +466,8 @@ public class LeaveController {
         Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(leave.getEmployee()));
   }
 
-  public void computeLeaveToDate(ActionRequest request, ActionResponse response) {
+  public void computeLeaveToDate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
     response.setValue(
         "leaveDaysToDate", Beans.get(LeaveRequestService.class).getLeaveDaysToDate(leave));

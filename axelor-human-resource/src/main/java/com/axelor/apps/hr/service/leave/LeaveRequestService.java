@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -30,13 +31,14 @@ import java.util.List;
 public interface LeaveRequestService {
   List<LeaveRequest> getLeaves(Employee employee, LocalDate date);
 
-  boolean willHaveEnoughDays(LeaveRequest leaveRequest);
+  boolean willHaveEnoughDays(LeaveRequest leaveRequest) throws AxelorException;
 
   String getLeaveCalendarDomain(User user);
 
   boolean isLeaveDay(Employee employee, LocalDate date);
 
-  BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest);
+  BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) throws AxelorException;
 
-  BigDecimal getLeaveDaysToDate(LocalDateTime toDateT, Employee employee, LeaveReason leaveReason);
+  BigDecimal getLeaveDaysToDate(LocalDateTime toDateT, Employee employee, LeaveReason leaveReason)
+      throws AxelorException;
 }
