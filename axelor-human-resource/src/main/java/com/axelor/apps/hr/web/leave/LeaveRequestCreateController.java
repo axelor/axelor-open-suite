@@ -152,7 +152,8 @@ public class LeaveRequestCreateController {
         Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(employee));
   }
 
-  public void leaveReasonOnChange(ActionRequest request, ActionResponse response) {
+  public void leaveReasonOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Employee employee =
         Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
 

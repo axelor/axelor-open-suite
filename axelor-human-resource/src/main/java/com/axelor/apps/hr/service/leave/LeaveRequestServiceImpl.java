@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -26,9 +29,11 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -82,7 +87,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   }
 
   @Override
-  public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
+  public boolean willHaveEnoughDays(LeaveRequest leaveRequest) throws AxelorException {
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
@@ -101,7 +106,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   }
 
   @Override
-  public BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) {
+  public BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) throws AxelorException {
 
     return getLeaveDaysToDate(
         leaveRequest.getToDateT(), leaveRequest.getEmployee(), leaveRequest.getLeaveReason());
@@ -109,7 +114,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
   @Override
   public BigDecimal getLeaveDaysToDate(
-      LocalDateTime toDateT, Employee employee, LeaveReason leaveReason) {
+      LocalDateTime toDateT, Employee employee, LeaveReason leaveReason) throws AxelorException {
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
 
     if (todayDate == null || toDateT == null) {
@@ -131,12 +136,17 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
 
     int interval = getInterval(leaveReasonTypeSelect, toDateT, todayDate);
-
+    WeeklyPlanning planning = employee.getWeeklyPlanning();
+    if (planning == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
+          employee.getName());
+    }
     return leaveLine
         .getQuantity()
         .add(
-            employee
-                .getWeeklyPlanning()
+            planning
                 .getLeaveCoef()
                 .multiply(leaveReason.getDefaultDayNumberGain())
                 .multiply(BigDecimal.valueOf(interval)));

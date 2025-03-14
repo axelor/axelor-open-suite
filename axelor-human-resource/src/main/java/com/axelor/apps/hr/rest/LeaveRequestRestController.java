@@ -259,7 +259,8 @@ public class LeaveRequestRestController {
   @Path("/compute-leave-available")
   @POST
   @HttpExceptionHandler
-  public Response getLeaveDaysToDate(LeaveDaysToDatePostRequest requestBody) {
+  public Response getLeaveDaysToDate(LeaveDaysToDatePostRequest requestBody)
+      throws AxelorException {
     new SecurityCheck().readAccess(LeaveReason.class, requestBody.getLeaveReasonId()).check();
 
     Employee employee =
@@ -282,7 +283,8 @@ public class LeaveRequestRestController {
   @Path("/check/{leaveRequestId}")
   @GET
   @HttpExceptionHandler
-  public Response checkLeaveRequest(@PathParam("leaveRequestId") Long leaveRequestId) {
+  public Response checkLeaveRequest(@PathParam("leaveRequestId") Long leaveRequestId)
+      throws AxelorException {
     new SecurityCheck().readAccess(LeaveRequest.class, leaveRequestId).check();
     LeaveRequest leaveRequest =
         ObjectFinder.find(LeaveRequest.class, leaveRequestId, ObjectFinder.NO_VERSION);

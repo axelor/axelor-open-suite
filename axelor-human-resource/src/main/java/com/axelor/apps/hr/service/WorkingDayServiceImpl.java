@@ -18,11 +18,15 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 
@@ -38,8 +42,14 @@ public class WorkingDayServiceImpl implements WorkingDayService {
   }
 
   @Override
-  public boolean isWorkingDay(Employee employee, LocalDate date) {
+  public boolean isWorkingDay(Employee employee, LocalDate date) throws AxelorException {
     WeeklyPlanning planning = employee.getWeeklyPlanning();
+    if (planning == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
+          employee.getName());
+    }
     return isWorkingDay(weeklyPlanningService.findDayPlanning(planning, date))
         && !publicHolidayHrService.checkPublicHolidayDay(date, employee);
   }
