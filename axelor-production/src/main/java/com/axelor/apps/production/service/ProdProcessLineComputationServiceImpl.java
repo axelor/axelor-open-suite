@@ -43,7 +43,10 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   @Override
   public BigDecimal computeNbCycle(BigDecimal qty, BigDecimal maxCapacityPerCycle) {
     BigDecimal nbCycles;
-    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+    if (qty == null || qty.compareTo(BigDecimal.ZERO) < 0) {
+      qty = BigDecimal.valueOf(0);
+    }
+    if (maxCapacityPerCycle == null || maxCapacityPerCycle.compareTo(BigDecimal.ZERO) <= 0) {
       nbCycles = qty;
     } else {
       nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
@@ -55,13 +58,19 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   public BigDecimal getMachineInstallingDuration(
       ProdProcessLine prodProcessLine, BigDecimal nbCycles) throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
+    Objects.requireNonNull(nbCycles);
+
+    if (nbCycles.compareTo(BigDecimal.ZERO) <= 0) {
+      return BigDecimal.ZERO;
+    }
 
     BigDecimal setupDuration =
         nbCycles
             .subtract(BigDecimal.ONE)
-            .multiply(BigDecimal.valueOf(prodProcessLine.getSetupDuration()));
-    return BigDecimal.valueOf(
-            prodProcessLine.getStartingDuration() + prodProcessLine.getEndingDuration())
+            .multiply(BigDecimal.ZERO.max(BigDecimal.valueOf(prodProcessLine.getSetupDuration())));
+    return BigDecimal.ZERO
+        .max(BigDecimal.valueOf(prodProcessLine.getStartingDuration()))
+        .add(BigDecimal.ZERO.max(BigDecimal.valueOf(prodProcessLine.getEndingDuration())))
         .add(setupDuration);
   }
 
@@ -76,6 +85,9 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   public BigDecimal getMachineDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
+    Objects.requireNonNull(nbCycles);
+
+    nbCycles = BigDecimal.ZERO.max(nbCycles);
 
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
@@ -101,7 +113,7 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
       }
 
       return nbCycles
-          .multiply(BigDecimal.valueOf(prodProcessLine.getDurationPerCycle()))
+          .multiply(BigDecimal.ZERO.max(BigDecimal.valueOf(prodProcessLine.getDurationPerCycle())))
           .add(getMachineInstallingDuration(prodProcessLine, nbCycles));
     }
 
@@ -111,11 +123,15 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   @Override
   public BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles) {
     Objects.requireNonNull(prodProcessLine);
+    Objects.requireNonNull(nbCycles);
+
+    nbCycles = BigDecimal.ZERO.max(nbCycles);
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
     if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
         || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      return nbCycles.multiply(BigDecimal.valueOf(prodProcessLine.getHumanDuration()));
+      return nbCycles.multiply(
+          BigDecimal.ZERO.max(BigDecimal.valueOf(prodProcessLine.getHumanDuration())));
     }
 
     return BigDecimal.ZERO;
@@ -126,8 +142,8 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
       throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
 
-    BigDecimal machineDuration = getMachineDuration(prodProcessLine, nbCycles);
-    BigDecimal humanDuration = getHumanDuration(prodProcessLine, nbCycles);
+    BigDecimal machineDuration = BigDecimal.ZERO.max(getMachineDuration(prodProcessLine, nbCycles));
+    BigDecimal humanDuration = BigDecimal.ZERO.max(getHumanDuration(prodProcessLine, nbCycles));
 
     if (humanDuration.compareTo(machineDuration) > 0) {
       return humanDuration;
