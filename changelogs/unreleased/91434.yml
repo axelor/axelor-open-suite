@@ -1,0 +1,2 @@
+title: "Sale Order: Added logic to conditionally remove the cost line."
+module: axelor-supplychain
