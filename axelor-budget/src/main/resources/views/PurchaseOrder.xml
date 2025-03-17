@@ -54,12 +54,14 @@
         value="action-budget-group-purchase-order-on-validate-actions"/>
     </extend>
 
-    <extend target="//button[@name='cancelBtn']">
+    <extend target="//button[@name='requestedBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           onClick="action-budget-group-purchase-order-compute-budget-distribution" hidden="true"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"
+          icon="clipboard2-data-fill"
+          readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       </insert>
     </extend>
 
