@@ -66,6 +66,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
         == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) { // Customer
       if (invoice.getInvoiceDate() != null) {
         refund.setOriginDate(invoice.getInvoiceDate());
+        refund.getOriginDate();
       }
     }
 
