@@ -1,2 +1,2 @@
-title: "MRP: a message is now displayed when deleting a mrp."
-module: axelor-production
+title: "MRP: a warning is now displayed when trying to delete a MRP to explain that the MRP is reset instead of removed."
+module: axelor-supplychain
