@@ -189,7 +189,7 @@
   </action-validate>
 
   <action-validate name="action-mrp-validate-delete-multi-mrp-reset">
-    <info message="The MRP have been reset and theirs results deleted."/>
+    <info message="The MRP have been reset and their results deleted."/>
   </action-validate>
 </object-views>
 

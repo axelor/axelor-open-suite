@@ -654,7 +654,7 @@
 "The invoice's unit is different and inconvertible into the stock move's unit.",,,
 "The invoiced partner must be the same for all sale orders",,,
 "The mrp has been reset and results deleted.",,,
-"The mrp have been reset and theirs results deleted.",,,
+"The mrp have been reset and their results deleted.",,,
 "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error.",,,
 "The product will not be delivered in time for its corresponding need.",,,
 "The proposal has been successfully generated.",,,
