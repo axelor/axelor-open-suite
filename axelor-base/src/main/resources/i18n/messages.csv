@@ -2054,6 +2054,7 @@
 "Show the reference",,,
 "Show tracebacks",,,
 "Signature",,,
+"Signature certificate is expired. Please change to a new certificate.",,,
 "Single tab",,,
 "Sirene API call",,,
 "Sirene access token generation url",,,
