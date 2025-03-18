@@ -112,7 +112,7 @@
         <field name="inTaxPrice" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           hidden="true"/>
-        <panel name="discountPanel" colSpan="12">
+        <panel name="discountPanel" colSpan="12" readonlyIf="$isGlobalDiscount">
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
@@ -121,9 +121,9 @@
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
         <field name="taxLineSet" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-          grid-view="tax-line-grid" form-view="tax-line-form"
-          domain="self.endDate = null or self.endDate &gt; :__date__" widget="TagSelect"/>
+          onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
+          form-view="tax-line-form"
+          onSelect="action-invoice-line-method-compute-tax-line-set-on-select" widget="TagSelect"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
@@ -137,6 +137,7 @@
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
+        <field name="$isGlobalDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
@@ -271,8 +272,8 @@
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="priceDiscounted" hidden="true"/>
         <field name="taxLineSet" canEdit="false"
-          onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-          grid-view="tax-line-grid" form-view="tax-line-form" widget="TagSelect"/>
+          onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
+          form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
@@ -314,6 +315,7 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
+    <action name="action-invoice-line-attrs-compute-is-global-discount"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -327,6 +329,7 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
+    <action name="action-invoice-line-attrs-compute-is-global-discount"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -385,6 +388,13 @@
     <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+  </action-group>
+
+  <action-group name="action-invoice-line-group-taxline-onchange">
+    <action name="action-invoice-line-method-recompute-tax"/>
+    <action name="action-invoice-line-method-convert-tax"/>
+    <action name="action-invoice-line-method-compute"/>
+    <action name="action-invoice-line-method-compute-analytic-distribution"/>
   </action-group>
 
   <!-- ACTION RECORDS -->
@@ -544,6 +554,14 @@
 
   <action-method name="action-invoice-line-method-check-qty">
     <call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="checkQty"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-recompute-tax">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="recomputeTax"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-compute-tax-line-set-on-select">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="onSelectTaxLineSet"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
@@ -739,6 +757,11 @@
   <action-attrs name="action-invoice-line-attrs-display-coefficient">
     <attribute for="coefficient" name="hidden"
       expr="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-line-attrs-compute-is-global-discount">
+    <attribute for="$isGlobalDiscount" name="value"
+      expr="eval: __parent__?.discountTypeSelect != 0"/>
   </action-attrs>
 
   <action-view name="action-invoice-line-view-project-tasks" title="Related tasks"

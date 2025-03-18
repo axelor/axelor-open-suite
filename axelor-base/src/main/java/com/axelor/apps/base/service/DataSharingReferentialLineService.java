@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
@@ -39,4 +40,7 @@ public interface DataSharingReferentialLineService {
       Long wizardRefId);
 
   void removeDataSharingReferentialLines(DataSharingProductWizard dataSharingProductWizard);
+
+  void testQueryCondition(DataSharingReferentialLine dataSharingReferentialLine)
+      throws AxelorException;
 }

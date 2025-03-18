@@ -45,12 +45,12 @@
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
-    onNew="action-business-project-project-group-on-new"
-    onSave="action-project-method-check-resource-availibility">
+    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save">
     <toolbar>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel" if="__config__.app.isApp('employee')"
-        if-module="axelor-human-resource" showIf="isShowPlanning"/>
+        onClick="save,action-project-view-show-planning-panel"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+        showIf="isShowPlanning"/>
       <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
         onClick="save,action-project-view-show-financial-datas-panel"/>
     </toolbar>
@@ -87,12 +87,12 @@
         <item name="perStatusCalendar" title="Per status calendar"
           action="save,action-project-view-per-status-calendar"
           showIf="id &amp;&amp; isShowCalendarPerStatus"/>
-        <item name="perSectionKanban" title="Per section kanban"
-          action="save,action-project-view-per-section-kanban"
-          showIf="id &amp;&amp; isShowKanbanPerSection"/>
-        <item name="perSectionCalendar" title="Per section calendar"
-          action="save,action-project-view-per-section-calendar"
-          showIf="id &amp;&amp; isShowCalendarPerSection"/>
+        <item name="perCategoryKanban" title="Per category kanban"
+          action="save,action-project-view-per-category-kanban"
+          showIf="id &amp;&amp; isShowKanbanPerCategory"/>
+        <item name="perCategoryCalendar" title="Per category calendar"
+          action="save,action-project-view-per-category-calendar"
+          showIf="id &amp;&amp; isShowCalendarPerCategory"/>
         <item name="perUserCalendar" title="Per user calendar"
           action="save,action-project-view-per-user-calendar"
           showIf="id &amp;&amp; isShowCalendarPerUser"/>
@@ -263,6 +263,12 @@
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
+      <panel title="Technical case" name="saleOrderPanel" hidden="true">
+        <button name="openLines" title="Open lines"
+          onClick="action-project-dashlet-sale-order-line"/>
+        <panel-dashlet name="saleOrderLinePanelDashlet"
+          action="action-project-dashlet-sale-order-line" colSpan="12"/>
+      </panel>
       <panel-include view="incl-wiki-panel-form"/>
 
       <panel-include view="incl-checklist-panel-form"/>
@@ -271,6 +277,7 @@
         if="__config__.app.isApp('timesheet')">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
+      <panel-include view="incl-project-roadmap-panel-form"/>
 
       <panel title="Invoicing" name="invoicingPanel">
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
@@ -298,7 +305,7 @@
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
-          <field name="projectTimeUnit"/>
+          <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
           <field name="numberHoursADay"/>
           <field name="spentTimeCostComputationMethod"/>
           <field name="allowToGetPricesFromFrameworkContract"/>
@@ -318,6 +325,9 @@
   <form title="Business project" model="com.axelor.apps.project.db.Project" width="large"
     name="business-project-financial-datas-form"
     onLoad="action-business-project-method-set-analytic-distribution-template-required">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
     <panel-tabs>
       <panel title="Sales" name="salesPanel"
         if="__config__.app.isApp('business-project')
@@ -601,10 +611,9 @@
     <action name="action-project-group-on-new-project"/>
     <action name="action-attrs-project-set-project-type"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-business-project-project-attrs-defaults"/>
-    <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-project-attrs-sale-order-panel-display"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -613,8 +622,8 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-method-count-to-invoice"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-project-attrs-set-time-unit-domain"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
+    <action name="action-project-attrs-sale-order-panel-display"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -646,17 +655,6 @@
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
     <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
-  </action-attrs>
-
-  <action-attrs name="action-business-project-project-attrs-defaults"
-    model="com.axelor.apps.project.db.Project">
-    <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
-    <attribute name="value" for="fromDate" expr="eval: __config__.date"/>
-    <attribute name="value" for="assignedTo" expr="eval: __user__"/>
-    <attribute name="value" for="numberHoursADay"
-      expr="eval: __config__.app.getApp('business-project')?.defaultHoursADay"/>
-    <attribute name="value" for="projectTimeUnit"
-      expr="eval: __config__.app.getApp('business-project')?.daysUnit"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-invoicing-sequence">
@@ -775,6 +773,15 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  </action-view>
+
+  <action-view name="action-project-dashlet-sale-order-line" title="Sale order lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <view type="grid" name="business-production-sale-order-line-editable-grid"/>
+    <view type="form" name="sale-order-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.project = :projectId AND self.saleOrder.statusSelect in (2,3)</domain>
+    <context name="projectId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-project-view-show-sale-order-lines" title="Sale Order Lines"
@@ -1285,11 +1292,6 @@
       method="showInvoicingProjects"/>
   </action-method>
 
-  <action-attrs name="action-project-attrs-set-time-unit-domain">
-    <attribute name="domain" for="projectTimeUnit"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
-  </action-attrs>
-
   <action-method name="action-project-method-compute-project-totals">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="computeProjectTotals"/>
@@ -1326,6 +1328,11 @@
   <action-attrs name="action-project-attrs-set-default-supplier-contract-domain">
     <attribute for="defaultFrameworkSupplierContract" name="domain"
       expr="eval: &quot;self.id IN (${frameworkSupplierContractSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-attrs-sale-order-panel-display">
+    <attribute for="saleOrderPanel" name="hidden"
+      expr="eval: __config__.app.getApp('sale')?.getListDisplayTypeSelect() != __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI || saleOrderLineList == null || saleOrderLineList?.size() == 0"/>
   </action-attrs>
 
   <!-- Analytic -->

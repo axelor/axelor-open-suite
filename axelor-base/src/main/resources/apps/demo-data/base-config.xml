@@ -56,6 +56,22 @@
   <input file="base_localization.csv" separator=";"
     type="com.axelor.apps.base.db.Localization" search="self.importId = :importId"/>
 
+  <input file="base_weeklyPlanning.csv" separator=";"
+    type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
+
+  <input file="base_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning"
+    search="self.importId  = :importId"/>
+
+  <input file="base_eventsPlanning.csv" type="com.axelor.apps.base.db.EventsPlanning"
+    separator=";" search="self.importId = :importId"/>
+
+  <input file="base_eventsPlanningLine.csv" type="com.axelor.apps.base.db.EventsPlanningLine"
+    separator=";" search="self.importId = :importId">
+    <bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"
+      column="date"/>
+    <bind to="year" eval="java.time.Year.now().getValue() + year.toInteger()" column="year"/>
+  </input>
+
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportCompany:importCompany"/>
 
@@ -371,5 +387,8 @@
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
   </input>
+
+  <input file="base_alternativeBarcodeType.csv" separator=";"
+    type="com.axelor.apps.base.db.AlternativeBarcodeType" search="self.importId = :importId"/>
 
 </csv-inputs>

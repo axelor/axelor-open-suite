@@ -11,6 +11,12 @@
     <many-to-many name="defaultSitesSet" title="Default sites"
       ref="com.axelor.apps.base.db.Site"/>
 
+    <extra-code>
+	    <![CDATA[
+	        public static final String SHORTCUT_ACTIVE_PROJECT = "2";
+	    ]]>
+    </extra-code>
+
   </entity>
 
 </domain-models>

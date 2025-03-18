@@ -21,16 +21,22 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectBatch;
 import com.axelor.apps.project.db.ProjectCheckListTemplate;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.db.repo.ProjectBatchRepository;
 import com.axelor.apps.project.db.repo.ProjectCheckListTemplateRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.TaskStatusRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTaskToolService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.batch.ProjectBatchInitService;
+import com.axelor.apps.project.service.roadmap.SprintService;
+import com.axelor.apps.project.web.tool.ProjectBatchControllerTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -41,10 +47,13 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ProjectController {
@@ -184,5 +193,40 @@ public class ProjectController {
     Beans.get(ProjectCheckListTemplateService.class)
         .generateCheckListItemsFromTemplate(project, template);
     response.setValue("projectCheckListItemList", project.getProjectCheckListItemList());
+  }
+
+  public void generateBacklogSprint(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    Beans.get(SprintService.class).generateBacklogSprint(project);
+    response.setValue("backlogSprint", project.getBacklogSprint());
+  }
+
+  public void removeTaskStatus(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    List<LinkedHashMap<String, Object>> statusToRemoveList =
+        (List<LinkedHashMap<String, Object>>) request.getContext().get("statusToRemoveSet");
+
+    if (project != null && ObjectUtils.notEmpty(statusToRemoveList)) {
+      TaskStatusRepository taskStatusRepository = Beans.get(TaskStatusRepository.class);
+      Set<TaskStatus> taskStatusSet =
+          statusToRemoveList.stream()
+              .map(it -> taskStatusRepository.find(Long.valueOf(it.get("id").toString())))
+              .collect(Collectors.toSet());
+      Set<Project> projectSet = new HashSet<>();
+      projectSet.add(Beans.get(ProjectRepository.class).find(project.getId()));
+
+      ProjectBatch projectBatch =
+          Beans.get(ProjectBatchInitService.class)
+              .initializeProjectBatchWithProjects(
+                  ProjectBatchRepository.ACTION_REMOVE_TASK_STATUS, projectSet, taskStatusSet);
+      ProjectBatchControllerTool.runBatch(projectBatch, response);
+    }
+  }
+
+  public void checkSprintOverlap(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    if (Beans.get(SprintService.class).checkSprintOverlap(project)) {
+      response.setError(ProjectExceptionMessage.PROJECT_SPRINTS_OVERLAPPED);
+    }
   }
 }

@@ -19,19 +19,19 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppTimesheet;
@@ -49,7 +49,7 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
   protected WeeklyPlanningService weeklyPlanningService;
   protected PublicHolidayService publicHolidayService;
   protected LeaveRequestService leaveRequestService;
-  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
+  protected LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService;
   protected TimesheetLineCreateService timesheetLineCreateService;
 
   @Inject
@@ -58,13 +58,13 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
       WeeklyPlanningService weeklyPlanningService,
       PublicHolidayService publicHolidayService,
       LeaveRequestService leaveRequestService,
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService,
       TimesheetLineCreateService timesheetLineCreateService) {
     this.appHumanResourceService = appHumanResourceService;
     this.weeklyPlanningService = weeklyPlanningService;
     this.publicHolidayService = publicHolidayService;
     this.leaveRequestService = leaveRequestService;
-    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
+    this.leaveRequestComputeLeaveHoursService = leaveRequestComputeLeaveHoursService;
     this.timesheetLineCreateService = timesheetLineCreateService;
   }
 
@@ -74,13 +74,13 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
     LocalDate toDate = timesheet.getToDate();
 
     Employee employee = timesheet.getEmployee();
-    HRConfig config = timesheet.getCompany().getHrConfig();
+    Company company = timesheet.getCompany();
     WeeklyPlanning weeklyPlanning =
-        employee != null ? employee.getWeeklyPlanning() : config.getWeeklyPlanning();
+        employee != null ? employee.getWeeklyPlanning() : company.getWeeklyPlanning();
     EventsPlanning holidayPlanning =
         employee != null
             ? employee.getPublicHolidayEventsPlanning()
-            : config.getPublicHolidayEventsPlanning();
+            : company.getPublicHolidayEventsPlanning();
     removeGeneratedLines(timesheet);
     createTimesheetLines(timesheet, fromDate, toDate, weeklyPlanning, holidayPlanning, employee);
   }
@@ -161,7 +161,7 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
 
     if (ObjectUtils.notEmpty(leaveList)) {
       BigDecimal totalLeaveHours =
-          leaveRequestComputeDurationService.computeTotalLeaveHours(
+          leaveRequestComputeLeaveHoursService.computeTotalLeaveHours(
               date, dayValueInHours, leaveList);
       TimesheetLine timesheetLine =
           timesheetLineCreateService.createTimesheetLine(

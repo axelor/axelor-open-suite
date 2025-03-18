@@ -41,10 +41,9 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.CurrencyServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -112,6 +111,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.productCompanyService = Beans.get(ProductCompanyService.class);
     this.currencyScaleService = Beans.get(CurrencyScaleService.class);
     this.taxService = Beans.get(TaxService.class);
+    this.currencyService = Beans.get(CurrencyService.class);
   }
 
   protected InvoiceLineGenerator(
@@ -134,7 +134,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
-    this.currencyService = new CurrencyServiceImpl(this.appBaseService, this.today);
     this.currencyScale = this.currencyScaleService.getScale(invoice);
     this.companyCurrencyScale = this.currencyScaleService.getCompanyScale(invoice);
   }
@@ -233,15 +232,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
   }
 
-  public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
-      throws AxelorException {
-    if (product != null) {
-      TaxEquiv taxEquiv =
-          Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
+  public void setTaxEquiv(InvoiceLine invoiceLine) {
+    TaxEquiv taxEquiv =
+        Beans.get(FiscalPositionServiceImpl.class)
+            .getTaxEquivFromOrToTaxSet(invoice.getFiscalPosition(), taxLineSet);
 
-      invoiceLine.setTaxEquiv(taxEquiv);
-    }
+    invoiceLine.setTaxEquiv(taxEquiv);
   }
 
   /**
@@ -282,7 +278,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       this.determineTaxLine();
     }
 
-    setTaxEquiv(invoiceLine, company, isPurchase);
+    setTaxEquiv(invoiceLine);
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));

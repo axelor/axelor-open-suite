@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
+    id="hr-project-form" width="large" extension="true">
+    <extend target="/">
+      <insert position="inside">
+        <toolbar>
+          <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+            onClick="save,action-project-view-show-planning-panel"
+            if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+            showIf="isShowPlanning"/>
+        </toolbar>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="incl-planning-panel-form" title="Project"
+    model="com.axelor.apps.project.db.Project" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
+    <panel title="Planning" name="planningPanel" colSpan="12">
+      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
+        x-show-bars="true" action="action-project-dashlet-project-planning-time" colSpan="12"
+        canSearch="true" height="200%"/>
+    </panel>
+  </form>
+
+  <form id="hr-incl-project-roadmap-panel-form" name="incl-project-roadmap-panel-form"
+    title="Project" model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="//panel[@name='sprintPanel']">
+      <insert position="after">
+        <panel-dashlet name="allocationLinePanel" title="Allocation lines" showIf="id"
+          height="200%" x-show-bars="true" action="action-project-view-related-allocation-lines"
+          colSpan="12" editable="true" canSearch="true" canNew="true" canDelete="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="incl-project-config-panel-form" id="hr-incl-project-config-panel-form"
+    title="Project" model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="//field[@name='isShowPlanning']">
+      <insert position="after">
+        <field name="allowAllocatedInit" colSpan="4" widget="inline-checkbox"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+          showIf="isShowPlanning"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-project-view-related-allocation-lines"
+    title="Allocation lines" model="com.axelor.apps.hr.db.AllocationLine">
+    <view type="grid" name="allocation-line-grid"/>
+    <view type="form" name="allocation-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.project.id = :_id AND self.period.toDate &gt; :__date__</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-project-view-show-planning-panel" title="Planning"
+    model="com.axelor.apps.project.db.Project">
+    <view type="form" name="incl-planning-panel-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+</object-views>

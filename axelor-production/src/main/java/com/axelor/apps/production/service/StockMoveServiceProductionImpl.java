@@ -21,10 +21,14 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
@@ -42,9 +46,11 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
-public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl {
+public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
+    implements StockMoveProductionService {
   @Inject
   public StockMoveServiceProductionImpl(
       StockMoveLineService stockMoveLineService,
@@ -103,5 +109,37 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
     } else {
       super.setOrigin(oldStockMove, newStockMove);
     }
+  }
+
+  @Override
+  public void cancel(StockMove stockMove) throws AxelorException {
+    if (!appBaseService.isApp("production")) {
+      super.cancel(stockMove);
+      return;
+    }
+
+    if (stockMove.getManufOrder() != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER));
+    }
+    cancelStockMoveInProduction(stockMove);
+  }
+
+  @Override
+  public void cancelFromManufOrder(StockMove stockMove) throws AxelorException {
+    cancelStockMoveInProduction(stockMove);
+  }
+
+  @Override
+  public void cancelFromManufOrder(StockMove stockMove, CancelReason cancelReason)
+      throws AxelorException {
+    applyCancelReason(stockMove, cancelReason);
+    cancelStockMoveInProduction(stockMove);
+  }
+
+  // future code specific to stock move cancellation in production module goes here
+  protected void cancelStockMoveInProduction(StockMove stockMove) throws AxelorException {
+    super.cancel(stockMove);
   }
 }

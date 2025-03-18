@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBase;
 import java.math.BigDecimal;
@@ -97,6 +98,14 @@ public interface AppBaseService extends AppService {
 
   public BigDecimal getGeneralDuration(BigDecimal duration);
 
+  Unit getUnitDays() throws AxelorException;
+
+  Unit getUnitHours() throws AxelorException;
+
+  Unit getUnitMinutes() throws AxelorException;
+
+  BigDecimal getDailyWorkHours() throws AxelorException;
+
   /**
    * Set the manageMultiBanks boolean in the general object.
    *
@@ -109,4 +118,12 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  String getSireneTokenGeneratorUrl() throws AxelorException;
+
+  String getSireneUrl() throws AxelorException;
+
+  String getSireneKey() throws AxelorException;
+
+  String getSireneSecret() throws AxelorException;
 }

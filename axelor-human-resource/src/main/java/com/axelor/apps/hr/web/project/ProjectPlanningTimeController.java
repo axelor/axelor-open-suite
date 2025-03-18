@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -44,7 +45,7 @@ public class ProjectPlanningTimeController {
       throws AxelorException {
 
     Context context = request.getContext();
-    Beans.get(ProjectPlanningTimeService.class).addMultipleProjectPlanningTime(context);
+    Beans.get(ProjectPlanningTimeCreateService.class).addMultipleProjectPlanningTime(context);
 
     response.setCanClose(true);
   }
@@ -69,20 +70,6 @@ public class ProjectPlanningTimeController {
     if (projectPlanningTimeLineIds != null) {
       Beans.get(ProjectPlanningTimeService.class)
           .removeProjectPlanningLines(projectPlanningTimeLineIds);
-    }
-
-    response.setReload(true);
-  }
-
-  public void removeSingleProjectPlanningTime(ActionRequest request, ActionResponse response) {
-
-    ProjectPlanningTime projectPlanningTime =
-        request.getContext().asType(ProjectPlanningTime.class);
-
-    if (projectPlanningTime != null) {
-      Beans.get(ProjectPlanningTimeService.class)
-          .removeProjectPlanningLine(
-              JPA.find(ProjectPlanningTime.class, projectPlanningTime.getId()));
     }
 
     response.setReload(true);
@@ -114,12 +101,13 @@ public class ProjectPlanningTimeController {
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 
-    response.setValues(
-        Beans.get(ProjectPlanningTimeComputeService.class)
-            .computePlannedTimeValues(projectPlanningTime));
+    Beans.get(ProjectPlanningTimeComputeService.class)
+        .computePlannedTimeValues(projectPlanningTime);
+    response.setValues(projectPlanningTime);
   }
 
-  public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response) {
+  public void computeDisplayTimeUnitDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     ProjectPlanningTime projectPlanningTime =
         request.getContext().asType(ProjectPlanningTime.class);
 

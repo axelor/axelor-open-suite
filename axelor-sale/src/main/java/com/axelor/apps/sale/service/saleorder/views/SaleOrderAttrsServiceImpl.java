@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -29,12 +30,16 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
 
   protected CurrencyScaleService currencyScaleService;
   protected SaleOrderService saleOrderService;
+  protected SaleOrderGlobalDiscountService saleOrderGlobalDiscountService;
 
   @Inject
   public SaleOrderAttrsServiceImpl(
-      CurrencyScaleService currencyScaleService, SaleOrderService saleOrderService) {
+      CurrencyScaleService currencyScaleService,
+      SaleOrderService saleOrderService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService) {
     this.currencyScaleService = currencyScaleService;
     this.saleOrderService = saleOrderService;
+    this.saleOrderGlobalDiscountService = saleOrderGlobalDiscountService;
   }
 
   protected void addAttr(
@@ -68,5 +73,14 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
   @Override
   public void addIncotermRequired(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("incoterm", "required", saleOrderService.isIncotermRequired(saleOrder), attrsMap);
+  }
+
+  @Override
+  public void setSaleOrderGlobalDiscountDummies(
+      SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
+    if (saleOrder == null) {
+      return;
+    }
+    attrsMap.putAll(saleOrderGlobalDiscountService.setDiscountDummies(saleOrder));
   }
 }

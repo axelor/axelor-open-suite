@@ -26,9 +26,12 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderShipmentService;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
@@ -170,8 +173,10 @@ public class PurchaseOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
       String message =
-          Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+          Beans.get(PurchaseOrderShipmentService.class)
+              .createShipmentCostLine(purchaseOrder, shipmentMode);
       if (message != null) {
         response.setInfo(message);
       }
@@ -192,5 +197,14 @@ public class PurchaseOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updatePurchaseOrderLinesStockLocation(
+      ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    List<PurchaseOrderLine> purchaseOrderLineList =
+        Beans.get(PurchaseOrderStockService.class)
+            .updatePurchaseOrderLinesStockLocation(purchaseOrder);
+    response.setValue("purchaseOrderLineList", purchaseOrderLineList);
   }
 }

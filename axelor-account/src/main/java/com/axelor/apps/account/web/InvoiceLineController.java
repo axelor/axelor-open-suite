@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
@@ -604,6 +605,35 @@ public class InvoiceLineController {
       Invoice invoice = this.getInvoice(request.getContext());
 
       response.setAttrs(Beans.get(InvoiceLineService.class).setScale(invoiceLine, invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void recomputeTax(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = getInvoice(context);
+
+      response.setValues(Beans.get(InvoiceLineService.class).recomputeTax(invoice, invoiceLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onSelectTaxLineSet(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = this.getInvoice(request.getContext());
+
+      if (invoice == null) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(InvoiceLineGroupService.class).setInvoiceLineTaxLineSetDomain(invoice, attrsMap);
+
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

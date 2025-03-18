@@ -12,34 +12,43 @@
       background="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"
-      onChange="action-expense-line-attrs-project-on-change"/>
+      onChange="action-expense-line-attrs-project-on-change"
+      readonlyIf="$get('expense.statusSelect') &gt; 1" readonly="true"/>
     <field name="projectTask" canView="false"
       onSelect="action-expense-line-method-compute-project-task-domain"
       onChange="action-expense-line-attrs-on-project-task-change"
-      grid-view="business-project-task-grid" form-view="business-project-task-form"/>
+      grid-view="business-project-task-grid" form-view="business-project-task-form"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="site" form-view="site-form" grid-view="site-grid"
       onSelect="action-expense-line-attrs-set-site-domain"
-      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="expenseProduct" canView="false"
       onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
       form-view="product-expense-form" grid-view="product-expense-grid" width="200"
-      onChange="action-expense-line-group-expense-product-on-change"/>
-    <field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
+      onChange="action-expense-line-group-expense-product-on-change"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
+    <field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
-      onSelect="action-expense-line-attrs-company"/>
+      onSelect="action-expense-line-attrs-company" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-      aggregate="sum" onChange="action-expense-line-group-total-grid-amount-on-change" width="170"/>
+      aggregate="sum" onChange="action-expense-line-group-total-grid-amount-on-change" width="170"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-      aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
+      aggregate="sum"
+      readonlyIf="expenseProduct.blockExpenseTax || $get('expense.statusSelect') &gt; 1" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
-    <field name="toInvoice"/>
+    <field name="toInvoice" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="justificationMetaFile" widget="binary-link"
-      onChange="action-expense-line-group-justification-line-onchange"/>
-    <field name="comments" width="400"/>
+      onChange="action-expense-line-group-justification-line-onchange"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
+    <field name="comments" width="400" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct.blockExpenseTax" hidden="true"/>
     <field name="isJustificationFileDigitallySigned" hidden="true"/>
     <field name="expenseProduct.amountLimit" hidden="true"/>
+    <field name="expense.statusSelect"/>
   </grid>
 
   <grid name="expense-line-kilometric-grid" title="Kilometric Allowances"
@@ -48,36 +57,47 @@
     <hilite if="untaxedAmount == 0" color="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-      grid-view="project-grid" width="120"/>
+      grid-view="project-grid" width="120" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="projectTask" canView="false"
       onSelect="action-expense-line-method-compute-project-task-domain"
       onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
-      grid-view="business-project-task-grid" form-view="business-project-task-form"/>
+      grid-view="business-project-task-grid" form-view="business-project-task-form"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="site" form-view="site-form" grid-view="site-grid"
       onSelect="action-expense-line-attrs-set-site-domain"
       onChange="action-expense-line-group-fill-arrival-and-compute"
-      if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      if="__config__.app.getApp('base')?.enableSiteManagementForProject"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="expenseDate" title="Date" width="95"
-      onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
+      onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="kilometricAllowParam" canEdit="false" required="true" width="60"
       onChange="action-kilometric-allowance-method-compute"
-      onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"/>
+      onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="kilometricTypeSelect" required="true" width="100"
-      onChange="action-kilometric-allowance-method-compute-distance"/>
+      onChange="action-kilometric-allowance-method-compute-distance"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="distance" required="true"
-      onChange="action-kilometric-allowance-method-compute" width="150"/>
+      onChange="action-kilometric-allowance-method-compute" width="150"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="fromCity" required="true"
-      onChange="action-kilometric-allowance-method-compute-distance" width="150"/>
+      onChange="action-kilometric-allowance-method-compute-distance" width="150"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="toCity" required="true"
-      onChange="action-kilometric-allowance-method-compute-distance" width="150"/>
+      onChange="action-kilometric-allowance-method-compute-distance" width="150"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
-      onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
-    <field name="comments" width="250"/>
+      onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
+    <field name="comments" width="250" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
-      onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
+      onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"
+      readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct" hidden="true"/>
-    <field name="toInvoice"/>
+    <field name="toInvoice" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
+    <field name="expense.statusSelect" hidden="true"/>
   </grid>
 
   <grid name="expense-line-orphan-grid" title="Expense lines"
@@ -114,76 +134,82 @@
     onNew="action-expense-line-group-onnew" onSave="action-expense-line-validate-expenseDate"
     width="large" onLoad="action-expense-line-attrs-read-only-analytic-distribution">
 
-    <panel name="mainPanel" title="Main" colSpan="12">
-      <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
-        onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-        form-view="business-project-form" grid-view="project-grid"/>
-      <field name="projectTask" edit-icon="false" canEdit="false"
-        onSelect="action-expense-line-method-compute-project-task-domain"
-        onChange="action-expense-line-attrs-on-project-task-change"
-        form-view="business-project-task-form" grid-view="business-project-task-grid"/>
-      <field name="site" form-view="site-form" grid-view="site-grid"
-        onSelect="action-expense-line-attrs-set-site-domain"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="expenseProduct" edit-icon="false" canEdit="false"
-        onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
-        form-view="product-expense-form" grid-view="product-expense-grid"
-        onChange="action-expense-line-group-expense-product-on-change"/>
-      <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
-      <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-        onChange="action-expense-line-group-total-amount-on-change">
-        <hilite color="danger"
-          if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
-      </field>
-      <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-        onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
-        readonlyIf="expenseProduct.blockExpenseTax"/>
-      <field name="untaxedAmount"/>
-      <field name="toInvoice" colSpan="3"/>
-      <field name="invoiced" colSpan="3"
-        showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
-        <viewer>
-          <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
-        </viewer>
-      </field>
-      <field name="justificationMetaFile" widget="binary-link"
-        onChange="action-expense-line-group-justification-line-onchange"/>
-      <field name="isJustificationFileDigitallySigned" hidden="true"/>
-      <field name="isAloneMeal" hidden="true" showIf="expenseProduct.deductLunchVoucher"
-        onChange="action-expense-line-record-alone-meal-on-change"/>
-      <field name="invitedCollaboratorSet" grid-view="employee-grid" form-view="employee-form"
-        onSelect="action-expense-line-attrs-set-invited-collaborators-domain" hidden="true"
-        showIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal"
-        requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"/>
-      <field name="comments" colSpan="12"/>
-      <field name="expense" hidden="true"/>
-      <field name="expense.companyCbSelect" hidden="true"/>
-      <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
-      <field name="expenseProduct.blockExpenseTax" hidden="true"/>
-      <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
-        onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
-    </panel>
+    <panel name="expensePanel">
+      <panel name="mainPanel" title="Main" colSpan="12"
+        readonlyIf="expense.statusSelect &gt; 1">
+        <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
+          onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
+          form-view="business-project-form" grid-view="project-grid"/>
+        <field name="projectTask" edit-icon="false" canEdit="false"
+          onSelect="action-expense-line-method-compute-project-task-domain"
+          onChange="action-expense-line-attrs-on-project-task-change"
+          form-view="business-project-task-form" grid-view="business-project-task-grid"/>
+        <field name="site" form-view="site-form" grid-view="site-grid"
+          onSelect="action-expense-line-attrs-set-site-domain"
+          if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+        <field name="expenseProduct" edit-icon="false" canEdit="false"
+          onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox"
+          form-view="product-expense-form" grid-view="product-expense-grid"
+          onChange="action-expense-line-group-expense-product-on-change"/>
+        <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+        <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
+          onChange="action-expense-line-group-total-amount-on-change">
+          <hilite color="danger"
+            if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
+        </field>
+        <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
+          onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+          readonlyIf="expenseProduct.blockExpenseTax"/>
+        <field name="untaxedAmount"/>
+        <field name="toInvoice" colSpan="3"/>
+        <field name="invoiced" colSpan="3"
+          showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
+          <viewer>
+            <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
+          </viewer>
+        </field>
+        <field name="justificationMetaFile" widget="binary-link"
+          onChange="action-expense-line-group-justification-line-onchange"/>
+        <field name="isJustificationFileDigitallySigned" hidden="true"/>
+        <field name="isAloneMeal" hidden="true" showIf="expenseProduct.deductLunchVoucher"
+          onChange="action-expense-line-record-alone-meal-on-change"/>
+        <field name="invitedCollaboratorSet" grid-view="employee-grid"
+          form-view="employee-form"
+          onSelect="action-expense-line-attrs-set-invited-collaborators-domain" hidden="true"
+          showIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal"
+          requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"/>
+        <field name="comments" colSpan="12"/>
+        <field name="expense" hidden="true"/>
+        <field name="expense.companyCbSelect" hidden="true"/>
+        <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
+        <field name="expenseProduct.blockExpenseTax" hidden="true"/>
+        <field name="employee" hidden="true" form-view="employee-form"
+          grid-view="employee-grid" onSelect="action-expense-line-attrs-company" canNew="false"
+          canEdit="false" canView="false"/>
+      </panel>
 
-    <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      showIf="expense.statusSelect >= 3">
-      <field name="analyticDistributionTemplate"
-        grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form" canEdit="false"
-        onChange="action-expense-line-method-create-distribution"/>
-      <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
-        grid-view="analytic-move-line-distribution-grid"
-        form-view="analytic-move-line-distribution-form" colSpan="12"
-        onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-      <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
-      <field name="expenseProduct.amountLimit" hidden="true"/>
+      <panel name="analyticDistributionPanel" title="Analytic distribution"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+        showIf="expense.statusSelect >= 3" readonlyIf="expense.ventilated">
+        <field name="analyticDistributionTemplate"
+          grid-view="analytic-distribution-template-grid"
+          form-view="analytic-distribution-template-form" canEdit="false"
+          onChange="action-expense-line-method-create-distribution"/>
+        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+          grid-view="analytic-move-line-distribution-grid"
+          form-view="analytic-move-line-distribution-form" colSpan="12"
+          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+        <field name="expenseProduct.amountLimit" hidden="true"/>
+        <field name="expense.statusSelect" hidden="true"/>
+      </panel>
+
+      <panel name="attrsPanel">
+        <field name="attrs" colSpan="12"/>
+      </panel>
+      <field name="expense.ventilated" hidden="true"/>
       <field name="expense.statusSelect" hidden="true"/>
     </panel>
-
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
-
   </form>
 
   <form name="expense-line-kilometric-form" title="Kilometric Allowance"
@@ -192,54 +218,60 @@
     onSave="action-expense-line-validate-expenseDate" width="large"
     onLoad="action-expense-line-attrs-read-only-analytic-distribution">
 
-    <panel name="kilometricAllowancePanel" title="Kilometric Allowance" colSpan="12">
-      <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
-        onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-        form-view="business-project-form" grid-view="project-grid"/>
-      <field name="projectTask" edit-icon="false" canEdit="false"
-        onSelect="action-expense-line-method-compute-project-task-domain"
-        onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
-        form-view="business-project-task-form" grid-view="business-project-task-grid"/>
-      <field name="site" form-view="site-form" grid-view="site-grid"
-        onSelect="action-expense-line-attrs-set-site-domain"
-        onChange="action-expense-line-group-fill-arrival-and-compute"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="expenseDate"/>
-      <field name="kilometricAllowParam" required="true"
-        onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
-        onChange="action-kilometric-allowance-method-compute"/>
-      <field name="kilometricTypeSelect" required="true"
-        onChange="action-kilometric-allowance-method-compute-distance"/>
-      <field name="distance" onChange="action-kilometric-allowance-method-compute"
-        required="true"/>
-      <panel name="cityDetailsPanel" colSpan="12">
-        <field name="fromCity" required="true"
+    <panel name="expensePanel">
+      <panel name="kilometricAllowancePanel" title="Kilometric Allowance" colSpan="12"
+        readonlyIf="expense.statusSelect &gt; 1">
+        <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
+          onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
+          form-view="business-project-form" grid-view="project-grid"/>
+        <field name="projectTask" edit-icon="false" canEdit="false"
+          onSelect="action-expense-line-method-compute-project-task-domain"
+          onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
+          form-view="business-project-task-form" grid-view="business-project-task-grid"/>
+        <field name="site" form-view="site-form" grid-view="site-grid"
+          onSelect="action-expense-line-attrs-set-site-domain"
+          onChange="action-expense-line-group-fill-arrival-and-compute"
+          if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+        <field name="expenseDate"/>
+        <field name="kilometricAllowParam" required="true"
+          onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
+          onChange="action-kilometric-allowance-method-compute"/>
+        <field name="kilometricTypeSelect" required="true"
           onChange="action-kilometric-allowance-method-compute-distance"/>
-        <field name="toCity" required="true"
-          onChange="action-kilometric-allowance-method-compute-distance"/>
-      </panel>
-      <field name="totalAmount"
-        onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
-        readonly="true"/>
-      <field name="comments" colSpan="12"/>
-      <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
-        onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
-      <field name="expenseProduct" hidden="true"/>
-    </panel>
+        <field name="distance" onChange="action-kilometric-allowance-method-compute"
+          required="true"/>
+        <panel name="cityDetailsPanel" colSpan="12">
+          <field name="fromCity" required="true"
+            onChange="action-kilometric-allowance-method-compute-distance"/>
+          <field name="toCity" required="true"
+            onChange="action-kilometric-allowance-method-compute-distance"/>
+        </panel>
+        <field name="totalAmount"
+          onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+          readonly="true"/>
+        <field name="comments" colSpan="12"/>
+        <field name="employee" hidden="true" form-view="employee-form"
+          grid-view="employee-grid" onSelect="action-expense-line-attrs-company" canNew="false"
+          canEdit="false" canView="false"/>
+        <field name="expenseProduct" hidden="true"/>
 
-    <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      showIf="expense.statusSelect >= 3">
-      <field name="analyticDistributionTemplate"
-        grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form" canEdit="false"
-        onChange="action-expense-line-method-create-distribution"/>
-      <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
-        grid-view="analytic-move-line-distribution-grid"
-        form-view="analytic-move-line-distribution-form" colSpan="12"
-        onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-      <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
+
+      <panel name="analyticDistributionPanel" title="Analytic distribution"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+        showIf="expense.statusSelect >= 3" readonlyIf="expense.ventilated">
+        <field name="analyticDistributionTemplate"
+          grid-view="analytic-distribution-template-grid"
+          form-view="analytic-distribution-template-form" canEdit="false"
+          onChange="action-expense-line-method-create-distribution"/>
+        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+          grid-view="analytic-move-line-distribution-grid"
+          form-view="analytic-move-line-distribution-form" colSpan="12"
+          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
       <field name="expense.statusSelect" hidden="true"/>
+      <field name="expense.ventilated" hidden="true"/>
     </panel>
   </form>
 

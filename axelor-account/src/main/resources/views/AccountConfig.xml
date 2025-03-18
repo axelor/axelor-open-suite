@@ -35,7 +35,7 @@
           <field name="$fiscalYearToDate" title="End date" showIf="$generateFiscalYear"
             colSpan="3" type="date" requiredIf="$generateFiscalYear"/>
           <field name="$accountingPeriodDuration" title="Period duration"
-            showIf="$generateFiscalYear" colSpan="3" type="integer" requiredIf="$generateFiscalYear"
+            showIf="$generateFiscalYear" colSpan="3" type="string" requiredIf="$generateFiscalYear"
             selection="base.year.period.duration.select"/>
           <button name="generateFiscalYearBtn" title="Generate fiscal year / periods"
             hidden="true"
@@ -314,8 +314,6 @@
         </panel>
 
         <panel name="productsPanel" title="Products" colSpan="12">
-          <field name="invoicingProduct" domain="self.dtype = 'Product'"
-            form-view="product-form" grid-view="product-grid"/>
           <field name="advancePaymentProduct" domain="self.dtype = 'Product'"
             form-view="product-form" grid-view="product-grid"/>
         </panel>

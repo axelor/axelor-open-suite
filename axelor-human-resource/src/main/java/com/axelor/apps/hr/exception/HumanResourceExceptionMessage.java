@@ -108,6 +108,8 @@ public final class HumanResourceExceptionMessage {
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   public static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
       "You now have a negative number of leaves available for the reason %s" /*)*/;
+  public static final String LEAVE_ALLOW_NEGATIVE_ALERT_2 = /*$$(*/
+      "You will have a negative number of leaves available." /*)*/;
   public static final String LEAVE_REASON_NO_UNIT = /*$$(*/
       "Please, choose unit in leave reason %s." /*)*/;
   public static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
@@ -116,6 +118,8 @@ public final class HumanResourceExceptionMessage {
       "Please set a company up on leave request" /*)*/;
   public static final String LEAVE_REQUEST_NO_LINE_PRESENT = /*$$(*/
       "You need lines to fill your export." /*)*/;
+  public static final String INVALID_DATES = /*$$(*/ "Invalid dates" /*)*/;
+  public static final String LEAVE_REQUEST_WRONG_DURATION = /*$$(*/ "Duration equals 0" /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
       "Please, add a planning for employee : %s" /*)*/;
@@ -207,6 +211,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
   public static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
+  public static final String EXPENSE_CLOSED_PERIOD = /*$$(*/ "Period is closed" /*)*/;
   public static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/
       "Please fill the payment mode." /*)*/;
   public static final String ALREADY_INVITED_TO_RESTAURANT = /*$$(*/
@@ -400,4 +405,33 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_LINE_INVALID_DATES = /*$$(*/
       "%s date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String NO_TIMESHEET_LINE_GENERATED = /*$$(*/
+      "No timesheet lines can be generated because no duration is entered. Please fill the duration field if you want to generate timesheet lines." /*)*/;
+
+  public static final String NO_TIMESHEET_GENERATED_DATE = /*$$(*/
+      "Please fill a generation date." /*)*/;
+
+  public static final String DATE_NOT_IN_TIMESHEET_PERIOD = /*$$(*/
+      "The date must be in the timesheet period." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_WRONG_START_ON_SELECT = /*$$(*/
+      "startOnSelect should be 1 for morning or 2 for afternoon." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_NONE_CREATED = /*$$(*/
+      "No leave requests were created." /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_FIRST_REQUEST = /*$$(*/
+      "No project planning time exists for this task. Do you want to create new project planning lines?" /*)*/;
+  public static final String PROJECT_PLANNING_TIME_NEW_REQUEST = /*$$(*/
+      "Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create new project planning lines?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT = /*$$(*/
+      "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_EXISTING_WITH_OLD_DURATION = /*$$(*/
+      "Project planning time on the sprint dates are existing, do you want to update these with the new budgeted time?" /*)*/;
+
+  public static final String LEAVE_REQUEST_NOT_ENOUGH_DAYS = /*$$(*/
+      "You will not have enough leaves available for this request." /*)*/;
 }

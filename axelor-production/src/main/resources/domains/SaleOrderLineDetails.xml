@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="SaleOrderLineDetails" implements="com.axelor.apps.sale.interfaces.MarginLine">
+
+    <string name="title" title="Title"/>
+    <decimal name="qty" title="Qty" default="1" precision="20" scale="10" min="0"/>
+    <decimal name="price" title="Unit price" precision="20" scale="10"/>
+    <decimal name="totalPrice" title="Total price" precision="20" scale="10" readonly="true"/>
+    <string name="description" title="Description" large="true"/>
+    <integer name="typeSelect" title="Type"
+      selection="production.sale.order.line.details.type.select"/>
+    <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sale order line"/>
+    <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="billOfMaterialLine"
+      ref="com.axelor.apps.production.db.BillOfMaterialLine" title="BoM line"/>
+    <decimal name="subTotalCostPrice" title="Sub total cost price" precision="20" scale="3"/>
+    <decimal name="subTotalGrossMargin" title="Sub Total gross profit" precision="20"
+      scale="3"/>
+    <decimal name="subMarginRate" title="Sub margin rate"/>
+    <decimal name="subTotalMarkup" title="Sub Total markup"/>
+    <decimal name="costPrice" title="Cost price" precision="20" scale="3"/>
+    <decimal name="marginCoefficient" title="Margin coefficient" default="1"/>
+
+    <extra-code>
+            <![CDATA[
+			// TYPE SELECT
+			public static final int TYPE_COMPONENT = 1;
+            public static final int TYPE_BUDGET_ITEM = 2;
+	  	]]>
+    </extra-code>
+
+    <entity-listener
+      class="com.axelor.apps.production.db.repo.SaleOrderLineDetailsListener"/>
+  </entity>
+</domain-models>

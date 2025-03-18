@@ -41,7 +41,8 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   ProjectTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
       throws AxelorException;
 
-  ProjectTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
+  ProjectTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty)
+      throws AxelorException;
 
   ProjectTask updateDiscount(ProjectTask projectTask);
 
@@ -79,7 +80,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
   Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
 
-  boolean isTimeUnitValid(Unit unit);
+  boolean isTimeUnitValid(Unit unit) throws AxelorException;
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
 }

@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -64,15 +65,17 @@ public class ExtraHoursController {
       response.setView(
           ActionView.define(I18n.get("Extra Hours"))
               .model(ExtraHours.class.getName())
-              .add("form", "extra-hours-form")
+              .add("form", "extra-hours-request-form")
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else if (extraHoursList.size() == 1) {
       response.setView(
           ActionView.define(I18n.get("ExtraHours"))
               .model(ExtraHours.class.getName())
-              .add("form", "extra-hours-form")
+              .add("form", "extra-hours-request-form")
               .param("forceEdit", "true")
               .context("_showRecord", String.valueOf(extraHoursList.get(0).getId()))
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else {
       response.setView(
@@ -114,10 +117,11 @@ public class ExtraHoursController {
     response.setView(
         ActionView.define(I18n.get("Extra hours"))
             .model(ExtraHours.class.getName())
-            .add("form", "extra-hours-form")
+            .add("form", "extra-hours-request-form")
             .param("forceEdit", "true")
             .domain("self.id = " + extraHoursMap.get("id"))
             .context("_showRecord", String.valueOf(extraHours.getId()))
+            .context("_isEmployeeReadOnly", true)
             .map());
   }
 
@@ -307,5 +311,10 @@ public class ExtraHoursController {
     ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
     Beans.get(ExtraHoursService.class).updateLineEmployee(extraHours);
     response.setValue("extraHoursLineList", extraHours.getExtraHoursLineList());
+  }
+
+  public void getEmployeeDomain(ActionRequest request, ActionResponse response) {
+    response.setAttr(
+        "employee", "domain", Beans.get(ExtraHoursDomainService.class).getEmployeeDomain());
   }
 }

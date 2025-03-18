@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  <form name="project-wizard-form" title="Project Dashboard" model="com.axelor.utils.db.Wizard"
+    extension="true" id="project-wizard-hr-form">
+    <extend target="//panel[@name='filtersPanel']/field[@name='$project']">
+      <insert position="after">
+        <field name="$employee" target="com.axelor.apps.hr.db.Employee" title="Employee"
+          onChange="action-attrs-refresh-dashlets" type="many-to-one" colSpan="12"
+          onSelect="action-project-method-compute-employee-domain"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='filtersPanel']">
+      <insert position="after">
+        <panel name="indicators" showIf="$project!=null || $employee!=null">
+          <panel-dashlet colSpan="2" height="175"
+            action="action-project-allocated-time" name="project-allocated-time-panel"/>
+          <panel-dashlet colSpan="2" height="175" action="action-project-planned-time"
+            name="project-planned-time-panel"/>
+          <panel-dashlet colSpan="2" height="175" action="action-project-leave-days"
+            name="project-leave-days-panel"/>
+          <panel-dashlet colSpan="2" height="175"
+            action="action-project-available-days" name="project-available-days-panel"/>
+          <panel-dashlet colSpan="2" height="175"
+            action="action-project-estimated-time" name="project-estimated-time-panel"/>
+          <panel-dashlet colSpan="2" height="175" action="action-project-spent-time"
+            name="project-spent-time-panel"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+
+  <action-method name="action-project-method-compute-employee-domain">
+    <call class="com.axelor.apps.hr.web.EmployeeDashboardController"
+      method="computeEmployeeDomainDashboard"/>
+  </action-method>
+  <action-view name="action-project-allocated-time" title="Allocated time">
+    <view type="custom" name="project.allocated.time"/>
+  </action-view>
+  <custom name="project.allocated.time" title="Allocated time" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalAllocatedTime</dataset>
+    <template>  <![CDATA[
+<report-box label='Total allocated time' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-planned-time" title="Planned time">
+    <view type="custom" name="project.planned.time"/>
+  </action-view>
+  <custom name="project.planned.time" title="Planned time" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalPlannedTime</dataset>
+    <template>  <![CDATA[
+<report-box label='Total planned time' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-leave-days" title="Leave days">
+    <view type="custom" name="hr.leave.days"/>
+  </action-view>
+  <custom name="hr.leave.days" title="Leave days" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalLeaveDays</dataset>
+    <template>  <![CDATA[
+<report-box label='Total leave days' value='first.total'/>
+  ]]></template>
+  </custom>
+
+
+  <action-view name="action-project-available-days" title="Available days">
+    <view type="custom" name="hr.available.days"/>
+  </action-view>
+  <custom name="hr.available.days" title="Available days" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalAvailableDays</dataset>
+    <template>  <![CDATA[
+<report-box label='Total available days' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-estimated-time" title="Estimated time">
+    <view type="custom" name="hr.estimated.days"/>
+  </action-view>
+  <custom name="hr.estimated.days" title="Estimated time" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalEstimatedTime</dataset>
+    <template>  <![CDATA[
+<report-box label='Total estimated time' value='first.total'/>
+  ]]></template>
+  </custom>
+
+  <action-view name="action-project-spent-time" title="Spent time">
+    <view type="custom" name="hr.spent.days"/>
+  </action-view>
+  <custom name="hr.spent.days" title="Spent time" css="report-box">
+    <dataset type="rpc">com.axelor.apps.hr.web.ProjectIndicatorsDashboardController:getTotalSpentTime</dataset>
+    <template>  <![CDATA[
+<report-box label='Total spent time' value='first.total'/>
+  ]]></template>
+  </custom>
+  <action-attrs name="action-attrs-refresh-dashlets"
+    id="hr-action-attrs-refresh-dashlets">
+    <attribute name="refresh" expr="eval: true" for="project-project-task-action-dashlet"/>
+    <attribute name="refresh" expr="eval: true"
+      for="project-planning-time-dashboard-action-dashlet"/>
+    <attribute name="refresh" expr="eval: true"
+      for="project-allocation-line-action-dashlet"/>
+    <attribute for="project-sprint-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-allocated-time-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-planned-time-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-leave-days-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-available-days-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-estimated-time-panel" name="refresh" expr="eval: true"/>
+    <attribute for="project-spent-time-panel" name="refresh" expr="eval: true"/>
+  </action-attrs>
+</object-views>

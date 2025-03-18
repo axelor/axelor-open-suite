@@ -24,6 +24,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
@@ -47,17 +48,20 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLinePackService saleOrderLinePackService;
   protected SubSaleOrderLineComputeService subSaleOrderLineComputeService;
+  protected final AppSaleService appSaleService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
       SaleOrderLineCreateTaxLineService saleOrderLineCreateTaxLineService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SubSaleOrderLineComputeService subSaleOrderLineComputeService) {
+      SubSaleOrderLineComputeService subSaleOrderLineComputeService,
+      AppSaleService appSaleService) {
     this.saleOrderLineCreateTaxLineService = saleOrderLineCreateTaxLineService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLinePackService = saleOrderLinePackService;
     this.subSaleOrderLineComputeService = subSaleOrderLineComputeService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
@@ -70,12 +74,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
-        saleOrderLine.setPrice(
-            subSaleOrderLineComputeService.computeSumSubLineList(subSaleOrderLineList, saleOrder));
-        saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-      }
+      subSaleOrderLineComputeService.computeSumSubLineList(saleOrderLine, saleOrder);
     }
 
     return saleOrder;

@@ -371,7 +371,7 @@ public final class SupplychainExceptionMessage {
   public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
       "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
 
-  public static final String SALE_SHIPMENT_THRESHOLD_EXCEEDED = /*$$(*/
+  public static final String SHIPMENT_THRESHOLD_EXCEEDED = /*$$(*/
       "Carriage paid threshold is exceeded, all shipment cost lines are removed" /*)*/;
 
   public static final String COULD_NOT_FIND_ELIGIBLE_EMAIL_TEMPLATE_FOR_STOCK_RULES = /*$$(*/
@@ -393,6 +393,22 @@ public final class SupplychainExceptionMessage {
   public static final String PARENT_PARTNER_CONFIGURATION_ERROR = /*$$(*/
       "There is a configuration error, partner %s is its own parent." /*)*/;
 
-  public static final String SALE_ORDER_EDIT_ERROR_TIMETABLE_INVOICED = /*$$(*/
-      "At least one timetable is invoiced, you cannot edit the order anymore." /*)*/;
+  public static final String SALE_ORDER_TIMETABLE_CAN_NOT_BE_UPDATED = /*$$(*/
+      "Invoice timetable has been updated because a part of the order has already been invoiced. Amount to be spread over the timetable : %s" /*)*/;
+
+  public static final String SALE_ORDER_TIMETABLE_PERCENTAGE_ERROR = /*$$(*/
+      "One of the timetables has a percentage exceeding 100%." /*)*/;
+
+  public static final String SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "Please select one freight carrier pricing line." /*)*/;
+
+  public static final String SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
+      "More than one freight carrier pricing line selected, please select only one line." /*)*/;
+
+  public static final String CONFIGURATOR_CAN_NOT_REGENERATE_PRODUCT = /*$$(*/
+      "Product cannot be regenerated because delivered / invoiced sale order lines are using it." /*)*/;
+
+  public static final String
+      SALE_ORDER_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
+          "Non-deductible tax not authorized for sale orders. Please remove the non-deductible tax on product." /*)*/;
 }

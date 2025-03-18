@@ -20,6 +20,8 @@ package com.axelor.apps.sale.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
@@ -28,13 +30,15 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -47,27 +51,30 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   protected TaxService taxService;
   protected CurrencyScaleService currencyScaleService;
   protected ProductCompanyService productCompanyService;
-  protected SaleOrderMarginService saleOrderMarginService;
+  protected MarginComputeService marginComputeService;
   protected CurrencyService currencyService;
   protected PriceListService priceListService;
   protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService;
 
   @Inject
   public SaleOrderLineComputeServiceImpl(
       TaxService taxService,
       CurrencyScaleService currencyScaleService,
       ProductCompanyService productCompanyService,
-      SaleOrderMarginService saleOrderMarginService,
+      MarginComputeService marginComputeService,
       CurrencyService currencyService,
       PriceListService priceListService,
-      SaleOrderLinePackService saleOrderLinePackService) {
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService) {
     this.taxService = taxService;
     this.currencyScaleService = currencyScaleService;
     this.productCompanyService = productCompanyService;
-    this.saleOrderMarginService = saleOrderMarginService;
+    this.marginComputeService = marginComputeService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.saleOrderLinePackService = saleOrderLinePackService;
+    this.saleOrderLineCostPriceComputeService = saleOrderLineCostPriceComputeService;
   }
 
   @Override
@@ -88,7 +95,6 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine, saleOrder.getInAti());
     BigDecimal taxRate = BigDecimal.ZERO;
-    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
 
     if (CollectionUtils.isNotEmpty(saleOrderLine.getTaxLineSet())) {
       taxRate = taxService.getTotalTaxRate(saleOrderLine.getTaxLineSet());
@@ -122,37 +128,63 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
               RoundingMode.HALF_UP);
     }
 
-    if (saleOrderLine.getProduct() != null
-        && ((BigDecimal)
-                    productCompanyService.get(
-                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                .compareTo(BigDecimal.ZERO)
-            != 0) {
-      subTotalCostPrice =
-          currencyScaleService.getCompanyScaledValue(
-              saleOrder,
-              ((BigDecimal)
-                      productCompanyService.get(
-                          saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                  .multiply(saleOrderLine.getQty()));
-    }
+    Product product = saleOrderLine.getProduct();
+    map.putAll(
+        saleOrderLineCostPriceComputeService.computeSubTotalCostPrice(
+            saleOrder, saleOrderLine, product));
+    map.putAll(setProductIconType(saleOrderLine, product));
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
     saleOrderLine.setExTaxTotal(exTaxTotal);
     saleOrderLine.setPriceDiscounted(priceDiscounted);
     saleOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     saleOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
-    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
     map.put("inTaxTotal", inTaxTotal);
     map.put("exTaxTotal", exTaxTotal);
     map.put("priceDiscounted", priceDiscounted);
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
-    map.put("subTotalCostPrice", subTotalCostPrice);
 
-    map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
+    map.putAll(
+        marginComputeService.getComputedMarginInfo(
+            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal()));
 
     return map;
+  }
+
+  protected Map<String, Object> setProductIconType(SaleOrderLine saleOrderLine, Product product) {
+    Map<String, Object> map = new HashMap<>();
+    String iconTypeSelect = getIconTypeSelect(product);
+
+    if (!iconTypeSelect.isEmpty()) {
+      saleOrderLine.setProductTypeIconSelect(iconTypeSelect);
+      map.put("productTypeIconSelect", iconTypeSelect);
+    }
+    return map;
+  }
+
+  protected String getIconTypeSelect(Product product) {
+    if (product != null) {
+      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())) {
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SERVICE;
+      } else {
+        return getIconTypeSelect(product.getProductSubTypeSelect());
+      }
+    }
+    return "";
+  }
+
+  protected String getIconTypeSelect(int productSubTypeSelect) {
+    switch (productSubTypeSelect) {
+      case ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_FINISHED_PRODUCT;
+      case ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_SEMI_FINISH_PRODUCT;
+      case ProductRepository.PRODUCT_SUB_TYPE_COMPONENT:
+        return SaleOrderLineRepository.SALE_ORDER_LINE_PRODUCT_TYPE_COMPONENT;
+      default:
+        return "";
+    }
   }
 
   protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
@@ -199,5 +231,22 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     saleOrderLinePackService.fillPriceFromPackLine(saleOrderLine, saleOrder);
     saleOrderLineMap.putAll(computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;
+  }
+
+  @Override
+  public void computeLevels(List<SaleOrderLine> saleOrderLineList, String parentLevel) {
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    int count = 1;
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      String levelIndicator =
+          StringUtils.isBlank(parentLevel)
+              ? String.valueOf(count)
+              : String.format("%s.%s", parentLevel, count);
+      saleOrderLine.setLevelIndicator(levelIndicator);
+      count++;
+      computeLevels(saleOrderLine.getSubSaleOrderLineList(), levelIndicator);
+    }
   }
 }

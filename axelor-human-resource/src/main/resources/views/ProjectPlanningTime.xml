@@ -13,16 +13,22 @@
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
     </toolbar>
-    <field name="plannedTime"/>
-    <field name="timeUnit"/>
-    <field name="project"/>
-    <field name="projectTask"/>
-    <field name="employee"/>
-    <field name="startDateTime"/>
-    <field name="endDateTime"/>
-    <button name="deleteProjectPlanningTime" icon="fa-times-circle"
-      onClick="action-project-planning-time-method-remove-single-project-planning-time"
-      help="Delete"/>
+    <field name="plannedTime" readonly="true"/>
+    <field name="timeUnit" readonly="true"/>
+    <field name="project" readonly="true"/>
+    <field name="projectTask" readonly="true"/>
+    <field name="employee" readonly="true"/>
+    <field name="startDateTime" readonly="true"/>
+    <field name="endDateTime" readonly="true"/>
+  </grid>
+
+  <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project Plannings"
+    editable="true" name="project-planning-timesheet-grid" edit-icon="false" groupBy="project">
+    <field name="project" readonly="true"/>
+    <field name="projectTask" readonly="true"/>
+    <field name="projectTask.ticketNumber" readonly="true"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="$duration" type="decimal" title="Duration"/>
   </grid>
 
   <grid name="project-planning-db-grid" title="Project Plannings"
@@ -61,8 +67,7 @@
         form-view="employee-form"/>
       <field name="product" canEdit="false"
         onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox"
-        form-view="product-form" grid-view="product-grid" required="true"
-        title="ProjectPlanningTime.Activity"/>
+        form-view="product-form" grid-view="product-grid" title="ProjectPlanningTime.Activity"/>
       <field name="startDateTime"
         onChange="action-project-planning-time-method-compute-planned-time"/>
       <field name="endDateTime" readonly="true"/>
@@ -93,7 +98,7 @@
         onChange="action-project-planning-time-attrs-employee-change"/>
       <field name="product" canEdit="false" title="ProjectPlanningTime.Activity"
         type="many-to-one" target="com.axelor.apps.base.db.Product" target-name="name"
-        onSelect="action-project-planning-time-attrs-domain-product" required="true"
+        onSelect="action-project-planning-time-attrs-domain-product"
         help="The field Activity is filled automatically from the field &quot;Default Activity Product&quot; from the employee form, on the timesheets panel. You can still modify for each task though"/>
       <field name="timepercent" title="Time%" widget="SelectProgress" type="integer"
         selection="project.task.progress.select"/>
@@ -101,12 +106,12 @@
         target-name="name" canEdit="false"
         onSelect="action-project-planning-time-attrs-set-site-domain" form-view="site-form"
         grid-view="site-grid" if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="timeUnit" showIf="!project.isBusinessProject"
+      <field name="timeUnit"
         onSelect="action-project-planning-time-method-compute-display-time-unit-domain"/>
-      <field name="project.isBusinessProject" hidden="true"/>
-      <spacer/>
+      <spacer colSpan="12"/>
+      <spacer colSpan="4"/>
       <button name="addMultipleProjectPlanningTimeBtn" title="Add lines"
-        onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3"
+        onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="4"
         readonlyIf="fromDate == null || toDate == null || employee == null"/>
       <field name="project" type="many-to-one" target="com.axelor.apps.project.db.Project"
         hidden="true"/>
@@ -123,12 +128,8 @@
     <view-param name="forceTitle" value="true"/>
     <context name="_projectTask" expr="eval:__parent__"
       if="eval: __parent__._model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <context name="_project" expr="eval:__parent__.project"
-      if="eval: __parent__._model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__parent__"
       if="eval: __parent__._model == 'com.axelor.apps.project.db.Project'"/>
-    <context name="_employee" expr="eval:__parent__.assignedTo.employee"
-      if="eval: __parent__._model == 'com.axelor.apps.project.db.ProjectTask'"/>
   </action-view>
 
   <action-view name="action-project-dashlet-project-planning-time"
@@ -151,8 +152,19 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="forceTitle" value="true"/>
-    <context name="_project" expr="eval:__parent__"/>
+    <context name="_projectTask" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_project" expr="eval:__parent__"
+      if="eval: __parent__?._model == 'com.axelor.apps.project.db.Project'"/>
     <context name="_timePlannedPopup" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-project-task-dashlet-project-planning-time"
+    title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <view type="grid" name="project-planning-time-grid"/>
+    <view type="form" name="project-planning-time-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.projectTask.id = :id</domain>
   </action-view>
 
   <action-attrs name="action-project-planning-time-attrs-domain-product">
@@ -178,33 +190,30 @@
   </action-attrs>
 
   <action-group name="action-project-planning-time-group-default">
+    <action name="action-project-planning-time-attrs-init-parent"/>
     <action name="action-project-planning-time-attrs-default"/>
     <action name="action-project-planning-time-method-get-company-config"/>
     <action name="action-project-planning-time-method-get-default-planning-time"/>
     <action name="action-project-planning-time-group-project-task-on-change"/>
   </action-group>
 
+  <action-attrs name="action-project-planning-time-attrs-init-parent">
+    <attribute name="value" for="projectTask" expr="eval: _projectTask"
+      if="eval: _projectTask"/>
+    <attribute name="value" for="project" expr="eval: _projectTask.project"
+      if="eval: _projectTask"/>
+    <attribute name="value" for="project" expr="eval: _project" if="eval: _project"/>
+  </action-attrs>
+
   <action-attrs name="action-project-planning-time-attrs-default">
-    <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
-    <attribute name="value" for="project" expr="eval:_project"/>
-    <attribute name="value" for="userSet" expr="eval:_project.membersUserSet"
-      if="_project != null"/>
-    <attribute name="value" for="employee" expr="eval:__user__.employee"
-      if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet"/>
-    <attribute name="value" for="product" expr="eval: __user__.employee.product"
-      if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet &amp;&amp; __user__.employee"/>
+    <attribute name="value" for="employee" expr="eval: __user__?.employee"
+      if="project &amp;&amp; __user__ in __repo__(Project).find(project.id).membersUserSet"/>
+    <attribute name="value" for="product" expr="eval: __user__?.employee?.product"
+      if="project &amp;&amp; __user__ in __repo__(Project).find(project.id).membersUserSet"/>
     <attribute name="value" for="startDateTime" expr="eval: __datetime__"/>
     <attribute name="value" for="endDateTime" expr="eval: __datetime__.plusMinutes(60)"/>
-    <attribute name="value" for="employee" expr="eval: _employee" if="_employee"/>
-    <attribute name="value" for="project" expr="eval:__parent__?.project"
-      if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <attribute name="value" for="projectTask" expr="eval:__parent__"
-      if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
-    <attribute name="readonly" for="projectTask" expr="eval:true"
-      if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' || _projectTask"/>
-    <attribute name="value" for="product" expr="eval: __user__.employee.product"
-      if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet &amp;&amp; __user__.employee"/>
-    <attribute name="value" for="displayTimeUnit" expr="eval: _project.projectTimeUnit"/>
+    <attribute name="readonly" for="projectTask" expr="eval:true" if="projectTask"/>
+    <attribute name="value" for="displayTimeUnit" expr="eval: project?.projectTimeUnit"/>
   </action-attrs>
 
   <action-method name="action-project-planning-time-method-get-company-config">
@@ -224,12 +233,6 @@
       method="removeProjectPlanningTime"/>
   </action-method>
 
-  <action-method
-    name="action-project-planning-time-method-remove-single-project-planning-time">
-    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
-      method="removeSingleProjectPlanningTime"/>
-  </action-method>
-
   <action-validate name="action-project-validate-remove-project-planning-time">
     <alert message="Are you sure wants to remove selected lines?"/>
   </action-validate>
@@ -240,14 +243,6 @@
   </action-group>
 
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
-    <attribute for="timeUnit" name="value" expr="eval: projectTask.timeUnit"
-      if="projectTask?.timeUnit"/>
-    <attribute for="timeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask?.timeUnit"/>
-    <attribute for="displayTimeUnit" name="value" expr="eval: projectTask?.timeUnit"
-      if="projectTask?.timeUnit"/>
-    <attribute for="displayTimeUnit" name="value" expr="eval: project?.projectTimeUnit"
-      if="!projectTask?.timeUnit"/>
     <attribute for="site" name="value" expr="eval: projectTask?.site"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
   </action-attrs>

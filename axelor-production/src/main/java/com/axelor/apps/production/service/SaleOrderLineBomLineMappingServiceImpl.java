@@ -20,9 +20,11 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.google.inject.Inject;
 import java.util.Objects;
@@ -30,15 +32,18 @@ import java.util.Optional;
 
 public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomLineMappingService {
 
-  protected final SaleOrderLineBomService saleOrderLineBomService;
   protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected final SaleOrderLineProductProductionService saleOrderLineProductProductionService;
+  protected final SaleOrderLineProductionService saleOrderLineProductionService;
 
   @Inject
   public SaleOrderLineBomLineMappingServiceImpl(
-      SaleOrderLineBomService saleOrderLineBomService,
-      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService) {
-    this.saleOrderLineBomService = saleOrderLineBomService;
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      SaleOrderLineProductProductionService saleOrderLineProductProductionService,
+      SaleOrderLineProductionService saleOrderLineProductionService) {
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.saleOrderLineProductProductionService = saleOrderLineProductProductionService;
+    this.saleOrderLineProductionService = saleOrderLineProductionService;
   }
 
   @Override
@@ -59,6 +64,15 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       // computing the line will generate sub lines.
       saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
+      BillOfMaterial billOfMaterial = billOfMaterialLine.getBillOfMaterial();
+      if (billOfMaterial != null) {
+        saleOrderLine.setSaleSupplySelect(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
+      }
+
+      saleOrderLine.setQtyToProduce(
+          saleOrderLineProductionService.computeQtyToProduce(
+              saleOrderLine, saleOrderLine.getParentSaleOrderLine()));
+
       return saleOrderLine;
     }
     return null;
@@ -67,6 +81,12 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
   @Override
   public boolean isBomLineEqualsSol(
       BillOfMaterialLine billOfMaterialLine, SaleOrderLine saleOrderLine) {
+    int saleSupplySelect = saleOrderLine.getSaleSupplySelect();
+    BillOfMaterial bomLineBom = billOfMaterialLine.getBillOfMaterial();
+    boolean isBomLineConsistentWithSol =
+        saleSupplySelect == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
+            && bomLineBom != null
+            && bomLineBom.equals(saleOrderLine.getBillOfMaterial());
 
     return billOfMaterialLine.getQty().equals(saleOrderLine.getQty())
         && billOfMaterialLine.getProduct().equals(saleOrderLine.getProduct())
@@ -75,7 +95,8 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
         && Optional.ofNullable(saleOrderLine.getBillOfMaterial())
             .map(solBom -> solBom.equals(billOfMaterialLine.getBillOfMaterial()))
             .or(() -> Optional.of(billOfMaterialLine.getBillOfMaterial() == null))
-            .orElse(false);
+            .orElse(false)
+        && isBomLineConsistentWithSol;
   }
 
   @Override

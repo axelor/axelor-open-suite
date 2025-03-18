@@ -32,5 +32,5 @@ public interface SaleOrderOnLineChangeService {
    */
   public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;
 
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException;
+  String onLineChange(SaleOrder saleOrder) throws AxelorException;
 }

@@ -70,7 +70,7 @@
 
   <grid name="timesheet-line-timesheet-grid" title="Timesheet Lines"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
-    onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date">
+    onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date" groupBy="date">
     <hilite color="danger" if="$moment(date).diff($get('timesheet.toDate'), 'days') &gt; 0"/>
     <field name="timesheet.toDate" hidden="true"/>
     <field name="sequence" if="__config__.app.getApp('timesheet')?.displayTimesheetLineNumber"
@@ -84,13 +84,13 @@
     <field name="site" width="200" form-view="site-form" grid-view="site-grid"
       onSelect="action-timesheet-line-attrs-set-site-domain"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-    <field name="date" width="100"
-      onChange="action-timesheet-line-validate-date,action-timesheet-line-method-check-daily-limit"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice &amp;&amp; !projectTask.frameworkCustomerContract" width="200"
       onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
       form-view="product-activity-form" grid-view="product-activity-grid"
       readonlyIf="projectTask.frameworkCustomerContract"/>
+    <field name="date" width="100"
+      onChange="action-timesheet-line-validate-date,action-timesheet-line-method-check-daily-limit"/>
     <field name="duration" width="100"
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
@@ -99,7 +99,7 @@
     <field name="toInvoice" width="100" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor" hidden="true"/>
-    <field name="comments" width="400"/>
+    <field name="comments"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"/>
     <field name="projectTask.frameworkCustomerContract" hidden="true"/>
   </grid>
@@ -160,7 +160,7 @@
 
   <grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date">
+    onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date" groupBy="date">
     <hilite color="danger" if="$moment(date).diff($get('timesheet.toDate'), 'days') &gt; 0"/>
     <field name="timesheet.toDate" hidden="true"/>
     <field name="sequence" if="__config__.app.getApp('timesheet')?.displayTimesheetLineNumber"
@@ -171,10 +171,10 @@
     <field name="projectTask" width="200" form-view="project-task-form"
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
       onChange="action-timesheet-line-method-set-default-to-invoice,action-timesheet-line-method-set-product"/>
-    <field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
       form-view="product-activity-form" grid-view="product-activity-grid"/>
+    <field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
     <field name="duration" width="62%"
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
@@ -440,6 +440,8 @@
     <field name="employee" expr="eval:__parent__.employee"/>
     <field name="enableEditor" expr="eval: true"
       if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
+    <field name="date" expr="eval:__config__.date"
+      if="__config__.date &gt;= __parent__?.fromDate &amp;&amp; (__parent__?.toDate == null || __config__.date &lt;= __parent__?.toDate)"/>
   </action-record>
 
   <action-record name="action-timesheet-line-record-to-invoice-parent"

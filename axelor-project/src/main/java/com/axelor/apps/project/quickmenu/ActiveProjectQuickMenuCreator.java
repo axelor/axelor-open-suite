@@ -18,14 +18,17 @@
  */
 package com.axelor.apps.project.quickmenu;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.web.UserController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
-import com.axelor.studio.db.AppProject;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
@@ -33,16 +36,17 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
 
-  protected AppProjectService appProjectService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public ActiveProjectQuickMenuCreator(AppProjectService appProjectService) {
-    this.appProjectService = appProjectService;
+  public ActiveProjectQuickMenuCreator(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -63,8 +67,9 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
   }
 
   protected boolean hasConfigEnabled() {
-    AppProject appProject = appProjectService.getAppProject();
-    return !appProject.getIsActivateProjectChangeShortcut();
+    AppBase appBase = appBaseService.getAppBase();
+    return StringUtils.isBlank(appBase.getShortcutMultiSelect())
+        || !appBase.getShortcutMultiSelect().contains(AppBaseRepository.SHORTCUT_ACTIVE_PROJECT);
   }
 
   protected List<QuickMenuItem> getItems() {
@@ -73,7 +78,7 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
         Optional.ofNullable(user).map(User::getProjectSet).orElse(new HashSet<>());
     List<QuickMenuItem> items = new ArrayList<>();
 
-    if (projectSet.size() <= 1) {
+    if (ObjectUtils.isEmpty(projectSet)) {
       return items;
     }
 
@@ -81,7 +86,10 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
     String action = UserController.class.getName() + ":" + "setActiveProject";
 
     for (Project project : projectSet) {
-      if (!Boolean.TRUE.equals(project.getArchived())) {
+      if (!Boolean.TRUE.equals(project.getArchived())
+          && (project.getCompany() == null
+              || user.getActiveCompany() == null
+              || (Objects.equals(project.getCompany(), user.getActiveCompany())))) {
         QuickMenuItem item =
             new QuickMenuItem(
                 project.getName(),

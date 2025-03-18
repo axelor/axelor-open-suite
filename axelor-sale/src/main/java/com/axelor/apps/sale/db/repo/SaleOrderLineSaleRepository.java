@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -33,6 +34,9 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
     json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+    json.put(
+        "$computeWithSOL",
+        Beans.get(AppSaleService.class).getAppSale().getIsSOLPriceTotalOfSubLines());
 
     if (context.get("_model") != null
         && (context.get("_model").equals(SaleOrder.class.getName())
@@ -60,5 +64,13 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
       }
     }
     return super.populate(json, context);
+  }
+
+  @Override
+  public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
+    SaleOrderLine copy = super.copy(entity, deep);
+    copy.setConfigurator(null);
+
+    return copy;
   }
 }

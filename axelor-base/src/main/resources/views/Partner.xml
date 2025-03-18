@@ -16,6 +16,8 @@
         onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
+      <button name="sirenApiBtn" title="Create from Sirene API"
+        onClick="action-partner-view-wizard-api-sirene-configuration"/>
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
@@ -156,6 +158,8 @@
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
+        <item name="sirenApiBtn" title="Fill from Sirene API"
+          action="save,action-partner-view-wizard-api-sirene-configuration"/>
       </menu>
     </menubar>
   </form>
@@ -350,6 +354,9 @@
           onChange="action-group-partner-registration-code-onChange"/>
         <field name="siren" colSpan="4" readonly="true" hidden="true"/>
         <field name="nic" colSpan="4" readonly="true" hidden="true"/>
+        <label name="isValidRegistrationCode" type="string" showTitle="false" x-dirty="false"
+          hidden="true" css="label-danger"/>
+        <spacer colSpan="8"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
@@ -503,7 +510,8 @@
         <field name="saleOrderInformation"/>
         <field name="payerQuality" if-module="axelor-account"
           if="__config__.app.isApp('account')" hideIf="isEmployee"/>
-        <field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1"
+        <field name="salePartnerPriceList" canEdit="false"
+          domain="self.typeSelect = 1 AND self.currency = :currency"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')"/>
@@ -541,7 +549,8 @@
       <panel name="supplierPanel" title="Supplier" if-module="axelor-purchase"
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
-        <field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2"
+        <field name="purchasePartnerPriceList" canEdit="false"
+          domain="self.typeSelect = 2 AND self.currency = :currency"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
@@ -793,6 +802,8 @@
         onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
+      <button name="sirenApiBtn" title="Create from Sirene API"
+        onClick="action-partner-view-wizard-api-sirene-configuration"/>
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
@@ -1049,6 +1060,37 @@
     </panel>
   </form>
 
+  <form name="partner-api-sirene-configuration-wizard-form" title="Sirene API call"
+    model="com.axelor.utils.db.Wizard" onNew="action-api-sirene-configuration-group-on-new">
+    <panel name="mainPanel">
+      <field name="siretNumber" title="Siret number" type="string" required="true" colSpan="5"
+        readonlyIf="$parentSiret"/>
+      <button name="executeApiBtn" title="Fetch data"
+        onClick="action-api-sirene-configuration-method-fetch-data" colSpan="2"
+        readonlyIf="siretNumber == null"/>
+      <field name="$parentSiret" type="string" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-api-sirene-configuration-method-fetch-data">
+    <call class="com.axelor.apps.base.web.PartnerController" method="apiSireneFetchData"/>
+  </action-method>
+
+  <action-group name="action-api-sirene-configuration-group-on-new">
+    <action name="action-api-sirene-configuration-record-set-parent-siret"/>
+    <action name="action-api-sirene-configuration-record-set-siret-number" if="parentSiret"/>
+  </action-group>
+
+  <action-record name="action-api-sirene-configuration-record-set-parent-siret"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$parentSiret" expr="eval: _parentSiret"/>
+  </action-record>
+
+  <action-record name="action-api-sirene-configuration-record-set-siret-number"
+    model="com.axelor.utils.db.Wizard">
+    <field name="siretNumber" expr="eval: parentSiret"/>
+  </action-record>
+
   <action-group name="action-group-partner-onload">
     <action name="action-partner-attrs-change-name"/>
     <action name="action-partner-attrs-show-specific-tax-note"/>
@@ -1066,6 +1108,7 @@
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
     <action name="action-method-partner-siren-nic-onload"/>
+    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1133,10 +1176,16 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
+    <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
-    <action name="action-method-partner-check-registration-code"/>
   </action-group>
+
+  <action-method
+    name="action-partner-method-check-if-registration-code-already-exists">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkIfRegistrationCodeExists"/>
+  </action-method>
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."
@@ -1298,6 +1347,7 @@
   </action-group>
 
   <action-group name="action-group-partner-registration-code-onChange">
+    <action name="action-method-partner-check-registration-code"/>
     <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
@@ -1762,6 +1812,17 @@
     <view type="grid" name="invoicing-project-grid"/>
     <view type="form" name="invoicing-project-form"/>
     <domain>self.project.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-wizard-api-sirene-configuration"
+    title="Sirene API call" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="partner-api-sirene-configuration-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_parentSiret" expr="eval: __this__.registrationCode"/>
   </action-view>
 
 </object-views>

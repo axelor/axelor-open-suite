@@ -244,9 +244,9 @@
         </editor>
       </field>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
-        <editor layout="table" x-show-titles="false">
-          <field name="name" readonly="true"/>
-          <field name="statusSelect"/>
+        <editor x-show-titles="false">
+          <field name="name" readonly="true" colSpan="12"/>
+          <field name="statusSelect" widget="RadioSelect" colSpan="12"/>
         </editor>
       </field>
     </panel>
@@ -628,8 +628,7 @@
 
   <action-record name="action-meeting-set-location-lead"
     model="com.axelor.apps.crm.db.Event">
-    <field name="location"
-      expr="eval:(eventLead?.primaryAddress != null ? eventLead.primaryAddress+', ' : '')+(eventLead?.primaryPostalCode != null ? eventLead.primaryPostalCode+' ' : '')+(eventLead?.primaryCity != null ? eventLead.primaryCity: '')"/>
+    <field name="location" expr="eval: eventLead?.address?.fullName"/>
   </action-record>
 
   <action-record name="action-event-record-compute-attendee-list"

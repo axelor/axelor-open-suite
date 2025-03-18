@@ -22,8 +22,10 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TradingNameRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
@@ -135,6 +137,18 @@ public class UserController {
       Beans.get(UserService.class).setActiveCompany(AuthUtils.getUser(), company);
       response.setNotify(
           String.format(I18n.get("Active company changed to %s"), company.getName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setTradingName(ActionRequest request, ActionResponse response) {
+    try {
+      TradingName tradingName = request.getContext().asType(TradingName.class);
+      tradingName = Beans.get(TradingNameRepository.class).find(tradingName.getId());
+      Beans.get(UserService.class).setTradingName(AuthUtils.getUser(), tradingName);
+      response.setNotify(
+          String.format(I18n.get("Trading name changed to %s"), tradingName.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

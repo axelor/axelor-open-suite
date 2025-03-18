@@ -53,6 +53,9 @@
 
   <grid model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines"
     name="purchase-order-line-grid" canNew="false" canDelete="false" canEdit="false">
+    <field name="$hasWarning" hidden="true"/>
+    <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
+      icon="fa-exclamation-triangle"/>
     <field name="purchaseOrder.purchaseOrderSeq" width="120"/>
     <field name="purchaseOrder.supplierPartner" form-view="partner-form"
       grid-view="partner-grid"/>
@@ -133,6 +136,12 @@
             <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
+        <field name="$unitWarningMessage" hidden="true" readonly="true" colSpan="12"
+          showTitle="false">
+          <viewer>
+            <![CDATA[<><Badge bg="warning">{_t("The supplier catalog's unit is different from the current unit.")}</Badge></>]]>
+          </viewer>
+        </field>
         <label name="differentSupplierLabel" hidden="true" colSpan="12"/>
         <field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0"
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -161,7 +170,8 @@
           <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"
             colSpan="3" validIf="$qtyValid != false"/>
           <field name="unit" colSpan="3" canEdit="false" form-view="unit-form"
-            grid-view="unit-grid" requiredIf="!isTitleLine"/>
+            grid-view="unit-grid" requiredIf="!isTitleLine"
+            onChange="action-purchase-order-line-attrs-display-different-unit-message"/>
           <panel name="pricePanel" colSpan="3">
             <field name="price" hidden="true" colSpan="12"
               onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
@@ -228,6 +238,13 @@
         action="action-purchase-order-line-view-show-order-line-history" colSpan="12"/>
       <panel name="deliveryPanel" title="Delivery" hidden="true" colSpan="12">
         <panel name="deliveryDatePanel" colSpan="12">
+          <field name="stockLocation" form-view="stock-location-form"
+            grid-view="stock-location-grid" if-module="axelor-supplychain"
+            if="__config__.app.isApp('supplychain')"
+            onSelect="action-purchase-order-line-attrs-set-stock-location-domain"/>
+          <field name="stockLocation.address" form-view="address-form"
+            grid-view="address-grid" if-module="axelor-supplychain"
+            if="__config__.app.isApp('supplychain')"/>
           <field name="desiredReceiptDate"/>
           <field name="estimatedReceiptDate"/>
         </panel>
@@ -286,7 +303,7 @@
 
   <form model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line"
     name="purchase-order-line-all-form" width="large" canNew="false" canDelete="false"
-    canEdit="false">
+    canEdit="false" onLoad="action-group-purchase-purchase-orderline-onload">
     <panel name="mainPanel">
       <field name="purchaseOrder.company" colSpan="3"/>
       <spacer name="purchaseOrderCompanySpacer" colSpan="9"/>
@@ -354,6 +371,7 @@
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-purchase-order-line-attrs-set-currency"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
+    <action name="action-purchase-order-line-attrs-display-different-unit-message"/>
     <action name="action-purchase-order-attrs-is-po-saved"/>
   </action-group>
 
@@ -365,6 +383,7 @@
     <action name="action-purchase-order-line-method-check-different-supplier"/>
     <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
     <action name="action-purchase-order-line-attrs-refresh-order-history-dashlet"/>
+    <action name="action-purchase-order-line-attrs-display-different-unit-message"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -540,6 +559,7 @@
   <action-record name="action-purchase-order-line-record-new"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <field name="qty" expr="eval: 1"/>
+    <field name="stockLocation" expr="eval: __parent__?.stockLocation"/>
     <field name="desiredReceiptDate" expr="eval: __parent__?.estimatedReceiptDate"/>
     <field name="$isFilterOnSupplier" expr="eval: true"/>
     <field name="estimatedReceiptDate" expr="eval: __parent__?.estimatedReceiptDate"
@@ -643,5 +663,11 @@
 
   <search-filters name="purchase-order-line-filters"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchases order line filters"/>
+
+  <action-method
+    name="action-purchase-order-line-attrs-display-different-unit-message">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="differentUnitMessage"/>
+  </action-method>
 
 </object-views>

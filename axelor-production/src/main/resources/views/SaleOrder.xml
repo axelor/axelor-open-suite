@@ -3,6 +3,55 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
+  <form id="sale-order-production-form" name="sale-order-form" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+
+    <extend target="//panel-related[@name='saleOrderLineEditableTreePanel']">
+      <replace>
+        <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
+          title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
+          form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
+          widget="tree-grid" x-tree-field="subSaleOrderLineList"
+          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+          x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
+          readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"
+          onNew="action-sale-order-line-method-onnew-editable"
+          onChange="action-sale-order-method-on-line-change"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+          editable="true">
+        </panel-related>
+      </replace>
+
+    </extend>
+  </form>
+
+  <form id="sale-order-editable-multi-lines-production-form"
+    name="sale-order-editable-multi-lines-form" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
+    extension="true">
+
+    <extend target="//panel-related[@name='saleOrderLineEditableTreePanel']">
+      <replace>
+        <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
+          title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
+          form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
+          widget="tree-grid" x-tree-field="subSaleOrderLineList"
+          x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
+          x-expand-all="subSaleOrderLineList,saleOrderLineDetailsList"
+          readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"
+          onNew="action-sale-order-line-method-onnew-editable"
+          onChange="action-sale-order-method-on-line-change"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+          editable="true">
+        </panel-related>
+      </replace>
+    </extend>
+  </form>
+
   <action-method name="action-sale-order-method-create-production-order"
     if-module="axelor-production">
     <call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController"

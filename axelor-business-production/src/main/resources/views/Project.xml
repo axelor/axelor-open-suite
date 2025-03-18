@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form id="business-production-business-project-form" name="business-project-form"
+    title="Business project" model="com.axelor.apps.project.db.Project" width="large"
+    onLoad="action-business-project-project-group-on-load"
+    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save"
+    extension="true">
+
+    <extend target="//panel-dashlet[@name='saleOrderLinePanelDashlet']">
+      <insert position="after">
+        <button name="generateProdOrdersBtn" title="Generate production orders"
+          onClick="action-project-method-generate-prod-orders"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-project-method-generate-prod-orders">
+    <call class="com.axelor.apps.businessproduction.web.ProjectController"
+      method="generateProdOrders"/>
+  </action-method>
+</object-views>

@@ -19,41 +19,31 @@
 package com.axelor.apps.businessproject.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLineService {
 
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
-
-  @Inject
-  public ProjectAnalyticMoveLineServiceImpl(AnalyticMoveLineRepository analyticMoveLineRepository) {
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
-  }
-
   @Override
-  @Transactional
   public PurchaseOrder updateLines(PurchaseOrder purchaseOrder) {
     for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
       orderLine.setProject(purchaseOrder.getProject());
-      for (AnalyticMoveLine analyticMoveLine : orderLine.getAnalyticMoveLineList()) {
-        analyticMoveLine.setProject(purchaseOrder.getProject());
-        analyticMoveLineRepository.save(analyticMoveLine);
+      List<AnalyticMoveLine> analyticMoveLineList = orderLine.getAnalyticMoveLineList();
+      if (ObjectUtils.notEmpty(analyticMoveLineList)) {
+        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+          analyticMoveLine.setProject(purchaseOrder.getProject());
+        }
       }
     }
     return purchaseOrder;
   }
 
   @Override
-  @Transactional
   public SaleOrder updateLines(SaleOrder saleOrder) {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
@@ -65,7 +55,6 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
       if (ObjectUtils.notEmpty(analyticMoveLines)) {
         for (AnalyticMoveLine analyticMoveLine : analyticMoveLines) {
           analyticMoveLine.setProject(saleOrder.getProject());
-          analyticMoveLineRepository.save(analyticMoveLine);
         }
       }
     }

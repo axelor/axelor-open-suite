@@ -39,12 +39,6 @@
     <panel name="productPanel" title="Product" colSpan="12">
       <field name="enableTaskTemplatesByProduct" widget="boolean-switch"/>
     </panel>
-    <panel name="serviceManagementPanel" title="Service management" colSpan="12">
-      <field name="daysUnit" domain="self.unitTypeSelect = 3"/>
-      <field name="hoursUnit" domain="self.unitTypeSelect = 3"/>
-      <field name="defaultHoursADay"
-        help="The days to hours conversion can be set for each project. This will determine the default value."/>
-    </panel>
     <panel name="workflowPanel" title="Workflow management" colSpan="12">
       <field name="closingProjectRuleSelect"
         help="This configuration allows you to select the rule to be applied when closing a project. Stay focus on selection for more information.">

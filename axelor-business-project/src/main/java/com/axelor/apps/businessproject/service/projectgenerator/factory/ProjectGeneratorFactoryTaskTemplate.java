@@ -91,9 +91,10 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public Project create(SaleOrder saleOrder) {
+  public Project create(SaleOrder saleOrder) throws AxelorException {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
+    project = projectRepository.save(project);
     try {
       if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
         project.setCode(sequenceService.getDraftSequenceNumber(project));
@@ -101,7 +102,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
-    return projectRepository.save(project);
+    return project;
   }
 
   @Override

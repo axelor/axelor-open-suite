@@ -30,4 +30,8 @@ public final class MobileSettingsTranslation {
       "Response of the query of the chart" /*)*/;
   public static final String NO_ACCESS_TO_RECORD = /*$$(*/
       "You do not have access to this record" /*)*/;
+  public static final String DMS_FILE_ADDED_TO_FAVORITES = /*$$(*/
+      "DMSFile added to favorites successfully" /*)*/;
+  public static final String DMS_FILE_REMOVED_FROM_FAVORITES = /*$$(*/
+      "DMSFile removed from favorites successfully" /*)*/;
 }

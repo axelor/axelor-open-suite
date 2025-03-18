@@ -214,8 +214,6 @@
 
     <!--Product -->
 
-    <many-to-one name="invoicingProduct" title="Product to partially invoice sale order"
-      ref="com.axelor.apps.base.db.Product"/>
     <many-to-one name="advancePaymentProduct" title="Advance payment product"
       ref="com.axelor.apps.base.db.Product"/>
 
@@ -487,7 +485,6 @@
       <field name="suppInvSequence" on="UPDATE"/>
       <field name="suppRefSequence" on="UPDATE"/>
 
-      <field name="invoicingProduct" on="UPDATE"/>
       <field name="advancePaymentProduct" on="UPDATE"/>
 
       <field name="displayDelAddrOnPrinting" on="UPDATE"/>

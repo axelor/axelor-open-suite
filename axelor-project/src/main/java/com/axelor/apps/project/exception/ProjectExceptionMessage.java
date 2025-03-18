@@ -78,4 +78,36 @@ public final class ProjectExceptionMessage {
 
   public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
       "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_TASK = /*$$(*/ "Task %s" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_PROJECT = /*$$(*/ "Project %s" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_PROJECT_TASK_CATEGORY = /*$$(*/
+      "Project task category %s" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_2 = /*$$(*/
+      "Tasks status update completed:" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_DONE = /*$$(*/
+      "* %s project task updated" /*)*/;
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
+
+  public static final String PROJECT_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the project %s." /*)*/;
+
+  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
+      "Please set the default number of hours per day in the project configuration." /*)*/;
+
+  public static final String SPRINT_GENERATED = /*$$(*/ "%s sprints have been generated" /*)*/;
+
+  public static final String SPRINT_FIELDS_MISSING =
+      /*$$(*/ "Please fill all dates and the number of days in a sprint with valid values." /*)*/;
+
+  public static final String PROJECT_VERSION_WITH_SAME_PROJECT_ALREADY_EXISTS = /*$$(*/
+      "Warning, at least 2 versions with the title %s are used on the project(s) %s." /*)*/;
+
+  public static final String PROJECT_SPRINTS_OVERLAPPED =
+      /*$$(*/ "The project contains overlapping sprints. Please correct the date ranges." /*)*/;
 }

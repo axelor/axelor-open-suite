@@ -231,12 +231,22 @@
     <option value="2">BBAN</option>
   </selection>
 
-  <selection name="base.year.period.duration.select">
+  <selection name="base.month.select">
     <option value="1">1 Month</option>
     <option value="2">2 Months</option>
     <option value="3">3 Months</option>
     <option value="6">6 Months</option>
     <option value="12">1 Year</option>
+  </selection>
+
+  <selection name="base.year.period.duration.select">
+    <option value="week">One week</option>
+    <option value="2week">Two weeks</option>
+    <option value="month">One month</option>
+    <option value="2month">Two months</option>
+    <option value="3month">Three months</option>
+    <option value="6month">Six months</option>
+    <option value="12month">One year</option>
   </selection>
 
   <selection name="account.year.type.select">
@@ -801,6 +811,11 @@
 
   <selection name="connector.mapper.select">
     <option value="other" order="10000">Other</option>
+  </selection>
+
+  <selection name="base.change.shortcut.select">
+    <option value="0">Active company</option>
+    <option value="1">Active trading name</option>
   </selection>
 
 </object-views>

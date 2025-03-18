@@ -52,7 +52,9 @@
   </action-view>
 
   <menuitem name="project-reporting-planned-charge" parent="project-reporting" order="200"
-    title="Planned charge" action="project.planned.charge"/>
+    title="Planned charge" action="project.planned.charge"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+    if-module="axelor-human-resource"/>
   <action-view name="project.planned.charge" title="Planned charge">
     <view type="dashboard" name="project-planned-charge"/>
   </action-view>
@@ -78,14 +80,6 @@
     <view type="grid" name="project-task-category-grid"/>
     <view type="form" name="project-task-category-form"/>
     <view-param name="search-filters" value="project-task-category-filters"/>
-  </action-view>
-
-  <menuitem name="project-task-section" parent="project-configurations" title="Section"
-    action="project.task.section" order="200"/>
-  <action-view name="project.task.section" title="Project Task Section"
-    model="com.axelor.apps.project.db.ProjectTaskSection">
-    <view type="grid" name="project-task-section-grid"/>
-    <view type="form" name="project-task-section-form"/>
   </action-view>
 
   <menuitem name="project-topic" title="Topics" parent="project-configurations"
@@ -223,6 +217,17 @@
   <menuitem name="project-my-reporting" parent="menu-my-project-root" order="1000"
     title="Reporting" action="project.my.projects"/>
 
+  <!-- BATCH -->
+  <menuitem name="admin-root-batch-project" parent="admin-root-batch"
+    if="__config__.app.isApp('project')" if-module="axelor-project" title="Project batches"
+    action="admin.root.batch.project" order="1600"/>
+
+  <action-view name="admin.root.batch.project" title="Project batches"
+    model="com.axelor.apps.project.db.ProjectBatch">
+    <view type="grid" name="project-batch-grid"/>
+    <view type="form" name="project-batch-form"/>
+  </action-view>
+
   <menuitem name="project-project-check-list-template" parent="project-configurations"
     title="Check list templates" action="project.root.project.checklist.template.all" order="1600"/>
 
@@ -230,6 +235,39 @@
     title="Check list templates" model="com.axelor.apps.project.db.ProjectCheckListTemplate">
     <view type="grid" name="project-check-list-template-grid"/>
     <view type="form" name="project-check-list-template-form"/>
+  </action-view>
+
+
+  <menuitem title="Project.versions" name="project-versions"
+    parent="project-configurations" action="action.project.version.view.all.versions" order="1100"/>
+
+  <action-view name="action.project.version.view.all.versions" title="Project.versions"
+    model="com.axelor.apps.project.db.ProjectVersion">
+    <view type="grid" name="project-version-grid"/>
+    <view type="form" name="project-version-form"/>
+  </action-view>
+
+  <menuitem name="project-dashboard-wizard" parent="project-reporting"
+    title="Projects and resources management" action="project.wizard.form" order="1820"/>
+
+  <action-view name="project.wizard.form" title="Projects and resources management"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="project-wizard-form"/>
+  </action-view>
+
+
+  <menuitem name="project-unit-conversion" parent="project-configurations"
+    title="Unit conversions" action="project.unit.conversion" order="1300"
+    if-module="axelor-human-resource"/>
+
+  <action-view name="project.unit.conversion" title="Unit conversions"
+    model="com.axelor.apps.base.db.UnitConversion">
+    <view type="grid" name="unit-conversion-grid"/>
+    <view type="form" name="unit-conversion-form"/>
+    <domain>self.entitySelect = 1</domain>
+    <context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
+    <context name="_entitySelect" expr="eval: 1"/>
+    <context name="_forceTimeUnit" expr="eval: true"/>
   </action-view>
 
 </object-views>

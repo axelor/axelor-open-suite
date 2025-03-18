@@ -25,4 +25,11 @@ public interface ITranslation {
 
   public static final String ABC_ANALYSIS_START_DATE = /*$$(*/ "AbcAnalysis.startDate"; /*)*/
   public static final String ABC_ANALYSIS_END_DATE = /*$$(*/ "AbcAnalysis.endDate"; /*)*/
+
+  public static final String PURCHASE_REQUEST_UPDATED = /*$$(*/
+      "Purchase request successfully updated."; /*)*/
+  public static final String PURCHASE_REQUEST_CREATE_WRONG_STATUS = /*$$(*/
+      "You can create a purchase request only with the status 'Draft' or 'Requested'."; /*)*/
+  public static final String MISSING_PRODUCT_INFORMATION_FOR_PURCHASE_REQUEST_LINE = /*$$(*/
+      "Please provide product information."; /*)*/
 }

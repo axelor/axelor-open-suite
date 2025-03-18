@@ -83,6 +83,9 @@
 
     <boolean name="activateBarCodeGeneration"
       title="Activate bar code generation for products" default="false"/>
+    <boolean name="enableMultiBarcodeOnProducts"
+      title="Enable multi-barcode management on products" default="false"
+      help="In addition to the main barcode, this feature allows you to enter a list of alternative barcodes to easily find the product on the application. Without the mobile app, these barcodes have only an informative value."/>
     <boolean name="editProductBarcodeType" title="Edit product barcode type" default="false"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
@@ -177,13 +180,25 @@
     <boolean name="isActivateInstanceInfoShortcut" default="false"
       title="Activate the instance information shortcut"
       help="This configuration allows quick access to the type of environment and the configured date and time"/>
-    <boolean name="isActivateCompanyChangeShortcut" default="false"
-      title="Activate the company change shortcut"
-      help="This configuration allows quick access to the active company change"/>
+    <string name="shortcutMultiSelect" title="Activate changes shortcut for"
+      selection="base.change.shortcut.select"
+      help="This configuration allows to display a shortcut to switch active company/trading name/project of the current user."/>
 
     <integer name="defaultBatchFetchLimit" title="Default batch fetch limit"
       help="Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used."
       min="0"/>
+
+    <boolean name="isRegistrationCodeCheckBlocking" title="Check duplicate registration"
+      default="false"
+      help="This configuration adds a warning when a partner is created if the registration code entered already exists in the database."/>
+    <boolean name="isGlobalDiscountEnabled" title="Enable global discount"
+      help="Allow the user to apply a global discount on a sale order or invoice. Global discount and discount per line are not cumulative."/>
+
+    <string name="sireneTokenGeneratorUrl" title="Sirene access token generation url"/>
+    <string name="sireneUrl" title="Sirene url"/>
+    <string name="sireneKey" title="Consumer key" encrypted="true"/>
+    <string name="sireneSecret" title="Consumer secret" encrypted="true"/>
+    <string name="sireneAccessToken" title="Access token" encrypted="true"/>
 
     <extra-code>
 	   		<![CDATA[
@@ -196,6 +211,9 @@
 
 	   			public static final String SEQUENCE_PER_PRODUCT = "Per product";
 	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
+
+	   			public static final String SHORTCUT_ACTIVE_COMPANY = "0";
+	   			public static final String SHORTCUT_ACTIVE_TRADING_NAME = "1";
 
 	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
 	   		]]>
@@ -265,6 +283,7 @@
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="isPricingComputingOrder" on="UPDATE"/>
       <field name="defaultBatchFetchLimit" on="UPDATE"/>
+      <field name="isRegistrationCodeCheckBlocking" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 

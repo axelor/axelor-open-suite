@@ -83,6 +83,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     currencyRate =
         moveLineMassEntryService.computeCurrentRate(
             currencyRate,
+            move.getCompany(),
             move.getMoveLineMassEntryList(),
             move.getCurrency(),
             move.getCompanyCurrency(),

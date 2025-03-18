@@ -31,6 +31,7 @@ import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
@@ -39,6 +40,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -81,16 +83,21 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
   protected ProductRepository productRepository;
   protected UnitConversionService unitConversionService;
+  protected AppStockService appStockService;
 
   @Inject
   public LogisticalFormServiceImpl(
-      ProductRepository productRepository, UnitConversionService unitConversionService) {
+      ProductRepository productRepository,
+      UnitConversionService unitConversionService,
+      AppStockService appStockService) {
     this.productRepository = productRepository;
     this.unitConversionService = unitConversionService;
+    this.appStockService = appStockService;
   }
 
   @Override
-  public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove)
+  public void addDetailLines(
+      LogisticalForm logisticalForm, StockMove stockMove, boolean includeConcernedLinesOnly)
       throws AxelorException {
     Objects.requireNonNull(logisticalForm);
     Objects.requireNonNull(stockMove);
@@ -110,8 +117,16 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
     List<Pair<StockMoveLine, BigDecimal>> toAddList = new ArrayList<>();
+    StockLocation stockLocation = logisticalForm.getStockLocation();
+    Boolean isManageStockLocationOnStockMoveLine =
+        appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine();
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (isManageStockLocationOnStockMoveLine
+          && includeConcernedLinesOnly
+          && !Objects.equals(stockMoveLine.getFromStockLocation(), stockLocation)) {
+        continue;
+      }
       BigDecimal spreadableQty =
           stockMoveLineService.computeSpreadableQtyOverLogisticalFormLines(
               stockMoveLine, logisticalForm);

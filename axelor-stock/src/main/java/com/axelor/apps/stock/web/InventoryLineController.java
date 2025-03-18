@@ -45,10 +45,18 @@ public class InventoryLineController {
         request.getContext().getParent() != null
             ? request.getContext().getParent().asType(Inventory.class)
             : inventoryLine.getInventory();
-    inventoryLine =
-        Beans.get(InventoryLineService.class).updateInventoryLine(inventoryLine, inventory);
+
+    InventoryLineService inventoryLineService = Beans.get(InventoryLineService.class);
+    inventoryLineService.updateInventoryLine(inventoryLine, inventory);
+    inventoryLineService.compute(inventoryLine, inventory);
+
+    response.setValue("price", inventoryLine.getPrice());
     response.setValue("rack", inventoryLine.getRack());
     response.setValue("currentQty", inventoryLine.getCurrentQty());
+    response.setValue("unit", inventoryLine.getUnit());
+    response.setValue("gap", inventoryLine.getGap());
+    response.setValue("gapValue", inventoryLine.getGapValue());
+    response.setValue("realValue", inventoryLine.getRealValue());
   }
 
   public void compute(ActionRequest request, ActionResponse response) {

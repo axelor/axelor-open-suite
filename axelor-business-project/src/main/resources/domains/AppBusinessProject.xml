@@ -53,11 +53,6 @@
     <integer name="closingProjectRuleSelect"
       selection="business.project.app.closing.project.rule.select"/>
 
-    <!-- planification fields -->
-    <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>
-    <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
-    <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
-
     <many-to-one name="invoicingProjectAnnexPrintTemplate"
       title="Invoicing project annex template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <many-to-one name="invoicingAnnexPrintTemplate" title="Invoicing annex template"

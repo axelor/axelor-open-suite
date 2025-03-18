@@ -23,9 +23,11 @@ import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -54,6 +56,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -65,6 +68,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderLineComputeService,
         saleOrderLinePackService,
         saleOrderComplementaryProductService,
+        saleOrderGlobalDiscountService,
         saleOrderSupplychainService,
         saleOrderShipmentService);
     this.appProductionService = appProductionService;
@@ -72,13 +76,15 @@ public class SaleOrderOnLineChangeProductionServiceImpl
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
-    super.onLineChange(saleOrder);
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
+    String message = super.onLineChange(saleOrder);
 
     if (appProductionService.isApp("production")
         && appSaleService.getAppSale().getListDisplayTypeSelect()
-            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
-      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder);
+            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder.getSaleOrderLineList());
     }
+    return message;
   }
 }

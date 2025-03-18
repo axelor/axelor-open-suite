@@ -18,11 +18,15 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
@@ -34,11 +38,13 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.google.inject.Singleton;
+import java.util.Optional;
 
 @Singleton
 public class ConfiguratorController {
 
   protected static final String saleOrderContextIdKey = "_saleOrderId";
+  protected static final String saleOrderLineContextIdKey = "_saleOrderLineId";
 
   /**
    * Called from configurator form view, set values for the indicators JSON field. call {@link
@@ -90,8 +96,36 @@ public class ConfiguratorController {
                 .map());
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void regenerateProduct(ActionRequest request, ActionResponse response) {
+    Configurator configurator = request.getContext().asType(Configurator.class);
+    JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
+    JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
+    configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
+    try {
+      Beans.get(ConfiguratorService.class)
+          .regenerateProduct(
+              configurator,
+              Beans.get(ProductRepository.class).find(configurator.getProduct().getId()),
+              jsonAttributes,
+              jsonIndicators,
+              getSaleOrderId(request.getContext()));
+      response.setReload(true);
+      if (configurator.getProduct() != null) {
+        response.setView(
+            ActionView.define(I18n.get("Product generated"))
+                .model(Product.class.getName())
+                .add("form", "product-form")
+                .add("grid", "product-grid")
+                .param("search-filters", "products-filters")
+                .context("_showRecord", configurator.getProduct().getId())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -120,6 +154,26 @@ public class ConfiguratorController {
     }
   }
 
+  public void regenerateForSaleOrder(ActionRequest request, ActionResponse response) {
+    Configurator configurator = request.getContext().asType(Configurator.class);
+    SaleOrderLine saleOrderLine = getSaleOrderLine(request.getContext());
+    long saleOrderId = getSaleOrderIdWithSOLId(request.getContext());
+
+    JsonContext jsonAttributes = (JsonContext) request.getContext().get("$attributes");
+    JsonContext jsonIndicators = (JsonContext) request.getContext().get("$indicators");
+
+    configurator = Beans.get(ConfiguratorRepository.class).find(configurator.getId());
+    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
+    try {
+      Beans.get(ConfiguratorService.class)
+          .regenerateSaleOrderLine(
+              configurator, saleOrder, jsonAttributes, jsonIndicators, saleOrderLine);
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Called from configurator view on selecting {@link Configurator#configuratorCreator}.
    *
@@ -137,6 +191,27 @@ public class ConfiguratorController {
     Integer saleOrderIdInt = (Integer) context.get(saleOrderContextIdKey);
     if (saleOrderIdInt != null) {
       return saleOrderIdInt.longValue();
+    } else {
+      return null;
+    }
+  }
+
+  protected SaleOrderLine getSaleOrderLine(Context context) {
+    Integer saleOrderLineIdInt = (Integer) context.get(saleOrderLineContextIdKey);
+    if (saleOrderLineIdInt != null) {
+      return Optional.ofNullable(
+              Beans.get(SaleOrderLineRepository.class).find(saleOrderLineIdInt.longValue()))
+          .orElse(null);
+    }
+    return null;
+  }
+
+  protected Long getSaleOrderIdWithSOLId(Context context) {
+
+    SaleOrderLine saleOrderLine = getSaleOrderLine(context);
+
+    if (saleOrderLine != null) {
+      return saleOrderLine.getSaleOrder().getId();
     } else {
       return null;
     }

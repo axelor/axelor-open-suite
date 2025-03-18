@@ -162,41 +162,6 @@
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
-  <!-- TOP MENU -->
-
-  <menuitem name="top-menu-purchase" title="Purchases" order="3" top="true" left="false"
-    if="__config__.app.isApp('purchase')"/>
-
-  <menuitem name="top-menu-purchase-quotations" title="Purchase quotations" top="true"
-    action="top.menu.purchase.quotations" parent="top-menu-purchase"/>
-
-  <action-view name="top.menu.purchase.quotations" title="Purchase quotations"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
-    <view type="grid" name="purchase-order-quotation-grid"/>
-    <view type="form" name="purchase-order-form"/>
-    <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect &lt; 3</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-  </action-view>
-
-  <menuitem name="top-menu-purchase-purchase-orders" title="Purchase orders" top="true"
-    action="top.menu.purchase.purchase.orders" parent="top-menu-purchase"/>
-
-  <action-view name="top.menu.purchase.purchase.orders" title="Purchase orders"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
-    <view type="grid" name="purchase-order-grid"/>
-    <view type="form" name="purchase-order-form"/>
-    <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect &gt; 2</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-  </action-view>
-
-  <!-- <menuitem name="top-purchase-reqeust-my-current-cart" order="-65" title="My current cart" action="sc.root.purchase.request.my.current.cart"
-    parent="top-purchase" top="true" left="false"/> -->
-
-
   <menuitem name="menu-purchase-dashboard-1" parent="sc-root-purchase-report"
     title="Purchase Buyer" action="purchase.dashboard.1" order="100"/>
 
