@@ -466,16 +466,6 @@
     <view type="form" name="sync-contact-form"/>
   </action-view>
 
-
-  <menuitem name="referential-conf-api-configuration" parent="referential-conf"
-    title="API Configuration" action="referential.conf.api.configuration" order="1700"/>
-
-  <action-view name="referential.conf.api.configuration" title="API Configuration"
-    model="com.axelor.apps.base.db.PartnerApiConfiguration">
-    <view type="grid" name="api-configuration-grid"/>
-    <view type="form" name="api-configuration-form"/>
-  </action-view>
-
   <menuitem name="referential-conf-partner-link-types" parent="referential-conf"
     if="__config__.app.getApp('base')?.activatePartnerRelations" title="Partner relations type"
     action="referential.conf.partner.link.types" order="400"/>

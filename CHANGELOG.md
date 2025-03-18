@@ -1,3 +1,64 @@
+## [8.3.1] (2025-03-13)
+
+### Fixes
+#### Base
+
+* Update to Axelor Open Platform 7.3.3.
+* Fixed a critical issue preventing the application from starting.
+* Base: removed API Configuration menu entry.
+* App base: added password widget for the certificate password.
+* Base: fixed some errors displayed as notification instead of popup.
+* Signature: fixed broken grid view when selecting a certificate.
+* Message: fixed an issue where the attached birt document name changed when sent via email.
+* User: made the title of the company set panel visible.
+
+#### Account
+
+* Accounting batch: ignored check at reconcile when move only contains tax account.
+
+#### Business Project
+
+* Invoice: fixed fiscal position when generating an invoice from an invoicing project.
+
+#### CRM
+
+* Partner: creating a new partner cannot create a prospect and a supplier at the same time.
+
+#### Human Resource
+
+* HR: fixed an error occurring when using 'Leave increment' batch and if employees do not have a main employment contract.
+* Timesheet: fixed error on opening a timesheet preventing employee field from being set readonly.
+
+#### Production
+
+* Sale order line: fixed an issue when syncing bill of materials lines dans sub sale order lines.
+
+#### Purchase
+
+* Purchase request: added missing API endpoint to get back to draft.
+
+#### Sale
+
+* Sale order line: fixed an issue where discount was not applied immediatly.
+* Sale order line: fixed icon of edit configurator button.
+* Sale order line: fixed advanced filter not displayed unless the whole page is refreshed.
+
+#### Stock
+
+* Stock location: fixed error when emptying parent stock location.
+
+
+### Developer
+
+#### Base
+
+Menu 'referential-conf-api-configuration' and action 'referential.conf.api.configuration' have been removed. 
+
+```sql
+DELETE FROM meta_menu WHERE name = 'referential-conf-api-configuration';
+DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
+```
+
 ## [8.3.0] (2025-03-07)
 
 ### Features
@@ -168,4 +229,5 @@
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.1]: https://github.com/axelor/axelor-open-suite/compare/v8.3.0...v8.3.1
 [8.3.0]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.3.0

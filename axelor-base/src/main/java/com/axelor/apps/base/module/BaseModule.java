@@ -352,7 +352,7 @@ public class BaseModule extends AxelorModule {
           public boolean matches(Class<?> aClass) {
             return aClass.getSimpleName().endsWith("Controller")
                 && aClass.getPackageName().startsWith("com.axelor.apps")
-                && aClass.getPackageName().endsWith("web");
+                && aClass.getPackageName().contains(".web");
           }
         },
         new AbstractMatcher<>() {
