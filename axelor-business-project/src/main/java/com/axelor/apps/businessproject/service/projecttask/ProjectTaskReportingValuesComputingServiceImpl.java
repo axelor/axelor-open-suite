@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -33,6 +33,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -50,13 +51,14 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
   private ProjectTaskRepository projectTaskRepo;
   private TimesheetLineRepository timesheetLineRepository;
-  private AppBusinessProjectService appBusinessProjectService;
+  private AppBaseService appBaseService;
   private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected ProjectTimeUnitService projectTimeUnitService;
 
   public static final int RESULT_SCALE = 2;
   public static final int COMPUTATION_SCALE = 5;
 
-  // AppBusinessProject config
+  // AppBase config
   private Unit daysUnit;
   private Unit hoursUnit;
   private BigDecimal defaultHoursADay;
@@ -65,21 +67,23 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   public ProjectTaskReportingValuesComputingServiceImpl(
       ProjectTaskRepository projectTaskRepo,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+      AppBaseService appBaseService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTimeUnitService projectTimeUnitService) {
     this.projectTaskRepo = projectTaskRepo;
     this.timesheetLineRepository = timesheetLineRepository;
-    this.appBusinessProjectService = appBusinessProjectService;
+    this.appBaseService = appBaseService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTimeUnitService = projectTimeUnitService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
-    // get AppBusinessProject config
-    daysUnit = appBusinessProjectService.getDaysUnit();
-    hoursUnit = appBusinessProjectService.getHoursUnit();
+    // get AppBase config
+    daysUnit = appBaseService.getUnitDays();
+    hoursUnit = appBaseService.getUnitHours();
     Project project = projectTask.getProject();
 
     if (Objects.isNull(project)) {
@@ -90,16 +94,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
               projectTask.getName()));
     }
 
-    defaultHoursADay = project.getNumberHoursADay();
-
-    if (defaultHoursADay.signum() <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(
-              I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING),
-              projectTask.getName()));
-    }
+    defaultHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);
 
     computeFinancialReporting(projectTask, project);
     projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
@@ -114,9 +109,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    */
   protected BigDecimal getTaskSpentTime(ProjectTask projectTask) throws AxelorException {
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
-    Unit timeUnit =
-        getTimeUnitForTimesheetLineConversion(
-            projectTask.getTimeUnit(), projectTask.getProject().getProjectTimeUnit());
+    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
     BigDecimal spentTime = BigDecimal.ZERO;
 
     for (TimesheetLine timeSheetLine : timesheetLines) {
@@ -124,18 +117,6 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     return spentTime;
-  }
-
-  protected Unit getTimeUnitForTimesheetLineConversion(Unit taskUnit, Unit projectUnit)
-      throws AxelorException {
-    if (taskUnit != null) {
-      return taskUnit;
-    } else if (projectUnit != null) {
-      return projectUnit;
-    }
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_INCONSISTENCY,
-        BusinessProjectExceptionMessage.PROJECT_NO_UNIT_FOUND);
   }
 
   /**
@@ -156,7 +137,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     SaleOrderLine saleOrderLine = projectTask.getSaleOrderLine();
     Product product = projectTask.getProduct();
 
-    Unit projectTaskUnit = projectTask.getTimeUnit();
+    Unit projectTaskUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
+
     boolean unitIsTimeUnit = projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit);
 
     computeInitialValues(projectTask, saleOrderLine, product, projectTaskUnit);
@@ -226,7 +208,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   }
 
   protected void computeInitialValues(
-      ProjectTask projectTask, SaleOrderLine saleOrderLine, Product product, Unit projectTaskUnit) {
+      ProjectTask projectTask, SaleOrderLine saleOrderLine, Product product, Unit projectTaskUnit)
+      throws AxelorException {
     BigDecimal initialCosts = BigDecimal.ZERO;
     if (saleOrderLine != null) {
       initialCosts = saleOrderLine.getSubTotalCostPrice();
@@ -318,7 +301,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     BigDecimal realCost = BigDecimal.ZERO;
 
-    if (projectTaskBusinessProjectService.isTimeUnitValid(projectTask.getTimeUnit())) {
+    if (projectTaskBusinessProjectService.isTimeUnitValid(
+        projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask))) {
       realCost = timeSpent.multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP);
     }
 
@@ -353,10 +337,11 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project) {
+  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project)
+      throws AxelorException {
     BigDecimal unitCost = BigDecimal.ZERO;
 
-    Unit timeUnit = projectTask.getTimeUnit();
+    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
 
     Integer spentTimeCostComputationMethod = project.getSpentTimeCostComputationMethod();
 
@@ -475,7 +460,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @param projectTaskUnit
    * @return
    */
-  protected BigDecimal getProductConvertedPrice(Product product, Unit projectTaskUnit) {
+  protected BigDecimal getProductConvertedPrice(Product product, Unit projectTaskUnit)
+      throws AxelorException {
     BigDecimal convertedProductPrice = product.getCostPrice();
     if (projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
       return convertedProductPrice;

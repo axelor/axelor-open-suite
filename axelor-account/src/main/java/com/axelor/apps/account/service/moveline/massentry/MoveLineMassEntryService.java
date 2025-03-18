@@ -38,6 +38,7 @@ public interface MoveLineMassEntryService {
 
   BigDecimal computeCurrentRate(
       BigDecimal currencyRate,
+      Company company,
       List<MoveLineMassEntry> moveLineList,
       Currency currency,
       Currency companyCurrency,

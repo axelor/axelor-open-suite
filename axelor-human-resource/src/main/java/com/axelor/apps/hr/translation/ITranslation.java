@@ -90,10 +90,31 @@ public interface ITranslation {
   public static final String EXPENSE_LINE_UPDATED = /*$$(*/
       "Expense line successfully updated." /*)*/;
   public static final String EXPENSE_UPDATED = /*$$(*/ "Expense successfully updated." /*)*/;
+  public static final String EXPENSE_UPDATED_NO_MAIL = /*$$(*/
+      "Expense successfully updated. An error occurred while sending the mail." /*)*/;
   public static final String TIMESHEET_UPDATED = /*$$(*/ "Timesheet successfully updated." /*)*/;
   public static final String TIMESHEET_LINE_UPDATED = /*$$(*/
       "Timesheet line successfully updated." /*)*/;
   public static final String TIMESHEET_CONVERTED_PERIOD_TOTAL = /*$$(*/
       "Timesheet converted period total." /*)*/;
   public static final String TIMER_UPDATED = /*$$(*/ "Timer successfully updated." /*)*/;
+
+  String API_LEAVE_REQUEST_UPDATED = /*$$(*/ "Leave request successfully updated." /*)*/;
+
+  String API_LEAVE_REQUEST_UPDATED_NO_MAIL = /*$$(*/
+      "Leave request successfully updated. An error occurred while sending the mail." /*)*/;
+
+  String API_LEAVE_REQUEST_CREATE_SUCCESS = /*$$(*/
+      "Leave request(s) have been correctly created." /*)*/;
+
+  String API_LEAVE_REQUEST_CREATE_SUCCESS_WITH_ERRORS = /*$$(*/
+      "Leave request(s) have been correctly created. Some requests were ignored as they were not correctly configured." /*)*/;
+
+  String API_LEAVE_REQUEST_COMPUTE_DURATION = /*$$(*/ "Duration computed." /*)*/;
+
+  String API_LEAVE_REQUEST_LEAVE_DAYS_TO_DATE_COMPUTATION = /*$$(*/
+      "Available leave days computed." /*)*/;
+
+  String LEAVE_REQUEST_CREATE_DURATION_ALERT = /*$$(*/
+      "You exceeded the available/asked duration. Do you wish to proceed ?" /*)*/;
 }

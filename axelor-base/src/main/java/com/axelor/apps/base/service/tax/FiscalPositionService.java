@@ -31,4 +31,6 @@ public interface FiscalPositionService {
   public TaxEquiv getTaxEquiv(FiscalPosition fiscalPosition, Set<Tax> taxSet);
 
   public TaxEquiv getTaxEquivFromTaxLines(FiscalPosition fiscalPosition, Set<TaxLine> taxLineSet);
+
+  public TaxEquiv getTaxEquivFromOrToTaxSet(FiscalPosition fiscalPosition, Set<TaxLine> taxLineSet);
 }

@@ -33,6 +33,8 @@ import com.axelor.apps.mobilesettings.service.MobileScreenCreateService;
 import com.axelor.apps.mobilesettings.service.MobileScreenCreateServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeService;
 import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeServiceImpl;
+import com.axelor.apps.mobilesettings.service.UserDMSFileService;
+import com.axelor.apps.mobilesettings.service.UserDMSFileServiceImpl;
 
 public class MobileSettingsModule extends AxelorModule {
 
@@ -47,5 +49,6 @@ public class MobileSettingsModule extends AxelorModule {
         .to(MobileSettingsResponseComputeServiceImpl.class);
     bind(MobileMenuCreateService.class).to(MobileMenuCreateServiceImpl.class);
     bind(MobileScreenCreateService.class).to(MobileScreenCreateServiceImpl.class);
+    bind(UserDMSFileService.class).to(UserDMSFileServiceImpl.class);
   }
 }

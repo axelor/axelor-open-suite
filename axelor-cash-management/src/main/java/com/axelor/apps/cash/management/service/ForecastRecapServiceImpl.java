@@ -59,7 +59,6 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -82,7 +81,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class ForecastRecapServiceImpl implements ForecastRecapService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -95,7 +93,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected JournalService journalService;
 
-  protected LocalDate today;
   protected Map<Integer, List<Integer>> invoiceStatusMap;
 
   @Inject
@@ -122,7 +119,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     forecastRecap.clearForecastRecapLineList();
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
 
-    today = appBaseService.getTodayDate(forecastRecap.getCompany());
     invoiceStatusMap = fetchAvailableStatusMap();
     forecastRecapRepo.save(forecastRecap);
   }
@@ -160,7 +156,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   public void finish(ForecastRecap forecastRecap) {
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
-    forecastRecap.setCalculationDate(today);
+    forecastRecap.setCalculationDate(appBaseService.getTodayDate(forecastRecap.getCompany()));
     forecastRecap.setIsComplete(true);
     forecastRecapRepo.save(forecastRecap);
   }
@@ -489,7 +485,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected BigDecimal getCompanyAmount(
       ForecastRecap forecastRecap, ForecastRecapLineType forecastRecapLineType, Model forecastModel)
       throws AxelorException {
-
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
@@ -503,7 +498,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 saleOrder.getCurrency(),
                 saleOrder.getCompany().getCurrency(),
                 getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
-                today)
+                appBaseService.getTodayDate(forecastRecap.getCompany()))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
         PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
@@ -512,7 +507,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 purchaseOrder.getCurrency(),
                 purchaseOrder.getCompany().getCurrency(),
                 getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
-                today)
+                appBaseService.getTodayDate(forecastRecap.getCompany()))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
@@ -611,7 +606,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             opportunityAmount
                 .multiply(opportunity.getProbability())
                 .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-            today)
+            appBaseService.getTodayDate(forecastRecap.getCompany()))
         .setScale(2, RoundingMode.HALF_UP);
   }
 
@@ -647,11 +642,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return expense.getValidationDateTime().toLocalDate();
       case ForecastRecapLineTypeRepository.ELEMENT_FORECAST:
         Forecast forecast = (Forecast) forecastModel;
-        return forecast
-                .getEstimatedDate()
-                .isAfter(appBaseService.getTodayDate(forecast.getCompany()))
-            ? forecast.getEstimatedDate()
-            : appBaseService.getTodayDate(forecast.getCompany());
+        LocalDate today = appBaseService.getTodayDate(forecast.getCompany());
+        return forecast.getEstimatedDate().isAfter(today) ? forecast.getEstimatedDate() : today;
       case ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY:
         Opportunity opportunity = (Opportunity) forecastModel;
         return opportunity.getExpectedCloseDate();
@@ -861,7 +853,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                     timetable.getSaleOrder().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     timetable.getAmount(),
-                    today)
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         this.createForecastRecapLine(
             timetable.getEstimatedDate(),
@@ -904,7 +896,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                     timetable.getPurchaseOrder().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     timetable.getAmount(),
-                    today)
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         this.createForecastRecapLine(
             timetable.getEstimatedDate(),
@@ -956,7 +948,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                     invoiceTerm.getMoveLine().getMove().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     invoiceTerm.getAmount(),
-                    today)
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
         this.createForecastRecapLine(

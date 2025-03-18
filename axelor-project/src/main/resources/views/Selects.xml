@@ -69,8 +69,35 @@
     <option value="category">Category</option>
   </selection>
 
+  <selection name="project.batch.action.select">
+    <option value="1">Remove task status</option>
+  </selection>
+
   <selection name="check.list.template.type.select">
     <option value="project">Project</option>
     <option value="task">Project task</option>
   </selection>
+
+  <selection name="project.version.status.select">
+    <option value="1">On hold</option>
+    <option value="2">In progress</option>
+    <option value="3">In test</option>
+    <option value="4">In production</option>
+  </selection>
+
+  <selection name="project.sprint.management.select">
+    <option value="none">None</option>
+    <option value="project">Project</option>
+    <option value="version">Version</option>
+  </selection>
+
+  <selection id="projct.base.change.shortcut.select" name="base.change.shortcut.select">
+    <option value="2">Active project</option>
+  </selection>
+
+  <selection name="unit.conversion.entity.select"
+    id="project.unit.conversion.entity.select">
+    <option value="1">Project</option>
+  </selection>
+
 </object-views>

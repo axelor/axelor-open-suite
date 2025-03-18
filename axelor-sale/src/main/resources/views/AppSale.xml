@@ -14,6 +14,9 @@
       <field name="isPastVersionRecovery" widget="boolean-switch"
         readonlyIf="!manageSaleOrderVersion"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
+      <field name="enableConfiguratorEdition" widget="boolean-switch"
+        showIf="enableConfigurator"/>
+      <field name="enableLineDuplication" widget="boolean-switch"/>
       <field name="allowPendingOrderModification" widget="boolean-switch"/>
       <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
       <field name="printingConfigPerSaleOrder" widget="boolean-switch"/>
@@ -32,11 +35,13 @@
 
     </panel>
     <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
-      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.<br>Tree line: Activate multi-level sale order lines. (Older version of the Editable tree display. Will be removed in the next version.)]]></help>
+      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.]]></help>
       <field name="listDisplayTypeSelect" colSpan="6"
         onChange="action-app-sale-attrs-reset-discount-enabled"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
         showIf="listDisplayTypeSelect != 0" colSpan="6"/>
+      <field name="isSOLPriceTotalOfSubLines" title="Compute price with sublines" colSpan="6"
+        widget="boolean-switch" showIf="listDisplayTypeSelect == 2"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"

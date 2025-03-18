@@ -20,18 +20,24 @@ package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
+import com.axelor.apps.production.service.BillOfMaterialRemoveService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorMetaJsonFieldService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderLineService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -46,6 +52,9 @@ import java.util.Optional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
+  protected final ConfiguratorBomService configuratorBomService;
+  protected final BillOfMaterialRemoveService billOfMaterialRemoveService;
+
   @Inject
   public ConfiguratorServiceProductionImpl(
       AppBaseService appBaseService,
@@ -58,7 +67,13 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      ConfiguratorCheckService configuratorCheckService,
+      ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
+      ProductCompanyRepository productCompanyRepository,
+      ConfiguratorBomService configuratorBomService,
+      ConfiguratorRepository configuratorRepository,
+      BillOfMaterialRemoveService billOfMaterialRemoveService) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -70,7 +85,13 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         saleOrderLineOnProductChangeService,
         saleOrderLineComputeService,
         saleOrderLineGeneratorService,
-        saleOrderRepository);
+        saleOrderRepository,
+        configuratorCheckService,
+        configuratorSaleOrderLineService,
+        productCompanyRepository,
+        configuratorRepository);
+    this.configuratorBomService = configuratorBomService;
+    this.billOfMaterialRemoveService = billOfMaterialRemoveService;
   }
 
   /**
@@ -94,9 +115,47 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null) {
       Product generatedProduct = configurator.getProduct();
-      Beans.get(ConfiguratorBomService.class)
-          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct)
+      configuratorBomService
+          .generateBillOfMaterial(
+              configuratorBOM, jsonAttributes, 0, generatedProduct, configurator)
           .ifPresent(generatedProduct::setDefaultBillOfMaterial);
+    }
+  }
+
+  @Override
+  public void regenerateProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
+    BillOfMaterial oldBillOfMaterial = product.getDefaultBillOfMaterial();
+    super.regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    // Removing
+    try {
+      billOfMaterialRemoveService.removeBomAndProdProcess(oldBillOfMaterial);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  protected void processGenerationProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException {
+    super.processGenerationProduct(
+        configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
+    if (configuratorBOM != null) {
+      configuratorBomService
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, product, configurator)
+          .ifPresent(product::setDefaultBillOfMaterial);
     }
   }
 
@@ -114,7 +173,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null) {
       Beans.get(ConfiguratorBomService.class)
-          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null)
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null, configurator)
           .ifPresent(saleOrderLine::setBillOfMaterial);
     }
     return saleOrderLine;

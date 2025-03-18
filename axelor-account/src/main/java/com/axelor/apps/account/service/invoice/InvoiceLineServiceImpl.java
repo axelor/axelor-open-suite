@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -47,7 +48,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.db.AppInvoice;
 import com.google.common.collect.Sets;
@@ -75,11 +76,13 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
-  protected TaxService taxService;
+  protected TaxAccountService taxAccountService;
   protected InternationalService internationalService;
   protected InvoiceLineAttrsService invoiceLineAttrsService;
   protected CurrencyScaleService currencyScaleService;
   protected ProductPriceService productPriceService;
+  protected FiscalPositionService fiscalPositionService;
+  protected InvoiceLineCheckService invoiceLineCheckService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -92,11 +95,13 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      TaxService taxService,
+      TaxAccountService taxAccountService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
-      ProductPriceService productPriceService) {
+      ProductPriceService productPriceService,
+      FiscalPositionService fiscalPositionService,
+      InvoiceLineCheckService invoiceLineCheckService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -106,11 +111,13 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
-    this.taxService = taxService;
+    this.taxAccountService = taxAccountService;
     this.internationalService = internationalService;
     this.invoiceLineAttrsService = invoiceLineAttrsService;
     this.currencyScaleService = currencyScaleService;
     this.productPriceService = productPriceService;
+    this.fiscalPositionService = fiscalPositionService;
+    this.invoiceLineCheckService = invoiceLineCheckService;
   }
 
   @Override
@@ -245,7 +252,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         processedDiscounts.put(
             "discountAmount",
-            taxService.convertUnitPrice(
+            taxAccountService.convertUnitPrice(
                 invoiceLine.getProduct().getInAti(),
                 invoiceLine.getTaxLineSet(),
                 (BigDecimal) rawDiscounts.get("discountAmount"),
@@ -266,7 +273,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             "inTaxPrice", currencyScaleService.getScaledValue(invoiceLine, price));
         processedDiscounts.put(
             "price",
-            taxService.convertUnitPrice(
+            taxAccountService.convertUnitPrice(
                 true,
                 invoiceLine.getTaxLineSet(),
                 price,
@@ -277,7 +284,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             "inTaxPrice",
             currencyScaleService.getScaledValue(
                 invoiceLine,
-                taxService.convertUnitPrice(
+                taxAccountService.convertUnitPrice(
                     false,
                     invoiceLine.getTaxLineSet(),
                     price,
@@ -316,8 +323,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public Unit getUnit(Product product, boolean isPurchase) {
-    return product.getUnit();
+  public Unit getUnit(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
+      throws AxelorException {
+    return invoiceLine.getProduct().getUnit();
   }
 
   @Override
@@ -378,10 +386,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
     Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
-      taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
+      taxRate = taxAccountService.getTotalTaxRateInPercentage(taxLineSet);
       invoiceLine.setTaxRate(taxRate);
       invoiceLineMap.put("taxRate", invoiceLine.getTaxRate());
-      invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+      invoiceLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
       invoiceLineMap.put("taxCode", invoiceLine.getTaxCode());
     }
 
@@ -432,7 +440,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("productName", product.getName());
       productInformation.put("productCode", product.getCode());
     }
-    productInformation.put("unit", this.getUnit(product, isPurchase));
+    productInformation.put("unit", this.getUnit(invoice, invoiceLine, isPurchase));
 
     AppInvoice appInvoice = appAccountService.getAppInvoice();
     Boolean isEnabledProductDescriptionCopy =
@@ -460,10 +468,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     try {
       taxLineSet = this.getTaxLineSet(invoice, invoiceLine, isPurchase);
+      invoiceLineCheckService.checkInvoiceLineTaxes(taxLineSet);
       invoiceLine.setTaxLineSet(taxLineSet);
       productInformation.put("taxLineSet", taxLineSet);
-      productInformation.put("taxRate", taxService.getTotalTaxRateInPercentage(taxLineSet));
-      productInformation.put("taxCode", taxService.computeTaxCode(taxLineSet));
+      productInformation.put("taxRate", taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
+      productInformation.put("taxCode", taxAccountService.computeTaxCode(taxLineSet));
 
       TaxEquiv taxEquiv =
           accountManagementAccountService.getProductTaxEquiv(
@@ -544,9 +553,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal coefficient = invoiceLine.getCoefficient();
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
-      taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
+      taxRate = taxAccountService.getTotalTaxRateInPercentage(taxLineSet);
       invoiceLine.setTaxRate(taxRate);
-      invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+      invoiceLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
     }
     if (Boolean.FALSE.equals(invoice.getInAti())) {
       exTaxTotal =
@@ -641,8 +650,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
       Set<TaxLine> taxLineSet = this.getTaxLineSet(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLineSet(taxLineSet);
-      invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
-      invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+      invoiceLine.setTaxRate(taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
+      invoiceLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
 
       TaxEquiv taxEquiv =
           accountManagementAccountService.getProductTaxEquiv(
@@ -667,12 +676,12 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setInTaxTotal(
           currencyScaleService.getScaledValue(
               invoice,
-              taxService.convertUnitPrice(
+              taxAccountService.convertUnitPrice(
                   false, taxLineSet, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice())));
       invoiceLine.setCompanyInTaxTotal(
           currencyScaleService.getCompanyScaledValue(
               invoice,
-              taxService.convertUnitPrice(
+              taxAccountService.convertUnitPrice(
                   false,
                   taxLineSet,
                   companyExTaxTotal,
@@ -680,7 +689,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setInTaxPrice(
           currencyScaleService.getScaledValue(
               invoice,
-              taxService.convertUnitPrice(
+              taxAccountService.convertUnitPrice(
                   false, taxLineSet, price, appBaseService.getNbDecimalDigitForUnitPrice())));
     }
     return invoiceLineList;
@@ -725,10 +734,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       return BigDecimal.ZERO;
     }
 
+    Set<TaxLine> taxLineSet =
+        taxAccountService.getNotNonDeductibleTaxesSet(invoiceLine.getTaxLineSet());
     BigDecimal taxValue =
-        Optional.of(invoiceLine)
-            .map(InvoiceLine::getTaxLineSet)
-            .map(taxService::getTotalTaxRateInPercentage)
+        Optional.of(taxLineSet)
+            .map(taxAccountService::getTotalTaxRateInPercentage)
             .map(
                 it ->
                     it.multiply(invoiceLine.getPrice())
@@ -750,5 +760,32 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, "");
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> recomputeTax(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
+    Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
+    TaxEquiv taxEquiv = null;
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+
+    taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(taxLineSet);
+    taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(taxLineSet);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+    if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
+      valuesMap.put("taxEquiv", taxEquiv);
+      return valuesMap;
+    }
+    taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
+    if (taxEquiv != null) {
+      taxLineSet =
+          taxAccountService.getTaxLineSet(
+              taxEquiv.getToTaxSet(), appAccountService.getTodayDate(invoice.getCompany()));
+    }
+
+    valuesMap.put("taxLineSet", taxLineSet);
+    valuesMap.put("taxEquiv", taxEquiv);
+    return valuesMap;
   }
 }

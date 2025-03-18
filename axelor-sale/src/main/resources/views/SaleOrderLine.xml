@@ -10,9 +10,6 @@
     <hilite color="warning" if="deliveryState == 2"/>
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
-    <button name="treeIconButton" showIf="hasTree" onClick="refresh" readonlyIf="true"
-      icon="list-ul"
-      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="fa-exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
@@ -51,16 +48,28 @@
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
+    <button name="configuratorEditBtn"
+      onClick="action-sale-order-line-group-on-configurator-edit"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="pencil-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
+      readonlyIf="saleOrder.id == null" icon="fa-copy"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
-    <field name="hasTree" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true">
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true"
+    onNew="action-sale-order-line-attrs-set-compute-with-sol">
+
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
@@ -68,6 +77,9 @@
       onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
       if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
       readonlyIf="!product || typeSelect != 0 || $isParentTitleLine"/>
+    <field name="productTypeIconSelect" title="" widget="ImageSelect" width="45"
+      if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+      readonly="true"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-type-select-onchange"
       readonlyIf="$isParentTitleLine"/>
     <field name="product" canEdit="false" x-image-field="picture"
@@ -87,11 +99,11 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"
       readonlyIf="$isParentTitleLine"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || subSaleOrderLineList.length &gt; 0 || $isParentTitleLine"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable || $isParentTitleLine || ((subSaleOrderLineList.length &gt; 0 || saleOrderLineDetailsList.length &gt; 0) &amp;&amp; $computeWithSOL)"
       onChange="action-sale-order-line-method-onchange-price" hidden="true"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="inTaxPrice"
-      readonlyIf="$isReadOnly !== false || deliveryState == 3 || $isParentTitleLine"
+      readonlyIf="$isReadOnly !== false || deliveryState == 3 || $isParentTitleLine || ((subSaleOrderLineList.length &gt; 0 || saleOrderLineDetailsList.length &gt; 0) &amp;&amp; $computeWithSOL)"
       onChange="action-sale-order-line-method-onchange-intaxprice"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="discountTypeSelect" colSpan="3"
@@ -109,20 +121,34 @@
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="TagSelect"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
-      readonlyIf="$isParentTitleLine"/>
+      readonly="true"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
-      readonlyIf="$isParentTitleLine"/>
+      readonly="true"/>
     <field name="description" readonlyIf="$isParentTitleLine"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
+    <button name="configuratorEditBtn"
+      onClick="action-sale-order-line-group-on-configurator-edit"
+      if="__config__.app.getApp('sale')?.getEnableConfigurator()" readonlyIf="configurator == null"
+      icon="pencil-square"/>
+    <button name="configuratorDuplicateBtn"
+      onClick="action-sale-order-line-group-on-configurator-duplicate"
+      if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
+      readonlyIf="saleOrder.id == null" icon="fa-copy"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="$isParentTitleLine" hidden="true"/>
+    <field name="$computeWithSOL" hidden="true"/>
+    <field name="configurator" hidden="true"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.id" hidden="true"/>
+    <field name="subSaleOrderLineList" hidden="true"/>
+    <field name="saleOrderLineDetailsList" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -253,6 +279,21 @@
               </viewer>
             </field>
 
+            <field name="$productionStatus" showTitle="false" colSpan="2"
+              showIf="$productionStatus" if-module="axelor-production"
+              if="__config__.app.isApp('production')">
+              <viewer>
+                <![CDATA[<>
+                      {$productionStatus == 'FINISHED' && <Badge bg="success">{_t('Production finished')}</Badge>}
+                      {$productionStatus == 'STANDBY' && <Badge bg="warning">{_t('Production on standby')}</Badge>}
+                      {$productionStatus == 'IN_PROGRESS' && <Badge bg="primary">{_t('Production in progress')}</Badge>}
+                      {$productionStatus == 'PLANNED' && <Badge bg="warning">{_t('Production planned')}</Badge>}
+                      {$productionStatus == 'CANCELED' && <Badge bg="danger">{_t('Production canceled')}</Badge>}
+                      {$productionStatus == 'DRAFT' && <Badge bg="danger">{_t('Production in draft')}</Badge>}
+                </>]]>
+              </viewer>
+            </field>
+
           </panel>
           <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-sale-order-line-method-get-product-information"
@@ -278,13 +319,13 @@
             onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"
             canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
           <field name="price" colSpan="3"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || subSaleOrderLineList.length &gt; 0"
+            readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable || ((subSaleOrderLineList.length &gt; 0 || saleOrderLineDetailsList.length &gt; 0) &amp;&amp; $computeWithSOL)"
             onChange="action-sale-order-line-method-onchange-price" hidden="true"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
             onChange="action-sale-order-line-method-onchange-intaxprice" hidden="true"/>
           <panel name="discountPanel" colSpan="12"
-            readonlyIf="$isReadOnly !== false || deliveryState == 3">
+            readonlyIf="$isGlobalDiscount || $isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
               onChange="action-sale-order-line-method-discount-type-onchange"/>
             <!--This panel purpose is to avoid issues with permission by field -->
@@ -293,7 +334,7 @@
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
                 onChange="action-sale-order-line-method-discount-amount-onchange"
                 x-scale="saleOrder.currency.numberOfDecimals"/>
-              <field name="discountDerogation" colSpan="3"
+              <field name="discountDerogation" colSpan="3" hideIf="$isGlobalDiscount"
                 onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-method-discount-amount-onchange"/>
             </panel>
             <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
@@ -308,6 +349,7 @@
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
           <field name="discountsNeedReview" hidden="true"/>
           <field name="$qtyValid" hidden="true" colSpan="12"/>
+          <field name="$computeWithSOL" hidden="true"/>
         </panel>
 
         <panel name="taxPanel" colSpan="12">
@@ -395,7 +437,8 @@
       <panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
         <field name="subTotalCostPrice"
           onChange="action-sale-order-line-method-compute-subMargin"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+          x-scale="$companyCurrency.numberOfDecimals"
+          readonlyIf="subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL"/>
         <field name="subTotalGrossMargin" readonly="true"
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>
@@ -405,6 +448,13 @@
         <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery">
+        <field name="deliveryAddress" canNew="true"
+          onChange="action-sale-order-line-record-compute-delivery-address-str"
+          onSelect="action-sale-order-line-attrs-domain-delivery-address" form-view="address-form"
+          grid-view="address-grid"/>
+        <field name="deliveryAddressStr" height="5">
+          <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
+        </field>
         <field name="desiredDeliveryDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedShippingDate"
           onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
@@ -456,6 +506,7 @@
       <field name="product.isPrototype"/>
       <field name="saleOrder"/>
       <field name="subSaleOrderLineList"/>
+      <field name="saleOrderLineDetailsList"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>
@@ -749,4 +800,61 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="addToCart"/>
   </action-method>
 
+  <action-attrs name="action-sale-order-line-attrs-set-compute-with-sol">
+    <attribute for="$computeWithSOL" name="value"
+      expr="eval: _config__.app.getApp('sale')?.getIsSOLPriceTotalOfSubLines()"/>
+  </action-attrs>
+
+  <action-record name="action-sale-order-line-record-compute-delivery-address-str"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="deliveryAddressStr"
+      expr="call: com.axelor.apps.base.service.address.AddressService:computeAddressStr(deliveryAddress)"/>
+  </action-record>
+
+  <action-attrs name="action-sale-order-line-attrs-domain-delivery-address">
+    <attribute name="domain" for="deliveryAddress"
+      expr="eval: &quot;self.id IN (${(__parent__?.clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
+  </action-attrs>
+
+
+  <action-view name="action-sale-order-line-view-regenerate-line"
+    title="Regenerate line" model="com.axelor.apps.sale.db.Configurator">
+    <view type="form" name="regenerate-configurator-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_saleOrderLineId" expr="eval: id"/>
+    <context name="_showRecord" expr="eval: configurator.id"/>
+  </action-view>
+
+  <action-method name="action-sale-order-line-method-configurator-duplicate">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="configuratorDuplicateSaleOrderLine"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-check-duplication-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkDuplicationSaleOrderLine"/>
+  </action-method>
+
+  <action-group name="action-sale-order-line-group-on-configurator-duplicate">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-duplication-sale-order-line"/>
+    <action name="action-sale-order-line-method-configurator-duplicate"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-group-on-configurator-edit">
+    <action name="save"/>
+    <action name="action-sale-order-line-method-check-edit-configurator-sale-order-line"/>
+    <action name="action-sale-order-line-view-regenerate-line"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-check-edit-configurator-sale-order-line">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="checkEditConfiguratorSaleOrderLine"/>
+  </action-method>
 </object-views>

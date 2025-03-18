@@ -255,16 +255,15 @@
     <option value="2">Expense declaration</option>
   </selection>
 
-  <selection name="unit.conversion.entity.select"
-    id="project.unit.conversion.entity.select">
-    <option value="1">Project</option>
-  </selection>
-
   <selection name="message.related.to.select" id="hr.message.related.to.select">
     <option value="com.axelor.apps.hr.db.Employee" data-grid="employee-grid"
       data-form="employee-form">Employee</option>
     <option value="com.axelor.apps.hr.db.EmploymentContract"
       data-grid="employment-contract-grid" data-form="employment-contract-form">Employment contract</option>
+  </selection>
+
+  <selection name="account.year.type.select" id="hr.account.year.type.select">
+    <option value="4">Allocation Year</option>
   </selection>
 
 </object-views>

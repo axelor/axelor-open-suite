@@ -37,7 +37,9 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
 import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
@@ -47,6 +49,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -443,8 +447,14 @@ public class PartnerController {
     RegistrationNumberValidator validator =
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
-    if (validator != null && !validator.isRegistrationCodeValid(partner)) {
-      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    boolean notValidRegistrationCode =
+        validator != null && !validator.isRegistrationCodeValid(partner);
+    response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
+    if (notValidRegistrationCode) {
+      response.setAttr(
+          "isValidRegistrationCode",
+          "title",
+          I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 
@@ -475,6 +485,50 @@ public class PartnerController {
                   .map(Partner::getId)
                   .map(String::valueOf)
                   .collect(Collectors.joining(","))));
+    }
+  }
+
+  public void checkIfRegistrationCodeExists(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    String message = Beans.get(PartnerService.class).checkIfRegistrationCodeExists(partner);
+    if (StringUtils.isEmpty(message)) {
+      return;
+    }
+    if (Beans.get(AppBaseService.class).getAppBase().getIsRegistrationCodeCheckBlocking()) {
+      response.setError(message);
+    } else {
+      response.setAlert(message);
+    }
+  }
+
+  @ErrorException
+  public void apiSireneFetchData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String siret = request.getContext().get("siretNumber").toString();
+
+    Object partnerId = request.getContext().get("_id");
+    Partner partner;
+    if (partnerId != null) {
+      partner = JPA.find(Partner.class, Long.parseLong(partnerId.toString()));
+    } else {
+      partner = new Partner();
+    }
+
+    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret);
+
+    if (partnerId != null) {
+      response.setValues(partner);
+      response.setCanClose(true);
+    } else {
+      ActionView.ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get("Partner"))
+              .model(Partner.class.getName())
+              .add("form", "partner-form")
+              .add("grid", "partner-grid")
+              .context("_showRecord", partner.getId());
+
+      response.setView(actionViewBuilder.map());
+      response.setCanClose(true);
     }
   }
 }

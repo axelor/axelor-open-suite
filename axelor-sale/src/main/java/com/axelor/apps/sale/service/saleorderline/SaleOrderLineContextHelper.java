@@ -32,18 +32,32 @@ public class SaleOrderLineContextHelper {
   public static SaleOrder getSaleOrder(Context context, SaleOrderLine saleOrderLine) {
     SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
     if (saleOrder != null) {
+      // Opening a sale order line from a Sale order form view whether is it persisted or not.
       return saleOrder;
     }
 
+    // Opening a sale order line form view from a form view that is not a SaleOrder
+    return getParentSaleOrderFromOtherFormView(saleOrderLine);
+  }
+
+  protected static SaleOrder getParentSaleOrderFromOtherFormView(SaleOrderLine saleOrderLine) {
+    SaleOrder saleOrder;
     SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
 
-    // Line is persisted and is not a subline
+    // We only work with persisted line
+
+    // Not a subline
     if (saleOrderLine.getId() != null) {
       saleOrder = saleOrderLineRepository.find(saleOrderLine.getId()).getSaleOrder();
       if (saleOrder != null) {
         return saleOrder;
       }
     }
+
+    // Is a subline
+    SaleOrderLine parentSol = SaleOrderLineUtils.getParentSol(saleOrderLine);
+    parentSol = saleOrderLineRepository.find(parentSol.getId());
+    saleOrder = parentSol.getSaleOrder();
     return saleOrder;
   }
 }

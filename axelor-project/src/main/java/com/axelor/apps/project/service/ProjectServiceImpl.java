@@ -89,7 +89,8 @@ public class ProjectServiceImpl implements ProjectService {
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner clientPartner)
+      throws AxelorException {
     Project project;
     project = projectRepository.findByName(fullName);
     if (project != null) {
@@ -125,7 +126,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   @Transactional
-  public Project generateProject(Partner partner) {
+  public Project generateProject(Partner partner) throws AxelorException {
     Preconditions.checkNotNull(partner);
     User user = AuthUtils.getUser();
     Project project =
@@ -180,9 +181,11 @@ public class ProjectServiceImpl implements ProjectService {
                 ? 1
                 : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1);
 
-    taskTemplateList.forEach(
-        taskTemplate ->
-            projectCreateTaskService.createTask(taskTemplate, project, taskTemplateSet));
+    if (!ObjectUtils.isEmpty(taskTemplateList)) {
+      for (TaskTemplate taskTemplate : taskTemplateList) {
+        projectCreateTaskService.createTask(taskTemplate, project, taskTemplateSet);
+      }
+    }
     return project;
   }
 
@@ -197,9 +200,9 @@ public class ProjectServiceImpl implements ProjectService {
             .domain(domain)
             .param("details-view", "true");
 
-    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
-      builder.add("kanban", "task-per-section-kanban");
-      builder.add("calendar", "project-task-per-section-calendar");
+    if (project.getIsShowKanbanPerCategory() && project.getIsShowCalendarPerCategory()) {
+      builder.add("kanban", "task-per-category-kanban");
+      builder.add("calendar", "project-task-per-category-calendar");
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");

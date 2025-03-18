@@ -21,7 +21,6 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -29,7 +28,7 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupBusinessService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -43,7 +42,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -216,31 +214,12 @@ public class ProjectTaskController {
   }
 
   @ErrorException
-  public void updateBudgetedTime(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-
-    Unit oldTimeUnit = null;
-    if (projectTask.getId() != null && projectTask.getTimeUnit() != null) {
-      oldTimeUnit =
-          Optional.ofNullable(Beans.get(ProjectTaskRepository.class).find(projectTask.getId()))
-              .map(ProjectTask::getTimeUnit)
-              .orElse(null);
-      if (oldTimeUnit == null || Objects.equals(oldTimeUnit, projectTask.getTimeUnit())) {
-        oldTimeUnit = null;
-      }
-    }
-
-    response.setValues(
-        Beans.get(ProjectTaskGroupService.class).updateBudgetedTime(projectTask, oldTimeUnit));
-  }
-
-  @ErrorException
   public void updateSoldTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-    response.setValues(Beans.get(ProjectTaskGroupService.class).updateSoldTime(projectTask));
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateSoldTime(projectTask));
   }
 
   @ErrorException
@@ -248,7 +227,8 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-    response.setValues(Beans.get(ProjectTaskGroupService.class).updateUpdatedTime(projectTask));
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateUpdatedTime(projectTask));
   }
 
   @ErrorException
@@ -256,7 +236,8 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-    response.setValues(Beans.get(ProjectTaskGroupService.class).updateQuantity(projectTask));
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateQuantity(projectTask));
   }
 
   @ErrorException
@@ -264,6 +245,7 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-    response.setValues(Beans.get(ProjectTaskGroupService.class).updateFinancialDatas(projectTask));
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateFinancialDatas(projectTask));
   }
 }

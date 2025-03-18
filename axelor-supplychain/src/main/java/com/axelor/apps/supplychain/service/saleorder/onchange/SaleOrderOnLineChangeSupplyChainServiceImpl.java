@@ -24,6 +24,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeServiceImpl;
@@ -32,6 +33,11 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLineChangeServiceImpl {
 
@@ -48,6 +54,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService) {
     super(
@@ -58,17 +65,24 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
         saleOrderLineRepository,
         saleOrderLineComputeService,
         saleOrderLinePackService,
-        saleOrderComplementaryProductService);
+        saleOrderComplementaryProductService,
+        saleOrderGlobalDiscountService);
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
     super.onLineChange(saleOrder);
+    List<String> messages = new ArrayList<>();
     saleOrderSupplychainService.setAdvancePayment(saleOrder);
-    saleOrderSupplychainService.updateTimetableAmounts(saleOrder);
+    messages.add(saleOrderSupplychainService.updateTimetableAmounts(saleOrder));
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
-    saleOrderShipmentService.createShipmentCostLine(saleOrder);
+    messages.add(
+        saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode()));
+    return messages.stream()
+        .filter(Objects::nonNull)
+        .filter(Predicate.not(String::isEmpty))
+        .collect(Collectors.joining("<br>"));
   }
 }

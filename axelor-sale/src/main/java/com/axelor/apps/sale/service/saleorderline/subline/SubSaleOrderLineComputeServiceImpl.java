@@ -19,8 +19,10 @@
 package com.axelor.apps.sale.service.saleorderline.subline;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -30,25 +32,45 @@ import org.apache.commons.collections.CollectionUtils;
 public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineComputeService {
 
   protected final SaleOrderLineComputeService saleOrderLineComputeService;
+  protected final AppSaleService appSaleService;
+  protected final CurrencyScaleService currencyScaleService;
 
   @Inject
   public SubSaleOrderLineComputeServiceImpl(
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      AppSaleService appSaleService,
+      CurrencyScaleService currencyScaleService) {
     this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.appSaleService = appSaleService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
-  public BigDecimal computeSumSubLineList(
-      List<SaleOrderLine> subSaleOrderLineList, SaleOrder saleOrder) throws AxelorException {
-    for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-      List<SaleOrderLine> subSubSaleOrderLineList = subSaleOrderLine.getSubSaleOrderLineList();
-      if (CollectionUtils.isNotEmpty(subSubSaleOrderLineList)) {
-        subSaleOrderLine.setPrice(computeSumSubLineList(subSubSaleOrderLineList, saleOrder));
-        saleOrderLineComputeService.computeValues(saleOrder, subSaleOrderLine);
+  public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
+        }
       }
+      computePrices(saleOrderLine, saleOrder);
     }
-    return subSaleOrderLineList.stream()
-        .map(SaleOrderLine::getExTaxTotal)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+  }
+
+  protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    saleOrderLine.setPrice(
+        subSaleOrderLineList.stream()
+            .map(SaleOrderLine::getExTaxTotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add));
+    saleOrderLine.setSubTotalCostPrice(
+        currencyScaleService.getCompanyScaledValue(
+            saleOrder,
+            subSaleOrderLineList.stream()
+                .map(SaleOrderLine::getSubTotalCostPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)));
   }
 }

@@ -3,16 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
-  <!-- <cards id="purchase-product-card-view" name="product-cards" title="Product" model="com.axelor.apps.base.db.Product"
-    cardWidth="25%" css="rect-image" orderBy="code,name"> <toolbar> <button name="catalog" title="Catalog"
-    onClick="action-print-product-catalog" icon="fa-book"/> </toolbar> <field name="picture" /> <field name="fullName"
-    /> <field name="salePrice" x-scale="2" /> <field name="saleCurrency.symbol" /> <field name="productFamily"
-    /> <field name="productCategory" /> <template><![CDATA[ <div class="span12"><strong>{{fullName}}</strong></div>
-    <div> <div class="span4 card-image"> <img ng-src="{{$image('picture', 'content')}}" /> </div> <div class="span8">
-    <span>{{$fmt('salePrice') | currency: saleCurrency.symbol}}<br/> {{productFamily.name}}<br/> {{productCategory.name}}</span>
-    <a class="btn btn-small btn-success" href="" ui-action-click="action-product-create-purcahse-request"
-    x-translate if="__config__.app.isApp('purchase-request')" >Add</a> </div> </div> ]]> </template> </cards> -->
-
   <form name="product-form" title="Product" id="purchase-product-form"
     model="com.axelor.apps.base.db.Product" extension="true">
     <extend target="//panel[@name='purchaseCostsPanel']">
@@ -30,13 +20,6 @@
     <view type="form" name="purchase-order-line-form"/>
     <domain>self.product.id = :id AND self.purchaseOrder.orderDate &lt;= :__date__ AND
       self.purchaseOrder.statusSelect IN (3,4)</domain>
-  </action-view>
-
-  <action-view name="action-product-create-purcahse-request"
-    model="com.axelor.apps.purchase.db.PurchaseRequest" title="Purchase request">
-    <view type="form" name="purchase-request-form"/>
-    <view-param name="popup" value="true"/>
-    <context name="_product" expr="eval:__self__"/>
   </action-view>
 
   <action-attrs name="action-product-attrs-readonly-purchasable">

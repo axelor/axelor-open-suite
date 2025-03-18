@@ -166,6 +166,8 @@
 	          </>
 	        ]]></viewer>
         </field>
+        <field name="typeSelect" showTitle="false" colSpan="2" widget="SingleSelect"
+          hidden="true"/>
         <field name="company.tradingNameList" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox"
           onChange="action-group-purchase-order-company-change-actions" form-view="company-form"
@@ -240,7 +242,8 @@
         <field name="stockLocation" canEdit="false" if-module="axelor-supplychain" colSpan="3"
           form-view="stock-location-form" grid-view="stock-location-grid"
           if="__config__.app.isApp('supplychain')"
-          onSelect="action-purchase-order-attrs-set-stock-location-domain"/>
+          onSelect="action-purchase-order-attrs-set-stock-location-domain"
+          onChange="action-purchase-order-group-stock-location-change"/>
         <field name="stockLocation.address" if-module="axelor-supplychain"
           form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')"/>
         <field name="fromStockLocation" canEdit="false"
@@ -263,10 +266,8 @@
         <field name="contract" readonly="true" hidden="true" showIf="contract"
           form-view="contract-form" grid-view="contract-grid"/>
         <field name="project" domain="self.isBusinessProject = true"
-          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
-        <button name="updateLinesBtn" title="Update lines with selected project"
-          onClick="save,action-business-project-purchase-order-method-update-lines,save" colSpan="6"
-          readonlyIf="!project"/>
+          form-view="business-project-form" grid-view="project-grid" colSpan="6"
+          onChange="action-business-project-purchase-order-method-update-lines"/>
         <field name="projectTask" domain="self.project = :project"
           form-view="business-project-task-form" grid-view="business-project-task-grid" colSpan="6"/>
       </panel>
@@ -482,23 +483,14 @@
 					</Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" mt={1}>
-					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
-						{amountInvoiced == 0 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
-						{amountInvoiced > 0 && (amountInvoiced < exTaxTotal) && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
-						{amountInvoiced > 0 && (amountInvoiced == exTaxTotal) && <Badge bg="success">{_t('Invoiced')}</Badge>}
-
-	                	{receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
-	                	{receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
-	                	{receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
-		            </Box>
-		            <Box>
-			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
-		            </Box>
-				</Box>
-				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(company.name)}</Badge>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					<Box>
+						<Badge style={{ backgroundColor: "#2185D0" }}>{_t(company.name)}</Badge> <Box/>
+						<Badge mt={1} style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					</Box>
+					<Box>
+						<strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+						<strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
+					</Box>
 				</Box>
 			</>
 		]]>
@@ -643,6 +635,7 @@
     <action name="action-purchase-order-method-empty-fiscal-position-if-not-compatible"/>
     <action name="action-purchase-order-method-fiscal-position-on-change"/>
     <action name="action-purchase-order-method-compute"/>
+    <action name="action-purchase-order-record-set-type-select"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-cancel">
@@ -988,6 +981,9 @@
       <domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id =
         :_internalUser</domain>
     </filter>
+    <filter name="purchase-order-filters-standard-purchases" title="Standard purchases">
+      <domain>self.typeSelect = 1</domain>
+    </filter>
   </search-filters>
 
   <action-record name="action-purchase-order-record-update-info-company"
@@ -1075,5 +1071,10 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="separateInNewQuotation"/>
   </action-method>
+
+  <action-record name="action-purchase-order-record-set-type-select"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <field name="typeSelect" expr="eval: 1" if="!supplierPartner"/>
+  </action-record>
 
 </object-views>

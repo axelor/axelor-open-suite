@@ -8,6 +8,8 @@
     <toolbar>
       <button onClick="action-leave-request-method-export-all" name="exportLRBtn"
         title="Export all leave requests"/>
+      <button name="multiRequestBtn" title="Multi-leave assistant"
+        onClick="leave.request.wizard"/>
     </toolbar>
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
@@ -78,18 +80,21 @@
         form-view="company-form" grid-view="company-grid" required="true"/>
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         onSelect="action-leave-request-attrs-set-employee-domain"
-        onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration,action-leave-request-method-leave-reason-to-justify"
+        onChange="action-leave-request-validate-dates,action-leave-request-group-compute-duration,action-leave-request-method-leave-reason-to-justify"
         canNew="false" canEdit="false" canView="false"/>
       <field name="requestDate" colSpan="12" width="50%"/>
-      <field name="leaveReason" onSelect="action-leave-request-attrs-leave-reason-domain"
+      <field name="leaveReason" onSelect="action-leave-request-method-get-leave-reason-domain"
         title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
-        onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-methode-compute-duration"
+        onChange="action-leave-request-attrs-select,action-leave-request-compute-leave-qty,action-leave-request-attrs-inject-change,action-leave-request-group-compute-duration"
         form-view="leave-reason-form" grid-view="leave-reason-grid"/>
       <field name="isPayrollInput" showIf="employee.hrManager"/>
       <panel name="quantityPanel" showIf="leaveReason.leaveReasonTypeSelect != 2">
         <field name="$leavequantity" title="Available quantity (acquired)"
-          showIf="statusSelect != 3" colSpan="12" readonly="true" type="decimal"/>
+          showIf="statusSelect != 3" readonly="true" type="decimal"/>
+        <field name="leaveDaysToDate" readonly="true" x-scale="1" hideIf="statusSelect > 2"
+          x-dirty="false"/>
         <field name="quantityBeforeValidation" showIf="statusSelect == 3" colSpan="12"/>
+        <field name="leaveReason.leaveReasonTypeSelect" hidden="true"/>
       </panel>
       <field name="injectConsumeSelect" hidden="true"
         onChange="action-leave-request-attrs-inject-change"/>
@@ -98,32 +103,26 @@
       <panel name="fromDatesPanel" colSpan="12">
         <panel name="fromDatesFirstInferiorPanel" hideIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="fromDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="fromDateT" onChange="action-leave-request-group-date-onchange"
             widget="date"/>
-          <field name="startOnSelect"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+          <field name="startOnSelect" onChange="action-leave-request-group-date-onchange"/>
         </panel>
         <panel name="fromDatesSecondInferiorPanel" showIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="fromDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="fromDateT" onChange="action-leave-request-group-date-onchange"
             widget="datetime"/>
         </panel>
       </panel>
       <panel name="toDatesPanel" colSpan="12">
         <panel name="toDatesFirstInferiorPanel" hideIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="toDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="toDateT" onChange="action-leave-request-group-date-onchange"
             widget="date"/>
-          <field name="endOnSelect"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
+          <field name="endOnSelect" onChange="action-leave-request-group-date-onchange"/>
         </panel>
         <panel name="toDatesSecondInferiorPanel" showIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="toDateT"
-            onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
+          <field name="toDateT" onChange="action-leave-request-group-date-onchange"
             widget="datetime"/>
         </panel>
       </panel>
@@ -171,24 +170,26 @@
     </panel>
   </form>
 
+  <form name="complete-my-leave-request-form" title="Leave Request"
+    model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
+    onLoad="action-leave-request-group-on-form-load"
+    onSave="action-leave-request-validate-dates-on-save" canCopy="false" canNew="false">
+    <panel-include view="leave-request-form"/>
+  </form>
+
   <calendar name="calendar-event-leave-request" model="com.axelor.apps.hr.db.LeaveRequest"
     title="Calendar" eventStart="fromDateT" eventStop="toDateT" colorBy="employee" editable="false">
     <field name="employee"/>
   </calendar>
 
   <action-group name="action-leave-request-group-send">
-    <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-sent-leave-request"/>
   </action-group>
 
   <action-group name="action-leave-request-group-validate">
-    <action name="action-leave-request-validate-dates-on-save"/>
     <action name="save"/>
     <action name="action-leave-request-method-validate-leave-request"/>
-    <action name="action-leave-request-attrs-buttons"/>
-    <action name="action-leave-request-attrs-valid-refuse"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-leave-request-group-refuse">
@@ -212,9 +213,11 @@
     <action name="action-leave-request-attrs-buttons"/>
     <action name="action-leave-request-attrs-draft-cancel"/>
     <action name="action-leave-request-attrs-select"/>
+    <action name="action-leave-request-compute-leave-qty"/>
     <action name="action-leave-request-attrs-inject-change"/>
     <action name="action-leave-request-attrs-send"/>
     <action name="action-leave-request-attrs-valid-refuse"/>
+    <action name="action-leave-request-method-compute-leave-to-date"/>
   </action-group>
 
   <action-group name="action-leave-request-group-onnew">
@@ -223,6 +226,16 @@
     <action name="action-validate-check-user-employee"/>
     <action name="action-leave-request-record-to-justify"/>
     <action name="action-leave-request-method-leave-reason-to-justify"/>
+  </action-group>
+
+  <action-group name="action-leave-request-group-date-onchange">
+    <action name="action-leave-request-validate-dates"/>
+    <action name="action-leave-request-group-compute-duration"/>
+  </action-group>
+
+  <action-group name="action-leave-request-group-compute-duration">
+    <action name="action-leave-request-methode-compute-duration"/>
+    <action name="action-leave-request-method-compute-leave-to-date"/>
   </action-group>
 
   <action-record name="action-leave-request-record-default"
@@ -258,7 +271,7 @@
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
     <attribute name="readonly" for="employee"
-      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0) || _isEmployeeReadOnly"/>
   </action-attrs>
 
   <action-attrs name="action-leave-request-attrs-select">
@@ -269,10 +282,6 @@
       expr="!leaveReason.allowInjection" if="leaveReason != null"/>
     <attribute name="value" for="injectConsumeSelect" if="!leaveReason?.allowInjection"
       expr="eval: 1"/>
-    <attribute name="value" for="$leavequantity" expr="eval: 0.00"/>
-    <attribute name="value" for="$leavequantity"
-      if="eval: leaveReason != null &amp;&amp; leaveReason?.leaveReasonTypeSelect != __repo__(LeaveReason).TYPE_SELECT_EXCEPTIONAL_DAYS &amp;&amp; employee?.leaveLineList != null "
-      expr="#{employee.leaveLineList.stream().filter(ll -> ll.leaveReason.id.equals(leaveReason.id)).map(ll -> ll.getQuantity()).findFirst().orElse(0.00)}"/>
   </action-attrs>
 
   <action-attrs name="action-leave-request-attrs-send">
@@ -331,6 +340,14 @@
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="cancel"/>
   </action-method>
 
+  <action-method name="action-leave-request-method-get-leave-reason-domain">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="getLeaveReasonDomain"/>
+  </action-method>
+
+  <action-method name="action-leave-request-method-compute-leave-to-date">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="computeLeaveToDate"/>
+  </action-method>
+
   <action-view name="action-leave-request-refusal-popup-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.LeaveRequest">
     <view type="form" name="popup-leave-request-refusal-form"/>
@@ -348,17 +365,6 @@
     <attribute name="hidden" for="toDateT" expr="eval: injectConsumeSelect == 2"/>
     <attribute name="hidden" for="endOnSelect" expr="eval: injectConsumeSelect == 2"/>
     <attribute name="readonly" for="duration" expr="eval: injectConsumeSelect != 2"/>
-  </action-attrs>
-
-  <action-attrs name="action-leave-request-attrs-leave-reason-domain">
-    <attribute name="domain" for="leaveReason"
-      expr="eval: &quot;self.leaveReasonTypeSelect = 2&quot;"/>
-    <attribute name="domain" for="leaveReason"
-      expr="eval: &quot;self.leaveReasonTypeSelect = 2 OR self IN (SELECT leaveReason FROM LeaveLine leaveLine WHERE leaveLine.employee.id = ${__this__.employee.id})&quot;"
-      if="employee != null"/>
-    <attribute name="domain" for="leaveReason"
-      expr="eval: &quot;(self.leaveReasonTypeSelect = 2 OR self IN (SELECT leaveReason FROM LeaveLine leaveLine WHERE leaveLine.employee.id = ${__this__.employee.id})) AND (self.selectedByMgtOnly = false) &quot;"
-      if="employee != null &amp;&amp; !__user__.employee?.hrManager"/>
   </action-attrs>
 
   <search-filters name="leave-request-filters"
@@ -380,5 +386,9 @@
 
   <action-method name="action-leave-request-method-export-all">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="exportLeaveRequest"/>
+  </action-method>
+
+  <action-method name="action-leave-request-compute-leave-qty">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="computeLeaveQuantity"/>
   </action-method>
 </object-views>

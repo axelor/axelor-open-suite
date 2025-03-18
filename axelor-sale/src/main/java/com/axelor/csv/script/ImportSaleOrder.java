@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -37,17 +38,20 @@ public class ImportSaleOrder {
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderFinalizeService saleOrderFinalizeService;
   protected SequenceService sequenceService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public ImportSaleOrder(
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderFinalizeService saleOrderFinalizeService,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderFinalizeService = saleOrderFinalizeService;
     this.sequenceService = sequenceService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   public Object importSaleOrder(Object bean, Map<String, Object> values) throws AxelorException {
@@ -57,6 +61,7 @@ public class ImportSaleOrder {
 
     saleOrderService.computeAddressStr(saleOrder);
 
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
     saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
 
     if (saleOrder.getStatusSelect() == 1) {

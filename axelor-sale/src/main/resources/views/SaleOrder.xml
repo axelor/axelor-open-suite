@@ -251,8 +251,7 @@
 
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
-    onNew="action-sale-order-method-onnew"
-    onSave="action-sale-order-line-tree-method-update-hasTree">
+    onNew="action-sale-order-method-onnew">
     <toolbar>
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
@@ -283,6 +282,9 @@
           action="save,action-sale-order-method-cancel-reservation"
           showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
           if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+        <item name="duplicateWithConfiguratorBtn" title="Duplicate with configurator"
+          action="action-sale-order-group-on-duplicate-with-configurator"
+          if="__config__.app.getApp('sale')?.getEnableConfigurator()"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -457,8 +459,7 @@
         <panel name="deliveryAddressPanel" stacked="true">
           <field name="deliveryAddress"
             hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true"
-            canEdit="false"
-            onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required"
+            canEdit="false" onChange="action-sale-order-group-delivery-address-change"
             onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
             grid-view="address-grid"/>
           <field name="deliveryAddressStr"
@@ -477,6 +478,13 @@
       hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
 
       <panel name="contentPanel" title="Content">
+        <panel name="displayMultiLinesButtonPanel"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+          colSpan="12">
+          <spacer colSpan="8"/>
+          <button name="displayLinesBtn" onClick="action-sale-order-view-display-multi-lines"
+            title="Display lines" colSpan="4" readonlyIf="id == null"/>
+        </panel>
 
         <panel-related name="detailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
@@ -501,17 +509,6 @@
           editable="true">
         </panel-related>
 
-        <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
-          height="30" widget="MasterDetail" form-view="sale-order-line-form"
-          tree-view="sale-order-line-tree" grid-view="sale-order-line-grid"
-          summary-view="sale-order-master-details-form" field="saleOrderLineList"
-          target="com.axelor.apps.sale.db.SaleOrderLine"
-          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          title="Details Lines" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change" canMove="true"
-          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE"/>
-
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"
           colSpan="12" height="30" field="saleOrderLineList" form-view="sale-order-line-form"
@@ -524,6 +521,10 @@
           if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_EDITABLE"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
+        </panel>
+        <panel name="subLinePanel" colSpan="12"
+          if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
+          <field name="isDisplaySubLinesOnReport" widget="boolean-switch"/>
         </panel>
       </panel>
       <panel name="taxPanel" title="Tax" readonlyIf="statusSelect != 1">
@@ -595,37 +596,6 @@
         <panel-dashlet name="manufOrdersPanel"
           action="action-sale-order-view-manuf-orders" colSpan="12"
           showIf="statusSelect == 3 || statusSelect == 4"/>
-      </panel>
-
-      <panel name="businessProjectPanel" title="Business project"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
-        if-module="axelor-business-project">
-        <field name="contract" readonly="true" hidden="true" showIf="contract"
-          form-view="contract-form" grid-view="contract-grid"/>
-        <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
-          form-view="business-project-form" grid-view="project-grid" edit-window="blank"
-          onChange="action-business-project-sale-order-method-update-lines"/>
-
-        <panel name="projectAndTaskGenerationPanel" title="Project and task generation"
-          colSpan="12">
-          <field name="$_projectGeneratorType" title="Project generation method"
-            x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"
-            help="You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has &quot;Produce&quot; as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration."/>
-          <panel name="fillOrGenerateProjectPanel" stacked="true">
-            <button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType"
-              title="Generate Project/Business"
-              if="!__config__.app.getApp('business-project').automaticProject"
-              showIf="project == null" hidden="true"
-              onClick="save,action-business-project-method-generate-project"/>
-            <button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType"
-              title="Fill project"
-              if="__config__.app.getApp('business-project').projectSaleOrderLines"
-              showIf="project != null" hidden="true"
-              onClick="save,action-business-project-method-fill-project"/>
-          </panel>
-          <field name="$_elementStartDate" title="Start date" widget="date-time"
-            type="datetime" colSpan="3"/>
-        </panel>
       </panel>
 
       <panel
@@ -786,9 +756,15 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
+        <viewer
+          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,discountCurrency,discountScale">
+          <![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+                             {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T. before discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{$fmt('priceBeforeGlobalDiscount')}</Box>}
+                             {discountTypeSelect != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Discount')}</Box>}
+	                     	 {discountTypeSelect != 0 && <Box as="dd" m={0} px={3} py={1}>{'-' + $fmt('discountAmount')}</Box>}
 	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
 	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
 	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
@@ -801,8 +777,25 @@
 	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
 	                     </Box>
 	                  </>
-	              ]]></viewer>
+                    ]]>
+        </viewer>
       </field>
+    </panel>
+    <panel name="globalDiscountPanel" title="Global discount"
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
+      showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
+      sidebar="true">
+      <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
+      <field name="discountAmount" showIf="discountTypeSelect != 0"
+        x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
+        onChange="action-sale-order-method-on-line-change"/>
+      <button name="$swapDiscountTypeBtn" title="Swap discount type" widget="info-button"
+        showIf="discountTypeSelect != 0" icon="arrow-left-right" colSpan="6"
+        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-line-change"/>
+      <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals" hidden="true"/>
+      <field name="discountCurrency" hidden="true" x-dirty="false"/>
+      <field name="discountScale" hidden="true" x-dirty="false"/>
     </panel>
     <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null"
       sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
@@ -1229,6 +1222,29 @@
     </panel>
   </form>
 
+  <form name="sale-order-editable-multi-lines-form" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder" width="large" canNew="false" canDelete="false"
+    onLoad="action-group-sale-saleorder-onload">
+    <panel name="mainPanel" colSpan="12">
+      <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
+        title="Details Lines" field="saleOrderLineList" orderBy="sequence" canMove="true"
+        form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
+        widget="tree-grid" x-tree-field="subSaleOrderLineList"
+        x-tree-field-title="Add a new sale order line"
+        readonlyIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"
+        onNew="action-sale-order-line-method-onnew-editable"
+        onChange="action-sale-order-method-on-line-change"
+        canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+        canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+        if="__config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+        editable="true">
+      </panel-related>
+      <field name="clientPartner" hidden="true"/>
+      <field name="statusSelect" hidden="true"/>
+      <field name="orderBeingEdited" hidden="true"/>
+    </panel>
+  </form>
+
   <action-attrs name="action-sale-order-attrs-amount-to-invoice">
     <attribute name="hidden"
       expr="eval: advancePaymentAmountNeeded > (new BigDecimal(amountToInvoice))"
@@ -1254,6 +1270,14 @@
       <button name="printBtn" title="Print"
         onClick="action-sale-order-method-print-sale-order"
         readonlyIf="$reportType == null || $saleOrderPrintTemplate == null"/>
+    </panel>
+  </form>
+
+  <form name="sale-order-incoterm-wizard-form" title="Fill incoterm"
+    model="com.axelor.apps.sale.db.SaleOrder" onSave="action-sale-group-confirmed">
+    <panel name="mainPanel" colSpan="12">
+      <field name="incoterm" required="true" grid-view="incoterm-grid"
+        form-view="incoterm-form"/>
     </panel>
   </form>
 
@@ -1365,7 +1389,7 @@
     <field name="saleOrderSeq"/>
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
-    <field name="orderDate"/>
+    <field name="creationDate"/>
     <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
@@ -1383,7 +1407,7 @@
 					<span>{_t('Sale quotation')}</span> {saleOrderSeq}
 					{externalReference && <span> ( {externalReference} )</span>}
 				</strong>
-				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('orderDate')}</Box>
+				<Box as="a" varient="secondary" d="flex" justifyContent="flex-end">{$fmt('creationDate')}</Box>
 				<Box d="grid" gridTemplateColumns="67% 33%">
 					<Box>
 						<Icon icon="people-fill"/> {clientPartner.fullName}
@@ -1398,23 +1422,14 @@
 					</Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" mt={1}>
-					<Box d="flex" flexDirection="column" gap={6} alignItems="start">
-						{invoicingState == 1 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
-		                {invoicingState == 2 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
-		                {invoicingState == 3 && <Badge bg="success">{_t('Invoiced')}</Badge>}
-
-	                	{deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
-	                	{deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
-	                	{deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
-		            </Box>
-		            <Box>
-			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
-		            </Box>
-				</Box>
-				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge>
-					<Badge style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					<Box>
+						<Badge style={{ backgroundColor: "#2185D0" }}>{_t(tradingName.name || company.name)}</Badge> <Box/>
+						<Badge mt={1} style={{ backgroundColor: "#2185D0" }}>{_t(stockLocation.name)}</Badge>
+					</Box>
+					<Box>
+						<strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+						<strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
+					</Box>
 				</Box>
 			</>
 		]]>
@@ -1494,6 +1509,8 @@
 
   <action-group name="action-sale-group-confirmed">
     <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
     <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
@@ -1754,10 +1771,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-compute-margin">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
-  </action-method>
-
   <action-attrs name="action-sale-order-attrs-collapse-specific-settings-group">
     <attribute name="collapse" for="specificSettings" expr="eval: true"/>
   </action-attrs>
@@ -1909,6 +1922,11 @@
     <context name="_saleOrder" expr="eval: __this__"/>
   </action-view>
 
+  <action-validate name="action-sale-order-validate-duplicate-lines">
+    <alert
+      message="This will duplicate lines and their configurator when possible, do you want to proceed ?"/>
+  </action-validate>
+
   <action-view name="action-view-show-stock-move-line" title="Customer deliveries"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-sale-order-grid"/>
@@ -1935,6 +1953,7 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-menu-grid"/>
     <view type="form" name="sale-order-line-all-form"/>
+    <view-param name="search-filters" value="sale-order-lines-filter"/>
     <domain>self.saleOrder.statusSelect in (1,2)</domain>
   </action-view>
 
@@ -1942,6 +1961,7 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-menu-grid"/>
     <view type="form" name="sale-order-line-all-form"/>
+    <view-param name="search-filters" value="sale-order-lines-filter"/>
     <domain>self.saleOrder.statusSelect IN (:_status)</domain>
     <context name="_status" expr="eval: status"/>
   </action-view>
@@ -2218,5 +2238,53 @@
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
   </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-swap-discount-type">
+    <attribute for="discountTypeSelect" name="value" expr="eval: 1"
+      if="discountTypeSelect == 2"/>
+    <attribute for="discountTypeSelect" name="value" expr="eval: 2"
+      if="discountTypeSelect == 1"/>
+    <attribute for="discountAmount" name="value" expr="eval: discountEquivalence"/>
+  </action-attrs>
+
+  <action-method name="action-sale-order-method-fill-incoterm-if-required">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="fillIncoterm"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-delivery-address-change">
+    <action name="action-sale-order-method-address-str"/>
+    <action name="action-sale-order-attrs-set-is-ispm-required"/>
+    <action name="action-sale-order-validate-sale-order-lines-delivery-address"
+      if="saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <action name="action-sale-order-method-update-sale-order-lines-delivery-address"/>
+  </action-group>
+
+  <action-validate
+    name="action-sale-order-validate-sale-order-lines-delivery-address">
+    <alert message="Would you like to update all lines with this new address?"/>
+  </action-validate>
+
+  <action-method
+    name="action-sale-order-method-update-sale-order-lines-delivery-address">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateSaleOrderLinesDeliveryAddress"/>
+  </action-method>
+
+  <action-method name="action-sale-order-duplicate-sale-order-with-configurator">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="duplicateWithConfigurator"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-on-duplicate-with-configurator">
+    <action name="save"/>
+    <action name="action-sale-order-validate-duplicate-lines"/>
+    <action name="action-sale-order-duplicate-sale-order-with-configurator"/>
+  </action-group>
+
+  <action-view name="action-sale-order-view-display-multi-lines"
+    title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-editable-multi-lines-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>

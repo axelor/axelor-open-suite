@@ -18,8 +18,15 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.SaleOrderLineDetails;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.List;
 
 public interface SaleOrderLineBomSyncService {
-  void syncSaleOrderLineBom(SaleOrder saleOrder);
+
+  void removeBomLines(SaleOrderLine saleOrderLine);
+
+  void removeSolDetailsBomLine(
+      List<SaleOrderLineDetails> saleOrderLineDetailsList, BillOfMaterial billOfMaterial);
 }

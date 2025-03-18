@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -99,4 +100,6 @@ public interface SupplierCatalogService {
 
   public BigDecimal getPurchasePrice(SupplierCatalog supplierCatalog, Company company)
       throws AxelorException;
+
+  Unit getUnit(Product product, Partner supplierPartner, Company company) throws AxelorException;
 }

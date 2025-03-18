@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form name="leave-request-create-form" model="com.axelor.utils.db.Wizard"
+    title="Create leave request" width="large" canSave="false" canNew="false"
+    onNew="action-leave-request-create-wizard-attrs-default-date">
+    <panel name="mainPanel"
+      readonlyIf="$leaveReasonList &amp;&amp; $leaveReasonList.length &gt; 0">
+      <field name="fromDate" type="date"
+        onChange="action-leave-request-create-wizard-group-from-date-onchange" required="true"/>
+      <field name="toDate" type="date" title="To date"
+        onChange="action-leave-request-create-wizard-group-date-onchange" required="true"/>
+      <field name="startOnSelect" title="Start On" type="integer"
+        selection="hr.start.on.select"
+        onChange="action-leave-request-create-wizard-group-date-onchange" required="true"/>
+      <field name="endOnSelect" title="End On" type="integer" selection="hr.start.on.select"
+        onChange="action-leave-request-create-wizard-group-date-onchange" required="true"/>
+      <field name="$duration" title="Duration" type="decimal" readonly="true" x-scale="1"/>
+    </panel>
+    <panel-related name="leaveReasonPanel" field="$leaveReasonList"
+      form-view="leave-reason-duration-form" grid-view="leave-reason-duration-grid"
+      title="Leave reasons" colSpan="12" type="one-to-many" target="com.axelor.utils.db.Wizard"
+      editable="true" onChange="action-leave-request-create-wizard-method-compute-total-duration"
+      readonlyIf="!fromDate || !toDate || !startOnSelect || !endOnSelect" required="true"/>
+    <panel name="durationPanel">
+      <field name="$totalDuration" title="Total duration" type="decimal"
+        hideIf="!$leaveReasonList || $leaveReasonList.length == 0" readonly="true"/>
+    </panel>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="createLeaveRequestBtn" title="Create leave requests"
+        onClick="action-leave-request-create-wizard-create-btn-group"
+        readonlyIf="!$leaveReasonList || $leaveReasonList.length == 0"/>
+    </panel>
+  </form>
+
+  <grid title="Leave reason" name="leave-reason-duration-grid"
+    model="com.axelor.utils.db.Wizard">
+    <hilite if="$number(duration) &gt; $number(leaveDaysToDate)" color="red"/>
+    <hilite
+      if="$number(duration) &gt; $number(leaveQuantity) &amp;&amp; $number(duration) &lt; $number(leaveDaysToDate)"
+      color="orange"/>
+    <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
+      onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"
+      onChange="action-leave-request-create-wizard-method-leave-reason-onchange"/>
+    <field name="duration" type="decimal" min="0" x-scale="1"/>
+    <field name="leaveQuantity" title="Available quantity (acquired)" type="decimal"
+      readonly="true"/>
+    <field name="leaveDaysToDate" title="Leave available to date" type="decimal"
+      readonly="true"/>
+    <field name="comment" type="string"/>
+  </grid>
+
+  <form title="Leave reason" name="leave-reason-duration-form"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <field name="leaveReason" type="many-to-one" target="com.axelor.apps.hr.db.LeaveReason"
+        onSelect="action-leave-request-create-wizard-method-get-leave-reason-domain"/>
+      <field name="duration" type="decimal" min="0" x-scale="1"/>
+      <field name="leaveQuantity" title="Available quantity (acquired)" type="decimal"
+        readonly="true"/>
+      <field name="leaveDaysToDate" title="Leave available to date" type="decimal"
+        readonly="true"/>
+      <field name="comment" type="string" widget="html" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-group name="action-leave-request-create-wizard-group-date-onchange">
+    <action name="action-leave-request-create-wizard-validate-check-date"/>
+    <action name="action-leave-request-create-wizard-method-compute-duration"/>
+  </action-group>
+
+  <action-group name="action-leave-request-create-wizard-group-from-date-onchange">
+    <action name="action-leave-request-create-wizard-validate-check-date"/>
+    <action name="action-leave-request-create-wizard-attrs-fill-todate"/>
+    <action name="action-leave-request-create-wizard-method-compute-duration"/>
+  </action-group>
+
+  <action-attrs name="action-leave-request-create-wizard-attrs-default-date">
+    <attribute for="fromDate" name="value" expr="eval: __date__"/>
+    <attribute for="startOnSelect" name="value" expr="eval: 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-leave-request-create-wizard-attrs-fill-todate">
+    <attribute for="toDate" name="value" expr="eval: fromDate" if="toDate == null"/>
+  </action-attrs>
+
+  <action-validate name="action-leave-request-create-wizard-validate-check-date">
+    <error
+      if="( toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDate != null &amp;&amp; toDate != null"
+      message="Invalid dates"/>
+  </action-validate>
+
+  <action-group name="action-leave-request-create-wizard-create-btn-group">
+    <action name="action-leave-request-create-wizard-method-check-duration"/>
+    <action name="action-leave-request-create-wizard-method-create-leave-request"/>
+  </action-group>
+
+  <action-method name="action-leave-request-create-wizard-method-create-leave-request">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController" method="create"/>
+  </action-method>
+
+  <action-method name="action-leave-request-create-wizard-method-check-duration">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="checkDuration"/>
+  </action-method>
+
+  <action-method name="action-leave-request-create-wizard-method-compute-duration">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="computeDuration"/>
+  </action-method>
+
+  <action-method
+    name="action-leave-request-create-wizard-method-leave-reason-onchange">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="leaveReasonOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-leave-request-create-wizard-method-compute-total-duration">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="computeTotalDuration"/>
+  </action-method>
+
+  <action-method
+    name="action-leave-request-create-wizard-method-get-leave-reason-domain">
+    <call class="com.axelor.apps.hr.web.leave.LeaveRequestCreateController"
+      method="getLeaveReasonDomain"/>
+  </action-method>
+
+
+  <action-view name="leave.request.wizard" model="com.axelor.utils.db.Wizard"
+    title="Leave Request Assistant">
+    <view name="leave-request-create-form" type="form"/>
+  </action-view>
+
+</object-views>

@@ -22,8 +22,6 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -33,14 +31,11 @@ import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,18 +49,18 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
   protected OrderLineTaxService orderLineTaxService;
   protected TaxService taxService;
   protected AppBaseService appBaseService;
-  protected CurrencyScaleService currencyScaleService;
+  protected PurchaseOrderLineTaxComputeService purchaseOrderLineTaxComputeService;
 
   @Inject
   public PurchaseOrderLineTaxServiceImpl(
       OrderLineTaxService orderLineTaxService,
       TaxService taxService,
       AppBaseService appBaseService,
-      CurrencyScaleService currencyScaleService) {
+      PurchaseOrderLineTaxComputeService purchaseOrderLineTaxComputeService) {
     this.orderLineTaxService = orderLineTaxService;
     this.taxService = taxService;
     this.appBaseService = appBaseService;
-    this.currencyScaleService = currencyScaleService;
+    this.purchaseOrderLineTaxComputeService = purchaseOrderLineTaxComputeService;
   }
 
   /**
@@ -99,7 +94,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       }
     }
 
-    computeAndAddTaxToList(
+    purchaseOrderLineTaxComputeService.computeAndAddTaxToList(
         map,
         purchaseOrderLineTaxList,
         purchaseOrder.getCurrency(),
@@ -186,53 +181,6 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     return purchaseOrderLineTax;
   }
 
-  protected void computeAndAddTaxToList(
-      Map<TaxLine, PurchaseOrderLineTax> map,
-      List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
-      Currency currency,
-      List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
-    for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
-      // Dans la devise de la commande
-      BigDecimal exTaxBase =
-          purchaseOrderLineTax.getReverseCharged()
-              ? purchaseOrderLineTax.getExTaxBase().negate()
-              : purchaseOrderLineTax.getExTaxBase();
-      BigDecimal taxTotal = BigDecimal.ZERO;
-      int currencyScale = currencyScaleService.getCurrencyScale(currency);
-
-      if (purchaseOrderLineTax.getTaxLine() != null) {
-        taxTotal =
-            exTaxBase.multiply(
-                purchaseOrderLineTax
-                    .getTaxLine()
-                    .getValue()
-                    .divide(
-                        new BigDecimal(100),
-                        AppBaseService.COMPUTATION_SCALING,
-                        RoundingMode.HALF_UP));
-      }
-      purchaseOrderLineTax.setTaxTotal(
-          currencyScaleService.getScaledValue(taxTotal, currencyScale));
-      purchaseOrderLineTax.setInTaxTotal(
-          currencyScaleService.getScaledValue(
-              purchaseOrderLineTax.getExTaxBase().add(taxTotal), currencyScale));
-      purchaseOrderLineTax.setPercentageTaxTotal(purchaseOrderLineTax.getTaxTotal());
-
-      PurchaseOrderLineTax oldPurchaseOrderLineTax =
-          getExistingPurchaseOrderLineTax(purchaseOrderLineTax, currentPurchaseOrderLineTaxList);
-      if (oldPurchaseOrderLineTax == null) {
-        purchaseOrderLineTaxList.add(purchaseOrderLineTax);
-
-        LOG.debug(
-            "Tax line : Tax total => {}, Total W.T. => {}",
-            purchaseOrderLineTax.getTaxTotal(),
-            purchaseOrderLineTax.getInTaxTotal());
-      } else {
-        purchaseOrderLineTaxList.add(oldPurchaseOrderLineTax);
-      }
-    }
-  }
-
   @Override
   public List<PurchaseOrderLineTax> getUpdatedPurchaseOrderLineTax(PurchaseOrder purchaseOrder) {
     List<PurchaseOrderLineTax> purchaseOrderLineTaxList = new ArrayList<>();
@@ -252,27 +200,5 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
                             != 0)
             .collect(Collectors.toList()));
     return purchaseOrderLineTaxList;
-  }
-
-  protected PurchaseOrderLineTax getExistingPurchaseOrderLineTax(
-      PurchaseOrderLineTax purchaseOrderLineTax,
-      List<PurchaseOrderLineTax> purchaseOrderLineTaxList) {
-    if (ObjectUtils.isEmpty(purchaseOrderLineTaxList) || purchaseOrderLineTax == null) {
-      return null;
-    }
-
-    for (PurchaseOrderLineTax purchaseOrderLineTaxItem : purchaseOrderLineTaxList) {
-      if (Objects.equals(purchaseOrderLineTaxItem.getTaxLine(), purchaseOrderLineTax.getTaxLine())
-          && purchaseOrderLineTaxItem
-                  .getPercentageTaxTotal()
-                  .compareTo(purchaseOrderLineTax.getTaxTotal())
-              == 0
-          && purchaseOrderLineTaxItem.getExTaxBase().compareTo(purchaseOrderLineTax.getExTaxBase())
-              == 0) {
-        return purchaseOrderLineTaxItem;
-      }
-    }
-
-    return null;
   }
 }

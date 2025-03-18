@@ -38,7 +38,7 @@ import java.util.Optional;
 @Singleton
 public class LogisticalFormController {
 
-  public void addStockMove(ActionRequest request, ActionResponse response) {
+  public void addAllStockMove(ActionRequest request, ActionResponse response) {
     try {
       @SuppressWarnings("unchecked")
       Map<String, Object> stockMoveMap =
@@ -51,7 +51,30 @@ public class LogisticalFormController {
           LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
           LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
 
-          logisticalFormService.addDetailLines(logisticalForm, stockMove);
+          logisticalFormService.addDetailLines(logisticalForm, stockMove, false);
+          response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
+          response.setValue("$stockMove", null);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void addConcernedStockMove(ActionRequest request, ActionResponse response) {
+    try {
+      @SuppressWarnings("unchecked")
+      Map<String, Object> stockMoveMap =
+          (Map<String, Object>) request.getContext().get("stockMove");
+      if (stockMoveMap != null) {
+        StockMove stockMove = Mapper.toBean(StockMove.class, stockMoveMap);
+        stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+
+        if (stockMove.getStockMoveLineList() != null) {
+          LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+          LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+
+          logisticalFormService.addDetailLines(logisticalForm, stockMove, true);
           response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
           response.setValue("$stockMove", null);
         }

@@ -19,12 +19,14 @@
 package com.axelor.apps.sale.service.saleorder.onchange;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -44,6 +46,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLinePackService saleOrderLinePackService;
   protected SaleOrderComplementaryProductService saleOrderComplementaryProductService;
+  protected SaleOrderGlobalDiscountService saleOrderGlobalDiscountService;
 
   @Inject
   public SaleOrderOnLineChangeServiceImpl(
@@ -54,7 +57,8 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       SaleOrderLineRepository saleOrderLineRepository,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SaleOrderComplementaryProductService saleOrderComplementaryProductService) {
+      SaleOrderComplementaryProductService saleOrderComplementaryProductService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService) {
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderMarginService = saleOrderMarginService;
@@ -63,6 +67,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLinePackService = saleOrderLinePackService;
     this.saleOrderComplementaryProductService = saleOrderComplementaryProductService;
+    this.saleOrderGlobalDiscountService = saleOrderGlobalDiscountService;
   }
 
   @Override
@@ -95,20 +100,29 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
+    String message = "";
     saleOrderComplementaryProductService.handleComplementaryProducts(saleOrder);
-    if (saleOrder.getSaleOrderLineList() != null
-        && saleOrder.getSaleOrderLineList().stream()
-            .anyMatch(
-                saleOrderLine ->
-                    saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK)) {
-      if (appSaleService.getAppSale().getEnablePackManagement()
+    if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()) {
+      if (saleOrder.getSaleOrderLineList().stream()
+              .anyMatch(
+                  saleOrderLine ->
+                      saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK)
+          && appSaleService.getAppSale().getEnablePackManagement()
           && saleOrderLinePackService.isStartOfPackTypeLineQtyChanged(
               saleOrder.getSaleOrderLineList())) {
         this.updateProductQtyWithPackHeaderQty(saleOrder);
       }
+      if (appSaleService.getAppBase().getIsGlobalDiscountEnabled()) {
+        saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+      }
+    } else {
+      saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
+      saleOrder.setDiscountAmount(BigDecimal.ZERO);
     }
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+    return message;
   }
 }

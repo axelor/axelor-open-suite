@@ -269,39 +269,22 @@ public class ProductServiceImpl implements ProductService {
     description += "<br>" + productVariant.getName();
     internalDescription += "<br>" + productVariant.getName();
 
-    Product product =
-        new Product(
-            productModel.getName() + " (" + productVariant.getName() + ")",
-            productModel.getCode() + "-" + seq,
-            description,
-            internalDescription,
-            productModel.getPicture(),
-            productModel.getProductCategory(),
-            productModel.getProductFamily(),
-            productModel.getUnit(),
-            productModel.getSaleSupplySelect(),
-            productModel.getProductTypeSelect(),
-            productModel.getProcurementMethodSelect(),
-            productModel.getSaleCurrency(),
-            productModel.getPurchaseCurrency(),
-            productModel.getStartDate(),
-            productModel.getEndDate());
+    Product generatedProduct = productRepo.copy(productModel, true);
+
+    generatedProduct.setName(productModel.getName() + " (" + productVariant.getName() + ")");
+    generatedProduct.setCode(productModel.getCode() + "-" + seq);
+    generatedProduct.setDescription(internalDescription);
+    generatedProduct.setDescription(description);
 
     productModel.setIsModel(true);
 
-    product.setIsModel(false);
-    product.setParentProduct(productModel);
-    product.setProductVariant(productVariant);
+    generatedProduct.setIsModel(false);
+    generatedProduct.setParentProduct(productModel);
+    generatedProduct.setProductVariant(productVariant);
 
-    product.setCostPrice(productModel.getCostPrice());
-    product.setSalePrice(productModel.getSalePrice());
-    product.setManagPriceCoef(productModel.getManagPriceCoef());
+    this.updateSalePrice(generatedProduct, null);
 
-    product = productVariantService.copyAdditionalFields(product, productModel);
-
-    this.updateSalePrice(product, null);
-
-    return product;
+    return generatedProduct;
   }
 
   /**

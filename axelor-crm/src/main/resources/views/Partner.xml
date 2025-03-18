@@ -39,6 +39,8 @@
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form">
     <menubar>
       <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+        <item name="sirenApiBtn" title="Fill from Sirene API"
+          action="save,action-partner-view-wizard-api-sirene-configuration"/>
         <item name="generateProjectItem" title="Generate Project"
           action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1"
           if-module="axelor-project" if="__config__.app.isApp('project')" hideIf="isContact"/>
@@ -361,12 +363,20 @@
 	         		{sizeSelect != 0 &&
 	         			<Box>
 	         				<dt>{_t('Size')}</dt>
-	         				{sizeSelect == 1 && <Box as="dd" ms={2}>{_t('1 to 20')}</Box>}
-	         				{sizeSelect == 2 && <Box as="dd" ms={2}>{_t('20 to 100')}</Box>}
-	         				{sizeSelect == 3 && <Box as="dd" ms={2}>{_t('100 to 500')}</Box>}
-	         				{sizeSelect == 4 && <Box as="dd" ms={2}>{_t('500 to 1000')}</Box>}
-	         				{sizeSelect == 5 && <Box as="dd" ms={2}>{_t('1000 to 2000')}</Box>}
-	         				{sizeSelect == 6 && <Box as="dd" ms={2}>{_t('Over 2000')}</Box>}
+	         				{sizeSelect == 1 && <Box as="dd" ms={2}>{_t('1 to 2')}</Box>}
+	         				{sizeSelect == 2 && <Box as="dd" ms={2}>{_t('3 to 5')}</Box>}
+	         				{sizeSelect == 3 && <Box as="dd" ms={2}>{_t('6 to 9')}</Box>}
+	         				{sizeSelect == 11 && <Box as="dd" ms={2}>{_t('10 to 19')}</Box>}
+	         				{sizeSelect == 12 && <Box as="dd" ms={2}>{_t('20 to 49')}</Box>}
+	         				{sizeSelect == 21 && <Box as="dd" ms={2}>{_t('50 to 99')}</Box>}
+	         				{sizeSelect == 22 && <Box as="dd" ms={2}>{_t('100 to 199')}</Box>}
+	         				{sizeSelect == 31 && <Box as="dd" ms={2}>{_t('200 to 249')}</Box>}
+	         				{sizeSelect == 32 && <Box as="dd" ms={2}>{_t('250 to 499')}</Box>}
+	         				{sizeSelect == 41 && <Box as="dd" ms={2}>{_t('500 to 999')}</Box>}
+	         				{sizeSelect == 42 && <Box as="dd" ms={2}>{_t('1000 to 1999')}</Box>}
+	         				{sizeSelect == 51 && <Box as="dd" ms={2}>{_t('2000 to 4999')}</Box>}
+	         				{sizeSelect == 52 && <Box as="dd" ms={2}>{_t('5000 to 9999')}</Box>}
+                            {sizeSelect == 53 && <Box as="dd" ms={2}>{_t('Over 10000')}</Box>}
 	         			</Box>
 	         		}
 	         		<Box>
@@ -444,6 +454,8 @@
         onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
+      <button name="sirenApiBtn" title="Create from Sirene API"
+        onClick="action-partner-view-wizard-api-sirene-configuration"/>
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
@@ -677,6 +689,7 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="isProspect" expr="true" if="_isProspect"/>
     <field name="isCustomer" expr="false" if="_isProspect"/>
+    <field name="isSupplier" expr="false" if="_isProspect"/>
   </action-record>
 
   <action-record name="action-partner-record-set-partner-status"

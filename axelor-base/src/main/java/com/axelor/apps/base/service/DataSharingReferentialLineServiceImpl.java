@@ -18,17 +18,23 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.apps.base.db.repo.DataSharingReferentialLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -134,6 +140,27 @@ public class DataSharingReferentialLineServiceImpl implements DataSharingReferen
 
     if (!CollectionUtils.isEmpty(dataSharingReferentialLineList)) {
       dataSharingReferentialLineList.forEach(dataSharingReferentialLineRepository::remove);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void testQueryCondition(DataSharingReferentialLine dataSharingReferentialLine)
+      throws AxelorException {
+    MetaModel model = dataSharingReferentialLine.getMetaModel();
+    if (model == null) {
+      return;
+    }
+    try {
+      getQuery(
+              Collections.singletonList(dataSharingReferentialLine),
+              (Class<? extends Model>) Class.forName(model.getFullName()))
+          .fetchOne();
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_WRONG),
+          e.getMessage());
     }
   }
 }

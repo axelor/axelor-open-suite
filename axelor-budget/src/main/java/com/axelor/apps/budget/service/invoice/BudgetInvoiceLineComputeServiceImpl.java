@@ -22,9 +22,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineCheckService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -34,11 +36,12 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.google.inject.Inject;
 import java.util.Map;
 
@@ -59,13 +62,16 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       SupplierCatalogService supplierCatalogService,
-      TaxService taxService,
+      TaxAccountService taxAccountService,
       InternationalService internationalService,
       InvoiceLineAttrsService invoiceLineAttrsService,
       CurrencyScaleService currencyScaleService,
+      ProductPriceService productPriceService,
+      FiscalPositionService fiscalPositionService,
+      InvoiceLineCheckService invoiceLineCheckService,
+      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService,
-      ProductPriceService productPriceService) {
+      AppBudgetService appBudgetService) {
     super(
         currencyService,
         priceListService,
@@ -77,11 +83,14 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
         accountConfigService,
         invoiceLineAnalyticService,
         supplierCatalogService,
-        taxService,
+        taxAccountService,
         internationalService,
         invoiceLineAttrsService,
         currencyScaleService,
-        productPriceService);
+        productPriceService,
+        fiscalPositionService,
+        invoiceLineCheckService,
+        invoiceLineSupplierCatalogService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }

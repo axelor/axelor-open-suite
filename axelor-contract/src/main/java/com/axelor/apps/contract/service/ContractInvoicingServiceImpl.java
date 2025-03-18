@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -220,7 +219,6 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     for (ContractLine line : additionalLines) {
       InvoiceLine invLine = generate(invoice, line);
       invLine.setContractLine(line);
-      setContractLineInAnalyticMoveLine(line, invLine);
       contractLineRepo.save(line);
     }
   }
@@ -264,7 +262,6 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
         AppAccount appAccount = appAccountService.getAppAccount();
         fillCutOffDate(contract, appAccount, start, invLine, end, isPeriodicInvoicing);
         invLine.setContractLine(line);
-        setContractLineInAnalyticMoveLine(line, invLine);
       }
     }
   }
@@ -404,22 +401,18 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
           }
 
           @Override
-          public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
-              throws AxelorException {
+          public void setTaxEquiv(InvoiceLine invoiceLine) {
             if (finalContract != null && contractYearEndBonusService.isYebContract(finalContract)) {
               if (CollectionUtils.isNotEmpty(taxLineSet)) {
-                Set<Tax> taxSet =
-                    taxLineSet.stream().map(TaxLine::getTax).collect(Collectors.toSet());
-                if (CollectionUtils.isNotEmpty(taxSet)) {
-                  TaxEquiv taxEquiv =
-                      fiscalPositionService.getTaxEquiv(invoice.getFiscalPosition(), taxSet);
-                  invoiceLine.setTaxEquiv(taxEquiv);
-                }
+                TaxEquiv taxEquiv =
+                    fiscalPositionService.getTaxEquivFromOrToTaxSet(
+                        invoice.getFiscalPosition(), taxLineSet);
+                invoiceLine.setTaxEquiv(taxEquiv);
               } else {
-                super.setTaxEquiv(invoiceLine, company, isPurchase);
+                super.setTaxEquiv(invoiceLine);
               }
             } else {
-              super.setTaxEquiv(invoiceLine, company, isPurchase);
+              super.setTaxEquiv(invoiceLine);
             }
           }
 
@@ -627,14 +620,6 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
       return ContractInvoicingService.super.getVersions(contract);
     } else {
       return Collections.singletonList(contract.getCurrentContractVersion());
-    }
-  }
-
-  protected void setContractLineInAnalyticMoveLine(ContractLine line, InvoiceLine invLine) {
-    if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
-      for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
-        analyticMoveLine.setContractLine(line);
-      }
     }
   }
 

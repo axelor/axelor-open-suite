@@ -18,77 +18,36 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
-import java.util.Objects;
+import java.util.List;
 
-public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSyncService {
-
-  protected final SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService;
-  protected final SaleOrderLineBomService saleOrderLineBomService;
-  protected final AppProductionService appProductionService;
+public class SaleOrderProductionSyncServiceImpl extends SaleOrderSyncAbstractService
+    implements SaleOrderProductionSyncService {
 
   @Inject
-  public SaleOrderProductionSyncServiceImpl(
-      SaleOrderLineBomService saleOrderLineBomService,
+  protected SaleOrderProductionSyncServiceImpl(
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
+      SaleOrderLineBomService saleOrderLineBomService,
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolBomCustomizationService solBomCustomizationService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService,
+      SolBomUpdateService solBomUpdateService,
       AppProductionService appProductionService) {
-    this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
-    this.saleOrderLineBomService = saleOrderLineBomService;
-    this.appProductionService = appProductionService;
+    super(
+        saleOrderLineBomLineMappingService,
+        saleOrderLineBomService,
+        saleOrderLineDetailsBomService,
+        solBomCustomizationService,
+        solDetailsBomUpdateService,
+        solBomUpdateService,
+        appProductionService);
   }
 
   @Override
-  public void syncSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
-    Objects.requireNonNull(saleOrder);
-
-    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
-      return;
-    }
-
-    if (saleOrder.getSaleOrderLineList() != null) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        syncSaleOrderLine(saleOrderLine);
-      }
-    }
-  }
-
-  protected void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
-    Objects.requireNonNull(saleOrderLine);
-    // No personalized BOM = no synchronization
-    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
-      return;
-    }
-    if (!saleOrderLine.getIsToProduce()) {
-      return;
-    }
-    // First we sync sub lines, because if a change occurs is one of them
-    // We take it into account when sync the current sale order line
-    if (saleOrderLine.getSubSaleOrderLineList() != null) {
-      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-        syncSaleOrderLine(subSaleOrderLine);
-      }
-    }
-
-    // if bom lines list is same size as sub line list (checking if more line or less)
-    // and if each lines are sync
-    var isUpdated = saleOrderLineBomService.isUpdated(saleOrderLine);
-
-    if (isUpdated) {
-      return;
-    }
-
-    // Not sync
-    // Checking first if a personalized bom is created on saleOrderLine. If not, will create one.
-    if (!saleOrderLine.getBillOfMaterial().getPersonalized()) {
-      saleOrderLineBomService.customizeBomOf(saleOrderLine);
-    }
-    // Will sync with current personalized bom
-    else {
-      saleOrderLineBomService.updateWithBillOfMaterial(saleOrderLine);
-    }
+  protected List<SaleOrderLineDetails> getSaleOrderListDetailsList(SaleOrderLine saleOrderLine) {
+    return saleOrderLine.getSaleOrderLineDetailsList();
   }
 }

@@ -29,12 +29,12 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -96,10 +96,10 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       BigDecimal forcedPriceDiscounted = null;
 
       ProjectTask projectTask = timesheetLine.getProjectTask();
-      if (projectTask != null && projectTask.getFrameworkCustomerContract() != null) {
-        forcedUnitPrice = projectTask.getProduct() != null ? projectTask.getUnitPrice() : null;
-        forcedPriceDiscounted =
-            projectTask.getProduct() != null ? projectTask.getPriceDiscounted() : null;
+      if (projectTask != null && projectTask.getProduct() != null) {
+        product = projectTask.getProduct();
+        forcedUnitPrice = projectTask.getUnitPrice();
+        forcedPriceDiscounted = projectTask.getPriceDiscounted();
       }
 
       tabInformations[0] = product;

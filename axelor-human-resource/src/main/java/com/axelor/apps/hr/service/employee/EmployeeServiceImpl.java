@@ -102,15 +102,16 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   @Override
   public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
-    Company company = employee.getMainEmploymentContract().getPayCompany();
     BigDecimal duration = BigDecimal.ZERO;
 
+    Company company =
+        Optional.ofNullable(employee.getMainEmploymentContract())
+            .map(EmploymentContract::getPayCompany)
+            .orElse(null);
+
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
-    if (weeklyPlanning == null) {
-      HRConfig conf = company.getHrConfig();
-      if (conf != null) {
-        weeklyPlanning = conf.getWeeklyPlanning();
-      }
+    if (weeklyPlanning == null && company != null) {
+      weeklyPlanning = company.getWeeklyPlanning();
     }
 
     if (weeklyPlanning == null) {
@@ -122,11 +123,8 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     }
 
     EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
-    if (publicHolidayPlanning == null) {
-      HRConfig conf = company.getHrConfig();
-      if (conf != null) {
-        publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
-      }
+    if (publicHolidayPlanning == null && company != null) {
+      publicHolidayPlanning = company.getPublicHolidayEventsPlanning();
     }
 
     if (publicHolidayPlanning == null) {

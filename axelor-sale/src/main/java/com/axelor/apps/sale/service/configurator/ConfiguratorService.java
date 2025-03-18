@@ -19,13 +19,14 @@
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
 import java.lang.reflect.InvocationTargetException;
-import wslite.json.JSONException;
 
 public interface ConfiguratorService {
 
@@ -41,6 +42,21 @@ public interface ConfiguratorService {
    */
   void updateIndicators(
       Configurator configurator, JsonContext attributes, JsonContext indicators, Long saleOrderId)
+      throws AxelorException;
+
+  void regenerateSaleOrderLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  SaleOrderLine generateSaleOrderLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators)
       throws AxelorException;
 
   /**
@@ -66,12 +82,23 @@ public interface ConfiguratorService {
       JsonContext jsonAttributes,
       JsonContext jsonIndicators,
       Long saleOrderId)
-      throws NoSuchMethodException,
-          InvocationTargetException,
-          IllegalAccessException,
-          JSONException,
-          ClassNotFoundException,
-          AxelorException;
+      throws AxelorException;
+
+  void regenerateProduct(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException;
+
+  void fillProductFields(
+      Configurator configurator,
+      Product product,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      Long saleOrderId)
+      throws AxelorException;
 
   /**
    * Generate a product, then generate a sale order line with the created product, then add this

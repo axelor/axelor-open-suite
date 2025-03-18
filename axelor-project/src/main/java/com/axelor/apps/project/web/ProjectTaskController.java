@@ -20,6 +20,7 @@ package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -35,6 +36,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectTaskAttrsService;
+import com.axelor.apps.project.service.ProjectTaskGroupService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
@@ -47,6 +49,7 @@ import com.axelor.rpc.ActionResponse;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -306,5 +309,33 @@ public class ProjectTaskController {
     Beans.get(ProjectCheckListTemplateService.class)
         .generateCheckListItemsFromTemplate(projectTask, template);
     response.setValue("projectCheckListItemList", projectTask.getProjectCheckListItemList());
+  }
+
+  public void computeSprintDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    String domain = Beans.get(ProjectTaskAttrsService.class).getActiveSprintDomain(projectTask);
+
+    response.setAttr("activeSprint", "domain", domain);
+  }
+
+  @ErrorException
+  public void updateBudgetedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Unit oldTimeUnit = null;
+    if (projectTask.getId() != null && projectTask.getTimeUnit() != null) {
+      oldTimeUnit =
+          Optional.ofNullable(Beans.get(ProjectTaskRepository.class).find(projectTask.getId()))
+              .map(ProjectTask::getTimeUnit)
+              .orElse(null);
+      if (oldTimeUnit == null || Objects.equals(oldTimeUnit, projectTask.getTimeUnit())) {
+        oldTimeUnit = null;
+      }
+    }
+
+    response.setValues(
+        Beans.get(ProjectTaskGroupService.class).updateBudgetedTime(projectTask, oldTimeUnit));
   }
 }

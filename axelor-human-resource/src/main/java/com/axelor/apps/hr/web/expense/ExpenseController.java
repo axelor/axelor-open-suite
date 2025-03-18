@@ -69,6 +69,7 @@ import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -149,16 +150,18 @@ public class ExpenseController {
       response.setView(
           ActionView.define(I18n.get("Expense"))
               .model(Expense.class.getName())
-              .add("form", "expense-form")
+              .add("form", "complete-my-expense-form")
               .context("_payCompany", Beans.get(UserHrService.class).getPayCompany(user))
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else if (expenseList.size() == 1) {
       response.setView(
           ActionView.define(I18n.get("Expense"))
               .model(Expense.class.getName())
-              .add("form", "expense-form")
+              .add("form", "complete-my-expense-form")
               .param("forceEdit", "true")
               .context("_showRecord", String.valueOf(expenseList.get(0).getId()))
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else {
       response.setView(
@@ -189,10 +192,11 @@ public class ExpenseController {
     response.setView(
         ActionView.define(I18n.get("Expense"))
             .model(Expense.class.getName())
-            .add("form", "expense-form")
+            .add("form", "complete-my-expense-form")
             .param("forceEdit", "true")
             .domain("self.id = " + expenseId)
             .context("_showRecord", expenseId)
+            .context("_isEmployeeReadOnly", true)
             .map());
   }
 
@@ -373,6 +377,13 @@ public class ExpenseController {
     } finally {
       response.setReload(true);
     }
+  }
+
+  public void backToDraft(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    Beans.get(ExpenseWorkflowService.class).backToDraft(expense);
+    response.setReload(true);
   }
 
   public void addPayment(ActionRequest request, ActionResponse response) {

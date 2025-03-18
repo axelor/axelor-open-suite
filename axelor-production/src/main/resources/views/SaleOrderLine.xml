@@ -8,12 +8,13 @@
     editable="true" extension="true">
     <extend target="//field[@name='sequence']">
       <insert position="before">
-        <hilite if="billOfMaterialLine" color="blue"/>
+        <hilite if="billOfMaterialLine &amp;&amp; saleSupplySelect == 3" color="blue"/>
       </insert>
     </extend>
     <extend target="//field[@name='availableStatus']">
       <insert position="after">
         <field name="billOfMaterialLine" hidden="true"/>
+        <field name="saleSupplySelect" hidden="true"/>
       </insert>
     </extend>
   </grid>
@@ -23,21 +24,26 @@
     <extend target="//field[@name='supplierPartner']">
       <insert position="after">
         <spacer colSpan="6"/>
-        <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
+        <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')" colSpan="4">
           <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
-            colSpan="12" onChange="action-sale-order-line-method-general-sub-lines"/>
+            colSpan="12" onChange="action-sale-order-line-method-bom-onchange"/>
           <button name="customizeBOMBtn" title="Customize BOM"
             if="__config__.app.getApp('production')?.allowPersonalizedBOM"
             onClick="action-production-method-customize-bill-of-material"/>
         </panel>
-        <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
+        <panel name="prodProcessPanel" if="__config__.app.isApp('production')" colSpan="4">
           <field name="prodProcess"
             onSelect="action-sale-order-line-method-set-prod-process-domain"
             form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
             if="__config__.app.getApp('production')?.allowPersonalizedProdProcess"/>
+        </panel>
+        <panel name="qtyToProducePanel" colSpan="4"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
+          <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true"
+            colSpan="12"/>
         </panel>
       </insert>
     </extend>
@@ -67,14 +73,30 @@
     </extend>
   </form>
 
+  <form name="sale-order-line-summary-form" title="Sale order line details"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <panel-related name="saleOrderLineDetailsEditablePanel"
+      field="saleOrderLineDetailsList" form-view="sale-order-line-details-form"
+      grid-view="sale-order-line-details-grid" editable="true"
+      showIf="!$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)"/>
+
+    <panel-related name="saleOrderLineDetailsReadonlyPanel"
+      field="saleOrderLineDetailsList" form-view="sale-order-line-details-form"
+      grid-view="sale-order-line-details-readonly-grid"
+      showIf="$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)"/>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="saleSupplySelect" hidden="true"/>
+      <field name="billOfMaterial" hidden="true"/>
+    </panel>
+  </form>
+
   <action-method name="action-production-method-customize-bill-of-material">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="customizeBillOfMaterial"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-general-sub-lines">
-    <call class="com.axelor.apps.production.web.SaleOrderLineController"
-      method="generateSubLines"/>
+  <action-method name="action-sale-order-line-method-bom-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController" method="bomOnChange"/>
   </action-method>
 
   <action-method name="action-production-method-customize-prod-process">

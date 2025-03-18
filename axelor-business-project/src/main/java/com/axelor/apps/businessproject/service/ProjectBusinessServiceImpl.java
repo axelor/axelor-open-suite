@@ -20,22 +20,18 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -47,21 +43,20 @@ import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.ResourceBookingService;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.studio.db.AppSupplychain;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -89,6 +84,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected InvoiceRepository invoiceRepository;
   protected UnitConversionForProjectService unitConversionForProjectService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
+  protected ProjectTimeUnitService projectTimeUnitService;
+  protected SaleOrderGeneratorService saleOrderGeneratorService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -111,7 +108,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
       UnitConversionForProjectService unitConversionForProjectService,
-      SaleOrderStockLocationService saleOrderStockLocationService) {
+      SaleOrderStockLocationService saleOrderStockLocationService,
+      ProjectTimeUnitService projectTimeUnitService,
+      SaleOrderGeneratorService saleOrderGeneratorService) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -128,12 +127,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.invoiceRepository = invoiceRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
+    this.projectTimeUnitService = projectTimeUnitService;
+    this.saleOrderGeneratorService = saleOrderGeneratorService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateQuotation(Project project) throws AxelorException {
-    SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 
     Partner clientPartner = project.getClientPartner();
     Partner contactPartner = project.getContactPartner();
@@ -143,86 +143,35 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     Company company = project.getCompany();
 
+    Currency currency = getCurrency(project, clientPartner, company);
+
+    SaleOrder order =
+        saleOrderGeneratorService.createSaleOrder(
+            clientPartner, company, contactPartner, currency, null);
+
     order.setProject(projectRepository.find(project.getId()));
-    order.setClientPartner(clientPartner);
-    order.setContactPartner(contactPartner);
-    order.setCompany(company);
-
-    order.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
-    order.setMainInvoicingAddressStr(
-        addressService.computeAddressStr(order.getMainInvoicingAddress()));
-    order.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
-    order.setDeliveryAddressStr(addressService.computeAddressStr(order.getDeliveryAddress()));
-    order.setIsNeedingConformityCertificate(clientPartner.getIsNeedingConformityCertificate());
-    order.setCompanyBankDetails(
-        Beans.get(AccountingSituationService.class)
-            .getCompanySalesBankDetails(company, clientPartner));
-
-    if (project.getCurrency() != null) {
-      order.setCurrency(project.getCurrency());
-    } else if (clientPartner.getCurrency() != null) {
-      order.setCurrency(clientPartner.getCurrency());
-    } else {
-      order.setCurrency(company.getCurrency());
-    }
 
     if (project.getPriceList() != null) {
       order.setPriceList(project.getPriceList());
-    } else {
-      order.setPriceList(
-          Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE));
     }
 
     if (order.getPriceList() != null) {
       order.setHideDiscount(order.getPriceList().getHideDiscount());
     }
 
-    if (clientPartner.getPaymentCondition() != null) {
-      order.setPaymentCondition(clientPartner.getPaymentCondition());
-    } else {
-      if (company != null && company.getAccountConfig() != null) {
-        order.setPaymentCondition(company.getAccountConfig().getDefPaymentCondition());
-      }
-    }
-
-    if (clientPartner.getInPaymentMode() != null) {
-      order.setPaymentMode(clientPartner.getInPaymentMode());
-    } else {
-      if (company != null && company.getAccountConfig() != null) {
-        order.setPaymentMode(company.getAccountConfig().getInPaymentMode());
-      }
-    }
-
-    AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
-    if (appSupplychain != null) {
-      order.setShipmentMode(clientPartner.getShipmentMode());
-      order.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
-      if (clientPartner.getFreightCarrierMode() != null) {
-        order.setCarrierPartner(clientPartner.getFreightCarrierMode().getCarrierPartner());
-      }
-      Boolean interco =
-          appSupplychain.getIntercoFromSale()
-              && !order.getCreatedByInterco()
-              && clientPartner != null
-              && Beans.get(CompanyRepository.class)
-                      .all()
-                      .filter("self.partner = ?", clientPartner)
-                      .fetchOne()
-                  != null;
-      order.setInterco(interco);
-      order.setStockLocation(
-          saleOrderStockLocationService.getStockLocation(clientPartner, company));
-      order.setToStockLocation(
-          saleOrderStockLocationService.getToStockLocation(clientPartner, company));
-
-      // Automatic invoiced and delivered partners set in case of partner delegations
-      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
-        Beans.get(SaleOrderSupplychainService.class)
-            .setDefaultInvoicedAndDeliveredPartnersAndAddresses(order);
-      }
-    }
     return Beans.get(SaleOrderRepository.class).save(order);
+  }
+
+  protected Currency getCurrency(Project project, Partner clientPartner, Company company) {
+    Currency currency;
+    if (project.getCurrency() != null) {
+      currency = project.getCurrency();
+    } else if (clientPartner.getCurrency() != null) {
+      currency = clientPartner.getCurrency();
+    } else {
+      currency = company.getCurrency();
+    }
+    return currency;
   }
 
   /**
@@ -232,7 +181,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
    * @return The project generated.
    */
   @Override
-  public Project generateProject(SaleOrder saleOrder) {
+  public Project generateProject(SaleOrder saleOrder) throws AxelorException {
     Project project = projectRepository.findByName(saleOrder.getFullName() + "_project");
     project =
         project == null
@@ -254,7 +203,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner clientPartner)
+      throws AxelorException {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
 
@@ -273,14 +223,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setIsInvoicingTimesheet(true);
     }
 
-    project.setNumberHoursADay(
-        appBusinessProjectService.getAppBusinessProject().getDefaultHoursADay());
-    project.setProjectTimeUnit(appBusinessProjectService.getAppBusinessProject().getDaysUnit());
+    project.setNumberHoursADay(appBaseService.getDailyWorkHours());
+    project.setProjectTimeUnit(appBaseService.getUnitDays());
     return project;
   }
 
   @Override
-  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) {
+  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent)
+      throws AxelorException {
     return generateProject(
         parent,
         saleOrderLine.getFullName(),
@@ -355,10 +305,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
     BigDecimal totalSpentTime = BigDecimal.ZERO;
 
-    Unit projectUnit = project.getProjectTimeUnit();
+    Unit projectUnit = projectTimeUnitService.getProjectDefaultHoursTimeUnit(project);
 
     for (ProjectTask projectTask : projectTaskList) {
-      Unit projectTaskUnit = projectTask.getTimeUnit();
+      Unit projectTaskUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
+
       if (!projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
         continue;
       }
@@ -598,7 +549,23 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void backupToProjectHistory(Project project) {
+
+    project.addProjectHistoryLineListItem(createProjectHistoryLine(project));
+
+    projectRepository.save(project);
+  }
+
+  protected ProjectHistoryLine createProjectHistoryLine(Project project) {
     ProjectHistoryLine projectHistoryLine = new ProjectHistoryLine();
+
+    computeTimeFields(projectHistoryLine, project);
+    computeFinancialFields(projectHistoryLine, project);
+    computeInvoiceFields(projectHistoryLine, project);
+
+    return projectHistoryLine;
+  }
+
+  protected void computeTimeFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setSoldTime(project.getSoldTime());
     projectHistoryLine.setUpdatedTime(project.getUpdatedTime());
     projectHistoryLine.setPlannedTime(project.getPlannedTime());
@@ -606,7 +573,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setPercentageOfProgress(project.getPercentageOfProgress());
     projectHistoryLine.setPercentageOfConsumption(project.getPercentageOfConsumption());
     projectHistoryLine.setRemainingAmountToDo(project.getRemainingAmountToDo());
+  }
 
+  protected void computeFinancialFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setTurnover(project.getTurnover());
     projectHistoryLine.setInitialCosts(project.getInitialCosts());
     projectHistoryLine.setInitialMargin(project.getInitialMargin());
@@ -621,15 +590,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setLandingCosts(project.getLandingCosts());
     projectHistoryLine.setLandingMargin(project.getLandingMargin());
     projectHistoryLine.setLandingMarkup(project.getLandingMarkup());
+  }
 
+  protected void computeInvoiceFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setTotalInvoiced(project.getTotalInvoiced());
     projectHistoryLine.setInvoicedThisMonth(project.getInvoicedThisMonth());
     projectHistoryLine.setInvoicedLastMonth(project.getInvoicedLastMonth());
     projectHistoryLine.setTotalPaid(project.getTotalPaid());
-
-    project.addProjectHistoryLineListItem(projectHistoryLine);
-
-    projectRepository.save(project);
   }
 
   @Override
@@ -834,9 +801,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .domain(domain)
             .param("details-view", "true");
 
-    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
-      builder.add("kanban", "task-per-section-kanban");
-      builder.add("calendar", "project-task-per-section-calendar");
+    if (project.getIsShowKanbanPerCategory() && project.getIsShowCalendarPerCategory()) {
+      builder.add("kanban", "task-per-category-kanban");
+      builder.add("calendar", "project-task-per-category-calendar");
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");

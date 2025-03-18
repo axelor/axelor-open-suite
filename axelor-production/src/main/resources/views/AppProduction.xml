@@ -5,7 +5,8 @@
 
   <form name="app-production-config-form" title="App manufacturing"
     model="com.axelor.studio.db.AppProduction" canDelete="false" canNew="false" width="large"
-    onSave="action-app-production-method-check-outsourcing-disabled-onsave">
+    onSave="action-app-production-method-check-outsourcing-disabled-onsave"
+    onLoad="action-app-production-attrs-so-bom-line-generation-readonly">
     <panel name="productionConfigurationPanel" colSpan="12">
       <panel name="firstConfigurationPanel" colSpan="6" itemSpan="12">
         <panel name="productionAndManufOrdersPanel"
@@ -24,6 +25,7 @@
           <field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
           <field name="manageResidualProductOnBom" widget="boolean-switch"/>
           <field name="allowPersonalizedBOM" widget="boolean-switch"/>
+          <field name="isBomLineGenerationInSODisabled" widget="boolean-switch"/>
           <field name="nbDecimalDigitForBomQty"/>
         </panel>
         <panel name="prodProcessPanel" title="Production process">
@@ -41,6 +43,9 @@
             showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
           <field name="allowPersonalizedProdProcess" widget="boolean-switch"/>
           <field name="operationContinuitySelect"/>
+          <field name="updateProjectSolDetailsLineTypeSelect"
+            if="__config__.app.getApp('sale')?.allowPendingOrderModification &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+            if-module="axelor-business-production"/>
         </panel>
 
       </panel>
@@ -125,5 +130,10 @@
       if="__config__.app.getApp('production')?.getManageOutsourcing() &amp;&amp; !this.manageOutsourcing"
       message="It will remove subcontractor tag from all partners. This change is irreversible"/>
   </action-validate>
+
+  <action-attrs name="action-app-production-attrs-so-bom-line-generation-readonly">
+    <attribute for="isBomLineGenerationInSODisabled" name="readonly"
+      expr="eval: __config__.app.getApp('sale')?.getListDisplayTypeSelect() != __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
+  </action-attrs>
 
 </object-views>

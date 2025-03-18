@@ -54,7 +54,8 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
   }
 
   @Override
-  public Map<String, Object> qtyOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public Map<String, Object> qtyOnChange(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSol)
       throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(saleOrderLineDiscountService.getDiscount(saleOrderLine, saleOrder));

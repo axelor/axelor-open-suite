@@ -17,8 +17,12 @@
     <view type="dashboard" name="my.hr.dashboard"/>
   </action-view>
 
+  <menuitem name="edit-leave-request" parent="my-hr-root" title="Complete my leave request"
+    action="edit.leave.request" order="200" if="__config__.app.isApp('leave')" icon="airplane"
+    icon-background="#84429f"/>
+
   <menuitem name="all-leave-request" parent="my-hr-root" title="Leave Requests"
-    action="leave.all" order="200" if="__config__.app.isApp('leave')" icon="airplane"
+    action="leave.all" order="250" if="__config__.app.isApp('leave')" icon="list-task"
     icon-background="#84429f"/>
 
   <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
@@ -32,9 +36,12 @@
     <context name="to_justify_leave_reason" expr="eval: false"/>
   </action-view>
 
-  <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
-    order="300" if="__config__.app.isApp('expense')" icon="credit-card-fill"
+  <menuitem name="edit-expense" parent="my-hr-root" title="Complete my expense"
+    action="edit.expense" order="300" if="__config__.app.isApp('expense')" icon="credit-card-fill"
     icon-background="#84429f"/>
+
+  <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
+    order="310" if="__config__.app.isApp('expense')" icon="list-task" icon-background="#84429f"/>
 
   <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
     title="My Expenses">
@@ -49,7 +56,7 @@
   </action-view>
 
   <menuitem name="my-hr-root-expense-declaration" parent="my-hr-root"
-    title="Expenses declaration" action="my.hr.root.expense.declaration" order="310"
+    title="Expenses declaration" action="my.hr.root.expense.declaration" order="320"
     if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.enableExpenseDeclaration"
     icon="credit-card-fill" icon-background="#84429f"/>
 
@@ -78,9 +85,13 @@
     <domain>self.expense IS NULL</domain>
   </action-view>
 
+  <menuitem name="edit-timesheet" parent="my-hr-root" title="Complete my timesheet"
+    action="edit.timesheet" order="400" if="__config__.app.isApp('timesheet')" icon="clock"
+    icon-background="#84429f"/>
+
   <menuitem name="all-my-timesheet" parent="my-hr-root" title="Timesheets"
-    action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"
-    icon="clock" icon-background="#84429f"/>
+    action="action.timesheet.view.my.timesheet" order="410" if="__config__.app.isApp('timesheet')"
+    icon="list-task" icon-background="#84429f"/>
 
   <action-view name="action.timesheet.view.my.timesheet"
     model="com.axelor.apps.hr.db.Timesheet" title="My Timesheets">
@@ -112,9 +123,12 @@
     <view name="ts-multi-timer-form" type="form"/>
   </action-view>
 
+  <menuitem name="edit-extra-hours" parent="my-hr-root" title="Extra hours request"
+    action="edit.extra.hours" order="500" if="__config__.app.isApp('exthrs')"
+    icon="hourglass-bottom" icon-background="#84429f"/>
 
-  <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
-    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="hourglass-top"
+  <menuitem name="all-extra-hours" parent="my-hr-root" title="All extra hours"
+    action="extra.hours.all" order="550" if="__config__.app.isApp('exthrs')" icon="list-task"
     icon-background="#84429f"/>
 
   <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
@@ -687,36 +701,25 @@
     <context name="_projectIds" expr="eval: projectId" if="projectId"/>
   </action-view>
 
-  <menuitem name="project-unit-conversion" parent="project-configurations"
-    title="Unit conversions" action="project.unit.conversion" order="1300"
-    if-module="axelor-human-resource"/>
+  <menuitem name="project-allocation-years" parent="project-configurations"
+    title="Allocation years" action="project.allocation.years" order="1700"/>
 
-  <action-view name="project.unit.conversion" title="Unit conversions"
-    model="com.axelor.apps.base.db.UnitConversion">
-    <view type="grid" name="unit-conversion-grid"/>
-    <view type="form" name="unit-conversion-form"/>
-    <domain>self.entitySelect = 1</domain>
-    <context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
-    <context name="_entitySelect" expr="eval: 1"/>
-    <context name="_forceTimeUnit" expr="eval: true"/>
+  <action-view name="project.allocation.years" title="Allocation years"
+    model="com.axelor.apps.base.db.Year">
+    <view type="grid" name="year-grid"/>
+    <view type="form" name="year-hr-allocation-form"/>
+    <view-param name="search-filters" value="year-filters"/>
+    <domain>self.typeSelect = 4</domain>
   </action-view>
 
-  <!-- Top Menus -->
+  <menuitem name="project-allocation-periods" parent="project-configurations"
+    title="Allocation periods" action="project.allocation.periods" order="1800"/>
 
-  <menuitem name="top-menu-hr" title="HR" order="4" top="true" left="false"
-    if="__config__.app.isApp('employee')"/>
-
-  <menuitem name="top-menu-hr-my-timesheet" parent="top-menu-hr" title="My timesheet"
-    action="edit.timesheet" top="true" if="__config__.app.isApp('timesheet')"/>
-
-  <menuitem name="top-menu-hr-my-expense" parent="top-menu-hr" title="My expense"
-    action="edit.expense" top="true" if="__config__.app.isApp('expense')"/>
-
-  <menuitem name="top-menu-hr-my-leave-request" parent="top-menu-hr"
-    title="My leave request" action="edit.leave.request" top="true"
-    if="__config__.app.isApp('leave')"/>
-
-  <menuitem name="top-menu-hr-my-extra-hours" parent="top-menu-hr" title="My extra hours"
-    action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"/>
+  <action-view name="project.allocation.periods" title="Allocation periods"
+    model="com.axelor.apps.base.db.Period">
+    <view type="grid" name="period-grid"/>
+    <view type="form" name="period-hr-allocation-form"/>
+    <domain>self.year.typeSelect = 4</domain>
+  </action-view>
 
 </object-views>

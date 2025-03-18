@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
@@ -139,10 +140,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    SaleOrderMarginService saleOrderMarginService = Beans.get(SaleOrderMarginService.class);
+    MarginComputeService marginComputeService = Beans.get(MarginComputeService.class);
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderMarginService.computeSubMargin(saleOrder, saleOrderLine);
+        marginComputeService.computeSubMargin(
+            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal());
       }
     }
   }

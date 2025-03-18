@@ -14,6 +14,9 @@
     <boolean name="excludeTimesheetEditor" title="Exclude timesheet editor"
       help="When the checkbox is true, it enables to choose the project when filling timesheet lines VIA THE DYNAMIC EDITOR of the HR timesheet app."/>
 
+    <boolean name="allowAllocatedInit" title="Allow allocated initialization"
+      help="If enable, allow the user to select the initialization of allocated with computed planned time on the period"/>
+
   </entity>
 
 </domain-models>

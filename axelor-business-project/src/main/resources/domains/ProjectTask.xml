@@ -12,8 +12,8 @@
     <decimal name="exTaxTotal" title="ProjectTask.exTaxTotal"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
-    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <decimal name="discountAmount" title="Discount amount" precision="30" scale="20"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="30" scale="20"/>
     <integer name="invoicingType" selection="business.project.task.invoicing.type.select"
       default="3" title="Invoicing Type"/>
     <boolean name="isPaid" title="Paid"/>
@@ -34,7 +34,6 @@
       ref="com.axelor.apps.contract.db.Contract"/>
 
     <!-- planification fields -->
-    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
     <decimal name="soldTime" title="Sold time"/>
     <decimal name="updatedTime" title="Updated time"/>
     <decimal name="plannedTime" title="Planned time"/>

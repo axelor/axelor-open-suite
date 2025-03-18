@@ -91,11 +91,6 @@
     <option value="com.axelor.apps.sale.db.SaleOrder">Sale Order</option>
   </selection>
 
-  <selection name="sale.sale.order.line.tree.select">
-    <option value="1">View</option>
-    <option value="2">Product</option>
-  </selection>
-
   <selection name="base.pricing.type.select" id="sale.base.pricing.type.select">
     <option value="Pricing">Sale.Pricing</option>
   </selection>
@@ -110,7 +105,13 @@
     <option value="0">Standard</option>
     <option value="1">Editable</option>
     <option value="2">Editable tree</option>
-    <option value="3">Tree line</option>
+  </selection>
+
+  <selection name="sale.sale.order.line.product.sub.type.icon.select">
+    <option value="SALE_ORDER_LINE_PRODUCT_TYPE_SERVICE" icon="fa-briefcase"/>
+    <option value="SALE_ORDER_LINE_PRODUCT_TYPE_FINISHED_PRODUCT" icon="fa-box"/>
+    <option value="SALE_ORDER_LINE_PRODUCT_TYPE_SEMI_FINISH_PRODUCT" icon="fa-wrench"/>
+    <option value="SALE_ORDER_LINE_PRODUCT_TYPE_COMPONENT" icon="fa-cpu-fill"/>
   </selection>
 
 </object-views>

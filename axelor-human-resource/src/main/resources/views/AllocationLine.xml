@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="allocation-line-grid" title="Allocation lines"
+    model="com.axelor.apps.hr.db.AllocationLine" groupBy="period" orderBy="period.fromDate"
+    editable="true" onNew="action-allocation-line-attrs-set-default-values">
+    <toolbar>
+      <button name="addMultipleLinesBtn" title="Add multiple lines" icon="fa-plus"
+        onClick="action-allocation-line-view-add-multiple-lines"/>
+      <button name="allAllocationLinesBtn" title="All allocation lines" colSpan="2"
+        css="btn-custom text-left" icon="calendar3-week"
+        onClick="save,action-allocation-line-view-all-allocations"/>
+    </toolbar>
+    <field name="employee" grid-view="employee-grid" form-view="employee-form" required="true"
+      canNew="false" onSelect="action-allocation-line-method-set-employee-domain"/>
+    <field name="period" grid-view="period-grid" form-view="period-hr-allocation-form"
+      required="true" domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
+    <field name="allocated" hideIf="$initWithPlanningTime"/>
+    <field name="$plannedTime" readonly="true" title="Planned time" x-scale="2"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
+    <field name="$leaves" readonly="true" title="Leaves" x-scale="2"/>
+    <field name="$alreadyAllocated" readonly="true" title="Already allocated" x-scale="2"/>
+    <field name="$availableAllocation" readonly="true" title="Available" x-scale="2"/>
+  </grid>
+
+  <grid name="allocation-line-default-grid" title="Allocation lines"
+    model="com.axelor.apps.hr.db.AllocationLine" groupBy="project,period" orderBy="period.fromDate"
+    canNew="false" onNew="action-allocation-line-attrs-set-default-values">
+    <field name="project" grid-view="project-grid" form-view="project-form" readonly="true"/>
+    <field name="employee" grid-view="employee-grid" form-view="employee-form" required="true"
+      canNew="false" onSelect="action-allocation-line-method-set-employee-domain"/>
+    <field name="period" grid-view="period-grid" form-view="period-hr-allocation-form"
+      required="true" domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
+    <field name="allocated" hideIf="$initWithPlanningTime"/>
+    <field name="$plannedTime" readonly="true" title="Planned time" x-scale="2"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
+    <field name="$leaves" readonly="true" title="Leaves" x-scale="2"/>
+    <field name="$alreadyAllocated" readonly="true" title="Already allocated" x-scale="2"/>
+    <field name="$availableAllocation" readonly="true" title="Available" x-scale="2"/>
+  </grid>
+
+  <form name="allocation-line-form" title="Allocation line"
+    model="com.axelor.apps.hr.db.AllocationLine"
+    onNew="action-allocation-line-attrs-set-default-values">
+    <panel name="mainPanel">
+      <field name="project" grid-view="project-grid" form-view="project-form" readonly="true"/>
+      <field name="employee" grid-view="employee-grid" form-view="employee-form"
+        required="true" canNew="false" onSelect="action-allocation-line-method-set-employee-domain"/>
+      <field name="period" grid-view="period-grid" form-view="period-hr-allocation-form"
+        required="true" domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
+      <field name="allocated" hideIf="$initWithPlanningTime"/>
+      <field name="$initWithPlanningTime" title="Init with planning time" type="boolean"
+        showIf="$project.allowAllocatedInit"/>
+      <spacer/>
+      <field name="$plannedTime" colSpan="3" readonly="true" title="Planned time" x-scale="2"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
+      <field name="$leaves" readonly="true" colSpan="3" title="Leaves" x-scale="2"/>
+      <field name="$alreadyAllocated" readonly="true" colSpan="3" title="Already allocated"
+        x-scale="2"/>
+      <field name="$availableAllocation" readonly="true" colSpan="3" title="Available"
+        x-scale="2"/>
+      <field name="description" colSpan="12"/>
+      <field name="$project.allowAllocatedInit" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="allocation-line-wizard-form" title="Allocation lines"
+    model="com.axelor.utils.db.Wizard" onNew="action-allocation-line-attrs-set-default-values">
+    <panel name="mainPanel">
+      <field name="$employeeSet" title="Employees" type="many-to-many"
+        target="com.axelor.apps.hr.db.Employee" grid-view="employee-grid" form-view="employee-form"
+        widget="TagSelect" placeholder="All" canNew="false"
+        onSelect="action-allocation-line-method-set-employee-set-domain"/>
+      <field name="$periodSet" title="Allocation periods" type="many-to-many"
+        target="com.axelor.apps.base.db.Period" grid-view="period-grid"
+        form-view="period-hr-allocation-form" widget="TagSelect" required="true"
+        domain="self.year.typeSelect = 4 AND self.toDate &gt; :__date__"/>
+      <field name="$allocated" title="Allocated" type="decimal" min="0" max="5" x-scale="1"
+        hideIf="$initWithPlanningTime"/>
+      <field name="$initWithPlanningTime" title="Init with planning time"
+        showIf="$project.allowAllocatedInit" type="boolean"/>
+      <button name="addMultipleLinesBtn" title="Add lines"
+        onClick="action-allocation-line-method-add-multiple-lines"/>
+      <field name="$project" title="Project" type="many-to-one"
+        target="com.axelor.apps.project.db.Project" grid-view="project-grid"
+        form-view="project-form" hidden="true"/>
+      <field name="$project.allowAllocatedInit" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-allocation-line-attrs-set-default-values">
+    <attribute for="project" name="value" expr="eval: __parent__" if="__parent__"/>
+    <attribute for="employee" name="value" expr="eval: __user__?.employee"/>
+  </action-attrs>
+
+  <action-method name="action-allocation-line-method-set-employee-domain">
+    <call class="com.axelor.apps.hr.web.AllocationLineController" method="setEmployeeDomain"/>
+  </action-method>
+
+  <action-method name="action-allocation-line-method-set-employee-set-domain">
+    <call class="com.axelor.apps.hr.web.AllocationLineController" method="setEmployeeSetDomain"/>
+  </action-method>
+
+  <action-method name="action-allocation-line-method-add-multiple-lines">
+    <call class="com.axelor.apps.hr.web.AllocationLineController" method="addAllocationLines"/>
+  </action-method>
+
+  <action-view name="action-allocation-line-view-add-multiple-lines"
+    title="Allocation lines" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="allocation-line-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="forceTitle" value="true"/>
+    <context name="_project" expr="eval: __parent__"/>
+  </action-view>
+
+  <action-view name="action-allocation-line-view-all-allocations"
+    title="Allocation lines" model="com.axelor.apps.hr.db.AllocationLine">
+    <view type="grid" name="allocation-line-default-grid"/>
+    <view type="form" name="allocation-line-form"/>
+    <domain>self.project.id = :projectId</domain>
+    <context name="projectId" expr="eval: __parent__?.id"/>
+  </action-view>
+
+</object-views>
