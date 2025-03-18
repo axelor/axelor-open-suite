@@ -22,11 +22,15 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
+import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsBomService {
 
@@ -41,8 +45,20 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
 
   @Override
   public List<SaleOrderLineDetails> createSaleOrderLineDetailsFromBom(
-      BillOfMaterial billOfMaterial, SaleOrder saleOrder) throws AxelorException {
+      BillOfMaterial billOfMaterial, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
     Objects.requireNonNull(billOfMaterial);
+
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList();
+
+    List<SaleOrderLineDetails> filteredSaleOrderLineDetails = new ArrayList<>();
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      filteredSaleOrderLineDetails.addAll(
+          saleOrderLineDetailsList.stream()
+              .filter(line -> line.getTypeSelect() != SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+              .collect(Collectors.toList()));
+    }
 
     var saleOrderLinesDetailsList = new ArrayList<SaleOrderLineDetails>();
 
@@ -54,6 +70,8 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
         saleOrderLinesDetailsList.add(saleOrderLineDetails);
       }
     }
-    return saleOrderLinesDetailsList;
+
+    filteredSaleOrderLineDetails.addAll(saleOrderLinesDetailsList);
+    return filteredSaleOrderLineDetails;
   }
 }
