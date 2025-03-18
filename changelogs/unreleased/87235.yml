@@ -1,0 +1,2 @@
+title: "MRP: a warning is now displayed when trying to delete a MRP to explain that the MRP is reset instead of removed."
+module: axelor-supplychain
