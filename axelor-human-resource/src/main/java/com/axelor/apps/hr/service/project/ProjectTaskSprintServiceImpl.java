@@ -240,14 +240,14 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             .map(ProjectTask::getActiveSprint)
             .map(Sprint::getToDate)
             .map(date -> date.atTime(23, 59));
-    if (projectTask.getActiveSprint==null)
+    if (projectTask.getActiveSprint()==null)
     {
-      startDateTime=projectTask.getTaskDate();
+    //  startDateTime=projectTask.getTaskDate();
 
     }
     Optional<Employee> employee =
         Optional.of(projectTask).map(ProjectTask::getAssignedTo).map(User::getEmployee);
-startDateTime=startDateTime.isEmpty()? Optional.of(projectTask).map(ProjectTask::getTaskDate);
+startDateTime=startDateTime.isEmpty()? Optional.of(projectTask).map(ProjectTask::getTaskDate):null;
 
     if (startDateTime.isEmpty() ||employee.isEmpty()) {
       return;
