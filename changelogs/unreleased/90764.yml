@@ -1,3 +1,3 @@
 ---
-title: "ProjectPlanningTime: Changed the field title to get the correct translation."
+title: "Project Planning Time: Fixed the planned time when generating planning times and updated the field title to ensure the correct translation."
 module: axelor-human-resource
