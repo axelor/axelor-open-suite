@@ -67,7 +67,6 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
 
   @Override
   public String getSprintOnChangeWarning(ProjectTask projectTask) {
-    if(projectTask)
     if (validateConfigAndSprint(projectTask) == null) {
       return "";
     }
@@ -139,8 +138,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
   @Override
   public void createOrMovePlanification(ProjectTask projectTask) throws AxelorException {
     Sprint currentSprint =
-            Optional.ofNullable(projectTask).map(ProjectTask::getActiveSprint).orElse(null);
-    if(sprintSprint==null){
+        Optional.ofNullable(projectTask).map(ProjectTask::getActiveSprint).orElse(null);
+    if (currentSprint == null) {
       createProjectPlanningTime(projectTask);
     }
     if (validateConfigAndSprint(projectTask) == null) {
@@ -240,19 +239,20 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             .map(ProjectTask::getActiveSprint)
             .map(Sprint::getToDate)
             .map(date -> date.atTime(23, 59));
-    if (projectTask.getActiveSprint()==null)
-    {
-    //  startDateTime=projectTask.getTaskDate();
+    if (projectTask.getActiveSprint() == null) {
+      //  startDateTime=projectTask.getTaskDate();
 
     }
     Optional<Employee> employee =
         Optional.of(projectTask).map(ProjectTask::getAssignedTo).map(User::getEmployee);
-startDateTime=startDateTime.isEmpty()? Optional.of(projectTask).map(ProjectTask::getTaskDate):null;
+    startDateTime =
+        startDateTime.isEmpty()
+            ? Optional.of(projectTask).map(ProjectTask::getTaskDate).map(LocalDate::atStartOfDay)
+            : null;
 
-    if (startDateTime.isEmpty() ||employee.isEmpty()) {
+    if (startDateTime.isEmpty() || employee.isEmpty()) {
       return;
     }
-
 
     ProjectPlanningTime projectPlanningTime =
         projectPlanningTimeCreateService.createProjectPlanningTime(
@@ -302,8 +302,10 @@ startDateTime=startDateTime.isEmpty()? Optional.of(projectTask).map(ProjectTask:
     }
 
     projectPlanningTimeComputeService.computePlannedTimeValues(projectPlanningTime);
-    //compute end date time =start date+duration
-    projectPlanningTime.setEndDateTime(projectPlanningTimeComputeService.computeEndDateTime(projectPlanningTime,projectTask.getProject()));
+    // compute end date time =start date+duration
+    projectPlanningTime.setEndDateTime(
+        projectPlanningTimeComputeService.computeEndDateTime(
+            projectPlanningTime, projectTask.getProject()));
   }
 
   protected Sprint getOldActiveSprint(ProjectTask projectTask) {

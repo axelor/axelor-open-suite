@@ -65,6 +65,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
   protected AppBaseService appBaseService;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected ProjectPlanningTimeToolService projectPlanningTimeToolService;
+  protected ProjectPlanningTimeComputeService projectPlanningTimeComputeService;
 
   @Inject
   public ProjectPlanningTimeCreateServiceImpl(
@@ -191,17 +192,20 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       Unit defaultTimeUnit)
       throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
-    taskEndDateTime=projectPlanningTimeComputeService.computeEndDateTime(projectPlanningTime,projectTask.getProject()));
     planningTime.setProjectTask(projectTask);
     planningTime.setProduct(activity);
     planningTime.setTimepercent(timePercent);
     planningTime.setEmployee(employee);
     planningTime.setStartDateTime(fromDate);
-    planningTime.setEndDateTime(taskEndDateTime);
+
     planningTime.setProject(project);
     planningTime.setSite(site);
     planningTime.setTimeUnit(defaultTimeUnit);
+    taskEndDateTime =
+        projectPlanningTimeComputeService.computeEndDateTime(
+            planningTime, projectTask.getProject());
 
+    planningTime.setEndDateTime(taskEndDateTime);
     BigDecimal totalHours = BigDecimal.ZERO;
     if (timePercent > 0) {
       totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
