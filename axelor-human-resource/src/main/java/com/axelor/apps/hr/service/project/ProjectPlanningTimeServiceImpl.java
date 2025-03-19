@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -87,6 +88,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected PlannedTimeValueService plannedTimeValueService;
   protected ICalendarService iCalendarService;
   protected ICalendarEventRepository iCalendarEventRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ProjectPlanningTimeServiceImpl(
@@ -104,7 +106,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       ICalendarService iCalendarService,
       ICalendarEventRepository iCalendarEventRepository,
       UnitConversionForProjectService unitConversionForProjectService,
-      UnitConversionRepository unitConversionRepository) {
+      UnitConversionRepository unitConversionRepository,
+      AppBaseService appBaseService) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -121,6 +124,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.unitConversionRepository = unitConversionRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -274,11 +278,15 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     planningTime.setSite(site);
     planningTime.setTimeUnit(defaultTimeUnit);
 
-    BigDecimal totalHours = BigDecimal.ZERO;
+    BigDecimal totalTime = BigDecimal.ZERO;
     if (timePercent > 0) {
-      totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
+      if (planningTime.getTimeUnit().equals(appBaseService.getAppBase().getUnitHours())) {
+        totalTime = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
+      } else {
+        totalTime = new BigDecimal(timePercent).divide(new BigDecimal(100));
+      }
     }
-    planningTime.setPlannedTime(totalHours);
+    planningTime.setPlannedTime(totalTime);
     return planningTime;
   }
 
