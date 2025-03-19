@@ -38,22 +38,15 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.message.db.EmailAddress;
-import com.axelor.message.db.Message;
-import com.axelor.message.db.MultiRelated;
-import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.MultiRelatedRepository;
-import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -65,7 +58,6 @@ public class LeadServiceImpl implements LeadService {
   protected MultiRelatedRepository multiRelatedRepository;
   protected LeadStatusRepository leadStatusRepo;
   protected AppCrmService appCrmService;
-  protected MessageRepository messageRepository;
 
   @Inject
   public LeadServiceImpl(
@@ -76,8 +68,7 @@ public class LeadServiceImpl implements LeadService {
       EventRepository eventRepo,
       MultiRelatedRepository multiRelatedRepository,
       LeadStatusRepository leadStatusRepo,
-      AppCrmService appCrmService,
-      MessageRepository messageRepository) {
+      AppCrmService appCrmService) {
     this.sequenceService = sequenceService;
     this.userService = userService;
     this.partnerRepo = partnerRepo;
@@ -86,7 +77,6 @@ public class LeadServiceImpl implements LeadService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
     this.appCrmService = appCrmService;
-    this.messageRepository = messageRepository;
   }
 
   /**
@@ -275,36 +265,5 @@ public class LeadServiceImpl implements LeadService {
     lead.setLeadStatus(defaultLeadStatus);
     lead.setLostReason(null);
     lead.setLostReasonStr(null);
-  }
-
-  @CallMethod
-  public List<Long> getMessagesIds(EmailAddress emailAddress, long leadId) {
-    List<Message> messages =
-        multiRelatedRepository
-            .all()
-            .filter("self.relatedToSelect=:leadModel" + " and self.relatedToSelectId=:leadId")
-            .bind("leadModel", "com.axelor.apps.crm.db.Lead")
-            .bind("leadId", leadId)
-            .fetch()
-            .stream()
-            .map(MultiRelated::getMessage)
-            .filter(m -> m.getMediaTypeSelect().equals(MessageRepository.MEDIA_TYPE_EMAIL))
-            .collect(Collectors.toList());
-    List<Message> msgs = new ArrayList<>();
-    if (emailAddress != null) {
-      msgs =
-          messageRepository.all().fetch().stream()
-              .filter(
-                  m ->
-                      (m.getToEmailAddressSet() != null
-                          && m.getToEmailAddressSet().stream()
-                              .anyMatch(
-                                  emailAdd ->
-                                      emailAdd.getAddress().equals(emailAddress.getAddress()))
-                          && m.getMediaTypeSelect().equals(MessageRepository.MEDIA_TYPE_EMAIL)))
-              .collect(Collectors.toList());
-    }
-    messages.addAll(msgs);
-    return messages.stream().map(Message::getId).collect(Collectors.toList());
   }
 }

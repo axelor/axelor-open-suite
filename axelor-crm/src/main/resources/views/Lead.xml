@@ -560,9 +560,14 @@
     <view type="cards" name="message-cards"/>
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
-    <domain>self.id in :_ids</domain>
-    <context name="_ids"
-      expr="call:com.axelor.apps.crm.service.LeadServiceImpl:getMessagesIds(emailAddress, id)"/>
+    <domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
+      WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
+      related.relatedToSelectId =
+      :id) OR (:email IS NULL) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member
+      of
+      self.toEmailAddressSet)))</domain>
+    <context name="email" expr="eval:emailAddress?.address" if="emailAddress?.address!=null"/>
+    <context name="email" expr="eval:''" if="emailAddress?.address==null"/>
   </action-view>
 
   <action-view name="action-lead-view-received-emails" title="Received emails"
