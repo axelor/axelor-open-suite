@@ -191,7 +191,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       Unit defaultTimeUnit)
       throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
-
+    taskEndDateTime=projectPlanningTimeComputeService.computeEndDateTime(projectPlanningTime,projectTask.getProject()));
     planningTime.setProjectTask(projectTask);
     planningTime.setProduct(activity);
     planningTime.setTimepercent(timePercent);
