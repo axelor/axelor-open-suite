@@ -1,3 +1,35 @@
+## [8.2.11] (2025-03-20)
+
+### Fixes
+#### Base
+
+* User: added missing translation for the notification message when switching active company.
+
+#### Account
+
+* Journal: disabled archive to avoid possibility to generate a move on an archived journal.
+* Move line: fixed a bug where generated credit note move line origin date was not consistent with its move date.
+
+#### Budget
+
+* Global budget: fixed the budgetKey computation process to always ensure an updated key value.
+
+#### Contract
+
+* Contract: fixed a duplication on analytic move lines at invoicing.
+
+#### CRM
+
+* Lead: fixed an error appearing in logs when opening the email panel.
+
+#### Project
+
+* Project: fixed an issue where 'Invoicing timesheet' field was not displayed.
+
+#### Purchase
+
+* Supplier catalog: products with multiple catalogs now take the catalog with the most recent update date.
+
 ## [8.2.10] (2025-03-13)
 
 ### Fixes
@@ -793,6 +825,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.11]: https://github.com/axelor/axelor-open-suite/compare/v8.2.10...v8.2.11
 [8.2.10]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.2.10
 [8.2.9]: https://github.com/axelor/axelor-open-suite/compare/v8.2.8...v8.2.9
 [8.2.8]: https://github.com/axelor/axelor-open-suite/compare/v8.2.7...v8.2.8

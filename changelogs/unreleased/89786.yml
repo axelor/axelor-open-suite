@@ -1,3 +1,0 @@
----
-title: "Global budget: fixed the budgetKey computation process to always ensure an updated key value."
-module: axelor-budget
