@@ -563,9 +563,11 @@
     <domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
       WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
       related.relatedToSelectId =
-      :id) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member of
+      :id) OR (:email IS NULL) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member
+      of
       self.toEmailAddressSet)))</domain>
-    <context name="email" expr="eval: emailAddress?.address"/>
+    <context name="email" expr="eval:emailAddress?.address" if="emailAddress?.address!=null"/>
+    <context name="email" expr="eval:''" if="emailAddress?.address==null"/>
   </action-view>
 
   <action-view name="action-lead-view-received-emails" title="Received emails"
