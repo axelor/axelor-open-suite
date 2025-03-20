@@ -139,7 +139,11 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
   public void createOrMovePlanification(ProjectTask projectTask) throws AxelorException {
     Sprint currentSprint =
         Optional.ofNullable(projectTask).map(ProjectTask::getActiveSprint).orElse(null);
-    if (currentSprint == null) {
+    LocalDate startDate =
+        Optional.ofNullable(projectTask).map(ProjectTask::getTaskDate).orElse(null);
+    if (currentSprint == null
+        && startDate != null
+        && !projectTask.getBudgetedTime().equals(BigDecimal.ZERO)) {
       createProjectPlanningTime(projectTask);
     }
     if (validateConfigAndSprint(projectTask) == null) {
@@ -239,17 +243,12 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             .map(ProjectTask::getActiveSprint)
             .map(Sprint::getToDate)
             .map(date -> date.atTime(23, 59));
-    if (projectTask.getActiveSprint() == null) {
-      //  startDateTime=projectTask.getTaskDate();
-
-    }
     Optional<Employee> employee =
         Optional.of(projectTask).map(ProjectTask::getAssignedTo).map(User::getEmployee);
     startDateTime =
         startDateTime.isEmpty()
             ? Optional.of(projectTask).map(ProjectTask::getTaskDate).map(LocalDate::atStartOfDay)
-            : null;
-
+            : Optional.empty();
     if (startDateTime.isEmpty() || employee.isEmpty()) {
       return;
     }
@@ -263,7 +262,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             employee.get(),
             projectTask.getProduct(),
             employee.get().getDailyWorkHours(),
-            endDateTime.get(),
+            null,
             projectTask.getSite(),
             getTimeUnit(projectTask));
 
