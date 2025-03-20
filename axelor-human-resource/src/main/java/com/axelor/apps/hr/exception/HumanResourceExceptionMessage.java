@@ -437,4 +437,11 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_CREATE_NO_USER_ERROR = /*$$(*/
       "No user was found when creating the timesheet." /*)*/;
+
+
+  public static final String PROJECT_PLANNING_TIME_CREATION_CONSENT= /*$$(*/
+          "Would you like to create a new planning time?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_CREATION_INFO = /*$$(*/
+          "A new planning time has been created." /*)*/;
 }
