@@ -1,0 +1,2 @@
+title: "Supplier catalog: products with multiple catalogs now take the catalog with the most recent update date."
+module: axelor-purchase
