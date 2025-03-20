@@ -370,6 +370,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
 
     Set<AnalyticAccount> analyticAccounts = new HashSet<AnalyticAccount>();
+    LocalDate originDate = isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate();
 
     if (partner == null) {
       throw new AxelorException(
@@ -417,7 +418,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               isDebitCustomer,
               invoice.getInvoiceDate(),
               invoice.getDueDate(),
-              invoice.getOriginDate(),
+              originDate,
               1,
               origin,
               null);
@@ -478,7 +479,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
-                invoice.getOriginDate(),
+                originDate,
                 moveLineId++,
                 origin,
                 invoiceLine.getProductName());
@@ -579,7 +580,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   !isDebitCustomer,
                   invoice.getInvoiceDate(),
                   null,
-                  invoice.getOriginDate(),
+                  originDate,
                   moveLineId++,
                   origin,
                   null);
@@ -668,6 +669,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     MoveLine holdBackMoveLine;
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
     BigDecimal companyAmount;
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    LocalDate originDate = isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       companyAmount =
@@ -691,7 +694,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
                 invoiceTerm.getDueDate(),
-                invoice.getOriginDate(),
+                originDate,
                 moveLineId++,
                 origin,
                 null);
@@ -710,7 +713,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
                   latestDueDate,
-                  invoice.getOriginDate(),
+                  originDate,
                   moveLineId++,
                   origin,
                   null);
