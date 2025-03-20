@@ -1,3 +1,19 @@
+## [7.2.35] (2025-03-20)
+
+### Fixes
+#### Account
+
+* Journal: disabled archive to avoid possibility to generate a move on an archived journal.
+* Move line: fixed a bug where generated credit note move line origin date was not consistent with its move date.
+
+#### Budget
+
+* Global budget: fixed the budgetKey computation process to always ensure an updated key value.
+
+#### Purchase
+
+* Supplier catalog: products with multiple catalogs now take the catalog with the most recent update date.
+
 ## [7.2.34] (2025-03-13)
 
 ### Fixes
@@ -1593,6 +1609,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.35]: https://github.com/axelor/axelor-open-suite/compare/v7.2.34...v7.2.35
 [7.2.34]: https://github.com/axelor/axelor-open-suite/compare/v7.2.33...v7.2.34
 [7.2.33]: https://github.com/axelor/axelor-open-suite/compare/v7.2.32...v7.2.33
 [7.2.32]: https://github.com/axelor/axelor-open-suite/compare/v7.2.31...v7.2.32
