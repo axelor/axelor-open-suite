@@ -1,3 +1,0 @@
----
-title: "Move line: fixed a bug where generated credit note move line origin date was not consistent with its move date."
-module: axelor-account

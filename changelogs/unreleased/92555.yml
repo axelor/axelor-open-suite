@@ -1,5 +1,0 @@
----
-title: "Sale order: fixed the issue where lines were not printed with the pack feature."
-module: axelor-sale
-developer: |
-    Added `SaleOrderLineComputeService` to the constructor of `SaleOrderServiceImpl`.

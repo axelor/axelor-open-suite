@@ -1,3 +1,50 @@
+## [8.3.2] (2025-03-20)
+
+### Fixes
+#### Base
+
+* User: added missing translation for the notification message when switching active company.
+
+#### Account
+
+* Journal: disabled archive to avoid possibility to generate a move on an archived journal.
+* Move line: fixed a bug where generated credit note move line origin date was not consistent with its move date.
+
+#### Budget
+
+* Global budget: fixed the budgetKey computation process to always ensure an updated key value.
+
+#### Contract
+
+* Contract: fixed a duplication on analytic move lines at invoicing.
+
+#### CRM
+
+* Lead: fixed an error appearing in logs when opening the email panel.
+
+#### Project
+
+* Project: fixed an issue where 'Invoicing timesheet' field was not displayed.
+
+#### Purchase
+
+* Supplier catalog: products with multiple catalogs now take the catalog with the most recent update date.
+
+#### Sale
+
+* Sale order: fixed the issue where lines were not printed with the pack feature.
+
+#### Supply Chain
+
+* MRP: a warning is now displayed when trying to delete a MRP to explain that the MRP is reset instead of removed.
+
+
+### Developer
+
+#### Sale
+
+Added `SaleOrderLineComputeService` to the constructor of `SaleOrderServiceImpl`.
+
 ## [8.3.1] (2025-03-13)
 
 ### Fixes
@@ -229,5 +276,6 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.2]: https://github.com/axelor/axelor-open-suite/compare/v8.3.1...v8.3.2
 [8.3.1]: https://github.com/axelor/axelor-open-suite/compare/v8.3.0...v8.3.1
 [8.3.0]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.3.0
