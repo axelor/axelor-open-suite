@@ -79,7 +79,8 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       TimesheetLineRepository timesheetLineRepository,
       AppBaseService appBaseService,
       ProjectTimeUnitService projectTimeUnitService,
-      ProjectPlanningTimeToolService projectPlanningTimeToolService) {
+      ProjectPlanningTimeToolService projectPlanningTimeToolService,
+      ProjectPlanningTimeComputeService projectPlanningTimeComputeService) {
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskRepo;
@@ -91,6 +92,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     this.appBaseService = appBaseService;
     this.projectTimeUnitService = projectTimeUnitService;
     this.projectPlanningTimeToolService = projectPlanningTimeToolService;
+    this.projectPlanningTimeComputeService = projectPlanningTimeComputeService;
   }
 
   @Override
@@ -201,11 +203,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     planningTime.setProject(project);
     planningTime.setSite(site);
     planningTime.setTimeUnit(defaultTimeUnit);
-    taskEndDateTime =
-        projectPlanningTimeComputeService.computeEndDateTime(
-            planningTime, projectTask.getProject());
 
-    planningTime.setEndDateTime(taskEndDateTime);
     BigDecimal totalHours = BigDecimal.ZERO;
     if (timePercent > 0) {
       totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
@@ -221,9 +219,12 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     if (planningTime.getTimeUnit() == null) {
       return planningTime;
     }
-
     computePlannedTime(planningTime, totalHours);
+    taskEndDateTime =
+        projectPlanningTimeComputeService.computeEndDateTime(
+            planningTime, projectTask.getProject());
 
+    planningTime.setEndDateTime(taskEndDateTime);
     return planningTime;
   }
 
