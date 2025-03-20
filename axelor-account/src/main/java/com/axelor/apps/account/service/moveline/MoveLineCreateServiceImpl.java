@@ -377,6 +377,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     log.debug("Creation of move lines of the invoice : {}", invoice.getInvoiceId());
 
     List<MoveLine> moveLines = new ArrayList<>();
+    LocalDate originDate = isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate();
 
     if (partner == null) {
       throw new AxelorException(
@@ -414,7 +415,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               isDebitCustomer,
               invoice.getInvoiceDate(),
               invoice.getDueDate(),
-              isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate(),
+              originDate,
               1,
               origin,
               null);
@@ -472,7 +473,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
-                invoice.getOriginDate(),
+                originDate,
                 moveLineId++,
                 origin,
                 invoiceLine.getProductName());
@@ -508,7 +509,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
-                invoice.getOriginDate(),
+                originDate,
                 moveLineId++,
                 origin,
                 null);
