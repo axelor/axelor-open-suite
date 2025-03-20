@@ -1,3 +1,31 @@
+## [8.1.20] (2025-03-20)
+
+### Fixes
+#### Base
+
+* User: added missing translation for the notification message when switching active company.
+
+#### Account
+
+* Journal: disabled archive to avoid possibility to generate a move on an archived journal.
+* Move line: fixed a bug where generated credit note move line origin date was not consistent with its move date.
+
+#### Budget
+
+* Global budget: fixed the budgetKey computation process to always ensure an updated key value.
+
+#### Contract
+
+* Contract: fixed a duplication on analytic move lines at invoicing.
+
+#### CRM
+
+* Lead: fixed an error appearing in logs when opening the email panel.
+
+#### Purchase
+
+* Supplier catalog: products with multiple catalogs now take the catalog with the most recent update date.
+
 ## [8.1.19] (2025-03-13)
 
 ### Fixes
@@ -1250,6 +1278,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.20]: https://github.com/axelor/axelor-open-suite/compare/v8.1.19...v8.1.20
 [8.1.19]: https://github.com/axelor/axelor-open-suite/compare/v8.1.18...v8.1.19
 [8.1.18]: https://github.com/axelor/axelor-open-suite/compare/v8.1.17...v8.1.18
 [8.1.17]: https://github.com/axelor/axelor-open-suite/compare/v8.1.16...v8.1.17
