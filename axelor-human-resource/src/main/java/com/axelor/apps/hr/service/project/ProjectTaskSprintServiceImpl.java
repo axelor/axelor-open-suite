@@ -137,6 +137,11 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
 
   @Override
   public void createOrMovePlanification(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getActiveSprint() == null
+        && projectTask.getTaskDate() != null
+        && projectTask.getBudgetedTime().signum() > 0) {
+      createPlanningTimeWithoutSprint(projectTask);
+    }
     if (validateConfigAndSprint(projectTask) == null) {
       return;
     }
@@ -175,6 +180,41 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
       }
     }
     createProjectPlanningTime(projectTask);
+  }
+
+  protected void createPlanningTimeWithoutSprint(ProjectTask projectTask) throws AxelorException {
+
+    LocalDate startDateTime = projectTask.getTaskDate();
+    Optional<Employee> employee =
+        Optional.of(projectTask).map(ProjectTask::getAssignedTo).map(User::getEmployee);
+    if (startDateTime == null || employee.isEmpty()) {
+      return;
+    }
+    ProjectPlanningTime projectPlanningTime =
+        projectPlanningTimeCreateService.createProjectPlanningTime(
+            startDateTime.atStartOfDay(),
+            projectTask,
+            projectTask.getProject(),
+            100,
+            employee.get(),
+            projectTask.getProduct(),
+            employee.get().getDailyWorkHours(),
+            null,
+            projectTask.getSite(),
+            getTimeUnit(projectTask));
+    LocalDateTime taskEndDateTime =
+        projectPlanningTimeComputeService.computeEndDateTime(
+            projectPlanningTime, projectTask.getProject());
+    projectPlanningTime.setEndDateTime(taskEndDateTime);
+
+    projectPlanningTime.setDisplayPlannedTime(projectTask.getBudgetedTime());
+    Unit timeUnit = getTimeUnit(projectTask);
+    if (timeUnit != null) {
+      projectPlanningTime.setDisplayTimeUnit(timeUnit);
+    }
+
+    projectPlanningTimeComputeService.computePlannedTimeValues(projectPlanningTime);
+    projectTask.addProjectPlanningTimeListItem(projectPlanningTime);
   }
 
   protected Sprint validateConfigAndSprint(ProjectTask projectTask) {
