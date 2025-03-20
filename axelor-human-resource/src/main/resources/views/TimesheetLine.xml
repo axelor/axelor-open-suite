@@ -333,14 +333,21 @@
         canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
       <field name="employee" readonly="false"
+        onChange="action-timesheet-line-attrs-empty-timesheet"
         onSelect="action-timesheet-line-attrs-domain-employee" form-view="employee-form"
         grid-view="employee-grid" canNew="false" canEdit="false" canView="false"/>
       <field name="timesheet" form-view="timesheet-form" readonly="false"
-        onSelect="action-timesheet-line-method-set-timesheet-domain"/>
+        onSelect="action-timesheet-line-method-set-timesheet-domain"
+        validIf="timesheet.employee.id == employee.id"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="hoursDuration" hidden="true"/>
+      <field name="timesheet.employee.id" hidden="true"/>
     </panel>
   </form>
+
+  <action-attrs name="action-timesheet-line-attrs-empty-timesheet">
+    <attribute for="timesheet" name="value" expr=""/>
+  </action-attrs>
 
   <action-group name="action-timesheet-line-group-project-onchange">
     <action name="action-timesheet-line-method-set-default-to-invoice"
