@@ -21,7 +21,6 @@ package com.axelor.apps.production.service.productionorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -36,18 +35,6 @@ public interface ProductionOrderSaleOrderMOGenerationService {
       SaleOrderLine saleOrderLine,
       Product product,
       BigDecimal qtyToProduce)
-      throws AxelorException;
-
-  ManufOrder generateManufOrder(
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderService.ManufOrderOriginType manufOrderOriginType,
-      ManufOrder manufOrderParent)
       throws AxelorException;
 
   /**
