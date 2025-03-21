@@ -265,7 +265,7 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
   <action-attrs name="action-account-attrs-budget-level-simulated-amounts"
-    model="com.axelor.apps.budget.db.com.axelor.apps.budget.db.BudgetLevel">
+    model="com.axelor.apps.budget.db.BudgetLevel">
 
     <attribute name="hidden" for="availableAmountWithSimulated,simulatedAmount"
       expr="eval:!__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isActivateSimulatedMove"/>
