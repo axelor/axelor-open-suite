@@ -815,6 +815,7 @@
 "No timesheet line has been created because the duration is less than 1 minute","Aucune ligne de feuille de temps n'a été générée car la durée est inférieure à 1 minute",,
 "No timesheet lines can be generated because no duration is entered. Please fill the duration field if you want to generate timesheet lines.","Aucune ligne de feuille de temps ne peut être générée car aucune durée n'est saisie. Veuillez remplir le champ de la durée si vous souhaitez générer des lignes de feuille de temps.",,
 "No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,
+"No user was found when creating the timesheet.","Aucun utilisateur n'a été trouvé lors de la création de la feuille de temps.",,
 "Non-Executive","Non-cadre",,
 "None","Aucun",,
 "Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency.","Tous les frais ne sont pas dans la même devise. Vous ne pouvez créer ou ajouter des lignes à une note de frais que lorsqu'elles ont la même devise.",,

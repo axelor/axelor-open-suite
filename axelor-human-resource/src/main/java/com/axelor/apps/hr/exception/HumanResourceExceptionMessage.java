@@ -434,4 +434,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String LEAVE_REQUEST_NOT_ENOUGH_DAYS = /*$$(*/
       "You will not have enough leaves available for this request." /*)*/;
+
+  public static final String TIMESHEET_CREATE_NO_USER_ERROR = /*$$(*/
+      "No user was found when creating the timesheet." /*)*/;
 }
