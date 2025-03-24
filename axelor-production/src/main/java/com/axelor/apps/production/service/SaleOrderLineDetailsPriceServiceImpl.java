@@ -132,7 +132,8 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
               prodProcessLine, qtyToProduce);
     }
 
-    saleOrderLineDetails.setCostPrice(costPrice);
+    saleOrderLineDetails.setCostPrice(
+        costPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
     lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
     return lineMap;
   }
