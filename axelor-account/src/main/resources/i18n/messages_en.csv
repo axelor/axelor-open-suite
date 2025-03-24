@@ -3301,6 +3301,7 @@
 "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted",,,
 "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
 "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
+"The following analytic axis are required : %s (company: %s)",,,
 "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
 "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
 "The following error occurred during the validation of fixed asset %d : %s.",,,

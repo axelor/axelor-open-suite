@@ -13,7 +13,7 @@
 
   <form name="analytic-distribution-template-form" title="Analytic distribution template"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
-    onSave="action-analytic-distribution-template-on-save">
+    onSave="action-method-analytic-distribution-template-check-analytic-axis,action-analytic-distribution-template-on-save">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="company" required="true"
