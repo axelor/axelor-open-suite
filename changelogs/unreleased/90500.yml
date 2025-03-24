@@ -1,3 +1,3 @@
 ---
-title: "AccountingBatch: fix balance amount on close / open account batch"
+title: "Accounting batch: fixed balance amount on close/open account batch."
 module: axelor-account
