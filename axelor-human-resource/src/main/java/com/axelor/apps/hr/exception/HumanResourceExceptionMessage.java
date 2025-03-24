@@ -400,4 +400,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_LINE_INVALID_DATES = /*$$(*/
       "%s date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String TIMESHEET_CREATE_NO_USER_ERROR = /*$$(*/
+      "No user was found when creating the timesheet." /*)*/;
 }
