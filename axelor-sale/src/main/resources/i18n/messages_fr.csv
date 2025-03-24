@@ -618,7 +618,7 @@
 "Specify whether to show the title. Default value is true (true or false).","Indiquez si le titre doit être affiché. La valeur par défaut est true (true ou false).",,
 "Standard",,,
 "Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.","Les opérations standards comme +, -, *, / peuvent être utilisées et fonctionnent correctement avec la classe BigDecimal.",,
-"Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.","Standard: Afficher la liste de lignes de commandes classique.<br>Éditable: Cette configuration permet d'activer une liste éditable sur les lignes de devis / commandes clients, permettant d'ajouter et de compléter rapidement des lignes de devis depuis la vue liste.<br>Arborescence éditable: Activer des lignes de commande client multi-niveaux.",,
+"Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.","Standard: Afficher la liste de lignes de commandes classique.<br>Modifiable: Cette configuration permet d'activer une liste éditable sur les lignes de devis / commandes clients, permettant d'ajouter et de compléter rapidement des lignes de devis depuis la vue liste.<br>Arborescence éditable: Activer des lignes de commande client multi-niveaux.",,
 "Start date","Date de début",,
 "Status","Statut",,
 "Stock Moves","BL/BR",,
