@@ -104,7 +104,7 @@
             showIf="priceDiscounted != 0 &amp;&amp; discountTypeSelect != 0"
             x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
         <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"
           required="true"/>
@@ -187,7 +187,7 @@
           onChange="action-method-contract-line-compute-total"/>
         <field name="price" x-scale="$nbDecimalDigitForUnitPrice"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
         <field name="unit" canEdit="false" required="true"/>
         <field name="exTaxTotal" readonly="true"/>
@@ -240,7 +240,7 @@
       <field name="productName"/>
       <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
-      <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
+      <field name="taxLineSet" canEdit="false" widget="TagSelect" canNew="false"/>
       <field name="unit" canEdit="false" required="true"/>
       <field name="isConsumptionLine"
         onChange="action-method-contract-line-change-is-consumption-line"/>
@@ -259,7 +259,7 @@
       <field name="productName"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
-      <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
+      <field name="taxLineSet" canEdit="false" widget="TagSelect" canNew="false"/>
       <field name="unit" canEdit="false" required="true"/>
       <field name="description" colSpan="12" widget="html"/>
     </panel>
@@ -276,7 +276,7 @@
             onChange="action-contract-template-method-change-product"
             domain="self.dtype = 'Product'"/>
           <field name="productName"/>
-          <field name="taxLineSet" canEdit="false" colSpan="12"/>
+          <field name="taxLineSet" canEdit="false" colSpan="12" canNew="false"/>
         </panel>
         <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
           <field name="pricing" canNew="true" canEdit="true"
@@ -298,7 +298,7 @@
             onSelect="action-contract-line-method-domain-product"
             onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
           <field name="productName"/>
-          <field name="taxLineSet" canEdit="false"
+          <field name="taxLineSet" canEdit="false" canNew="false"
             onChange="action-method-contract-line-compute-total" colSpan="12"/>
         </panel>
         <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
