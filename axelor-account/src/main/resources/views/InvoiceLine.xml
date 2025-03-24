@@ -120,7 +120,7 @@
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form"
           domain="self.endDate = null or self.endDate &gt; :__date__" widget="TagSelect"/>
@@ -270,7 +270,7 @@
           grid-view="unit-grid"/>
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="priceDiscounted" hidden="true"/>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
           grid-view="tax-line-grid" form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" readonly="true"/>
