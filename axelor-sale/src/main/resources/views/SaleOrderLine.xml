@@ -115,7 +115,7 @@
       onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
-    <field name="taxLineSet" canEdit="false" width="160%"
+    <field name="taxLineSet" canEdit="false" width="160%" canNew="false"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0 || $isParentTitleLine"
       onChange="action-sale-order-line-method-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
@@ -353,7 +353,7 @@
         </panel>
 
         <panel name="taxPanel" colSpan="12">
-          <field name="taxLineSet" canEdit="false" colSpan="6"
+          <field name="taxLineSet" canEdit="false" colSpan="6" canNew="false"
             readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
             onChange="action-sale-order-line-method-tax-line-onchange"
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
@@ -551,7 +551,7 @@
           <field name="priceDiscounted" colSpan="4" hidden="true"/>
         </panel>
       </panel>
-      <field name="taxLineSet" canEdit="false" colSpan="4"
+      <field name="taxLineSet" canEdit="false" colSpan="4" canNew="false"
         onChange="action-sale-order-line-method-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form" widget="TagSelect"/>
