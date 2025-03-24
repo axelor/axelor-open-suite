@@ -610,7 +610,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       BigDecimal avgPrice =
           this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-      stockLocationLine.setAvgPrice(avgPrice);
+      setAvgPriceAndComputeForProduct(stockLocationLine, avgPrice);
 
       stockLocationLineService.updateHistory(
           stockLocationLine,
@@ -663,7 +663,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (toStatus == StockMoveRepository.STATUS_CANCELED) {
       resetAvgPrice(stockLocationLine, origin);
     } else {
-      stockLocationLine.setAvgPrice(
+      setAvgPriceAndComputeForProduct(
+          stockLocationLine,
           Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
     }
 
@@ -675,7 +676,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         getStockLocationLineHistoryTypeSelect(toStatus));
   }
 
-  protected void resetAvgPrice(StockLocationLine stockLocationLine, String origin) {
+  protected void resetAvgPrice(StockLocationLine stockLocationLine, String origin)
+      throws AxelorException {
 
     // Sort by date.
     List<StockLocationLineHistory> sortedHistoryLines =
@@ -703,14 +705,16 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       // Case where firstHistoryLine is simply not from same origin.
       // Or we could not find historyLine from different origin.
       if (i == 0 || i >= sortedHistoryLines.size()) {
-        stockLocationLine.setAvgPrice(
+        setAvgPriceAndComputeForProduct(
+            stockLocationLine,
             Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
       } else {
-        stockLocationLine.setAvgPrice(lastHistoryLine.getWap());
+        setAvgPriceAndComputeForProduct(stockLocationLine, lastHistoryLine.getWap());
       }
 
     } else {
-      stockLocationLine.setAvgPrice(
+      setAvgPriceAndComputeForProduct(
+          stockLocationLine,
           Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
     }
   }
@@ -766,6 +770,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       newAvgPrice = oldAvgPrice;
     }
     return newAvgPrice;
+  }
+
+  protected void setAvgPriceAndComputeForProduct(
+      StockLocationLine stockLocationLine, BigDecimal avgPrice) throws AxelorException {
+    stockLocationLine.setAvgPrice(avgPrice);
+    weightedAveragePriceService.computeAvgPriceForProduct(stockLocationLine.getProduct());
   }
 
   @Override
