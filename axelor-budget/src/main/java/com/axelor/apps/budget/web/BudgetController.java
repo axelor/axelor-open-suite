@@ -189,9 +189,12 @@ public class BudgetController {
         response.setValue("analyticAccount", null);
       } else {
         GlobalBudget globalBudget = getGlobalBudget(request);
+        BudgetStructure budgetStructure = getBudgetStructure(request);
         Company company = null;
         if (globalBudget != null) {
           company = globalBudget.getCompany();
+        } else if (budgetStructure != null) {
+          company = budgetStructure.getCompany();
         }
 
         List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
@@ -218,9 +221,12 @@ public class BudgetController {
             "self.analyticAxis.id = " + budget.getAnalyticAxis().getId());
       } else {
         GlobalBudget globalBudget = getGlobalBudget(request);
+        BudgetStructure budgetStructure = getBudgetStructure(request);
         Company company = null;
         if (globalBudget != null) {
           company = globalBudget.getCompany();
+        } else if (budgetStructure != null) {
+          company = budgetStructure.getCompany();
         }
 
         List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
@@ -343,10 +349,6 @@ public class BudgetController {
     if (budgetStructure != null) {
       return budgetStructure;
     }
-    if (context == null) {
-      return null;
-    }
-
     if (context.getParent() != null
         && BudgetStructure.class.isAssignableFrom(context.getParent().getContextClass())) {
       return context.getParent().asType(BudgetStructure.class);
