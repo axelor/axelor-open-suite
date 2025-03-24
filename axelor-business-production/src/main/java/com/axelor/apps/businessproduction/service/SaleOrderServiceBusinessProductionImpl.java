@@ -30,6 +30,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
@@ -66,6 +67,7 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
       SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderLineDiscountService saleOrderLineDiscountService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
@@ -87,6 +89,7 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
         saleOrderLineComplementaryProductService,
         saleOrderLinePackService,
         saleOrderLineDiscountService,
+        saleOrderLineComputeService,
         appSupplychainService,
         saleOrderStockService,
         accountingSituationSupplychainService,
