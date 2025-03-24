@@ -157,6 +157,9 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Timesheet getOrCreateTimesheet(Employee employee, Project project, LocalDate date) {
+    if (employee != null) {
+      employee = employeeRepository.find(employee.getId());
+    }
     Company company = null;
     if (project != null) {
       company = project.getCompany();
