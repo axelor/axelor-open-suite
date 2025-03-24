@@ -120,7 +120,7 @@
             hideIf="discountTypeSelect == 0"/>
           <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
         </panel>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
           form-view="tax-line-form"
           onSelect="action-invoice-line-method-compute-tax-line-set-on-select" widget="TagSelect"/>
@@ -271,7 +271,7 @@
           grid-view="unit-grid"/>
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="priceDiscounted" hidden="true"/>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
           form-view="tax-line-form" widget="TagSelect"/>
         <field name="exTaxTotal" readonly="true"/>

@@ -358,7 +358,7 @@
         showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0"
         hidden="true"/>
       <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
-        type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
+        canNew="false" type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
         showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
         widget="TagSelect"/>
       <field name="comments" colSpan="12" widget="html" x-lite="true"
