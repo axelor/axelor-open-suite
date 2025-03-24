@@ -610,7 +610,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockMoveLine stockMoveLine,
       LocalDate date,
       String origin,
-      int toStatus) {
+      int toStatus)
+      throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
             stockLocation, stockMoveLine.getProduct());
