@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the alert when finalizing an order and the price list is not valid."
+module: axelor-sale

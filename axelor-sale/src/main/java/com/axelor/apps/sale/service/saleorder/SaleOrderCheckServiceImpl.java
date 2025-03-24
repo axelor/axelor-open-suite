@@ -95,6 +95,6 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
     boolean beginDateNotValid =
         priceListBeginDate == null || priceListBeginDate.isBefore(todayDate);
     boolean endDateNotValid = priceListEndDate == null || priceListEndDate.isAfter(todayDate);
-    return beginDateNotValid && endDateNotValid;
+    return !priceList.getIsActive() || beginDateNotValid || endDateNotValid;
   }
 }
