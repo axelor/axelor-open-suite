@@ -46,7 +46,16 @@
           <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true"
             colSpan="12"/>
         </panel>
+        <panel name="qtyProducedPanel" colSpan="4"
+          if="__config__.app.isApp('production') &amp;&amp; __parent__.statusSelect==3">
+          <field name="qtyProduced" x-scale="$nbDecimalDigitForQty" readonly="true"
+            colSpan="12"/>
+        </panel>
       </insert>
+    </extend>
+    <extend target="/">
+      <attribute name="onLoad"
+        value="action-sale-order-line-method-onload,action-sale-order-line-method-fill-qtyProduced"/>
     </extend>
   </form>
 
@@ -119,4 +128,8 @@
       method="prodProcessOnChange"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-fill-qtyProduced">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="fillQtyProduced"/>
+  </action-method>
 </object-views>
