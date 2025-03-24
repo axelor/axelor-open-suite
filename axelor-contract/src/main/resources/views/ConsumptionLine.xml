@@ -27,7 +27,8 @@
     onLoad="action-consumption-line-attrs-init-qty-init-product">
     <panel readonlyIf="isInvoiced" name="mainPanel">
       <field name="product" required="true" canEdit="false"
-        onChange="action-consumption-line-group-product-change" domain="self.dtype = 'Product'"/>
+        onChange="action-consumption-line-group-product-change"
+        onSelect="action-consumption-line-attrs-set-product-domain"/>
       <field name="lineDate" required="true"/>
       <field name="reference"/>
       <field name="unit" canEdit="false"/>
@@ -66,5 +67,14 @@
     <action name="action-consumption-line-method-change-product"/>
     <action name="action-contract-method-check-consumption-line-quantity"/>
   </action-group>
+
+  <action-attrs name="action-consumption-line-attrs-set-product-domain">
+    <attribute name="domain" for="product"
+      expr="eval: &quot; self.dtype = 'Product' AND self.sellable = true &quot;"
+      if="__parent__?.targetTypeSelect == 1 || __parent__?.targetTypeSelect == 3"/>
+    <attribute name="domain" for="product"
+      expr="eval: &quot; self.dtype = 'Product' AND self.purchasable = true &quot;"
+      if="__parent__?.targetTypeSelect == 2 || __parent__?.targetTypeSelect == 4"/>
+  </action-attrs>
 
 </object-views>
