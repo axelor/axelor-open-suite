@@ -25,7 +25,7 @@ public class SaleOrderLineMoServiceImpl implements SaleOrderLineMoService {
 
   @Transactional
   @Override
-  public Optional<BigDecimal> fillQtyProduced(SaleOrderLine saleOrderLine) {
+  public BigDecimal fillQtyProduced(SaleOrderLine saleOrderLine) {
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
     ManufOrder manufOrder =
         manufOrderRepository
@@ -46,7 +46,7 @@ public class SaleOrderLineMoServiceImpl implements SaleOrderLineMoService {
               .map(StockMoveLine::getQty)
               .reduce(BigDecimal::add);
 
-      return quantityProduced;
+      return quantityProduced.get();
     }
     return null;
   }

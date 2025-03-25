@@ -38,7 +38,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Singleton
 public class SaleOrderLineController {
@@ -141,9 +140,13 @@ public class SaleOrderLineController {
   public void fillQtyProduced(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (saleOrderLine != null) {
-      Optional<BigDecimal> qtyProduced =
+      BigDecimal qtyProduced =
           Beans.get(SaleOrderLineMoService.class).fillQtyProduced(saleOrderLine);
-      qtyProduced.ifPresent(bigDecimal -> response.setValue("qtyProduced", bigDecimal));
+      if (qtyProduced != null) {
+        response.setValue("qtyProduced", qtyProduced);
+      } else {
+        response.setAttr("qtyProduced", "hidden", true);
+      }
     }
   }
 }
