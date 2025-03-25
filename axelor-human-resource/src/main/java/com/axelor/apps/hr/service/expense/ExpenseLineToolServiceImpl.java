@@ -114,7 +114,10 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
 
     if (expenseProduct != null) {
       checkExpenseProduct(expenseProduct);
-      expenseLine.setIsAloneMeal(CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
+      if (expenseProduct.getDeductLunchVoucher()) {
+        expenseLine.setIsAloneMeal(
+            CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
+      }
       expenseLine.setExpenseProduct(expenseProduct);
     }
 

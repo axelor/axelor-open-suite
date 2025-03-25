@@ -240,18 +240,19 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     }
   }
 
-  public List<Employee> getEmployeeList(List<Long> employeeIdList, ExpenseLine expenseLine,LocalDate expenseDate) {
+  public List<Employee> getEmployeeList(
+      List<Long> employeeIdList, ExpenseLine expenseLine, LocalDate expenseDate) {
     if (employeeIdList == null || employeeIdList.isEmpty()) {
       return null;
     }
     return Beans.get(EmployeeRepository.class)
-            .all()
-            .filter(
-                    "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
-                            + "AND self.mainEmploymentContract.payCompany IN :companySet ")
-            .bind("employeeIdList", employeeIdList)
-            .bind("expenseDate", expenseLine.getExpenseDate())
-            .bind("companySet", AuthUtils.getUser().getCompanySet())
-            .fetch();
+        .all()
+        .filter(
+            "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
+                + "AND self.mainEmploymentContract.payCompany IN :companySet ")
+        .bind("employeeIdList", employeeIdList)
+        .bind("expenseDate", expenseLine.getExpenseDate())
+        .bind("companySet", AuthUtils.getUser().getCompanySet())
+        .fetch();
   }
 }
