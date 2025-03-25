@@ -560,6 +560,7 @@
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
+    <action name="action-project-task-group-set-price-from-contract" if="isBusinessProject"/>
   </action-group>
 
   <action-group name="action-project-task-group-product-onchange">
