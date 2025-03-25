@@ -109,7 +109,7 @@
     <view type="grid" name="partner-price-list-grid"/>
     <view type="form" name="partner-price-list-form"/>
     <domain>:priceList MEMBER OF self.priceListSet</domain>
-    <context name="priceList" expr="eval: __self__"/>
+    <context name="priceList" expr="eval: __this__" if="id != null"/>
   </action-view>
 
   <action-attrs name="action-price-list-attrs-set-currency-readonly">
