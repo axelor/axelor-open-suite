@@ -75,7 +75,7 @@ public class ExpenseLineRestController {
     String expenseLineType = requestBody.getExpenseLineType();
     Boolean toInvoice = requestBody.getToInvoice();
     ProjectTask projectTask = requestBody.fetchProjectTask();
-    List<Employee> employeeList = requestBody.fetchEmployeeList();
+    List<Employee> employeeList =  expenseLineCreateService.getEmployeeList(requestBody.fetchEmployeeList(),expenseLine,expenseDate);
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -147,7 +147,8 @@ public class ExpenseLineRestController {
     RequestValidator.validateBody(requestBody);
     ExpenseLine expenseLine =
         ObjectFinder.find(ExpenseLine.class, expenseLineId, requestBody.getVersion());
-
+    ExpenseLineCreateService expenseLineCreateService = Beans.get(ExpenseLineCreateService.class);
+    List<Employee> employeeList =  expenseLineCreateService.getEmployeeList(requestBody.fetchEmployeeList(expenseLine),expenseLine,expenseLine.getExpenseDate());
     expenseLine =
         Beans.get(ExpenseLineUpdateService.class)
             .updateExpenseLine(
@@ -169,7 +170,7 @@ public class ExpenseLineRestController {
                 requestBody.getToInvoice(),
                 requestBody.fetchExpense(),
                 requestBody.fetchProjectTask(),
-                requestBody.fetchEmployeeList(expenseLine));
+                    employeeList);
 
     return ResponseConstructor.build(
         Response.Status.OK,

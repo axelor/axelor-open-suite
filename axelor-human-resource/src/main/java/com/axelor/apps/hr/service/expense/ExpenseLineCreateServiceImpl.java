@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
@@ -38,6 +39,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
@@ -236,5 +238,20 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
         expenseLine.setCurrency(company.getCurrency());
       }
     }
+  }
+
+  public List<Employee> getEmployeeList(List<Long> employeeIdList, ExpenseLine expenseLine,LocalDate expenseDate) {
+    if (employeeIdList == null || employeeIdList.isEmpty()) {
+      return null;
+    }
+    return Beans.get(EmployeeRepository.class)
+            .all()
+            .filter(
+                    "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
+                            + "AND self.mainEmploymentContract.payCompany IN :companySet ")
+            .bind("employeeIdList", employeeIdList)
+            .bind("expenseDate", expenseLine.getExpenseDate())
+            .bind("companySet", AuthUtils.getUser().getCompanySet())
+            .fetch();
   }
 }

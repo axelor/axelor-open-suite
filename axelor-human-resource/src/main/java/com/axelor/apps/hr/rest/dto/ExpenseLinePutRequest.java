@@ -304,18 +304,10 @@ public class ExpenseLinePutRequest extends RequestStructure {
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
   }
 
-  public List<Employee> fetchEmployeeList(ExpenseLine expenseLine) {
+  public List<Long> fetchEmployeeList(ExpenseLine expenseLine) {
     if (employeeIdList == null || employeeIdList.isEmpty()) {
       return null;
     }
-    return Beans.get(EmployeeRepository.class)
-        .all()
-        .filter(
-            "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
-                + "AND self.mainEmploymentContract.payCompany IN :companySet ")
-        .bind("employeeIdList", employeeIdList)
-        .bind("expenseDate", expenseLine.getExpenseDate())
-        .bind("companySet", AuthUtils.getUser().getCompanySet())
-        .fetch();
+    return employeeIdList;
   }
 }
