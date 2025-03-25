@@ -300,6 +300,7 @@
     <action name="action-expense-method-compute"/>
     <action name="action-expense-method-update-moveDate-and-period"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-method-check-analytic-axis"/>
   </action-group>
 
   <action-record name="action-expense-record-default"
@@ -483,6 +484,10 @@
 
   <action-method name="action-expense-method-draft">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="backToDraft"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-analytic-axis">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkAnalyticAxis"/>
   </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"

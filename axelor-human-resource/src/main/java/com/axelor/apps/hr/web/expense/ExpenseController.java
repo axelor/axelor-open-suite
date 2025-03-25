@@ -764,4 +764,10 @@ public class ExpenseController {
       response.setValue("kilometricExpenseLineList", kilometricExpenseLineList);
     }
   }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
+  }
 }

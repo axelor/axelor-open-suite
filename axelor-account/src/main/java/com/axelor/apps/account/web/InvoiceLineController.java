@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
@@ -33,6 +34,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -543,6 +545,12 @@ public class InvoiceLineController {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       if (invoiceLine != null) {
         Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(invoiceLine);
+        Beans.get(AnalyticAxisService.class)
+            .checkRequiredAxisByCompany(
+                invoiceLine.getInvoice().getCompany(),
+                invoiceLine.getAnalyticMoveLineList().stream()
+                    .map(AnalyticMoveLine::getAnalyticAxis)
+                    .collect(Collectors.toList()));
         response.setValues(invoiceLine);
       }
     } catch (Exception e) {

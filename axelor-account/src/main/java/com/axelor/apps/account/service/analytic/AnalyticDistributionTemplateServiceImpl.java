@@ -31,14 +31,12 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticDistributionTemplateServiceImpl
@@ -46,15 +44,18 @@ public class AnalyticDistributionTemplateServiceImpl
   protected AccountConfigService accountConfigService;
   protected AnalyticDistributionLineService analyticDistributionLineService;
   protected AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public AnalyticDistributionTemplateServiceImpl(
       AccountConfigService accountConfigService,
       AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository,
-      AnalyticDistributionLineService analyticDistributionLineService) {
+      AnalyticDistributionLineService analyticDistributionLineService,
+      AnalyticAxisService analyticAxisService) {
     this.accountConfigService = accountConfigService;
     this.analyticDistributionTemplateRepository = analyticDistributionTemplateRepository;
     this.analyticDistributionLineService = analyticDistributionLineService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   public BigDecimal getPercentage(
@@ -346,34 +347,9 @@ public class AnalyticDistributionTemplateServiceImpl
     if (analyticDistributionTemplate == null) {
       return;
     }
-    List<AnalyticDistributionLine> analyticDistributionLineList =
-        analyticDistributionTemplate.getAnalyticDistributionLineList();
-    if (!CollectionUtils.isEmpty(analyticDistributionLineList)) {
-      AccountConfig accountConfig =
-          accountConfigService.getAccountConfig(analyticDistributionTemplate.getCompany());
-      List<AnalyticAxis> requiredAnalyticAxisList =
-          accountConfig.getAnalyticAxisByCompanyList().stream()
-              .filter(AnalyticAxisByCompany::getIsRequired)
-              .map(AnalyticAxisByCompany::getAnalyticAxis)
-              .collect(Collectors.toList());
 
-      List<AnalyticAxis> missingAxis =
-          requiredAnalyticAxisList.stream()
-              .filter(
-                  axis ->
-                      !analyticDistributionLineList.stream()
-                          .map(AnalyticDistributionLine::getAnalyticAxis)
-                          .collect(Collectors.toList())
-                          .contains(axis))
-              .collect(Collectors.toList());
-      if (!ObjectUtils.isEmpty(missingAxis)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(
-                AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS),
-            missingAxis.stream().map(AnalyticAxis::getName).collect(Collectors.joining(", ")),
-            analyticDistributionTemplate.getCompany().getName());
-      }
-    }
+    analyticAxisService.checkAnalyticDistributionLinesRequiredAxisByCompany(
+        analyticDistributionTemplate.getCompany(),
+        analyticDistributionTemplate.getAnalyticDistributionLineList());
   }
 }

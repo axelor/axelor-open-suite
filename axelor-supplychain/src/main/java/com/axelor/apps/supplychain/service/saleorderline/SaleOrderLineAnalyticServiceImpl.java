@@ -18,21 +18,28 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticService {
 
   protected AnalyticGroupService analyticGroupService;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
-  public SaleOrderLineAnalyticServiceImpl(AnalyticGroupService analyticGroupService) {
+  public SaleOrderLineAnalyticServiceImpl(
+      AnalyticGroupService analyticGroupService, AnalyticAxisService analyticAxisService) {
     this.analyticGroupService = analyticGroupService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -41,5 +48,22 @@ public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticSe
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
     return analyticGroupService.getAnalyticAccountValueMap(
         analyticLineModel, saleOrder.getCompany());
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder == null || ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      return;
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      if (!ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
+        analyticAxisService.checkRequiredAxisByCompany(
+            saleOrder.getCompany(),
+            saleOrderLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+      }
+    }
   }
 }

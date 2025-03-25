@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -46,6 +48,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -57,6 +60,7 @@ import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ContractLineServiceImpl implements ContractLineService {
@@ -72,6 +76,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
   protected AppSaleService appSaleService;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -86,7 +91,8 @@ public class ContractLineServiceImpl implements ContractLineService {
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
       TaxService taxService,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      AnalyticAxisService analyticAxisService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
@@ -99,6 +105,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.currencyScaleService = currencyScaleService;
     this.taxService = taxService;
     this.appSaleService = appSaleService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -389,5 +396,22 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     return domain;
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
+    if (contract.getCurrentContractVersion() == null) {
+      return;
+    }
+
+    if (!ObjectUtils.isEmpty(contract.getCurrentContractVersion().getContractLineList())) {
+      for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
+        analyticAxisService.checkRequiredAxisByCompany(
+            contract.getCompany(),
+            contractLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+      }
+    }
   }
 }

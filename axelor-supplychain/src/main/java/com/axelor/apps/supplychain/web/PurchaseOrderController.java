@@ -207,4 +207,15 @@ public class PurchaseOrderController {
             .updatePurchaseOrderLinesStockLocation(purchaseOrder);
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
   }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      if (purchaseOrder != null) {
+        Beans.get(PurchaseOrderSupplychainService.class).checkAnalyticAxisByCompany(purchaseOrder);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
