@@ -159,12 +159,12 @@ public class SaleOrderLineController {
 
   public void fillQtyProduced(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    if (saleOrderLine != null) {
+    if (saleOrderLine != null && saleOrderLine.getSaleOrder() != null) {
       BigDecimal qtyProduced =
           Beans.get(SaleOrderLineMoService.class).fillQtyProduced(saleOrderLine);
       if (qtyProduced.signum() != -1) {
         response.setValue("qtyProduced", qtyProduced);
-        response.setAttr("qtyProduced", "hidden", false);
+        response.setAttr("qtyProducedPanel", "hidden", false);
       }
     }
   }

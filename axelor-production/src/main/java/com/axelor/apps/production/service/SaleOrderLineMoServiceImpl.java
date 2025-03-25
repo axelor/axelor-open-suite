@@ -33,7 +33,7 @@ public class SaleOrderLineMoServiceImpl implements SaleOrderLineMoService {
             .bind("saleOrder", saleOrder.getId())
             .bind("productId", saleOrderLine.getProduct().getId())
             .fetchOne();
-    if (saleOrder.getStatusSelect() <= SaleOrderRepository.STATUS_ORDER_CONFIRMED
+    if (saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED
         || manufOrder == null) return new BigDecimal(-1);
 
     Optional<BigDecimal> quantityProduced =
