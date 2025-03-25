@@ -8,7 +8,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -23,10 +22,10 @@ public class SaleOrderLineMoServiceImpl implements SaleOrderLineMoService {
     this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
-  @Transactional
   @Override
   public BigDecimal fillQtyProduced(SaleOrderLine saleOrderLine) {
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+
     ManufOrder manufOrder =
         manufOrderRepository
             .all()
@@ -34,20 +33,17 @@ public class SaleOrderLineMoServiceImpl implements SaleOrderLineMoService {
             .bind("saleOrder", saleOrder.getId())
             .bind("productId", saleOrderLine.getProduct().getId())
             .fetchOne();
-    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
-        && manufOrder != null) {
-      // saleOrderLine=saleOrderLineRepository.find(saleOrderLine.getId());
-      Optional<BigDecimal> quantityProduced =
-          manufOrder.getProducedStockMoveLineList().stream()
-              .filter(
-                  stockMoveLine ->
-                      stockMoveLine.getStockMove().getStatusSelect()
-                          == StockMoveLineProductionServiceImpl.TYPE_OUT_PRODUCTIONS)
-              .map(StockMoveLine::getQty)
-              .reduce(BigDecimal::add);
+    if (saleOrder.getStatusSelect() <= SaleOrderRepository.STATUS_ORDER_CONFIRMED
+        || manufOrder == null) return new BigDecimal(-1);
 
-      return quantityProduced.get();
-    }
-    return null;
+    Optional<BigDecimal> quantityProduced =
+        manufOrder.getProducedStockMoveLineList().stream()
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getStockMove().getStatusSelect()
+                        == StockMoveLineProductionServiceImpl.TYPE_OUT_PRODUCTIONS)
+            .map(StockMoveLine::getQty)
+            .reduce(BigDecimal::add);
+    return quantityProduced.orElse(BigDecimal.ZERO);
   }
 }
