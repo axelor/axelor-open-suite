@@ -178,7 +178,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
     }
 
-    setDisposalFields(fixedAsset, disposalDate, BigDecimal.ZERO, transferredReason);
+    setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
     fixedAssetRepo.save(fixedAsset);
     return depreciationFixedAssetLine;
   }
