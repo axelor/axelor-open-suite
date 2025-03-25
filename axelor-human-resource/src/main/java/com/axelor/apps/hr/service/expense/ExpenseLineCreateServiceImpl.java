@@ -251,7 +251,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
             "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
                 + "AND self.mainEmploymentContract.payCompany IN :companySet ")
         .bind("employeeIdList", employeeIdList)
-        .bind("expenseDate", expenseLine.getExpenseDate())
+        .bind("expenseDate",expenseDate)
         .bind("companySet", AuthUtils.getUser().getCompanySet())
         .fetch();
   }
