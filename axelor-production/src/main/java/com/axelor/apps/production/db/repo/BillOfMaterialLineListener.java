@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.BomTreeRemoveService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -71,6 +72,7 @@ public class BillOfMaterialLineListener {
             saleOrdersCount - DISPLAY_LIMIT);
       }
     }
+    Beans.get(BomTreeRemoveService.class).removeLinkedBomTrees(billOfMaterialLine);
   }
 
   protected Set<SaleOrder> getSaleOrders(BillOfMaterialLine billOfMaterialLine) {
