@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed NPE when creating a sale order without active company."
+module: axelor-sale
