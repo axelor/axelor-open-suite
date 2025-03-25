@@ -66,4 +66,6 @@ public interface ExpenseLineCreateService {
       Boolean toInvoice,
       ProjectTask projectTask)
       throws AxelorException;
+  List<Employee> getEmployeeList(List<Long> employeeIdList, ExpenseLine expenseLine,LocalDate expenseDate);
 }
+
