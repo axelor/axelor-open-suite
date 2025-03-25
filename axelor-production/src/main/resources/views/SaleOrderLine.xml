@@ -46,8 +46,7 @@
           <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true"
             colSpan="12"/>
         </panel>
-        <panel name="qtyProducedPanel" colSpan="4"
-          if="__config__.app.isApp('production') &amp;&amp; __parent__.statusSelect==3">
+        <panel name="qtyProducedPanel" colSpan="4" if="__config__.app.isApp('production')">
           <field name="qtyProduced" x-scale="$nbDecimalDigitForQty" readonly="true"
             colSpan="12"/>
         </panel>
