@@ -56,6 +56,8 @@ import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.BomTreeRemoveService;
+import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -336,5 +338,6 @@ public class ProductionModule extends AxelorModule {
     bind(ProdProductAttrsService.class).to(ProdProductAttrsServiceImpl.class);
     bind(ProdProductService.class).to(ProdProductServiceImpl.class);
     bind(SaleOrderLineBomSyncService.class).to(SaleOrderLineBomSyncServiceImpl.class);
+    bind(BomTreeRemoveService.class).to(BomTreeRemoveServiceImpl.class);
   }
 }
