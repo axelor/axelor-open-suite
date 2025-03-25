@@ -29,9 +29,10 @@ public class SaleOrderLineMoServiceImpl implements SaleOrderLineMoService {
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
     ManufOrder manufOrder =
         manufOrderRepository
-                .all()
-                .filter("self.product.id=:productId and :saleOrder in self.saleOrderSet.id").bind("saleOrder",saleOrder.getId())
-                .bind("productId", saleOrderLine.getProduct().getId())
+            .all()
+            .filter("self.product.id=:productId and :saleOrder in self.saleOrderSet.id")
+            .bind("saleOrder", saleOrder.getId())
+            .bind("productId", saleOrderLine.getProduct().getId())
             .fetchOne();
     if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
         && manufOrder != null) {
