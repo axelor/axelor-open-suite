@@ -1,0 +1,3 @@
+---
+title: "Bill of material: fixed an issue where a component could not be deleted from the BOM line list after the tree view was opened."
+module: axelor-production
