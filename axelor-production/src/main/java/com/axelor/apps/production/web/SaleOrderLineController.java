@@ -162,10 +162,9 @@ public class SaleOrderLineController {
     if (saleOrderLine != null) {
       BigDecimal qtyProduced =
           Beans.get(SaleOrderLineMoService.class).fillQtyProduced(saleOrderLine);
-      if (qtyProduced != null) {
+      if (qtyProduced.signum() != -1) {
         response.setValue("qtyProduced", qtyProduced);
-      } else {
-        response.setAttr("qtyProduced", "hidden", true);
+        response.setAttr("qtyProduced", "hidden", false);
       }
     }
   }
