@@ -255,7 +255,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setExTaxTotal(exTaxTotal);
 
     if (projectTask.getProduct() != null) {
-      projectTask.setTotalCosts(
+       projectTask.setTotalCosts(
           projectTask
               .getUnitCost()
               .multiply(projectTask.getQuantity())

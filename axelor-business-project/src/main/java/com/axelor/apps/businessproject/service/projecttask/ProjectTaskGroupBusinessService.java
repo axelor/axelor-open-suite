@@ -31,4 +31,6 @@ public interface ProjectTaskGroupBusinessService {
   Map<String, Object> updateQuantity(ProjectTask projectTask) throws AxelorException;
 
   Map<String, Object> updateFinancialDatas(ProjectTask projectTask) throws AxelorException;
+
+  Map<String, Object> onChangeQuantity(ProjectTask projectTask) throws AxelorException;
 }

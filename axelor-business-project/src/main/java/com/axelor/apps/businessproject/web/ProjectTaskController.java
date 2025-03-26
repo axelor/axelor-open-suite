@@ -248,4 +248,12 @@ public class ProjectTaskController {
     response.setValues(
         Beans.get(ProjectTaskGroupBusinessService.class).updateFinancialDatas(projectTask));
   }
+  @ErrorException
+  public void onChangeQuantity(ActionRequest request, ActionResponse response)
+          throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setValues(
+            Beans.get(ProjectTaskGroupBusinessService.class).onChangeQuantity(projectTask));
+  }
 }
