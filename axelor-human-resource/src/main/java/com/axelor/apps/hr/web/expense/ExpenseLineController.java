@@ -30,6 +30,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.List;
 
 public class ExpenseLineController {
@@ -81,5 +82,15 @@ public class ExpenseLineController {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
     String domain = Beans.get(ExpenseLineService.class).computeProjectTaskDomain(expenseLine);
     response.setAttr("projectTask", "domain", domain);
+  }
+
+  public void setInvitedCollaboratorSetDomain(ActionRequest request, ActionResponse response) {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    String domain =
+        "self.id IN ("
+            + StringHelper.getIdListString(
+                Beans.get(ExpenseLineService.class).getEmployeeDomain(expenseLine.getExpenseDate()))
+            + ")";
+    response.setAttr("invitedCollaboratorSet", "domain", domain);
   }
 }

@@ -28,7 +28,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
@@ -39,7 +38,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
@@ -47,6 +45,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
@@ -58,6 +57,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected AppBaseService appBaseService;
   protected ExpenseProofFileService expenseProofFileService;
   protected ExpenseLineToolService expenseLineToolService;
+  protected ExpenseLineService expenseLineService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -67,7 +67,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
-      ExpenseLineToolService expenseLineToolService) {
+      ExpenseLineToolService expenseLineToolService,
+      ExpenseLineService expenseLineService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
@@ -75,6 +76,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     this.appBaseService = appBaseService;
     this.expenseProofFileService = expenseProofFileService;
     this.expenseLineToolService = expenseLineToolService;
+    this.expenseLineService = expenseLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -240,19 +242,14 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     }
   }
 
+  @Override
   public List<Employee> getEmployeeList(
       List<Long> employeeIdList, ExpenseLine expenseLine, LocalDate expenseDate) {
-    if (employeeIdList == null || employeeIdList.isEmpty()) {
+    if (CollectionUtils.isEmpty(employeeIdList)) {
       return null;
     }
-    return Beans.get(EmployeeRepository.class)
-        .all()
-        .filter(
-            "self.id in :employeeIdList AND self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
-                + "AND self.mainEmploymentContract.payCompany IN :companySet ")
-        .bind("employeeIdList", employeeIdList)
-        .bind("expenseDate",expenseDate)
-        .bind("companySet", AuthUtils.getUser().getCompanySet())
-        .fetch();
+    return expenseLineService.getEmployeeDomain(expenseDate).stream()
+        .filter(el -> employeeIdList.contains(el.getId()))
+        .collect(Collectors.toList());
   }
 }
