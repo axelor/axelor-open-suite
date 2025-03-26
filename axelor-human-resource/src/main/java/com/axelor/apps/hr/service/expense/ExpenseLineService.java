@@ -20,8 +20,10 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseLineService {
@@ -45,4 +47,6 @@ public interface ExpenseLineService {
   Product getExpenseProduct(ExpenseLine expenseLine) throws AxelorException;
 
   String computeProjectTaskDomain(ExpenseLine expenseLine);
+
+  List<Employee> getEmployeeDomain(LocalDate expenseDate);
 }
