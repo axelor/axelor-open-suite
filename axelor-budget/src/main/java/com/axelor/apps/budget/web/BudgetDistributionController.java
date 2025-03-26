@@ -108,52 +108,45 @@ public class BudgetDistributionController {
     try {
       Context parentContext = request.getContext().getParent();
       String query = "";
-      if (parentContext != null
-          && PurchaseOrderLine.class.equals(parentContext.getContextClass())) {
+      if (parentContext == null) {
+        return;
+      }
+      Context parent = parentContext.getParent();
+      if (PurchaseOrderLine.class.equals(parentContext.getContextClass())) {
         PurchaseOrderLine purchaseOrderLine = parentContext.asType(PurchaseOrderLine.class);
-        PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+        PurchaseOrder purchaseOrder =
+            parent != null && PurchaseOrder.class.equals(parent.getContextClass())
+                ? parent.asType(PurchaseOrder.class)
+                : purchaseOrderLine.getPurchaseOrder();
 
-        if (purchaseOrder == null
-            && parentContext.getParent() != null
-            && PurchaseOrder.class.equals(parentContext.getParent().getContextClass())) {
-          purchaseOrder = parentContext.getParent().asType(PurchaseOrder.class);
-        }
         query =
             Beans.get(PurchaseOrderLineBudgetService.class)
                 .getBudgetDomain(purchaseOrderLine, purchaseOrder);
 
-      } else if (parentContext != null && MoveLine.class.equals(parentContext.getContextClass())) {
+      } else if (MoveLine.class.equals(parentContext.getContextClass())) {
         MoveLine moveLine = parentContext.asType(MoveLine.class);
-        Move move = moveLine.getMove();
-        if (move == null
-            && parentContext.getParent() != null
-            && Move.class.equals(parentContext.getParent().getContextClass())) {
-          move = parentContext.getParent().asType(Move.class);
-        }
+        Move move =
+            parent != null && Move.class.equals(parent.getContextClass())
+                ? parent.asType(Move.class)
+                : moveLine.getMove();
+
         query = Beans.get(MoveLineBudgetService.class).getBudgetDomain(move, moveLine);
 
-      } else if (parentContext != null
-          && InvoiceLine.class.equals(parentContext.getContextClass())) {
+      } else if (InvoiceLine.class.equals(parentContext.getContextClass())) {
+        InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
+        Invoice invoice =
+            parent != null && Invoice.class.equals(parent.getContextClass())
+                ? parent.asType(Invoice.class)
+                : invoiceLine.getInvoice();
 
-        if (Invoice.class.equals(parentContext.getParent().getContextClass())) {
-          InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
-          Invoice invoice = invoiceLine.getInvoice();
-          if (invoice == null
-              && parentContext.getParent() != null
-              && Invoice.class.equals(parentContext.getParent().getContextClass())) {
-            invoice = parentContext.getParent().asType(Invoice.class);
-          }
-          query = Beans.get(BudgetInvoiceLineService.class).getBudgetDomain(invoice, invoiceLine);
-        }
-      } else if (parentContext != null
-          && SaleOrderLine.class.equals(parentContext.getContextClass())) {
+        query = Beans.get(BudgetInvoiceLineService.class).getBudgetDomain(invoice, invoiceLine);
+
+      } else if (SaleOrderLine.class.equals(parentContext.getContextClass())) {
         SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
-        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-        if (saleOrder == null
-            && parentContext.getParent() != null
-            && SaleOrder.class.equals(parentContext.getParent().getContextClass())) {
-          saleOrder = parentContext.getParent().asType(SaleOrder.class);
-        }
+        SaleOrder saleOrder =
+            parent != null && SaleOrder.class.equals(parent.getContextClass())
+                ? parent.asType(SaleOrder.class)
+                : saleOrderLine.getSaleOrder();
         query =
             Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
       }
