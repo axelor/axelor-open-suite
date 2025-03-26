@@ -118,7 +118,11 @@ public class SaleOrderLineOnChangeProductionServiceImpl
   // This is a fix to update N+2 level when the sale order is persisted on the qty on change.
   protected List<Map<String, Object>> getSubSaleOrderLinesMap(SaleOrderLine saleOrderLine) {
     List<Map<String, Object>> subSaleOrderLineMapList = new ArrayList<>();
-    for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (CollectionUtils.isEmpty(subSaleOrderLineList)) {
+      return subSaleOrderLineMapList;
+    }
+    for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
       Map<String, Object> subSaleOrderLineMap = new HashMap<>(Mapper.toMap(subSaleOrderLine));
       subSaleOrderLineMap.put("subSaleOrderLineList", getSubSaleOrderLinesMap(subSaleOrderLine));
       subSaleOrderLineMap.put(
