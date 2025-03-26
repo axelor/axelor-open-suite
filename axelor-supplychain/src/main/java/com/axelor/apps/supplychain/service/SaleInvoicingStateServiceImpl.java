@@ -44,18 +44,21 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
   public int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine) {
     int invoicingState = 0;
 
-    if (saleOrderLine.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0) {
-      if (saleOrderLine.getAmountInvoiced().compareTo(saleOrderLine.getExTaxTotal()) < 0) {
-        invoicingState = SALE_ORDER_INVOICE_PARTIALLY_INVOICED;
-      }
-      if (saleOrderLine.getAmountInvoiced().compareTo(saleOrderLine.getExTaxTotal()) >= 0) {
-        invoicingState = SALE_ORDER_INVOICE_INVOICED;
-      }
+    BigDecimal amountInvoiced = saleOrderLine.getAmountInvoiced();
+    BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
+    BigDecimal difference = exTaxTotal.subtract(amountInvoiced);
+
+    if (difference.compareTo(BigDecimal.ZERO) == 0) {
+      invoicingState = SALE_ORDER_INVOICE_INVOICED;
     }
 
-    if (saleOrderLine.getAmountInvoiced().compareTo(BigDecimal.ZERO) == 0) {
+    if (difference.compareTo(BigDecimal.ZERO) != 0) {
+      invoicingState = SALE_ORDER_INVOICE_PARTIALLY_INVOICED;
+    }
+
+    if (amountInvoiced.compareTo(BigDecimal.ZERO) == 0) {
       if (atLeastOneInvoiceVentilated(saleOrderLine)
-          && saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+          && exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
         invoicingState = SALE_ORDER_INVOICE_INVOICED;
       } else {
         invoicingState = SALE_ORDER_INVOICE_NOT_INVOICED;
