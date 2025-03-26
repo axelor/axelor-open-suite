@@ -89,7 +89,7 @@ public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupService
   public Map<String, Object> updateQuantity(ProjectTask projectTask) throws AxelorException {
     projectTaskComputeBusinessService.computeQuantity(projectTask);
 
-    Map<String, Object> valuesMap = new HashMap<>(updateFinancialDatas(projectTask));
+    Map<String, Object> valuesMap = new HashMap<>(onChangeQuantity(projectTask));
     valuesMap.put("quantity", projectTask.getQuantity());
 
     return valuesMap;
@@ -104,6 +104,22 @@ public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupService
 
     valuesMap.put("unitPrice", projectTask.getUnitPrice());
     valuesMap.put("unitCost", projectTask.getUnitCost());
+    valuesMap.put("discountTypeSelect", projectTask.getDiscountTypeSelect());
+    valuesMap.put("discountAmount", projectTask.getDiscountAmount());
+    valuesMap.put("priceDiscounted", projectTask.getPriceDiscounted());
+    valuesMap.put("exTaxTotal", projectTask.getExTaxTotal());
+    valuesMap.put("totalCosts", projectTask.getTotalCosts());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> onChangeQuantity(ProjectTask projectTask) {
+    Map<String, Object> valuesMap = new HashMap<>();
+    // projectTaskComputeBusinessService.computeFinancialDatas(projectTask);
+    projectTaskBusinessProjectService.updateDiscount(projectTask);
+    projectTaskBusinessProjectService.compute(projectTask);
+
     valuesMap.put("discountTypeSelect", projectTask.getDiscountTypeSelect());
     valuesMap.put("discountAmount", projectTask.getDiscountAmount());
     valuesMap.put("priceDiscounted", projectTask.getPriceDiscounted());
