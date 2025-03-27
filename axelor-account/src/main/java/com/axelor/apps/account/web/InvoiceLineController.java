@@ -53,6 +53,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -542,16 +543,25 @@ public class InvoiceLineController {
 
   public void checkAnalyticMoveLineForAxis(ActionRequest request, ActionResponse response) {
     try {
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (invoiceLine != null) {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = this.getInvoice(context);
+
+      if (invoiceLine != null && invoice != null) {
         Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(invoiceLine);
-        Beans.get(AnalyticAxisService.class)
-            .checkRequiredAxisByCompany(
-                invoiceLine.getInvoice().getCompany(),
-                invoiceLine.getAnalyticMoveLineList().stream()
-                    .map(AnalyticMoveLine::getAnalyticAxis)
-                    .collect(Collectors.toList()));
+        List<AnalyticMoveLine> analyticMoveLineList =
+            Optional.of(invoiceLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
+        String error =
+            Beans.get(AnalyticAxisService.class)
+                .checkRequiredAxisByCompany(
+                    invoice.getCompany(),
+                    analyticMoveLineList.stream()
+                        .map(AnalyticMoveLine::getAnalyticAxis)
+                        .collect(Collectors.toList()));
         response.setValues(invoiceLine);
+        if (StringUtils.notEmpty(error)) {
+          response.setError(error);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

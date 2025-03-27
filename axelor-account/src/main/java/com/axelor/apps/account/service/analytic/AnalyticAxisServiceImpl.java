@@ -28,6 +28,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -136,15 +137,19 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
   public void checkAnalyticDistributionLinesRequiredAxisByCompany(
       Company company, List<AnalyticDistributionLine> analyticDistributionLineList)
       throws AxelorException {
-    this.checkRequiredAxisByCompany(
-        company,
-        analyticDistributionLineList.stream()
-            .map(AnalyticDistributionLine::getAnalyticAxis)
-            .collect(Collectors.toList()));
+    String error =
+        this.checkRequiredAxisByCompany(
+            company,
+            analyticDistributionLineList.stream()
+                .map(AnalyticDistributionLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+    if (StringUtils.notEmpty(error)) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, error);
+    }
   }
 
   @Override
-  public void checkRequiredAxisByCompany(Company company, List<AnalyticAxis> analyticAxisList)
+  public String checkRequiredAxisByCompany(Company company, List<AnalyticAxis> analyticAxisList)
       throws AxelorException {
     if (!CollectionUtils.isEmpty(analyticAxisList)) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
@@ -159,13 +164,14 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
               .filter(axis -> !analyticAxisList.contains(axis))
               .collect(Collectors.toList());
       if (!ObjectUtils.isEmpty(missingAxis)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
+        return String.format(
             I18n.get(
                 AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS),
             missingAxis.stream().map(AnalyticAxis::getName).collect(Collectors.joining(", ")),
             company.getName());
       }
     }
+
+    return null;
   }
 }

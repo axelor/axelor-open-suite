@@ -74,6 +74,7 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
@@ -524,7 +525,8 @@ public class ExpenseController {
     }
   }
 
-  public void validateAndCompute(ActionRequest request, ActionResponse response) {
+  public void validateAndCompute(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
     ExpenseLineService expenseLineService = Beans.get(ExpenseLineService.class);
@@ -564,6 +566,7 @@ public class ExpenseController {
     }
 
     compute(request, response);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)
@@ -768,6 +771,9 @@ public class ExpenseController {
   public void checkAnalyticAxis(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Expense expense = request.getContext().asType(Expense.class);
-    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
+    String error = Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
+    if (StringUtils.notEmpty(error)) {
+      response.setError(error);
+    }
   }
 }

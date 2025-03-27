@@ -51,19 +51,23 @@ public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticSe
   }
 
   @Override
-  public void checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException {
+  public String checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException {
     if (saleOrder == null || ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-      return;
+      return null;
     }
 
+    StringBuilder error = new StringBuilder();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       if (!ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
-        analyticAxisService.checkRequiredAxisByCompany(
-            saleOrder.getCompany(),
-            saleOrderLine.getAnalyticMoveLineList().stream()
-                .map(AnalyticMoveLine::getAnalyticAxis)
-                .collect(Collectors.toList()));
+        error.append(
+            analyticAxisService.checkRequiredAxisByCompany(
+                saleOrder.getCompany(),
+                saleOrderLine.getAnalyticMoveLineList().stream()
+                    .map(AnalyticMoveLine::getAnalyticAxis)
+                    .collect(Collectors.toList())));
       }
     }
+
+    return error.toString();
   }
 }

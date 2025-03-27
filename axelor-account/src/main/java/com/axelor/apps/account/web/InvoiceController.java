@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
@@ -69,6 +70,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -1455,5 +1457,18 @@ public class InvoiceController {
   public void setDiscountDummies(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     response.setAttrs(Beans.get(InvoiceGlobalDiscountService.class).setDiscountDummies(invoice));
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      String error =
+          Beans.get(InvoiceLineAnalyticService.class).checkAnalyticAxisByCompany(invoice);
+      if (StringUtils.notEmpty(error)) {
+        response.setError(error);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

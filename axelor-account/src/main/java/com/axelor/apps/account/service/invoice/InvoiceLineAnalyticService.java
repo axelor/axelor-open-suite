@@ -41,4 +41,6 @@ public interface InvoiceLineAnalyticService {
   List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine);
 
   boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList);
+
+  String checkAnalyticAxisByCompany(Invoice invoice) throws AxelorException;
 }

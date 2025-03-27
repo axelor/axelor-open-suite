@@ -247,21 +247,25 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  public void checkAnalyticAxisByCompany(PurchaseOrder purchaseOrder) throws AxelorException {
+  public String checkAnalyticAxisByCompany(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder == null || ObjectUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-      return;
+      return null;
     }
 
+    StringBuilder error = new StringBuilder();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       if (!ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
-        analyticAxisService.checkRequiredAxisByCompany(
-            purchaseOrder.getCompany(),
-            Optional.of(
-                    purchaseOrderLine.getAnalyticMoveLineList().stream()
-                        .map(AnalyticMoveLine::getAnalyticAxis)
-                        .collect(Collectors.toList()))
-                .orElse(null));
+        error.append(
+            analyticAxisService.checkRequiredAxisByCompany(
+                purchaseOrder.getCompany(),
+                Optional.of(
+                        purchaseOrderLine.getAnalyticMoveLineList().stream()
+                            .map(AnalyticMoveLine::getAnalyticAxis)
+                            .collect(Collectors.toList()))
+                    .orElse(null)));
       }
     }
+
+    return error.toString();
   }
 }

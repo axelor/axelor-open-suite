@@ -11,6 +11,8 @@
     <extend target="/">
       <attribute name="onNew"
         value="action-supplychain-group-purchase-order-on-new-actions"/>
+      <attribute name="onSave"
+        value="action-supplychain-method-purchase-order-check-analytic-axis"/>
     </extend>
 
     <extend target="//field[@name='shipmentMode']">

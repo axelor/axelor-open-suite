@@ -37,6 +37,6 @@ public interface AnalyticAxisService {
       Company company, List<AnalyticDistributionLine> analyticDistributionLineList)
       throws AxelorException;
 
-  void checkRequiredAxisByCompany(Company company, List<AnalyticAxis> analyticAxisList)
+  String checkRequiredAxisByCompany(Company company, List<AnalyticAxis> analyticAxisList)
       throws AxelorException;
 }

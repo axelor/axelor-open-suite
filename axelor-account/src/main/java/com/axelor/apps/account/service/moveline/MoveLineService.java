@@ -68,4 +68,6 @@ public interface MoveLineService {
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists);
 
   void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException;
+
+  void checkAnalyticAxisByCompany(Move move) throws AxelorException;
 }

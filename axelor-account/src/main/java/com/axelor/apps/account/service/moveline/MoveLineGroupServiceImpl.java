@@ -35,14 +35,19 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -517,11 +522,17 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   public Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
       MoveLine moveLine) throws AxelorException {
     analyticLineService.checkAnalyticLineForAxis(moveLine);
-    analyticAxisService.checkRequiredAxisByCompany(
-        moveLine.getMove().getCompany(),
-        moveLine.getAnalyticMoveLineList().stream()
-            .map(AnalyticMoveLine::getAnalyticAxis)
-            .collect(Collectors.toList()));
+    List<AnalyticMoveLine> analyticMoveLineList =
+        Optional.of(moveLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
+    String error =
+        analyticAxisService.checkRequiredAxisByCompany(
+            moveLine.getMove().getCompany(),
+            analyticMoveLineList.stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+    if (StringUtils.notEmpty(error)) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, error);
+    }
 
     return createAnalyticValuesMap(moveLine);
   }

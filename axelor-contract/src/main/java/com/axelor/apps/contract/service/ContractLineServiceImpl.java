@@ -399,19 +399,25 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public void checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
+  public String checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
     if (contract.getCurrentContractVersion() == null) {
-      return;
+      return null;
     }
 
+    StringBuilder error = new StringBuilder();
     if (!ObjectUtils.isEmpty(contract.getCurrentContractVersion().getContractLineList())) {
       for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
-        analyticAxisService.checkRequiredAxisByCompany(
-            contract.getCompany(),
-            contractLine.getAnalyticMoveLineList().stream()
-                .map(AnalyticMoveLine::getAnalyticAxis)
-                .collect(Collectors.toList()));
+        if (!ObjectUtils.isEmpty(contractLine.getAnalyticMoveLineList())) {
+          error.append(
+              analyticAxisService.checkRequiredAxisByCompany(
+                  contract.getCompany(),
+                  contractLine.getAnalyticMoveLineList().stream()
+                      .map(AnalyticMoveLine::getAnalyticAxis)
+                      .collect(Collectors.toList())));
+        }
       }
     }
+
+    return error.toString();
   }
 }
