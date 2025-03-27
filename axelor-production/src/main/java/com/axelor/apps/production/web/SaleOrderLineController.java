@@ -26,7 +26,6 @@ import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
-import com.axelor.apps.production.service.SaleOrderLineMoService;
 import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -37,7 +36,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
 
 @Singleton
 public class SaleOrderLineController {
@@ -137,15 +135,12 @@ public class SaleOrderLineController {
     }
   }
 
-  public void fillQtyProduced(ActionRequest request, ActionResponse response) {
+  public void showQtyProduced(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (saleOrderLine != null && saleOrderLine.getSaleOrder() != null) {
-      BigDecimal qtyProduced =
-          Beans.get(SaleOrderLineMoService.class).fillQtyProduced(saleOrderLine);
-      if (qtyProduced.signum() != -1) {
-        response.setValue("qtyProduced", qtyProduced);
-        response.setAttr("qtyProducedPanel", "hidden", false);
-      }
+      boolean showQtyProduced =
+          Beans.get(SaleOrderLineBomService.class).ShowQtyProduced(saleOrderLine);
+      response.setAttr("qtyProducedPanel", "hidden", !showQtyProduced);
     }
   }
 }

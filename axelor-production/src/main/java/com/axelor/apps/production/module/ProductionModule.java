@@ -118,8 +118,6 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDummyProductionServiceImpl;
-import com.axelor.apps.production.service.SaleOrderLineMoService;
-import com.axelor.apps.production.service.SaleOrderLineMoServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineOnChangeProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
@@ -420,6 +418,5 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineDummyProductionServiceImpl.class);
     bind(ProdProcessComputationService.class).to(ProdProcessComputationServiceImpl.class);
     bind(BillOfMaterialDummyService.class).to(BillOfMaterialDummyServiceImpl.class);
-    bind(SaleOrderLineMoService.class).to(SaleOrderLineMoServiceImpl.class);
   }
 }
