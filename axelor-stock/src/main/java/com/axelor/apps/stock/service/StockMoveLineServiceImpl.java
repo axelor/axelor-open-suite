@@ -1883,7 +1883,4 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     unfulfilledStockMoveLine.setStockMove(fulfilledStockMoveLine.getStockMove());
     unfulfilledStockMoveLine.setConformitySelect(0);
   }
-
-  @Override
-  public void fillSaleOrderLineProducedQty(StockMoveLine stockMoveLine) {}
 }

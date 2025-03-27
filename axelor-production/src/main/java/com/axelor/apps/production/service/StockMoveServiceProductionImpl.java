@@ -158,10 +158,13 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         .getStockMoveLineList()
         .forEach(
             sml -> {
-              SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
-              if (saleOrderLine.getProduct().equals(sml.getProduct()))
-                saleOrderLine.setQtyProduced(sml.getQty());
-              saleOrderLineRepository.save(saleOrderLine);
+              if (sml.getProducedManufOrder() != null
+                  && sml.getProducedManufOrder().getSaleOrderLine() != null) {
+                SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
+                if (saleOrderLine.getProduct().equals(sml.getProduct()))
+                  saleOrderLine.setQtyProduced(sml.getQty());
+                saleOrderLineRepository.save(saleOrderLine);
+              }
             });
     return newStockSeq;
   }

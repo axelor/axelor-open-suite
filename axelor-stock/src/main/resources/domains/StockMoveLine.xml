@@ -10,6 +10,7 @@
     <many-to-one name="stockMove" readonly="true"
       ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
     <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
+
     <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       required="true" title="From stock location"/>
     <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
