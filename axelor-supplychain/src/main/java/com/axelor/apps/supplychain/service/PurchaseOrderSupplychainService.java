@@ -34,4 +34,6 @@ public interface PurchaseOrderSupplychainService {
 
   StockLocation getFromStockLocation(Partner supplierPartner, Company company)
       throws AxelorException;
+
+  String checkAnalyticAxisByCompany(PurchaseOrder purchaseOrder) throws AxelorException;
 }

@@ -35,6 +35,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -206,5 +207,19 @@ public class PurchaseOrderController {
         Beans.get(PurchaseOrderStockService.class)
             .updatePurchaseOrderLinesStockLocation(purchaseOrder);
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      String error =
+          Beans.get(PurchaseOrderSupplychainService.class)
+              .checkAnalyticAxisByCompany(purchaseOrder);
+      if (StringUtils.notEmpty(error)) {
+        response.setError(error);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

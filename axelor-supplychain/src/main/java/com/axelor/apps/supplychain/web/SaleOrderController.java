@@ -54,7 +54,9 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -845,6 +847,19 @@ public class SaleOrderController {
             .computeFreightCarrierMode(
                 freightCarrierModeList, Long.valueOf(context.get("_id").toString()));
         response.setCanClose(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      String error =
+          Beans.get(SaleOrderLineAnalyticService.class).checkAnalyticAxisByCompany(saleOrder);
+      if (StringUtils.notEmpty(error)) {
+        response.setError(error);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

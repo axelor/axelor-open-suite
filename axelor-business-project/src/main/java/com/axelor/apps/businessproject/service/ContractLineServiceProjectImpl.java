@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -53,7 +54,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
       TaxService taxService,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      AnalyticAxisService analyticAxisService) {
     super(
         appBaseService,
         accountManagementService,
@@ -66,7 +68,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
         appAccountService,
         currencyScaleService,
         taxService,
-        appSaleService);
+        appSaleService,
+        analyticAxisService);
   }
 
   @Override

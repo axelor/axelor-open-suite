@@ -25,6 +25,7 @@
       required="true"/>
     <many-to-one name="analyticAxis" ref="AnalyticAxis" title="Analytic Axis"
       required="true"/>
+    <boolean name="isRequired" title="Required"/>
   </entity>
 
 </domain-models>
