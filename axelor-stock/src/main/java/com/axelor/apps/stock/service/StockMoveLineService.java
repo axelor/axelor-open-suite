@@ -379,6 +379,4 @@ public interface StockMoveLineService {
    */
   void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
       throws AxelorException;
-
-  void fillSaleOrderLineProducedQty(StockMoveLine stockMoveLine);
 }

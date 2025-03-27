@@ -123,10 +123,11 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     ManufOrder manufOrder =
         manufOrderRepository
             .all()
-            .filter("self.product.id=:productId and :saleOrder in self.saleOrderSet.id")
-            .bind("saleOrder", saleOrder.getId())
+            .filter("self.product.id=:productId and :saleOrderLineId =self.saleOrderLine.id")
+            .bind("saleOrderLineId", saleOrderLine.getId())
             .bind("productId", saleOrderLine.getProduct().getId())
             .fetchOne();
+
     return saleOrder.getStatusSelect() >= SaleOrderRepository.STATUS_ORDER_CONFIRMED
         && manufOrder != null;
   }
