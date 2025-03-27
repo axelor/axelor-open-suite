@@ -31,6 +31,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.project.db.Project;
@@ -42,6 +43,7 @@ import java.time.LocalDate;
 
 public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServiceImpl {
   protected AppBusinessProjectService appBusinessProjectService;
+  protected ExpenseLineService expenseLineService;
 
   @Inject
   public ExpenseLineCreateServiceProjectImpl(
@@ -52,7 +54,8 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
       ExpenseLineToolService expenseLineToolService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ExpenseLineService expenseLineService) {
     super(
         expenseLineRepository,
         appHumanResourceService,
@@ -60,7 +63,8 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
         hrConfigService,
         appBaseService,
         expenseProofFileService,
-        expenseLineToolService);
+        expenseLineToolService,
+        expenseLineService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

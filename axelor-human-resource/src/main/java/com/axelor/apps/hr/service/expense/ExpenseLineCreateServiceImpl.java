@@ -44,6 +44,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
 
@@ -54,6 +57,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected AppBaseService appBaseService;
   protected ExpenseProofFileService expenseProofFileService;
   protected ExpenseLineToolService expenseLineToolService;
+  protected ExpenseLineService expenseLineService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -63,7 +67,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
-      ExpenseLineToolService expenseLineToolService) {
+      ExpenseLineToolService expenseLineToolService,
+      ExpenseLineService expenseLineService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
@@ -71,6 +76,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     this.appBaseService = appBaseService;
     this.expenseProofFileService = expenseProofFileService;
     this.expenseLineToolService = expenseLineToolService;
+    this.expenseLineService = expenseLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -86,7 +92,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
 
     if (expenseProduct == null) {
@@ -94,14 +101,18 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_MISSING_EXPENSE_PRODUCT));
     }
-
     ExpenseLine expenseLine =
         createBasicExpenseLine(
             project, employee, expenseDate, comments, currency, toInvoice, projectTask);
+    if (expenseProduct.getDeductLunchVoucher() && !CollectionUtils.isEmpty(employeeList)) {
+      for (Employee e : employeeList) {
+        expenseLine.addInvitedCollaboratorSetItem(e);
+        expenseLine.setIsAloneMeal(false);
+      }
+    }
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     convertJustificationFileToPdf(expenseLine);
-
     return expenseLineRepository.save(expenseLine);
   }
 
@@ -229,5 +240,16 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
         expenseLine.setCurrency(company.getCurrency());
       }
     }
+  }
+
+  @Override
+  public List<Employee> getEmployeeList(
+      List<Long> employeeIdList, ExpenseLine expenseLine, LocalDate expenseDate) {
+    if (CollectionUtils.isEmpty(employeeIdList)) {
+      return null;
+    }
+    return expenseLineService.getEmployeeDomain(expenseDate).stream()
+        .filter(el -> employeeIdList.contains(el.getId()))
+        .collect(Collectors.toList());
   }
 }
