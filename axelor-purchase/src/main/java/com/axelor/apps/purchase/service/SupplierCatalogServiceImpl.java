@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
@@ -136,14 +137,16 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       return null;
     }
 
-    List<SupplierCatalog> supplierCatalogList = supplierPartner.getSupplierCatalogList();
+    List<SupplierCatalog> supplierCatalogList =
+        supplierPartner.getSupplierCatalogList().stream()
+            .filter(catalog -> catalog.getProduct().equals(product))
+            .collect(Collectors.toList());
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
         && CollectionUtils.isNotEmpty(supplierCatalogList)) {
       if (supplierCatalogList.stream().anyMatch(catalog -> catalog.getUpdateDate() != null)) {
         return supplierCatalogList.stream()
-            .filter(
-                catalog -> catalog.getUpdateDate() != null && catalog.getProduct().equals(product))
+            .filter(catalog -> catalog.getUpdateDate() != null)
             .max(Comparator.comparing(SupplierCatalog::getUpdateDate))
             .orElse(null);
       } else {
