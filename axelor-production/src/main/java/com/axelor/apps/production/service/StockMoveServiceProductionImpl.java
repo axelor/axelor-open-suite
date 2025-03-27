@@ -30,6 +30,8 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.stock.db.StockMove;
@@ -48,9 +50,12 @@ import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
     implements StockMoveProductionService {
+  protected SaleOrderLineRepository saleOrderLineRepository;
+
   @Inject
   public StockMoveServiceProductionImpl(
       StockMoveLineService stockMoveLineService,
@@ -74,7 +79,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
       SaleOrderConfirmService saleOrderConfirmService,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
+      SaleOrderLineRepository saleOrderLineRepository) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -98,6 +104,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         pfpService,
         saleOrderConfirmService,
         stockMoveLineServiceSupplychain);
+    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   @Override
@@ -141,5 +148,21 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   // future code specific to stock move cancellation in production module goes here
   protected void cancelStockMoveInProduction(StockMove stockMove) throws AxelorException {
     super.cancel(stockMove);
+  }
+
+  @Transactional
+  @Override
+  public String realize(StockMove stockMove) throws AxelorException {
+    String newStockSeq = super.realize(stockMove);
+    stockMove
+        .getStockMoveLineList()
+        .forEach(
+            sml -> {
+              SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
+              if (saleOrderLine.getProduct().equals(sml.getProduct()))
+                saleOrderLine.setQtyProduced(sml.getQty());
+              saleOrderLineRepository.save(saleOrderLine);
+            });
+    return newStockSeq;
   }
 }

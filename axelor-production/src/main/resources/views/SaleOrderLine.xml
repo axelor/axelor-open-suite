@@ -55,7 +55,7 @@
     </extend>
     <extend target="/">
       <attribute name="onLoad"
-        value="action-sale-order-line-method-onload,action-sale-order-line-method-fill-qtyProduced"/>
+        value="action-sale-order-line-method-onload,action-sale-order-line-method-display-qtyProduced"/>
     </extend>
   </form>
 
@@ -128,8 +128,8 @@
       method="prodProcessOnChange"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-method-fill-qtyProduced">
+  <action-method name="action-sale-order-line-method-display-qtyProduced">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
-      method="fillQtyProduced"/>
+      method="showQtyProduced"/>
   </action-method>
 </object-views>
