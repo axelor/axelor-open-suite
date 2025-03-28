@@ -1,0 +1,3 @@
+---
+title: "Payment voucher : Fixed control when we register payment in multicurrency"
+module: axelor-account
