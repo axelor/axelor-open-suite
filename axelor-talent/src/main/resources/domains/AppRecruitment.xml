@@ -15,6 +15,7 @@
 
     <track>
       <field name="lastEmailId" on="UPDATE"/>
+      <field name="hiringStatus" on="UPDATE"/>
     </track>
   </entity>
 

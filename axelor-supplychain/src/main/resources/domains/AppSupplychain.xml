@@ -129,6 +129,11 @@
       <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
       <field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
+      <field name="completeSaleOrderOnInvoicing" on="UPDATE"/>
+      <field name="sOFilterOnStockDetailStatusSelect" on="UPDATE"/>
+      <field name="pOFilterOnStockDetailStatusSelect" on="UPDATE"/>
+      <field name="autoFillDeliveryRealQty" on="UPDATE"/>
+      <field name="autoFillReceiptRealQty" on="UPDATE"/>
     </track>
   </entity>
 

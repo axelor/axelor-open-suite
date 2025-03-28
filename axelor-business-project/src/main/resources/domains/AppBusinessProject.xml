@@ -96,6 +96,7 @@
       <field name="invoicingProjectAnnexPrintTemplate" on="UPDATE"/>
       <field name="invoicingAnnexPrintTemplate" on="UPDATE"/>
       <field name="invoiceExpensePrintTemplate" on="UPDATE"/>
+      <field name="closingProjectRuleSelect" on="UPDATE"/>
     </track>
 
   </entity>

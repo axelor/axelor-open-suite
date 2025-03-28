@@ -17,6 +17,9 @@
 	    ]]>
     </extra-code>
 
-  </entity>
+    <track>
+      <field name="enableSiteManagementForProject" on="UPDATE"/>
+    </track>
 
+  </entity>
 </domain-models>

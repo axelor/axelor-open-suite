@@ -39,6 +39,8 @@
       <field name="isPayrollPreparationExportEnabled" on="UPDATE"/>
       <field name="firstLeaveDayPeriod" on="UPDATE"/>
       <field name="firstLeaveMonthPeriod" on="UPDATE"/>
+      <field name="monthlySchedule" on="UPDATE"/>
+      <field name="annualSchedule" on="UPDATE"/>
     </track>
   </entity>
 

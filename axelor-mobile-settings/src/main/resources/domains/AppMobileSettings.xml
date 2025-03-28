@@ -202,6 +202,9 @@
       <field name="isFolderCreationAllowed" on="UPDATE"/>
       <field name="isFileCreationAllowed" on="UPDATE"/>
       <field name="isFileDeletionAllowed" on="UPDATE"/>
+      <field name="fieldsToShowOnTimesheet" on="UPDATE"/>
+      <field name="isStockLocationManagementEnabled" on="UPDATE"/>
+      <field name="isOneLineShortcut" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>
