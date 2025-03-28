@@ -97,19 +97,24 @@ public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupService
 
   @Override
   public Map<String, Object> updateFinancialDatas(ProjectTask projectTask) throws AxelorException {
-    Map<String, Object> valuesMap = new HashMap<>();
     projectTaskComputeBusinessService.computeFinancialDatas(projectTask);
-    projectTaskBusinessProjectService.updateDiscount(projectTask);
-    projectTaskBusinessProjectService.compute(projectTask);
-
+    Map<String, Object> valuesMap = updateFinancialDatasWithoutPriceUnits(projectTask);
     valuesMap.put("unitPrice", projectTask.getUnitPrice());
     valuesMap.put("unitCost", projectTask.getUnitCost());
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> updateFinancialDatasWithoutPriceUnits(ProjectTask projectTask)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+    projectTaskBusinessProjectService.updateDiscount(projectTask);
+    projectTaskBusinessProjectService.compute(projectTask);
     valuesMap.put("discountTypeSelect", projectTask.getDiscountTypeSelect());
     valuesMap.put("discountAmount", projectTask.getDiscountAmount());
     valuesMap.put("priceDiscounted", projectTask.getPriceDiscounted());
     valuesMap.put("exTaxTotal", projectTask.getExTaxTotal());
     valuesMap.put("totalCosts", projectTask.getTotalCosts());
-
     return valuesMap;
   }
 }
