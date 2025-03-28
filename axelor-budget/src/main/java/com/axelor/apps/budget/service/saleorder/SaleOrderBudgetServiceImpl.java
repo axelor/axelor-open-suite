@@ -227,6 +227,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
             saleOrderLine.getBudgetDistributionList(),
             invoiceLine,
             qtyToInvoice.divide(saleOrderLine.getQty(), RoundingMode.HALF_UP));
+
         invoiceLine.setBudgetRemainingAmountToAllocate(
             budgetToolsService.getBudgetRemainingAmountToAllocate(
                 invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
