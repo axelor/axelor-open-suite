@@ -33,5 +33,15 @@
       ref="com.axelor.apps.intervention.db.InterventionCategory"
       title="Default intervention category from contract batch"/>
 
+    <track>
+      <field name="defaultRequestSource" on="UPDATE"/>
+      <field name="defaultRequestSubject" on="UPDATE"/>
+      <field name="defaultInterventionCategory" on="UPDATE"/>
+      <field name="defaultInterventionDescription" on="UPDATE"/>
+      <field name="defaultTypeForInterventionsFromContracts" on="UPDATE"/>
+      <field name="defaultRequestSourceBatchContract" on="UPDATE"/>
+      <field name="defaultRequestSubjectBatchContract" on="UPDATE"/>
+      <field name="defaultInterventionCategoryBatchContract" on="UPDATE"/>
+    </track>
   </entity>
 </domain-models>
