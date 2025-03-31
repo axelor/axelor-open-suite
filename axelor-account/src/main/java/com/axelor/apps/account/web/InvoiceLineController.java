@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -68,7 +67,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class InvoiceLineController {
@@ -564,38 +562,6 @@ public class InvoiceLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
-    try {
-      AccountService accountService = Beans.get(AccountService.class);
-
-      if (Invoice.class.equals(request.getContext().getContextClass())) {
-        Invoice invoice = request.getContext().asType(Invoice.class);
-        if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
-          for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-            if (invoiceLine != null && invoiceLine.getAccount() != null) {
-              accountService.checkAnalyticAxis(
-                  invoiceLine.getAccount(),
-                  invoiceLine.getAnalyticDistributionTemplate(),
-                  false,
-                  invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines());
-            }
-          }
-        }
-      } else {
-        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-        if (invoiceLine != null && invoiceLine.getAccount() != null) {
-          accountService.checkAnalyticAxis(
-              invoiceLine.getAccount(),
-              invoiceLine.getAnalyticDistributionTemplate(),
-              false,
-              invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines());
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

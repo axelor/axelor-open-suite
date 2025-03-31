@@ -144,14 +144,6 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public void checkAnalyticAccount(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      moveLineCheckService.checkAnalyticAccount(move.getMoveLineList());
-    }
-  }
-
-  @Override
   public boolean isPartnerCompatible(Move move) {
     return move.getPartner() == null
         || journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
