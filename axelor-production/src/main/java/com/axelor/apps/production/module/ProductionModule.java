@@ -248,6 +248,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
@@ -430,5 +431,6 @@ public class ProductionModule extends AxelorModule {
         .to(SolDetailsProdProcessLineMappingServiceImpl.class);
     bind(ProdProcessLineHourlyCostComputeService.class)
         .to(ProdProcessLineHourlyCostComputeServiceImpl.class);
+    bind(SaleOrderLineViewSupplychainServiceImpl.class).to(SaleOrderLineViewProductionServiceImpl.class);
   }
 }
