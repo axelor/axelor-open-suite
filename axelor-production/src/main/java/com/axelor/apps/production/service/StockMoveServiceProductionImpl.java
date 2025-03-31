@@ -152,8 +152,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
 
   @Transactional
   @Override
-  public String realize(StockMove stockMove) throws AxelorException {
-    String newStockSeq = super.realize(stockMove);
+  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
+    String newStockSeq = super.realizeStockMove(stockMove, check);
     stockMove
         .getStockMoveLineList()
         .forEach(

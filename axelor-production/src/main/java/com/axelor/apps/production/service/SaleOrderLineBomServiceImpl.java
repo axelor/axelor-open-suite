@@ -21,14 +21,11 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
-import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
@@ -51,7 +48,6 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialService billOfMaterialService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
-  protected ManufOrderRepository manufOrderRepository;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -63,8 +59,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialLineService billOfMaterialLineService,
       BillOfMaterialService billOfMaterialService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
-      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService,
-      ManufOrderRepository manufOrderRepository) {
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
@@ -73,7 +68,6 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     this.billOfMaterialService = billOfMaterialService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
     this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
-    this.manufOrderRepository = manufOrderRepository;
   }
 
   @Override
@@ -114,21 +108,5 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     return saleOrderLinesList.stream()
         .sorted(Comparator.comparingInt(SaleOrderLine::getSequence))
         .collect(Collectors.toList());
-  }
-
-  @Override
-  public boolean ShowQtyProduced(SaleOrderLine saleOrderLine) {
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
-    ManufOrder manufOrder =
-        manufOrderRepository
-            .all()
-            .filter("self.product.id=:productId and :saleOrderLineId =self.saleOrderLine.id")
-            .bind("saleOrderLineId", saleOrderLine.getId())
-            .bind("productId", saleOrderLine.getProduct().getId())
-            .fetchOne();
-
-    return saleOrder.getStatusSelect() >= SaleOrderRepository.STATUS_ORDER_CONFIRMED
-        && manufOrder != null;
   }
 }

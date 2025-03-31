@@ -154,13 +154,4 @@ public class SaleOrderLineController {
               .createSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrder, saleOrderLine));
     }
   }
-
-  public void showQtyProduced(ActionRequest request, ActionResponse response) {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    if (saleOrderLine != null && saleOrderLine.getSaleOrder() != null) {
-      boolean showQtyProduced =
-          Beans.get(SaleOrderLineBomService.class).ShowQtyProduced(saleOrderLine);
-      response.setAttr("qtyProducedPanel", "hidden", !showQtyProduced);
-    }
-  }
 }
