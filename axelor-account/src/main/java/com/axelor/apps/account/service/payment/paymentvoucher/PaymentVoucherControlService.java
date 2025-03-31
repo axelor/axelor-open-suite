@@ -38,6 +38,7 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -153,8 +154,17 @@ public class PaymentVoucherControlService {
 
   protected BigDecimal getConvertedCompanyAmountFromMoveLine(MoveLine moveLine, BigDecimal amount) {
     if (!moveLine.getCurrency().equals(moveLine.getCompanyCurrency())) {
+      BigDecimal moveLineCurrencyRate =
+          moveLine
+              .getDebit()
+              .max(moveLine.getCredit())
+              .divide(
+                  moveLine.getCurrencyAmount(),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP)
+              .abs();
       return currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-          amount, moveLine.getCurrencyRate(), moveLine.getCompanyCurrency());
+          amount, moveLineCurrencyRate, moveLine.getCompanyCurrency());
     }
 
     return amount;
