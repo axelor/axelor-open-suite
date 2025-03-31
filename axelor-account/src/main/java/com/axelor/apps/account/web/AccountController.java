@@ -38,6 +38,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
@@ -343,23 +344,23 @@ public class AccountController {
     }
   }
 
-  public void originAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
-    try {
-      Account account = request.getContext().asType(Account.class);
-      if (Boolean.TRUE.equals(account.getAnalyticDistributionAuthorized())) {
-        Company accountCompany = account.getCompany();
-        if (accountCompany != null && accountCompany.getAccountConfig() != null) {
-          Integer analyticDistSelect =
-              accountCompany.getAccountConfig().getAnalyticDistributionTypeSelect();
-          if (analyticDistSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
-            response.setAttr("analyticDistributionTemplateLabel", "hidden", false);
-          } else if (analyticDistSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-            response.setAttr("analyticDistributionTemplate", "required", true);
-          }
+  @ErrorException
+  public void originAnalyticDistTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    if (Boolean.TRUE.equals(account.getAnalyticDistributionAuthorized())) {
+      Company accountCompany = account.getCompany();
+      if (accountCompany != null && accountCompany.getAccountConfig() != null) {
+        Integer analyticDistSelect =
+            Beans.get(AccountConfigService.class)
+                .getAccountConfig(accountCompany)
+                .getAnalyticDistributionTypeSelect();
+        if (analyticDistSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
+          response.setAttr("analyticDistributionTemplateLabel", "hidden", false);
+        } else if (analyticDistSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+          response.setAttr("analyticDistributionTemplate", "required", true);
         }
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 }
