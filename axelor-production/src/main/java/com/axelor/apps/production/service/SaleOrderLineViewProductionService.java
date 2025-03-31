@@ -26,6 +26,6 @@ import java.util.Map;
 public interface SaleOrderLineViewProductionService {
   Map<String, Map<String, Object>> hideBomAndProdProcess(SaleOrderLine saleOrderLne);
 
-  public Map<String, Map<String, Object>> getOnLoadAttrs(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+  Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }
