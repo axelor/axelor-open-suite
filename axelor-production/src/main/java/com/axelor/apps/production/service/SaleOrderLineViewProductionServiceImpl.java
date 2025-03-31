@@ -115,7 +115,8 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
   @Override
   public Map<String, Map<String, Object>> getOnLoadAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Map<String, Object>> attrs = super.getOnLoadAttrs(saleOrderLine, saleOrder);
+    Map<String, Map<String, Object>> attrs = hideBomAndProdProcess(saleOrderLine);
+    attrs.putAll(super.getOnLoadAttrs(saleOrderLine, saleOrder));
     MapTools.addMap(attrs, hideQtyProduced(saleOrderLine));
     return attrs;
   }

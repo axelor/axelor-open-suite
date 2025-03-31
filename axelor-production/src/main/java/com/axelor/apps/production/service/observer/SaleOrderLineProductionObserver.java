@@ -38,11 +38,12 @@ public class SaleOrderLineProductionObserver {
         Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) {
+  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
+        Beans.get(SaleOrderLineViewProductionService.class)
+            .getOnLoadAttrs(saleOrderLine, saleOrderLine.getSaleOrder()));
   }
 
   void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)

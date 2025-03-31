@@ -51,6 +51,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
     implements StockMoveProductionService {
@@ -148,6 +149,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   // future code specific to stock move cancellation in production module goes here
   protected void cancelStockMoveInProduction(StockMove stockMove) throws AxelorException {
     super.cancel(stockMove);
+    updateSaleOrderLineOncancel(stockMove);
   }
 
   @Transactional
@@ -167,5 +169,21 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
               }
             });
     return newStockSeq;
+  }
+
+  @Transactional
+  protected void updateSaleOrderLineOncancel(StockMove stockMove) {
+    stockMove
+        .getStockMoveLineList()
+        .forEach(
+            sml -> {
+              if (sml.getProducedManufOrder() != null
+                  && sml.getProducedManufOrder().getSaleOrderLine() != null) {
+                SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
+                if (saleOrderLine.getProduct().equals(sml.getProduct()))
+                  saleOrderLine.setQtyProduced(BigDecimal.ZERO);
+                saleOrderLineRepository.save(saleOrderLine);
+              }
+            });
   }
 }
