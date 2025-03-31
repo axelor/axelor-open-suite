@@ -45,8 +45,19 @@ public class ProductionOrderSaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
+      ProductionOrderSaleOrderService productionOrderSaleOrderService =
+          Beans.get(ProductionOrderSaleOrderService.class);
+
+      productionOrderSaleOrderService.checkGeneratedProductionOrders(saleOrder);
+
+      boolean productionOrderExists =
+          productionOrderSaleOrderService.productionOrderForSaleOrderExists(saleOrder);
+      int nbOfMoBeforeCreation =
+          productionOrderSaleOrderService.getNumberOfMoFromProductionOrder(saleOrder);
       List<Long> productionOrderIdList =
-          Beans.get(ProductionOrderSaleOrderService.class).generateProductionOrder(saleOrder);
+          productionOrderSaleOrderService.generateProductionOrder(saleOrder);
+      int nbOfMoAfterCreation =
+          productionOrderSaleOrderService.getNumberOfMoFromProductionOrder(saleOrder);
 
       if (productionOrderIdList != null && productionOrderIdList.size() == 1) {
         response.setView(
@@ -58,6 +69,9 @@ public class ProductionOrderSaleOrderController {
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(productionOrderIdList.get(0)))
                 .map());
+        if (productionOrderExists && (nbOfMoAfterCreation - nbOfMoBeforeCreation != 0)) {
+          response.setInfo(I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ADDED_TO_EXISTENT_PO));
+        }
       } else if (productionOrderIdList != null && productionOrderIdList.size() > 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))

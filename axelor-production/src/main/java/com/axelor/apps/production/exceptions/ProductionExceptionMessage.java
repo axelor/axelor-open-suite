@@ -408,4 +408,10 @@ public final class ProductionExceptionMessage {
 
   public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE = /*$$(*/
       "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more" /*)*/;
+
+  public static final String SALE_ORDER_EVERY_PO_ALREADY_GENERATED = /*$$(*/
+      "Every sale order lines have generated a production order." /*)*/;
+
+  public static final String SALE_ORDER_MO_ADDED_TO_EXISTENT_PO = /*$$(*/
+      "Manufacturing orders have been added to the existent production order." /*)*/;
 }

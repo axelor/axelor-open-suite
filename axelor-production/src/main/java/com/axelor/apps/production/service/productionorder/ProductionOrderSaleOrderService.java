@@ -32,4 +32,10 @@ public interface ProductionOrderSaleOrderService {
       throws AxelorException;
 
   ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
+
+  boolean productionOrderForSaleOrderExists(SaleOrder saleOrder);
+
+  void checkGeneratedProductionOrders(SaleOrder saleOrder) throws AxelorException;
+
+  int getNumberOfMoFromProductionOrder(SaleOrder saleOrder);
 }
