@@ -1,0 +1,3 @@
+---
+title: "Bank order/National treasury transfer: fixed internal money transfer from bank order by inverting credit and debit."
+module: axelor-account
