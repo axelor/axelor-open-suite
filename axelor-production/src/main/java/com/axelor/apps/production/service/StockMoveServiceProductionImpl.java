@@ -51,7 +51,6 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
     implements StockMoveProductionService {
@@ -164,7 +163,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
                   && sml.getProducedManufOrder().getSaleOrderLine() != null) {
                 SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
                 if (saleOrderLine.getProduct().equals(sml.getProduct()))
-                  saleOrderLine.setQtyProduced(sml.getQty());
+                  saleOrderLine.setQtyProduced(saleOrderLine.getQtyProduced().add(sml.getQty()));
                 saleOrderLineRepository.save(saleOrderLine);
               }
             });
@@ -181,7 +180,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
                   && sml.getProducedManufOrder().getSaleOrderLine() != null) {
                 SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
                 if (saleOrderLine.getProduct().equals(sml.getProduct()))
-                  saleOrderLine.setQtyProduced(BigDecimal.ZERO);
+                  saleOrderLine.setQtyProduced(
+                      saleOrderLine.getQtyProduced().subtract(sml.getQty()));
                 saleOrderLineRepository.save(saleOrderLine);
               }
             });
