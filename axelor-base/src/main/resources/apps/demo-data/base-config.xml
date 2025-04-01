@@ -391,4 +391,11 @@
   <input file="base_alternativeBarcodeType.csv" separator=";"
     type="com.axelor.apps.base.db.AlternativeBarcodeType" search="self.importId = :importId"/>
 
+  <input file="base_blocking.csv" separator=";" type="com.axelor.apps.base.db.Blocking"
+    search="self.importId = :importId">
+    <bind to="blockingToDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(blockingToDate)"
+      column="blockingToDate"/>
+  </input>
+
 </csv-inputs>
