@@ -127,6 +127,9 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       partner.setMainActivity(mainActivity);
     }
 
+    String nic = uniteLegale.getNicSiegeUniteLegale();
+    safeSetString(partner::setNic, partner::getNic, nic);
+
     String categorieJuridique = uniteLegale.getCategorieJuridiqueUniteLegale();
     if (categorieJuridique != null && Integer.parseInt(categorieJuridique) == 1000) {
       setIndividualPartnerDetails(partner, uniteLegale);
