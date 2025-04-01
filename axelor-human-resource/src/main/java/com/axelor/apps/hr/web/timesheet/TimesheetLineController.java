@@ -18,19 +18,19 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetEmployeeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetQueryService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -42,7 +42,6 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 public class TimesheetLineController {
 
@@ -187,12 +186,10 @@ public class TimesheetLineController {
     }
   }
 
-  public void logTime(ActionRequest request, ActionResponse response) {
+  public void logTime(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     Project project = null;
     ProjectTask projectTask = null;
-    Employee employee =
-        Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
 
     if (Project.class.equals(context.getContextClass())) {
       project = context.asType(Project.class);
@@ -216,11 +213,7 @@ public class TimesheetLineController {
       projectTask = null;
     }
 
-    employee =
-        Optional.ofNullable(project)
-            .map(Project::getAssignedTo)
-            .map(User::getEmployee)
-            .orElse(employee);
+    Employee employee = Beans.get(TimesheetEmployeeService.class).getEmployee(project);
 
     response.setView(
         ActionView.define(I18n.get("Create Timesheet line"))

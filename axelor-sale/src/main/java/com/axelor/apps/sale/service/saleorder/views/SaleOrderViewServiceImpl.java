@@ -114,7 +114,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
   protected Map<String, Map<String, Object>> inAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(saleOrder.getCompany());
     AppSale appSale = appSaleService.getAppSale();
     boolean isClassicLineList =
         appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_CLASSIC;
@@ -127,6 +126,7 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
     Company company = saleOrder.getCompany();
     if (company != null) {
+      SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
       int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
       boolean hideInAti =
           saleOrderInAtiSelect == SaleConfigRepository.SALE_WT_ALWAYS

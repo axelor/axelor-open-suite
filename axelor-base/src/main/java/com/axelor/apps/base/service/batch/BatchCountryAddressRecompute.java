@@ -89,6 +89,7 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
       for (Address address : addressList) {
         ++offset;
         try {
+          address = addressRepository.find(address.getId());
           recomputeAddress(address);
           incrementDone();
         } catch (Exception e) {
