@@ -79,7 +79,7 @@ public class ProjectFrameworkContractServiceImpl implements ProjectFrameworkCont
     Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
 
     Map<String, Object> productMap = new HashMap<>();
-    if(projectTask.getProject() == null) {
+    if (projectTask.getProject() == null) {
       return productMap;
     }
 
@@ -133,7 +133,7 @@ public class ProjectFrameworkContractServiceImpl implements ProjectFrameworkCont
 
     Map<String, Object> productMap = new HashMap<>();
 
-    if(projectTask.getProject() == null) {
+    if (projectTask.getProject() == null) {
       return productMap;
     }
 
