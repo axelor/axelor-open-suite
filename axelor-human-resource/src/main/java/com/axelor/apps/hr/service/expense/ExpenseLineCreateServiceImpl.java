@@ -107,7 +107,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     if (expenseProduct.getDeductLunchVoucher() && !CollectionUtils.isEmpty(employeeList)) {
       for (Employee e : employeeList) {
         expenseLine.addInvitedCollaboratorSetItem(e);
-        expenseLine.setIsAloneMeal(false);
       }
     }
     expenseLineToolService.setGeneralExpenseLineInfo(

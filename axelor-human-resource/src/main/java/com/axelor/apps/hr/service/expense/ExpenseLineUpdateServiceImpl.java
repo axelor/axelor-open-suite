@@ -288,9 +288,10 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         && employeeList != null) {
       for (Employee e : employeeList) {
         expenseLine.addInvitedCollaboratorSetItem(e);
-        expenseLine.setIsAloneMeal(false);
       }
+      expenseLine.setIsAloneMeal(false);
     }
+
     if (projectTask != null) {
       expenseLine.setProjectTask(projectTask);
     }
