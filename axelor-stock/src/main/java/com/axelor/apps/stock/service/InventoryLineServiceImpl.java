@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.Inventory;
@@ -151,6 +152,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     Product product = inventoryLine.getProduct();
     StockLocationLine stockLocationLine =
         stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
+    Company company = stockLocation.getCompany();
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -166,27 +168,23 @@ public class InventoryLineServiceImpl implements InventoryLineService {
 
       BigDecimal price;
       int inventoryValuationTypeSelect =
-          stockConfigService
-              .getStockConfig(stockLocation.getCompany())
-              .getInventoryValuationTypeSelect();
+          stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect();
 
       BigDecimal productAvgPrice =
-          (BigDecimal)
-              productCompanyService.get(
-                  product, "avgPrice", inventory.getStockLocation().getCompany());
+          (BigDecimal) productCompanyService.get(product, "avgPrice", company);
 
       switch (inventoryValuationTypeSelect) {
         case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
           price = productAvgPrice;
           break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
-          price = product.getCostPrice();
+          price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
           break;
         case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
-          price = product.getSalePrice();
+          price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
           break;
         case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
-          price = product.getPurchasePrice();
+          price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
           break;
         case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
           if (stockLocationLine != null) {
