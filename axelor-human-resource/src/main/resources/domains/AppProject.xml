@@ -17,6 +17,8 @@
 
     <track>
       <field name="enablePlanification" on="UPDATE"/>
+      <field name="enableEventCreation" on="UPDATE"/>
+      <field name="eventSubjectGroovyFormula" on="UPDATE"/>
     </track>
   </entity>
 
