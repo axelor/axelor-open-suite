@@ -101,23 +101,19 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
   }
 
   @Override
-  public String checkAnalyticAxisByCompany(Expense expense) throws AxelorException {
+  public void checkAnalyticAxisByCompany(Expense expense) throws AxelorException {
     if (expense == null || ObjectUtils.isEmpty(expense.getGeneralExpenseLineList())) {
-      return null;
+      return;
     }
 
-    StringBuilder error = new StringBuilder();
     for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
       if (!ObjectUtils.isEmpty(expenseLine.getAnalyticMoveLineList())) {
-        error.append(
-            analyticAxisService.checkRequiredAxisByCompany(
-                expense.getCompany(),
-                expenseLine.getAnalyticMoveLineList().stream()
-                    .map(AnalyticMoveLine::getAnalyticAxis)
-                    .collect(Collectors.toList())));
+        analyticAxisService.checkRequiredAxisByCompany(
+            expenseLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()),
+            expense.getCompany());
       }
     }
-
-    return error.toString();
   }
 }

@@ -27,5 +27,5 @@ public interface SaleOrderLineAnalyticService {
   Map<String, Object> printAnalyticAccounts(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  String checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException;
+  void checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException;
 }

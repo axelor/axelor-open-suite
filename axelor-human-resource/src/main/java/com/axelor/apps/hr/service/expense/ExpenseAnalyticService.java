@@ -29,5 +29,5 @@ public interface ExpenseAnalyticService {
 
   public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException;
 
-  String checkAnalyticAxisByCompany(Expense expense) throws AxelorException;
+  void checkAnalyticAxisByCompany(Expense expense) throws AxelorException;
 }

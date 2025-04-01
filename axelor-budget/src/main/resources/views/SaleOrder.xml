@@ -37,7 +37,7 @@
   </form>
 
   <action-group name="action-budget-sale-order-group-on-save">
-    <action name="action-supplychain-group-saleorder-onsave"/>
+    <action name="action-supplychain-saleorder-onsave"/>
     <action name="save"/>
     <action name="action-budget-sale-order-method-fill-budget-str"
       if="__config__.app.isApp('budget')"/>

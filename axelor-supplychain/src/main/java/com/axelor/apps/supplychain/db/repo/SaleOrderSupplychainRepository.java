@@ -20,13 +20,16 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import java.math.BigDecimal;
+import javax.persistence.PersistenceException;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
@@ -72,5 +75,16 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     } catch (AxelorException e) {
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public SaleOrder save(SaleOrder saleOrder) {
+    try {
+      Beans.get(SaleOrderLineAnalyticService.class).checkAnalyticAxisByCompany(saleOrder);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    return super.save(saleOrder);
   }
 }

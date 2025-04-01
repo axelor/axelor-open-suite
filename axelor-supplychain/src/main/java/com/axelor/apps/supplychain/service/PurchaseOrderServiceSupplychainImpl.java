@@ -18,10 +18,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -44,6 +42,7 @@ import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.common.ObjectUtils;
@@ -54,8 +53,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +72,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected StockConfigService stockConfigService;
   protected CurrencyScaleService currencyScaleService;
   protected AdvancePaymentRefundService refundService;
-  protected AnalyticAxisService analyticAxisService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -90,7 +87,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       StockConfigService stockConfigService,
       CurrencyScaleService currencyScaleService,
       AdvancePaymentRefundService refundService,
-      AnalyticAxisService analyticAxisService) {
+      AnalyticLineModelService analyticLineModelService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -103,7 +100,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.stockConfigService = stockConfigService;
     this.currencyScaleService = currencyScaleService;
     this.refundService = refundService;
-    this.analyticAxisService = analyticAxisService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -247,25 +244,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  public String checkAnalyticAxisByCompany(PurchaseOrder purchaseOrder) throws AxelorException {
+  public void checkAnalyticAxisByCompany(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder == null || ObjectUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-      return null;
+      return;
     }
 
-    StringBuilder error = new StringBuilder();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      if (!ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
-        error.append(
-            analyticAxisService.checkRequiredAxisByCompany(
-                purchaseOrder.getCompany(),
-                Optional.of(
-                        purchaseOrderLine.getAnalyticMoveLineList().stream()
-                            .map(AnalyticMoveLine::getAnalyticAxis)
-                            .collect(Collectors.toList()))
-                    .orElse(null)));
-      }
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+      analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
     }
-
-    return error.toString();
   }
 }

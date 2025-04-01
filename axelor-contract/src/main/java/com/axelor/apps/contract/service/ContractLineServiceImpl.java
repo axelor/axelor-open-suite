@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.contract.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -60,7 +58,6 @@ import java.math.RoundingMode;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ContractLineServiceImpl implements ContractLineService {
@@ -76,7 +73,6 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
   protected AppSaleService appSaleService;
-  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -91,8 +87,7 @@ public class ContractLineServiceImpl implements ContractLineService {
       AppAccountService appAccountService,
       CurrencyScaleService currencyScaleService,
       TaxService taxService,
-      AppSaleService appSaleService,
-      AnalyticAxisService analyticAxisService) {
+      AppSaleService appSaleService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
@@ -105,7 +100,6 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.currencyScaleService = currencyScaleService;
     this.taxService = taxService;
     this.appSaleService = appSaleService;
-    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -399,25 +393,18 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public String checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
+  public void checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
     if (contract.getCurrentContractVersion() == null) {
-      return null;
+      return;
     }
 
-    StringBuilder error = new StringBuilder();
     if (!ObjectUtils.isEmpty(contract.getCurrentContractVersion().getContractLineList())) {
       for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
-        if (!ObjectUtils.isEmpty(contractLine.getAnalyticMoveLineList())) {
-          error.append(
-              analyticAxisService.checkRequiredAxisByCompany(
-                  contract.getCompany(),
-                  contractLine.getAnalyticMoveLineList().stream()
-                      .map(AnalyticMoveLine::getAnalyticAxis)
-                      .collect(Collectors.toList())));
-        }
+        AnalyticLineContractModel analyticLineModel =
+            new AnalyticLineContractModel(
+                contractLine, contract.getCurrentContractVersion(), contract);
+        analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
       }
     }
-
-    return error.toString();
   }
 }

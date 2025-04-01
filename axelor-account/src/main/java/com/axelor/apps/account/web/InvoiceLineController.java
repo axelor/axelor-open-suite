@@ -53,7 +53,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -551,17 +550,13 @@ public class InvoiceLineController {
         Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(invoiceLine);
         List<AnalyticMoveLine> analyticMoveLineList =
             Optional.of(invoiceLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
-        String error =
-            Beans.get(AnalyticAxisService.class)
-                .checkRequiredAxisByCompany(
-                    invoice.getCompany(),
-                    analyticMoveLineList.stream()
-                        .map(AnalyticMoveLine::getAnalyticAxis)
-                        .collect(Collectors.toList()));
+        Beans.get(AnalyticAxisService.class)
+            .checkRequiredAxisByCompany(
+                analyticMoveLineList.stream()
+                    .map(AnalyticMoveLine::getAnalyticAxis)
+                    .collect(Collectors.toList()),
+                invoice.getCompany());
         response.setValues(invoiceLine);
-        if (StringUtils.notEmpty(error)) {
-          response.setError(error);
-        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

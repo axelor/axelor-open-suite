@@ -98,5 +98,5 @@ public interface ContractLineService {
 
   String computeProductDomain(Contract contract);
 
-  String checkAnalyticAxisByCompany(Contract contract) throws AxelorException;
+  void checkAnalyticAxisByCompany(Contract contract) throws AxelorException;
 }

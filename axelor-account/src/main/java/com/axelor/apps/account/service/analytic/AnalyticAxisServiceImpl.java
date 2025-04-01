@@ -28,13 +28,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticAxisServiceImpl implements AnalyticAxisService {
 
@@ -137,41 +135,34 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
   public void checkAnalyticDistributionLinesRequiredAxisByCompany(
       Company company, List<AnalyticDistributionLine> analyticDistributionLineList)
       throws AxelorException {
-    String error =
-        this.checkRequiredAxisByCompany(
-            company,
-            analyticDistributionLineList.stream()
-                .map(AnalyticDistributionLine::getAnalyticAxis)
-                .collect(Collectors.toList()));
-    if (StringUtils.notEmpty(error)) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, error);
-    }
+    this.checkRequiredAxisByCompany(
+        analyticDistributionLineList.stream()
+            .map(AnalyticDistributionLine::getAnalyticAxis)
+            .collect(Collectors.toList()),
+        company);
   }
 
   @Override
-  public String checkRequiredAxisByCompany(Company company, List<AnalyticAxis> analyticAxisList)
+  public void checkRequiredAxisByCompany(List<AnalyticAxis> analyticAxisList, Company company)
       throws AxelorException {
-    if (!CollectionUtils.isEmpty(analyticAxisList)) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-      List<AnalyticAxis> requiredAnalyticAxisList =
-          accountConfig.getAnalyticAxisByCompanyList().stream()
-              .filter(AnalyticAxisByCompany::getIsRequired)
-              .map(AnalyticAxisByCompany::getAnalyticAxis)
-              .collect(Collectors.toList());
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    List<AnalyticAxis> requiredAnalyticAxisList =
+        accountConfig.getAnalyticAxisByCompanyList().stream()
+            .filter(AnalyticAxisByCompany::getIsRequired)
+            .map(AnalyticAxisByCompany::getAnalyticAxis)
+            .collect(Collectors.toList());
 
-      List<AnalyticAxis> missingAxis =
-          requiredAnalyticAxisList.stream()
-              .filter(axis -> !analyticAxisList.contains(axis))
-              .collect(Collectors.toList());
-      if (!ObjectUtils.isEmpty(missingAxis)) {
-        return String.format(
-            I18n.get(
-                AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS),
-            missingAxis.stream().map(AnalyticAxis::getName).collect(Collectors.joining(", ")),
-            company.getName());
-      }
+    List<AnalyticAxis> missingAxis =
+        requiredAnalyticAxisList.stream()
+            .filter(axis -> !analyticAxisList.contains(axis))
+            .collect(Collectors.toList());
+    if (!ObjectUtils.isEmpty(missingAxis)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS),
+          missingAxis.stream().map(AnalyticAxis::getName).collect(Collectors.joining(", ")),
+          company.getName());
     }
-
-    return null;
   }
 }

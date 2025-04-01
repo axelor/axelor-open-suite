@@ -70,7 +70,6 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -1462,11 +1461,7 @@ public class InvoiceController {
   public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      String error =
-          Beans.get(InvoiceLineAnalyticService.class).checkAnalyticAxisByCompany(invoice);
-      if (StringUtils.notEmpty(error)) {
-        response.setError(error);
-      }
+      Beans.get(InvoiceLineAnalyticService.class).checkAnalyticAxisByCompany(invoice);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

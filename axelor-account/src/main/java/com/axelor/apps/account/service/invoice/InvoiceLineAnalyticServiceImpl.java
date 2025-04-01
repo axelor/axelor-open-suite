@@ -235,23 +235,19 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   }
 
   @Override
-  public String checkAnalyticAxisByCompany(Invoice invoice) throws AxelorException {
+  public void checkAnalyticAxisByCompany(Invoice invoice) throws AxelorException {
     if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
-      return null;
+      return;
     }
 
-    StringBuilder error = new StringBuilder();
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       if (!ObjectUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
-        error.append(
-            analyticAxisService.checkRequiredAxisByCompany(
-                invoice.getCompany(),
-                invoiceLine.getAnalyticMoveLineList().stream()
-                    .map(AnalyticMoveLine::getAnalyticAxis)
-                    .collect(Collectors.toList())));
+        analyticAxisService.checkRequiredAxisByCompany(
+            invoiceLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()),
+            invoice.getCompany());
       }
     }
-
-    return error.toString();
   }
 }

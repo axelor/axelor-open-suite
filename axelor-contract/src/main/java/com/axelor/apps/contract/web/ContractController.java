@@ -46,7 +46,6 @@ import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -329,10 +328,7 @@ public class ContractController {
     try {
       Contract contract = this.getContract(request);
 
-      String error = Beans.get(ContractLineService.class).checkAnalyticAxisByCompany(contract);
-      if (StringUtils.notEmpty(error)) {
-        response.setError(error);
-      }
+      Beans.get(ContractLineService.class).checkAnalyticAxisByCompany(contract);
 
       response.setAttrs(
           Beans.get(ContractLineAttrsService.class)

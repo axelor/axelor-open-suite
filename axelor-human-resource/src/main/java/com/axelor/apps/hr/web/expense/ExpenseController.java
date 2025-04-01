@@ -74,7 +74,6 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
@@ -771,9 +770,6 @@ public class ExpenseController {
   public void checkAnalyticAxis(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Expense expense = request.getContext().asType(Expense.class);
-    String error = Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
-    if (StringUtils.notEmpty(error)) {
-      response.setError(error);
-    }
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 }

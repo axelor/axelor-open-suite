@@ -47,7 +47,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -479,22 +478,16 @@ public class MoveLineServiceImpl implements MoveLineService {
       return;
     }
 
-    StringBuilder error = new StringBuilder();
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (!ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-        error.append(
-            analyticAxisService.checkRequiredAxisByCompany(
-                move.getCompany(),
-                Optional.of(
-                        moveLine.getAnalyticMoveLineList().stream()
-                            .map(AnalyticMoveLine::getAnalyticAxis)
-                            .collect(Collectors.toList()))
-                    .orElse(null)));
+        analyticAxisService.checkRequiredAxisByCompany(
+            Optional.of(
+                    moveLine.getAnalyticMoveLineList().stream()
+                        .map(AnalyticMoveLine::getAnalyticAxis)
+                        .collect(Collectors.toList()))
+                .orElse(null),
+            move.getCompany());
       }
-    }
-
-    if (StringUtils.notEmpty(error)) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, error.toString());
     }
   }
 }

@@ -86,7 +86,6 @@
   </action-group>
 
   <action-group name="action-budget-purchase-order-group-on-save">
-    <action name="action-supplychain-method-purchase-order-check-analytic-axis"/>
     <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
       if="__config__.app.isApp('budget')"/>
     <action name="save"/>

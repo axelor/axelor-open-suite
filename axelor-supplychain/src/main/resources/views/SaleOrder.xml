@@ -7,7 +7,7 @@
     id="supplychain-sale-order-form" extension="true">
     <extend target="/">
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
-      <attribute name="onSave" value="action-supplychain-group-saleorder-onsave"/>
+      <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
     <extend target="//field[@name='versionNumber']">
       <insert position="after">
@@ -43,8 +43,7 @@
   <form name="sale-order-form-partner" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
     onNew="action-sale-order-method-onnew,action-group-partner-saleorder-onnew"
-    onLoad="action-group-supplychain-saleorder-onload"
-    onSave="action-supplychain-group-saleorder-onsave">
+    onLoad="action-group-supplychain-saleorder-onload" onSave="action-supplychain-saleorder-onsave">
 
     <panel-include view="sale-order-form" from="axelor-sale"/>
   </form>
@@ -121,7 +120,7 @@
 
   <action-group id="action-group-supplychain-sale-order-validate-changes"
     name="action-group-sale-order-validate-changes">
-    <action name="action-supplychain-group-saleorder-onsave"/>
+    <action name="action-supplychain-saleorder-onsave"/>
     <action name="save"/>
     <action name="action-method-sale-order-validate-changes"/>
     <action name="action-sale-order-method-notify-stock-move-created"
@@ -152,11 +151,6 @@
   <action-group name="action-supplychain-group-sale-order-on-line-changes">
     <action name="action-sale-order-method-on-line-change"/>
     <action name="action-supplychain-method-sale-order-check-analytic-axis"/>
-  </action-group>
-
-  <action-group name="action-supplychain-group-saleorder-onsave">
-    <action name="action-supplychain-method-sale-order-check-analytic-axis"/>
-    <action name="action-supplychain-saleorder-onsave"/>
   </action-group>
 
   <!-- ACTION METHOD -->

@@ -18,28 +18,27 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticService {
 
   protected AnalyticGroupService analyticGroupService;
-  protected AnalyticAxisService analyticAxisService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public SaleOrderLineAnalyticServiceImpl(
-      AnalyticGroupService analyticGroupService, AnalyticAxisService analyticAxisService) {
+      AnalyticGroupService analyticGroupService,
+      AnalyticLineModelService analyticLineModelService) {
     this.analyticGroupService = analyticGroupService;
-    this.analyticAxisService = analyticAxisService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -51,23 +50,14 @@ public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticSe
   }
 
   @Override
-  public String checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException {
+  public void checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException {
     if (saleOrder == null || ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-      return null;
+      return;
     }
 
-    StringBuilder error = new StringBuilder();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      if (!ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
-        error.append(
-            analyticAxisService.checkRequiredAxisByCompany(
-                saleOrder.getCompany(),
-                saleOrderLine.getAnalyticMoveLineList().stream()
-                    .map(AnalyticMoveLine::getAnalyticAxis)
-                    .collect(Collectors.toList())));
-      }
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+      analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
     }
-
-    return error.toString();
   }
 }

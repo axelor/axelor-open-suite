@@ -42,5 +42,5 @@ public interface InvoiceLineAnalyticService {
 
   boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList);
 
-  String checkAnalyticAxisByCompany(Invoice invoice) throws AxelorException;
+  void checkAnalyticAxisByCompany(Invoice invoice) throws AxelorException;
 }
