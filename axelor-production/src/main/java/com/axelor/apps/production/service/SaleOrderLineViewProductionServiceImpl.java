@@ -114,16 +114,15 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
 
   @Override
   public Map<String, Map<String, Object>> getOnLoadAttrs(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = hideBomAndProdProcess(saleOrderLine);
-    attrs.putAll(super.getOnLoadAttrs(saleOrderLine, saleOrder));
-    MapTools.addMap(attrs, hideQtyProduced(saleOrderLine));
+    MapTools.addMap(attrs, hideQtyProduced(saleOrderLine, saleOrder));
     return attrs;
   }
 
-  public Map<String, Map<String, Object>> hideQtyProduced(SaleOrderLine saleOrderLine) {
+  protected Map<String, Map<String, Object>> hideQtyProduced(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
     ManufOrder manufOrder =
         manufOrderRepository
             .all()
@@ -131,11 +130,12 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
             .bind("saleOrderLineId", saleOrderLine.getId())
             .bind("productId", saleOrderLine.getProduct().getId())
             .fetchOne();
-
-    boolean hideQtyProduced =
-        saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED
-            || manufOrder == null;
-
+    boolean hideQtyProduced = true;
+    if (saleOrder != null) {
+      hideQtyProduced =
+          saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED
+              || manufOrder == null;
+    }
     attrs.put("qtyProducedPanel", Map.of(HIDDEN_ATTR, hideQtyProduced));
     return attrs;
   }
