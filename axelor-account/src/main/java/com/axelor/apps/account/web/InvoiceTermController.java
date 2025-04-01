@@ -382,18 +382,26 @@ public class InvoiceTermController {
   }
 
   protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
-    invoiceTerm.setInvoice(ContextHelper.getContextParent(request.getContext(), Invoice.class, 1));
+    Invoice invoice = ContextHelper.getContextParent(request.getContext(), Invoice.class, 1);
+    if (invoice != null) {
+      invoiceTerm.setInvoice(invoice);
+    }
   }
 
   protected void setMove(ActionRequest request, MoveLine moveLine) {
     if (moveLine != null) {
-      moveLine.setMove(ContextHelper.getContextParent(request.getContext(), Move.class, 2));
+      Move move = ContextHelper.getContextParent(request.getContext(), Move.class, 2);
+      if (move != null) {
+        moveLine.setMove(move);
+      }
     }
   }
 
   protected void setMoveLine(ActionRequest request, InvoiceTerm invoiceTerm) {
-    invoiceTerm.setMoveLine(
-        ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1));
+    MoveLine moveLine = ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1);
+    if (moveLine != null) {
+      invoiceTerm.setMoveLine(moveLine);
+    }
   }
 
   public void addLinkedFiles(ActionRequest request, ActionResponse response) {
