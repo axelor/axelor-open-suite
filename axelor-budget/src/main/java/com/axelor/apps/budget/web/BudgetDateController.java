@@ -35,7 +35,7 @@ public class BudgetDateController {
 
     String labelError =
         Beans.get(BudgetDateService.class)
-            .getBudgetDateError(fromDate, toDate, budget, budgetDistributionList, null);
+            .getBudgetDateError(fromDate, toDate, budget, budgetDistributionList);
     if (StringUtils.notEmpty(labelError)) {
       response.setAttr("budgetDatesLabel", "title", labelError);
       response.setAttr("budgetDatesLabel", "hidden", false);

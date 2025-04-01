@@ -13,6 +13,5 @@ public interface BudgetDateService {
       LocalDate fromDate,
       LocalDate toDate,
       Budget budget,
-      List<BudgetDistribution> budgetDistributionList,
-      String productName);
+      List<BudgetDistribution> budgetDistributionList);
 }

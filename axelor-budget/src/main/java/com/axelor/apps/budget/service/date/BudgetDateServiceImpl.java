@@ -39,8 +39,7 @@ public class BudgetDateServiceImpl implements BudgetDateService {
               invoiceLine.getBudgetFromDate(),
               invoiceLine.getBudgetToDate(),
               invoiceLine.getBudget(),
-              invoiceLine.getBudgetDistributionList(),
-              invoiceLine.getProductName());
+              invoiceLine.getBudgetDistributionList());
       if (StringUtils.notEmpty(error)) {
         sj.add(
             String.format(
@@ -58,8 +57,7 @@ public class BudgetDateServiceImpl implements BudgetDateService {
       LocalDate fromDate,
       LocalDate toDate,
       Budget budget,
-      List<BudgetDistribution> budgetDistributionList,
-      String productName) {
+      List<BudgetDistribution> budgetDistributionList) {
     if (fromDate == null && toDate == null) {
       return "";
     }
