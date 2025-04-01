@@ -190,6 +190,7 @@
   <selection name="production.sale.order.line.details.type.select">
     <option value="1" icon="fa-cpu-fill">Component</option>
     <option value="2" icon="fa-cash-coin">Budget item</option>
+    <option value="3" icon="fa-stopwatch-fill">Operation</option>
   </selection>
 
   <selection name="purchase.purchase.order.type.select"

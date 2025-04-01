@@ -39,6 +39,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
@@ -74,6 +75,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService;
   protected SaleOrderLinePackService saleOrderLinePackService;
   protected SaleOrderLineDiscountService saleOrderLineDiscountService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderServiceImpl(
@@ -86,7 +88,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLineCreateService saleOrderLineCreateService,
       SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SaleOrderLineDiscountService saleOrderLineDiscountService) {
+      SaleOrderLineDiscountService saleOrderLineDiscountService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderRepo = saleOrderRepo;
@@ -97,6 +100,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
     this.saleOrderLinePackService = saleOrderLinePackService;
     this.saleOrderLineDiscountService = saleOrderLineDiscountService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -233,6 +237,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     if (soLines != null && !soLines.isEmpty()) {
       try {
+        saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
         saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
         saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       } catch (AxelorException e) {

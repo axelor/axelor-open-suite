@@ -22,9 +22,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
@@ -35,6 +38,8 @@ import java.util.Map;
 
 public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetailsPriceService {
 
+  protected final ProdProcessLineHourlyCostComputeService prodProcessLineHourlyCostComputeService;
+  protected final AppBaseService appBaseService;
   protected final MarginComputeService marginComputeService;
   protected final ProductCompanyService productCompanyService;
   protected final AppSaleService appSaleService;
@@ -42,10 +47,14 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
 
   @Inject
   public SaleOrderLineDetailsPriceServiceImpl(
+      ProdProcessLineHourlyCostComputeService prodProcessLineHourlyCostComputeService,
+      AppBaseService appBaseService,
       MarginComputeService marginComputeService,
       ProductCompanyService productCompanyService,
       AppSaleService appSaleService,
       SaleOrderLineDetailsService saleOrderLineDetailsService) {
+    this.prodProcessLineHourlyCostComputeService = prodProcessLineHourlyCostComputeService;
+    this.appBaseService = appBaseService;
     this.marginComputeService = marginComputeService;
     this.productCompanyService = productCompanyService;
     this.appSaleService = appSaleService;
@@ -54,10 +63,12 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
 
   @Override
   public Map<String, Object> computePrices(
-      SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException {
+      SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
     Map<String, Object> lineMap = new HashMap<>();
 
-    lineMap.putAll(computeSubTotalCostPrice(saleOrderLineDetails, saleOrder));
+    lineMap.putAll(computeCostPrice(saleOrderLineDetails, saleOrder, saleOrderLine));
+    lineMap.putAll(computeSubTotalCostPrice(saleOrderLineDetails));
     lineMap.putAll(computePrice(saleOrderLineDetails));
     lineMap.putAll(computeTotalPrice(saleOrderLineDetails, saleOrder));
 
@@ -100,29 +111,45 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
     return lineMap;
   }
 
-  protected Map<String, Object> computeSubTotalCostPrice(
-      SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException {
+  protected Map<String, Object> computeCostPrice(
+      SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
     Map<String, Object> lineMap = new HashMap<>();
     Company company = saleOrder.getCompany();
     Product product = saleOrderLineDetails.getProduct();
-    BigDecimal qty = saleOrderLineDetails.getQty();
+
     int saleOrderLineDetailsTypeSelect = saleOrderLineDetails.getTypeSelect();
-    BigDecimal costPrice;
-    if (product != null
-        && company != null
-        && saleOrderLineDetailsTypeSelect == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
-      costPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
-    } else {
-      costPrice = saleOrderLineDetails.getCostPrice();
+    BigDecimal costPrice = BigDecimal.ZERO;
+    if (saleOrderLineDetailsTypeSelect == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
+      if (product != null && company != null) {
+        costPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+      }
+    } else if (saleOrderLineDetailsTypeSelect == SaleOrderLineDetailsRepository.TYPE_OPERATION) {
+      ProdProcessLine prodProcessLine = saleOrderLineDetails.getProdProcessLine();
+      BigDecimal qtyToProduce = saleOrderLine.getQtyToProduce();
+      costPrice =
+          prodProcessLineHourlyCostComputeService.computeLineHourlyCost(
+              prodProcessLine, qtyToProduce);
     }
+
+    saleOrderLineDetails.setCostPrice(
+        costPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+    lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
+    return lineMap;
+  }
+
+  protected Map<String, Object> computeSubTotalCostPrice(
+      SaleOrderLineDetails saleOrderLineDetails) {
+    Map<String, Object> lineMap = new HashMap<>();
+    BigDecimal qty = saleOrderLineDetails.getQty();
+    BigDecimal costPrice = saleOrderLineDetails.getCostPrice();
     BigDecimal totalCostPrice =
         costPrice
             .multiply(qty)
             .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-    saleOrderLineDetails.setCostPrice(costPrice);
+
     saleOrderLineDetails.setSubTotalCostPrice(totalCostPrice);
     lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
-    lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
     return lineMap;
   }
 
