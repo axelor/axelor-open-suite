@@ -21,6 +21,10 @@
     <panel-related field="callTenderSupplierList"
       form-view="call-tender-supplier-form" grid-view="call-tender-supplier-grid" colSpan="12"
       canSelect="false"/>
+    <panel-related field="callTenderOfferList" form-view="call-tender-offer-form"
+      grid-view="call-tender-offer-grid" colSpan="12" canSelect="false"/>
+
+
   </form>
 
 </object-views>
