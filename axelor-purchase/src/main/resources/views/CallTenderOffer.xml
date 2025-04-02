@@ -37,6 +37,9 @@
       <field name="proposedUnit"/>
       <field name="proposedPrice"/>
     </panel>
+    <panel name="commentPanel">
+      <field name="offerComment"/>
+    </panel>
 
   </form>
 
