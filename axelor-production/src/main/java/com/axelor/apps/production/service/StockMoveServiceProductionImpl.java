@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
@@ -51,6 +52,8 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
     implements StockMoveProductionService {
@@ -148,30 +151,19 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   // future code specific to stock move cancellation in production module goes here
   protected void cancelStockMoveInProduction(StockMove stockMove) throws AxelorException {
     super.cancel(stockMove);
-    updateSaleOrderLineOncancel(stockMove);
+    updateSaleOrderLineOnCancelOnRealized(stockMove);
   }
 
   @Transactional
   @Override
   public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
     String newStockSeq = super.realizeStockMove(stockMove, check);
-    stockMove
-        .getStockMoveLineList()
-        .forEach(
-            sml -> {
-              if (sml.getProducedManufOrder() != null
-                  && sml.getProducedManufOrder().getSaleOrderLine() != null) {
-                SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
-                if (saleOrderLine.getProduct().equals(sml.getProduct()))
-                  saleOrderLine.setQtyProduced(saleOrderLine.getQtyProduced().add(sml.getQty()));
-                saleOrderLineRepository.save(saleOrderLine);
-              }
-            });
+    updateSaleOrderLineOnCancelOnRealized(stockMove);
     return newStockSeq;
   }
 
   @Transactional
-  protected void updateSaleOrderLineOncancel(StockMove stockMove) {
+  protected void updateSaleOrderLineOnCancelOnRealized(StockMove stockMove) {
     stockMove
         .getStockMoveLineList()
         .forEach(
@@ -179,9 +171,16 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
               if (sml.getProducedManufOrder() != null
                   && sml.getProducedManufOrder().getSaleOrderLine() != null) {
                 SaleOrderLine saleOrderLine = sml.getProducedManufOrder().getSaleOrderLine();
-                if (saleOrderLine.getProduct().equals(sml.getProduct()))
-                  saleOrderLine.setQtyProduced(
-                      saleOrderLine.getQtyProduced().subtract(sml.getQty()));
+                List<StockMoveLine> stockMoveLineList =
+                    sml.getProducedManufOrder().getProducedStockMoveLineList();
+                BigDecimal qtyProduced = BigDecimal.ZERO;
+                for (StockMoveLine stockMoveLine : stockMoveLineList) {
+                  if (saleOrderLine.getProduct().equals(stockMoveLine.getProduct())
+                      && stockMoveLine.getStockMove().getStatusSelect()
+                          == StockMoveRepository.STATUS_REALIZED)
+                    qtyProduced = qtyProduced.add(stockMoveLine.getQty());
+                }
+                saleOrderLine.setQtyProduced(qtyProduced);
                 saleOrderLineRepository.save(saleOrderLine);
               }
             });
