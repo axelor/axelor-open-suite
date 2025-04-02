@@ -9,7 +9,7 @@
     <field name="requestedQty"/>
     <field name="unit"/>
     <field name="requestDate"/>
-    <field name="type"/>
+    <field name="typeSelect"/>
   </grid>
 
   <form name="call-tender-need-form" model="com.axelor.apps.purchase.db.CallTenderNeed"
@@ -19,7 +19,7 @@
       <field name="requestedQty" colSpan="6"/>
       <field name="unit" colSpan="6"/>
       <field name="requestDate"/>
-      <field name="type"/>
+      <field name="typeSelect"/>
     </panel>
   </form>
 

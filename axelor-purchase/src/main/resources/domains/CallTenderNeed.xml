@@ -12,7 +12,8 @@
     <decimal name="requestedQty" default="1" required="true" title="Quantity"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <date name="requestedDate" title="Date"/>
-    <integer name="type" selection="purchase.call.tender.need.type.select" title="Type"/>
+    <integer name="typeSelect" selection="purchase.call.tender.need.type.select"
+      title="Type"/>
 
 
     <track on="UPDATE">
