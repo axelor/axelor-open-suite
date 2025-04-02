@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -27,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -58,6 +60,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected InvoiceTermFilterService invoiceTermFilterService;
+  protected AccountConfigService accountConfigService;
 
   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -67,12 +70,14 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
-      InvoiceTermFilterService invoiceTermFilterService) {
+      InvoiceTermFilterService invoiceTermFilterService,
+      AccountConfigService accountConfigService) {
     this.invoiceTermService = invoiceTermService;
     this.currencyScaleService = currencyScaleService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.invoiceTermFilterService = invoiceTermFilterService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -123,15 +128,16 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       BigDecimal total = moveLine.getCurrencyAmount().abs();
 
       if (invoiceAttached != null) {
-        invoiceTermList = invoiceAttached.getInvoiceTermList();
+        //invoiceTermList = invoiceAttached.getInvoiceTermList();
         total = invoiceAttached.getInTaxTotal();
       }
 
-      if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total)) {
+      Company company = moveLine.getMove().getCompany();
+      if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total, company)) {
         this.checkTotal(invoiceTermList, invoiceAttached, moveLine, false);
         this.checkTotal(invoiceTermList, invoiceAttached, moveLine, true);
 
-        if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total)) {
+        if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total, company)) {
           throw new AxelorException(
               moveLine,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -147,12 +153,13 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   }
 
   protected boolean compareInvoiceTermAmountSumToTotal(
-      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
-    return invoiceTermList.stream()
+      List<InvoiceTerm> invoiceTermList, BigDecimal total, Company company) throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    BigDecimal diff = invoiceTermList.stream()
             .map(InvoiceTerm::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .compareTo(total)
-        != 0;
+            .subtract(total).abs();
+    return diff.compareTo(accountConfig.getAllowedTaxGap()) > 0;
   }
 
   protected void checkTotal(
@@ -162,6 +169,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       boolean isCompanyAmount)
       throws AxelorException {
     BigDecimal total;
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(moveLine.getMove().getCompany());
 
     if (isCompanyAmount) {
       total =
@@ -184,21 +192,21 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     if (invoiceTermTotal.compareTo(total) != 0) {
-      invoiceTermTotal =
-          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total, isCompanyAmount);
-
-      if (!isCompanyAmount) {
-        if (invoiceAttached == null) {
-          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
-        } else {
-          invoiceTermList.forEach(
-              it ->
-                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
-                      it, invoiceAttached));
-        }
-      }
-
-      if (invoiceTermTotal.compareTo(total) != 0) {
+//      invoiceTermTotal =
+//          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total, isCompanyAmount);
+//
+//      if (!isCompanyAmount) {
+//        if (invoiceAttached == null) {
+//          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
+//        } else {
+//          invoiceTermList.forEach(
+//              it ->
+//                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
+//                      it, invoiceAttached));
+//        }
+//      }
+      BigDecimal diff = invoiceTermTotal.subtract(total).abs();
+      if (diff.compareTo(accountConfig.getAllowedTaxGap()) > 0) {
         throw new AxelorException(
             moveLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
