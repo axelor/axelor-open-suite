@@ -1762,6 +1762,7 @@
   <action-group name="action-invoice-group-validate-and-ventilate-onclick">
     <action name="action-invoice-group-before-validate"/>
     <action name="action-invoice-group-before-ventilate"/>
+    <action name="save"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
 
