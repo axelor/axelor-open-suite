@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
@@ -62,6 +63,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
@@ -73,7 +75,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       InvoiceTermToolService invoiceTermToolService,
-      InvoiceTermPfpToolService invoiceTermPfpToolService) {
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineCreateService = moveLineCreateService;
@@ -83,6 +86,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
   }
 
   @Override
@@ -116,11 +120,16 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(move.getFunctionalOriginSelect());
 
-    Invoice invoice =
-        moveLine.getInvoiceTermList().stream()
-            .map(InvoiceTerm::getInvoice)
-            .findFirst()
-            .orElse(null);
+    Invoice invoice;
+    if (!ObjectUtils.isEmpty(moveLine.getInvoiceTermList())) {
+      invoice =
+          moveLine.getInvoiceTermList().stream()
+              .map(InvoiceTerm::getInvoice)
+              .findFirst()
+              .orElse(null);
+    } else {
+      invoice = null;
+    }
     moveLine.clearInvoiceTermList();
 
     if (paymentCondition == null
@@ -476,6 +485,40 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
       lastElement.setCompanyAmount(companyAmount);
       lastElement.setCompanyAmountRemaining(companyAmountRemaining);
+    }
+  }
+
+  public void manageFinancialDiscount(Move move) throws AxelorException {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+        List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
+        Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
+        BigDecimal total = moveLine.getCurrencyAmount().abs();
+        this.manageMoveLineFinancialDiscount(
+            moveLine, invoiceTermList, invoiceAttached, true, total);
+        this.manageMoveLineFinancialDiscount(
+            moveLine, invoiceTermList, invoiceAttached, false, total);
+      }
+    }
+  }
+
+  protected void manageMoveLineFinancialDiscount(
+      MoveLine moveLine,
+      List<InvoiceTerm> invoiceTermList,
+      Invoice invoiceAttached,
+      boolean isCompanyAmount,
+      BigDecimal total)
+      throws AxelorException {
+    invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total, isCompanyAmount);
+
+    if (!isCompanyAmount) {
+      if (invoiceAttached == null) {
+        moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
+      } else {
+        invoiceTermList.forEach(
+            it ->
+                invoiceTermFinancialDiscountService.computeFinancialDiscount(it, invoiceAttached));
+      }
     }
   }
 }

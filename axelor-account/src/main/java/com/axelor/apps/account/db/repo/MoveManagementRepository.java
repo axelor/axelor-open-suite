@@ -170,6 +170,7 @@ public class MoveManagementRepository extends MoveRepository {
           || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         moveValidateService.checkPreconditions(move);
+        Beans.get(MoveLineInvoiceTermService.class).manageFinancialDiscount(move);
       }
       if (move.getCurrency() != null) {
         move.setCurrencyCode(move.getCurrency().getCodeISO());

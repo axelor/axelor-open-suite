@@ -128,7 +128,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       BigDecimal total = moveLine.getCurrencyAmount().abs();
 
       if (invoiceAttached != null) {
-        // invoiceTermList = invoiceAttached.getInvoiceTermList();
+        invoiceTermList = invoiceAttached.getInvoiceTermList();
         total = invoiceAttached.getInTaxTotal();
       }
 
@@ -195,21 +195,6 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     if (invoiceTermTotal.compareTo(total) != 0) {
-      //      invoiceTermTotal =
-      //          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total,
-      // isCompanyAmount);
-      //
-      //      if (!isCompanyAmount) {
-      //        if (invoiceAttached == null) {
-      //          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine,
-      // moveLine.getMove());
-      //        } else {
-      //          invoiceTermList.forEach(
-      //              it ->
-      //                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
-      //                      it, invoiceAttached));
-      //        }
-      //      }
       BigDecimal diff = invoiceTermTotal.subtract(total).abs();
       if (diff.compareTo(accountConfig.getAllowedTaxGap()) > 0) {
         throw new AxelorException(
