@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.crm.service.partner.api;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
@@ -25,6 +26,8 @@ import com.axelor.apps.base.db.repo.MainActivityRepository;
 import com.axelor.apps.base.db.repo.PartnerCategoryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.google.inject.Inject;
@@ -46,18 +49,23 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
       CountryRepository countryRepository,
       CityRepository cityRepository,
       PartnerApiFetchService partnerApiFetchService,
-      MainActivityRepository mainActivityRepository) {
+      MainActivityRepository mainActivityRepository,
+      PartnerService partnerService,
+      AppBaseService appBaseService) {
     super(
         partnerRepository,
         partnerCategoryRepository,
         countryRepository,
         cityRepository,
         partnerApiFetchService,
-        mainActivityRepository);
+        mainActivityRepository,
+        partnerService,
+        appBaseService);
   }
 
   @Override
-  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData) {
+  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData)
+      throws AxelorException {
     super.setPartnerBasicDetails(partner, partnerData);
     Integer sizeSelect = null;
 
