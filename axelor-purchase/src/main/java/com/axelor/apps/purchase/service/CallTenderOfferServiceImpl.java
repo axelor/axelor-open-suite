@@ -4,6 +4,7 @@ import com.axelor.apps.purchase.db.CallTenderNeed;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.apps.purchase.db.CallTenderSupplier;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -14,7 +15,10 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
   public List<CallTenderOffer> generateCallTenderOfferList(
       CallTenderSupplier supplier, List<CallTenderNeed> needs) {
     Objects.requireNonNull(supplier);
-    Objects.requireNonNull(needs);
+
+    if (needs == null) {
+      return Collections.emptyList();
+    }
 
     return needs.stream()
         .map(
@@ -36,8 +40,10 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
   @Override
   public boolean alreadyGenerated(CallTenderOffer offer, List<CallTenderOffer> offerList) {
     Objects.requireNonNull(offer);
-    Objects.requireNonNull(offerList);
 
+    if (offerList == null) {
+      return false;
+    }
     return offerList.stream()
         .anyMatch(
             offerInList ->
