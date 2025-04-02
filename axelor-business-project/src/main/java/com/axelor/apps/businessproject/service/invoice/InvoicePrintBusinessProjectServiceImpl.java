@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryCo
 import com.axelor.apps.businessproject.report.ITranslation;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -134,16 +135,16 @@ public class InvoicePrintBusinessProjectServiceImpl extends InvoicePrintServiceI
               .map(Objects::toString)
               .collect(Collectors.joining(",")));
       paramMap.put("locale", locale);
-      paramMap.put("InvoiceId", invoice.getId());
 
       if (groupingPeriod != null) {
         fileNamePerPeriod = getFileNamePerPeriod(invoice, groupingPeriod);
       }
+      PrintingGenFactoryContext factoryContext =
+          new PrintingGenFactoryContext(EntityHelper.getEntity(invoice));
+      factoryContext.setContext(paramMap);
       fileList.add(
           printingTemplatePrintService.getPrintFile(
-              invoiceExpensePrintTemplate,
-              new PrintingGenFactoryContext(paramMap),
-              fileNamePerPeriod));
+              invoiceExpensePrintTemplate, factoryContext, fileNamePerPeriod));
 
       addJustificationFiles(fileList, expenseLines);
       noOfPeriods++;

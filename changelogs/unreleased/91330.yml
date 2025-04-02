@@ -1,0 +1,3 @@
+---
+title: "Birt template: fixed default invoice expense BIRT template parameters so that it can be used in mail template."
+module: axelor-business-project
