@@ -20,6 +20,7 @@
     title="Supplier offer">
     <panel name="sidePanel" showTitle="false" sidebar="true">
       <field name="requestedDate" colSpan="12"/>
+      <field name="proposedDate" colSpan="12"/>
     </panel>
     <panel name="mainPanel" showTitle="false">
       <field name="statusSelect" colSpan="12" widget="NavSelect"/>

@@ -18,6 +18,10 @@ public class CallTenderServiceImpl implements CallTenderService {
   public void generateCallTenderOffers(CallTender callTender) {
     Objects.requireNonNull(callTender);
 
+    if (callTender.getCallTenderSupplierList() == null) {
+      return;
+    }
+
     callTender.getCallTenderSupplierList().stream()
         .map(
             supplier ->
