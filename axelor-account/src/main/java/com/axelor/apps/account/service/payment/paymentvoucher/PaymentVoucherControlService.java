@@ -31,14 +31,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -47,21 +44,15 @@ public class PaymentVoucherControlService {
   protected PaymentVoucherSequenceService paymentVoucherSequenceService;
   protected AppBaseService appBaseService;
   protected AccountManagementRepository accountManagementRepo;
-  protected CurrencyService currencyService;
-  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PaymentVoucherControlService(
       PaymentVoucherSequenceService paymentVoucherSequenceService,
       AppBaseService appBaseService,
-      AccountManagementRepository accountManagementRepo,
-      CurrencyService currencyService,
-      CurrencyScaleService currencyScaleService) {
+      AccountManagementRepository accountManagementRepo) {
     this.paymentVoucherSequenceService = paymentVoucherSequenceService;
     this.appBaseService = appBaseService;
     this.accountManagementRepo = accountManagementRepo;
-    this.currencyService = currencyService;
-    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -133,41 +124,19 @@ public class PaymentVoucherControlService {
   public boolean controlMoveAmounts(PaymentVoucher paymentVoucher) {
     if (!CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
       for (PayVoucherElementToPay elementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
-        MoveLine moveLine = elementToPay.getMoveLine();
         BigDecimal remainingAmountToPay = elementToPay.getRemainingAmount();
         BigDecimal remainingAmountMoveLine;
         if (elementToPay.getFinancialDiscount() == null) {
-          remainingAmountMoveLine = moveLine.getAmountRemaining();
+          remainingAmountMoveLine = elementToPay.getMoveLine().getAmountRemaining();
         } else {
-          remainingAmountMoveLine = moveLine.getRemainingAmountAfterFinDiscount();
+          remainingAmountMoveLine = elementToPay.getMoveLine().getRemainingAmountAfterFinDiscount();
         }
-        remainingAmountToPay =
-            this.getConvertedCompanyAmountFromMoveLine(moveLine, remainingAmountToPay);
-        if (!currencyScaleService.equals(
-            remainingAmountToPay.abs(), remainingAmountMoveLine.abs(), moveLine, true)) {
+        if (!remainingAmountToPay.abs().equals(remainingAmountMoveLine.abs())) {
           return false;
         }
       }
     }
     return true;
-  }
-
-  protected BigDecimal getConvertedCompanyAmountFromMoveLine(MoveLine moveLine, BigDecimal amount) {
-    if (!moveLine.getCurrency().equals(moveLine.getCompanyCurrency())) {
-      BigDecimal moveLineCurrencyRate =
-          moveLine
-              .getDebit()
-              .max(moveLine.getCredit())
-              .divide(
-                  moveLine.getCurrencyAmount(),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP)
-              .abs();
-      return currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-          amount, moveLineCurrencyRate, moveLine.getCompanyCurrency());
-    }
-
-    return amount;
   }
 
   public boolean isReceiptDisplayed(PaymentVoucher paymentVoucher) {
