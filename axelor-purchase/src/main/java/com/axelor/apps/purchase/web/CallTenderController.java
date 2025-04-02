@@ -26,7 +26,7 @@ import com.axelor.rpc.ActionResponse;
 
 public class CallTenderController {
 
-  public void generateCallForTenders(ActionRequest request, ActionResponse response) {
+  public void generateCallTenderOffers(ActionRequest request, ActionResponse response) {
 
     var callTender = request.getContext().asType(CallTender.class);
 
