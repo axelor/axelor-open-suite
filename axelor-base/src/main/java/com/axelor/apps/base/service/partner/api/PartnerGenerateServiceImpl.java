@@ -108,7 +108,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     String registrationCodeMessage = partnerService.checkIfRegistrationCodeExists(partner);
 
     if (!StringUtils.isEmpty(registrationCodeMessage)
-        && Boolean.TRUE.equals(appBaseService.getAppBase().getIsRegistrationCodeCheckBlocking())) {
+        && appBaseService.getAppBase().getIsRegistrationCodeCheckBlocking()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, registrationCodeMessage);
     }
