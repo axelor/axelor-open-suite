@@ -11,7 +11,8 @@
   <form name="call-tender-supplier-form" model="com.axelor.apps.purchase.db.CallTenderSupplier"
     title="Supplier" width="large">
     <panel name="mainPanel" showTitle="false">
-      <field name="supplierPartner" domain="self.isSupplier IS true"/>
+      <field name="supplierPartner" domain="self.isSupplier IS true" form-view="partner-form"
+        grid-view="partner-grid"/>
     </panel>
   </form>
 
