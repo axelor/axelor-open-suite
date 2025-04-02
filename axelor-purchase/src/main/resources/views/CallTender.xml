@@ -10,7 +10,7 @@
   </grid>
 
   <form name="call-tender-form" model="com.axelor.apps.purchase.db.CallTender"
-    title="Call for tender" width="large">
+    title="Call for tender">
     <panel name="headerPanel" showTitle="false">
       <field name="name" colSpan="6"/>
       <field name="description" colSpan="6"/>
