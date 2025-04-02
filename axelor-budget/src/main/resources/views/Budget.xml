@@ -127,8 +127,10 @@
         title="Total amounts" showIf="id">
         <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
         <field name="availableAmount" x-scale="company.currency.numberOfDecimals"/>
-        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"/>
-        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"
+          hidden="true"/>
+        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"
+          hidden="true"/>
         <field name="totalAmountCommitted" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" x-scale="company.currency.numberOfDecimals"/>
         <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
@@ -230,6 +232,7 @@
     <action name="budget-action-budget-attrs-set-attrs"/>
     <action name="budget-action-method-budget-manage-budget-key"/>
     <action name="budget-action-method-show-period-fields"/>
+    <action name="action-account-attrs-budget-simulated-amounts"/>
   </action-group>
 
   <action-attrs name="budget-action-budget-attrs-set-attrs">
@@ -419,5 +422,10 @@
       self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
     <context name="_budgetId" expr="eval: __this__.id"/>
   </action-view>
+  <action-attrs name="action-account-attrs-budget-simulated-amounts"
+    model="com.axelor.apps.budget.db.Budget">
+    <attribute name="hidden" for="availableAmountWithSimulated,simulatedAmount"
+      expr="eval:!__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isActivateSimulatedMove"/>
 
+  </action-attrs>
 </object-views>
