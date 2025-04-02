@@ -1,3 +1,5 @@
 ---
-title: "Payment voucher : Fixed control when we register payment in multicurrency"
+title: "Payment voucher: fixed control when we register payment in multicurrency."
 module: axelor-account
+developer: |
+  Added `CurrencyService` and `CurrencyScaleService` to the constructor of `PaymentVoucherControlService`.
