@@ -36,7 +36,7 @@ public class ProjectTaskController {
 
     String warning = null;
     if (projectTask.getActiveSprint() == null) {
-      warning = I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_CREATION_CONSENT);
+      warning = Beans.get(ProjectTaskSprintService.class).getSprintOnChangeWarningWithoutSprint(projectTask);
     } else {
       warning = Beans.get(ProjectTaskSprintService.class).getSprintOnChangeWarning(projectTask);
     }
