@@ -18,6 +18,9 @@
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"
       canSelect="false"/>
+    <panel-related field="callTenderSupplierList"
+      form-view="call-tender-supplier-form" grid-view="call-tender-supplier-grid" colSpan="12"
+      canSelect="false"/>
   </form>
 
 </object-views>
