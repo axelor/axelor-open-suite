@@ -250,6 +250,22 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
 
     return projectPlanningTimeSet;
   }
+  protected Set<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
+          ProjectTask projectTask, LocalDate fromDate , BigDecimal period) {
+    Set<ProjectPlanningTime> projectPlanningTimeSet = new HashSet<>();
+    if ( !ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
+      if (fromDate != null && period != null) {
+        return projectTask.getProjectPlanningTimeList().stream()
+                .filter(
+                        ppt ->
+                                ppt.getStartDateTime().toLocalDate().equals(fromDate)
+                                        && ppt.getPlannedTime().equals(period))
+                .collect(Collectors.toSet());
+      }
+    }
+
+    return projectPlanningTimeSet;
+  }
 
   protected void moveProjectPlanningTime(
       ProjectPlanningTime projectPlanningTime, ProjectTask projectTask) throws AxelorException {
@@ -348,5 +364,38 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     return oldBudgetedTime;
+  }
+@Override
+  public String getSprintOnChangeWarningWithoutSprint(ProjectTask projectTask) {
+    BigDecimal oldBudgetedTime = getOldBudgetedTime(projectTask);
+
+    Sprint backlogSprint =
+            Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getBacklogSprint)
+                    .orElse(null);
+
+    if (projectTask.getActiveSprint().equals(backlogSprint)) {
+      return "";
+    }
+
+    Set<ProjectPlanningTime> projectPlanningTimeSet =
+            getProjectPlanningTimeOnOldSprint(projectTask, projectTask.getTaskDate(),projectTask.getBudgetedTime());
+
+    String warning =
+            getBudgetedTimeOnChangeWarning(projectPlanningTimeSet, oldBudgetedTime, projectTask);
+    if (StringUtils.notEmpty(warning)) {
+      return warning;
+    }
+
+    if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+      if (ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
+        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
+      } else {
+        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
+      }
+    } else {
+      return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT);
+    }
   }
 }

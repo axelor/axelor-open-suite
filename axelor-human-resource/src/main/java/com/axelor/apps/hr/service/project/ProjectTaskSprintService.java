@@ -25,4 +25,6 @@ public interface ProjectTaskSprintService {
   String getSprintOnChangeWarning(ProjectTask projectTask);
 
   void createOrMovePlanification(ProjectTask projectTask) throws AxelorException;
+
+  String getSprintOnChangeWarningWithoutSprint(ProjectTask projectTask);
 }
