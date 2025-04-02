@@ -15,7 +15,7 @@
   <form name="call-tender-need-form" model="com.axelor.apps.purchase.db.CallTenderNeed"
     title="Call for tender" width="large">
     <panel name="mainPanel" showTitle="false">
-      <field name="product" colSpan="12"/>
+      <field name="product" colSpan="12" domain="self.purchasable is true"/>
       <field name="requestedQty" colSpan="6"/>
       <field name="unit" colSpan="6"/>
       <field name="requestDate"/>
