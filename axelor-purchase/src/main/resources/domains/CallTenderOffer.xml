@@ -38,6 +38,9 @@
    		]]>
     </extra-code>
 
+    <track on="UPDATE">
+      <field name="supplierPartner"/>
+    </track>
   </entity>
 
 </domain-models>
