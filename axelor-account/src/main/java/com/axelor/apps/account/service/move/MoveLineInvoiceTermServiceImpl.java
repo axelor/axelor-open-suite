@@ -117,10 +117,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
             .contains(move.getFunctionalOriginSelect());
 
     Invoice invoice =
-            moveLine.getInvoiceTermList().stream()
-                    .map(InvoiceTerm::getInvoice)
-                    .findFirst()
-                    .orElse(null);
+        moveLine.getInvoiceTermList().stream()
+            .map(InvoiceTerm::getInvoice)
+            .findFirst()
+            .orElse(null);
     moveLine.clearInvoiceTermList();
 
     if (paymentCondition == null

@@ -128,7 +128,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       BigDecimal total = moveLine.getCurrencyAmount().abs();
 
       if (invoiceAttached != null) {
-        //invoiceTermList = invoiceAttached.getInvoiceTermList();
+        // invoiceTermList = invoiceAttached.getInvoiceTermList();
         total = invoiceAttached.getInTaxTotal();
       }
 
@@ -155,10 +155,12 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected boolean compareInvoiceTermAmountSumToTotal(
       List<InvoiceTerm> invoiceTermList, BigDecimal total, Company company) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    BigDecimal diff = invoiceTermList.stream()
+    BigDecimal diff =
+        invoiceTermList.stream()
             .map(InvoiceTerm::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
-            .subtract(total).abs();
+            .subtract(total)
+            .abs();
     return diff.compareTo(accountConfig.getAllowedTaxGap()) > 0;
   }
 
@@ -169,7 +171,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       boolean isCompanyAmount)
       throws AxelorException {
     BigDecimal total;
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(moveLine.getMove().getCompany());
+    AccountConfig accountConfig =
+        accountConfigService.getAccountConfig(moveLine.getMove().getCompany());
 
     if (isCompanyAmount) {
       total =
@@ -192,19 +195,21 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     if (invoiceTermTotal.compareTo(total) != 0) {
-//      invoiceTermTotal =
-//          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total, isCompanyAmount);
-//
-//      if (!isCompanyAmount) {
-//        if (invoiceAttached == null) {
-//          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, moveLine.getMove());
-//        } else {
-//          invoiceTermList.forEach(
-//              it ->
-//                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
-//                      it, invoiceAttached));
-//        }
-//      }
+      //      invoiceTermTotal =
+      //          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total,
+      // isCompanyAmount);
+      //
+      //      if (!isCompanyAmount) {
+      //        if (invoiceAttached == null) {
+      //          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine,
+      // moveLine.getMove());
+      //        } else {
+      //          invoiceTermList.forEach(
+      //              it ->
+      //                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
+      //                      it, invoiceAttached));
+      //        }
+      //      }
       BigDecimal diff = invoiceTermTotal.subtract(total).abs();
       if (diff.compareTo(accountConfig.getAllowedTaxGap()) > 0) {
         throw new AxelorException(
