@@ -107,6 +107,7 @@
       onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected"
       onSelect="action-bank-reconciliation-line-method-move-line-domain" form-view="move-line-form"
       grid-view="move-line-grid"/>
+    <field name="analyticDistributionTemplate"/>
     <field name="isPosted" readonly="true"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
@@ -114,34 +115,40 @@
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large" canNew="false">
-    <panel name="bankStatementPanel" title="Bank statement details">
-      <field name="bankStatementLine" canEdit="false"
-        onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>
-      <field name="effectDate"/>
-      <field name="name"/>
-      <field name="reference"/>
-      <field name="debit" x-scale="$currencyNumberOfDecimals"/>
-      <field name="credit" x-scale="$currencyNumberOfDecimals"/>
-      <field name="bankStatementLine.amountRemainToReconcile"
-        x-scale="$currencyNumberOfDecimals"/>
-      <field name="$currencyNumberOfDecimals" hidden="true"/>
-    </panel>
-    <panel name="accountingPanel" title="Accounting details">
-      <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
-      <field name="account" canEdit="false"
-        onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
-        grid-view="account-grid"/>
-      <field name="partner" canEdit="false"
-        onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
-        onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form"
-        grid-view="partner-grid"/>
-    </panel>
-    <panel name="associatedMoveLinePanel" title="Associated MoveLine">
-      <field name="moveLine" canEdit="false"
-        onSelect="action-bank-reconciliation-line-method-move-line-domain"
-        form-view="move-line-form" grid-view="move-line-grid"/>
-      <field name="isPosted" readonly="true"/>
-    </panel>
+    <panel-tabs>
+      <panel name="bankStatementPanel" title="Bank statement details">
+        <field name="bankStatementLine" canEdit="false"
+          onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>
+        <field name="effectDate"/>
+        <field name="name"/>
+        <field name="reference"/>
+        <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+        <field name="credit" x-scale="$currencyNumberOfDecimals"/>
+        <field name="bankStatementLine.amountRemainToReconcile"
+          x-scale="$currencyNumberOfDecimals"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
+      </panel>
+      <panel name="accountingPanel" title="Accounting details">
+        <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
+        <field name="account" canEdit="false"
+          onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
+          grid-view="account-grid"/>
+        <field name="partner" canEdit="false"
+          onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
+          onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form"
+          grid-view="partner-grid"/>
+      </panel>
+      <panel name="associatedMoveLinePanel" title="Associated MoveLine">
+        <field name="moveLine" canEdit="false"
+          onSelect="action-bank-reconciliation-line-method-move-line-domain"
+          form-view="move-line-form" grid-view="move-line-grid"/>
+        <field name="isPosted" readonly="true"/>
+      </panel>
+      <panel name="analyticPanel" title="Analytic">
+        <field name="analyticDistributionTemplate"
+          requiredIf="account.analyticDistributionRequiredOnMoveLines"/>
+      </panel>
+    </panel-tabs>
   </form>
 
   <action-record
