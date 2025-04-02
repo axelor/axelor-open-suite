@@ -39,6 +39,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
 
@@ -285,7 +286,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
 
     if (expenseLine.getExpenseProduct() != null
         && expenseLine.getExpenseProduct().getDeductLunchVoucher()
-        && employeeList != null) {
+        && !CollectionUtils.isEmpty(employeeList)) {
       for (Employee e : employeeList) {
         expenseLine.addInvitedCollaboratorSetItem(e);
       }
