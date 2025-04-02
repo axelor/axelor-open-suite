@@ -9,7 +9,8 @@
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
-    <decimal name="requestedQty" default="1" required="true" title="Quantity"/>
+    <decimal name="requestedQty" default="1" required="true" title="Quantity" precision="20"
+      scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <date name="requestedDate" title="Date"/>
     <integer name="typeSelect" selection="purchase.call.tender.need.type.select"
