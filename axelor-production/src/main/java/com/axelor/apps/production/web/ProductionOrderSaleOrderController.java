@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -32,7 +33,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.util.List;
+import java.util.Set;
 
 @Singleton
 public class ProductionOrderSaleOrderController {
@@ -50,16 +51,16 @@ public class ProductionOrderSaleOrderController {
 
       productionOrderSaleOrderService.checkGeneratedProductionOrders(saleOrder);
 
+      boolean oneProdOrderPerSO =
+          Beans.get(AppProductionService.class).getAppProduction().getOneProdOrderPerSO();
       boolean productionOrderExists =
           productionOrderSaleOrderService.productionOrderForSaleOrderExists(saleOrder);
-      int nbOfMoBeforeCreation =
-          productionOrderSaleOrderService.getNumberOfMoFromProductionOrder(saleOrder);
-      List<Long> productionOrderIdList =
+      int nbOfMoOrPoBeforeCreation = productionOrderSaleOrderService.getNumberOfMoOrPo(saleOrder);
+      Set<Long> productionOrderIds =
           productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-      int nbOfMoAfterCreation =
-          productionOrderSaleOrderService.getNumberOfMoFromProductionOrder(saleOrder);
+      int nbOfMoOrPoAfterCreation = productionOrderSaleOrderService.getNumberOfMoOrPo(saleOrder);
 
-      if (productionOrderIdList != null && productionOrderIdList.size() == 1) {
+      if (productionOrderIds != null && productionOrderIds.size() == 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))
                 .model(ProductionOrder.class.getName())
@@ -67,20 +68,30 @@ public class ProductionOrderSaleOrderController {
                 .add("grid", "production-order-grid")
                 .param("search-filters", "production-order-filters")
                 .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(productionOrderIdList.get(0)))
+                .context(
+                    "_showRecord",
+                    String.valueOf(productionOrderIds.stream().findFirst().orElse(0L)))
                 .map());
-        if (productionOrderExists && (nbOfMoAfterCreation - nbOfMoBeforeCreation != 0)) {
-          response.setInfo(I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ADDED_TO_EXISTENT_PO));
+        if (oneProdOrderPerSO) {
+          if (productionOrderExists && (nbOfMoOrPoAfterCreation - nbOfMoOrPoBeforeCreation != 0)) {
+            response.setInfo(
+                I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ADDED_TO_EXISTENT_PO));
+          } else if (productionOrderExists) {
+            response.setInfo(I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ALREADY_GENERATED));
+          }
         }
-      } else if (productionOrderIdList != null && productionOrderIdList.size() > 1) {
+      } else if (productionOrderIds != null && productionOrderIds.size() > 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))
                 .model(ProductionOrder.class.getName())
                 .add("grid", "production-order-grid")
                 .add("form", "production-order-form")
                 .param("search-filters", "production-order-filters")
-                .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
+                .domain("self.id in (" + Joiner.on(",").join(productionOrderIds) + ")")
                 .map());
+        if (nbOfMoOrPoAfterCreation - nbOfMoOrPoBeforeCreation != 0) {
+          response.setInfo(I18n.get(ProductionExceptionMessage.SALE_ORDER_NEW_PO_GENERATED));
+        }
       } else {
         response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
       }

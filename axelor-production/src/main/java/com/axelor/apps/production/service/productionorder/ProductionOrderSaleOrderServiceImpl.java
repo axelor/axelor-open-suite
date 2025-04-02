@@ -35,7 +35,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -64,13 +66,13 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class})
-  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public Set<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
     boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
 
-    List<Long> productionOrderIdList = new ArrayList<>();
+    Set<Long> productionOrderIds = new HashSet<>();
     if (saleOrder.getSaleOrderLineList() == null) {
-      return productionOrderIdList;
+      return productionOrderIds;
     }
 
     List<SaleOrderLine> saleOrderLineList =
@@ -80,14 +82,23 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
     if (oneProdOrderPerSO) {
       ProductionOrder productionOrder = generateOnePoPerSaleOrder(saleOrder, saleOrderLineList);
-      productionOrderIdList.add(productionOrder.getId());
+      productionOrderIds.add(productionOrder.getId());
     } else {
       List<ProductionOrder> productionOrderList = generateOnePoPerSol(saleOrder, saleOrderLineList);
-      productionOrderIdList.addAll(
+      productionOrderIds.addAll(
           productionOrderList.stream().map(ProductionOrder::getId).collect(Collectors.toList()));
+      productionOrderIds.addAll(
+          productionOrderRepo
+              .all()
+              .filter("self.saleOrder = :saleOrder")
+              .bind("saleOrder", saleOrder)
+              .fetch()
+              .stream()
+              .map(ProductionOrder::getId)
+              .collect(Collectors.toList()));
     }
 
-    return productionOrderIdList;
+    return productionOrderIds;
   }
 
   protected ProductionOrder generateOnePoPerSaleOrder(
@@ -152,16 +163,27 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   }
 
   @Override
-  public int getNumberOfMoFromProductionOrder(SaleOrder saleOrder) {
-    ProductionOrder productionOrder =
-        productionOrderRepo
-            .all()
-            .filter("self.saleOrder = :saleOrder")
-            .bind("saleOrder", saleOrder)
-            .fetchOne();
-    if (productionOrder != null) {
-      return productionOrder.getManufOrderSet().size();
+  public int getNumberOfMoOrPo(SaleOrder saleOrder) {
+    boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
+    if (oneProdOrderPerSO) {
+      ProductionOrder productionOrder =
+          productionOrderRepo
+              .all()
+              .filter("self.saleOrder = :saleOrder")
+              .bind("saleOrder", saleOrder)
+              .fetchOne();
+      if (productionOrder != null) {
+        return productionOrder.getManufOrderSet().size();
+      }
+    } else {
+      return productionOrderRepo
+          .all()
+          .filter("self.saleOrder = :saleOrder")
+          .bind("saleOrder", saleOrder)
+          .fetch()
+          .size();
     }
+
     return 0;
   }
 
