@@ -46,11 +46,11 @@
           onChange="action-bank-reconciliation-group-onchange-company" required="true"
           form-view="company-form" grid-view="company-grid"/>
         <field name="currency" colSpan="3" canEdit="false" required="true"
-          readonlyIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0"
+          readonlyIf="(bankDetails &amp;&amp; bankDetails.currency) || (bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0)"
           form-view="currency-form" grid-view="currency-grid"/>
         <field name="bankDetails" canEdit="false"
           readonlyIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0"
-          onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account"
+          onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account,action-bank-reconciliation-record-set-currency"
           onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"
           form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4"/>
         <field name="journal" colSpan="2" canEdit="false"
@@ -62,11 +62,13 @@
         <field name="cashAccount" colSpan="3" canEdit="false"
           onSelect="action-bank-reconciliation-method-set-cash-account-domain"
           form-view="account-form" grid-view="account-grid"/>
+        <field name="bankDetails.currency" hidden="true"/>
       </panel>
       <panel name="actionsPanel" colSpan="12">
         <button name="loadBankStatementBtn" title="Load bank statements"
           readonlyIf="!(bankStatement &amp;&amp; !bankReconciliationLineList.length > 0)"
-          colSpan="3" onClick="save,action-bank-reconciliation-method-load-bank-statement"/>
+          colSpan="3"
+          onClick="save,action-bank-reconciliation-validate-currency,action-bank-reconciliation-method-load-bank-statement"/>
         <button name="loadOtherBankStatementBtn" title="Load other bank statements"
           showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements"
           readonlyIf="statusSelect == 2" colSpan="3"
@@ -263,6 +265,11 @@
     <field name="cashAccount" expr="eval: null"/>
   </action-record>
 
+  <action-record name="action-bank-reconciliation-record-set-currency"
+    model="com.axelor.apps.bankpayment.db.BankReconciliation">
+    <field name="currency" expr="eval: bankDetails?.currency" if="bankDetails"/>
+  </action-record>
+
   <action-method name="action-bank-reconciliation-method-set-bank-details-domain">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
       method="setBankDetailsDomain"/>
@@ -398,6 +405,12 @@
     <alert
       message="There is at least one incomplete bank reconciliation. Are you sure you want to continue?"
       if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null"/>
+  </action-validate>
+
+  <action-validate name="action-bank-reconciliation-validate-currency">
+    <error
+      message="The bank reconciliation currency is different from the bank details currency so the reconciliation can't be initiated. Please select a currency which is equal to the bank statement currency."
+      if="bankDetails.currency &amp;&amp; bankDetails.currency != currency"/>
   </action-validate>
 
   <action-method
