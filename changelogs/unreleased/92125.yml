@@ -1,5 +1,0 @@
----
-title: "Fixed SIRET check before creation using partner Sirene API call."
-module: axelor-base
-developer: |
-  Added `PartnerService` and `AppBaseService` to the constructor of `PartnerGenerateService`.
