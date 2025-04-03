@@ -26,6 +26,18 @@
           showIf="!$readonly() &amp;&amp; shipmentMode"/>
       </insert>
     </extend>
+    <extend target="//panel-related[@name='detailLinesPanel']">
+      <attribute name="onChange"
+        value="action-supplychain-group-sale-order-on-line-changes"/>
+    </extend>
+    <extend target="//panel-related[@name='saleOrderLineEditableTreePanel']">
+      <attribute name="onChange"
+        value="action-supplychain-group-sale-order-on-line-changes"/>
+    </extend>
+    <extend target="//panel-related[@name='editableDetailLinesPanel']">
+      <attribute name="onChange"
+        value="action-supplychain-group-sale-order-on-line-changes"/>
+    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
@@ -136,6 +148,11 @@
       name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
   </action-group>
 
+  <action-group name="action-supplychain-group-sale-order-on-line-changes">
+    <action name="action-sale-order-method-on-line-change"/>
+    <action name="action-supplychain-method-sale-order-check-analytic-axis"/>
+  </action-group>
+
   <!-- ACTION METHOD -->
 
   <action-method name="action-supplychain-saleorder-onsave">
@@ -165,6 +182,11 @@
     name="action-supplychain-so-method-set-next-invoicing-end-period-date">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="setNextInvoicingStartPeriodDate"/>
+  </action-method>
+
+  <action-method name="action-supplychain-method-sale-order-check-analytic-axis">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="checkAnalyticAxis"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->

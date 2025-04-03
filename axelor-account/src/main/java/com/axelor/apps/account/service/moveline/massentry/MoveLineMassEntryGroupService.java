@@ -77,7 +77,7 @@ public interface MoveLineMassEntryGroupService {
       MoveLineMassEntry moveLine, Move move) throws AxelorException;
 
   Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
-      MoveLineMassEntry moveLine);
+      MoveLineMassEntry moveLine) throws AxelorException;
 
   Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
       throws AxelorException;
