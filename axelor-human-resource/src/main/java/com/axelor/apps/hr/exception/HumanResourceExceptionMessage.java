@@ -442,4 +442,8 @@ public final class HumanResourceExceptionMessage {
 
   public static final String PROJECT_PLANNING_TIME_CREATION_INFO = /*$$(*/
       "A new planning time has been created." /*)*/;
+  public static final String PROJECT_PLANNING_TIME_EXISTING_ON_PERIOD = /*$$(*/
+      "Project planning times with the same dates and period already existing" /*)*/;
+  public static final String PROJECT_PLANNING_TIME_UPDATE = /*$$(*/
+      "Project planning time already exists, do you want to update it?" /*)*/;
 }
