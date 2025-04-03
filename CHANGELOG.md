@@ -1,3 +1,54 @@
+## [8.1.21] (2025-04-03)
+
+### Fixes
+#### Base
+
+* Base batch: fixed issue in recompute all addresses batch.
+
+#### Account
+
+* Fixed an user interface issue where it was allowed to create a new tax where the user should only be able to select one.
+* Bank order/National treasury transfer: fixed internal money transfer from bank order by inverting credit and debit.
+* Accounting batch: fixed balance amount on close/open account batch.
+* Invoice: fixed bad error handling when skipping validation is active.
+* Invoice term: fixed display condition for PFP panel.
+* Payment voucher: fixed control when we register payment in multicurrency.
+* Fixed asset: fixed null value on moveline for ongoing cession.
+
+#### Budget
+
+* Budget: fixed domain issues for analytic axis and account in Budget from Budget structure.
+* Global budget/Budget level/Budget: fixed the visibility of the simulated budget amount fields.
+* Purchase order line: fixed budget domain in budget distribution.
+
+#### Business Project
+
+* Invoicing project: fixed an issue where non validated timesheet lines were included.
+
+#### Contract
+
+* Contract line: fixed domain for product based on contract target type.
+
+#### Production
+
+* Bill of material: fixed an issue where a component could not be deleted from the BOM line list after the tree view was opened.
+
+#### Sale
+
+* Sale order: fixed wrong behaviour on a prospect with accepted credit.
+
+#### Stock
+
+* Stock move: fixed average price not updated on product when stock move is canceled.
+* Inventory: gap and real values computation now correctly takes into account company product cost/sale/purchase price.
+
+
+### Developer
+
+#### Account
+
+Added `CurrencyService` and `CurrencyScaleService` to the constructor of `PaymentVoucherControlService`.
+
 ## [8.1.20] (2025-03-20)
 
 ### Fixes
@@ -1278,6 +1329,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.21]: https://github.com/axelor/axelor-open-suite/compare/v8.1.20...v8.1.21
 [8.1.20]: https://github.com/axelor/axelor-open-suite/compare/v8.1.19...v8.1.20
 [8.1.19]: https://github.com/axelor/axelor-open-suite/compare/v8.1.18...v8.1.19
 [8.1.18]: https://github.com/axelor/axelor-open-suite/compare/v8.1.17...v8.1.18
