@@ -735,7 +735,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     Objects.requireNonNull(stockMove);
 
     if (stockMove.getStockMoveLineList() != null) {
-      stockMove.getStockMoveLineList().forEach(sml -> sml.setRealQty(sml.getQty()));
+      stockMove
+          .getStockMoveLineList()
+          .forEach(
+              sml -> {
+                sml.setRealQty(sml.getQty());
+                sml.setTotalNetMass(sml.getQty().multiply(sml.getNetMass()));
+              });
     }
   }
 }

@@ -1841,6 +1841,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty) {
     if (stockMoveLine != null) {
       stockMoveLine.setRealQty(qty);
+      stockMoveLine.setTotalNetMass(qty.multiply(stockMoveLine.getNetMass()));
     }
   }
 
