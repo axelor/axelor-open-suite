@@ -1,0 +1,3 @@
+---
+title: "Job application: fixed internal server error when opening kanban view due to undefined search filter."
+module: axelor-talent
