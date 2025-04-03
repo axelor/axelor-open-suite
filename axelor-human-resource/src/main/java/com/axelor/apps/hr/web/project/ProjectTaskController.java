@@ -19,12 +19,10 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,7 +34,9 @@ public class ProjectTaskController {
 
     String warning = null;
     if (projectTask.getActiveSprint() == null) {
-      warning = Beans.get(ProjectTaskSprintService.class).getSprintOnChangeWarningWithoutSprint(projectTask);
+      warning =
+          Beans.get(ProjectTaskSprintService.class)
+              .getSprintOnChangeWarningWithoutSprint(projectTask);
     } else {
       warning = Beans.get(ProjectTaskSprintService.class).getSprintOnChangeWarning(projectTask);
     }
@@ -54,8 +54,5 @@ public class ProjectTaskController {
     response.setValue("oldActiveSprint", projectTask.getActiveSprint());
     response.setValue("oldBudgetedTime", projectTask.getBudgetedTime());
     response.setValue("projectPlanningTimeList", projectTask.getProjectPlanningTimeList());
-    if (projectTask.getActiveSprint() == null) {
-      response.setInfo(I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_CREATION_INFO));
-    }
   }
 }
