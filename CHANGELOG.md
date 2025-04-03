@@ -1,3 +1,65 @@
+## [8.2.12] (2025-04-03)
+
+### Fixes
+#### Base
+
+* Base batch: fixed issue in recompute all addresses batch.
+
+#### Account
+
+* Fixed an user interface issue where it was allowed to create a new tax where the user should only be able to select one.
+* Bank order/National treasury transfer: fixed internal money transfer from bank order by inverting credit and debit.
+* Accounting batch: fixed balance amount on close/open account batch.
+* Invoice: fixed bad error handling when skipping validation is active.
+* Invoice term: fixed display condition for PFP panel.
+* Payment voucher: fixed control when we register payment in multicurrency.
+* Fixed asset: fixed null value on moveline for ongoing cession.
+
+#### Budget
+
+* Budget: fixed domain issues for analytic axis and account in Budget from Budget structure.
+* Global budget/Budget level/Budget: fixed the visibility of the simulated budget amount fields.
+* Purchase order line: fixed budget domain in budget distribution.
+
+#### Business Project
+
+* Business project task: fixed an issue at task creation when employee has a product.
+* Invoicing project: fixed an issue where non validated timesheet lines were included.
+
+#### Contract
+
+* Contract line: fixed domain for product based on contract target type.
+* Contract: added french translation for the 'Related Equipment' panel title.
+
+#### Human Resource
+
+* Project: fixed an error occurring when creating a timesheet and the user had no employee.
+* Timesheet line: fixed an issue where a timesheet line was not linked to the employee's timesheet.
+
+#### Production
+
+* Bill of material: fixed an issue where a component could not be deleted from the BOM line list after the tree view was opened.
+* Sale order: fill default prod process of bill of material when choosing a product.
+
+#### Sale
+
+* Sale order: fixed the alert when finalizing an order and the price list is not valid.
+* Sale order: fixed wrong behaviour on a prospect with accepted credit.
+* App sale: fixed French translation for line list display type helper.
+* Sale order: fixed NPE when creating a sale order without active company.
+
+#### Stock
+
+* Stock move: fixed average price not updated on product when stock move is canceled.
+* Inventory: gap and real values computation now correctly takes into account company product cost/sale/purchase price.
+
+
+### Developer
+
+#### Account
+
+Added `CurrencyService` and `CurrencyScaleService` to the constructor of `PaymentVoucherControlService`.
+
 ## [8.2.11] (2025-03-20)
 
 ### Fixes
@@ -825,6 +887,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.12]: https://github.com/axelor/axelor-open-suite/compare/v8.2.11...v8.2.12
 [8.2.11]: https://github.com/axelor/axelor-open-suite/compare/v8.2.10...v8.2.11
 [8.2.10]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.2.10
 [8.2.9]: https://github.com/axelor/axelor-open-suite/compare/v8.2.8...v8.2.9

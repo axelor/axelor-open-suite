@@ -1,3 +1,0 @@
----
-title: "Timesheet line: fixed an issue where a timesheet line was not linked to the employee's timesheet."
-module: axelor-human-resource
