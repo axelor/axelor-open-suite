@@ -1,3 +1,26 @@
+## [7.2.36] (2025-04-03)
+
+### Fixes
+#### Account
+
+* Bank order/National treasury transfer: fixed internal money transfer from bank order by inverting credit and debit.
+* Accounting batch: fixed balance amount on close/open account batch.
+* Invoice: fixed bad error handling when skipping validation is active.
+* Fixed asset: fixed null value on moveline for ongoing cession.
+
+#### Production
+
+* Bill of material: fixed an issue where a component could not be deleted from the BOM line list after the tree view was opened.
+
+#### Sale
+
+* Sale order: fixed wrong behaviour on a prospect with accepted credit.
+
+#### Stock
+
+* Stock move: fixed average price not updated on product when stock move is canceled.
+* Inventory: gap and real values computation now correctly takes into account company product cost/sale/purchase price.
+
 ## [7.2.35] (2025-03-20)
 
 ### Fixes
@@ -1609,6 +1632,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.36]: https://github.com/axelor/axelor-open-suite/compare/v7.2.35...v7.2.36
 [7.2.35]: https://github.com/axelor/axelor-open-suite/compare/v7.2.34...v7.2.35
 [7.2.34]: https://github.com/axelor/axelor-open-suite/compare/v7.2.33...v7.2.34
 [7.2.33]: https://github.com/axelor/axelor-open-suite/compare/v7.2.32...v7.2.33
