@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.service.project.ProjectTaskPPTGenerateService;
 import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
@@ -35,7 +36,7 @@ public class ProjectTaskController {
     String warning = null;
     if (projectTask.getActiveSprint() == null) {
       warning =
-          Beans.get(ProjectTaskSprintService.class)
+          Beans.get(ProjectTaskPPTGenerateService.class)
               .getSprintOnChangeWarningWithoutSprint(projectTask);
     } else {
       warning = Beans.get(ProjectTaskSprintService.class).getSprintOnChangeWarning(projectTask);
@@ -50,7 +51,11 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask =
         EntityHelper.getEntity(request.getContext().asType(ProjectTask.class));
-    Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
+    if (projectTask.getActiveSprint() == null) {
+      Beans.get(ProjectTaskPPTGenerateService.class).createUpdatePlanningTimeWithoutSprint(projectTask);
+    } else {
+      Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
+    }
     response.setValue("oldActiveSprint", projectTask.getActiveSprint());
     response.setValue("oldBudgetedTime", projectTask.getBudgetedTime());
     response.setValue("projectPlanningTimeList", projectTask.getProjectPlanningTimeList());
