@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.rest.dto.CheckResponse;
 import com.axelor.apps.base.rest.dto.CheckResponseLine;
 import com.axelor.apps.hr.db.LeaveReason;
@@ -42,7 +43,7 @@ public class LeaveRequestCheckResponseServiceImpl implements LeaveRequestCheckRe
   }
 
   @Override
-  public CheckResponse createResponse(LeaveRequest leaveRequest) {
+  public CheckResponse createResponse(LeaveRequest leaveRequest) throws AxelorException {
     List<CheckResponseLine> checkResponseLineList = new ArrayList<>();
     checkDate(leaveRequest).ifPresent(checkResponseLineList::add);
     checkDuration(leaveRequest).ifPresent(checkResponseLineList::add);
@@ -73,7 +74,8 @@ public class LeaveRequestCheckResponseServiceImpl implements LeaveRequestCheckRe
     return Optional.empty();
   }
 
-  protected Optional<CheckResponseLine> checkAvailableDays(LeaveRequest leaveRequest) {
+  protected Optional<CheckResponseLine> checkAvailableDays(LeaveRequest leaveRequest)
+      throws AxelorException {
     LeaveReason leaveReason = leaveRequest.getLeaveReason();
     if (!leaveRequestService.willHaveEnoughDays(leaveRequest) && leaveReason != null) {
 

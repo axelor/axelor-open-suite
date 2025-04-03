@@ -18,13 +18,16 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface LeaveRequestCreateHelperDateService {
-  LocalDate computeNextStartDate(LocalDate toDate, int endOnSelect, int nextStartOnSelect);
+  LocalDate computeNextStartDate(LocalDate toDate, int endOnSelect, int nextStartOnSelect)
+      throws AxelorException;
 
-  LocalDate computeNextToDate(LocalDate fromDate, BigDecimal duration, int startOnSelect);
+  LocalDate computeNextToDate(LocalDate fromDate, BigDecimal duration, int startOnSelect)
+      throws AxelorException;
 
   int computeNextStartOnSelect(int endOfSelect);
 
