@@ -388,6 +388,15 @@ public class ContractLineServiceImpl implements ContractLineService {
           " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
     }
 
+    int targetTypeSelect = contract.getTargetTypeSelect();
+    if (targetTypeSelect == ContractRepository.CUSTOMER_CONTRACT
+        || targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
+      domain += " AND self.sellable = true";
+    } else if (targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT
+        || targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
+      domain += " AND self.purchasable = true";
+    }
+
     return domain;
   }
 }

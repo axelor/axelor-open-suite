@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed NPE when invoicing a sale order with title line."
-module: axelor-supplychain
