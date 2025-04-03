@@ -65,6 +65,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
   protected AppBaseService appBaseService;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected ProjectPlanningTimeToolService projectPlanningTimeToolService;
+  protected ProjectPlanningTimeComputeService projectPlanningTimeComputeService;
 
   @Inject
   public ProjectPlanningTimeCreateServiceImpl(
@@ -78,7 +79,8 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       TimesheetLineRepository timesheetLineRepository,
       AppBaseService appBaseService,
       ProjectTimeUnitService projectTimeUnitService,
-      ProjectPlanningTimeToolService projectPlanningTimeToolService) {
+      ProjectPlanningTimeToolService projectPlanningTimeToolService,
+      ProjectPlanningTimeComputeService projectPlanningTimeComputeService) {
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskRepo;
@@ -90,6 +92,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     this.appBaseService = appBaseService;
     this.projectTimeUnitService = projectTimeUnitService;
     this.projectPlanningTimeToolService = projectPlanningTimeToolService;
+    this.projectPlanningTimeComputeService = projectPlanningTimeComputeService;
   }
 
   @Override
@@ -191,13 +194,12 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       Unit defaultTimeUnit)
       throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
-
     planningTime.setProjectTask(projectTask);
     planningTime.setProduct(activity);
     planningTime.setTimepercent(timePercent);
     planningTime.setEmployee(employee);
     planningTime.setStartDateTime(fromDate);
-    planningTime.setEndDateTime(taskEndDateTime);
+
     planningTime.setProject(project);
     planningTime.setSite(site);
     planningTime.setTimeUnit(defaultTimeUnit);
@@ -217,9 +219,12 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     if (planningTime.getTimeUnit() == null) {
       return planningTime;
     }
-
     computePlannedTime(planningTime, totalHours);
+    taskEndDateTime =
+        projectPlanningTimeComputeService.computeEndDateTime(
+            planningTime, projectTask.getProject());
 
+    planningTime.setEndDateTime(taskEndDateTime);
     return planningTime;
   }
 
