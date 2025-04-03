@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed sale order invoicing state when a line has a negative amount."
+module: axelor-supplychain
