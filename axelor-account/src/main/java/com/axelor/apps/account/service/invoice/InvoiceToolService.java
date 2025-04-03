@@ -59,15 +59,20 @@ public class InvoiceToolService {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
     return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
-        ? getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
+            || (invoice.getPaymentCondition() != null && invoice.getPaymentCondition().getIsFree())
+        ? getMaxDueDate(invoice.getPaymentCondition(), invoiceDate, invoice.getDueDate())
         : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 
   protected static LocalDate getMaxDueDate(
-      PaymentCondition paymentCondition, LocalDate defaultDate) {
+      PaymentCondition paymentCondition, LocalDate defaultDate, LocalDate dueDate) {
     if (paymentCondition == null
         || ObjectUtils.isEmpty(paymentCondition.getPaymentConditionLineList())) {
       return defaultDate;
+    }
+
+    if (paymentCondition.getIsFree() && dueDate != null) {
+      return dueDate;
     }
 
     return getDueDate(

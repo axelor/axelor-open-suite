@@ -1712,7 +1712,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         || checkIfCustomizedInvoiceTerms(invoice)) {
       return;
     }
-    if (InvoiceToolService.isPurchase(invoice)) {
+    if ((invoice.getPaymentCondition() != null && invoice.getPaymentCondition().getIsFree())
+        && invoice.getDueDate() != null) {
+      setDueDates(invoice, invoice.getDueDate());
+    } else if (InvoiceToolService.isPurchase(invoice)) {
       if (invoice.getOriginDate() != null) {
         invoice = setDueDates(invoice, invoice.getOriginDate());
       } else {
