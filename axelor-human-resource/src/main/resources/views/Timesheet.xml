@@ -121,7 +121,8 @@
           name="employee.timesheetImputationSelect" hidden="true"/>
         <field name="fromDate"
           onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5"/>
-        <field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5"/>
+        <field name="toDate" readonlyIf="isCompleted"
+          onChange="action-timesheet-group-to-date-onchange" colSpan="5"/>
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
