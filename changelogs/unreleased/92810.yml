@@ -1,0 +1,3 @@
+---
+title: "Supplier catalog: fixed wrong fetched information for product without catalog."
+module: axelor-purchase
