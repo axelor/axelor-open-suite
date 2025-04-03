@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
@@ -28,15 +27,10 @@ import java.util.Comparator;
 
 public class PaymentConditionToolService {
 
-  public static LocalDate getMaxDueDate(
-      PaymentCondition paymentCondition, LocalDate defaultDate, LocalDate dueDate) {
+  public static LocalDate getMaxDueDate(PaymentCondition paymentCondition, LocalDate defaultDate) {
     if (paymentCondition == null
         || ObjectUtils.isEmpty(paymentCondition.getPaymentConditionLineList())) {
       return defaultDate;
-    }
-
-    if (paymentCondition.getIsFree() && dueDate != null) {
-      return dueDate;
     }
 
     return getDueDate(
@@ -108,9 +102,5 @@ public class PaymentConditionToolService {
       default:
         return date;
     }
-  }
-
-  public static boolean isFreePaymentCondition(Invoice invoice) {
-    return invoice.getPaymentCondition() != null && invoice.getPaymentCondition().getIsFree();
   }
 }
