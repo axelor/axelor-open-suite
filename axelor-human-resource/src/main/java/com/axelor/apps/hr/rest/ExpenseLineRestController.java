@@ -40,6 +40,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDate;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -74,6 +75,9 @@ public class ExpenseLineRestController {
     String expenseLineType = requestBody.getExpenseLineType();
     Boolean toInvoice = requestBody.getToInvoice();
     ProjectTask projectTask = requestBody.fetchProjectTask();
+    List<Employee> employeeList =
+        expenseLineCreateService.getEmployeeList(
+            requestBody.fetchEmployeeList(), expenseLine, expenseDate);
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -88,7 +92,8 @@ public class ExpenseLineRestController {
               employee,
               requestBody.fetchCurrency(),
               toInvoice,
-              projectTask);
+              projectTask,
+              employeeList);
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -144,7 +149,10 @@ public class ExpenseLineRestController {
     RequestValidator.validateBody(requestBody);
     ExpenseLine expenseLine =
         ObjectFinder.find(ExpenseLine.class, expenseLineId, requestBody.getVersion());
-
+    ExpenseLineCreateService expenseLineCreateService = Beans.get(ExpenseLineCreateService.class);
+    List<Employee> employeeList =
+        expenseLineCreateService.getEmployeeList(
+            requestBody.fetchEmployeeList(expenseLine), expenseLine, expenseLine.getExpenseDate());
     expenseLine =
         Beans.get(ExpenseLineUpdateService.class)
             .updateExpenseLine(
@@ -165,7 +173,8 @@ public class ExpenseLineRestController {
                 requestBody.fetchCurrency(),
                 requestBody.getToInvoice(),
                 requestBody.fetchExpense(),
-                requestBody.fetchProjectTask());
+                requestBody.fetchProjectTask(),
+                employeeList);
 
     return ResponseConstructor.build(
         Response.Status.OK,

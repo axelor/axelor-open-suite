@@ -30,6 +30,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -90,6 +91,15 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   private Boolean toInvoice;
 
   private Long projectTaskId;
+  private List<Long> employeeIdList;
+
+  public List<Long> getEmployeeIdList() {
+    return employeeIdList;
+  }
+
+  public void setEmployeeIdList(List<Long> employeeIdList) {
+    this.employeeIdList = employeeIdList;
+  }
 
   public Long getProjectId() {
     return projectId;
@@ -290,5 +300,12 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
+  }
+
+  public List<Long> fetchEmployeeList() {
+    if (employeeIdList == null || employeeIdList.isEmpty()) {
+      return null;
+    }
+    return employeeIdList;
   }
 }

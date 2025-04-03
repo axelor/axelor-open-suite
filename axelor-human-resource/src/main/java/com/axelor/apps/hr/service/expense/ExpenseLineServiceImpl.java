@@ -21,19 +21,23 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -175,5 +179,17 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList()))
         + ")";
+  }
+
+  @Override
+  public List<Employee> getEmployeeDomain(LocalDate expenseDate) {
+    return Beans.get(EmployeeRepository.class)
+        .all()
+        .filter(
+            "self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.leavingDate=null OR self.leavingDate >= :expenseDate) AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
+                + "AND self.mainEmploymentContract.payCompany IN :companySet")
+        .bind("expenseDate", expenseDate)
+        .bind("companySet", AuthUtils.getUser().getCompanySet())
+        .fetch();
   }
 }
