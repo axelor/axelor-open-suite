@@ -91,6 +91,11 @@
           <bind node="priority" to="priority"/>
           <bind node="priorityFormula" to="priorityFormula"/>
           <bind node="defPriorityAsFormula" to="defPriorityAsFormula"/>
+          <bind node="workCenterTypeSelect" to="workCenterTypeSelect"/>
+          <bind node="workCenterGroup" to="workCenterGroup"
+            search="self.id = :workCenterGroupId" if="workCenterGroupId">
+            <bind node="text()" to="id" alias="workCenterGroupId"/>
+          </bind>
           <bind node="workCenter" to="workCenter" search="self.id = :workCenterId"
             if="workCenterId">
             <bind node="text()" to="id" alias="workCenterId"/>
