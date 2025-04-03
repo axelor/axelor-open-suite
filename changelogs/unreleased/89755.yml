@@ -1,0 +1,3 @@
+---
+title: "PurchaseOrder/Invoice: fixed budget repartition on partial invoicing."
+module: axelor-budget
