@@ -32,8 +32,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -73,17 +71,6 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
   }
 
   @Override
-  public void checkAnalyticAxes(MoveLine moveLine) throws AxelorException {
-    if (moveLine.getAccount() != null) {
-      accountService.checkAnalyticAxis(
-          moveLine.getAccount(),
-          moveLine.getAnalyticDistributionTemplate(),
-          moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines(),
-          false);
-    }
-  }
-
-  @Override
   public void checkDebitCredit(MoveLine moveLine) throws AxelorException {
     if (moveLine.getCredit().signum() == 0 && moveLine.getDebit().signum() == 0) {
       throw new AxelorException(
@@ -103,20 +90,6 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       for (MoveLine moveline : move.getMoveLineList()) {
         moveLineToolService.checkDateInPeriod(move, moveline);
-      }
-    }
-  }
-
-  @Override
-  public void checkAnalyticAccount(List<MoveLine> moveLineList) throws AxelorException {
-    Objects.requireNonNull(moveLineList);
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine != null && moveLine.getAccount() != null) {
-        accountService.checkAnalyticAxis(
-            moveLine.getAccount(),
-            moveLine.getAnalyticDistributionTemplate(),
-            moveLine.getAccount().getAnalyticDistributionRequiredOnMoveLines(),
-            false);
       }
     }
   }
