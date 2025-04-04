@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -104,6 +105,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
   protected AccountManagementRepository accountManagementRepository;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -513,21 +515,15 @@ public class BankReconciliationMoveGenerationServiceImpl
             description);
     moveLine.setOriginDate(originDate);
 
-    if (account.getHasAutomaticApplicationAccountingDate()) {
+    if (account != null && account.getHasAutomaticApplicationAccountingDate()) {
       moveLineService.applyCutOffDates(moveLine, move, date, date);
       moveLine.setIsCutOffGenerated(true);
     }
-    if (account.getAnalyticDistributionRequiredOnMoveLines()) {
-      if (account.getAnalyticDistributionTemplate() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(
-                BankPaymentExceptionMessage
-                    .BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE),
-            account.getCode());
-      }
-      moveLine.setAnalyticDistributionTemplate(account.getAnalyticDistributionTemplate());
+
+    if (moveLine.getAnalyticDistributionTemplate() != null) {
+      moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
     }
+
     move.addMoveLineListItem(moveLine);
     return moveLine;
   }
