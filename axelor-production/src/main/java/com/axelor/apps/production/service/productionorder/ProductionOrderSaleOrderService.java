@@ -22,14 +22,20 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import java.util.List;
+import java.util.Set;
 
 public interface ProductionOrderSaleOrderService {
 
-  List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+  Set<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
   ProductionOrder generateManufOrders(ProductionOrder productionOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
   ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
+
+  boolean productionOrderForSaleOrderExists(SaleOrder saleOrder);
+
+  void checkGeneratedProductionOrders(SaleOrder saleOrder) throws AxelorException;
+
+  int getNumberOfMoOrPo(SaleOrder saleOrder);
 }
