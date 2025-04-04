@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed an issue in the BIRT report where a partner or company partner had multiple accounting situations for different companies."
+module: axelor-account
