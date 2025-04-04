@@ -3,6 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
 
+  <input file="base_role.csv" separator=";" type="com.axelor.auth.db.Role"
+    search="self.name = :name"/>
+
   <input file="base_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
