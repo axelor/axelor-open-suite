@@ -47,4 +47,8 @@
     <option value="1" color="blue">Standard</option>
   </selection>
 
+  <selection name="purchase.call.tender.need.type.select">
+    <option value="1">Manual</option>
+  </selection>
+
 </object-views>
