@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed issue where account was conditionally set instead of using only configuration."
-module: axelor-budget
