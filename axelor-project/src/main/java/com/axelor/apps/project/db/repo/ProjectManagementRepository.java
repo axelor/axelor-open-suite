@@ -56,7 +56,7 @@ public class ProjectManagementRepository extends ProjectRepository {
   }
 
   protected void setProjectFullName(Project project) throws AxelorException {
-    Context scriptContext = new Context(Mapper.toMap(project), project.getClass());
+    Context scriptContext = new Context(Mapper.toMap(project), Project.class);
     GroovyScriptHelper groovyScriptHelper = new GroovyScriptHelper(scriptContext);
 
     String fullNameGroovyFormula = appProjectService.getAppProject().getFullNameGroovyFormula();
