@@ -26,7 +26,6 @@ import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
@@ -178,7 +177,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
-      throws AxelorException {
+      throws AxelorException, MalformedURLException, JSONException {
 
     List<PackLine> packLineList = pack.getComponents();
     if (ObjectUtils.isEmpty(packLineList)) {
@@ -195,14 +194,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     BigDecimal conversionRate = BigDecimal.valueOf(1.00);
     if (pack.getCurrency() != null
         && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
-      try {
-        conversionRate =
-            Beans.get(CurrencyConversionFactory.class)
-                .getCurrencyConversionService()
-                .convert(pack.getCurrency(), saleOrder.getCurrency());
-      } catch (MalformedURLException | JSONException | AxelorException e) {
-        TraceBackService.trace(e);
-      }
+      conversionRate =
+          Beans.get(CurrencyConversionFactory.class)
+              .getCurrencyConversionService()
+              .convert(pack.getCurrency(), saleOrder.getCurrency());
     }
 
     if (Boolean.FALSE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
@@ -236,14 +231,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     if (soLines != null && !soLines.isEmpty()) {
-      try {
-        saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
-        saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
-        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-      }
-
+      saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
+      saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       saleOrderRepo.save(saleOrder);
     }
     return saleOrder;

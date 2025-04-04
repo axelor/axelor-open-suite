@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed missing error message on pack products."
+module: axelor-sale
