@@ -1,2 +1,2 @@
-title: "Timesheet: Fixed the visibility of the toDate field."
+title: "Timesheet: prevent 'To date' edition on completed timesheets."
 module: axelor-human-resource
