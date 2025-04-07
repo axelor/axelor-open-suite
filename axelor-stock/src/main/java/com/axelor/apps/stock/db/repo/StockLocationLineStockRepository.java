@@ -19,10 +19,13 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class StockLocationLineStockRepository extends StockLocationLineRepository {
@@ -46,5 +49,15 @@ public class StockLocationLineStockRepository extends StockLocationLineRepositor
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+    json.put(
+        "$nbDecimalDigitForUnitPrice",
+        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+
+    return super.populate(json, context);
   }
 }
