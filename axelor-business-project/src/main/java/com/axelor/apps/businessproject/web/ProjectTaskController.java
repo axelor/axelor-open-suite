@@ -35,11 +35,13 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -247,5 +249,15 @@ public class ProjectTaskController {
 
     response.setValues(
         Beans.get(ProjectTaskGroupBusinessService.class).updateFinancialDatas(projectTask));
+  }
+
+  public void computePlannedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Long projectTaskId = request.getContext().asType(ProjectTask.class).getId();
+    ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(projectTaskId);
+    EntityHelper.getEntity(request.getContext().asType(ProjectTask.class));
+    BigDecimal plannedTime =
+        Beans.get(ProjectTaskBusinessProjectService.class).computePlannedTime(projectTask);
+    response.setValue("plannedTime", plannedTime);
   }
 }
