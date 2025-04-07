@@ -114,7 +114,7 @@
     <action name="action-group-sale-saleorder-onnew"/>
     <action name="action-sale-order-record-payment-mode"/>
     <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
+      if="tradingName?.shippingDefaultStockLocation == null &amp;&amp; stockLocation == null"/>
     <action name="action-sale-order-attrs-interco"/>
     <action name="action-sale-order-record-interco"/>
     <action name="supplychain-action-create-shipment-cost-line"/>
