@@ -43,7 +43,9 @@
           action="save,action-partner-view-wizard-api-sirene-configuration"/>
         <item name="generateProjectItem" title="Generate Project"
           action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1"
-          if-module="axelor-project" if="__config__.app.isApp('project')" hideIf="isContact"/>
+          if-module="axelor-project"
+          if="__config__.app.isApp('project') &amp;&amp; __config__.app.isApp('business-project')"
+          hideIf="isContact"/>
         <item title="Customer recovery" name="customerRecoveryItem"
           action="action-partner-view-show-customer-debt-recovery"
           if="__config__.app.isApp('account')" showIf="isCustomer"/>
