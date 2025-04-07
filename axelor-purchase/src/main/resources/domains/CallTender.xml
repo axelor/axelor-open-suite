@@ -15,6 +15,8 @@
       ref="com.axelor.apps.purchase.db.CallTenderSupplier" title="Suppliers"/>
     <one-to-many name="callTenderOfferList"
       ref="com.axelor.apps.purchase.db.CallTenderOffer" title="Offers"/>
+    <many-to-one name="callForTenderMailTemplate" title="Call for tender mail template"
+      ref="com.axelor.message.db.Template"/>
 
 
     <track on="UPDATE">

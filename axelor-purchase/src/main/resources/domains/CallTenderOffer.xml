@@ -26,6 +26,8 @@
     <decimal name="proposedPrice" title="Proposed price" precision="20" scale="10" min="0"/>
     <string name="offerComment" title="Comment"/>
     <integer name="statusSelect" selection="purchase.call.tender.offer.status.select"/>
+    <many-to-one name="offerMail" ref="com.axelor.apps.purchase.db.CallTenderMail"/>
+
 
     <extra-code>
       <![CDATA[
