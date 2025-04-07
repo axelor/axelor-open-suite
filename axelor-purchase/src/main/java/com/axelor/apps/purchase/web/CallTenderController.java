@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.purchase.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.service.CallTenderService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,6 +36,17 @@ public class CallTenderController {
     if (callTender != null) {
       Beans.get(CallTenderService.class).generateCallTenderOffers(callTender);
       response.setReload(true);
+    }
+  }
+
+  public void sendCallTenderOffers(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    var callTender = request.getContext().asType(CallTender.class);
+
+    if (callTender != null) {
+      Beans.get(CallTenderService.class).sendCallTenderOffers(callTender);
+      response.setInfo(I18n.get("Mails sent !"));
     }
   }
 }
