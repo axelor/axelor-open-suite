@@ -213,6 +213,7 @@
             onChange="action-project-task-group-unit-price-onchange"
             readonlyIf="saleOrderLine || frameworkCustomerContract"/>
           <field name="unitCost" colSpan="3"
+            onChange="action-project-task-group-unit-price-onchange"
             readonlyIf="saleOrderLine || frameworkSupplierContract"/>
           <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
             form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"
