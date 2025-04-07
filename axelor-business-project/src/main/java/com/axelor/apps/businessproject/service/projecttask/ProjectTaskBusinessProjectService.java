@@ -83,4 +83,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   boolean isTimeUnitValid(Unit unit) throws AxelorException;
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
+
+  @Transactional
+  BigDecimal computePlannedTime(ProjectTask projectTask) throws AxelorException;
 }
