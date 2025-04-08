@@ -51,7 +51,10 @@ public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateCompute
     }
 
     LocalDate invoiceDate = appBaseService.getTodayDate(invoice.getCompany());
-    if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
+    if (PaymentConditionToolService.isFreePaymentCondition(invoice)
+        && invoice.getDueDate() != null) {
+      invoiceDate = invoice.getDueDate();
+    } else if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
       invoiceDate = invoice.getOriginDate();
     } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
       invoiceDate = invoice.getInvoiceDate();
