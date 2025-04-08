@@ -26,6 +26,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.io.IOException;
+import javax.mail.MessagingException;
 
 public class CallTenderController {
 
@@ -40,7 +42,7 @@ public class CallTenderController {
   }
 
   public void sendCallTenderOffers(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+      throws AxelorException, IOException, MessagingException, ClassNotFoundException {
 
     var callTender = request.getContext().asType(CallTender.class);
 
