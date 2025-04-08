@@ -21,18 +21,22 @@ package com.axelor.apps.production.service.productionorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
 
@@ -59,36 +63,107 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class})
-  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public String generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
+
+    checkGeneratedProductionOrders(saleOrder);
 
     boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
 
-    List<Long> productionOrderIdList = new ArrayList<>();
-    if (saleOrder.getSaleOrderLineList() == null) {
-      return productionOrderIdList;
+    List<SaleOrderLine> saleOrderLineList =
+        saleOrder.getSaleOrderLineList().stream()
+            .filter(line -> CollectionUtils.isEmpty(line.getManufOrderList()))
+            .collect(Collectors.toList());
+
+    if (oneProdOrderPerSO) {
+      ProductionOrder productionOrderBeforeGeneration =
+          productionOrderRepo
+              .all()
+              .filter("self.saleOrder = :saleOrder")
+              .bind("saleOrder", saleOrder)
+              .fetchOne();
+      int nbOfMoBeforeCreation = getNumberOfMo(saleOrder);
+      generateOnePoPerSaleOrder(saleOrder, saleOrderLineList);
+      int nbOfMoAfterCreation = getNumberOfMo(saleOrder);
+
+      if (productionOrderBeforeGeneration != null
+          && (nbOfMoAfterCreation - nbOfMoBeforeCreation != 0)) {
+        return I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ADDED_TO_EXISTENT_PO);
+      } else if (productionOrderBeforeGeneration != null) {
+        return I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ALREADY_GENERATED);
+      }
+    } else {
+      generateOnePoPerSol(saleOrder, saleOrderLineList);
+      return I18n.get(ProductionExceptionMessage.SALE_ORDER_NEW_PO_GENERATED);
     }
 
-    ProductionOrder productionOrder = null;
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    return null;
+  }
 
-      if (productionOrder == null || !oneProdOrderPerSO) {
-        productionOrder = this.createProductionOrder(saleOrder);
-      }
-
-      productionOrder = this.generateManufOrders(productionOrder, saleOrderLine);
-
-      if (productionOrder != null && !productionOrderIdList.contains(productionOrder.getId())) {
-        productionOrderIdList.add(productionOrder.getId());
-      }
+  protected void generateOnePoPerSaleOrder(
+      SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException {
+    ProductionOrder productionOrder = this.fetchOrCreateProductionOrder(saleOrder);
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      generateManufOrders(productionOrder, saleOrderLine);
     }
+  }
 
-    return productionOrderIdList;
+  protected void generateOnePoPerSol(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList)
+      throws AxelorException {
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      ProductionOrder productionOrder = this.fetchOrCreateProductionOrder(saleOrder);
+      generateManufOrders(productionOrder, saleOrderLine);
+    }
   }
 
   @Override
-  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException {
+    boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
+    ProductionOrder productionOrder =
+        productionOrderRepo
+            .all()
+            .filter("self.saleOrder = :saleOrder")
+            .bind("saleOrder", saleOrder)
+            .fetchOne();
+    if (productionOrder != null && oneProdOrderPerSO) {
+      return productionOrder;
+    }
 
     return productionOrderService.createProductionOrder(saleOrder, null);
+  }
+
+  @Override
+  public List<ProductionOrder> getLinkedProductionOrders(SaleOrder saleOrder) {
+    return productionOrderRepo
+        .all()
+        .filter("self.saleOrder = :saleOrder")
+        .bind("saleOrder", saleOrder)
+        .fetch();
+  }
+
+  protected void checkGeneratedProductionOrders(SaleOrder saleOrder) throws AxelorException {
+    boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (!oneProdOrderPerSO
+        && saleOrderLineList.stream()
+            .allMatch(line -> CollectionUtils.isNotEmpty(line.getManufOrderList()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.SALE_ORDER_EVERY_PO_ALREADY_GENERATED));
+    }
+  }
+
+  protected int getNumberOfMo(SaleOrder saleOrder) {
+    ProductionOrder productionOrder =
+        productionOrderRepo
+            .all()
+            .filter("self.saleOrder = :saleOrder")
+            .bind("saleOrder", saleOrder)
+            .fetchOne();
+    if (productionOrder != null) {
+      return productionOrder.getManufOrderSet().size();
+    }
+
+    return 0;
   }
 
   @Override

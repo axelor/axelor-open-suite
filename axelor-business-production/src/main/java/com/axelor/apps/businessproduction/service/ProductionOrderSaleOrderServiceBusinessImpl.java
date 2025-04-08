@@ -48,9 +48,9 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
   }
 
   @Override
-  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
-    ProductionOrder productionOrder = super.createProductionOrder(saleOrder);
+    ProductionOrder productionOrder = super.fetchOrCreateProductionOrder(saleOrder);
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()) {
