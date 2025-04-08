@@ -14,7 +14,8 @@
     <panel name="headerPanel" showTitle="false">
       <field name="name" colSpan="6"/>
       <field name="description" colSpan="6"/>
-      <field name="callForTenderMailTemplate" colSpan="6"/>
+      <field name="callForTenderMailTemplate" colSpan="6"
+        domain="self.metaModel.name='CallTenderOffer'"/>
     </panel>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="generateCallTenderBtn" title="Generate call for tenders"
@@ -39,7 +40,8 @@
 
 
   <action-method name="action-call-tender-method-send-call-tender-offers">
-    <call class="com.axelor.apps.purchase.web.CallTenderController" method="sendCallTendersBtn"/>
+    <call class="com.axelor.apps.purchase.web.CallTenderController"
+      method="sendCallTenderOffers"/>
   </action-method>
 
 </object-views>
