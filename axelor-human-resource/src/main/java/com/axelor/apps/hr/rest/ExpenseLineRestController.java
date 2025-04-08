@@ -152,7 +152,7 @@ public class ExpenseLineRestController {
     ExpenseLineCreateService expenseLineCreateService = Beans.get(ExpenseLineCreateService.class);
     List<Employee> employeeList =
         expenseLineCreateService.getEmployeeList(
-            requestBody.fetchEmployeeList(expenseLine), expenseLine, expenseLine.getExpenseDate());
+            requestBody.fetchEmployeeList(), expenseLine, expenseLine.getExpenseDate());
     expenseLine =
         Beans.get(ExpenseLineUpdateService.class)
             .updateExpenseLine(

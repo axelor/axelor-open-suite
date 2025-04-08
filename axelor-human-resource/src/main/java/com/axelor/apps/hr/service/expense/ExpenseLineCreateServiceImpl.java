@@ -245,7 +245,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   @Override
   public List<Employee> getEmployeeList(
       List<Long> employeeIdList, ExpenseLine expenseLine, LocalDate expenseDate) {
-    if (CollectionUtils.isEmpty(employeeIdList)) {
+    if (employeeIdList==null) {
       return null;
     }
     return expenseLineService.getEmployeeDomain(expenseDate).stream()

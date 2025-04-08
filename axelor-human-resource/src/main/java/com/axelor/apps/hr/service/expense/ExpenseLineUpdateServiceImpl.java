@@ -287,13 +287,15 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
 
     if (expenseLine.getExpenseProduct() != null
-        && expenseLine.getExpenseProduct().getDeductLunchVoucher()
-        && !CollectionUtils.isEmpty(employeeList)) {
-      Set<Employee> employeeSet = new HashSet<>(employeeList);
-      expenseLine.setInvitedCollaboratorSet(employeeSet);
+        && expenseLine.getExpenseProduct().getDeductLunchVoucher())
+    { if( employeeList!=null)
+      { Set<Employee> employeeSet = new HashSet<>(employeeList);
+      expenseLine.setInvitedCollaboratorSet(employeeSet);}
+    expenseLine.setIsAloneMeal(CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
+    }
+    else {
       expenseLine.setIsAloneMeal(false);
     }
-
     if (projectTask != null) {
       expenseLine.setProjectTask(projectTask);
     }

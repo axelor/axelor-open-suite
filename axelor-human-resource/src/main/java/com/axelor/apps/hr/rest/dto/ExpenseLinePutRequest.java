@@ -301,8 +301,8 @@ public class ExpenseLinePutRequest extends RequestStructure {
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
   }
 
-  public List<Long> fetchEmployeeList(ExpenseLine expenseLine) {
-    if (employeeIdList == null || employeeIdList.isEmpty()) {
+  public List<Long> fetchEmployeeList() {
+    if (employeeIdList == null) {
       return null;
     }
     return employeeIdList;
