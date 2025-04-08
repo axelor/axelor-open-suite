@@ -50,11 +50,11 @@ public class SaleOrderLineDetailsController {
     Context context = request.getContext();
     SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
     SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService =
-            Beans.get(SaleOrderLineDetailsPriceService.class);
+        Beans.get(SaleOrderLineDetailsPriceService.class);
     SaleOrder saleOrder = getSaleOrder(context);
     Map<String, Object> values = new HashMap<>();
     values.putAll(
-            saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
+        saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
     values.putAll(saleOrderLineDetailsPriceService.computeMarginCoef(saleOrderLineDetails));
     response.setValues(values);
   }
