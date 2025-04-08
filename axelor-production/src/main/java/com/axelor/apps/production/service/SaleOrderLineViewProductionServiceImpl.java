@@ -113,7 +113,7 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
   }
 
   @Override
-  public Map<String, Map<String, Object>> getOnLoadAttrs(
+  public Map<String, Map<String, Object>> getProductionOnLoadAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = hideBomAndProdProcess(saleOrderLine);
     MapTools.addMap(attrs, hideQtyProduced(saleOrderLine, saleOrder));
@@ -123,20 +123,22 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
   protected Map<String, Map<String, Object>> hideQtyProduced(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    ManufOrder manufOrder =
-        manufOrderRepository
-            .all()
-            .filter("self.product.id=:productId and :saleOrderLineId =self.saleOrderLine.id")
-            .bind("saleOrderLineId", saleOrderLine.getId())
-            .bind("productId", saleOrderLine.getProduct().getId())
-            .fetchOne();
-    boolean hideQtyProduced = true;
-    if (saleOrder != null) {
-      hideQtyProduced =
-          saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED
-              || manufOrder == null;
+    ManufOrder manufOrder = null;
+    if (saleOrderLine.getProduct() != null) {
+      manufOrder =
+          manufOrderRepository
+              .all()
+              .filter("self.product.id=:productId and self.saleOrderLine.id=:saleOrderLineId")
+              .bind("saleOrderLineId", saleOrderLine.getId())
+              .bind("productId", saleOrderLine.getProduct().getId())
+              .fetchOne();
     }
-    attrs.put("qtyProducedPanel", Map.of(HIDDEN_ATTR, hideQtyProduced));
+    attrs.put(
+        "qtyProducedPanel",
+        Map.of(
+            HIDDEN_ATTR,
+            saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED
+                || manufOrder == null));
     return attrs;
   }
 }

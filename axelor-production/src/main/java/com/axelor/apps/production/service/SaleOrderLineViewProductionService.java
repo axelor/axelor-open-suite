@@ -25,5 +25,6 @@ import java.util.Map;
 public interface SaleOrderLineViewProductionService {
   Map<String, Map<String, Object>> hideBomAndProdProcess(SaleOrderLine saleOrderLine);
 
-  Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+  Map<String, Map<String, Object>> getProductionOnLoadAttrs(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 }
