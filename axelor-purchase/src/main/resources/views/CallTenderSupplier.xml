@@ -6,7 +6,7 @@
   <grid name="call-tender-supplier-grid" title="Supplier partners"
     model="com.axelor.apps.purchase.db.CallTenderNeed">
     <field name="supplierPartner"/>
-    <field name="contactPartnerList" widget="TagSelect"/>
+    <field name="contactPartnerSet" widget="TagSelect"/>
   </grid>
 
   <form name="call-tender-supplier-form" model="com.axelor.apps.purchase.db.CallTenderSupplier"
