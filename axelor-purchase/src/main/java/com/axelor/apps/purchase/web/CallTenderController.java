@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.purchase.db.CallTender;
+import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.service.CallTenderService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -29,10 +30,10 @@ public class CallTenderController {
   public void generateCallTenderOffers(ActionRequest request, ActionResponse response) {
 
     var callTender = request.getContext().asType(CallTender.class);
-
+    callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
     if (callTender != null) {
       Beans.get(CallTenderService.class).generateCallTenderOffers(callTender);
-      response.setValue("callTenderOfferList", callTender.getCallTenderOfferList());
+      response.setReload(true);
     }
   }
 }
