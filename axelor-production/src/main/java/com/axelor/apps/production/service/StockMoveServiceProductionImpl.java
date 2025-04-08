@@ -182,7 +182,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
     List<StockMoveLine> stockMoveLineList = manufOrder.getProducedStockMoveLineList();
     BigDecimal qtyProduced = BigDecimal.ZERO;
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      if (product!=null && product.equals(stockMoveLine.getProduct())
+      if (product != null
+          && product.equals(stockMoveLine.getProduct())
           && stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_REALIZED)
         qtyProduced = qtyProduced.add(stockMoveLine.getQty());
     }
