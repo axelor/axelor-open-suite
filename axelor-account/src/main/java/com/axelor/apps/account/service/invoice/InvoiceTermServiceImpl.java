@@ -1714,7 +1714,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
     if (InvoiceToolService.isPurchase(invoice)) {
-      if (invoice.getOriginDate() != null) {
+      if (PaymentConditionToolService.isFreePaymentCondition(invoice)
+          && invoice.getDueDate() != null) {
+        invoice = setDueDates(invoice, invoice.getDueDate());
+      } else if (invoice.getOriginDate() != null) {
         invoice = setDueDates(invoice, invoice.getOriginDate());
       } else {
         invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
