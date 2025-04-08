@@ -50,11 +50,13 @@ public class ProjectPlanningTimeComputeNameServiceImpl
         fullName += "-" + project.getCode();
       }
 
-      String dateStr = startDateTime.format(dateService.getDateFormat());
-      if (!fullName.isEmpty()) {
-        fullName += "-" + dateStr;
-      } else {
-        fullName = dateStr;
+      if (startDateTime != null) {
+        String dateStr = startDateTime.format(dateService.getDateFormat());
+        if (!fullName.isEmpty()) {
+          fullName += "-" + dateStr;
+        } else {
+          fullName = dateStr;
+        }
       }
     } catch (Exception e) {
       Logger logger = LoggerFactory.getLogger(getClass());
