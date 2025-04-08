@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
