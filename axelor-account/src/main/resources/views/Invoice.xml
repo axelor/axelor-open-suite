@@ -1674,7 +1674,7 @@
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-set-default-mail"/>
     <action name="action-invoice-method-fill-price-list"
-      if="eval: invoiceLineList?.isEmpty()"/>
+      if="invoiceLineList == null || invoiceLineList.isEmpty()"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
