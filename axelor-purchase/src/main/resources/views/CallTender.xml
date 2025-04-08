@@ -17,7 +17,7 @@
     </panel>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="generateCallTenderBtn" title="Generate call for tenders"
-        onClick="action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
+        onClick="save,action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
     </panel>
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"

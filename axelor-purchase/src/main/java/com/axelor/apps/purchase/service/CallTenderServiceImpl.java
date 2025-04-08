@@ -2,6 +2,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.purchase.db.CallTender;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ public class CallTenderServiceImpl implements CallTenderService {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void generateCallTenderOffers(CallTender callTender) {
     Objects.requireNonNull(callTender);
 
