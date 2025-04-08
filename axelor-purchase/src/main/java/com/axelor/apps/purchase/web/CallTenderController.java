@@ -46,9 +46,10 @@ public class CallTenderController {
 
     var callTender = request.getContext().asType(CallTender.class);
 
+    callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
     if (callTender != null) {
       Beans.get(CallTenderGenerateService.class).sendCallTenderOffers(callTender);
-      response.setInfo(I18n.get("Mails sent !"));
+      response.setInfo(I18n.get("Mails successfully planned for sending."));
     }
   }
 }
