@@ -52,7 +52,8 @@ public class ProjectTaskController {
     ProjectTask projectTask =
         EntityHelper.getEntity(request.getContext().asType(ProjectTask.class));
     if (projectTask.getActiveSprint() == null) {
-      Beans.get(ProjectTaskPPTGenerateService.class).createUpdatePlanningTimeWithoutSprint(projectTask);
+      Beans.get(ProjectTaskPPTGenerateService.class)
+          .createUpdatePlanningTimeWithoutSprint(projectTask);
     } else {
       Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
     }

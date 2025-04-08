@@ -11,6 +11,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,8 +19,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.google.inject.persist.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerateService {
@@ -42,7 +41,8 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
     BigDecimal oldBudgetedTime = projectPlanningTimeCreateService.getOldBudgetedTime(projectTask);
 
     Set<ProjectPlanningTime> projectPlanningTimeSet =
-        getProjectPlanningTimeOnOldDuration(projectTask, projectTask.getTaskDate(), oldBudgetedTime);
+        getProjectPlanningTimeOnOldDuration(
+            projectTask, projectTask.getTaskDate(), oldBudgetedTime);
 
     if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
       if (ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
@@ -56,6 +56,7 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
       return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_ON_DURATION);
     }
   }
+
   @Override
   @Transactional
   public void createUpdatePlanningTimeWithoutSprint(ProjectTask projectTask)

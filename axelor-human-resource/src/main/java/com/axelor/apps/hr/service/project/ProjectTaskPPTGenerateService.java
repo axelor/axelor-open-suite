@@ -9,6 +9,5 @@ public interface ProjectTaskPPTGenerateService {
   String getSprintOnChangeWarningWithoutSprint(ProjectTask projectTask);
 
   @Transactional
-  void createUpdatePlanningTimeWithoutSprint(ProjectTask projectTask)
-      throws AxelorException;
+  void createUpdatePlanningTimeWithoutSprint(ProjectTask projectTask) throws AxelorException;
 }
