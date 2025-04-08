@@ -80,7 +80,7 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
               .filter(line -> line.getSaleOrder().equals(saleOrder))
               .collect(Collectors.toList());
       ProductionOrder productionOrder =
-          productionOrderSaleOrderService.createProductionOrder(saleOrder);
+          productionOrderSaleOrderService.fetchOrCreateProductionOrder(saleOrder);
       for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
         productionOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
       }
@@ -94,7 +94,7 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       SaleOrder saleOrder = saleOrderLine.getSaleOrder();
       ProductionOrder productionOrder =
-          productionOrderSaleOrderService.createProductionOrder(saleOrder);
+          productionOrderSaleOrderService.fetchOrCreateProductionOrder(saleOrder);
       productionOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
       productionOrderList.add(productionOrder);
     }

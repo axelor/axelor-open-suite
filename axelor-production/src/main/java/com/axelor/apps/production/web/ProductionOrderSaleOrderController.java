@@ -22,10 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -33,7 +33,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ProductionOrderSaleOrderController {
@@ -49,16 +50,12 @@ public class ProductionOrderSaleOrderController {
       ProductionOrderSaleOrderService productionOrderSaleOrderService =
           Beans.get(ProductionOrderSaleOrderService.class);
 
-      productionOrderSaleOrderService.checkGeneratedProductionOrders(saleOrder);
+      String infoMessage = productionOrderSaleOrderService.generateProductionOrder(saleOrder);
 
-      boolean oneProdOrderPerSO =
-          Beans.get(AppProductionService.class).getAppProduction().getOneProdOrderPerSO();
-      boolean productionOrderExists =
-          productionOrderSaleOrderService.productionOrderForSaleOrderExists(saleOrder);
-      int nbOfMoOrPoBeforeCreation = productionOrderSaleOrderService.getNumberOfMoOrPo(saleOrder);
-      Set<Long> productionOrderIds =
-          productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-      int nbOfMoOrPoAfterCreation = productionOrderSaleOrderService.getNumberOfMoOrPo(saleOrder);
+      List<Long> productionOrderIds =
+          productionOrderSaleOrderService.getLinkedProductionOrders(saleOrder).stream()
+              .map(ProductionOrder::getId)
+              .collect(Collectors.toList());
 
       if (productionOrderIds != null && productionOrderIds.size() == 1) {
         response.setView(
@@ -72,14 +69,6 @@ public class ProductionOrderSaleOrderController {
                     "_showRecord",
                     String.valueOf(productionOrderIds.stream().findFirst().orElse(0L)))
                 .map());
-        if (oneProdOrderPerSO) {
-          if (productionOrderExists && (nbOfMoOrPoAfterCreation - nbOfMoOrPoBeforeCreation != 0)) {
-            response.setInfo(
-                I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ADDED_TO_EXISTENT_PO));
-          } else if (productionOrderExists) {
-            response.setInfo(I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ALREADY_GENERATED));
-          }
-        }
       } else if (productionOrderIds != null && productionOrderIds.size() > 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))
@@ -89,11 +78,12 @@ public class ProductionOrderSaleOrderController {
                 .param("search-filters", "production-order-filters")
                 .domain("self.id in (" + Joiner.on(",").join(productionOrderIds) + ")")
                 .map());
-        if (nbOfMoOrPoAfterCreation - nbOfMoOrPoBeforeCreation != 0) {
-          response.setInfo(I18n.get(ProductionExceptionMessage.SALE_ORDER_NEW_PO_GENERATED));
-        }
       } else {
         response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
+      }
+
+      if (StringUtils.notEmpty(infoMessage)) {
+        response.setInfo(infoMessage);
       }
 
     } catch (Exception e) {
