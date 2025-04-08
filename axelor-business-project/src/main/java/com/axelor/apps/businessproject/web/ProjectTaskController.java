@@ -248,4 +248,14 @@ public class ProjectTaskController {
     response.setValues(
         Beans.get(ProjectTaskGroupBusinessService.class).updateFinancialDatas(projectTask));
   }
+
+
+  @ErrorException
+  public void computeSpentTime(ActionRequest request, ActionResponse response)
+          throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    response.setValue("spentTime",
+            Beans.get(ProjectTaskBusinessProjectService.class).computeProjectTaskSpentTime(projectTask));
+  }
+
 }

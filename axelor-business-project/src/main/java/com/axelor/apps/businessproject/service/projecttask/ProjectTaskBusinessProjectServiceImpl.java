@@ -744,4 +744,32 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
     return value;
   }
+@Transactional(rollbackOn = {Exception.class})
+@Override
+  public BigDecimal computeProjectTaskSpentTime(ProjectTask projectTask) throws AxelorException {
+    BigDecimal spentTime = BigDecimal.ZERO;
+    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
+    List<TimesheetLine> timeSheetLines =
+            timesheetLineRepository
+                    .all()
+                    .filter("self.timesheet.statusSelect = :status AND self.projectTask = :projectTask")
+                    .bind("status", TimesheetRepository.STATUS_VALIDATED)
+                    .bind("projectTask", projectTask)
+                    .fetch();
+
+    for (TimesheetLine timeSheetLine : timeSheetLines) {
+      spentTime =
+              spentTime.add(convertTimesheetLineDurationToProjectTaskUnit(timeSheetLine, timeUnit));
+    }
+
+    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
+    for (ProjectTask task : projectTaskList) {
+      computeProjectTaskSpentTime(task);
+      spentTime = spentTime.add(task.getSpentTime());
+    }
+
+    projectTask.setSpentTime(spentTime);
+    projectTaskRepo.save(projectTask);
+    return spentTime;
+  }
 }
