@@ -38,7 +38,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
@@ -287,9 +289,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (expenseLine.getExpenseProduct() != null
         && expenseLine.getExpenseProduct().getDeductLunchVoucher()
         && !CollectionUtils.isEmpty(employeeList)) {
-      for (Employee e : employeeList) {
-        expenseLine.addInvitedCollaboratorSetItem(e);
-      }
+      Set<Employee> employeeSet = new HashSet<>(employeeList);
+      expenseLine.setInvitedCollaboratorSet(employeeSet);
       expenseLine.setIsAloneMeal(false);
     }
 

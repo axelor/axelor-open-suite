@@ -44,7 +44,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -105,9 +107,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
         createBasicExpenseLine(
             project, employee, expenseDate, comments, currency, toInvoice, projectTask);
     if (expenseProduct.getDeductLunchVoucher() && !CollectionUtils.isEmpty(employeeList)) {
-      for (Employee e : employeeList) {
-        expenseLine.addInvitedCollaboratorSetItem(e);
-      }
+      Set<Employee> employeeSet = new HashSet<>(employeeList);
+      expenseLine.setInvitedCollaboratorSet(employeeSet);
     }
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
