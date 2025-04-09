@@ -744,25 +744,4 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
     return value;
   }
-
-  @Transactional
-  @Override
-  public BigDecimal computePlannedTime(ProjectTask projectTask) {
-
-    BigDecimal plannedTime = BigDecimal.ZERO;
-    plannedTime =
-        projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedTime)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
-    if (!CollectionUtils.isEmpty(projectTaskList)) {
-      for (ProjectTask task : projectTaskList) {
-        computePlannedTime(task);
-        plannedTime = plannedTime.add(task.getPlannedTime());
-      }
-    }
-    projectTask.setPlannedTime(plannedTime);
-    projectTaskRepo.save(projectTask);
-    return plannedTime;
-  }
 }
