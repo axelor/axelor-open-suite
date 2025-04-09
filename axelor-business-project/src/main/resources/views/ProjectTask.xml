@@ -118,8 +118,8 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-        onLoad="action-business-project-project-task-group-on-load,action-hr-project-method-compute-spent-time"
-        width="large">
+    onLoad="action-business-project-project-task-group-on-load,action-hr-project-method-compute-spent-time"
+    width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -469,10 +469,10 @@
   </tree>
 
   <form name="project-task-form" id="business-project-task-form" extension="true" title="Task"
-        model="com.axelor.apps.project.db.ProjectTask" width="large">
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
     <extend target="/">
       <attribute name="onLoad"
-                 value="action-project-task-group-timer-process,action-hr-project-method-compute-spent-time"/>
+        value="action-project-task-group-timer-process,action-hr-project-method-compute-spent-time"/>
     </extend>
   </form>
 
@@ -711,6 +711,6 @@
 
   <action-method name="action-hr-project-method-compute-spent-time">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-          method="computeSpentTime"/>
+      method="computeSpentTime"/>
   </action-method>
 </object-views>

@@ -84,6 +84,6 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
 
-    @Transactional(rollbackOn = {Exception.class})
-    BigDecimal computeProjectTaskSpentTime(ProjectTask projectTask) throws AxelorException;
+  @Transactional(rollbackOn = {Exception.class})
+  BigDecimal computeProjectTaskSpentTime(ProjectTask projectTask) throws AxelorException;
 }
