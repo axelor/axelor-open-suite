@@ -670,7 +670,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty) {
 
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
@@ -688,7 +687,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         stockMoveLine.setRealQty(BigDecimal.ZERO);
         stockMoveLine.setTotalNetMass(BigDecimal.ZERO);
       }
-      stockMoveLineRepository.save(stockMoveLine);
     } else {
       super.fillRealQuantities(stockMoveLine, stockMove, qty);
     }
