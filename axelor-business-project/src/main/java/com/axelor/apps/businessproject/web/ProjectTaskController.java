@@ -250,14 +250,4 @@ public class ProjectTaskController {
     response.setValues(
         Beans.get(ProjectTaskGroupBusinessService.class).updateFinancialDatas(projectTask));
   }
-
-  public void computePlannedTime(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Long projectTaskId = request.getContext().asType(ProjectTask.class).getId();
-    ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(projectTaskId);
-    EntityHelper.getEntity(request.getContext().asType(ProjectTask.class));
-    BigDecimal plannedTime =
-        Beans.get(ProjectTaskBusinessProjectService.class).computePlannedTime(projectTask);
-    response.setValue("plannedTime", plannedTime);
-  }
 }
