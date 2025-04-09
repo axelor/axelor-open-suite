@@ -1838,10 +1838,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty) {
     if (stockMoveLine != null) {
       stockMoveLine.setRealQty(qty);
       stockMoveLine.setTotalNetMass(qty.multiply(stockMoveLine.getNetMass()));
+      stockMoveLineRepository.save(stockMoveLine);
     }
   }
 

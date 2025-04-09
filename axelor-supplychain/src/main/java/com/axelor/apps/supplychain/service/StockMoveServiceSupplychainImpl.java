@@ -731,17 +731,16 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void fillRealQuantities(StockMove stockMove) {
     Objects.requireNonNull(stockMove);
-
-    if (stockMove.getStockMoveLineList() != null) {
-      stockMove
-          .getStockMoveLineList()
-          .forEach(
-              sml -> {
-                sml.setRealQty(sml.getQty());
-                sml.setTotalNetMass(sml.getQty().multiply(sml.getNetMass()));
-              });
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (stockMoveLineList != null) {
+      for (StockMoveLine sml : stockMoveLineList) {
+        sml.setRealQty(sml.getQty());
+        sml.setTotalNetMass(sml.getQty().multiply(sml.getNetMass()));
+        stockMoveLineRepo.save(sml);
+      }
     }
   }
 }
