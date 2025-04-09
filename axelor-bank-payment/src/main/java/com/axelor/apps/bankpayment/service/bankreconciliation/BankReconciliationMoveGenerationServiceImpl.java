@@ -125,7 +125,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       MoveLineService moveLineService,
       CurrencyScaleService currencyScaleService,
       MoveLineToolService moveLineToolService,
-      AccountManagementRepository accountManagementRepository) {
+      AccountManagementRepository accountManagementRepository,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -143,6 +144,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
     this.accountManagementRepository = accountManagementRepository;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
   @Override
@@ -518,6 +520,17 @@ public class BankReconciliationMoveGenerationServiceImpl
     if (account != null && account.getHasAutomaticApplicationAccountingDate()) {
       moveLineService.applyCutOffDates(moveLine, move, date, date);
       moveLine.setIsCutOffGenerated(true);
+    }
+
+    if (moveLine.getAccount().getAnalyticDistributionAuthorized()) {
+      if (bankReconciliationLine.getAnalyticDistributionTemplate() != null) {
+        moveLine.setAnalyticDistributionTemplate(
+            bankReconciliationLine.getAnalyticDistributionTemplate());
+      } else if (bankStatementRule != null
+          && bankStatementRule.getAnalyticDistributionTemplate() != null) {
+        moveLine.setAnalyticDistributionTemplate(
+            bankStatementRule.getAnalyticDistributionTemplate());
+      }
     }
 
     if (moveLine.getAnalyticDistributionTemplate() != null) {

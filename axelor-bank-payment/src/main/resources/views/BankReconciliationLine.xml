@@ -131,12 +131,13 @@
       <panel name="accountingPanel" title="Accounting details">
         <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
         <field name="account" canEdit="false"
-          onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
-          grid-view="account-grid"/>
+          onSelect="action-bank-reconciliation-line-method-account-domain"
+          onChange="action-bank-reconciliation-line-record-set-analytic-template"
+          form-view="account-form" grid-view="account-grid"/>
         <field name="partner" canEdit="false"
           onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
-          onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form"
-          grid-view="partner-grid"/>
+          onChange="action-bank-reconciliation-line-group-partner-on-change"
+          form-view="partner-form" grid-view="partner-grid"/>
       </panel>
       <panel name="associatedMoveLinePanel" title="Associated MoveLine">
         <field name="moveLine" canEdit="false"
@@ -147,6 +148,7 @@
       <panel name="analyticPanel" title="Analytic">
         <field name="analyticDistributionTemplate"
           requiredIf="account.analyticDistributionRequiredOnMoveLines"/>
+        <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
       </panel>
     </panel-tabs>
   </form>
@@ -210,5 +212,16 @@
   <action-method name="action-bank-reconciliation-line-method-move-line-domain">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
       method="setMoveLineDomain"/>
+  </action-method>
+
+  <action-group name="action-bank-reconciliation-line-group-partner-on-change">
+    <action name="action-bank-reconciliation-line-record-set-account"/>
+    <action name="action-bank-reconciliation-line-record-set-analytic-template"/>
+  </action-group>
+
+  <action-method name="action-bank-reconciliation-line-record-set-analytic-template"
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="setAnalyticDistributionTemplate"/>
   </action-method>
 </object-views>

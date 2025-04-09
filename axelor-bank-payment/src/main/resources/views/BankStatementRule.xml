@@ -19,61 +19,60 @@
   <form name="bank-statement-rule-form" title="Bank statement rule"
     model="com.axelor.apps.bankpayment.db.BankStatementRule"
     onLoad="action-bank-statement-rule-attrs-partner-fetch-selection">
-    <panel-tabs>
-      <panel name="accountManagementPanel"
-        title="BankDetails/Payment Mode/Interbank code configuration">
-        <field name="accountManagement"
-          onChange="action-bank-statement-rule-group-onchange-account-management"
-          domain="self.typeSelect = 3" form-view="account-management-form"
-          grid-view="account-management-bank-statement-rule-grid"/>
-        <field name="accountManagement.bankDetails" form-view="bank-details-form"
-          grid-view="bank-details-grid"/>
-        <label colSpan="12" showIf="ruleTypeSelect == 3"
-          title="For the rules of type 'Move line's fetching', the 'Payment account management' record selected is only used to select the right bank account and company on which the rule applies and doesn't take into account the payment mode."/>
-        <field name="accountManagement.journal" grid-view="journal-grid"
-          form-view="journal-form" hideIf="partnerFetchMethodSelect == 3"/>
-        <field name="accountManagement.interbankCodeLine" colspan="3"
-          hideIf="partnerFetchMethodSelect == 3" form-view="interbank-code-line-form"
-          grid-view="interbank-code-line-grid"/>
-        <field name="accountManagement.interbankCodeLine.code" colspan="3"
-          hideIf="partnerFetchMethodSelect == 3"/>
-        <field name="accountManagement.company" hidden="true"/>
-      </panel>
-      <panel name="bankStatementMainPanel" title="Search and accounting rule Config."
-        readonlyIf="!accountManagement">
-        <field name="ruleTypeSelect" readonlyIf="!accountManagement"
-          requiredIf="ruleTypeSelect == 0"
-          onChange="action-bank-statement-rule-group-rule-type-select-onchange"/>
-        <field name="partnerFetchMethodSelect"/>
-        <field name="partner" domain="self.partnerTypeSelect = 1"
-          requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleTypeSelect == 0 &amp;&amp; partnerFetchMethoSelect == 1"
-          form-view="partner-form" grid-view="partner-grid" showIf="partnerFetchMethodSelect == 1"
-          hidden="true"/>
-        <field name="partnerBankStatementQuery" requiredIf="partnerFetchMethodSelect == 2"
-          showIf="partnerFetchMethodSelect == 2" hidden="true" domain="self.ruleTypeSelect = 2"/>
-        <field name="bankStatementQuery" domain="self.ruleTypeSelect = :ruleTypeSelect"
-          form-view="bank-statement-query-form" grid-view="bank-statement-query-grid"
-          hideIf="partnerFetchMethodSelect == 3"/>
-        <field name="counterpartAccount" hideIf="partnerFetchMethodSelect == 3"
-          onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"
-          onChange="action-bank-statement-rule-record-counterpart-account-on-change"/>
-        <field name="searchLabel" hideIf="partnerFetchMethodSelect == 3"/>
-        <field name="letterToInvoice" readonlyIf="partnerFetchMethodSelect == 3"/>
-        <field name="specificTax"/>
-        <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
-          showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
-      </panel>
-      <panel name="customizedLabelsPanel" title="Generated entry customized labels">
-        <field name="entryOriginComputation" widget="code-editor" x-code-syntax="groovy"
-          height="80" x-code-theme="groovy" colSpan="12"/>
-        <field name="entryDescriptionComputation" widget="code-editor" x-code-syntax="groovy"
-          height="150" x-code-theme="groovy" colSpan="12"/>
-      </panel>
-      <panel name="analyticPanel" title="Analytic">
-        <field name="analyticDistributionTemplate" showIf="counterpartAccount"
-          requiredIf="counterpartAccount.analyticDistributionRequiredOnMoveLines"/>
-      </panel>
-    </panel-tabs>
+    <panel name="accountManagementPanel"
+      title="BankDetails/Payment Mode/Interbank code configuration">
+      <field name="accountManagement"
+        onChange="action-bank-statement-rule-group-onchange-account-management"
+        domain="self.typeSelect = 3" form-view="account-management-form"
+        grid-view="account-management-bank-statement-rule-grid"/>
+      <field name="accountManagement.bankDetails" form-view="bank-details-form"
+        grid-view="bank-details-grid"/>
+      <label colSpan="12" showIf="ruleTypeSelect == 3"
+        title="For the rules of type 'Move line's fetching', the 'Payment account management' record selected is only used to select the right bank account and company on which the rule applies and doesn't take into account the payment mode."/>
+      <field name="accountManagement.journal" grid-view="journal-grid"
+        form-view="journal-form" hideIf="partnerFetchMethodSelect == 3"/>
+      <field name="accountManagement.interbankCodeLine" colspan="3"
+        hideIf="partnerFetchMethodSelect == 3" form-view="interbank-code-line-form"
+        grid-view="interbank-code-line-grid"/>
+      <field name="accountManagement.interbankCodeLine.code" colspan="3"
+        hideIf="partnerFetchMethodSelect == 3"/>
+      <field name="accountManagement.company" hidden="true"/>
+    </panel>
+    <panel name="bankStatementMainPanel" title="Search and accounting rule Config."
+      readonlyIf="!accountManagement">
+      <field name="ruleTypeSelect" readonlyIf="!accountManagement"
+        requiredIf="ruleTypeSelect == 0"
+        onChange="action-bank-statement-rule-group-rule-type-select-onchange"/>
+      <field name="partnerFetchMethodSelect"/>
+      <field name="partner" domain="self.partnerTypeSelect = 1"
+        requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleTypeSelect == 0 &amp;&amp; partnerFetchMethoSelect == 1"
+        form-view="partner-form" grid-view="partner-grid" showIf="partnerFetchMethodSelect == 1"
+        hidden="true"/>
+      <field name="partnerBankStatementQuery" requiredIf="partnerFetchMethodSelect == 2"
+        showIf="partnerFetchMethodSelect == 2" hidden="true" domain="self.ruleTypeSelect = 2"/>
+      <field name="bankStatementQuery" domain="self.ruleTypeSelect = :ruleTypeSelect"
+        form-view="bank-statement-query-form" grid-view="bank-statement-query-grid"
+        hideIf="partnerFetchMethodSelect == 3"/>
+      <field name="counterpartAccount" hideIf="partnerFetchMethodSelect == 3"
+        onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"
+        onChange="action-bank-statement-rule-record-counterpart-account-on-change"/>
+      <field name="searchLabel" hideIf="partnerFetchMethodSelect == 3"/>
+      <field name="letterToInvoice" readonlyIf="partnerFetchMethodSelect == 3"/>
+      <field name="specificTax"/>
+      <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
+        showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
+    </panel>
+    <panel name="customizedLabelsPanel" title="Generated entry customized labels">
+      <field name="entryOriginComputation" widget="code-editor" x-code-syntax="groovy"
+        height="80" x-code-theme="groovy" colSpan="12"/>
+      <field name="entryDescriptionComputation" widget="code-editor" x-code-syntax="groovy"
+        height="150" x-code-theme="groovy" colSpan="12"/>
+    </panel>
+    <panel name="analyticPanel" title="Analytic" showIf="counterpartAccount">
+      <field name="analyticDistributionTemplate"
+        requiredIf="counterpartAccount.analyticDistributionRequiredOnMoveLines"/>
+      <field name="counterpartAccount.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+    </panel>
   </form>
 
   <action-group name="action-bank-statement-rule-group-rule-type-select-onchange">

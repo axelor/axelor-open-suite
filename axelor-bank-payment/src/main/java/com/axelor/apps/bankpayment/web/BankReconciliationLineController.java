@@ -18,13 +18,17 @@
  */
 package com.axelor.apps.bankpayment.web;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -115,5 +119,26 @@ public class BankReconciliationLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void setAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    BankReconciliationLine bankReconciliationLine =
+        request.getContext().asType(BankReconciliationLine.class);
+    BankReconciliation bankReconciliation =
+        request.getContext().getParent().asType(BankReconciliation.class);
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        Beans.get(AnalyticMoveLineService.class)
+            .getAnalyticDistributionTemplate(
+                bankReconciliationLine.getPartner(),
+                null,
+                bankReconciliation.getCompany(),
+                null,
+                bankReconciliationLine.getAccount(),
+                false);
+
+    response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
   }
 }
