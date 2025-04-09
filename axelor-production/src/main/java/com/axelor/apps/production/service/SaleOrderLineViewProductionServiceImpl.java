@@ -26,9 +26,13 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.utils.MapTools;
+import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -40,6 +44,7 @@ import java.util.Optional;
 
 public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSupplychainServiceImpl
     implements SaleOrderLineViewProductionService {
+  protected ManufOrderRepository manufOrderRepository;
 
   @Inject
   public SaleOrderLineViewProductionServiceImpl(
@@ -50,7 +55,8 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
       AnalyticAttrsSupplychainService analyticAttrsSupplychainService,
       AppSupplychainService appSupplychainService,
       AccountConfigRepository accountConfigRepository,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      ManufOrderRepository manufOrderRepository) {
     super(
         appBaseService,
         appSaleService,
@@ -60,6 +66,7 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
         appSupplychainService,
         accountConfigRepository,
         appAccountService);
+    this.manufOrderRepository = manufOrderRepository;
   }
 
   @Override
@@ -102,6 +109,36 @@ public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSup
     attrs.put(
         "qtyToProduce",
         Map.of(HIDDEN_ATTR, saleSupplySelect != SaleOrderLineRepository.SALE_SUPPLY_PRODUCE));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getProductionOnLoadAttrs(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = hideBomAndProdProcess(saleOrderLine);
+    MapTools.addMap(attrs, hideQtyProduced(saleOrderLine, saleOrder));
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> hideQtyProduced(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    ManufOrder manufOrder = null;
+    if (saleOrderLine.getProduct() != null) {
+      manufOrder =
+          manufOrderRepository
+              .all()
+              .filter("self.product.id=:productId and self.saleOrderLine.id=:saleOrderLineId")
+              .bind("saleOrderLineId", saleOrderLine.getId())
+              .bind("productId", saleOrderLine.getProduct().getId())
+              .fetchOne();
+    }
+    attrs.put(
+        "qtyProducedPanel",
+        Map.of(
+            HIDDEN_ATTR,
+            saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED
+                || manufOrder == null));
     return attrs;
   }
 }

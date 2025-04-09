@@ -20,7 +20,7 @@
     <one-to-many name="saleOrderLineDetailsList" title="Sale order line details list"
       ref="com.axelor.apps.production.db.SaleOrderLineDetails" mappedBy="saleOrderLine"/>
     <decimal name="qtyToProduce" title="Quantity to produce" readonly="true"/>
-
+    <decimal name="qtyProduced" title="Quantity produced" readonly="true"/>
     <boolean name="isToProduce" transient="true">
       <![CDATA[
 		return (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;

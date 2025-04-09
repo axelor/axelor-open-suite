@@ -46,6 +46,11 @@
           <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true"
             colSpan="12"/>
         </panel>
+        <panel name="qtyProducedPanel" colSpan="4" if="__config__.app.isApp('production')"
+          hidden="true">
+          <field name="qtyProduced" x-scale="$nbDecimalDigitForQty" readonly="true"
+            colSpan="12"/>
+        </panel>
       </insert>
     </extend>
   </form>
