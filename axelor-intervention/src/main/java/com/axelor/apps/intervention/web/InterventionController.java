@@ -285,7 +285,7 @@ public class InterventionController {
 
       String strFilter =
           Beans.get(PartnerLinkService.class)
-              .computePartnerFilter(client, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+              .computePartnerFilter(client, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
