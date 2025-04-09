@@ -38,6 +38,7 @@ public interface TimesheetLineCreateBusinessService {
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       String comments,
       boolean toInvoice,
       ManufOrder manufOrder,
