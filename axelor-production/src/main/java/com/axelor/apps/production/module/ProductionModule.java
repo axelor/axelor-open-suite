@@ -282,7 +282,6 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDummySuppl
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeService;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeServiceImpl;
 
 public class ProductionModule extends AxelorModule {
