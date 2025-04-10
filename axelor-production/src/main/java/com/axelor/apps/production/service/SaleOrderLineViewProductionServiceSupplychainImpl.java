@@ -48,7 +48,7 @@ public class SaleOrderLineViewProductionServiceSupplychainImpl
         appSaleService,
         productMultipleQtyService,
         analyticAttrsService,
-            saleOrderLineViewSupplychainService);
+        saleOrderLineViewSupplychainService);
     this.saleOrderLineViewProductionService = saleOrderLineViewProductionService;
   }
 
