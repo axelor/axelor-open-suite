@@ -118,7 +118,7 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-    onLoad="action-business-project-project-task-group-on-load,action-hr-project-method-compute-spent-time"
+    onLoad="action-business-project-project-task-group-on-load,action-hr-project-method-compute-spent-time,save"
     width="large">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
@@ -472,7 +472,7 @@
     model="com.axelor.apps.project.db.ProjectTask" width="large">
     <extend target="/">
       <attribute name="onLoad"
-        value="action-project-task-group-timer-process,action-hr-project-method-compute-spent-time"/>
+        value="action-project-task-group-timer-process,action-hr-project-method-compute-spent-time,save"/>
     </extend>
   </form>
 

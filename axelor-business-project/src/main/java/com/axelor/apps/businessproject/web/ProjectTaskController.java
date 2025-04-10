@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectComputeService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupBusinessService;
 import com.axelor.apps.project.db.ProjectTask;
@@ -255,8 +254,9 @@ public class ProjectTaskController {
       throws AxelorException {
     Long projectTaskId = request.getContext().asType(ProjectTask.class).getId();
     ProjectTask projectTask = Beans.get(ProjectTaskRepository.class).find(projectTaskId);
-
-    Beans.get(ProjectTaskBusinessProjectService.class)
-        .computeProjectTaskSpentTime(projectTask);
+    response.setValue(
+        "spentTime",
+        Beans.get(ProjectTaskBusinessProjectService.class)
+            .computeProjectTaskSpentTime(projectTask));
   }
 }
