@@ -1,2 +1,4 @@
-title: "Sale Order: Added logic to conditionally remove the cost line."
+title: "Sale Order: do not remove shipment cost line if the line is already invoiced."
 module: axelor-supplychain
+developer: |
+  Added `InvoiceRepository` to the constructor of `SaleOrderShipmentServiceImpl`.
