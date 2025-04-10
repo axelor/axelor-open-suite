@@ -1,3 +1,3 @@
 ---
-title: "Business project task: fixed changes when modifying quantity."
+title: "Business project task: fixed an issue where modifying quantity was resetting unit price."
 module: axelor-business-project
