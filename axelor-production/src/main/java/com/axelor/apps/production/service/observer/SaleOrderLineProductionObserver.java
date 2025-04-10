@@ -21,7 +21,7 @@ package com.axelor.apps.production.service.observer;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductionOnLoadService;
-import com.axelor.apps.production.service.SaleOrderLineProductionViewService;
+import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.event.SaleOrderLineProductOnChange;
@@ -36,7 +36,7 @@ public class SaleOrderLineProductionObserver {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineProductionViewService.class).hideBomAndProdProcess(saleOrderLine));
+        Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
   }
 
   void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {

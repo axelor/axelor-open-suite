@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SaleOrderLineSupplychainViewServiceImpl
-    implements SaleOrderLineSupplychainViewService {
+public class SaleOrderLineViewSupplychainServiceImpl
+    implements SaleOrderLineViewSupplychainService {
 
   AppSupplychainService appSupplychainService;
   AppAccountService appAccountService;
@@ -30,7 +30,7 @@ public class SaleOrderLineSupplychainViewServiceImpl
   AnalyticAttrsSupplychainService analyticAttrsSupplychainService;
 
   @Inject
-  public SaleOrderLineSupplychainViewServiceImpl(
+  public SaleOrderLineViewSupplychainServiceImpl(
       AppSupplychainService appSupplychainService,
       AppAccountService appAccountService,
       AccountConfigRepository accountConfigRepository,

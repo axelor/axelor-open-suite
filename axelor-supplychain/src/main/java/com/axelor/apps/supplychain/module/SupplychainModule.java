@@ -308,8 +308,8 @@ import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSuppl
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewService;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewServiceImpl;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewService;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
@@ -469,8 +469,8 @@ public class SupplychainModule extends AxelorModule {
     bind(StockLocationLineFetchServiceImpl.class)
         .to(StockLocationLineFetchServiceSupplychainImpl.class);
     bind(SaleOrderFinalizeServiceImpl.class).to(SaleOrderFinalizeSupplychainServiceImpl.class);
-    bind(SaleOrderLineSupplychainViewService.class)
-        .to(SaleOrderLineSupplychainViewServiceImpl.class);
+    bind(SaleOrderLineViewSupplychainService.class)
+        .to(SaleOrderLineViewSupplychainServiceImpl.class);
     bind(SaleOrderLineViewServiceImpl.class).to(SaleOrderLineViewServiceSupplychainImpl.class);
     bind(SaleOrderLineDomainSupplychainService.class)
         .to(SaleOrderLineDomainSupplychainServiceImpl.class);

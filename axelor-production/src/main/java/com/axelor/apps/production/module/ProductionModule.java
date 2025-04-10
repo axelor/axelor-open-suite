@@ -132,8 +132,8 @@ import com.axelor.apps.production.service.SaleOrderLineProductionOnLoadService;
 import com.axelor.apps.production.service.SaleOrderLineProductionOnLoadServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductionServiceImpl;
-import com.axelor.apps.production.service.SaleOrderLineProductionViewService;
-import com.axelor.apps.production.service.SaleOrderLineProductionViewServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
+import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceSupplychainImpl;
 import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.SaleOrderProductionSyncServiceImpl;
@@ -396,7 +396,7 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderCreateBarcodeService.class).to(OperationOrderCreateBarcodeServiceImpl.class);
     bind(SaleOrderLineDomainProductionService.class)
         .to(SaleOrderLineDomainProductionServiceImpl.class);
-    bind(SaleOrderLineProductionViewService.class).to(SaleOrderLineProductionViewServiceImpl.class);
+    bind(SaleOrderLineViewProductionService.class).to(SaleOrderLineViewProductionServiceImpl.class);
     bind(SaleOrderLineProductionOnLoadService.class)
         .to(SaleOrderLineProductionOnLoadServiceImpl.class);
     bind(SaleOrderLineProductionObserver.class);

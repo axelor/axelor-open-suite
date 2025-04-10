@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SaleOrderLineProductionViewServiceImpl implements SaleOrderLineProductionViewService {
+public class SaleOrderLineViewProductionServiceImpl implements SaleOrderLineViewProductionService {
 
   @Override
   public Map<String, Map<String, Object>> hideBomAndProdProcess(SaleOrderLine saleOrderLine) {

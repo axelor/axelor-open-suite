@@ -31,7 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ import java.util.Optional;
 public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewServiceImpl {
 
   protected AnalyticAttrsService analyticAttrsService;
-  protected SaleOrderLineSupplychainViewService saleOrderLineSupplychainViewService;
+  protected SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService;
 
   @Inject
   public SaleOrderLineViewServiceSupplychainImpl(
@@ -49,10 +49,10 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
       AppSaleService appSaleService,
       ProductMultipleQtyService productMultipleQtyService,
       AnalyticAttrsService analyticAttrsService,
-      SaleOrderLineSupplychainViewService saleOrderLineSupplychainViewService) {
+      SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService) {
     super(appBaseService, appSaleService, productMultipleQtyService);
     this.analyticAttrsService = analyticAttrsService;
-    this.saleOrderLineSupplychainViewService = saleOrderLineSupplychainViewService;
+    this.saleOrderLineViewSupplychainService = saleOrderLineViewSupplychainService;
   }
 
   @Override
@@ -64,7 +64,7 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
     MapTools.addMap(
         attrs,
-        saleOrderLineSupplychainViewService.setAnalyticDistributionPanelHidden(
+        saleOrderLineViewSupplychainService.setAnalyticDistributionPanelHidden(
             saleOrder, saleOrderLine));
     return attrs;
   }

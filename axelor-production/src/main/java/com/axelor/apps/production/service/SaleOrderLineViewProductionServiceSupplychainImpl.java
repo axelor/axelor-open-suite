@@ -26,14 +26,14 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import com.google.inject.Inject;
 import java.util.Map;
 
 public class SaleOrderLineViewProductionServiceSupplychainImpl
     extends SaleOrderLineViewServiceSupplychainImpl {
 
-  protected SaleOrderLineProductionViewService saleOrderLineProductionViewService;
+  protected SaleOrderLineViewProductionService saleOrderLineViewProductionService;
 
   @Inject
   public SaleOrderLineViewProductionServiceSupplychainImpl(
@@ -41,15 +41,15 @@ public class SaleOrderLineViewProductionServiceSupplychainImpl
       AppSaleService appSaleService,
       ProductMultipleQtyService productMultipleQtyService,
       AnalyticAttrsService analyticAttrsService,
-      SaleOrderLineSupplychainViewService saleOrderLineSupplychainViewService,
-      SaleOrderLineProductionViewService saleOrderLineProductionViewService) {
+      SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService,
+      SaleOrderLineViewProductionService saleOrderLineViewProductionService) {
     super(
         appBaseService,
         appSaleService,
         productMultipleQtyService,
         analyticAttrsService,
-        saleOrderLineSupplychainViewService);
-    this.saleOrderLineProductionViewService = saleOrderLineProductionViewService;
+            saleOrderLineViewSupplychainService);
+    this.saleOrderLineViewProductionService = saleOrderLineViewProductionService;
   }
 
   @Override
@@ -57,7 +57,7 @@ public class SaleOrderLineViewProductionServiceSupplychainImpl
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs =
         super.getProductOnChangeAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(saleOrderLineProductionViewService.hideBomAndProdProcess(saleOrderLine));
+    attrs.putAll(saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
     return attrs;
   }
 }

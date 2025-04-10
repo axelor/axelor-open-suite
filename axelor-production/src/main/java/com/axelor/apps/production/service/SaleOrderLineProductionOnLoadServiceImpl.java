@@ -15,14 +15,14 @@ import java.util.Map;
 public class SaleOrderLineProductionOnLoadServiceImpl
     implements SaleOrderLineProductionOnLoadService {
 
-  protected SaleOrderLineProductionViewService saleOrderLineProductionViewService;
+  protected SaleOrderLineViewProductionService saleOrderLineViewProductionService;
   protected ManufOrderRepository manufOrderRepository;
 
   @Inject
   public SaleOrderLineProductionOnLoadServiceImpl(
-      SaleOrderLineProductionViewService saleOrderLineProductionViewService,
+      SaleOrderLineViewProductionService saleOrderLineViewProductionService,
       ManufOrderRepository manufOrderRepository) {
-    this.saleOrderLineProductionViewService = saleOrderLineProductionViewService;
+    this.saleOrderLineViewProductionService = saleOrderLineViewProductionService;
     this.manufOrderRepository = manufOrderRepository;
   }
 
@@ -30,7 +30,7 @@ public class SaleOrderLineProductionOnLoadServiceImpl
   public Map<String, Map<String, Object>> getProductionOnLoadAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs =
-        saleOrderLineProductionViewService.hideBomAndProdProcess(saleOrderLine);
+        saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine);
     MapTools.addMap(attrs, hideQtyProduced(saleOrderLine, saleOrder));
     return attrs;
   }

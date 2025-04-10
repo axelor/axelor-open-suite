@@ -13,30 +13,30 @@ public class SaleOrderLineSupplychainOnNewServiceImpl
     implements SaleOrderLineSupplychainOnNewService {
 
   protected AnalyticAttrsService analyticAttrsService;
-  protected SaleOrderLineSupplychainViewService saleOrderLineSupplychainViewService;
+  protected SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService;
 
   @Inject
   public SaleOrderLineSupplychainOnNewServiceImpl(
       AnalyticAttrsService analyticAttrsService,
-      SaleOrderLineSupplychainViewService saleOrderLineSupplychainViewService) {
+      SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService) {
     this.analyticAttrsService = analyticAttrsService;
-    this.saleOrderLineSupplychainViewService = saleOrderLineSupplychainViewService;
+    this.saleOrderLineViewSupplychainService = saleOrderLineViewSupplychainService;
   }
 
   @Override
   public Map<String, Map<String, Object>> getSupplychainOnNewAttrs(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    MapTools.addMap(attrs, saleOrderLineSupplychainViewService.hideSupplychainPanels(saleOrder));
-    MapTools.addMap(attrs, saleOrderLineSupplychainViewService.hideDeliveredQty(saleOrder));
+    MapTools.addMap(attrs, saleOrderLineViewSupplychainService.hideSupplychainPanels(saleOrder));
+    MapTools.addMap(attrs, saleOrderLineViewSupplychainService.hideDeliveredQty(saleOrder));
     MapTools.addMap(
-        attrs, saleOrderLineSupplychainViewService.hideAllocatedQtyBtn(saleOrder, saleOrderLine));
+        attrs, saleOrderLineViewSupplychainService.hideAllocatedQtyBtn(saleOrder, saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
     MapTools.addMap(
         attrs,
-        saleOrderLineSupplychainViewService.setAnalyticDistributionPanelHidden(
+        saleOrderLineViewSupplychainService.setAnalyticDistributionPanelHidden(
             saleOrder, saleOrderLine));
-    MapTools.addMap(attrs, saleOrderLineSupplychainViewService.setReservedQtyReadonly(saleOrder));
+    MapTools.addMap(attrs, saleOrderLineViewSupplychainService.setReservedQtyReadonly(saleOrder));
     return attrs;
   }
 }

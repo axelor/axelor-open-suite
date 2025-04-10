@@ -5,7 +5,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.Map;
 
-public interface SaleOrderLineSupplychainViewService {
+public interface SaleOrderLineViewSupplychainService {
   Map<String, Map<String, Object>> hideSupplychainPanels(SaleOrder saleOrder);
 
   Map<String, Map<String, Object>> hideDeliveredQty(SaleOrder saleOrder);

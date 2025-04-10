@@ -40,7 +40,7 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSuppl
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDomainSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeService;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -438,7 +438,7 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
     response.setAttrs(
-        Beans.get(SaleOrderLineSupplychainViewService.class)
+        Beans.get(SaleOrderLineViewSupplychainService.class)
             .setDistributionLineReadonly(saleOrder));
   }
 }

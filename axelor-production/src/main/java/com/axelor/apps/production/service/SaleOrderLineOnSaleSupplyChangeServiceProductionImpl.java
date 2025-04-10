@@ -10,14 +10,14 @@ import java.util.Map;
 public class SaleOrderLineOnSaleSupplyChangeServiceProductionImpl
     extends SaleOrderLineOnSaleSupplyChangeServiceImpl {
 
-  protected SaleOrderLineProductionViewService saleOrderLineProductionViewService;
+  protected SaleOrderLineViewProductionService saleOrderLineViewProductionService;
 
   @Inject
   public SaleOrderLineOnSaleSupplyChangeServiceProductionImpl(
       SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService,
-      SaleOrderLineProductionViewService saleOrderLineProductionViewService) {
+      SaleOrderLineViewProductionService saleOrderLineViewProductionService) {
     super(saleOrderLineProductSupplychainService);
-    this.saleOrderLineProductionViewService = saleOrderLineProductionViewService;
+    this.saleOrderLineViewProductionService = saleOrderLineViewProductionService;
   }
 
   @Override
@@ -25,7 +25,7 @@ public class SaleOrderLineOnSaleSupplyChangeServiceProductionImpl
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs =
         super.onSaleSupplyChangeAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(saleOrderLineProductionViewService.hideBomAndProdProcess(saleOrderLine));
+    attrs.putAll(saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
     return attrs;
   }
 }
