@@ -467,7 +467,6 @@
     </node>
   </tree>
 
-
   <action-method name="action-project-task-method-update-to-invoice">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateToInvoice"/>
@@ -701,8 +700,4 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
-  <action-method name="action-hr-project-method-compute-planned-time">
-    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-      method="computePlannedTime"/>
-  </action-method>
 </object-views>
