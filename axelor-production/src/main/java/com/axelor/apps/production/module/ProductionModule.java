@@ -125,12 +125,16 @@ import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDummyProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineOnChangeProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineOnSaleSupplyChangeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineProductionOnLoadService;
+import com.axelor.apps.production.service.SaleOrderLineProductionOnLoadServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceSupplychainImpl;
 import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.SaleOrderProductionSyncServiceImpl;
 import com.axelor.apps.production.service.SolBomCustomizationService;
@@ -277,7 +281,8 @@ import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineCha
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDummySupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeServiceImpl;
 
 public class ProductionModule extends AxelorModule {
 
@@ -380,13 +385,17 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineProductProductionServiceImpl.class);
     bind(SaleOrderLineProductSupplychainServiceImpl.class)
         .to(SaleOrderLineProductProductionServiceImpl.class);
-    bind(SaleOrderLineViewSupplychainServiceImpl.class)
-        .to(SaleOrderLineViewProductionServiceImpl.class);
+    bind(SaleOrderLineViewServiceSupplychainImpl.class)
+        .to(SaleOrderLineViewProductionServiceSupplychainImpl.class);
+    bind(SaleOrderLineOnSaleSupplyChangeServiceImpl.class)
+        .to(SaleOrderLineOnSaleSupplyChangeServiceProductionImpl.class);
     bind(ManufOrderCreateBarcodeService.class).to(ManufOrderCreateBarcodeServiceImpl.class);
     bind(OperationOrderCreateBarcodeService.class).to(OperationOrderCreateBarcodeServiceImpl.class);
     bind(SaleOrderLineDomainProductionService.class)
         .to(SaleOrderLineDomainProductionServiceImpl.class);
     bind(SaleOrderLineViewProductionService.class).to(SaleOrderLineViewProductionServiceImpl.class);
+    bind(SaleOrderLineProductionOnLoadService.class)
+        .to(SaleOrderLineProductionOnLoadServiceImpl.class);
     bind(SaleOrderLineProductionObserver.class);
     bind(SaleOrderProductionObserver.class);
     bind(SaleOrderConfirmProductionService.class).to(SaleOrderConfirmProductionServiceImpl.class);
