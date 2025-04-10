@@ -36,18 +36,18 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSupplychainServiceImpl
+public class SaleOrderLineViewProductionServiceSupplychainImpl extends SaleOrderLineViewServiceSupplychainImpl
     implements SaleOrderLineViewProductionService {
   protected ManufOrderRepository manufOrderRepository;
 
   @Inject
-  public SaleOrderLineViewProductionServiceImpl(
+  public SaleOrderLineViewProductionServiceSupplychainImpl(
       AppBaseService appBaseService,
       AppSaleService appSaleService,
       ProductMultipleQtyService productMultipleQtyService,

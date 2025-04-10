@@ -40,7 +40,6 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSuppl
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDomainSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

@@ -301,8 +301,13 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSup
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
@@ -462,11 +467,13 @@ public class SupplychainModule extends AxelorModule {
     bind(StockLocationLineFetchServiceImpl.class)
         .to(StockLocationLineFetchServiceSupplychainImpl.class);
     bind(SaleOrderFinalizeServiceImpl.class).to(SaleOrderFinalizeSupplychainServiceImpl.class);
-    bind(SaleOrderLineViewSupplychainService.class)
-        .to(SaleOrderLineViewSupplychainServiceImpl.class);
-    bind(SaleOrderLineViewServiceImpl.class).to(SaleOrderLineViewSupplychainServiceImpl.class);
+    bind(SaleOrderLineSupplychainViewService.class)
+        .to(SaleOrderLineSupplychainViewServiceImpl.class);
+    bind(SaleOrderLineViewServiceImpl.class).to(SaleOrderLineViewServiceSupplychainImpl.class);
     bind(SaleOrderLineDomainSupplychainService.class)
         .to(SaleOrderLineDomainSupplychainServiceImpl.class);
+    bind(SaleOrderLineSupplychainOnLoadService.class).to(SaleOrderLineSupplychainOnLoadServiceImpl.class);
+    bind(SaleOrderLineSupplychainOnNewService.class).to(SaleOrderLineSupplychainOnNewServiceImpl.class);
     bind(SaleOrderTaxNumberService.class).to(SaleOrderTaxNumberServiceImpl.class);
     bind(SaleOrderCheckServiceImpl.class).to(SaleOrderCheckSupplychainServiceImpl.class);
     bind(SaleOrderLineSupplychainObserver.class);
