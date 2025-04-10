@@ -63,7 +63,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class})
-  public String generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public String generateProductionOrder(
+      SaleOrder saleOrder, List<SaleOrderLine> selectedSaleOrderLine) throws AxelorException {
 
     checkGeneratedProductionOrders(saleOrder);
 
@@ -73,6 +74,13 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         saleOrder.getSaleOrderLineList().stream()
             .filter(line -> CollectionUtils.isEmpty(line.getManufOrderList()))
             .collect(Collectors.toList());
+
+    if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)) {
+      saleOrderLineList =
+          selectedSaleOrderLine.stream()
+              .filter(line -> CollectionUtils.isEmpty(line.getManufOrderList()))
+              .collect(Collectors.toList());
+    }
 
     if (oneProdOrderPerSO) {
       ProductionOrder productionOrderBeforeGeneration =
