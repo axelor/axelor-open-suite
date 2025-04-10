@@ -130,7 +130,6 @@ import com.axelor.apps.budget.service.saleorderline.SaleOrderLineComputeBudgetSe
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
-import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
@@ -142,6 +141,7 @@ import com.axelor.apps.businessproject.service.WorkflowVentilationProjectService
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineComputeSupplychainServiceImpl;
@@ -205,7 +205,7 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLevelResetToolService.class).to(BudgetLevelResetToolServiceImpl.class);
     bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
-    bind(SaleOrderProjectRepository.class).to(SaleOrderBudgetRepository.class);
+    bind(SaleOrderSupplychainRepository.class).to(SaleOrderBudgetRepository.class);
     bind(ExpenseMoveReverseServiceImpl.class).to(MoveReverseServiceBudgetImpl.class);
     bind(ReconcileInvoiceTermComputationServiceImpl.class)
         .to(ReconcileInvoiceTermComputationBudgetServiceImpl.class);

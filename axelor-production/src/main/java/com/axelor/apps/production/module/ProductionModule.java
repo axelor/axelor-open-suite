@@ -102,6 +102,8 @@ import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderCopyProductionService;
+import com.axelor.apps.production.service.SaleOrderCopyProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
@@ -456,5 +458,6 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineMOGenerationSingleLineServiceImpl.class);
     bind(SaleOrderLineMOGenerationMultiLineService.class)
         .to(SaleOrderLineMOGenerationMultiLineServiceImpl.class);
+    bind(SaleOrderCopyProductionService.class).to(SaleOrderCopyProductionServiceImpl.class);
   }
 }
