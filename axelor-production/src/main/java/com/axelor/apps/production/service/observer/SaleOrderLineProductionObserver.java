@@ -43,7 +43,7 @@ public class SaleOrderLineProductionObserver {
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineViewProductionService.class)
-            .getProductionOnLoadAttrs(saleOrderLine, saleOrderLine.getSaleOrder()));
+            .getProductionOnLoadAttrs(saleOrderLine, event.getSaleOrder()));
   }
 
   void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)
