@@ -20,9 +20,8 @@ package com.axelor.apps.businessproject.service.projecttask;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.ProjectTask;
-import java.math.BigDecimal;
 
 public interface ProjectTaskBusinessProjectComputeService {
 
-  BigDecimal computePlannedTime(ProjectTask projectTask) throws AxelorException;
+  void computePlannedTime(ProjectTask projectTask) throws AxelorException;
 }

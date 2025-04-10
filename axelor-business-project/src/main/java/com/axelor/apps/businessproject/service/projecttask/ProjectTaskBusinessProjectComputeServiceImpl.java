@@ -18,22 +18,46 @@
  */
 package com.axelor.apps.businessproject.service.projecttask;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectComputeServiceImpl
     implements ProjectTaskBusinessProjectComputeService {
+  UnitConversionForProjectService unitConversionForProjectService;
+
+  @Inject
+  public ProjectTaskBusinessProjectComputeServiceImpl(
+      UnitConversionForProjectService unitConversionForProjectService) {
+    this.unitConversionForProjectService = unitConversionForProjectService;
+  }
+
   @Override
-  public BigDecimal computePlannedTime(ProjectTask projectTask) {
+  public void computePlannedTime(ProjectTask projectTask) throws AxelorException {
 
     BigDecimal plannedTime = BigDecimal.ZERO;
-    plannedTime =
-        projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedTime)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    Unit unitTime = projectTask.getTimeUnit();
+    Project project = projectTask.getProject();
+    List<ProjectPlanningTime> projectPlanningTimeList = projectTask.getProjectPlanningTimeList();
+    if (!CollectionUtils.isEmpty(projectPlanningTimeList)) {
+      for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeList) {
+        plannedTime =
+            plannedTime.add(
+                unitConversionForProjectService.convert(
+                    projectPlanningTime.getTimeUnit(),
+                    unitTime,
+                    projectPlanningTime.getPlannedTime(),
+                    projectTask.getPlannedTime().scale(),
+                    project));
+      }
+    }
     List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
     if (!CollectionUtils.isEmpty(projectTaskList)) {
       for (ProjectTask task : projectTaskList) {
@@ -41,7 +65,7 @@ public class ProjectTaskBusinessProjectComputeServiceImpl
         plannedTime = plannedTime.add(task.getPlannedTime());
       }
     }
+
     projectTask.setPlannedTime(plannedTime);
-    return plannedTime;
   }
 }

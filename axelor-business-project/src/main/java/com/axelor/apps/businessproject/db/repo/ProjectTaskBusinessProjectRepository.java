@@ -20,7 +20,6 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectComputeService;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
@@ -36,7 +35,7 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
   @Inject
   public ProjectTaskBusinessProjectRepository(
       ProjectTaskProgressUpdateService projectTaskProgressUpdateService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+      ProjectTaskBusinessProjectComputeService projectTaskBusinessProjectComputeService) {
     this.projectTaskProgressUpdateService = projectTaskProgressUpdateService;
     this.projectTaskBusinessProjectComputeService = projectTaskBusinessProjectComputeService;
   }
