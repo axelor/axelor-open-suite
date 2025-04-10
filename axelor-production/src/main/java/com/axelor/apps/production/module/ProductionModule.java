@@ -390,8 +390,6 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineViewProductionServiceSupplychainImpl.class);
     bind(SaleOrderLineOnSaleSupplyChangeServiceImpl.class)
         .to(SaleOrderLineOnSaleSupplyChangeServiceProductionImpl.class);
-    bind(SaleOrderLineOnSaleSupplyChangeService.class)
-        .to(SaleOrderLineOnSaleSupplyChangeServiceProductionImpl.class);
     bind(ManufOrderCreateBarcodeService.class).to(ManufOrderCreateBarcodeServiceImpl.class);
     bind(OperationOrderCreateBarcodeService.class).to(OperationOrderCreateBarcodeServiceImpl.class);
     bind(SaleOrderLineDomainProductionService.class)
