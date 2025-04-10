@@ -1,5 +1,8 @@
 package com.axelor.apps.supplychain.service.saleorderline.view;
 
+import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.HIDDEN_ATTR;
+import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.READONLY_ATTR;
+
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
@@ -14,13 +17,9 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppAccount;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.HIDDEN_ATTR;
-import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.READONLY_ATTR;
 
 public class SaleOrderLineSupplychainViewServiceImpl
     implements SaleOrderLineSupplychainViewService {
@@ -111,13 +110,6 @@ public class SaleOrderLineSupplychainViewServiceImpl
         Map.of(
             READONLY_ATTR,
             saleOrder.getStatusSelect() > SaleOrderRepository.STATUS_FINALIZED_QUOTATION));
-    return attrs;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getSaleSupplySelectOnChangeAttrs(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    Map<String, Map<String, Object>> attrs = new HashMap<>();
     return attrs;
   }
 

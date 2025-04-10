@@ -30,6 +30,7 @@ public interface SaleOrderLineViewService {
   String SCALE_ATTR = "scale";
   String SELECTION_IN_ATTR = "selection-in";
   String READONLY_ATTR = "readonly";
+
   Map<String, Map<String, Object>> getOnNewAttrs(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 

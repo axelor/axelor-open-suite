@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -33,10 +31,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainViewService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,10 +41,7 @@ import java.util.Optional;
 public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewServiceImpl {
 
   protected AnalyticAttrsService analyticAttrsService;
-  protected AnalyticAttrsSupplychainService analyticAttrsSupplychainService;
-  protected AppSupplychainService appSupplychainService;
-  protected AccountConfigRepository accountConfigRepository;
-  protected AppAccountService appAccountService;
+  protected SaleOrderLineSupplychainViewService saleOrderLineSupplychainViewService;
 
   @Inject
   public SaleOrderLineViewServiceSupplychainImpl(
@@ -56,19 +49,11 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
       AppSaleService appSaleService,
       ProductMultipleQtyService productMultipleQtyService,
       AnalyticAttrsService analyticAttrsService,
-      AnalyticAttrsSupplychainService analyticAttrsSupplychainService,
-      AppSupplychainService appSupplychainService,
-      AccountConfigRepository accountConfigRepository,
-      AppAccountService appAccountService) {
+      SaleOrderLineSupplychainViewService saleOrderLineSupplychainViewService) {
     super(appBaseService, appSaleService, productMultipleQtyService);
     this.analyticAttrsService = analyticAttrsService;
-    this.analyticAttrsSupplychainService = analyticAttrsSupplychainService;
-    this.appSupplychainService = appSupplychainService;
-    this.accountConfigRepository = accountConfigRepository;
-    this.appAccountService = appAccountService;
+    this.saleOrderLineSupplychainViewService = saleOrderLineSupplychainViewService;
   }
-
-
 
   @Override
   public Map<String, Map<String, Object>> getProductOnChangeAttrs(
@@ -77,7 +62,10 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
         super.getProductOnChangeAttrs(saleOrderLine, saleOrder);
     MapTools.addMap(attrs, hideDeliveryPanel(saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
-    MapTools.addMap(attrs, setAnalyticDistributionPanelHidden(saleOrder, saleOrderLine));
+    MapTools.addMap(
+        attrs,
+        saleOrderLineSupplychainViewService.setAnalyticDistributionPanelHidden(
+            saleOrder, saleOrderLine));
     return attrs;
   }
 

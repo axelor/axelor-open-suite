@@ -1,5 +1,7 @@
 package com.axelor.apps.supplychain.service.saleorderline.view;
 
+import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.HIDDEN_ATTR;
+
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -8,15 +10,10 @@ import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.HIDDEN_ATTR;
 
 public class SaleOrderLineSupplychainOnLoadServiceImpl
     implements SaleOrderLineSupplychainOnLoadService {
