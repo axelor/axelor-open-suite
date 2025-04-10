@@ -137,14 +137,17 @@ public class BankReconciliationController {
           Beans.get(BankReconciliationRepository.class);
       BankReconciliation bankReconciliation =
           bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
-      Currency currency = bankReconciliation.getBankDetails().getCurrency();
-      if (currency != null && !bankReconciliation.getCurrency().equals(currency)) {
+      Currency currency = null;
+      if (bankReconciliation.getBankDetails() != null) {
+        currency = bankReconciliation.getBankDetails().getCurrency();
+      }
+      if (currency != null && !currency.equals(bankReconciliation.getCurrency())) {
         throw new AxelorException(
             bankReconciliation,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
                 BankPaymentExceptionMessage
-                    .BANK_RECONCILIATION_BANK_DETILS_CURRENCY_NOT_COMPATIBLE));
+                    .BANK_RECONCILIATION_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
       }
       Company company = bankReconciliation.getCompany();
       if (company != null) {
