@@ -1134,7 +1134,7 @@
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date"/>
+          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-compute-invoice-terms-due-dates"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1296,7 +1296,7 @@
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-invoice-date-on-change"/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date"/>
+          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-compute-invoice-terms-due-dates"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
@@ -1697,7 +1697,7 @@
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-set-default-mail"/>
     <action name="action-invoice-method-fill-price-list"
-      if="eval: invoiceLineList?.isEmpty()"/>
+      if="invoiceLineList == null || invoiceLineList.isEmpty()"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
@@ -1836,6 +1836,7 @@
   <action-group name="action-invoice-group-validate-and-ventilate-onclick">
     <action name="action-invoice-group-before-validate"/>
     <action name="action-invoice-group-before-ventilate"/>
+    <action name="save"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
 

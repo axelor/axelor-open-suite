@@ -1,3 +1,0 @@
----
-title: "Fixed an user interface issue where it was allowed to create a new tax where the user should only be able to select one."
-module: axelor-account
