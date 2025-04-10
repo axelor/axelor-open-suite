@@ -95,7 +95,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   protected TimesheetLineRepository timesheetLineRepository;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected TaskTemplateService taskTemplateService;
-  protected ProjectTaskBusinessProjectComputeService projectTaskBusinessProjectComputeService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -113,8 +112,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       ProjectTimeUnitService projectTimeUnitService,
-      TaskTemplateService taskTemplateService,
-      ProjectTaskBusinessProjectComputeService projectTaskBusinessProjectComputeService) {
+      TaskTemplateService taskTemplateService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -131,7 +129,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.timesheetLineRepository = timesheetLineRepository;
     this.projectTimeUnitService = projectTimeUnitService;
     this.taskTemplateService = taskTemplateService;
-    this.projectTaskBusinessProjectComputeService = projectTaskBusinessProjectComputeService;
   }
 
   @Override
@@ -557,42 +554,73 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
     BigDecimal plannedTime = BigDecimal.ZERO;
-    BigDecimal spentTime = BigDecimal.ZERO;
-
-    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
-
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
             .map(ProjectPlanningTime::getPlannedTime)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    List<TimesheetLine> timeSheetLines =
-        timesheetLineRepository
-            .all()
-            .filter("self.timesheet.statusSelect = :status AND self.projectTask = :projectTask")
-            .bind("status", TimesheetRepository.STATUS_VALIDATED)
-            .bind("projectTask", projectTask)
-            .fetch();
-
-    for (TimesheetLine timeSheetLine : timeSheetLines) {
-      spentTime =
-          spentTime.add(convertTimesheetLineDurationToProjectTaskUnit(timeSheetLine, timeUnit));
-    }
-
     List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
     for (ProjectTask task : projectTaskList) {
       computeProjectTaskTotals(task);
       plannedTime = plannedTime.add(task.getPlannedTime());
-      spentTime = spentTime.add(task.getSpentTime());
     }
 
     projectTask.setPlannedTime(plannedTime);
-    projectTask.setSpentTime(spentTime);
+    projectTask.setSpentTime(computeProjectTaskSpentTime(projectTask));
 
     if (projectTask.getParentTask() == null) {
       computeProjectTaskReporting(projectTask);
     }
     projectTaskRepo.save(projectTask);
+  }
+
+  protected BigDecimal convertTimesheetLineDurationToProjectTaskUnit(
+      TimesheetLine timesheetLine, Unit timeUnit) throws AxelorException {
+    String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
+    BigDecimal duration = timesheetLine.getDuration();
+    BigDecimal convertedDuration = BigDecimal.ZERO;
+
+    Unit daysUnit = appBaseService.getUnitDays();
+    Unit hoursUnit = appBaseService.getUnitHours();
+    BigDecimal defaultHoursADay = appBaseService.getDailyWorkHours();
+    if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+    }
+
+    switch (timeLoggingUnit) {
+      case EmployeeRepository.TIME_PREFERENCE_DAYS:
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration.multiply(defaultHoursADay);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_HOURS:
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration =
+              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_MINUTES:
+        // convert to hours
+        convertedDuration =
+            duration.divide(new BigDecimal(60), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration =
+              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+        }
+        break;
+      default:
+        break;
+    }
+
+    return convertedDuration;
   }
 
   /**
@@ -724,54 +752,5 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     projectTask.setSpentTime(spentTime);
     return spentTime;
-  }
-
-  public BigDecimal convertTimesheetLineDurationToProjectTaskUnit(
-      TimesheetLine timesheetLine, Unit timeUnit) throws AxelorException {
-    String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
-    BigDecimal duration = timesheetLine.getDuration();
-    BigDecimal convertedDuration = BigDecimal.ZERO;
-
-    Unit daysUnit = appBaseService.getUnitDays();
-    Unit hoursUnit = appBaseService.getUnitHours();
-    BigDecimal defaultHoursADay = appBaseService.getDailyWorkHours();
-    if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
-    }
-
-    switch (timeLoggingUnit) {
-      case EmployeeRepository.TIME_PREFERENCE_DAYS:
-        if (timeUnit.equals(daysUnit)) {
-          convertedDuration = duration;
-        }
-        if (timeUnit.equals(hoursUnit)) {
-          convertedDuration = duration.multiply(defaultHoursADay);
-        }
-        break;
-      case EmployeeRepository.TIME_PREFERENCE_HOURS:
-        if (timeUnit.equals(hoursUnit)) {
-          convertedDuration = duration;
-        }
-        if (timeUnit.equals(daysUnit)) {
-          convertedDuration =
-              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
-        }
-        break;
-      case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        // convert to hours
-        convertedDuration =
-            duration.divide(new BigDecimal(60), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
-        if (timeUnit.equals(daysUnit)) {
-          convertedDuration =
-              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
-        }
-        break;
-      default:
-        break;
-    }
-
-    return convertedDuration;
   }
 }

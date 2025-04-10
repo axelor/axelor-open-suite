@@ -19,7 +19,6 @@
 package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectComputeService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
@@ -30,14 +29,11 @@ import javax.persistence.PersistenceException;
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
 
   protected ProjectTaskProgressUpdateService projectTaskProgressUpdateService;
-  protected ProjectTaskBusinessProjectComputeService projectTaskBusinessProjectComputeService;
 
   @Inject
   public ProjectTaskBusinessProjectRepository(
-      ProjectTaskProgressUpdateService projectTaskProgressUpdateService,
-      ProjectTaskBusinessProjectComputeService projectTaskBusinessProjectComputeService) {
+      ProjectTaskProgressUpdateService projectTaskProgressUpdateService) {
     this.projectTaskProgressUpdateService = projectTaskProgressUpdateService;
-    this.projectTaskBusinessProjectComputeService = projectTaskBusinessProjectComputeService;
   }
 
   @Override
@@ -56,7 +52,6 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
           projectTaskProgressUpdateService.updateChildrenProgress(
               projectTask, projectTask.getProgress());
       projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
-      projectTaskBusinessProjectComputeService.computePlannedTime(projectTask);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
