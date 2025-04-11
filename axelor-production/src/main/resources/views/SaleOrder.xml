@@ -9,7 +9,7 @@
     <extend target="//panel-related[@name='saleOrderLineEditableTreePanel']">
       <replace>
         <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
-          title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
+          title="Order Lines" field="saleOrderLineList" orderBy="sequence" canMove="true"
           form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
           widget="tree-grid" x-tree-field="subSaleOrderLineList"
           x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"
@@ -35,7 +35,7 @@
     <extend target="//panel-related[@name='saleOrderLineEditableTreePanel']">
       <replace>
         <panel-related name="saleOrderLineEditableTreePanel" colSpan="12"
-          title="Details Lines (Tree)" field="saleOrderLineList" orderBy="sequence" canMove="true"
+          title="Order Lines" field="saleOrderLineList" orderBy="sequence" canMove="true"
           form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
           widget="tree-grid" x-tree-field="subSaleOrderLineList"
           x-tree-field-title="Add a new sale order line" summary-view="sale-order-line-summary-form"

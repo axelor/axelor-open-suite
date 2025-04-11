@@ -272,6 +272,8 @@ public final class BankPaymentExceptionMessage {
       "Selected bank reconciliation is validated and can not be deleted" /*)*/;
   public static final String BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION = /*$$(*/
       "Selected bank reconciliation is under correction and can not be deleted" /*)*/;
+  public static final String BANK_RECONCILIATION_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
+      "The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency." /*)*/;
 
   public static final String BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE = /*$$(*/
       "The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration" /*)*/;
