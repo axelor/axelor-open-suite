@@ -6,6 +6,8 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Blocking">
+    <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sale order line"/>
     <extra-code>
             <![CDATA[
                 public static final Integer SALE_BLOCKING = 5;

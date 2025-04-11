@@ -91,6 +91,8 @@ import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
 import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
+import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.BlockingServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -542,5 +544,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
     bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
     bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
+    bind(BlockingService.class).to(BlockingServiceImpl.class);
   }
 }

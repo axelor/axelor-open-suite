@@ -58,6 +58,7 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
     if (isTotalAmountZero(saleOrder)) {
       return I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO);
     }
+
     return "";
   }
 

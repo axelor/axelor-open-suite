@@ -26,6 +26,8 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBlockingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
@@ -41,15 +43,18 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
 
   protected AppSupplychainService appSupplychainService;
   protected AppStockService appStockService;
+  protected final SaleOrderBlockingService saleOrderBlockingService;
 
   @Inject
   public SaleOrderCheckSupplychainServiceImpl(
       AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      SaleOrderBlockingService saleOrderBlockingService) {
     super(appBaseService);
     this.appSupplychainService = appSupplychainService;
     this.appStockService = appStockService;
+    this.saleOrderBlockingService = saleOrderBlockingService;
   }
 
   @Override
@@ -58,6 +63,13 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
       return super.confirmCheckAlert(saleOrder);
     }
     isIncotermFilled(saleOrder);
+
+    if (appSupplychainService.getAppSupplychain().getCustStockMoveMgtOnSO()
+        && appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()
+        && saleOrderBlockingService.hasOngoingBlockingDeliveries(saleOrder)) {
+      return I18n.get(SaleExceptionMessage.SALE_ORDER_LINES_CANNOT_DELIVER);
+    }
+
     return "";
   }
 

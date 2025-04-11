@@ -743,7 +743,8 @@
         name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
         readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0" colSpan="12"
-        onClick="save, action-supplychain-sale-order-create-stock-move" icon="truck"/>
+        onClick="save,action-sale-order-method-check-blocking-deliveries,action-supplychain-sale-order-create-stock-move"
+        icon="truck"/>
       <button
         if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto"
         name="generateProductionOrderBtn" title="Generate production order"
@@ -2303,5 +2304,9 @@
     <view type="form" name="sale-order-editable-multi-lines-form"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+
+  <action-method name="action-sale-order-method-check-blocking-deliveries">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="checkBlockingDeliveries"/>
+  </action-method>
 
 </object-views>
