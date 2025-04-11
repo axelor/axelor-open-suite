@@ -34,8 +34,8 @@
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
       <field name="description" showTitle="false" colSpan="12"/>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-business-project-batch-show-batches" canSearch="true"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="updateTaskBtn" title="Update tasks"
@@ -92,6 +92,14 @@
     <call class="com.axelor.apps.businessproject.web.BusinessProjectBatchController"
       method="showGeneratedInvoicingProject"/>
   </action-method>
+
+  <action-view name="action-business-project-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.businessProjectBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="business-project-batch-filters"
     model="com.axelor.apps.businessproject.db.BusinessProjectBatch"

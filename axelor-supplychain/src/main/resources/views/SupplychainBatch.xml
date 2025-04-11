@@ -77,8 +77,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" showTitle="false"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-supplychain-batch-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions">
@@ -136,6 +136,14 @@
     <view type="form" name="stock-history-line-form"/>
     <domain>self.period = :period</domain>
     <context name="period" expr="eval: __self__?.supplychainBatch?.period"/>
+  </action-view>
+
+  <action-view name="action-supplychain-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.supplychainBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
   </action-view>
 
   <search-filters name="supplychain-batch-filters"

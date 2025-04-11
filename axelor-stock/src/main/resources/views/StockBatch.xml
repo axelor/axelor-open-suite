@@ -28,8 +28,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" showTitle="false" colSpan="12"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-stock-batch-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true" title="Actions" itemSpan="12">
@@ -56,5 +56,13 @@
     <alert
       message="This batch will recompute stock location quantities and reset all WAP history lines, are you sure you want to continue ?"/>
   </action-validate>
+
+  <action-view name="action-stock-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.stockBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

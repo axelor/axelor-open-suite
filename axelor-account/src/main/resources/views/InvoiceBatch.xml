@@ -38,8 +38,8 @@
         <field name="createdBy" title="Created by"/>
         <field name="description" showTitle="false" colSpan="12"/>
       </panel>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-invoice-batch-show-batches" canSearch="true"/>
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="statusBatchBtn" title="Run"
@@ -102,5 +102,13 @@
   <action-attrs name="action-invoice-batch-attrs-on-select-ok">
     <attribute name="hidden" expr="eval: !onSelectOk" for="invoiceSet"/>
   </action-attrs>
+
+  <action-view name="action-invoice-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.invoiceBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
 </object-views>
