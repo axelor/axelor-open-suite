@@ -179,6 +179,8 @@
 
     <boolean name="isDisplaySubLinesOnReport" title="Display sublines on report"/>
 
+    <many-to-one name="originSaleQuotation" ref="com.axelor.apps.sale.db.SaleOrder"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>

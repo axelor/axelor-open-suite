@@ -675,7 +675,13 @@
       <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
         colSpan="12" onClick="action-sale-group-confirmed"
         readonlyIf="(advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)) || !saleOrderLineList || saleOrderLineList.length == 0"
-        icon="check-all" css="btn-success"/>
+        icon="check-all" css="btn-success"
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+      <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
+        colSpan="12" onClick="save, action-sale-order-confirm-wizard-method-open-wizard"
+        readonlyIf="(advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)) || !saleOrderLineList || saleOrderLineList.length == 0"
+        icon="check-all" css="btn-success"
+        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
       <button
         if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))"
         name="completeManuallySaleOrderBtn" title="Complete manually sale order"
