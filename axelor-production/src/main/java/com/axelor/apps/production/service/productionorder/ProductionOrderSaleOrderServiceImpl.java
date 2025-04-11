@@ -196,19 +196,19 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     return 0;
   }
 
-  protected boolean isGenerationNeeded(SaleOrderLine line) {
-    return isLineHasCorrectSaleSupply(line) && CollectionUtils.isEmpty(line.getManufOrderList());
-  }
-
   protected void checkSelectedLines(List<SaleOrderLine> selectedSaleOrderLine)
       throws AxelorException {
 
     if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)
-        && selectedSaleOrderLine.stream().anyMatch(line -> !isLineHasCorrectSaleSupply(line))) {
+        && selectedSaleOrderLine.stream().anyMatch(line -> !isGenerationNeeded(line))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ProductionExceptionMessage.SALE_ORDER_SELECT_WRONG_LINE));
     }
+  }
+
+  protected boolean isGenerationNeeded(SaleOrderLine line) {
+    return isLineHasCorrectSaleSupply(line) && CollectionUtils.isEmpty(line.getManufOrderList());
   }
 
   protected boolean isLineHasCorrectSaleSupply(SaleOrderLine saleOrderLine) {
