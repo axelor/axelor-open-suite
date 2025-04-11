@@ -31,7 +31,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectComputeServiceImpl
     implements ProjectTaskBusinessProjectComputeService {
-  UnitConversionForProjectService unitConversionForProjectService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectComputeServiceImpl(
