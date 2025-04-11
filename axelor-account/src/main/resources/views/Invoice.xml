@@ -786,6 +786,8 @@
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
           target="com.axelor.apps.base.db.Localization" hidden="true"/>
+        <panel-related name="invoiceNoteListPanel" field="invoiceNoteList" colSpan="6"
+          form-view="invoice-note-form" grid-view="invoice-note-grid"/>
         <panel name="descriptionToDisplayOnInvoicePanel" title="Comment to display on invoice"
           colSpan="12">
           <field name="note" widget="html" colSpan="12" showTitle="false"/>
