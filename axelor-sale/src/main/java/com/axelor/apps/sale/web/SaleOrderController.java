@@ -83,6 +83,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
@@ -97,6 +98,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -315,9 +317,12 @@ public class SaleOrderController {
   public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    String alert = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
-    if (StringUtils.notEmpty(alert)) {
-      response.setAlert(alert);
+    List<String> alertList = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
+    if (!CollectionUtils.isEmpty(alertList)) {
+      response.setAlert(
+          String.format(
+              I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_CHECK_ALERT),
+              StringHtmlListBuilder.formatMessage(alertList)));
     }
   }
 

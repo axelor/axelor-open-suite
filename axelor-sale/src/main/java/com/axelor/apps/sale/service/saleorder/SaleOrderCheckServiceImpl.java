@@ -28,6 +28,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -54,11 +55,12 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
   }
 
   @Override
-  public String confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+  public List<String> confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+    List<String> alertList = new ArrayList<>();
     if (isTotalAmountZero(saleOrder)) {
-      return I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO);
+      alertList.add(I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO));
     }
-    return "";
+    return alertList;
   }
 
   protected boolean isTotalAmountZero(SaleOrder saleOrder) {
