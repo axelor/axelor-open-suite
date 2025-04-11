@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the issue where stock location was overwritten upon changing the partner when trading name was null."
+module: axelor-sale

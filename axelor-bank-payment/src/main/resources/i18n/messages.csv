@@ -739,6 +739,7 @@
 "The bank details type is not compatible with the accepted types in file format.",,,
 "The bank order %s has been generated successfully.",,,
 "The bank order is not properly signed. Please correct it and sign it again.",,,
+"The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency.",,,
 "The company %s does not have bank order sequence",,,
 "The field encryption.bankorder.password in config file must be filled.",,,
 "The move %s can't be reversed because it is linked to a bank reconciliation with status validated",,,
