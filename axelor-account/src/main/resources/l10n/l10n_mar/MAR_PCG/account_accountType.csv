@@ -1,0 +1,16 @@
+"importId";"technicalTypeSelect";"name";"isManageSubsidiaryAccount"
+"MAR_PCG0";"view";"Vue";0
+"MAR_PCG1";"asset";"Actif";0
+"MAR_PCG2";"cash";"Disponibilités";0
+"MAR_PCG3";"commitment";"Engagements";0
+"MAR_PCG4";"currentAsset";"Actif circulant";0
+"MAR_PCG5";"debt";"Dettes";1
+"MAR_PCG6";"equity";"Capitaux propres";0
+"MAR_PCG7";"charge";"Charges";0
+"MAR_PCG8";"immobilisation";"Immobilisation";0
+"MAR_PCG9";"income";"Produits";0
+"MAR_PCG10";"payable";"Fournisseurs";1
+"MAR_PCG11";"provision";"Provisions";0
+"MAR_PCG12";"receivable";"Créances";1
+"MAR_PCG13";"special";"Spéciaux";0
+"MAR_PCG14";"tax";"Taxes";0
