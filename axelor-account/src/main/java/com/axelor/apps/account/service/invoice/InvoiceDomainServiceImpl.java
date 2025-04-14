@@ -18,11 +18,14 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.account.db.repo.FiscalPositionRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -30,10 +33,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceDomainServiceImpl implements InvoiceDomainService {
 
   protected InvoiceService invoiceService;
+  protected FiscalPositionRepository fiscalPositionRepository;
 
   @Inject
-  public InvoiceDomainServiceImpl(InvoiceService invoiceService) {
+  public InvoiceDomainServiceImpl(
+      InvoiceService invoiceService, FiscalPositionRepository fiscalPositionRepository) {
     this.invoiceService = invoiceService;
+    this.fiscalPositionRepository = fiscalPositionRepository;
   }
 
   @Override
@@ -65,5 +71,27 @@ public class InvoiceDomainServiceImpl implements InvoiceDomainService {
                 .collect(Collectors.joining(","));
 
     return String.format("self.id IN (%s)", companyTaxNumbersIds);
+  }
+
+  @Override
+  public String getFiscalPositionDomain(Invoice invoice) {
+    TaxNumber companyTaxNumber = invoice.getCompanyTaxNumber();
+    if (companyTaxNumber != null) {
+      List<FiscalPosition> fiscalPositionList =
+          fiscalPositionRepository
+              .all()
+              .filter("(:companyTaxNumber) MEMBER OF self.taxNumberSet")
+              .bind("companyTaxNumber", companyTaxNumber)
+              .fetch();
+      String companyTaxNumbersIds =
+          CollectionUtils.isEmpty(fiscalPositionList)
+              ? "0"
+              : fiscalPositionList.stream()
+                  .map(FiscalPosition::getId)
+                  .map(Objects::toString)
+                  .collect(Collectors.joining(","));
+      return String.format("self.id IN (%s)", companyTaxNumbersIds);
+    }
+    return null;
   }
 }
