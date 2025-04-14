@@ -991,7 +991,128 @@ WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOr
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OperationDetails" id="4361">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">manuf_order_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">manuf_order_id</text-property>
+                    <text-property name="heading">manuf_order_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">priority</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">priority</text-property>
+                    <text-property name="heading">priority</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">prod_process_line</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">prod_process_line</text-property>
+                    <text-property name="heading">prod_process_line</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">planned_start_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">planned_start_datet</text-property>
+                    <text-property name="heading">planned_start_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">planned_end_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">planned_end_datet</text-property>
+                    <text-property name="heading">planned_end_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">real_start_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">real_start_datet</text-property>
+                    <text-property name="heading">real_start_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">real_end_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">real_end_datet</text-property>
+                    <text-property name="heading">real_end_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">machine_serial</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">machine_serial</text-property>
+                    <text-property name="heading">machine_serial</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">description_id</text-property>
+                    <text-property name="heading">description_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description_prio</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">description_prio</text-property>
+                    <text-property name="heading">description_prio</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">file_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">file_path</text-property>
+                    <text-property name="heading">file_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_cons_pro_on_operation</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_cons_pro_on_operation</text-property>
+                    <text-property name="heading">is_cons_pro_on_operation</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bar_code_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">bar_code_path</text-property>
+                    <text-property name="heading">bar_code_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">operation_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">operation_name</text-property>
+                    <text-property name="heading">operation_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bar_code</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">bar_code</text-property>
+                    <text-property name="heading">bar_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">work_center_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">work_center_code</text-property>
+                    <text-property name="heading">work_center_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">work_center_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">work_center_name</text-property>
+                    <text-property name="heading">work_center_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">hide_report_details</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">hide_report_details</text-property>
+                    <text-property name="heading">hide_report_details</text-property>
+                </structure>
+            </list-property>
             <list-property name="filter"/>
             <list-property name="parameters"/>
             <structure name="cachedMetaData">
@@ -1091,6 +1212,11 @@ WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOr
                         <property name="name">work_center_name</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">hide_report_details</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["ManufOrderId"])]]></method>
@@ -1101,114 +1227,140 @@ WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOr
                     <property name="name">manuf_order_id</property>
                     <property name="nativeName">manuf_order_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">priority</property>
                     <property name="nativeName">priority</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">prod_process_line</property>
                     <property name="nativeName">prod_process_line</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">planned_start_datet</property>
                     <property name="nativeName">planned_start_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">planned_end_datet</property>
                     <property name="nativeName">planned_end_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">real_start_datet</property>
                     <property name="nativeName">real_start_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">real_end_datet</property>
                     <property name="nativeName">real_end_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">machine_serial</property>
                     <property name="nativeName">machine_serial</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">description_id</property>
                     <property name="nativeName">description_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">description_prio</property>
                     <property name="nativeName">description_prio</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">file_path</property>
                     <property name="nativeName">file_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">description</property>
                     <property name="nativeName">description</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">is_cons_pro_on_operation</property>
                     <property name="nativeName">is_cons_pro_on_operation</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">bar_code_path</property>
                     <property name="nativeName">bar_code_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">operation_name</property>
                     <property name="nativeName">operation_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">bar_code</property>
                     <property name="nativeName">bar_code</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">work_center_code</property>
                     <property name="nativeName">work_center_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">work_center_name</property>
                     <property name="nativeName">work_center_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">hide_report_details</property>
+                    <property name="nativeName">hide_report_details</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
@@ -1217,7 +1369,8 @@ WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOr
 	OperationOrderLine.real_end_datet, Machine.serial_number as machine_serial,
 	ObjectDescription.id as description_id,ObjectDescription.sequence as description_prio, MetaFile.file_path, ObjectDescription.description,
 	ManufOrder.is_cons_pro_on_operation, MetaFileBarcode.file_path as bar_code_path, OperationOrderLine.operation_name,
-	OperationOrderLine.bar_code as bar_code, WorkCenter.code as work_center_code, WorkCenter.name as work_center_name
+	OperationOrderLine.bar_code as bar_code, WorkCenter.code as work_center_code, WorkCenter.name as work_center_name,
+	ManufOrder.hide_report_details
 	
 FROM production_object_description as ObjectDescription
 	LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = ObjectDescription.image)
@@ -4266,6 +4419,13 @@ else dataSetRow["planned_end_datet"]</expression>
                                     <property name="dataType">string</property>
                                     <property name="allowExport">true</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">hideReportDetails</property>
+                                    <text-property name="displayName">hideReportDetails</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["hide_report_details"]</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
                             </list-property>
                             <property name="repeatHeader">false</property>
                             <column id="4391">
@@ -4285,6 +4445,12 @@ else dataSetRow["planned_end_datet"]</expression>
                             </column>
                             <header>
                                 <row id="4394">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["hideReportDetails"] == 1</expression>
+                                        </structure>
+                                    </list-property>
                                     <cell id="4395">
                                         <property name="colSpan">3</property>
                                         <property name="rowSpan">1</property>
@@ -4352,6 +4518,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                 </list-property>
                                 <header>
                                     <row id="4401">
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["hideReportDetails"] == 1</expression>
+                                            </structure>
+                                        </list-property>
                                         <cell id="4402">
                                             <property name="colSpan">2</property>
                                             <property name="rowSpan">4</property>
@@ -4477,9 +4649,30 @@ else dataSetRow["planned_end_datet"]</expression>
                                             </image>
                                         </cell>
                                     </row>
-                                    <row id="4458"/>
-                                    <row id="4462"/>
-                                    <row id="4470"/>
+                                    <row id="4458">
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["hideReportDetails"] == 1</expression>
+                                            </structure>
+                                        </list-property>
+                                    </row>
+                                    <row id="4462">
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["hideReportDetails"] == 1</expression>
+                                            </structure>
+                                        </list-property>
+                                    </row>
+                                    <row id="4470">
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["hideReportDetails"] == 1</expression>
+                                            </structure>
+                                        </list-property>
+                                    </row>
                                     <row id="4486">
                                         <cell id="4487">
                                             <property name="colSpan">3</property>
