@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -34,17 +35,21 @@ public class TimesheetQueryServiceImpl implements TimesheetQueryService {
 
   protected TimesheetRepository timesheetRepository;
   protected EmployeeRepository employeeRepository;
+  protected EmployeeService employeeService;
 
   @Inject
   public TimesheetQueryServiceImpl(
-      TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository) {
+      TimesheetRepository timesheetRepository,
+      EmployeeRepository employeeRepository,
+      EmployeeService employeeService) {
     this.timesheetRepository = timesheetRepository;
     this.employeeRepository = employeeRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
   public Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine) {
-    Company defaultCompany = getDefaultCompany(timesheetLine.getEmployee());
+    Company defaultCompany = employeeService.getDefaultCompany(timesheetLine.getEmployee());
     return getTimesheetQuery(
         timesheetLine.getEmployee(),
         Optional.of(timesheetLine)
@@ -63,18 +68,5 @@ public class TimesheetQueryServiceImpl implements TimesheetQueryService {
             employee,
             company,
             date);
-  }
-
-  @Override
-  public Company getDefaultCompany(Employee employee) {
-    if (employee != null) {
-      employee = employeeRepository.find(employee.getId());
-      if (employee.getMainEmploymentContract() != null) {
-        return employee.getMainEmploymentContract().getPayCompany();
-      } else if (employee.getUser() != null) {
-        return employee.getUser().getActiveCompany();
-      }
-    }
-    return null;
   }
 }
