@@ -19,17 +19,15 @@
 package com.axelor.apps.production.service.productionorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -44,22 +42,19 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected ProductionOrderService productionOrderService;
   protected ProductionOrderRepository productionOrderRepo;
   protected AppProductionService appProductionService;
-  protected ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService;
-  protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected ManufOrderSaleOrderService manufOrderSaleOrderService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      ManufOrderSaleOrderService manufOrderSaleOrderService) {
 
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
-    this.productionOrderSaleOrderMOGenerationService = productionOrderSaleOrderMOGenerationService;
-    this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.manufOrderSaleOrderService = manufOrderSaleOrderService;
   }
 
   @Override
@@ -145,7 +140,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException {
     ProductionOrder productionOrder = this.fetchOrCreateProductionOrder(saleOrder);
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      generateManufOrders(productionOrder, saleOrderLine);
+      manufOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
     }
   }
 
@@ -153,7 +148,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       throws AxelorException {
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       ProductionOrder productionOrder = this.fetchOrCreateProductionOrder(saleOrder);
-      generateManufOrders(productionOrder, saleOrderLine);
+      manufOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
     }
   }
 
@@ -208,7 +203,10 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   }
 
   protected boolean isGenerationNeeded(SaleOrderLine line) {
-    return isLineHasCorrectSaleSupply(line) && CollectionUtils.isEmpty(line.getManufOrderList());
+    return isLineHasCorrectSaleSupply(line)
+        && CollectionUtils.isEmpty(line.getManufOrderList())
+        && manufOrderSaleOrderService.computeQuantityToProduceLeft(line).compareTo(BigDecimal.ZERO)
+            > 0;
   }
 
   protected boolean isLineHasCorrectSaleSupply(SaleOrderLine saleOrderLine) {
@@ -216,42 +214,5 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     authorizedStatus.add(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
     authorizedStatus.add(SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE);
     return authorizedStatus.contains(saleOrderLine.getSaleSupplySelect());
-  }
-
-  @Override
-  public ProductionOrder generateManufOrders(
-      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException {
-
-    Product product = saleOrderLine.getProduct();
-
-    // Produce everything
-    if (saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
-        && product != null
-        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-
-      BigDecimal qtyToProduce = saleOrderLine.getQty();
-
-      return productionOrderSaleOrderMOGenerationService.generateManufOrders(
-          productionOrder, saleOrderLine, product, qtyToProduce);
-
-    }
-    // Produce only missing qty
-    else if (saleOrderLine.getSaleSupplySelect()
-            == SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE
-        && product != null
-        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-
-      BigDecimal availableQty =
-          stockLocationLineFetchService.getAvailableQty(
-              saleOrderLine.getSaleOrder().getStockLocation(), product);
-      BigDecimal qtyToProduce = saleOrderLine.getQty().subtract(availableQty);
-
-      if (qtyToProduce.compareTo(BigDecimal.ZERO) > 0) {
-        return productionOrderSaleOrderMOGenerationService.generateManufOrders(
-            productionOrder, saleOrderLine, product, qtyToProduce);
-      }
-    }
-
-    return null;
   }
 }
