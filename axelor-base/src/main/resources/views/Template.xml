@@ -36,6 +36,9 @@
       <field name="localizationSet" widget="TagSelect" canEdit="false" canNew="false"
         form-view="localization-form" grid-view="localization-grid"/>
       <field name="templateEngineSelect"/>
+      <field name="mailAccount" hidden="true" showIf="mediaTypeSelect == 2"
+        grid-view="mail-account-grid" form-view="mail-account-form"
+        onSelect="action-template-attrs-set-mail-account-domain"/>
       <field name="isJson" onChange="action-template-record-is-json-change"/>
       <panel itemSpan="12">
         <field name="metaModel" hideIf="isJson" canEdit="false" form-view="meta-model-form"
@@ -185,5 +188,31 @@
   <action-method name="action-template-check-receptor">
     <call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
   </action-method>
+
+  <action-record id="action-base-template-record-new"
+    name="action-template-record-new" model="com.axelor.message.db.Template">
+    <field name="metaModel"
+      expr="eval: __parent__?.targetSelect == 1 ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (__parent__?.targetSelect == 2 ? __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)"
+      if="__parent__?.targetSelect"/>
+    <field name="metaModel" expr="eval: __parent__?.metaModel" if="__parent__?.metaModel"/>
+    <field name="metaModel" expr="eval: __parent__?.__parent__?.metaModel"
+      if="__parent__?.__parent__?.metaModel"/>
+    <field if="_mediaType != null" name="mediaTypeSelect" expr="eval:_mediaType"/>
+    <field name="mailAccount"
+      expr="eval: __repo__(EmailAccount).all().filter('self.isDefault = true and self.isValid = true').fetchOne()"
+      if="!__config__.app.getApp('base')?.getEmailAccountByUser()"/>
+    <field name="mailAccount"
+      expr="eval: __repo__(EmailAccount).all().filter('self.isDefault = true and self.isValid = true and self.user = ?',__user__).fetchOne()"
+      if="__config__.app.getApp('base')?.getEmailAccountByUser()"/>
+  </action-record>
+
+  <action-attrs name="action-template-attrs-set-mail-account-domain">
+    <attribute name="domain" for="mailAccount"
+      expr="eval: &quot; self.isValid = true &quot;"
+      if="!__config__.app.getApp('base')?.getEmailAccountByUser()"/>
+    <attribute name="domain" for="mailAccount"
+      expr="eval: &quot; self.isValid = true AND self.user.id = ${__user__.id} &quot;"
+      if="__config__.app.getApp('base')?.getEmailAccountByUser()"/>
+  </action-attrs>
 
 </object-views>
