@@ -131,7 +131,7 @@ public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupService
     projectTask.setQuantity(computeQuantity(projectTask));
     projectTaskBusinessProjectService.updateDiscount(projectTask);
     projectTaskBusinessProjectService.compute(projectTask);
-    valuesMap.put("quantity",projectTask.getQuantity() );
+    valuesMap.put("quantity", projectTask.getQuantity());
     valuesMap.put("unitPrice", projectTask.getUnitPrice());
     valuesMap.put("unitCost", projectTask.getUnitCost());
     valuesMap.put("exTaxTotal", projectTask.getExTaxTotal());
