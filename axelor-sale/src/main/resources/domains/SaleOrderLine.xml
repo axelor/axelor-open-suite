@@ -138,6 +138,9 @@
     <many-to-one name="configurator" ref="com.axelor.apps.sale.db.Configurator"
       title="Configurator"/>
 
+    <one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking"
+      title="Blocking follow-up List" mappedBy="saleOrderLine" orderBy="-blockingToDate"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-imports>

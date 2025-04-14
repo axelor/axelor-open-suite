@@ -50,6 +50,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBlockingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -889,5 +890,14 @@ public class SaleOrderController {
             .param("forceTitle", "true")
             .context("_showRecord", String.valueOf(copySaleOrder.getId()))
             .map());
+  }
+
+  public void checkBlockingDeliveries(ActionRequest request, ActionResponse response) {
+
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    if (Beans.get(SaleOrderBlockingService.class).hasOngoingBlockingDeliveries(saleOrder)) {
+      response.setAlert(I18n.get(SaleExceptionMessage.SALE_ORDER_LINES_CANNOT_DELIVER));
+    }
   }
 }

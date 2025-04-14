@@ -288,7 +288,7 @@
                       {$productionStatus == 'STANDBY' && <Badge bg="warning">{_t('Production on standby')}</Badge>}
                       {$productionStatus == 'IN_PROGRESS' && <Badge bg="primary">{_t('Production in progress')}</Badge>}
                       {$productionStatus == 'PLANNED' && <Badge bg="warning">{_t('Production planned')}</Badge>}
-                      {$productionStatus == 'CANCELED' && <Badge bg="danger">{_t('Production canceled')}</Badge>}
+                      Partner.xml{$productionStatus == 'CANCELED' && <Badge bg="danger">{_t('Production canceled')}</Badge>}
                       {$productionStatus == 'DRAFT' && <Badge bg="danger">{_t('Production in draft')}</Badge>}
                 </>]]>
               </viewer>
@@ -495,6 +495,29 @@
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
+      <panel name="blockingPanel" title="Blockings">
+        <field name="blockingList" colSpan="12" title="Blockings" showIf="!$readonly()">
+          <editor x-show-on-new="false"
+            onNew="action-sale-order-line-record-blocking-set-default-selection,action-blocking-record-realized-by"
+            colSpan="12">
+            <field name="blockingSelect" colSpan="12" selection="base.blocking.select"
+              widget="RadioSelect" required="true" selection-in="[7]"/>
+            <field name="blockingToDate" colSpan="3"/>
+            <field name="blockingReason" colSpan="3" canNew="true"
+              form-view="stop-reason-form" grid-view="stop-reason-grid"/>
+            <panel name="informationPanel" colSpan="6">
+              <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form"
+                grid-view="user-grid"/>
+              <field name="blockingComment" widget="html" colSpan="12"/>
+              <field name="createdOn" colSpan="3" showIf="createdOn"/>
+              <field name="updatedOn" colSpan="3" showIf="updatedOn"/>
+              <field name="updatedBy" form-view="user-form" grid-view="user-grid"
+                showIf="updatedBy" colSpan="3"/>
+            </panel>
+          </editor>
+        </field>
+      </panel>
+
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -857,4 +880,9 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="checkEditConfiguratorSaleOrderLine"/>
   </action-method>
+
+  <action-record name="action-sale-order-line-record-blocking-set-default-selection"
+    model="com.axelor.apps.base.db.Blocking">
+    <field name="blockingSelect" expr="eval: 7"/>
+  </action-record>
 </object-views>

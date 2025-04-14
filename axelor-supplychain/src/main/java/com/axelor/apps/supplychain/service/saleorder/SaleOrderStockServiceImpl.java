@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBlockingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
@@ -87,6 +88,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected TaxService taxService;
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
+  protected final SaleOrderBlockingService saleOrderBlockingService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -104,7 +106,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService,
       TaxService taxService,
-      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      SaleOrderBlockingService saleOrderBlockingService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -120,6 +123,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.taxService = taxService;
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
+    this.saleOrderBlockingService = saleOrderBlockingService;
   }
 
   @Override
@@ -185,6 +189,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderBlockingService.hasOngoingBlockingDeliveries(
+          saleOrderLine, saleOrder.getCompany())) {
+        continue;
+      }
       if (saleOrderLine.getProduct() != null) {
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
         if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {

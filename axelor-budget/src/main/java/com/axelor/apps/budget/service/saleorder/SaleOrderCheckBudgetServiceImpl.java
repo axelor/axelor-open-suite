@@ -26,6 +26,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorder.SaleOrderBlockingService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
@@ -47,8 +48,9 @@ public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckSupplychainSe
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
       SaleOrderBudgetService saleOrderBudgetService,
-      AppBudgetService appBudgetService) {
-    super(appBaseService, appSupplychainService, appStockService);
+      AppBudgetService appBudgetService,
+      SaleOrderBlockingService saleOrderBlockingService) {
+    super(appBaseService, appSupplychainService, appStockService, saleOrderBlockingService);
     this.saleOrderBudgetService = saleOrderBudgetService;
     this.appBudgetService = appBudgetService;
   }
@@ -77,7 +79,7 @@ public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckSupplychainSe
       return alert;
     }
 
-    return "";
+    return super.confirmCheckAlert(saleOrder);
   }
 
   protected String checkNoComputeBudgetAlert(SaleOrder saleOrder) {

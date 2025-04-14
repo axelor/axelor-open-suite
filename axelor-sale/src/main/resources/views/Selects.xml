@@ -36,6 +36,7 @@
 
   <selection name="base.blocking.select" id="sale.blocking.select">
     <option value="5">Sale blocking</option>
+    <option value="7">Sale delivery blocking</option>
   </selection>
 
   <selection name="product.periodicity.subscription.select">
@@ -113,5 +114,4 @@
     <option value="SALE_ORDER_LINE_PRODUCT_TYPE_SEMI_FINISH_PRODUCT" icon="fa-wrench"/>
     <option value="SALE_ORDER_LINE_PRODUCT_TYPE_COMPONENT" icon="fa-cpu-fill"/>
   </selection>
-
 </object-views>
