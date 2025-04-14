@@ -286,7 +286,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     if (ObjectUtils.isEmpty(bankOrder.getBankOrderLineList())
         || bankOrder.getBankOrderLineList().size() == 1
         || bankOrder.getAreMovesGenerated()
-        || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
+        || bankOrder.getStatusSelect() != BankOrderRepository.STATUS_DRAFT) {
       bankOrderCancelService.cancelBankOrder(bankOrder);
       return;
     }
@@ -294,8 +294,10 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     BankOrderLine bankOrderLine = findBankOrderLineWithThisOrigin(bankOrder, expense);
     if (bankOrderLine == null) {
       bankOrderCancelService.cancelBankOrder(bankOrder);
+      return;
     }
 
+    expense.setBankOrder(null);
     bankOrder.removeBankOrderLineListItem(bankOrderLine);
     bankOrderRepository.save(bankOrder);
   }
