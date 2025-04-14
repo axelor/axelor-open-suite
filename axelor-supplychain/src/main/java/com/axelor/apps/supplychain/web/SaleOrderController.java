@@ -720,7 +720,7 @@ public class SaleOrderController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -741,7 +741,7 @@ public class SaleOrderController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_TO);
 
       response.setAttr("deliveredPartner", "domain", strFilter);
     } catch (Exception e) {
