@@ -1,0 +1,20 @@
+plugins {
+    id 'com.axelor.app'
+}
+
+apply from: "../version.gradle"
+
+apply {
+    version = openSuiteVersion
+}
+
+axelor {
+    title "Axelor :: Construction"
+    description "Axelor construction module"
+}
+
+dependencies {
+    api project(":modules:axelor-business-support")
+    api project(":modules:axelor-business-production")
+    api project(":modules:axelor-budget")
+}

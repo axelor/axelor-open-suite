@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid name="product-type-grid" title="Products types"
+    model="com.axelor.apps.base.db.ProductType">
+    <field name="name"/>
+  </grid>
+  <form name="product-type-form" title="Product type"
+    model="com.axelor.apps.base.db.ProductType">
+    <panel name="mainPanel">
+      <field name="name"/>
+    </panel>
+  </form>
+
+</object-views>
