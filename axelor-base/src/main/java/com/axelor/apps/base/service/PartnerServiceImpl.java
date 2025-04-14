@@ -349,26 +349,39 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner, int emailType) {
-
-    String query =
-        String.format(
-            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
-                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
-            partner.getId());
-
     String emailAddress =
-        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
+        Optional.ofNullable(partner)
+            .map(Partner::getEmailAddress)
+            .map(EmailAddress::getAddress)
+            .orElse(null);
+
+    StringBuilder query =
+        new StringBuilder(
+            "SELECT DISTINCT email.id"
+                + " FROM Message AS email"
+                + " JOIN email.multiRelatedList AS related"
+                + " JOIN Partner AS part ON part.id = related.relatedToSelectId"
+                + " WHERE part.id = :partnerId"
+                + " AND related.relatedToSelect = :relatedToSelect"
+                + " AND email.typeSelect = :emailType"
+                + " AND email.mediaTypeSelect = :mediaType");
+
     if (emailAddress != null) {
-      query +=
-          " OR (:emailAddress IN ("
-              + ((emailType == MessageRepository.TYPE_RECEIVED)
-                  ? "email.fromEmailAddress.address"
-                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
-              + "))";
-    } else {
-      query += " AND email.typeSelect = " + emailType;
+      if (emailType == MessageRepository.TYPE_RECEIVED) {
+        query.append(" AND email.fromEmailAddress.address = :emailAddress");
+      } else {
+        query.append(
+            " AND :emailAddress IN (SELECT addr.address FROM email.toEmailAddressSet addr)");
+      }
     }
-    javax.persistence.Query q = JPA.em().createQuery(query);
+
+    javax.persistence.Query q = JPA.em().createQuery(query.toString());
+
+    q.setParameter("partnerId", partner.getId());
+    q.setParameter("relatedToSelect", "com.axelor.apps.base.db.Partner");
+    q.setParameter("emailType", emailType);
+    q.setParameter("mediaType", MessageRepository.MEDIA_TYPE_EMAIL);
+
     if (emailAddress != null) {
       q.setParameter("emailAddress", emailAddress);
     }
