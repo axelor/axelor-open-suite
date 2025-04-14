@@ -786,8 +786,8 @@
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
           target="com.axelor.apps.base.db.Localization" hidden="true"/>
-        <panel-related name="invoiceNoteListPanel" field="invoiceNoteList" colSpan="6"
-          form-view="invoice-note-form" grid-view="invoice-note-grid"/>
+        <panel-related name="invoiceNoteListPanel" field="invoiceNoteList"
+          colSpan="12" form-view="invoice-note-form" grid-view="invoice-note-grid"/>
         <panel name="descriptionToDisplayOnInvoicePanel" title="Comment to display on invoice"
           colSpan="12">
           <field name="note" widget="html" colSpan="12" showTitle="false"/>
@@ -1775,6 +1775,7 @@
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-check-analytic-axis"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="action-invoice-method-set-invoice-notes"/>
   </action-group>
 
   <action-group name="action-invoice-group-pfp-validate">
@@ -3034,5 +3035,9 @@
     <view type="form" name="invoice-form"/>
     <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
   </action-view>
+
+  <action-method name="action-invoice-method-set-invoice-notes">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="generateInvoiceNote"/>
+  </action-method>
 
 </object-views>
