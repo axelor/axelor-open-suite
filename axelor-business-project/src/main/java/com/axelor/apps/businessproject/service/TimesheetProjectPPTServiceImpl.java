@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -30,6 +31,7 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 
 public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTimeServiceImpl {
 
@@ -52,5 +54,19 @@ public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTime
       line.setToInvoice(projectPlanningTime.getProjectTask().getToInvoice());
     }
     return line;
+  }
+
+  @Override
+  protected BigDecimal computeTimeForConvertedPlannedTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException {
+    return computeHoursDuration(
+        projectPlanningTime.getProject().getNumberHoursADay(),
+        projectPlanningTime.getPlannedTime(),
+        projectPlanningTime.getTimeUnit());
+  }
+
+  @Override
+  protected Unit computeUnitForConvertedPlannedTime(ProjectPlanningTime projectPlanningTime) {
+    return appBaseService.getAppBase().getUnitHours();
   }
 }
