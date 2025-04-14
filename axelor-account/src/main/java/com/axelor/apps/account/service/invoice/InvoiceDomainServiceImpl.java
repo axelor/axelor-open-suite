@@ -19,9 +19,13 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.google.inject.Inject;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceDomainServiceImpl implements InvoiceDomainService {
 
@@ -48,5 +52,18 @@ public class InvoiceDomainServiceImpl implements InvoiceDomainService {
       domain += " AND self.isSupplier = true ";
     }
     return domain;
+  }
+
+  @Override
+  public String getCompanyTaxNumberDomain(Company company) {
+    String companyTaxNumbersIds =
+        CollectionUtils.isEmpty(company.getTaxNumberList())
+            ? "0"
+            : company.getTaxNumberList().stream()
+                .map(TaxNumber::getId)
+                .map(Objects::toString)
+                .collect(Collectors.joining(","));
+
+    return String.format("self.id IN (%s)", companyTaxNumbersIds);
   }
 }

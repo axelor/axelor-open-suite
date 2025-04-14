@@ -1456,4 +1456,13 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     response.setAttrs(Beans.get(InvoiceGlobalDiscountService.class).setDiscountDummies(invoice));
   }
+
+  @ErrorException
+  public void setCompanyTaxNumberDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Company company = invoice.getCompany();
+    String domain = Beans.get(InvoiceDomainService.class).getCompanyTaxNumberDomain(company);
+
+    response.setAttr("companyTaxNumber", "domain", domain);
+  }
 }
