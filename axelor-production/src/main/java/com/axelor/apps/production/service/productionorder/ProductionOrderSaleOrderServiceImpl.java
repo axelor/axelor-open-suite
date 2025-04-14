@@ -34,6 +34,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,40 +64,81 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class})
-  public String generateProductionOrder(SaleOrder saleOrder) throws AxelorException {
-
-    checkGeneratedProductionOrders(saleOrder);
+  public String generateProductionOrder(
+      SaleOrder saleOrder, List<SaleOrderLine> selectedSaleOrderLine) throws AxelorException {
 
     boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
 
+    checkSelectedLines(selectedSaleOrderLine);
+
     List<SaleOrderLine> saleOrderLineList =
         saleOrder.getSaleOrderLineList().stream()
-            .filter(line -> CollectionUtils.isEmpty(line.getManufOrderList()))
+            .filter(this::isGenerationNeeded)
             .collect(Collectors.toList());
 
-    if (oneProdOrderPerSO) {
-      ProductionOrder productionOrderBeforeGeneration =
-          productionOrderRepo
-              .all()
-              .filter("self.saleOrder = :saleOrder")
-              .bind("saleOrder", saleOrder)
-              .fetchOne();
-      int nbOfMoBeforeCreation = getNumberOfMo(saleOrder);
-      generateOnePoPerSaleOrder(saleOrder, saleOrderLineList);
-      int nbOfMoAfterCreation = getNumberOfMo(saleOrder);
-
-      if (productionOrderBeforeGeneration != null
-          && (nbOfMoAfterCreation - nbOfMoBeforeCreation != 0)) {
-        return I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ADDED_TO_EXISTENT_PO);
-      } else if (productionOrderBeforeGeneration != null) {
-        return I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ALREADY_GENERATED);
-      }
-    } else {
-      generateOnePoPerSol(saleOrder, saleOrderLineList);
-      return I18n.get(ProductionExceptionMessage.SALE_ORDER_NEW_PO_GENERATED);
+    if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)) {
+      saleOrderLineList =
+          selectedSaleOrderLine.stream()
+              .filter(this::isGenerationNeeded)
+              .collect(Collectors.toList());
     }
 
+    if (oneProdOrderPerSO) {
+      return getMessageForOneProdPerSo(saleOrder, selectedSaleOrderLine, saleOrderLineList);
+    } else {
+      return getMessageForOneProdPerSol(saleOrder, selectedSaleOrderLine, saleOrderLineList);
+    }
+  }
+
+  protected String getMessageForOneProdPerSo(
+      SaleOrder saleOrder,
+      List<SaleOrderLine> selectedSaleOrderLine,
+      List<SaleOrderLine> saleOrderLineList)
+      throws AxelorException {
+    ProductionOrder productionOrderBeforeGeneration =
+        productionOrderRepo
+            .all()
+            .filter("self.saleOrder = :saleOrder")
+            .bind("saleOrder", saleOrder)
+            .fetchOne();
+
+    int nbOfMoBeforeCreation = getNumberOfMo(saleOrder);
+    generateOnePoPerSaleOrder(saleOrder, saleOrderLineList);
+    int nbOfMoAfterCreation = getNumberOfMo(saleOrder);
+
+    if (productionOrderBeforeGeneration != null
+        && (nbOfMoAfterCreation - nbOfMoBeforeCreation != 0)) {
+      return I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ADDED_TO_EXISTENT_PO);
+    } else if (productionOrderBeforeGeneration != null) {
+      if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)) {
+        return I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ALREADY_GENERATED_SELECTED);
+      } else {
+        return I18n.get(ProductionExceptionMessage.SALE_ORDER_MO_ALREADY_GENERATED);
+      }
+    }
     return null;
+  }
+
+  protected String getMessageForOneProdPerSol(
+      SaleOrder saleOrder,
+      List<SaleOrderLine> selectedSaleOrderLine,
+      List<SaleOrderLine> saleOrderLineList)
+      throws AxelorException {
+    if (saleOrderLineList.stream()
+        .allMatch(line -> CollectionUtils.isNotEmpty(line.getManufOrderList()))) {
+      if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)) {
+        return I18n.get(
+            ProductionExceptionMessage.SALE_ORDER_EVERY_PO_ALREADY_GENERATED_FOR_SELECTED);
+      } else {
+        return I18n.get(ProductionExceptionMessage.SALE_ORDER_EVERY_PO_ALREADY_GENERATED);
+      }
+    }
+    generateOnePoPerSol(saleOrder, saleOrderLineList);
+    if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)) {
+      return I18n.get(ProductionExceptionMessage.SALE_ORDER_NEW_PO_GENERATED_SELECTED);
+    } else {
+      return I18n.get(ProductionExceptionMessage.SALE_ORDER_NEW_PO_GENERATED);
+    }
   }
 
   protected void generateOnePoPerSaleOrder(
@@ -140,18 +182,6 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         .fetch();
   }
 
-  protected void checkGeneratedProductionOrders(SaleOrder saleOrder) throws AxelorException {
-    boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (!oneProdOrderPerSO
-        && saleOrderLineList.stream()
-            .allMatch(line -> CollectionUtils.isNotEmpty(line.getManufOrderList()))) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.SALE_ORDER_EVERY_PO_ALREADY_GENERATED));
-    }
-  }
-
   protected int getNumberOfMo(SaleOrder saleOrder) {
     ProductionOrder productionOrder =
         productionOrderRepo
@@ -164,6 +194,28 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     }
 
     return 0;
+  }
+
+  protected void checkSelectedLines(List<SaleOrderLine> selectedSaleOrderLine)
+      throws AxelorException {
+
+    if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)
+        && selectedSaleOrderLine.stream().anyMatch(line -> !isGenerationNeeded(line))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.SALE_ORDER_SELECT_WRONG_LINE));
+    }
+  }
+
+  protected boolean isGenerationNeeded(SaleOrderLine line) {
+    return isLineHasCorrectSaleSupply(line) && CollectionUtils.isEmpty(line.getManufOrderList());
+  }
+
+  protected boolean isLineHasCorrectSaleSupply(SaleOrderLine saleOrderLine) {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
+    authorizedStatus.add(SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE);
+    return authorizedStatus.contains(saleOrderLine.getSaleSupplySelect());
   }
 
   @Override

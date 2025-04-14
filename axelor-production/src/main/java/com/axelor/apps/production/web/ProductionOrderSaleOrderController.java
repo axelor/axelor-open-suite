@@ -24,8 +24,10 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -45,12 +47,19 @@ public class ProductionOrderSaleOrderController {
     try {
 
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+      List<SaleOrderLine> selectedSaleOrderLines =
+          saleOrder.getSaleOrderLineList().stream()
+              .filter(Model::isSelected)
+              .collect(Collectors.toList());
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
       ProductionOrderSaleOrderService productionOrderSaleOrderService =
           Beans.get(ProductionOrderSaleOrderService.class);
 
-      String infoMessage = productionOrderSaleOrderService.generateProductionOrder(saleOrder);
+      String infoMessage =
+          productionOrderSaleOrderService.generateProductionOrder(
+              saleOrder, selectedSaleOrderLines);
 
       List<Long> productionOrderIds =
           productionOrderSaleOrderService.getLinkedProductionOrders(saleOrder).stream()
