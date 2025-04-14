@@ -25,4 +25,6 @@ public interface InvoiceDomainService {
   String getPartnerBaseDomain(Company company, Invoice invoice, int invoiceTypeSelect);
 
   String getCompanyTaxNumberDomain(Company company);
+
+  String getFiscalPositionDomain(Invoice invoice);
 }

@@ -19,11 +19,13 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
@@ -70,6 +72,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -1472,7 +1475,62 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     Company company = invoice.getCompany();
     String domain = Beans.get(InvoiceDomainService.class).getCompanyTaxNumberDomain(company);
-
     response.setAttr("companyTaxNumber", "domain", domain);
+  }
+
+  @ErrorException
+  public void setDefaultCompanyTaxNumber(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    TaxNumber taxNumber = null;
+
+    Company company = invoice.getCompany();
+    if (company != null) {
+      Partner partner = company.getPartner();
+      if (partner != null) {
+        String partnerTaxNumber = partner.getTaxNbr();
+        if (StringUtils.notEmpty(partnerTaxNumber)) {
+          taxNumber =
+              company.getTaxNumberList().stream()
+                  .filter(taxNb -> partnerTaxNumber.equals(taxNb.getTaxNbr()))
+                  .findFirst()
+                  .orElse(null);
+        }
+      }
+    }
+
+    response.setValue("companyTaxNumber", taxNumber);
+  }
+
+  @ErrorException
+  public void manageFiscalPositionFromCompanyTaxNumber(
+      ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    FiscalPosition invoiceFiscalPosition = invoice.getFiscalPosition();
+    TaxNumber companyTaxNumber = invoice.getCompanyTaxNumber();
+
+    if (companyTaxNumber == null) {
+      return;
+    }
+
+    if (invoiceFiscalPosition == null) {
+      // Manually created invoice
+      FiscalPosition fiscalPosition =
+          companyTaxNumber.getFiscalPositionSet().stream().findFirst().orElse(null);
+      response.setValue("fiscalPosition", fiscalPosition);
+    } else {
+      boolean hasMatch =
+          invoiceFiscalPosition.getTaxNumberSet().stream()
+              .anyMatch(taxNumber -> taxNumber.equals(companyTaxNumber));
+      if (!hasMatch) {
+        response.setValue("fiscalPosition", null);
+      }
+    }
+  }
+
+  @ErrorException
+  public void setFiscalPositionDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    String domain = Beans.get(InvoiceDomainService.class).getFiscalPositionDomain(invoice);
+    response.setAttr("fiscalPosition", "domain", domain);
   }
 }
