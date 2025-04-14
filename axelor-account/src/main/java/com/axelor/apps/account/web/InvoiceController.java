@@ -1466,4 +1466,13 @@ public class InvoiceController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  @ErrorException
+  public void setCompanyTaxNumberDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Company company = invoice.getCompany();
+    String domain = Beans.get(InvoiceDomainService.class).getCompanyTaxNumberDomain(company);
+
+    response.setAttr("companyTaxNumber", "domain", domain);
+  }
 }

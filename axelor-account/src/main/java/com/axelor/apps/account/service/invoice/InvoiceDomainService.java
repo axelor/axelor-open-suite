@@ -23,4 +23,6 @@ import com.axelor.apps.base.db.Company;
 
 public interface InvoiceDomainService {
   String getPartnerBaseDomain(Company company, Invoice invoice, int invoiceTypeSelect);
+
+  String getCompanyTaxNumberDomain(Company company);
 }

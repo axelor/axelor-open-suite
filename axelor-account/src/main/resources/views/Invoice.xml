@@ -494,6 +494,10 @@
           onChange="action-invoice-record-hide-discount"
           onSelect="action-invoice-method-domain-priceList" form-view="price-list-form"
           grid-view="price-list-grid" colSpan="4"/>
+        <spacer colSpan="4"/>
+        <field name="companyTaxNumber" if-module="axelor-supplychain"
+          if="__config__.app.getApp('base')?.getEnableTaxNumbers()" colSpan="4"
+          onSelect="action-invoice-method-domain-companyTaxNumber"/>
         <field name="fiscalPosition" readonlyIf="statusSelect > 1" colSpan="4"
           onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"
           form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
@@ -2433,6 +2437,11 @@
 
   <action-method name="action-invoice-method-domain-priceList">
     <call class="com.axelor.apps.account.web.InvoiceController" method="changePriceListDomain"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-domain-companyTaxNumber">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setCompanyTaxNumberDomain"/>
   </action-method>
 
   <action-method
