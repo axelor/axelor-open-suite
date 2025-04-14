@@ -137,6 +137,15 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
 
   @Override
   public void createOrMovePlanification(ProjectTask projectTask) throws AxelorException {
+    Sprint currentSprint =
+        Optional.ofNullable(projectTask).map(ProjectTask::getActiveSprint).orElse(null);
+    LocalDate startDate =
+        Optional.ofNullable(projectTask).map(ProjectTask::getTaskDate).orElse(null);
+    if (currentSprint == null
+        && startDate != null
+        && !projectTask.getBudgetedTime().equals(BigDecimal.ZERO)) {
+      createProjectPlanningTime(projectTask);
+    }
     if (validateConfigAndSprint(projectTask) == null) {
       return;
     }
@@ -236,8 +245,11 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             .map(date -> date.atTime(23, 59));
     Optional<Employee> employee =
         Optional.of(projectTask).map(ProjectTask::getAssignedTo).map(User::getEmployee);
-
-    if (startDateTime.isEmpty() || endDateTime.isEmpty() || employee.isEmpty()) {
+    startDateTime =
+        startDateTime.isEmpty()
+            ? Optional.of(projectTask).map(ProjectTask::getTaskDate).map(LocalDate::atStartOfDay)
+            : Optional.empty();
+    if (startDateTime.isEmpty() || employee.isEmpty()) {
       return;
     }
 
@@ -250,7 +262,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             employee.get(),
             projectTask.getProduct(),
             employee.get().getDailyWorkHours(),
-            endDateTime.get(),
+            null,
             projectTask.getSite(),
             getTimeUnit(projectTask));
 
@@ -289,7 +301,10 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     projectPlanningTimeComputeService.computePlannedTimeValues(projectPlanningTime);
-    projectPlanningTime.setEndDateTime(activeSprint.getToDate().atTime(23, 59));
+    // compute end date time =start date+duration
+    projectPlanningTime.setEndDateTime(
+        projectPlanningTimeComputeService.computeEndDateTime(
+            projectPlanningTime, projectTask.getProject()));
   }
 
   protected Sprint getOldActiveSprint(ProjectTask projectTask) {
