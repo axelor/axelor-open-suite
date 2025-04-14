@@ -241,6 +241,15 @@ public class ProjectTaskController {
   }
 
   @ErrorException
+  public void updateInvoicingUnit(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateInvoicingUnit(projectTask));
+  }
+
+  @ErrorException
   public void updateFinancialDatas(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);

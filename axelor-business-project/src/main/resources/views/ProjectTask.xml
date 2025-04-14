@@ -204,7 +204,7 @@
           readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
         <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
           <field name="product" colSpan="3" canEdit="false"
-            onChange="action-business-project-project-task-group-product-onchange"
+            onChange="action-business-project-project-task-group-product-onchange,save"
             onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
             grid-view="product-grid"/>
           <field name="quantity" colSpan="3"
@@ -216,7 +216,7 @@
             readonlyIf="saleOrderLine || frameworkSupplierContract"/>
           <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
             form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"
-            onChange="action-project-task-method-update-quantity"/>
+            onChange="action-project-task-method-onchange-invoicing-unit,save"/>
           <field name="currency" colSpan="3" grid-view="currency-grid"
             form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"/>
@@ -699,5 +699,9 @@
     <view type="form" name="incl-planning-panel-business-task-form"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+  <action-method name="action-project-task-method-onchange-invoicing-unit">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateInvoicingUnit"/>
+  </action-method>
 
 </object-views>

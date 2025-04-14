@@ -34,4 +34,6 @@ public interface ProjectTaskGroupBusinessService {
 
   Map<String, Object> updateFinancialDatasWithoutPriceUnits(ProjectTask projectTask)
       throws AxelorException;
+
+  Map<String, Object> updateInvoicingUnit(ProjectTask projectTask) throws AxelorException;
 }

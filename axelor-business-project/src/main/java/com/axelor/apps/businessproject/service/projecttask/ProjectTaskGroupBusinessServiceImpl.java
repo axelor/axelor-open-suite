@@ -24,25 +24,32 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskComputeService;
 import com.axelor.apps.project.service.ProjectTaskGroupServiceImpl;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupServiceImpl
     implements ProjectTaskGroupBusinessService {
-
+  protected ProjectTaskRepository projectTaskRepository;
+  protected UnitConversionForProjectService unitConversionForProjectService;
   protected ProjectTaskComputeBusinessService projectTaskComputeBusinessService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject
   public ProjectTaskGroupBusinessServiceImpl(
       ProjectTaskComputeService projectTaskComputeService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
-      ProjectTaskComputeBusinessService projectTaskComputeBusinessService) {
+      ProjectTaskRepository projectTaskRepository,
+      UnitConversionForProjectService unitConversionForProjectService,
+      ProjectTaskComputeBusinessService projectTaskComputeBusinessService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
     super(projectTaskComputeService);
-    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskRepository = projectTaskRepository;
+    this.unitConversionForProjectService = unitConversionForProjectService;
     this.projectTaskComputeBusinessService = projectTaskComputeBusinessService;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
   @Override
@@ -116,5 +123,33 @@ public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupService
     valuesMap.put("exTaxTotal", projectTask.getExTaxTotal());
     valuesMap.put("totalCosts", projectTask.getTotalCosts());
     return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> updateInvoicingUnit(ProjectTask projectTask) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+    projectTask.setQuantity(computeQuantity(projectTask));
+    projectTaskBusinessProjectService.updateDiscount(projectTask);
+    projectTaskBusinessProjectService.compute(projectTask);
+    valuesMap.put("quantity",projectTask.getQuantity() );
+    valuesMap.put("unitPrice", projectTask.getUnitPrice());
+    valuesMap.put("unitCost", projectTask.getUnitCost());
+    valuesMap.put("exTaxTotal", projectTask.getExTaxTotal());
+    valuesMap.put("totalCosts", projectTask.getTotalCosts());
+    return valuesMap;
+  }
+
+  public BigDecimal computeQuantity(ProjectTask projectTask) throws AxelorException {
+    Unit unit = projectTaskRepository.find(projectTask.getId()).getInvoicingUnit();
+    if (projectTask == null || projectTask.getInvoicingUnit() == null || unit == null) {
+      return BigDecimal.ZERO;
+    }
+
+    return unitConversionForProjectService.convert(
+        unit,
+        projectTask.getInvoicingUnit(),
+        projectTask.getQuantity(),
+        projectTask.getQuantity().scale(),
+        projectTask.getProject());
   }
 }
