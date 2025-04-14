@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -1455,5 +1456,11 @@ public class InvoiceController {
   public void setDiscountDummies(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     response.setAttrs(Beans.get(InvoiceGlobalDiscountService.class).setDiscountDummies(invoice));
+  }
+
+  public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+    response.setValues(invoice);
   }
 }
