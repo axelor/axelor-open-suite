@@ -15,6 +15,8 @@
     <panel name="mainPanel" colSpan="12">
       <field name="company" readonlyIf="activeUmr || (umrList &amp;&amp; umrList.length != 0)"
         onSelect="action-method-invoicing-payment-situation-company-onselect"/>
+      <field name="bankDetails" requiredIf="activeUmr"
+        onSelect="action-invoicing-payment-situation-method-bank-details-on-select"/>
       <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12"
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment">
         <field name="activeUmr"
@@ -44,6 +46,12 @@
   <action-method name="action-invoicing-payment-situation-method-onnew">
     <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
       method="onNew"/>
+  </action-method>
+
+  <action-method
+    name="action-invoicing-payment-situation-method-bank-details-on-select">
+    <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
+      method="selectBankDetails"/>
   </action-method>
 
 </object-views>
