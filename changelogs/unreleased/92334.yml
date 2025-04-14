@@ -1,0 +1,3 @@
+---
+title: "Prod process line: fixed domain of stock location to take into account only those usable on production"
+module: axelor-production
