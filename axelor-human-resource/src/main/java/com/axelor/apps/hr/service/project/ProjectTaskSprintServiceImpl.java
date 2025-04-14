@@ -72,7 +72,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     Sprint savedSprint = getOldActiveSprint(projectTask);
-    BigDecimal oldBudgetedTime = getOldBudgetedTime(projectTask);
+    BigDecimal oldBudgetedTime = projectPlanningTimeCreateService.getOldBudgetedTime(projectTask);
 
     Sprint backlogSprint =
         Optional.of(projectTask)
@@ -142,7 +142,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     Sprint savedSprint = getOldActiveSprint(projectTask);
-    BigDecimal oldBudgetedTime = getOldBudgetedTime(projectTask);
+    BigDecimal oldBudgetedTime = projectPlanningTimeCreateService.getOldBudgetedTime(projectTask);
 
     Sprint backlogSprint =
         Optional.of(projectTask)
@@ -252,23 +252,10 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             employee.get().getDailyWorkHours(),
             endDateTime.get(),
             projectTask.getSite(),
-            getTimeUnit(projectTask));
+            projectPlanningTimeCreateService.getTimeUnit(projectTask));
 
     updateProjectPlanningTimeDatesAndDuration(projectPlanningTime, projectTask);
     projectTask.addProjectPlanningTimeListItem(projectPlanningTime);
-  }
-
-  protected Unit getTimeUnit(ProjectTask projectTask) {
-    Unit unit = projectTask.getTimeUnit();
-    if (unit == null) {
-      unit =
-          Optional.of(projectTask)
-              .map(ProjectTask::getProject)
-              .map(Project::getProjectTimeUnit)
-              .orElse(null);
-    }
-
-    return unit;
   }
 
   protected void updateProjectPlanningTimeDatesAndDuration(
@@ -283,7 +270,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     projectPlanningTime.setStartDateTime(activeSprint.getFromDate().atStartOfDay());
     projectPlanningTime.setEndDateTime(activeSprint.getToDate().atTime(23, 59));
     projectPlanningTime.setDisplayPlannedTime(projectTask.getBudgetedTime());
-    Unit timeUnit = getTimeUnit(projectTask);
+    Unit timeUnit = projectPlanningTimeCreateService.getTimeUnit(projectTask);
     if (timeUnit != null) {
       projectPlanningTime.setDisplayTimeUnit(timeUnit);
     }
@@ -299,14 +286,5 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     return savedSprint;
-  }
-
-  protected BigDecimal getOldBudgetedTime(ProjectTask projectTask) {
-    BigDecimal oldBudgetedTime = projectTask.getOldBudgetedTime();
-    if ((oldBudgetedTime == null || oldBudgetedTime.signum() == 0) && projectTask.getId() != null) {
-      oldBudgetedTime = projectTaskRepository.find(projectTask.getId()).getBudgetedTime();
-    }
-
-    return oldBudgetedTime;
   }
 }
