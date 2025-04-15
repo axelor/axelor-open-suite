@@ -42,7 +42,8 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
   }
 
   @Override
-  public String finalizeCheckAlert(SaleOrder saleOrder) {
+  public String finalizeCheckAlert(SaleOrder saleOrder) throws AxelorException {
+    checkSaleOrderLineList(saleOrder);
     if (productSoldAtLoss(saleOrder)) {
       return I18n.get(SaleExceptionMessage.SALE_ORDER_FINALIZE_PRODUCT_SOLD_AT_LOSS);
     }
