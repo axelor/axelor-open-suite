@@ -53,6 +53,11 @@
       <field name="project.sprintManagementSelect" hidden="true"/>
     </panel>
   </form>
+  <form name="sprint-tree-form" title="Sprint" model="com.axelor.apps.project.db.Sprint"
+    width="large" onNew="action-sprint-group-onnew"
+    onLoad="action-sprint-attrs-manage-hide-project-version" canNew="false" canEdit="false">
+    <panel-include view="sprint-form"/>
+  </form>
 
   <form model="com.axelor.utils.db.Wizard" title="Sprint generator"
     name="sprint-generator-wizard-form" width="large" onNew="action-sprint-generator-group-onnew">
