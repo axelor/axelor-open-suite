@@ -1513,9 +1513,9 @@ public class InvoiceController {
     }
 
     if (invoiceFiscalPosition == null) {
-      // Manually created invoice
+      Set<FiscalPosition> fiscalPositionSet = companyTaxNumber.getFiscalPositionSet();
       FiscalPosition fiscalPosition =
-          companyTaxNumber.getFiscalPositionSet().stream().findFirst().orElse(null);
+          (fiscalPositionSet.size() == 1) ? fiscalPositionSet.iterator().next() : null;
       response.setValue("fiscalPosition", fiscalPosition);
     } else {
       boolean hasMatch =
