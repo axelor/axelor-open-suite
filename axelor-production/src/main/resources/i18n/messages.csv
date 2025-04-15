@@ -672,6 +672,7 @@
 "Prod process filters",,,
 "Prod process is already on draft status",,,
 "Prod process line",,,
+"Prod process of the bill of material is null therefore a manuf order cannot be generated.",,,
 "Prod process template",,,
 "ProdProcess.company",,,
 "ProdProcess.consumeProduct",,,

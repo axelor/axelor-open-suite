@@ -672,6 +672,7 @@
 "Prod process filters","Filtres des gammes",,
 "Prod process is already on draft status","La gamme est déjà au statut brouillon",,
 "Prod process line","Phase",,
+"Prod process of the bill of material is null therefore a manuf order cannot be generated.","La gamme de la nomenclature est null par conséquent l'ordre de fabrication de ne peut pas être généré.",,
 "Prod process template","Modèle gamme",,
 "ProdProcess.company","Société",,
 "ProdProcess.consumeProduct","Produits à consommer",,

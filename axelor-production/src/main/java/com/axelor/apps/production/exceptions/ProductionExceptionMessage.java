@@ -408,4 +408,7 @@ public final class ProductionExceptionMessage {
 
   public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE = /*$$(*/
       "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more" /*)*/;
+
+  public static final String CBN_PROD_PROCESS_CANNOT_BE_NULL = /*$$(*/
+      "Prod process of the bill of material is null therefore a manuf order cannot be generated. " /*)*/;
 }
