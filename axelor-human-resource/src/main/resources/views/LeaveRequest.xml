@@ -174,7 +174,8 @@
   <form name="complete-my-leave-request-form" title="Leave Request"
     model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
     onLoad="action-leave-request-group-on-form-load"
-    onSave="action-leave-request-validate-dates-on-save" canCopy="false" canNew="false">
+    onSave="action-leave-request-attrs-fill-toDateT,action-leave-request-validate-dates-on-save"
+    canCopy="false" canNew="false">
     <panel-include view="leave-request-form"/>
   </form>
 
