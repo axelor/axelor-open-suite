@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed 'Generate production order' button displayed when app production is deactivated."
+module: axelor-sale
