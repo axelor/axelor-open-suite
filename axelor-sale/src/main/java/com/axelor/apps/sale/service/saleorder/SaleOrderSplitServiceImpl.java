@@ -93,8 +93,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   protected void updateOriginSol(
       SaleOrderLine saleOrderLineToCopy, BigDecimal qtyToOrder, AppBase appBase)
       throws AxelorException {
-    BigDecimal qtyToOrderLeft =
-        saleOrderLineToCopy.getQty().subtract(saleOrderLineToCopy.getOrderedQty());
+    BigDecimal qtyToOrderLeft = getQtyToOrderLeft(saleOrderLineToCopy);
     if (qtyToOrderLeft.compareTo(qtyToOrder) < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -125,5 +124,10 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.SALE_QUOTATION_ALL_ALREADY_ORDERED));
     }
+  }
+
+  @Override
+  public BigDecimal getQtyToOrderLeft(SaleOrderLine saleOrderLine) {
+    return saleOrderLine.getQty().subtract(saleOrderLine.getOrderedQty());
   }
 }

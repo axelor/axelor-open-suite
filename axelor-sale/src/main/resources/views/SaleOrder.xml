@@ -678,7 +678,7 @@
         icon="check-all" css="btn-success"
         if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
       <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
-        colSpan="12" onClick="save, action-sale-order-confirm-wizard-method-open-wizard"
+        colSpan="12" onClick="action-sale-order-group-split-confirm"
         readonlyIf="(advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)) || !saleOrderLineList || saleOrderLineList.length == 0"
         icon="check-all" css="btn-success"
         if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
@@ -1297,7 +1297,8 @@
   </form>
 
   <form name="sale-order-incoterm-wizard-form" title="Fill incoterm"
-    model="com.axelor.apps.sale.db.SaleOrder" onSave="action-sale-group-confirmed">
+    model="com.axelor.apps.sale.db.SaleOrder"
+    onSave="action-sale-order-group-incoterm-wizard-onsave">
     <panel name="mainPanel" colSpan="12">
       <field name="incoterm" required="true" grid-view="incoterm-grid"
         form-view="incoterm-form"/>
@@ -1538,6 +1539,21 @@
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-method-confirm"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-split-confirm">
+    <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+    <action name="save"/>
+    <action name="action-sale-order-confirm-wizard-method-open-wizard"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-incoterm-wizard-onsave">
+    <action name="action-sale-group-confirmed"
+      if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+    <action name="action-sale-order-group-split-confirm"
+      if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
