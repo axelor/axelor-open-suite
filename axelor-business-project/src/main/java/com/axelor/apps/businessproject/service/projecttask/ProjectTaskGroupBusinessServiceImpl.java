@@ -128,7 +128,7 @@ public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupService
   @Override
   public Map<String, Object> updateInvoicingUnit(ProjectTask projectTask) throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
-    projectTask.setQuantity(computeQuantity(projectTask));
+    computeQuantity(projectTask);
     projectTaskBusinessProjectService.updateDiscount(projectTask);
     projectTaskBusinessProjectService.compute(projectTask);
     valuesMap.put("quantity", projectTask.getQuantity());
@@ -139,17 +139,40 @@ public class ProjectTaskGroupBusinessServiceImpl extends ProjectTaskGroupService
     return valuesMap;
   }
 
-  public BigDecimal computeQuantity(ProjectTask projectTask) throws AxelorException {
+  public void computeQuantity(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getId() == null) {
+      return;
+    }
     Unit unit = projectTaskRepository.find(projectTask.getId()).getInvoicingUnit();
-    if (projectTask == null || projectTask.getInvoicingUnit() == null || unit == null) {
-      return BigDecimal.ZERO;
+    if (projectTask.getInvoicingUnit() == null || unit == null) {
+      return;
     }
 
-    return unitConversionForProjectService.convert(
-        unit,
-        projectTask.getInvoicingUnit(),
-        projectTask.getQuantity(),
-        projectTask.getQuantity().scale(),
-        projectTask.getProject());
+    BigDecimal qty =
+        unitConversionForProjectService.convert(
+            unit,
+            projectTask.getInvoicingUnit(),
+            projectTask.getQuantity(),
+            projectTask.getQuantity().scale(),
+            projectTask.getProject());
+    projectTask.setQuantity(qty);
+
+    BigDecimal unitCost =
+        unitConversionForProjectService.convert(
+            projectTask.getInvoicingUnit(),
+            unit,
+            projectTask.getUnitCost(),
+            projectTask.getUnitCost().scale(),
+            projectTask.getProject());
+    projectTask.setUnitCost(unitCost);
+
+    BigDecimal unitPrice =
+        unitConversionForProjectService.convert(
+            projectTask.getInvoicingUnit(),
+            unit,
+            projectTask.getUnitPrice(),
+            projectTask.getUnitPrice().scale(),
+            projectTask.getProject());
+    projectTask.setUnitPrice(unitPrice);
   }
 }
