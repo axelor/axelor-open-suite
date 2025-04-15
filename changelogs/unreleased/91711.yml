@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the issue of finalizing a sale order without sale order lines."
+module: axelor-sale
