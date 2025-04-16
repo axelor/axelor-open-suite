@@ -96,7 +96,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
     moveLine = super.fillMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
 
     moveLine.setBudget(invoiceLine.getBudget());
-
+    moveLine.setBudgetFromDate(invoiceLine.getBudgetFromDate());
+    moveLine.setBudgetToDate(invoiceLine.getBudgetToDate());
     if (!CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         moveLine.addBudgetDistributionListItem(budgetDistribution);

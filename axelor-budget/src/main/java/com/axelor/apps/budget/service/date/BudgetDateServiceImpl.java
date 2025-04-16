@@ -2,6 +2,8 @@ package com.axelor.apps.budget.service.date;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
@@ -26,30 +28,58 @@ public class BudgetDateServiceImpl implements BudgetDateService {
 
   @Override
   public String checkBudgetDates(Invoice invoice) {
-    String error = "";
     if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
-      return error;
+      return "";
     }
 
     StringJoiner sj = new StringJoiner("<BR/>");
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      error =
-          getBudgetDateError(
-              invoiceLine.getBudgetFromDate(),
-              invoiceLine.getBudgetToDate(),
-              invoiceLine.getBudget(),
-              invoiceLine.getBudgetDistributionList());
-      if (StringUtils.notEmpty(error)) {
-        sj.add(
-            String.format(
-                "%s %s :",
-                I18n.get(BudgetExceptionMessage.ON_PRODUCT_LINE), invoiceLine.getProductName()));
-        sj.add(error);
-      }
+      getBudgetDateError(
+          invoiceLine.getBudgetFromDate(),
+          invoiceLine.getBudgetToDate(),
+          invoiceLine.getBudget(),
+          invoiceLine.getBudgetDistributionList(),
+          invoiceLine.getProductName(),
+          sj);
     }
 
     return sj.toString();
+  }
+
+  @Override
+  public String checkBudgetDates(Move move) {
+    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return "";
+    }
+
+    StringJoiner sj = new StringJoiner("<BR/>");
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      getBudgetDateError(
+          moveLine.getBudgetFromDate(),
+          moveLine.getBudgetToDate(),
+          moveLine.getBudget(),
+          moveLine.getBudgetDistributionList(),
+          moveLine.getAccountName(),
+          sj);
+    }
+
+    return sj.toString();
+  }
+
+  protected void getBudgetDateError(
+      LocalDate fromDate,
+      LocalDate toDate,
+      Budget budget,
+      List<BudgetDistribution> budgetDistributionList,
+      String errorArgument,
+      StringJoiner sj) {
+    String error = getBudgetDateError(fromDate, toDate, budget, budgetDistributionList);
+    if (StringUtils.notEmpty(error)) {
+      sj.add(String.format("%s %s :", I18n.get(BudgetExceptionMessage.ON_LINE), errorArgument));
+      sj.add(error);
+    }
   }
 
   @Override
