@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.validation.constraints.Min;
-import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLinePutRequest extends RequestStructure {
 
@@ -307,11 +306,9 @@ public class ExpenseLinePutRequest extends RequestStructure {
     if (employeeIdList == null) {
       return null;
     }
-
-    if (CollectionUtils.isEmpty(employeeIdList)) {
+    if (employeeIdList.isEmpty()) {
       return Collections.emptyList();
     }
-
     List<Employee> employeeList = new ArrayList<>();
     for (Long id : employeeIdList) {
       employeeList.add(ObjectFinder.find(Employee.class, id, ObjectFinder.NO_VERSION));

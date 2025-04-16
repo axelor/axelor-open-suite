@@ -58,7 +58,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected AppBaseService appBaseService;
   protected ExpenseProofFileService expenseProofFileService;
   protected ExpenseLineToolService expenseLineToolService;
-  protected ExpenseLineService expenseLineService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -68,8 +67,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
-      ExpenseLineToolService expenseLineToolService,
-      ExpenseLineService expenseLineService) {
+      ExpenseLineToolService expenseLineToolService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
@@ -77,7 +75,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     this.appBaseService = appBaseService;
     this.expenseProofFileService = expenseProofFileService;
     this.expenseLineToolService = expenseLineToolService;
-    this.expenseLineService = expenseLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})

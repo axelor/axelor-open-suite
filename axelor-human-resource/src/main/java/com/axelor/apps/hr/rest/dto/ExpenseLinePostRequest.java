@@ -306,9 +306,6 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   }
 
   public List<Employee> fetchEmployeeList() {
-    if (employeeIdList == null) {
-      return null;
-    }
     if (CollectionUtils.isEmpty(employeeIdList)) {
       return Collections.emptyList();
     }
