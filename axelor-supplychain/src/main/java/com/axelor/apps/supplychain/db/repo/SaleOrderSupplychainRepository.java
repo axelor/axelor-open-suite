@@ -21,43 +21,17 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
-import java.math.BigDecimal;
+import com.google.inject.Inject;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
-  @Override
-  public SaleOrder copy(SaleOrder entity, boolean deep) {
-
-    SaleOrder copy = super.copy(entity, deep);
-
-    if (!Beans.get(AppService.class).isApp("supplychain")) {
-      return copy;
-    }
-
-    copy.setShipmentDate(null);
-    copy.setDeliveryState(DELIVERY_STATE_NOT_DELIVERED);
-    copy.setAmountInvoiced(null);
-    copy.setInvoicingState(INVOICING_STATE_NOT_INVOICED);
-    copy.setStockMoveList(null);
-
-    if (copy.getSaleOrderLineList() != null) {
-      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-        saleOrderLine.setDeliveryState(null);
-        saleOrderLine.setInvoicingState(null);
-        saleOrderLine.setDeliveredQty(null);
-        saleOrderLine.setAmountInvoiced(null);
-        saleOrderLine.setInvoiced(null);
-        saleOrderLine.setIsInvoiceControlled(null);
-        saleOrderLine.setReservedQty(BigDecimal.ZERO);
-      }
-    }
-
-    return copy;
+  @Inject
+  public SaleOrderSupplychainRepository(SaleOrderCopyService saleOrderCopyService) {
+    super(saleOrderCopyService);
   }
 
   @Override
