@@ -137,6 +137,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderRestServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
@@ -330,5 +332,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderGlobalDiscountService.class).to(SaleOrderGlobalDiscountServiceImpl.class);
     bind(SaleOrderCopyService.class).to(SaleOrderCopyServiceImpl.class);
     bind(SaleOrderDateService.class).to(SaleOrderDateServiceImpl.class);
+    bind(SaleOrderSplitService.class).to(SaleOrderSplitServiceImpl.class);
   }
 }
