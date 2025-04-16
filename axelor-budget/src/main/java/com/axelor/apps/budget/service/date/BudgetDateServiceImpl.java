@@ -98,7 +98,7 @@ public class BudgetDateServiceImpl implements BudgetDateService {
     if (ObjectUtils.isEmpty(budget.getBudgetLineList())) {
       sj.add(
           String.format(
-              BudgetExceptionMessage.BUDGET_LINE_MISSING_ON_DATES,
+              I18n.get(BudgetExceptionMessage.BUDGET_LINE_MISSING_ON_DATES),
               fromDate.toString(),
               toDate.toString(),
               budget.getCode()));
@@ -112,7 +112,7 @@ public class BudgetDateServiceImpl implements BudgetDateService {
       if (budgetLine == null) {
         sj.add(
             String.format(
-                BudgetExceptionMessage.BUDGET_LINE_MISSING_ON_DATES,
+                I18n.get(BudgetExceptionMessage.BUDGET_LINE_MISSING_ON_DATES),
                 date.toString(),
                 toDate.toString(),
                 budget.getCode()));
