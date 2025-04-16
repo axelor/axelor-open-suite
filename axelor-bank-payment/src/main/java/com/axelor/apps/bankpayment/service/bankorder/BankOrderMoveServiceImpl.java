@@ -162,7 +162,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
     isDebit =
         orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
-            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER;
+            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER
+            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_NATIONAL_TREASURY_TRANSFER;
 
     generateMovesBankOrderLines(bankOrder);
   }

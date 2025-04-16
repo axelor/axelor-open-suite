@@ -9,6 +9,10 @@
 
     <many-to-one name="completedPaidProjectStatus" title="Completed paid project status"
       ref="com.axelor.apps.project.db.ProjectStatus"/>
+
+    <track>
+      <field name="completedPaidProjectStatus" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

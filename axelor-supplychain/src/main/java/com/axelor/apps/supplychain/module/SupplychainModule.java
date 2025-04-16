@@ -253,6 +253,8 @@ import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInitValueSupplychainServiceImpl;
@@ -301,8 +303,15 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSup
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
@@ -464,9 +473,15 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderFinalizeServiceImpl.class).to(SaleOrderFinalizeSupplychainServiceImpl.class);
     bind(SaleOrderLineViewSupplychainService.class)
         .to(SaleOrderLineViewSupplychainServiceImpl.class);
-    bind(SaleOrderLineViewServiceImpl.class).to(SaleOrderLineViewSupplychainServiceImpl.class);
+    bind(SaleOrderLineViewServiceImpl.class).to(SaleOrderLineViewServiceSupplychainImpl.class);
     bind(SaleOrderLineDomainSupplychainService.class)
         .to(SaleOrderLineDomainSupplychainServiceImpl.class);
+    bind(SaleOrderLineSupplychainOnLoadService.class)
+        .to(SaleOrderLineSupplychainOnLoadServiceImpl.class);
+    bind(SaleOrderLineSupplychainOnNewService.class)
+        .to(SaleOrderLineSupplychainOnNewServiceImpl.class);
+    bind(SaleOrderLineOnSaleSupplyChangeService.class)
+        .to(SaleOrderLineOnSaleSupplyChangeServiceImpl.class);
     bind(SaleOrderTaxNumberService.class).to(SaleOrderTaxNumberServiceImpl.class);
     bind(SaleOrderCheckServiceImpl.class).to(SaleOrderCheckSupplychainServiceImpl.class);
     bind(SaleOrderLineSupplychainObserver.class);
@@ -497,5 +512,6 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderShipmentService.class).to(PurchaseOrderShipmentServiceImpl.class);
     bind(ShippingService.class).to(ShippingServiceImpl.class);
     bind(FreightCarrierModeService.class).to(FreightCarrierModeServiceImpl.class);
+    bind(SaleOrderCopySupplychainService.class).to(SaleOrderCopySupplychainServiceImpl.class);
   }
 }

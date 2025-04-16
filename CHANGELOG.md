@@ -1,3 +1,79 @@
+## [8.3.3] (2025-04-03)
+
+### Fixes
+#### Base
+
+* Update to Axelor Open Platform 7.3.4.
+* Day planning: added sequence in demo data.
+* Base batch: fixed issue in recompute all addresses batch.
+* Fixed SIRET check before creation using partner Sirene API call.
+* Partner: when creating/filling a partner from Sirene API, fill the NIC.
+* Partner: fixed wrong registration number check warning translation.
+
+#### Account
+
+* Fixed an user interface issue where it was allowed to create a new tax where the user should only be able to select one.
+* Invoice: show 'Price excl. Tax' on invoice report even if it is 0.
+* Bank order/National treasury transfer: fixed internal money transfer from bank order by inverting credit and debit.
+* Accounting batch: fixed balance amount on close/open account batch.
+* Invoice: fixed bad error handling when skipping validation is active.
+* Invoice term: fixed display condition for PFP panel.
+* Payment voucher: fixed control when we register payment in multicurrency.
+* Fixed asset: fixed null value on moveline for ongoing cession.
+
+#### Budget
+
+* Budget: fixed domain issues for analytic axis and account in Budget from Budget structure.
+* Global budget/Budget level/Budget: fixed the visibility of the simulated budget amount fields.
+* Purchase order line: fixed budget domain in budget distribution.
+
+#### Business Project
+
+* Business project task: fixed an issue at task creation when employee has a product.
+* Invoicing project: fixed an issue where non validated timesheet lines were included.
+
+#### Contract
+
+* Contract line: fixed domain for product based on contract target type.
+* Contract: added french translation for the 'Related Equipment' panel title.
+
+#### Human Resource
+
+* Project: fixed an error occurring when creating a timesheet and the user had no employee.
+* Timesheet line: fixed an issue where a timesheet line was not linked to the employee's timesheet.
+
+#### Production
+
+* Bill of material: fixed an issue where a component could not be deleted from the BOM line list after the tree view was opened.
+* Sale order: fill default prod process of bill of material when choosing a product.
+
+#### Sale
+
+* Sale order: fixed the alert when finalizing an order and the price list is not valid.
+* Sale order: fixed wrong behaviour on a prospect with accepted credit.
+* App sale: fixed French translation for line list display type helper.
+* Sale order: fixed NPE when creating a sale order without active company.
+
+#### Stock
+
+* Stock move: fixed average price not updated on product when stock move is canceled.
+* Inventory: gap and real values computation now correctly takes into account company product cost/sale/purchase price.
+
+#### Supply Chain
+
+* Sale order: fixed NPE when invoicing a sale order with title line.
+
+
+### Developer
+
+#### Base
+
+Added `PartnerService` and `AppBaseService` to the constructor of `PartnerGenerateService`.
+
+#### Account
+
+Added `CurrencyService` and `CurrencyScaleService` to the constructor of `PaymentVoucherControlService`.
+
 ## [8.3.2] (2025-03-20)
 
 ### Fixes
@@ -276,6 +352,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.3]: https://github.com/axelor/axelor-open-suite/compare/v8.3.2...v8.3.3
 [8.3.2]: https://github.com/axelor/axelor-open-suite/compare/v8.3.1...v8.3.2
 [8.3.1]: https://github.com/axelor/axelor-open-suite/compare/v8.3.0...v8.3.1
 [8.3.0]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.3.0

@@ -36,7 +36,7 @@ public class PartnerLinkSupplychainServiceImpl extends PartnerLinkServiceImpl
   public Partner getDefaultInvoicedPartner(Partner clientPartner) {
 
     List<Long> partnerIds =
-        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
     // If there is only one, then it is the default one
     if (partnerIds.size() == 1) {
       return partnerRepository.find(partnerIds.get(0));
@@ -50,7 +50,7 @@ public class PartnerLinkSupplychainServiceImpl extends PartnerLinkServiceImpl
   @Override
   public Partner getDefaultDeliveredPartner(Partner clientPartner) {
     List<Long> partnerIds =
-        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+        getPartnerIds(clientPartner, PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_TO);
     // If there is only one, then it is the default one
     if (partnerIds.size() == 1) {
       return partnerRepository.find(partnerIds.get(0));

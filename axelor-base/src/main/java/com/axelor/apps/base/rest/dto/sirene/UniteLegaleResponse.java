@@ -30,6 +30,11 @@ public class UniteLegaleResponse {
   private String denominationUniteLegale;
   private String trancheEffectifsUniteLegale;
   private String activitePrincipaleUniteLegale;
+  private String nicSiegeUniteLegale;
+
+  public String getNicSiegeUniteLegale() {
+    return nicSiegeUniteLegale;
+  }
 
   public String getActivitePrincipaleUniteLegale() {
     return activitePrincipaleUniteLegale;

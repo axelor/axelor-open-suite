@@ -88,6 +88,12 @@
       <field name="isEnableCalculationEntireQuotation" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
       <field name="isCartManagementEnabled" on="UPDATE"/>
+      <field name="isPastVersionRecovery" on="UPDATE"/>
+      <field name="isDiscountEnabledOnEditableGrid" on="UPDATE"/>
+      <field name="listDisplayTypeSelect" on="UPDATE"/>
+      <field name="isSOLPriceTotalOfSubLines" on="UPDATE"/>
+      <field name="enableConfiguratorEdition" on="UPDATE"/>
+      <field name="enableLineDuplication" on="UPDATE"/>
     </track>
   </entity>
 

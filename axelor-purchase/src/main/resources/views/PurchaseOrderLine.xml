@@ -195,7 +195,7 @@
             hideIf="discountTypeSelect == 3"/>
           <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"/>
         </panel>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-group-purchase-purchase-orderline-taxline-onchange"
           domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
           form-view="tax-line-form" widget="TagSelect"/>
