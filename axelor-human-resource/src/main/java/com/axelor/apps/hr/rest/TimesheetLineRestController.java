@@ -71,6 +71,7 @@ public class TimesheetLineRestController {
                 requestBody.getDate(),
                 timesheet,
                 requestBody.getDuration(),
+                requestBody.getHoursDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice());
     Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
@@ -100,6 +101,7 @@ public class TimesheetLineRestController {
             requestBody.fetchProjectTask(),
             requestBody.fetchProduct(),
             requestBody.getDuration(),
+            requestBody.getHoursDuration(),
             requestBody.getDate(),
             requestBody.getComments(),
             requestBody.isToInvoice());

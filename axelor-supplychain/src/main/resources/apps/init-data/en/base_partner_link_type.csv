@@ -1,4 +1,4 @@
 "importId";"name";"typeSelect";"link1Name";"link2Name"
-1;"Invoice";"Invoiced by";"Invoiced for";"Invoiced by"
+1;"Invoice";"Invoiced to";"Invoiced instead of";"Invoiced to"
 2;"Order";"Ordered by";"Ordered for";"Ordered by"
-3;"Delivery";"Delivered by";"Delivered for";"Delivered by"
+3;"Delivery";"Delivered to";"Delivered instead of";"Delivered to"

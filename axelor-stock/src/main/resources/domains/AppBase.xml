@@ -7,6 +7,10 @@
 
   <entity name="AppBase" cacheable="true">
     <boolean name="enableSiteManagementForStock" title="Enable site management for stock"/>
+
+    <track>
+      <field name="enableSiteManagementForStock" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

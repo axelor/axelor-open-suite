@@ -22,14 +22,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import wslite.json.JSONException;
 
 public interface SaleOrderService {
 
   public String getFileName(SaleOrder saleOrder);
-
-  public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 
   /**
    * Fill {@link SaleOrder#mainInvoicingAddressStr} and {@link SaleOrder#deliveryAddressStr}
@@ -76,8 +76,11 @@ public interface SaleOrderService {
    *
    * @param saleOrder
    * @throws AxelorException
+   * @throws JSONException
+   * @throws MalformedURLException
    */
-  SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) throws AxelorException;
+  SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
+      throws AxelorException, MalformedURLException, JSONException;
 
   /**
    * Blocks if the given sale order has line with a discount superior to the max authorized

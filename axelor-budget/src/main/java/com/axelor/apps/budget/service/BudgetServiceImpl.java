@@ -434,7 +434,7 @@ public class BudgetServiceImpl implements BudgetService {
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
       GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
-      if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey()) && globalBudget != null) {
+      if (checkBudgetKey && globalBudget != null) {
         String error = computeBudgetKey(budget, globalBudget.getCompany());
         if (!Strings.isNullOrEmpty(error)) {
           throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, error);

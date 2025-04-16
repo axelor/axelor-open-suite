@@ -30,8 +30,9 @@ public class PurchaseOrderTypeSelectProductionServiceImpl
   public void setTypeSelect(PurchaseOrder purchaseOrder) {
     Objects.requireNonNull(purchaseOrder);
 
-    if (purchaseOrder.getSupplierPartner() != null
-        && purchaseOrder.getSupplierPartner().getIsSubcontractor()) {
+    if ((purchaseOrder.getSupplierPartner() != null
+            && purchaseOrder.getSupplierPartner().getIsSubcontractor())
+        || purchaseOrder.getTypeSelect().equals(PurchaseOrderRepository.TYPE_SUBCONTRACTING)) {
       purchaseOrder.setTypeSelect(PurchaseOrderRepository.TYPE_SUBCONTRACTING);
     } else {
       super.setTypeSelect(purchaseOrder);
