@@ -68,10 +68,12 @@
       <field name="entryDescriptionComputation" widget="code-editor" x-code-syntax="groovy"
         height="150" x-code-theme="groovy" colSpan="12"/>
     </panel>
-    <panel name="analyticPanel" title="Analytic" showIf="counterpartAccount">
+    <panel name="analyticPanel" title="Analytic"
+      showIf="counterpartAccount.analyticDistributionAuthorized">
       <field name="analyticDistributionTemplate"
         requiredIf="counterpartAccount.analyticDistributionRequiredOnMoveLines"/>
       <field name="counterpartAccount.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+      <field name="counterpartAccount.analyticDistributionAuthorized" hidden="true"/>
     </panel>
   </form>
 

@@ -145,10 +145,12 @@
           form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="isPosted" readonly="true"/>
       </panel>
-      <panel name="analyticPanel" title="Analytic">
+      <panel name="analyticPanel" title="Analytic"
+        showIf="account.analyticDistributionAuthorized">
         <field name="analyticDistributionTemplate"
           requiredIf="account.analyticDistributionRequiredOnMoveLines"/>
         <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+        <field name="account.analyticDistributionAuthorized" hidden="true"/>
       </panel>
     </panel-tabs>
   </form>
