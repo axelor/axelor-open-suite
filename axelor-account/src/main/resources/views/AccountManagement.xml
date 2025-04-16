@@ -72,8 +72,6 @@
       target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
       <attribute name="showIf"
         value="paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
-      <attribute name="requiredIf"
-        value="typeSelect == 3 &amp;&amp; (paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
       <insert position="after">
         <field name="chequeDepositJournal"
           domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
