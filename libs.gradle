@@ -1,6 +1,6 @@
 def libs = ext.libs = [:]
 
-libs.axelor_studio = 'com.axelor.addons:axelor-studio:3.4.1'
+libs.axelor_studio = 'com.axelor.addons:axelor-studio:3.4.2'
 libs.axelor_message = 'com.axelor.addons:axelor-message:3.2.2'
 libs.axelor_utils = 'com.axelor.addons:axelor-utils:3.4.0'
 

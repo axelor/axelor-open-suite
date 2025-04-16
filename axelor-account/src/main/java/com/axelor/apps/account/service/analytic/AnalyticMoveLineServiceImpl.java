@@ -401,7 +401,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   @Override
   public void setAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
     if (analyticMoveLine != null) {
-      analyticMoveLine.setCurrency(Optional.of(company).map(Company::getCurrency).orElse(null));
+      analyticMoveLine.setCurrency(
+          Optional.ofNullable(company).map(Company::getCurrency).orElse(null));
     }
   }
 }

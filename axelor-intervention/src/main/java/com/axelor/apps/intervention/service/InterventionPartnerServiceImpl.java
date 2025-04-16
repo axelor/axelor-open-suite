@@ -37,12 +37,12 @@ public class InterventionPartnerServiceImpl implements InterventionPartnerServic
       return partner;
     }
 
-    // Retrieve all Invoiced by Type
+    // Retrieve all Invoiced to Type
     List<PartnerLink> partnerLinkInvoicedByList =
         partner.getManagedByPartnerLinkList().stream()
             .filter(
                 partnerSupplychainLink ->
-                    PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
+                    PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO.equals(
                         partnerSupplychainLink.getPartnerLinkType().getTypeSelect()))
             .collect(Collectors.toList());
     // If there is only one, then it is the default one

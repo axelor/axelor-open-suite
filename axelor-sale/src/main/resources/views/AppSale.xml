@@ -32,6 +32,7 @@
       <field name="considerZeroCost" widget="boolean-switch"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
+      <field name="isQuotationAndOrderSplitEnabled" widget="boolean-switch"/>
 
     </panel>
     <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
