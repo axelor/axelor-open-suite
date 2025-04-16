@@ -36,7 +36,8 @@
     </toolbar>
 
     <panel name="mainPanel">
-      <field name="company" canEdit="false"/>
+      <field name="company" canEdit="false"
+        onChange="action-declaration-of-exchanges-record-on-change-company"/>
       <field name="country"
         domain="self IN (SELECT sl.address.country FROM StockLocation sl WHERE sl.company = :company)"
         canEdit="false"/>
@@ -157,6 +158,14 @@
     <attribute for="declarationOfExchangesPanel.unitPriceUntaxed" name="hidden"
       expr="eval: stockMoveTypeSelect == 3"/>
   </action-attrs>
+
+  <action-record name="action-declaration-of-exchanges-record-on-change-company"
+    model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
+    <field name="fiscalYear" expr="eval: null"/>
+    <field name="period" expr="eval: null"/>
+    <field name="country"
+      expr="eval: __repo__(Country).all().filter('self = :country AND self IN (SELECT sl.address.country FROM StockLocation sl WHERE sl.company = :company)').bind('country', __this__?.country).bind('company', __this__?.company).fetchOne()"/>
+  </action-record>
 
   <search-filters name="declaration-of-exchanges-filters"
     model="com.axelor.apps.supplychain.db.DeclarationOfExchanges"
