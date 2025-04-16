@@ -47,7 +47,6 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
@@ -240,16 +239,5 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
         expenseLine.setCurrency(company.getCurrency());
       }
     }
-  }
-
-  @Override
-  public List<Employee> getEmployeeList(
-      List<Long> employeeIdList, ExpenseLine expenseLine, LocalDate expenseDate) {
-    if (employeeIdList == null) {
-      return null;
-    }
-    return expenseLineService.getEmployeeDomain(expenseDate).stream()
-        .filter(el -> employeeIdList.contains(el.getId()))
-        .collect(Collectors.toList());
   }
 }

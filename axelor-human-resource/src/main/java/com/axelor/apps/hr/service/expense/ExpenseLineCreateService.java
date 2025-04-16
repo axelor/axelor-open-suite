@@ -28,14 +28,12 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseLineCreateService {
 
-  @Transactional(rollbackOn = {Exception.class})
   ExpenseLine createGeneralExpenseLine(
       Project project,
       Product expenseProduct,
@@ -66,7 +64,4 @@ public interface ExpenseLineCreateService {
       Boolean toInvoice,
       ProjectTask projectTask)
       throws AxelorException;
-
-  List<Employee> getEmployeeList(
-      List<Long> employeeIdList, ExpenseLine expenseLine, LocalDate expenseDate);
 }

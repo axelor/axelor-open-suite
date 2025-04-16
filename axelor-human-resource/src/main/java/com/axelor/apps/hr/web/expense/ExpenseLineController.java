@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -30,7 +31,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.db.Wizard;
-import com.axelor.utils.helpers.StringHelper;
 import java.util.List;
 
 public class ExpenseLineController {
@@ -86,11 +86,7 @@ public class ExpenseLineController {
 
   public void setInvitedCollaboratorSetDomain(ActionRequest request, ActionResponse response) {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-    String domain =
-        "self.id IN ("
-            + StringHelper.getIdListString(
-                Beans.get(ExpenseLineService.class).getEmployeeDomain(expenseLine.getExpenseDate()))
-            + ")";
+    String domain = Beans.get(ExpenseLineDomainService.class).getInvitedCollaborators(expenseLine);
     response.setAttr("invitedCollaboratorSet", "domain", domain);
   }
 }

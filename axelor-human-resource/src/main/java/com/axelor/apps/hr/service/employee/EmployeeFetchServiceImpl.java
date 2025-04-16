@@ -23,11 +23,14 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -73,5 +76,17 @@ public class EmployeeFetchServiceImpl implements EmployeeFetchService {
     }
 
     return Joiner.on(" AND ").join(query);
+  }
+
+  @Override
+  public List<Employee> getInvitedCollaboratorsDomain(LocalDate expenseDate) {
+    return Beans.get(EmployeeRepository.class)
+        .all()
+        .filter(
+            "self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.leavingDate=null OR self.leavingDate >= :expenseDate) AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
+                + "AND self.mainEmploymentContract.payCompany IN :companySet")
+        .bind("expenseDate", expenseDate)
+        .bind("companySet", AuthUtils.getUser().getCompanySet())
+        .fetch();
   }
 }

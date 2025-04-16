@@ -30,10 +30,13 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLinePostRequest extends RequestPostStructure {
 
@@ -302,10 +305,18 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
   }
 
-  public List<Long> fetchEmployeeList() {
-    if (employeeIdList == null || employeeIdList.isEmpty()) {
+  public List<Employee> fetchEmployeeList() {
+    if (employeeIdList == null) {
       return null;
     }
-    return employeeIdList;
+    if (CollectionUtils.isEmpty(employeeIdList)) {
+      return Collections.emptyList();
+    }
+
+    List<Employee> employeeList = new ArrayList<>();
+    for (Long id : employeeIdList) {
+      employeeList.add(ObjectFinder.find(Employee.class, id, ObjectFinder.NO_VERSION));
+    }
+    return employeeList;
   }
 }
