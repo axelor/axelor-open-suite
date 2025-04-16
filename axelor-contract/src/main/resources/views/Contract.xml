@@ -88,8 +88,7 @@
           hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
-        <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
-          showIf="contractTypeSelect == 1"/>
+        <field name="project" colSpan="8" hidden="true" showIf="contractTypeSelect == 1"/>
         <field name="company.tradingNameList" hidden="true"/>
       </panel>
     </panel>
