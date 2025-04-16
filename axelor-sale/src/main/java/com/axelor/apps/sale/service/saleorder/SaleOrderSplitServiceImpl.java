@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
 
@@ -87,6 +88,12 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
       SaleOrderLine copySaleOrderLine =
           getSaleOrderLineCopy(saleOrderLineToCopy, qtyToOrder, confirmedSaleOrder);
       confirmedSaleOrder.addSaleOrderLineListItem(copySaleOrderLine);
+    }
+
+    if (CollectionUtils.isEmpty(confirmedSaleOrder.getSaleOrderLineList())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_QUOTATION_NO_LINE_GENERATED));
     }
   }
 

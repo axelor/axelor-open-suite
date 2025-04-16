@@ -9,7 +9,7 @@
       canNew="false" grid-view="confirm-wizard-sale-order-line-grid" editable="true"/>
     <panel name="actionPanel">
       <button name="confirmBtn" title="Generate the order"
-        onClick="action-sale-order-confirm-wizard-method-generate"/>
+        onClick="validate, action-sale-order-confirm-wizard-method-generate"/>
     </panel>
   </form>
 
@@ -25,7 +25,8 @@
     <field name="orderedQty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="$qtyToOrder" title="Qty to order" type="decimal"
       readonlyIf="$orderAll || (qty == orderedQty)" min="0" x-scale="$nbDecimalDigitForQty"
-      validIf="$qtyToOrder &lt;= $qtyToOrderLeft"/>
+      validIf="$qtyToOrder &lt;= $qtyToOrderLeft"
+      onChange="action-sale-order-line-confirm-validate-qty-to-order"/>
     <field name="$orderAll" title="Order all" type="boolean"
       onChange="action-attrs-sale-order-line-confirm-wizard-fill-qty" readonlyIf="qty == orderedQty"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -46,4 +47,9 @@
     <call class="com.axelor.apps.sale.web.SaleOrderConfirmController"
       method="generateConfirmedSaleOrder"/>
   </action-method>
+
+  <action-validate name="action-sale-order-line-confirm-validate-qty-to-order">
+    <notify message="You can not order more than the quantity to order left."
+      if="eval: new BigDecimal(qtyToOrder).compareTo(qty - orderedQty) > 0"/>
+  </action-validate>
 </object-views>
