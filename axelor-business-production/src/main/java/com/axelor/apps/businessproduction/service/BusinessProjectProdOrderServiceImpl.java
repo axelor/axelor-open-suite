@@ -21,6 +21,7 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,13 +40,16 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
 
   protected final ProductionOrderSaleOrderService productionOrderSaleOrderService;
   protected final AppProductionService appProductionService;
+  protected final ManufOrderSaleOrderService manufOrderSaleOrderService;
 
   @Inject
   public BusinessProjectProdOrderServiceImpl(
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      ManufOrderSaleOrderService manufOrderSaleOrderService) {
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
+    this.manufOrderSaleOrderService = manufOrderSaleOrderService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -82,7 +86,7 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
       ProductionOrder productionOrder =
           productionOrderSaleOrderService.fetchOrCreateProductionOrder(saleOrder);
       for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
-        productionOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
+        manufOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
       }
       productionOrderList.add(productionOrder);
     }
@@ -95,7 +99,7 @@ public class BusinessProjectProdOrderServiceImpl implements BusinessProjectProdO
       SaleOrder saleOrder = saleOrderLine.getSaleOrder();
       ProductionOrder productionOrder =
           productionOrderSaleOrderService.fetchOrCreateProductionOrder(saleOrder);
-      productionOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
+      manufOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
       productionOrderList.add(productionOrder);
     }
   }

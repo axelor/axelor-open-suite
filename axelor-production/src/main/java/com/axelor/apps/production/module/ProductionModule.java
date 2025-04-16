@@ -210,6 +210,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServic
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineService;
@@ -459,5 +461,6 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineMOGenerationMultiLineService.class)
         .to(SaleOrderLineMOGenerationMultiLineServiceImpl.class);
     bind(SaleOrderCopyProductionService.class).to(SaleOrderCopyProductionServiceImpl.class);
+    bind(ManufOrderSaleOrderService.class).to(ManufOrderSaleOrderServiceImpl.class);
   }
 }
