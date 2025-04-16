@@ -46,9 +46,12 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
 
   @Inject
   public ExpenseLineToolServiceImpl(
-      AppHumanResourceService appHumanResourceService, KilometricService kilometricService) {
+      AppHumanResourceService appHumanResourceService,
+      KilometricService kilometricService,
+      EmployeeFetchService employeeFetchService) {
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
+    this.employeeFetchService = employeeFetchService;
   }
 
   @Override
