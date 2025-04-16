@@ -194,5 +194,5 @@ public final class SaleExceptionMessage {
       "You can not order more than %s for the line with the product %s." /*)*/;
 
   public static final String SALE_QUOTATION_NO_LINE_GENERATED = /*$$(*/
-      "No line was generated. Please check that at least one line has a quantity to order." /*)*/;
+      "No lines were generated. Please check that at least one line has a quantity to order." /*)*/;
 }

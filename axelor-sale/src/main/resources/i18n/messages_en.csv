@@ -369,7 +369,7 @@
 "Next invoicing start period date",,,
 "Next pricing",,,
 "No Of Units",,,
-"No line was generated. Please check that at least one line has a quantity to order.",,,
+"No lines were generated. Please check that at least one line has a quantity to order.",,,
 "No order line needs to be generated for this cart.",,,
 "No pricing scale used for this record",,,
 "No product family is set for this product: %s",,,
