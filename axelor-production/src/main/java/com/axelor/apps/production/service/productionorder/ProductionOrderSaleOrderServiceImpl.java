@@ -204,7 +204,6 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   protected boolean isGenerationNeeded(SaleOrderLine line) {
     return isLineHasCorrectSaleSupply(line)
-        && CollectionUtils.isEmpty(line.getManufOrderList())
         && manufOrderSaleOrderService.computeQuantityToProduceLeft(line).compareTo(BigDecimal.ZERO)
             > 0;
   }
