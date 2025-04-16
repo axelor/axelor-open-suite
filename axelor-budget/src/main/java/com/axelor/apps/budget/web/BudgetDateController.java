@@ -2,6 +2,8 @@ package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.budget.db.Budget;
@@ -31,6 +33,12 @@ public class BudgetDateController {
       toDate = invoiceLine.getBudgetToDate();
       budget = invoiceLine.getBudget();
       budgetDistributionList = invoiceLine.getBudgetDistributionList();
+    } else if (MoveLine.class.equals(request.getContext().getContextClass())) {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      fromDate = moveLine.getBudgetFromDate();
+      toDate = moveLine.getBudgetToDate();
+      budget = moveLine.getBudget();
+      budgetDistributionList = moveLine.getBudgetDistributionList();
     }
 
     String labelError =
@@ -52,6 +60,10 @@ public class BudgetDateController {
       labelError =
           Beans.get(BudgetDateService.class)
               .checkBudgetDates(request.getContext().asType(Invoice.class));
+    } else if (Move.class.equals(request.getContext().getContextClass())) {
+      labelError =
+          Beans.get(BudgetDateService.class)
+              .checkBudgetDates(request.getContext().asType(Move.class));
     } else {
       return;
     }
