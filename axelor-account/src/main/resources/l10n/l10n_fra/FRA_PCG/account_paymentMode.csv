@@ -7,7 +7,7 @@
 150;"Enc. LCR Direct Banque";"ENC_LCR";13;"LCR";1;10;;;;1;"true";"true";"true";8;"/tmp/";"pain.xxx.cfonb160.dco - LCR"
 160;"Enc. Espèces";"ENC_ESP";5;"Espèces";1;5;;;;1;;;;;;
 170;"Enc. Autre";"ENC_OTH";13;"Autres moyens de paiement";1;1;;;;1;;;;;;
-200;"Dec. Virement";"DEC_VIR";19;"Virement";2;9;"true";7;1;1;;;;;;
+200;Dec. Virement;"DEC_VIR";19;"Virement";2;9;"true";7;1;1;;"true";;1;;"pain.001.001.02.sct - Virement SEPA"
 210;"Dec. Chèque";"DEC_CHQ";16;"Chèque";2;7;;;;1;;;;;;
 220;"Dec. Carte bancaire";"DEC_CB";17;"Carte bancaire";2;6;;;;1;;;;;;
 230;"Dec. Prélèvement";"DEC_PRE";20;"Prélèvement";2;2;"true";7;1;1;;;;;;
