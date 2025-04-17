@@ -1,3 +1,32 @@
+## [7.2.37] (2025-04-17)
+
+### Fixes
+#### Account
+
+* Account management: fixed fields not required in editable grid of payment mode.
+* Invoice: fixed price list not filled the first time we change the partner.
+
+#### CRM
+
+* Partner: fixed 'Generate Project' button still present even with job costing app disabled.
+
+#### Project
+
+* Project task: fixed NPE on project task gantt views.
+
+#### Purchase
+
+* Supplier catalog: fixed wrong fetched information for product without catalog.
+
+#### Sale
+
+* Sale order: fixed 'Generate production order' button displayed when app production is deactivated.
+* Sale order: fixed the issue where stock location was overwritten upon changing the partner when trading name was null.
+
+#### Supply Chain
+
+* Sale order: fixed sale order invoicing state when a line has a negative amount.
+
 ## [7.2.36] (2025-04-03)
 
 ### Fixes
@@ -1632,6 +1661,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.37]: https://github.com/axelor/axelor-open-suite/compare/v7.2.36...v7.2.37
 [7.2.36]: https://github.com/axelor/axelor-open-suite/compare/v7.2.35...v7.2.36
 [7.2.35]: https://github.com/axelor/axelor-open-suite/compare/v7.2.34...v7.2.35
 [7.2.34]: https://github.com/axelor/axelor-open-suite/compare/v7.2.33...v7.2.34
