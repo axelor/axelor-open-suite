@@ -97,7 +97,7 @@
       target="//menu[@name='stockMoveToolsMenu']/item[@name='refreshProductNetMassItem']">
       <insert position="after">
         <item name="fillRealQties" title="Fill real quantities"
-          action="action-supplychain-stock-move-method-fill-real-quantities,save"/>
+          action="action-supplychain-stock-move-method-fill-real-quantities"/>
       </insert>
     </extend>
   </form>
