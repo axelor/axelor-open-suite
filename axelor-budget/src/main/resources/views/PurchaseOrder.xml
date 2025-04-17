@@ -90,6 +90,7 @@
   <action-group name="action-budget-purchase-order-group-on-save">
     <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="save"/>
     <action name="action-budget-purchase-order-method-fill-budget-str"
       if="__config__.app.isApp('budget')"/>
@@ -115,6 +116,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-budget-validate-request"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
