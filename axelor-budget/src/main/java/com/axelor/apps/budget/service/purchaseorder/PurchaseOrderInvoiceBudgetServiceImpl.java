@@ -123,6 +123,9 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
         invoiceLine.setBudgetRemainingAmountToAllocate(
             purchaseOrderLine.getBudgetRemainingAmountToAllocate());
+        invoiceLine.setBudgetFromDate(purchaseOrderLine.getBudgetFromDate());
+        invoiceLine.setBudgetToDate(purchaseOrderLine.getBudgetToDate());
+
         if (!ObjectUtils.isEmpty(purchaseOrderLine.getBudgetDistributionList())) {
           for (BudgetDistribution budgetDistribution :
               purchaseOrderLine.getBudgetDistributionList()) {

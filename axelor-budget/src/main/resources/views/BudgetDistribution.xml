@@ -447,7 +447,7 @@
       method="manageBudgetDateLabel"/>
   </action-method>
 
-  <action-method name="action-budget-invoice-validate-budget-dates">
+  <action-method name="action-budget-validate-budget-dates">
     <call class="com.axelor.apps.budget.web.BudgetDateController" method="checkBudgetDates"/>
   </action-method>
 
