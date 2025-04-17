@@ -1,3 +1,57 @@
+## [8.2.13] (2025-04-17)
+
+### Fixes
+#### Base
+
+* Updated axelor-studio dependency to 3.3.13.
+
+#### Account
+
+* Reconcile: removed check on tax for opening/closure.
+* Invoice: fixed an issue in the BIRT report where a partner or company partner had multiple accounting situations for different companies.
+* Account management: fixed fields not required in editable grid of payment mode.
+* Invoice: fix due date when we save with free payment condition
+* Invoice: fixed price list not filled the first time we change the partner.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed issue when try to load bank statement in different currency than bank details.
+
+#### CRM
+
+* Partner: fixed 'Generate Project' button still present even with job costing app disabled.
+
+#### Project
+
+* Project: fixed wrong compute of full name.
+* Project task: fixed npe on project task gantt views.
+
+#### Purchase
+
+* Supplier catalog: fixed wrong fetched information for product without catalog.
+
+#### Sale
+
+* Sale order: fixed 'Generate production order' button displayed when app production is deactivated.
+* Sale order: fixed the issue where stock location was overwritten upon changing the partner when trading name was null.
+* Sale order: fixed the alert message before confirming the sale order.
+
+#### Stock
+
+* Stock move line: fixed total net mass calculation when real quantities are generated.
+* Stock location: fixed quantity scaling in stock location line grid and form views.
+
+#### Supply Chain
+
+* Sale order: fixed sale order invoicing state when a line has a negative amount.
+
+
+### Developer
+
+#### Sale
+
+The method `confirmCheckAlert` in `SaleOrderCheckService` now returns `List<String>` instead of `String`.
+
 ## [8.2.12] (2025-04-03)
 
 ### Fixes
@@ -887,6 +941,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.13]: https://github.com/axelor/axelor-open-suite/compare/v8.2.12...v8.2.13
 [8.2.12]: https://github.com/axelor/axelor-open-suite/compare/v8.2.11...v8.2.12
 [8.2.11]: https://github.com/axelor/axelor-open-suite/compare/v8.2.10...v8.2.11
 [8.2.10]: https://github.com/axelor/axelor-open-suite/compare/v8.2.9...v8.2.10
