@@ -152,7 +152,7 @@
         readonlyIf="partner == null" readonly="true"/>
       <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
         title="Create employee" if-module="axelor-human-resource"
-        showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
+        showIf="(partner != null &amp;&amp; partner.employee == null) &amp;&amp; (employee == null &amp;&amp; id != null &amp;&amp; id>0)"
         if="__config__.app.isApp('employee')"/>
     </panel>
     <panel name="testingPanel" title="Testing" sidebar="true" hidden="true"

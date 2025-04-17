@@ -1,0 +1,3 @@
+---
+title: "User: hide create employee button if the partner has already an employee."
+module: axelor-human-resource
