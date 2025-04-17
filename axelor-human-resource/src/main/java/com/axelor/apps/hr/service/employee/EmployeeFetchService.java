@@ -26,5 +26,5 @@ import java.util.List;
 public interface EmployeeFetchService {
   List<Employee> getEmployees(HrBatch hrBatch);
 
-  List<Employee> getInvitedCollaboratorsDomain(LocalDate expenseDate);
+  List<Employee> getInvitedCollaborators(LocalDate expenseDate);
 }

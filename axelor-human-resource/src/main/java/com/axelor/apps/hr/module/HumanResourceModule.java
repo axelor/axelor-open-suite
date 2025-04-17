@@ -159,6 +159,8 @@ import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseServiceImpl;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainService;
@@ -483,5 +485,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectIndicatorsService.class).to(ProjectIndicatorsServiceImpl.class);
     bind(ProjectPlanningTimeToolService.class).to(ProjectPlanningTimeToolServiceImpl.class);
     bind(TimesheetEmployeeService.class).to(TimesheetEmployeeServiceImpl.class);
+    bind(ExpenseLineDomainService.class).to(ExpenseLineDomainServiceImpl.class);
   }
 }

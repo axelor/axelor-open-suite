@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -38,10 +39,11 @@ import org.apache.commons.collections.CollectionUtils;
 public class EmployeeFetchServiceImpl implements EmployeeFetchService {
 
   protected EmployeeRepository employeeRepository;
-
+protected AppBaseService appBaseService;
   @Inject
-  public EmployeeFetchServiceImpl(EmployeeRepository employeeRepository) {
+  public EmployeeFetchServiceImpl(EmployeeRepository employeeRepository,AppBaseService appBaseService) {
     this.employeeRepository = employeeRepository;
+    this.appBaseService=appBaseService;
   }
 
   @Override
@@ -79,14 +81,15 @@ public class EmployeeFetchServiceImpl implements EmployeeFetchService {
   }
 
   @Override
-  public List<Employee> getInvitedCollaboratorsDomain(LocalDate expenseDate) {
-    return Beans.get(EmployeeRepository.class)
+  public List<Employee> getInvitedCollaborators(LocalDate expenseDate) {
+    return employeeRepository
         .all()
         .filter(
-            "self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.leavingDate=null OR self.leavingDate >= :expenseDate) AND (self.user.expiresOn is null OR self.user.expiresOn> CURRENT_DATE) \n"
+            "self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.leavingDate=null OR self.leavingDate >= :expenseDate) AND (self.user.expiresOn is null OR self.user.expiresOn> :currentDate) \n"
                 + "AND self.mainEmploymentContract.payCompany IN :companySet")
         .bind("expenseDate", expenseDate)
         .bind("companySet", AuthUtils.getUser().getCompanySet())
+            .bind("currentDate", appBaseService.getTodayDate(null))
         .fetch();
   }
 }

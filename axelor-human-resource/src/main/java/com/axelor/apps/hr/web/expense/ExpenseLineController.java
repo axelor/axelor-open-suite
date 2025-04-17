@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.web.expense;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
@@ -86,7 +87,8 @@ public class ExpenseLineController {
 
   public void setInvitedCollaboratorSetDomain(ActionRequest request, ActionResponse response) {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-    String domain = Beans.get(ExpenseLineDomainService.class).getInvitedCollaborators(expenseLine);
+    Expense expense=request.getContext().getParent()!=null?request.getContext().getParent().asType(Expense.class):null;
+    String domain = Beans.get(ExpenseLineDomainService.class).getInvitedCollaborators(expenseLine,expense);
     response.setAttr("invitedCollaboratorSet", "domain", domain);
   }
 }

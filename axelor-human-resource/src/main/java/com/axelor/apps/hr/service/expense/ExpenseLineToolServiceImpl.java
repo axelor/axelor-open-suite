@@ -149,7 +149,7 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
     if (employeeList == null) {
       return null;
     }
-    return employeeFetchService.getInvitedCollaboratorsDomain(expenseDate).stream()
+    return employeeFetchService.getInvitedCollaborators(expenseDate).stream()
         .filter(employeeList::contains)
         .collect(Collectors.toList());
   }
