@@ -107,7 +107,11 @@
       onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected"
       onSelect="action-bank-reconciliation-line-method-move-line-domain" form-view="move-line-form"
       grid-view="move-line-grid"/>
-    <field name="analyticDistributionTemplate"/>
+    <field name="analyticDistributionTemplate"
+      requiredIf="account.analyticDistributionRequiredOnMoveLines"
+      readonlyIf="!account.analyticDistributionAuthorized"/>
+    <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+    <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="isPosted" readonly="true"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>

@@ -126,19 +126,22 @@ public class BankReconciliationLineController {
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine =
         request.getContext().asType(BankReconciliationLine.class);
-    BankReconciliation bankReconciliation =
-        request.getContext().getParent().asType(BankReconciliation.class);
 
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        Beans.get(AnalyticMoveLineService.class)
-            .getAnalyticDistributionTemplate(
-                bankReconciliationLine.getPartner(),
-                null,
-                bankReconciliation.getCompany(),
-                null,
-                bankReconciliationLine.getAccount(),
-                false);
+    if(request.getContext().getParent() != null){
+      BankReconciliation bankReconciliation =
+              request.getContext().getParent().asType(BankReconciliation.class);
 
-    response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+              Beans.get(AnalyticMoveLineService.class)
+                      .getAnalyticDistributionTemplate(
+                              bankReconciliationLine.getPartner(),
+                              null,
+                              bankReconciliation.getCompany(),
+                              null,
+                              bankReconciliationLine.getAccount(),
+                              false);
+
+      response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+    }
   }
 }
