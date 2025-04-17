@@ -79,7 +79,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     MapTools.addMap(attrs, hideDiscount());
     MapTools.addMap(attrs, refreshVersionPanel());
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
-    MapTools.addMap(attrs, getStatusSelectSelectionIn(saleOrder));
     return attrs;
   }
 
@@ -89,7 +88,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
     MapTools.addMap(attrs, hideDiscount());
-    MapTools.addMap(attrs, getStatusSelectSelectionIn(saleOrder));
     saleOrderAttrsService.setSaleOrderGlobalDiscountDummies(saleOrder, attrs);
     return attrs;
   }
@@ -234,23 +232,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
                 || (clientPartner != null
                     && clientPartner.getPartnerTypeSelect()
                         == PartnerRepository.PARTNER_TYPE_INDIVIDUAL)));
-    return attrs;
-  }
-
-  protected Map<String, Map<String, Object>> getStatusSelectSelectionIn(SaleOrder saleOrder) {
-    Map<String, Map<String, Object>> attrs = new HashMap<>();
-    AppSale appSale = appSaleService.getAppSale();
-    boolean isQuotationAndOrderSplit = appSale.getIsQuotationAndOrderSplitEnabled();
-    if (!isQuotationAndOrderSplit) {
-      return attrs;
-    }
-    int statusSelect = saleOrder.getStatusSelect();
-    if (statusSelect <= SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      attrs.put("statusSelect", Map.of(SELECTION_IN_ATTRS, new int[] {1, 2}));
-    } else {
-      attrs.put("statusSelect", Map.of(SELECTION_IN_ATTRS, new int[] {3, 4, 5}));
-    }
-
     return attrs;
   }
 }

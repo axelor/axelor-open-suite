@@ -314,7 +314,14 @@
           </viewer>
         </field>
       </panel>
-      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        selection-in="[1,2]" if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+        showIf="statusSelect &lt;= 2"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        selection-in="[3,4,5]" if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+        showIf="statusSelect &gt; 2"/>
       <field name="saleOrderSeq" showTitle="false">
         <viewer depends="statusSelect,saleOrderSeq"><![CDATA[
 	          <>
