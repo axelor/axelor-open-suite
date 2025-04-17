@@ -127,19 +127,19 @@ public class BankReconciliationLineController {
     BankReconciliationLine bankReconciliationLine =
         request.getContext().asType(BankReconciliationLine.class);
 
-    if(request.getContext().getParent() != null){
+    if (request.getContext().getParent() != null) {
       BankReconciliation bankReconciliation =
-              request.getContext().getParent().asType(BankReconciliation.class);
+          request.getContext().getParent().asType(BankReconciliation.class);
 
       AnalyticDistributionTemplate analyticDistributionTemplate =
-              Beans.get(AnalyticMoveLineService.class)
-                      .getAnalyticDistributionTemplate(
-                              bankReconciliationLine.getPartner(),
-                              null,
-                              bankReconciliation.getCompany(),
-                              null,
-                              bankReconciliationLine.getAccount(),
-                              false);
+          Beans.get(AnalyticMoveLineService.class)
+              .getAnalyticDistributionTemplate(
+                  bankReconciliationLine.getPartner(),
+                  null,
+                  bankReconciliation.getCompany(),
+                  null,
+                  bankReconciliationLine.getAccount(),
+                  false);
 
       response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
     }
