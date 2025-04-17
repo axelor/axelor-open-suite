@@ -319,10 +319,10 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     List<String> alertList = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
     if (!CollectionUtils.isEmpty(alertList)) {
+      String msg =
+          alertList.size() == 1 ? alertList.get(0) : StringHtmlListBuilder.formatMessage(alertList);
       response.setAlert(
-          String.format(
-              I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_CHECK_ALERT),
-              StringHtmlListBuilder.formatMessage(alertList)));
+          msg + " " + I18n.get(SaleExceptionMessage.SALE_ORDER_DO_YOU_WANT_TO_PROCEED));
     }
   }
 

@@ -187,6 +187,6 @@ public final class SaleExceptionMessage {
   public static final String CONFIGURATOR_IS_NOT_ACTIVATED = /*$$(*/
       "Configurator is not activated." /*)*/;
 
-  public static final String SALE_ORDER_CONFIRM_CHECK_ALERT = /*$$(*/
-      "The following alerts have been triggered: %s Do you want to proceed ?" /*)*/;
+  public static final String SALE_ORDER_DO_YOU_WANT_TO_PROCEED = /*$$(*/
+      "Do you want to proceed ?" /*)*/;
 }
