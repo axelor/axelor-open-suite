@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationServiceImpl;
@@ -105,6 +106,7 @@ import com.axelor.apps.budget.service.move.MoveBudgetDistributionService;
 import com.axelor.apps.budget.service.move.MoveBudgetDistributionServiceImpl;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveBudgetServiceImpl;
+import com.axelor.apps.budget.service.move.MoveGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl;
@@ -236,5 +238,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetDateService.class).to(BudgetDateServiceImpl.class);
 
     bind(BudgetLineComputeService.class).to(BudgetLineComputeServiceImpl.class);
+    bind(MoveGroupServiceImpl.class).to(MoveGroupBudgetServiceImpl.class);
   }
 }

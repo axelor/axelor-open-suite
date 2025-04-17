@@ -9,6 +9,10 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -62,6 +66,48 @@ public class BudgetDateServiceImpl implements BudgetDateService {
           moveLine.getBudget(),
           moveLine.getBudgetDistributionList(),
           moveLine.getAccountName(),
+          sj);
+    }
+
+    return sj.toString();
+  }
+
+  @Override
+  public String checkBudgetDates(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder == null || ObjectUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return "";
+    }
+
+    StringJoiner sj = new StringJoiner("<BR/>");
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      getBudgetDateError(
+          purchaseOrderLine.getBudgetFromDate(),
+          purchaseOrderLine.getBudgetToDate(),
+          purchaseOrderLine.getBudget(),
+          purchaseOrderLine.getBudgetDistributionList(),
+          purchaseOrderLine.getProductName(),
+          sj);
+    }
+
+    return sj.toString();
+  }
+
+  @Override
+  public String checkBudgetDates(SaleOrder saleOrder) {
+    if (saleOrder == null || ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      return "";
+    }
+
+    StringJoiner sj = new StringJoiner("<BR/>");
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      getBudgetDateError(
+          saleOrderLine.getBudgetFromDate(),
+          saleOrderLine.getBudgetToDate(),
+          saleOrderLine.getBudget(),
+          saleOrderLine.getBudgetDistributionList(),
+          saleOrderLine.getProductName(),
           sj);
     }
 

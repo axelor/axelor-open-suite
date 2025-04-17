@@ -9,6 +9,10 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.date.BudgetDateService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -39,6 +43,18 @@ public class BudgetDateController {
       toDate = moveLine.getBudgetToDate();
       budget = moveLine.getBudget();
       budgetDistributionList = moveLine.getBudgetDistributionList();
+    } else if (PurchaseOrderLine.class.equals(request.getContext().getContextClass())) {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      fromDate = purchaseOrderLine.getBudgetFromDate();
+      toDate = purchaseOrderLine.getBudgetToDate();
+      budget = purchaseOrderLine.getBudget();
+      budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
+    } else if (SaleOrderLine.class.equals(request.getContext().getContextClass())) {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      fromDate = saleOrderLine.getBudgetFromDate();
+      toDate = saleOrderLine.getBudgetToDate();
+      budget = saleOrderLine.getBudget();
+      budgetDistributionList = saleOrderLine.getBudgetDistributionList();
     }
 
     String labelError =
@@ -64,6 +80,14 @@ public class BudgetDateController {
       labelError =
           Beans.get(BudgetDateService.class)
               .checkBudgetDates(request.getContext().asType(Move.class));
+    } else if (PurchaseOrder.class.equals(request.getContext().getContextClass())) {
+      labelError =
+          Beans.get(BudgetDateService.class)
+              .checkBudgetDates(request.getContext().asType(PurchaseOrder.class));
+    } else if (SaleOrder.class.equals(request.getContext().getContextClass())) {
+      labelError =
+          Beans.get(BudgetDateService.class)
+              .checkBudgetDates(request.getContext().asType(SaleOrder.class));
     } else {
       return;
     }

@@ -22,4 +22,12 @@ public interface BudgetLineComputeService {
       LocalDate fromDate,
       LocalDate toDate,
       LocalDate defaultDate);
+
+  void updateBudgetLineAmountsOnOrder(
+      BigDecimal amountInvoiced,
+      Budget budget,
+      BigDecimal amount,
+      LocalDate fromDate,
+      LocalDate toDate,
+      LocalDate defaultDate);
 }
