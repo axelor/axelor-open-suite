@@ -1,0 +1,3 @@
+---
+title: "Fixed the translation of 'trading name' in various places."
+module: axelor-base/ axelor-account/ axelor-purchase/ axelor-contract
