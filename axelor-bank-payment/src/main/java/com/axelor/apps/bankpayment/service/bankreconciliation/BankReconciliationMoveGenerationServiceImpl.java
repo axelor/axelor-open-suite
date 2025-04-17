@@ -517,7 +517,7 @@ public class BankReconciliationMoveGenerationServiceImpl
             description);
     moveLine.setOriginDate(originDate);
 
-    if (account != null && account.getHasAutomaticApplicationAccountingDate()) {
+    if (account.getHasAutomaticApplicationAccountingDate()) {
       moveLineService.applyCutOffDates(moveLine, move, date, date);
       moveLine.setIsCutOffGenerated(true);
     }
