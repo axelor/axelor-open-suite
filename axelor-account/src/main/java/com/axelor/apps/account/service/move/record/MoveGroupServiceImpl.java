@@ -139,7 +139,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
-    moveCheckService.checkAnalyticAccount(move);
     moveCheckService.checkCurrencyAmountSum(move);
   }
 
