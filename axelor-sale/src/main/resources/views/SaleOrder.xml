@@ -717,10 +717,11 @@
         showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12"
         onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
       <button
-        if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto"
+        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp;
+        !__config__.app.getApp('production')?.productionOrderGenerationAuto"
         name="generateProductionOrderBtn" title="Generate production order"
-        showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
-        onClick="save,action-sale-order-method-create-production-order"/>
+        if-module="axelor-production" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
+        colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
       <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times"
         showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12"
         onClick="save,action-sale-order-view-cancel"/>
@@ -2081,18 +2082,6 @@
   <action-method name="action-sale-order-method-company-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="companyOnChange"/>
   </action-method>
-
-  <action-validate name="action-sale-order-validate-check-on-confirm">
-    <alert message="The total amount of quotation is zero. Do you want to proceed ?"
-      if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
-    <error message="Incoterm must be filled"
-      if="__config__.app.isApp('supplychain')
-                &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
-          &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
-          &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code))"/>
-  </action-validate>
 
   <action-record name="action-sale-order-manual-unblock"
     model="com.axelor.apps.sale.db.SaleOrder">
