@@ -1,3 +1,47 @@
+## [8.1.22] (2025-04-17)
+
+### Fixes
+#### Base
+
+* Updated axelor-studio dependency to 3.1.11.
+
+#### Account
+
+* Reconcile: removed check on tax for opening/closure.
+* Account management: fixed fields not required in editable grid of payment mode.
+* Invoice: fixed due date when we save with free payment condition.
+* Invoice: fixed price list not filled the first time we change the partner.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed issue when try to load bank statement in different currency than bank details.
+
+#### CRM
+
+* Partner: fixed 'Generate Project' button still present even with job costing app disabled.
+
+#### Project
+
+* Project: fixed wrong compute of full name.
+* Project task: fixed npe on project task gantt views.
+
+#### Purchase
+
+* Supplier catalog: fixed wrong fetched information for product without catalog.
+
+#### Sale
+
+* Sale order: fixed 'Generate production order' button displayed when app production is deactivated.
+* Sale order: fixed the issue where stock location was overwritten upon changing the partner when trading name was null.
+
+#### Stock
+
+* Stock move line: fixed total net mass calculation when real quantities are generated.
+
+#### Supply Chain
+
+* Sale order: fixed sale order invoicing state when a line has a negative amount.
+
 ## [8.1.21] (2025-04-03)
 
 ### Fixes
@@ -1329,6 +1373,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.22]: https://github.com/axelor/axelor-open-suite/compare/v8.1.21...v8.1.22
 [8.1.21]: https://github.com/axelor/axelor-open-suite/compare/v8.1.20...v8.1.21
 [8.1.20]: https://github.com/axelor/axelor-open-suite/compare/v8.1.19...v8.1.20
 [8.1.19]: https://github.com/axelor/axelor-open-suite/compare/v8.1.18...v8.1.19
