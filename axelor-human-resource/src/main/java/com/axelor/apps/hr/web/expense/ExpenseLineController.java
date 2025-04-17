@@ -87,8 +87,12 @@ public class ExpenseLineController {
 
   public void setInvitedCollaboratorSetDomain(ActionRequest request, ActionResponse response) {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-    Expense expense=request.getContext().getParent()!=null?request.getContext().getParent().asType(Expense.class):null;
-    String domain = Beans.get(ExpenseLineDomainService.class).getInvitedCollaborators(expenseLine,expense);
+    Expense expense =
+        request.getContext().getParent() != null
+            ? request.getContext().getParent().asType(Expense.class)
+            : null;
+    String domain =
+        Beans.get(ExpenseLineDomainService.class).getInvitedCollaborators(expenseLine, expense);
     response.setAttr("invitedCollaboratorSet", "domain", domain);
   }
 }

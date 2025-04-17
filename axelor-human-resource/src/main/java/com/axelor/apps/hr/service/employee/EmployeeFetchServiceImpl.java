@@ -26,7 +26,6 @@ import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -39,11 +38,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class EmployeeFetchServiceImpl implements EmployeeFetchService {
 
   protected EmployeeRepository employeeRepository;
-protected AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
+
   @Inject
-  public EmployeeFetchServiceImpl(EmployeeRepository employeeRepository,AppBaseService appBaseService) {
+  public EmployeeFetchServiceImpl(
+      EmployeeRepository employeeRepository, AppBaseService appBaseService) {
     this.employeeRepository = employeeRepository;
-    this.appBaseService=appBaseService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -89,7 +90,7 @@ protected AppBaseService appBaseService;
                 + "AND self.mainEmploymentContract.payCompany IN :companySet")
         .bind("expenseDate", expenseDate)
         .bind("companySet", AuthUtils.getUser().getCompanySet())
-            .bind("currentDate", appBaseService.getTodayDate(null))
+        .bind("currentDate", appBaseService.getTodayDate(null))
         .fetch();
   }
 }

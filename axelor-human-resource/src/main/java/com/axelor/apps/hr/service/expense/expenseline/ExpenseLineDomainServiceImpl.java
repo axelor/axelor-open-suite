@@ -6,7 +6,6 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
-
 import java.util.List;
 
 public class ExpenseLineDomainServiceImpl implements ExpenseLineDomainService {
@@ -19,11 +18,11 @@ public class ExpenseLineDomainServiceImpl implements ExpenseLineDomainService {
 
   @Override
   public String getInvitedCollaborators(ExpenseLine expenseLine, Expense expense) {
-  List<Employee> employeeList=  employeeFetchService.getInvitedCollaborators(expenseLine.getExpenseDate());
-     if(expense!=null)
-     {employeeList.remove(expense.getEmployee());}
-    return "self.id IN ("
-        + StringHelper.getIdListString(employeeList)
-        + ")";
+    List<Employee> employeeList =
+        employeeFetchService.getInvitedCollaborators(expenseLine.getExpenseDate());
+    if (expense != null) {
+      employeeList.remove(expense.getEmployee());
+    }
+    return "self.id IN (" + StringHelper.getIdListString(employeeList) + ")";
   }
 }
