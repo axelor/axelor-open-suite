@@ -25,7 +25,7 @@
     <field name="orderedQty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="$qtyToOrder" title="Qty to order" type="decimal"
       readonlyIf="$orderAll || (qty == orderedQty)" min="0" x-scale="$nbDecimalDigitForQty"
-      validIf="$qtyToOrder &lt;= $qtyToOrderLeft"
+      validIf="$number($qtyToOrder) &lt;= $number($qtyToOrderLeft)"
       onChange="action-sale-order-line-confirm-validate-qty-to-order"/>
     <field name="$orderAll" title="Order all" type="boolean"
       onChange="action-attrs-sale-order-line-confirm-wizard-fill-qty" readonlyIf="qty == orderedQty"/>
