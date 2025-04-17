@@ -1,0 +1,2 @@
+title: "Move line tax: Fix tax line generation when two lines have the same taxes but different vat system"
+module: axelor-account
