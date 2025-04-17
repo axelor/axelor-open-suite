@@ -1,5 +1,0 @@
----
-title: "Sale order: fixed the alert message before confirming the sale order."
-module: axelor-sale
-developer: |
-  The method `confirmCheckAlert` in `SaleOrderCheckService` now returns `List<String>` instead of `String`.
