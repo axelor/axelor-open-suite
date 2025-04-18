@@ -25,6 +25,7 @@ import com.axelor.apps.hr.rest.dto.ExpenseLinePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
+import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
@@ -40,6 +41,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDate;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -66,6 +68,8 @@ public class ExpenseLineRestController {
     new SecurityCheck().createAccess(ExpenseLine.class).check();
 
     ExpenseLineCreateService expenseLineCreateService = Beans.get(ExpenseLineCreateService.class);
+    ExpenseLineToolService expenseLineToolService = Beans.get(ExpenseLineToolService.class);
+
     ExpenseLine expenseLine = new ExpenseLine();
     Project project = requestBody.fetchProject();
     LocalDate expenseDate = requestBody.getExpenseDate();
@@ -74,6 +78,9 @@ public class ExpenseLineRestController {
     String expenseLineType = requestBody.getExpenseLineType();
     Boolean toInvoice = requestBody.getToInvoice();
     ProjectTask projectTask = requestBody.fetchProjectTask();
+    List<Employee> employeeList =
+        expenseLineToolService.filterInvitedCollaborators(
+            requestBody.fetchInvitedCollaboratorList(), expenseLine, expenseDate);
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -88,7 +95,8 @@ public class ExpenseLineRestController {
               employee,
               requestBody.fetchCurrency(),
               toInvoice,
-              projectTask);
+              projectTask,
+              employeeList);
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -144,7 +152,10 @@ public class ExpenseLineRestController {
     RequestValidator.validateBody(requestBody);
     ExpenseLine expenseLine =
         ObjectFinder.find(ExpenseLine.class, expenseLineId, requestBody.getVersion());
-
+    ExpenseLineToolService expenseLineToolService = Beans.get(ExpenseLineToolService.class);
+    List<Employee> employeeList =
+        expenseLineToolService.filterInvitedCollaborators(
+            requestBody.fetchInvitedCollaboratorList(), expenseLine, expenseLine.getExpenseDate());
     expenseLine =
         Beans.get(ExpenseLineUpdateService.class)
             .updateExpenseLine(
@@ -165,7 +176,8 @@ public class ExpenseLineRestController {
                 requestBody.fetchCurrency(),
                 requestBody.getToInvoice(),
                 requestBody.fetchExpense(),
-                requestBody.fetchProjectTask());
+                requestBody.fetchProjectTask(),
+                employeeList);
 
     return ResponseConstructor.build(
         Response.Status.OK,

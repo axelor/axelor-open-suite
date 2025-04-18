@@ -31,6 +31,9 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.validation.constraints.Min;
 
 public class ExpenseLinePutRequest extends RequestStructure {
@@ -81,6 +84,7 @@ public class ExpenseLinePutRequest extends RequestStructure {
   private Long expenseId;
 
   private Long projectTaskId;
+  private List<Long> invitedCollaboratorList;
 
   public Long getProjectId() {
     return projectId;
@@ -226,6 +230,14 @@ public class ExpenseLinePutRequest extends RequestStructure {
     this.projectTaskId = projectTaskId;
   }
 
+  public List<Long> getInvitedCollaboratorList() {
+    return invitedCollaboratorList;
+  }
+
+  public void setInvitedCollaboratorList(List<Long> invitedCollaboratorList) {
+    this.invitedCollaboratorList = invitedCollaboratorList;
+  }
+
   public Project fetchProject() {
     if (projectId == null || projectId == 0L) {
       return null;
@@ -288,5 +300,19 @@ public class ExpenseLinePutRequest extends RequestStructure {
       return null;
     }
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
+  }
+
+  public List<Employee> fetchInvitedCollaboratorList() {
+    if (invitedCollaboratorList == null) {
+      return null;
+    }
+    if (invitedCollaboratorList.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<Employee> employeeList = new ArrayList<>();
+    for (Long id : invitedCollaboratorList) {
+      employeeList.add(ObjectFinder.find(Employee.class, id, ObjectFinder.NO_VERSION));
+    }
+    return employeeList;
   }
 }

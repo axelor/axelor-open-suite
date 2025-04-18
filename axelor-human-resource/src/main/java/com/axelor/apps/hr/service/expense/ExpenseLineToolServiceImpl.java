@@ -27,22 +27,31 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
   protected AppHumanResourceService appHumanResourceService;
   protected KilometricService kilometricService;
+  protected EmployeeFetchService employeeFetchService;
 
   @Inject
   public ExpenseLineToolServiceImpl(
-      AppHumanResourceService appHumanResourceService, KilometricService kilometricService) {
+      AppHumanResourceService appHumanResourceService,
+      KilometricService kilometricService,
+      EmployeeFetchService employeeFetchService) {
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
+    this.employeeFetchService = employeeFetchService;
   }
 
   @Override
@@ -113,8 +122,10 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
 
     if (expenseProduct != null) {
       checkExpenseProduct(expenseProduct);
-
-      expenseLine.setIsAloneMeal(expenseProduct.getDeductLunchVoucher());
+      if (expenseProduct.getDeductLunchVoucher()) {
+        expenseLine.setIsAloneMeal(
+            CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
+      }
       expenseLine.setExpenseProduct(expenseProduct);
     }
 
@@ -130,5 +141,16 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
     Product expenseProduct = expenseLine.getExpenseProduct();
     KilometricAllowParam kilometricAllowParam = expenseLine.getKilometricAllowParam();
     return expenseProduct != null && kilometricAllowParam != null;
+  }
+
+  @Override
+  public List<Employee> filterInvitedCollaborators(
+      List<Employee> employeeList, ExpenseLine expenseLine, LocalDate expenseDate) {
+    if (employeeList == null) {
+      return null;
+    }
+    return employeeFetchService.getInvitedCollaborators(expenseDate).stream()
+        .filter(employeeList::contains)
+        .collect(Collectors.toList());
   }
 }

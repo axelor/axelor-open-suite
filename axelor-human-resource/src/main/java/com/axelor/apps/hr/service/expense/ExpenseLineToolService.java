@@ -24,6 +24,8 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.meta.db.MetaFile;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface ExpenseLineToolService {
   void computeAmount(Employee employee, ExpenseLine expenseLine) throws AxelorException;
@@ -39,4 +41,7 @@ public interface ExpenseLineToolService {
       throws AxelorException;
 
   boolean isKilometricExpenseLine(ExpenseLine expenseLine);
+
+  List<Employee> filterInvitedCollaborators(
+      List<Employee> employeeList, ExpenseLine expenseLine, LocalDate expenseDate);
 }
