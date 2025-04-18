@@ -376,10 +376,10 @@
   <action-attrs name="action-attrs-accounting-report-attrs-move-status-domain">
     <attribute name="selection-in" for="moveStatusSelect"
       if="_isCustom &amp;&amp; companySet"
-      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, companySet)"/>
+      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(companySet)"/>
     <attribute name="selection-in" for="moveStatusSelect"
       if="!_isCustom &amp;&amp; company"
-      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, company)"/>
+      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(company)"/>
     <attribute name="hidden" for="moveStatusSelect" expr="eval: true"
       if="!company || !companySet"/>
   </action-attrs>

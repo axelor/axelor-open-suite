@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed moveStatusSelect filter display issue after a status is being selected."
+module: axelor-account
