@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -36,6 +37,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -44,6 +46,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BudgetDistributionController {
 
@@ -224,6 +229,28 @@ public class BudgetDistributionController {
       if (Arrays.asList(PurchaseOrderLine.class, SaleOrderLine.class)
           .contains(request.getContext().getContextClass())) {
         response.setValue("budgetStr", "");
+      }
+    }
+  }
+
+  @ErrorException
+  public void fillInvoiceLineField(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    MoveLine moveLine = request.getContext().getParent().asType(MoveLine.class);
+
+    if (ObjectUtils.notEmpty(moveLine.getBudgetDistributionList())
+        && MoveRepository.STATUS_DAYBOOK
+            == Optional.of(moveLine)
+                .map(MoveLine::getMove)
+                .map(Move::getStatusSelect)
+                .orElse(MoveRepository.STATUS_NEW)) {
+      List<InvoiceLine> invoiceLineList =
+          moveLine.getBudgetDistributionList().stream()
+              .filter(bd -> bd.getInvoiceLine() != null)
+              .map(BudgetDistribution::getInvoiceLine)
+              .collect(Collectors.toList());
+      if (ObjectUtils.notEmpty(invoiceLineList) && invoiceLineList.size() == 1) {
+        response.setValue("invoiceLine", invoiceLineList.get(0));
       }
     }
   }
