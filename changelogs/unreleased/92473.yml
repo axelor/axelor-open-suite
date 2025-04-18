@@ -1,3 +1,5 @@
 ---
 title: "Invoice: fixed third-party payer when generating an invoice from an invoicing project."
 module: axelor-business-project
+developer: |
+  Added `PartnerAccountService` to the constructor of `ProjectGenerateInvoiceServiceImpl`.
