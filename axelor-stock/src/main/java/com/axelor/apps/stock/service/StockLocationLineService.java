@@ -87,9 +87,9 @@ public interface StockLocationLineService {
    * @param product
    * @param unit
    * @param qty
-   * @throws AxelorException if there is not enough qty in stock
+   * @return a message if there is not enough qty in stock
    */
-  void checkIfEnoughStock(StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
+  String checkIfEnoughStock(StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
       throws AxelorException;
 
   public StockLocationLine updateLocation(

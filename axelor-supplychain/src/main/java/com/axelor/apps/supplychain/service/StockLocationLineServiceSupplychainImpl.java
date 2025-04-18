@@ -21,7 +21,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -67,10 +66,9 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
   }
 
   @Override
-  public void checkIfEnoughStock(
+  public String checkIfEnoughStock(
       StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
       throws AxelorException {
-    super.checkIfEnoughStock(stockLocation, product, unit, qty);
 
     if (appSupplychainService.isApp("supplychain")
         && appSupplychainService.getAppSupplychain().getManageStockReservation()
@@ -78,7 +76,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       StockLocationLine stockLocationLine =
           stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine == null) {
-        return;
+        return null;
       }
       BigDecimal convertedQty =
           unitConversionService.convert(
@@ -88,14 +86,15 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
               .subtract(stockLocationLine.getReservedQty())
               .compareTo(convertedQty)
           < 0) {
-        throw new AxelorException(
-            stockLocationLine,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        return String.format(
             I18n.get(SupplychainExceptionMessage.LOCATION_LINE_RESERVED_QTY),
             stockLocationLine.getProduct().getName(),
             stockLocationLine.getProduct().getCode());
       }
+    } else {
+      return super.checkIfEnoughStock(stockLocation, product, unit, qty);
     }
+    return null;
   }
 
   @Override
