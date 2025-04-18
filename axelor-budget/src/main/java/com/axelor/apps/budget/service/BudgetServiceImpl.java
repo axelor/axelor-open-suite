@@ -687,6 +687,22 @@ public class BudgetServiceImpl implements BudgetService {
     budgetLine.setRealizedWithNoPo(
         currencyScaleService.getCompanyScaledValue(
             budget, budgetLine.getRealizedWithNoPo().add(amount)));
+    updateOtherAmounts(budgetLine, budget, amount);
+  }
+
+  @Override
+  public void updateBudgetLineAmountWithPo(
+      BudgetLine budgetLine, Budget budget, BigDecimal amount) {
+    budgetLine.setRealizedWithPo(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getRealizedWithPo().add(amount)));
+    budgetLine.setAmountCommitted(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getAmountCommitted().subtract(amount)));
+    updateOtherAmounts(budgetLine, budget, amount);
+  }
+
+  protected void updateOtherAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
     budgetLine.setAmountRealized(
         currencyScaleService.getCompanyScaledValue(
             budget, budgetLine.getAmountRealized().add(amount)));
