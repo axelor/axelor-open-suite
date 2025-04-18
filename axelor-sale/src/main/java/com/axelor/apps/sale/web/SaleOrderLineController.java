@@ -287,6 +287,8 @@ public class SaleOrderLineController {
       parentSol = parentContext.asType(SaleOrderLine.class);
     }
 
+    Beans.get(SaleOrderLineCheckService.class).qtyOnChangeCheck(saleOrderLine, saleOrder);
+
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineOnChangeService.class)

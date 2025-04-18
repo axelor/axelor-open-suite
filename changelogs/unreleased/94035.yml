@@ -1,0 +1,3 @@
+---
+title: "Sale order: add missing check when changing quantity on sale order line."
+module: axelor-sale
