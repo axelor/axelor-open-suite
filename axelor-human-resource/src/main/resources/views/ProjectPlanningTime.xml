@@ -233,7 +233,7 @@
   </action-method>
 
   <action-validate name="action-project-validate-remove-project-planning-time">
-    <alert message="Are you sure wants to remove selected lines?"/>
+    <alert message="Are you sure you want to remove selected lines?"/>
   </action-validate>
 
   <action-record name="action-project-planning-time-record-start-time-onchange"
