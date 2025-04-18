@@ -248,8 +248,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" showTitle="false"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-accounting-batch-show-batches" canSearch="true"/>
       </panel>
 
     </panel-tabs>
@@ -730,6 +730,14 @@
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="setOpeningAccountSet"/>
   </action-method>
+
+  <action-view name="action-accounting-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.accountingBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="accounting-batch-filters"
     model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">

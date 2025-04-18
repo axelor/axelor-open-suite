@@ -44,8 +44,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" showTitle="false" colSpan="12"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-production-batch-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true" title="Actions" itemSpan="12">
@@ -82,6 +82,14 @@
     <attribute name="domain" for="workshopStockLocation"
       expr="eval: company != null ? &quot; self.company = :company &quot; : null"/>
   </action-attrs>
+
+  <action-view name="action-production-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.productionBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="production-batch-filters"
     model="com.axelor.apps.production.db.ProductionBatch" title="Production batch filters">

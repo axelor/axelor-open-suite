@@ -43,7 +43,8 @@
         <field name="createdOn"/>
         <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
         <field name="description"/>
-        <field name="batchList" form-view="batch-form" grid-view="batch-grid" colSpan="12"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-import-batch-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true">
@@ -69,5 +70,13 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
   </action-record>
+
+  <action-view name="action-import-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.importBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

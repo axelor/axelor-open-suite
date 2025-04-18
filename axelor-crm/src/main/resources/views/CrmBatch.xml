@@ -32,8 +32,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" colSpan="12"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-crm-batch-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
   </form>
@@ -70,6 +70,14 @@
   <action-attrs name="action-crm-batch-attrs-action-select">
     <attribute name="hidden" expr="eval: actionSelect != 21" for="eventReminderPanel"/>
   </action-attrs>
+
+  <action-view name="action-crm-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.crmBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="crm-batch-filters" model="com.axelor.apps.crm.db.CrmBatch"
     title="Crm batch filters">

@@ -32,8 +32,8 @@
       <panel name="descriptionPanel" title="Description">
         <field name="description" showTitle="false" colSpan="12"/>
       </panel>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-sale-batch-show-batches" canSearch="true"/>
     </panel-tabs>
   </form>
 
@@ -64,6 +64,14 @@
     <action name="action-sale-batch-record-on-new"/>
     <action name="action-sale-batch-attrs-action-select"/>
   </action-group>
+
+  <action-view name="action-sale-batch-show-batches" title="Batchs"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <domain>self.saleBatch.id = :_batchId</domain>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="sale-batch-filters" model="com.axelor.apps.sale.db.SaleBatch"
     title="Sale batch filters">
