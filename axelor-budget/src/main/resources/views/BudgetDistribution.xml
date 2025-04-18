@@ -133,7 +133,8 @@
   </grid>
 
   <grid name="move-line-budget-distribution-grid" title="Budget distributions"
-    model="com.axelor.apps.budget.db.BudgetDistribution">
+    model="com.axelor.apps.budget.db.BudgetDistribution"
+    onNew="action-budget-distribution-method-move-onnew">
     <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
       onChange="action-method-budget-budget-distribution-set-amount-available"/>
     <field name="budgetAmountAvailable" readonly="true"
@@ -434,6 +435,11 @@
 
   <action-method name="action-reset-budget-method">
     <call class="com.axelor.apps.budget.web.BudgetDistributionController" method="resetBudget"/>
+  </action-method>
+
+  <action-method name="action-budget-distribution-method-move-onnew">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController"
+      method="fillInvoiceLineField"/>
   </action-method>
 
   <action-attrs name="action-purchase-order-line-attrs-dashlet-onload">
