@@ -1,0 +1,3 @@
+---
+title: "Move/Budget: fixed the fact that only realized with no po was imputed when creating budget on moveline related to an invoiceline"
+module: axelor-budget
