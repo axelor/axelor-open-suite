@@ -152,16 +152,14 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
             .map(AnalyticAxisByCompany::getAnalyticAxis)
             .collect(Collectors.toList());
 
-    List<AnalyticAxis> missingAxis =
-        requiredAnalyticAxisList.stream()
-            .filter(axis -> !analyticAxisList.contains(axis))
-            .collect(Collectors.toList());
-    if (!ObjectUtils.isEmpty(missingAxis)) {
+    if (requiredAnalyticAxisList.stream().anyMatch(axis -> !analyticAxisList.contains(axis))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(
               AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS),
-          missingAxis.stream().map(AnalyticAxis::getName).collect(Collectors.joining(", ")),
+          requiredAnalyticAxisList.stream()
+              .map(AnalyticAxis::getName)
+              .collect(Collectors.joining(", ")),
           company.getName());
     }
   }
