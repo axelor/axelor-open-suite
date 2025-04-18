@@ -86,8 +86,11 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Boolean toInvoice,
       Expense newExpense,
       ProjectTask projectTask,
-      List<Employee> employeeList)
+      List<Employee> invitedCollaboratorList)
       throws AxelorException {
+    List<Employee> employeeList =
+        expenseLineToolService.filterInvitedCollaborators(
+            invitedCollaboratorList, expenseLine, expenseLine.getExpenseDate());
     if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       updateKilometricExpenseLine(
           expenseLine,

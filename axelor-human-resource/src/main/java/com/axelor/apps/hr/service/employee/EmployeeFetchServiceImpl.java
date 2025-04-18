@@ -86,7 +86,9 @@ public class EmployeeFetchServiceImpl implements EmployeeFetchService {
     return employeeRepository
         .all()
         .filter(
-            "self.user.blocked = false AND self.hireDate <= :expenseDate AND (self.leavingDate=null OR self.leavingDate >= :expenseDate) AND (self.user.expiresOn is null OR self.user.expiresOn> :currentDate) \n"
+            "self.user.blocked = false AND self.hireDate <= :expenseDate AND "
+                + "(self.leavingDate=null OR self.leavingDate >= :expenseDate)"
+                + " AND (self.user.expiresOn is null OR self.user.expiresOn> :currentDate)"
                 + "AND self.mainEmploymentContract.payCompany IN :companySet")
         .bind("expenseDate", expenseDate)
         .bind("companySet", AuthUtils.getUser().getCompanySet())

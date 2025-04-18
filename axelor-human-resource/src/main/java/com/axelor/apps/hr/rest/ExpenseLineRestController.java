@@ -80,7 +80,7 @@ public class ExpenseLineRestController {
     ProjectTask projectTask = requestBody.fetchProjectTask();
     List<Employee> employeeList =
         expenseLineToolService.filterInvitedCollaborators(
-            requestBody.fetchEmployeeList(), expenseLine, expenseDate);
+            requestBody.fetchInvitedCollaboratorList(), expenseLine, expenseDate);
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -155,7 +155,7 @@ public class ExpenseLineRestController {
     ExpenseLineToolService expenseLineToolService = Beans.get(ExpenseLineToolService.class);
     List<Employee> employeeList =
         expenseLineToolService.filterInvitedCollaborators(
-            requestBody.fetchEmployeeList(), expenseLine, expenseLine.getExpenseDate());
+            requestBody.fetchInvitedCollaboratorList(), expenseLine, expenseLine.getExpenseDate());
     expenseLine =
         Beans.get(ExpenseLineUpdateService.class)
             .updateExpenseLine(

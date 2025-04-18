@@ -84,7 +84,7 @@ public class ExpenseLinePutRequest extends RequestStructure {
   private Long expenseId;
 
   private Long projectTaskId;
-  private List<Long> employeeIdList;
+  private List<Long> invitedCollaboratorList;
 
   public Long getProjectId() {
     return projectId;
@@ -230,12 +230,12 @@ public class ExpenseLinePutRequest extends RequestStructure {
     this.projectTaskId = projectTaskId;
   }
 
-  public List<Long> getEmployeeIdList() {
-    return employeeIdList;
+  public List<Long> getInvitedCollaboratorList() {
+    return invitedCollaboratorList;
   }
 
-  public void setEmployeeIdList(List<Long> employeeIdList) {
-    this.employeeIdList = employeeIdList;
+  public void setInvitedCollaboratorList(List<Long> invitedCollaboratorList) {
+    this.invitedCollaboratorList = invitedCollaboratorList;
   }
 
   public Project fetchProject() {
@@ -302,15 +302,15 @@ public class ExpenseLinePutRequest extends RequestStructure {
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
   }
 
-  public List<Employee> fetchEmployeeList() {
-    if (employeeIdList == null) {
+  public List<Employee> fetchInvitedCollaboratorList() {
+    if (invitedCollaboratorList == null) {
       return null;
     }
-    if (employeeIdList.isEmpty()) {
+    if (invitedCollaboratorList.isEmpty()) {
       return Collections.emptyList();
     }
     List<Employee> employeeList = new ArrayList<>();
-    for (Long id : employeeIdList) {
+    for (Long id : invitedCollaboratorList) {
       employeeList.add(ObjectFinder.find(Employee.class, id, ObjectFinder.NO_VERSION));
     }
     return employeeList;

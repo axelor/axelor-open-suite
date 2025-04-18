@@ -94,14 +94,14 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   private Boolean toInvoice;
 
   private Long projectTaskId;
-  private List<Long> employeeIdList;
+  private List<Long> invitedCollaboratorList;
 
-  public List<Long> getEmployeeIdList() {
-    return employeeIdList;
+  public List<Long> getInvitedCollaboratorList() {
+    return invitedCollaboratorList;
   }
 
-  public void setEmployeeIdList(List<Long> employeeIdList) {
-    this.employeeIdList = employeeIdList;
+  public void setInvitedCollaboratorList(List<Long> invitedCollaboratorList) {
+    this.invitedCollaboratorList = invitedCollaboratorList;
   }
 
   public Long getProjectId() {
@@ -305,13 +305,13 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
   }
 
-  public List<Employee> fetchEmployeeList() {
-    if (CollectionUtils.isEmpty(employeeIdList)) {
+  public List<Employee> fetchInvitedCollaboratorList() {
+    if (CollectionUtils.isEmpty(invitedCollaboratorList)) {
       return Collections.emptyList();
     }
 
     List<Employee> employeeList = new ArrayList<>();
-    for (Long id : employeeIdList) {
+    for (Long id : invitedCollaboratorList) {
       employeeList.add(ObjectFinder.find(Employee.class, id, ObjectFinder.NO_VERSION));
     }
     return employeeList;
