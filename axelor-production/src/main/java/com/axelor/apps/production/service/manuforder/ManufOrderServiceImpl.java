@@ -365,6 +365,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     ProdProcess prodProcess = billOfMaterial.getProdProcess();
 
+    if (prodProcess == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.CBN_PROD_PROCESS_CANNOT_BE_NULL));
+    }
     ManufOrder manufOrder =
         new ManufOrder(
             qty,
