@@ -388,39 +388,39 @@
           <field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
             <editor x-show-titles="false">
               <field name="productVariantAttr1" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value1"
+                onChange="action-product-variant-config-record-reset-variant-value1"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr2" showIf="productVariantAttr1" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value2"
+                onChange="action-product-variant-config-record-reset-variant-value2"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr3" showIf="productVariantAttr2" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value3"
+                onChange="action-product-variant-config-record-reset-variant-value3"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value4"
+                onChange="action-product-variant-config-record-reset-variant-value4"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr5" showIf="productVariantAttr4" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value5"
+                onChange="action-product-variant-config-record-reset-variant-value5"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue5Set" showIf="productVariantAttr5" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
             </editor>
           </field>
@@ -438,31 +438,36 @@
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue1" showTitle="false"
                 showIf="productVariantAttr1" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr2" showTitle="false" readonly="true"
                 showIf="productVariantAttr1" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue2" showTitle="false"
                 showIf="productVariantAttr2" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr3" showTitle="false" readonly="true"
                 showIf="productVariantAttr2" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue3" showTitle="false"
                 showIf="productVariantAttr3" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr4" showTitle="false" readonly="true"
                 showIf="productVariantAttr3" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue4" showTitle="false"
                 showIf="productVariantAttr4" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr5" showTitle="false" readonly="true"
                 showIf="productVariantAttr4" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue5" showTitle="false"
                 showIf="productVariantAttr5" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
             </editor>
           </field>
           <field name="parentProduct" canEdit="false" form-view="product-form"
