@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.MessageRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -72,35 +73,40 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
   }
 
   @Deprecated
-  @SuppressWarnings("unchecked")
   public List<Long> findMailsFromSaleOrder(Partner partner, int emailType) {
-
-    String query =
-        "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
-            + " WHERE part.id = "
-            + partner.getId()
-            + " AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)"
-            + " AND email.typeSelect = "
-            + emailType;
-
-    return JPA.em().createQuery(query).getResultList();
+    return findMailsFromSaleOrder(
+        partner, emailType, "com.axelor.apps.sale.db.SaleOrder", "clientPartner");
   }
 
   @Deprecated
-  @SuppressWarnings("unchecked")
   public List<Long> findMailsFromSaleOrderContact(Partner partner, int emailType) {
+    return findMailsFromSaleOrder(
+        partner, emailType, "com.axelor.apps.sale.db.SaleOrder", "contactPartner");
+  }
 
-    String query =
-        "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
-            + " WHERE part.id = "
-            + partner.getId()
-            + " AND so.contactPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)"
-            + " AND email.typeSelect = "
-            + emailType;
+  @SuppressWarnings("unchecked")
+  protected List<Long> findMailsFromSaleOrder(
+      Partner partner, int emailType, String relatedToSelect, String partnerField) {
+    StringBuilder query =
+        new StringBuilder(
+            "SELECT DISTINCT email.id"
+                + " FROM Message AS email"
+                + " JOIN email.multiRelatedList AS related	"
+                + " JOIN SaleOrder AS so ON so.id = related.relatedToSelectId"
+                + " JOIN Partner AS part ON part.id = so."
+                + partnerField
+                + " WHERE part.id = :partnerId"
+                + " AND related.relatedToSelect = :relatedToSelect"
+                + " AND email.typeSelect = :emailType"
+                + " AND email.mediaTypeSelect = :mediaType");
 
-    return JPA.em().createQuery(query).getResultList();
+    return JPA.em()
+        .createQuery(query.toString())
+        .setParameter("partnerId", partner.getId())
+        .setParameter("relatedToSelect", relatedToSelect)
+        .setParameter("emailType", emailType)
+        .setParameter("mediaType", MessageRepository.MEDIA_TYPE_EMAIL)
+        .getResultList();
   }
 
   public List<Product> getProductBoughtByCustomer(Partner customer) {
