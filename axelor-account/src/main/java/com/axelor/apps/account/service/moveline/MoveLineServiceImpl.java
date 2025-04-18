@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -30,7 +29,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
-import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.batch.BatchDoubtfulCustomer;
@@ -46,7 +44,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -67,7 +64,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
@@ -92,7 +88,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineTaxService moveLineTaxService;
   protected CurrencyScaleService currencyScaleService;
   protected AccountingBatchRepository accountingBatchRepo;
-  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -106,8 +101,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountingCutOffService cutOffService,
       MoveLineTaxService moveLineTaxService,
       CurrencyScaleService currencyScaleService,
-      AccountingBatchRepository accountingBatchRepo,
-      AnalyticAxisService analyticAxisService) {
+      AccountingBatchRepository accountingBatchRepo) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -119,7 +113,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineTaxService = moveLineTaxService;
     this.currencyScaleService = currencyScaleService;
     this.accountingBatchRepo = accountingBatchRepo;
-    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -470,24 +463,5 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLineList.add(moveLine);
     }
     return moveLineList;
-  }
-
-  @Override
-  public void checkAnalyticAxisByCompany(Move move) throws AxelorException {
-    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())) {
-      return;
-    }
-
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (!ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-        analyticAxisService.checkRequiredAxisByCompany(
-            move.getCompany(),
-            Optional.of(
-                    moveLine.getAnalyticMoveLineList().stream()
-                        .map(AnalyticMoveLine::getAnalyticAxis)
-                        .collect(Collectors.toList()))
-                .orElse(null));
-      }
-    }
   }
 }

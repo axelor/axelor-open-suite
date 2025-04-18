@@ -144,7 +144,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
     moveCheckService.checkAnalyticAccount(move);
-    moveLineService.checkAnalyticAxisByCompany(move);
+    moveCheckService.checkAnalyticAxisByCompany(move);
     moveCheckService.checkCurrencyAmountSum(move);
   }
 
@@ -413,7 +413,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getMoveLineListOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
-    moveLineService.checkAnalyticAxisByCompany(move);
+    moveCheckService.checkAnalyticAxisByCompany(move);
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
