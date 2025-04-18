@@ -481,12 +481,12 @@ public class MoveLineServiceImpl implements MoveLineService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (!ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
         analyticAxisService.checkRequiredAxisByCompany(
+            move.getCompany(),
             Optional.of(
                     moveLine.getAnalyticMoveLineList().stream()
                         .map(AnalyticMoveLine::getAnalyticAxis)
                         .collect(Collectors.toList()))
-                .orElse(null),
-            move.getCompany());
+                .orElse(null));
       }
     }
   }

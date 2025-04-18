@@ -109,10 +109,10 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
     for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
       if (!ObjectUtils.isEmpty(expenseLine.getAnalyticMoveLineList())) {
         analyticAxisService.checkRequiredAxisByCompany(
+            expense.getCompany(),
             expenseLine.getAnalyticMoveLineList().stream()
                 .map(AnalyticMoveLine::getAnalyticAxis)
-                .collect(Collectors.toList()),
-            expense.getCompany());
+                .collect(Collectors.toList()));
       }
     }
   }

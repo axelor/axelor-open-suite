@@ -281,7 +281,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
           analyticLineModel.getAnalyticMoveLineList().stream()
               .map(AnalyticMoveLine::getAnalyticAxis)
               .collect(Collectors.toList());
-      analyticAxisService.checkRequiredAxisByCompany(analyticAxisList, company);
+      analyticAxisService.checkRequiredAxisByCompany(company, analyticAxisList);
     }
   }
 }

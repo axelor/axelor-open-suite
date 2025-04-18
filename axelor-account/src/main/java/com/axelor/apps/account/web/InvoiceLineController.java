@@ -552,10 +552,10 @@ public class InvoiceLineController {
             Optional.of(invoiceLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
         Beans.get(AnalyticAxisService.class)
             .checkRequiredAxisByCompany(
+                invoice.getCompany(),
                 analyticMoveLineList.stream()
                     .map(AnalyticMoveLine::getAnalyticAxis)
-                    .collect(Collectors.toList()),
-                invoice.getCompany());
+                    .collect(Collectors.toList()));
         response.setValues(invoiceLine);
       }
     } catch (Exception e) {

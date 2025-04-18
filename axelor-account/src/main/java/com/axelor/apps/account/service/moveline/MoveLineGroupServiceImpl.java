@@ -523,10 +523,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     List<AnalyticMoveLine> analyticMoveLineList =
         Optional.of(moveLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
     analyticAxisService.checkRequiredAxisByCompany(
+        moveLine.getMove().getCompany(),
         analyticMoveLineList.stream()
             .map(AnalyticMoveLine::getAnalyticAxis)
-            .collect(Collectors.toList()),
-        moveLine.getMove().getCompany());
+            .collect(Collectors.toList()));
 
     return createAnalyticValuesMap(moveLine);
   }

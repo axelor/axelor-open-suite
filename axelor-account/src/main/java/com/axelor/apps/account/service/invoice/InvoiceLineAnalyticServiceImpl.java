@@ -243,10 +243,10 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       if (!ObjectUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
         analyticAxisService.checkRequiredAxisByCompany(
+            invoice.getCompany(),
             invoiceLine.getAnalyticMoveLineList().stream()
                 .map(AnalyticMoveLine::getAnalyticAxis)
-                .collect(Collectors.toList()),
-            invoice.getCompany());
+                .collect(Collectors.toList()));
       }
     }
   }

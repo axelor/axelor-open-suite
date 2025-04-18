@@ -136,14 +136,14 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
       Company company, List<AnalyticDistributionLine> analyticDistributionLineList)
       throws AxelorException {
     this.checkRequiredAxisByCompany(
+        company,
         analyticDistributionLineList.stream()
             .map(AnalyticDistributionLine::getAnalyticAxis)
-            .collect(Collectors.toList()),
-        company);
+            .collect(Collectors.toList()));
   }
 
   @Override
-  public void checkRequiredAxisByCompany(List<AnalyticAxis> analyticAxisList, Company company)
+  public void checkRequiredAxisByCompany(Company company, List<AnalyticAxis> analyticAxisList)
       throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     List<AnalyticAxis> requiredAnalyticAxisList =
