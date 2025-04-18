@@ -666,9 +666,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         .bind("paymentMode", accountingReport.getPaymentMode())
         .bind("currency", accountingReport.getCurrency())
         .bind("companySet", companySet)
-        .bind(
-            "statusList",
-            moveToolService.getMoveStatusSelect(accountingReport.getMoveStatusSelect(), companySet))
+        .bind("statusList", moveToolService.getMoveStatusSelect(companySet))
         .bind("accountIdSet", accountIdSet)
         .bind("analyticAccountSet", analyticAccountSet);
   }

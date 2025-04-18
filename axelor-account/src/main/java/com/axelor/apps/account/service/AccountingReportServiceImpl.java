@@ -380,14 +380,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+    List<Integer> statusSelects = new ArrayList<>();
 
     if (accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
-      statusSelects =
-          moveToolService.getMoveStatusSelect(
-              accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
+      statusSelects = moveToolService.getMoveStatusSelect(accountingReport.getCompany());
     }
 
     this.addParams(
@@ -822,8 +820,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT);
 
     List<Integer> statusSelects =
-        moveToolService.getMoveStatusSelect(
-            accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
+        moveToolService.getMoveStatusSelect(accountingReport.getCompany());
 
     this.addParams(
         String.format(
@@ -870,8 +867,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
     List<Integer> statusSelects =
-        moveToolService.getMoveStatusSelect(
-            accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
+        moveToolService.getMoveStatusSelect(accountingReport.getCompany());
 
     this.addParams(
         String.format(

@@ -693,19 +693,21 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Integer> getMoveStatusSelectWithoutAccounted(
-      String moveStatusSelect, Set<Company> companySet) {
-    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, companySet);
+  public List<Integer> getMoveStatusSelectWithoutAccounted(Set<Company> companySet) {
+    List<Integer> statusList = this.getMoveStatusSelect(companySet);
     statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    if (CollectionUtils.isEmpty(statusList)) {
+      statusList.add(0);
+    }
     return statusList;
   }
 
   @Override
-  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet) {
+  public List<Integer> getMoveStatusSelect(Set<Company> companySet) {
     List<Integer> statusList = null;
 
     for (Company company : companySet) {
-      List<Integer> companyStatusList = this.getMoveStatusSelect(moveStatusSelect, company);
+      List<Integer> companyStatusList = this.getMoveStatusSelect(company);
 
       if (statusList == null) {
         statusList = companyStatusList;
@@ -718,29 +720,29 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Integer> getMoveStatusSelectWithoutAccounted(
-      String moveStatusSelect, Company company) {
-    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, company);
+  public List<Integer> getMoveStatusSelectWithoutAccounted(Company company) {
+    List<Integer> statusList = this.getMoveStatusSelect(company);
     statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
+    if (CollectionUtils.isEmpty(statusList)) {
+      statusList.add(0);
+    }
     return statusList;
   }
 
   @Override
-  public List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company) {
+  public List<Integer> getMoveStatusSelect(Company company) {
     List<Integer> statusList = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
 
-    if (ObjectUtils.isEmpty(moveStatusSelect) || company == null) {
+    if (company == null) {
       return statusList;
     }
     try {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-      if (accountConfig.getAccountingDaybook()
-          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
+      if (accountConfig.getAccountingDaybook()) {
         statusList.add(MoveRepository.STATUS_DAYBOOK);
       }
-      if (accountConfig.getIsActivateSimulatedMove()
-          && moveStatusSelect.contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
+      if (accountConfig.getIsActivateSimulatedMove()) {
         statusList.add(MoveRepository.STATUS_SIMULATED);
       }
     } catch (Exception e) {

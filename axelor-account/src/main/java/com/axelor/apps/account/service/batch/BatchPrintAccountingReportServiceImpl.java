@@ -25,14 +25,12 @@ import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -94,18 +92,8 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setRef(accountingReportService.getSequence(accountingReport));
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
 
-    String availableMoveStatusSelect =
-        Joiner.on(',')
-            .join(
-                Lists.newArrayList(
-                    MoveRepository.STATUS_ACCOUNTED,
-                    MoveRepository.STATUS_DAYBOOK,
-                    MoveRepository.STATUS_SIMULATED));
     accountingReport.setMoveStatusSelect(
-        Joiner.on(',')
-            .join(
-                moveToolService.getMoveStatusSelect(
-                    availableMoveStatusSelect, accountingReport.getCompany())));
+        Joiner.on(',').join(moveToolService.getMoveStatusSelect(accountingReport.getCompany())));
 
     accountingReport.setDisplayClosingAccountingMoves(accountingBatch.getCloseYear());
     accountingReport.setDisplayOpeningAccountingMoves(accountingBatch.getOpenYear());
