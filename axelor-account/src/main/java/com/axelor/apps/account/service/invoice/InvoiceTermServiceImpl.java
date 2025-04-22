@@ -751,6 +751,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
+      if (invoiceTerm == null) {
+        continue;
+      }
 
       BigDecimal paidAmount =
           invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
