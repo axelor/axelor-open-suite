@@ -247,10 +247,10 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       BankDetails companyBankDetails)
       throws AxelorException {
 
-    if(journal == null){
+    if (journal == null) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.BANK_RECONCILIATION_MISSING_JOURNAL));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.BANK_RECONCILIATION_MISSING_JOURNAL));
     }
 
     log.debug(
