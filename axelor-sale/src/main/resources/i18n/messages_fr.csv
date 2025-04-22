@@ -288,6 +288,7 @@
 "Hide Unit Amounts","Cacher les montant unitaires",,
 "Hide unit amounts","Cacher les montant unitaires",,
 "Historical","Historique",,
+"If you want to enable this configuration, interco sale order can not be created at finalized quotation. Please change the configuration in supplychain application.","Si vous voulez activer cette configuration, les commandes interco ne peuvent pas être générées à la finalisation du devis. Veuillez changer cette configuration dans l'application supplychain.",,
 "Ignore missing products","Ignorer les produits manquants",,
 "Import configurator creators","Importer des modèles de configurateur",,
 "Import log",,,
