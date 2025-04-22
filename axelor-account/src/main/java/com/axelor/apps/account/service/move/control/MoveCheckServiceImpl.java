@@ -311,7 +311,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
                     moveLine.getAnalyticMoveLineList().stream()
                         .map(AnalyticMoveLine::getAnalyticAxis)
                         .collect(Collectors.toList()))
-                .orElse(null));
+                .orElse(new ArrayList<>()));
       }
     }
   }
