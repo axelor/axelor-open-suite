@@ -1,0 +1,3 @@
+---
+title: "FixedAsset/PurchaseOrderLine: Added account check when fixes asset is modified."
+module: axelor-budget
