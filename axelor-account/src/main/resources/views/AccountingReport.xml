@@ -27,8 +27,9 @@
   </grid>
 
   <form name="accounting-report-form" title="Accounting report"
-    model="com.axelor.apps.account.db.AccountingReport" onNew="action-group-account-report-on-new"
-    onLoad="action-attrs-accounting-report-attrs-move-status-domain,action-accounting-report-attrs-display-anomalies">
+    model="com.axelor.apps.account.db.AccountingReport"
+    onNew="action-accounting-report-record-default"
+    onLoad="action-accounting-report-attrs-display-anomalies">
     <panel name="mainPanel"
       readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
       <field name="ref" showTitle="false"
@@ -212,8 +213,7 @@
         <panel name="accountingMovesPanel" title="Moves" colSpan="12" canCollapse="true"
           hideIf="[17,23,24].indexOf(reportType.typeSelect) != -1" stacked="true">
           <field name="moveStatusSelect" widget="MultiSelect"
-            onSelect="action-attrs-accounting-report-attrs-move-status-domain" selection-in="[2,5]"
-            hideIf="[1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,20,21,22,2000,2001,3000].indexOf(reportType.typeSelect) == -1"/>
+            hideIf="[1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,20,21,22,2000,2001,3000].indexOf(reportType.typeSelect) == -1 || (!_isCustom &amp;&amp; !company) || (_isCustom &amp;&amp; !companySet)"/>
           <field name="displayClosingAccountingMoves" widget="inline-checkbox"
             hideIf="[5,10,12,15,16,17,21,22,23,24,1001,1010,2000,3000].indexOf(reportType.typeSelect) != -1"/>
           <field name="displayOpeningAccountingMoves" widget="inline-checkbox"
@@ -277,7 +277,7 @@
 
   <form name="accounting-report-export-form" title="Accounting export"
     model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default,action-attrs-accounting-report-attrs-move-status-domain">
+    onNew="action-accounting-report-record-default">
 
     <panel name="searchPanel">
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
@@ -338,10 +338,6 @@
 
 
   <!-- ACTION GROUPs -->
-  <action-group name="action-group-account-report-on-new">
-    <action name="action-accounting-report-record-default"/>
-    <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
-  </action-group>
 
   <action-group name="action-group-account-accounting-report-reporttype-onchange">
     <action name="action-accounting-report-record-reset"/>
@@ -367,22 +363,10 @@
   <action-group name="action-group-account-accounting-report-company-onchange">
     <action name="action-accounting-report-method-get-account"/>
     <action name="action-accounting-report-record-reset"/>
-    <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
     <action name="action-accounting-report-record-empty-report-type"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-attrs-accounting-report-attrs-move-status-domain">
-    <attribute name="selection-in" for="moveStatusSelect"
-      if="_isCustom &amp;&amp; companySet"
-      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, companySet)"/>
-    <attribute name="selection-in" for="moveStatusSelect"
-      if="!_isCustom &amp;&amp; company"
-      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, company)"/>
-    <attribute name="hidden" for="moveStatusSelect" expr="eval: true"
-      if="!company || !companySet"/>
-  </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-period-domain">
     <attribute if="eval: year != null" name="domain"
