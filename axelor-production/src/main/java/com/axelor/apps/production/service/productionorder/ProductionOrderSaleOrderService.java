@@ -29,9 +29,6 @@ public interface ProductionOrderSaleOrderService {
   String generateProductionOrder(SaleOrder saleOrder, List<SaleOrderLine> selectedSaleOrderLine)
       throws AxelorException;
 
-  ProductionOrder generateManufOrders(ProductionOrder productionOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
-
   ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
   List<ProductionOrder> getLinkedProductionOrders(SaleOrder saleOrder) throws AxelorException;
