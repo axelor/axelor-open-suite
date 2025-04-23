@@ -1,0 +1,3 @@
+---
+title: "Analytic move line: fixed critical error when we create an analytic move line without analytic axis."
+module: axelor-account
