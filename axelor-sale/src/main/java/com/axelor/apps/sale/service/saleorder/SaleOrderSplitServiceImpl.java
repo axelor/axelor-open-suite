@@ -59,7 +59,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     saleOrderComputeService.computeSaleOrder(confirmedSaleOrder);
     saleOrderFinalizeService.finalizeQuotation(confirmedSaleOrder);
     saleOrderConfirmService.confirmSaleOrder(confirmedSaleOrder);
-
+    updateOrderingStatus(saleOrder);
     return confirmedSaleOrder;
   }
 
@@ -136,5 +136,16 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   @Override
   public BigDecimal getQtyToOrderLeft(SaleOrderLine saleOrderLine) {
     return saleOrderLine.getQty().subtract(saleOrderLine.getOrderedQty());
+  }
+
+  protected void updateOrderingStatus(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList.stream()
+        .allMatch(line -> line.getQty().compareTo(line.getOrderedQty()) == 0)) {
+      saleOrder.setOrderingStatus(SaleOrderRepository.ORDERING_STATUS_CLOSED);
+    } else if (saleOrderLineList.stream()
+        .anyMatch(line -> line.getOrderedQty().compareTo(BigDecimal.ZERO) > 0)) {
+      saleOrder.setOrderingStatus(SaleOrderRepository.ORDERING_STATUS_PARTIALLY_ORDERED);
+    }
   }
 }

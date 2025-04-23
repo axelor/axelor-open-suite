@@ -360,6 +360,15 @@
 	          </>
 	      ]]></viewer>
         </field>
+        <field if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+          showTitle="false" name="orderingStatus" showIf="statusSelect &lt;= 2">
+          <viewer><![CDATA[
+	          <>
+                 {orderingStatus == 1 && <Badge bg="warning">{_t('Partially ordered')}</Badge>}
+	             {orderingStatus == 2 && <Badge bg="success">{_t('orderingStatus.closed')}</Badge>}
+	          </>
+	      ]]></viewer>
+        </field>
         <field name="availabilityRequestLabel" colSpan="3" css="label-bold bold"
           showTitle="false" readonly="true" hidden="true">
           <viewer>
