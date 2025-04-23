@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an error occurring when generating sale order line details with no cost price."
+module: axelor-production
