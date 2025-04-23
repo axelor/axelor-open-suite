@@ -1,3 +1,3 @@
 ---
-title: "Stock move: fixed generation of invoices only when the generateInvoiceFromStockMove is enabled from supplychain app."
+title: "Stock move: prevented generation of invoices when 'generate Invoice from stock move' configuration is disabled in supplychain app."
 module: axelor-stock
