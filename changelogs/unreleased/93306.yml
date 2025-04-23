@@ -1,3 +1,5 @@
 ---
 title: "AutoReconcile/Partner: restricted auto reconcile between customer and supplier invoices on partner with isCompensation enabled."
 module: axelor-account
+developer: |
+  Changed the invoiceId parameter in an invoice in MoveLineToolService.getMoveExcessDueList
