@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
@@ -50,6 +51,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
   protected ExpenseLineToolService expenseLineToolService;
   protected ExpenseLineRepository expenseLineRepository;
   protected ExpenseRepository expenseRepository;
+  protected EmployeeFetchService employeeFetchService;
 
   @Inject
   public ExpenseLineUpdateServiceImpl(
@@ -57,12 +59,14 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       ExpenseComputationService expenseComputationService,
       ExpenseLineToolService expenseLineToolService,
       ExpenseLineRepository expenseLineRepository,
-      ExpenseRepository expenseRepository) {
+      ExpenseRepository expenseRepository,
+      EmployeeFetchService employeeFetchService) {
     this.expenseToolService = expenseToolService;
     this.expenseComputationService = expenseComputationService;
     this.expenseLineToolService = expenseLineToolService;
     this.expenseLineRepository = expenseLineRepository;
     this.expenseRepository = expenseRepository;
+    this.employeeFetchService = employeeFetchService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -88,9 +92,14 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       ProjectTask projectTask,
       List<Employee> invitedCollaboratorList)
       throws AxelorException {
+    expenseDate = expenseDate != null ? expenseDate : expenseLine.getExpenseDate();
+    List<Employee> filteredEmployeeList = employeeFetchService.getInvitedCollaborators(expenseDate);
     List<Employee> employeeList =
         expenseLineToolService.filterInvitedCollaborators(
-            invitedCollaboratorList, expenseLine, expenseLine.getExpenseDate());
+            invitedCollaboratorList,
+            filteredEmployeeList,
+            expenseLine,
+            expenseLine.getExpenseDate());
     if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       updateKilometricExpenseLine(
           expenseLine,

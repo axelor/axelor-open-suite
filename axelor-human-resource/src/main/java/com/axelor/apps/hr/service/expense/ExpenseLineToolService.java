@@ -43,5 +43,8 @@ public interface ExpenseLineToolService {
   boolean isKilometricExpenseLine(ExpenseLine expenseLine);
 
   List<Employee> filterInvitedCollaborators(
-      List<Employee> employeeList, ExpenseLine expenseLine, LocalDate expenseDate);
+      List<Employee> employeeList,
+      List<Employee> filteredEmployeeList,
+      ExpenseLine expenseLine,
+      LocalDate expenseDate);
 }

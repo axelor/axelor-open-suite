@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
@@ -78,9 +79,16 @@ public class ExpenseLineRestController {
     String expenseLineType = requestBody.getExpenseLineType();
     Boolean toInvoice = requestBody.getToInvoice();
     ProjectTask projectTask = requestBody.fetchProjectTask();
+
+    List<Employee> filteredEmployeeList =
+        Beans.get(EmployeeFetchService.class).getInvitedCollaborators(expenseDate);
+
     List<Employee> employeeList =
         expenseLineToolService.filterInvitedCollaborators(
-            requestBody.fetchInvitedCollaboratorList(), expenseLine, expenseDate);
+            requestBody.fetchInvitedCollaboratorList(),
+            filteredEmployeeList,
+            expenseLine,
+            expenseDate);
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
@@ -152,10 +160,6 @@ public class ExpenseLineRestController {
     RequestValidator.validateBody(requestBody);
     ExpenseLine expenseLine =
         ObjectFinder.find(ExpenseLine.class, expenseLineId, requestBody.getVersion());
-    ExpenseLineToolService expenseLineToolService = Beans.get(ExpenseLineToolService.class);
-    List<Employee> employeeList =
-        expenseLineToolService.filterInvitedCollaborators(
-            requestBody.fetchInvitedCollaboratorList(), expenseLine, expenseLine.getExpenseDate());
     expenseLine =
         Beans.get(ExpenseLineUpdateService.class)
             .updateExpenseLine(
@@ -177,7 +181,7 @@ public class ExpenseLineRestController {
                 requestBody.getToInvoice(),
                 requestBody.fetchExpense(),
                 requestBody.fetchProjectTask(),
-                employeeList);
+                requestBody.fetchInvitedCollaboratorList());
 
     return ResponseConstructor.build(
         Response.Status.OK,

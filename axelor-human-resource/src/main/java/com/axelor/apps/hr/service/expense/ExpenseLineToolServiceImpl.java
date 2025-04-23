@@ -27,7 +27,6 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -42,16 +41,12 @@ import org.apache.commons.collections.CollectionUtils;
 public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
   protected AppHumanResourceService appHumanResourceService;
   protected KilometricService kilometricService;
-  protected EmployeeFetchService employeeFetchService;
 
   @Inject
   public ExpenseLineToolServiceImpl(
-      AppHumanResourceService appHumanResourceService,
-      KilometricService kilometricService,
-      EmployeeFetchService employeeFetchService) {
+      AppHumanResourceService appHumanResourceService, KilometricService kilometricService) {
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
-    this.employeeFetchService = employeeFetchService;
   }
 
   @Override
@@ -145,11 +140,14 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
 
   @Override
   public List<Employee> filterInvitedCollaborators(
-      List<Employee> employeeList, ExpenseLine expenseLine, LocalDate expenseDate) {
+      List<Employee> employeeList,
+      List<Employee> filteredEmployeeList,
+      ExpenseLine expenseLine,
+      LocalDate expenseDate) {
     if (employeeList == null) {
       return null;
     }
-    return employeeFetchService.getInvitedCollaborators(expenseDate).stream()
+    return filteredEmployeeList.stream()
         .filter(employeeList::contains)
         .collect(Collectors.toList());
   }

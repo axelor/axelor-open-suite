@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
@@ -50,13 +51,15 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
       ExpenseLineToolService expenseLineToolService,
       ExpenseLineRepository expenseLineRepository,
       ExpenseRepository expenseRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      EmployeeFetchService employeeFetchService) {
     super(
         expenseToolService,
         expenseComputationService,
         expenseLineToolService,
         expenseLineRepository,
-        expenseRepository);
+        expenseRepository,
+        employeeFetchService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
