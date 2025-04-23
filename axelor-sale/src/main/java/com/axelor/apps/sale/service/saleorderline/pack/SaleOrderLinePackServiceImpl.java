@@ -123,7 +123,7 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
                 ? packLine
                     .getQuantity()
                     .multiply(packqty)
-                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
                 : packqty);
         break;
 
