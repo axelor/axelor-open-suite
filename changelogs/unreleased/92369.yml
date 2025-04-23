@@ -1,0 +1,3 @@
+---
+title: "Stock move: prevented generation of invoices when 'generate Invoice from stock move' configuration is disabled in supplychain app."
+module: axelor-stock
