@@ -1,14 +1,12 @@
-
 package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
 import jakarta.xml.bind.annotation.*;
 
-
 /**
- * <p>Java class for anonymous complex type.
- * 
+ * Java class for anonymous complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -25,176 +23,144 @@ import jakarta.xml.bind.annotation.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "sellerParty",
-    "buyerParty",
-    "recipientParty",
-    "deliveryParty",
-    "payerParty",
-    "factorParty"
-})
+@XmlType(
+    name = "",
+    propOrder = {
+      "sellerParty",
+      "buyerParty",
+      "recipientParty",
+      "deliveryParty",
+      "payerParty",
+      "factorParty"
+    })
 @XmlRootElement(name = "InvoiceParties")
 public class InvoiceParties {
 
-    @XmlElement(name = "SellerParty", required = true)
-    protected SellerPartyRecord sellerParty;
-    @XmlElement(name = "BuyerParty", required = true)
-    protected BillPartyRecord buyerParty;
-    @XmlElement(name = "RecipientParty")
-    protected BillPartyRecord recipientParty;
-    @XmlElement(name = "DeliveryParty")
-    protected BillPartyRecord deliveryParty;
-    @XmlElement(name = "PayerParty")
-    protected BillPartyRecord payerParty;
-    @XmlElement(name = "FactorParty")
-    protected BillPartyRecord factorParty;
+  @XmlElement(name = "SellerParty", required = true)
+  protected SellerPartyRecord sellerParty;
 
-    /**
-     * Gets the value of the sellerParty property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SellerPartyRecord }
-     *     
-     */
-    public SellerPartyRecord getSellerParty() {
-        return sellerParty;
-    }
+  @XmlElement(name = "BuyerParty", required = true)
+  protected BillPartyRecord buyerParty;
 
-    /**
-     * Sets the value of the sellerParty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SellerPartyRecord }
-     *     
-     */
-    public void setSellerParty(SellerPartyRecord value) {
-        this.sellerParty = value;
-    }
+  @XmlElement(name = "RecipientParty")
+  protected BillPartyRecord recipientParty;
 
-    /**
-     * Gets the value of the buyerParty property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public BillPartyRecord getBuyerParty() {
-        return buyerParty;
-    }
+  @XmlElement(name = "DeliveryParty")
+  protected BillPartyRecord deliveryParty;
 
-    /**
-     * Sets the value of the buyerParty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public void setBuyerParty(BillPartyRecord value) {
-        this.buyerParty = value;
-    }
+  @XmlElement(name = "PayerParty")
+  protected BillPartyRecord payerParty;
 
-    /**
-     * Gets the value of the recipientParty property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public BillPartyRecord getRecipientParty() {
-        return recipientParty;
-    }
+  @XmlElement(name = "FactorParty")
+  protected BillPartyRecord factorParty;
 
-    /**
-     * Sets the value of the recipientParty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public void setRecipientParty(BillPartyRecord value) {
-        this.recipientParty = value;
-    }
+  /**
+   * Gets the value of the sellerParty property.
+   *
+   * @return possible object is {@link SellerPartyRecord }
+   */
+  public SellerPartyRecord getSellerParty() {
+    return sellerParty;
+  }
 
-    /**
-     * Gets the value of the deliveryParty property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public BillPartyRecord getDeliveryParty() {
-        return deliveryParty;
-    }
+  /**
+   * Sets the value of the sellerParty property.
+   *
+   * @param value allowed object is {@link SellerPartyRecord }
+   */
+  public void setSellerParty(SellerPartyRecord value) {
+    this.sellerParty = value;
+  }
 
-    /**
-     * Sets the value of the deliveryParty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public void setDeliveryParty(BillPartyRecord value) {
-        this.deliveryParty = value;
-    }
+  /**
+   * Gets the value of the buyerParty property.
+   *
+   * @return possible object is {@link BillPartyRecord }
+   */
+  public BillPartyRecord getBuyerParty() {
+    return buyerParty;
+  }
 
-    /**
-     * Gets the value of the payerParty property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public BillPartyRecord getPayerParty() {
-        return payerParty;
-    }
+  /**
+   * Sets the value of the buyerParty property.
+   *
+   * @param value allowed object is {@link BillPartyRecord }
+   */
+  public void setBuyerParty(BillPartyRecord value) {
+    this.buyerParty = value;
+  }
 
-    /**
-     * Sets the value of the payerParty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public void setPayerParty(BillPartyRecord value) {
-        this.payerParty = value;
-    }
+  /**
+   * Gets the value of the recipientParty property.
+   *
+   * @return possible object is {@link BillPartyRecord }
+   */
+  public BillPartyRecord getRecipientParty() {
+    return recipientParty;
+  }
 
-    /**
-     * Gets the value of the factorParty property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public BillPartyRecord getFactorParty() {
-        return factorParty;
-    }
+  /**
+   * Sets the value of the recipientParty property.
+   *
+   * @param value allowed object is {@link BillPartyRecord }
+   */
+  public void setRecipientParty(BillPartyRecord value) {
+    this.recipientParty = value;
+  }
 
-    /**
-     * Sets the value of the factorParty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BillPartyRecord }
-     *     
-     */
-    public void setFactorParty(BillPartyRecord value) {
-        this.factorParty = value;
-    }
+  /**
+   * Gets the value of the deliveryParty property.
+   *
+   * @return possible object is {@link BillPartyRecord }
+   */
+  public BillPartyRecord getDeliveryParty() {
+    return deliveryParty;
+  }
 
+  /**
+   * Sets the value of the deliveryParty property.
+   *
+   * @param value allowed object is {@link BillPartyRecord }
+   */
+  public void setDeliveryParty(BillPartyRecord value) {
+    this.deliveryParty = value;
+  }
+
+  /**
+   * Gets the value of the payerParty property.
+   *
+   * @return possible object is {@link BillPartyRecord }
+   */
+  public BillPartyRecord getPayerParty() {
+    return payerParty;
+  }
+
+  /**
+   * Sets the value of the payerParty property.
+   *
+   * @param value allowed object is {@link BillPartyRecord }
+   */
+  public void setPayerParty(BillPartyRecord value) {
+    this.payerParty = value;
+  }
+
+  /**
+   * Gets the value of the factorParty property.
+   *
+   * @return possible object is {@link BillPartyRecord }
+   */
+  public BillPartyRecord getFactorParty() {
+    return factorParty;
+  }
+
+  /**
+   * Sets the value of the factorParty property.
+   *
+   * @param value allowed object is {@link BillPartyRecord }
+   */
+  public void setFactorParty(BillPartyRecord value) {
+    this.factorParty = value;
+  }
 }

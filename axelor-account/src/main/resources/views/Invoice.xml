@@ -403,9 +403,12 @@
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
-        <item title="Check whether partner accepts e-invoices" action="save,action-check-partner-accept-einvoice" readonlyIf="partner == null"/>
-        <item title="Send invoice to e-arve" action="save,action-send-electronic-invoice" readonlyIf="statusSelect != 3" prompt="Send electronic invoice?"/>
-        <item title="Mark invoice as sent" action="save,action-mark-as-sent" readonlyIf="(statusSelect != 3) || (sentEmailDate != null)"/>
+        <item title="Check whether partner accepts e-invoices"
+          action="save,action-check-partner-accept-einvoice" readonlyIf="partner == null"/>
+        <item title="Send invoice to e-arve" action="save,action-send-electronic-invoice"
+          readonlyIf="statusSelect != 3" prompt="Send electronic invoice?"/>
+        <item title="Mark invoice as sent" action="save,action-mark-as-sent"
+          readonlyIf="(statusSelect != 3) || (sentEmailDate != null)"/>
       </menu>
     </menubar>
 
@@ -419,7 +422,7 @@
       </panel>
       <panel name="viewerTagsPanel" colSpan="5">
         <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
-          colSpan="9" depends="partner.factorizedCustomer">
+          colSpan="9" depends="partner.factorizedCustomer,sentEmailDate,sentEinvoiceDate">
           <viewer>
 	                    <![CDATA[
 	                        <>
@@ -441,8 +444,8 @@
 
 	                        		{(operationTypeSelect == 3 || operationTypeSelect == 4) && partner.factorizedCustomer && <Badge bg="info">{_t('Factorized customer')}</Badge>}
 
-                                    {record.sentEmailDate  && <Badge bg="info">{_t(`Email sent on ${new Date(record.sentEmailDate).toLocaleDateString("ru-RU")}`)}</Badge> }
-                                    {record.sentEinvoiceDate  && <Badge bg="info">{_t(`e-Invoice sent on ${new Date(record.sentEinvoiceDate).toLocaleDateString("ru-RU")}`)}</Badge> }
+                                    {sentEmailDate  && <Badge bg="info">{_t(`Email sent on ${new Date(sentEmailDate).toLocaleDateString("ru-RU")}`)}</Badge> }
+                                    {sentEinvoiceDate  && <Badge bg="info">{_t(`e-Invoice sent on ${new Date(sentEinvoiceDate).toLocaleDateString("ru-RU")}`)}</Badge> }
 
 	                        	</Box>
 	                        </>
@@ -2036,7 +2039,8 @@
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
-    <attribute name="hidden" for="cancelBtn" expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
+    <attribute name="hidden" for="cancelBtn"
+      expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">

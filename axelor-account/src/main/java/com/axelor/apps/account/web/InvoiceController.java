@@ -230,12 +230,12 @@ public class InvoiceController {
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-            && invoice.getCompany().getAccountConfig() != null
-            && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+        && invoice.getCompany().getAccountConfig() != null
+        && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
       response.setError(
-              I18n.get(
-                      AccountExceptionMessage
-                              .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
+          I18n.get(
+              AccountExceptionMessage
+                  .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
       return;
     }
 

@@ -1,4 +1,3 @@
-
 package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -6,12 +5,11 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for AccountDataRecord complex type.
- * 
+ * Java class for AccountDataRecord complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="AccountDataRecord">
  *   &lt;complexContent>
@@ -26,121 +24,94 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AccountDataRecord", propOrder = {
-    "accountNumber",
-    "iban",
-    "bic",
-    "bankName"
-})
+@XmlType(
+    name = "AccountDataRecord",
+    propOrder = {"accountNumber", "iban", "bic", "bankName"})
 public class AccountDataRecord {
 
-    @XmlElement(name = "AccountNumber", required = true)
-    protected String accountNumber;
-    @XmlElement(name = "IBAN")
-    protected String iban;
-    @XmlElement(name = "BIC")
-    protected String bic;
-    @XmlElement(name = "BankName")
-    protected String bankName;
+  @XmlElement(name = "AccountNumber", required = true)
+  protected String accountNumber;
 
-    /**
-     * Gets the value of the accountNumber property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAccountNumber() {
-        return accountNumber;
-    }
+  @XmlElement(name = "IBAN")
+  protected String iban;
 
-    /**
-     * Sets the value of the accountNumber property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAccountNumber(String value) {
-        this.accountNumber = value;
-    }
+  @XmlElement(name = "BIC")
+  protected String bic;
 
-    /**
-     * Gets the value of the iban property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIBAN() {
-        return iban;
-    }
+  @XmlElement(name = "BankName")
+  protected String bankName;
 
-    /**
-     * Sets the value of the iban property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIBAN(String value) {
-        this.iban = value;
-    }
+  /**
+   * Gets the value of the accountNumber property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getAccountNumber() {
+    return accountNumber;
+  }
 
-    /**
-     * Gets the value of the bic property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getBIC() {
-        return bic;
-    }
+  /**
+   * Sets the value of the accountNumber property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setAccountNumber(String value) {
+    this.accountNumber = value;
+  }
 
-    /**
-     * Sets the value of the bic property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBIC(String value) {
-        this.bic = value;
-    }
+  /**
+   * Gets the value of the iban property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getIBAN() {
+    return iban;
+  }
 
-    /**
-     * Gets the value of the bankName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getBankName() {
-        return bankName;
-    }
+  /**
+   * Sets the value of the iban property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setIBAN(String value) {
+    this.iban = value;
+  }
 
-    /**
-     * Sets the value of the bankName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBankName(String value) {
-        this.bankName = value;
-    }
+  /**
+   * Gets the value of the bic property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getBIC() {
+    return bic;
+  }
 
+  /**
+   * Sets the value of the bic property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setBIC(String value) {
+    this.bic = value;
+  }
+
+  /**
+   * Gets the value of the bankName property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getBankName() {
+    return bankName;
+  }
+
+  /**
+   * Sets the value of the bankName property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setBankName(String value) {
+    this.bankName = value;
+  }
 }

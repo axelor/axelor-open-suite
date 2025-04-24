@@ -1,4 +1,3 @@
-
 package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
 import jakarta.xml.bind.annotation.*;
@@ -6,12 +5,11 @@ import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigDecimal;
 
-
 /**
- * <p>Java class for AdditionRecord complex type.
- * 
+ * Java class for AdditionRecord complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="AdditionRecord">
  *   &lt;complexContent>
@@ -33,121 +31,95 @@ import java.math.BigDecimal;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AdditionRecord", propOrder = {
-    "addContent",
-    "addRate",
-    "addSum"
-})
+@XmlType(
+    name = "AdditionRecord",
+    propOrder = {"addContent", "addRate", "addSum"})
 public class AdditionRecord {
 
-    @XmlElement(name = "AddContent", required = true)
-    protected String addContent;
-    @XmlElement(name = "AddRate")
-    protected BigDecimal addRate;
-    @XmlElement(name = "AddSum")
-    protected BigDecimal addSum;
-    @XmlAttribute(name = "addCode", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String addCode;
+  @XmlElement(name = "AddContent", required = true)
+  protected String addContent;
 
-    /**
-     * Gets the value of the addContent property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAddContent() {
-        return addContent;
-    }
+  @XmlElement(name = "AddRate")
+  protected BigDecimal addRate;
 
-    /**
-     * Sets the value of the addContent property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAddContent(String value) {
-        this.addContent = value;
-    }
+  @XmlElement(name = "AddSum")
+  protected BigDecimal addSum;
 
-    /**
-     * Gets the value of the addRate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public BigDecimal getAddRate() {
-        return addRate;
-    }
+  @XmlAttribute(name = "addCode", required = true)
+  @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+  protected String addCode;
 
-    /**
-     * Sets the value of the addRate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public void setAddRate(BigDecimal value) {
-        this.addRate = value;
-    }
+  /**
+   * Gets the value of the addContent property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getAddContent() {
+    return addContent;
+  }
 
-    /**
-     * Gets the value of the addSum property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public BigDecimal getAddSum() {
-        return addSum;
-    }
+  /**
+   * Sets the value of the addContent property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setAddContent(String value) {
+    this.addContent = value;
+  }
 
-    /**
-     * Sets the value of the addSum property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public void setAddSum(BigDecimal value) {
-        this.addSum = value;
-    }
+  /**
+   * Gets the value of the addRate property.
+   *
+   * @return possible object is {@link BigDecimal }
+   */
+  public BigDecimal getAddRate() {
+    return addRate;
+  }
 
-    /**
-     * Gets the value of the addCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAddCode() {
-        return addCode;
-    }
+  /**
+   * Sets the value of the addRate property.
+   *
+   * @param value allowed object is {@link BigDecimal }
+   */
+  public void setAddRate(BigDecimal value) {
+    this.addRate = value;
+  }
 
-    /**
-     * Sets the value of the addCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAddCode(String value) {
-        this.addCode = value;
-    }
+  /**
+   * Gets the value of the addSum property.
+   *
+   * @return possible object is {@link BigDecimal }
+   */
+  public BigDecimal getAddSum() {
+    return addSum;
+  }
 
+  /**
+   * Sets the value of the addSum property.
+   *
+   * @param value allowed object is {@link BigDecimal }
+   */
+  public void setAddSum(BigDecimal value) {
+    this.addSum = value;
+  }
+
+  /**
+   * Gets the value of the addCode property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getAddCode() {
+    return addCode;
+  }
+
+  /**
+   * Sets the value of the addCode property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setAddCode(String value) {
+    this.addCode = value;
+  }
 }

@@ -218,8 +218,8 @@
 
     <string name="headOfficeAddress" title="Head office address"/>
 
-    <date name="sentEmailDate" title="sent Email" />
-    <date name="sentEinvoiceDate" title="sent Electronic invoice" />
+    <date name="sentEmailDate" title="sent Email"/>
+    <date name="sentEinvoiceDate" title="sent Electronic invoice"/>
 
     <boolean name="displayStockMoveOnInvoicePrinting" title="Display Deliveries on printing"
       default="false"/>

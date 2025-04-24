@@ -1,19 +1,16 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import com.axelor.apps.account.einvoice.ElementAdapter;
-import org.w3c.dom.Element;
-
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
+import org.w3c.dom.Element;
 
 /**
- * <p>Java class for AccountPlanRequestType complex type.
- * 
+ * Java class for AccountPlanRequestType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="AccountPlanRequestType"&gt;
  *   &lt;complexContent&gt;
@@ -29,147 +26,118 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AccountPlanRequestType", propOrder = {
-    "any"
-})
+@XmlType(
+    name = "AccountPlanRequestType",
+    propOrder = {"any"})
 public class AccountPlanRequestType {
 
-    @XmlJavaTypeAdapter(ElementAdapter.class)
-    @XmlAnyElement
-    protected Element any;
-    @XmlAttribute(name = "format", required = true)
-    protected RegistryFormatType format;
-    @XmlAttribute(name = "replace")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String replace;
-    @XmlAttribute(name = "parse")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String parse;
-    @XmlAttribute(name = "authPhrase", required = true)
-    protected String authPhrase;
+  @XmlJavaTypeAdapter(ElementAdapter.class)
+  @XmlAnyElement
+  protected Element any;
 
-    /**
-     * Gets the value of the any property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public Element getAny() {
-        return any;
-    }
+  @XmlAttribute(name = "format", required = true)
+  protected RegistryFormatType format;
 
-    /**
-     * Sets the value of the any property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Element }
-     *     
-     */
-    public void setAny(Element value) {
-        this.any = value;
-    }
+  @XmlAttribute(name = "replace")
+  @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+  protected String replace;
 
-    /**
-     * Gets the value of the format property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RegistryFormatType }
-     *     
-     */
-    public RegistryFormatType getFormat() {
-        return format;
-    }
+  @XmlAttribute(name = "parse")
+  @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+  protected String parse;
 
-    /**
-     * Sets the value of the format property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RegistryFormatType }
-     *     
-     */
-    public void setFormat(RegistryFormatType value) {
-        this.format = value;
-    }
+  @XmlAttribute(name = "authPhrase", required = true)
+  protected String authPhrase;
 
-    /**
-     * Gets the value of the replace property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getReplace() {
-        return replace;
-    }
+  /**
+   * Gets the value of the any property.
+   *
+   * @return possible object is {@link String }
+   */
+  public Element getAny() {
+    return any;
+  }
 
-    /**
-     * Sets the value of the replace property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setReplace(String value) {
-        this.replace = value;
-    }
+  /**
+   * Sets the value of the any property.
+   *
+   * @param value allowed object is {@link Element }
+   */
+  public void setAny(Element value) {
+    this.any = value;
+  }
 
-    /**
-     * Gets the value of the parse property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getParse() {
-        return parse;
-    }
+  /**
+   * Gets the value of the format property.
+   *
+   * @return possible object is {@link RegistryFormatType }
+   */
+  public RegistryFormatType getFormat() {
+    return format;
+  }
 
-    /**
-     * Sets the value of the parse property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setParse(String value) {
-        this.parse = value;
-    }
+  /**
+   * Sets the value of the format property.
+   *
+   * @param value allowed object is {@link RegistryFormatType }
+   */
+  public void setFormat(RegistryFormatType value) {
+    this.format = value;
+  }
 
-    /**
-     * Gets the value of the authPhrase property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAuthPhrase() {
-        return authPhrase;
-    }
+  /**
+   * Gets the value of the replace property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getReplace() {
+    return replace;
+  }
 
-    /**
-     * Sets the value of the authPhrase property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAuthPhrase(String value) {
-        this.authPhrase = value;
-    }
+  /**
+   * Sets the value of the replace property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setReplace(String value) {
+    this.replace = value;
+  }
 
+  /**
+   * Gets the value of the parse property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getParse() {
+    return parse;
+  }
+
+  /**
+   * Sets the value of the parse property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setParse(String value) {
+    this.parse = value;
+  }
+
+  /**
+   * Gets the value of the authPhrase property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getAuthPhrase() {
+    return authPhrase;
+  }
+
+  /**
+   * Sets the value of the authPhrase property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setAuthPhrase(String value) {
+    this.authPhrase = value;
+  }
 }

@@ -1,5 +1,7 @@
 package com.axelor.apps.base.job;
 
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC;
+
 import com.axelor.apps.base.db.IndustrySector;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerTurnover;
@@ -8,6 +10,14 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PartnerTurnoverRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -18,17 +28,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC;
 
 public class EmtaRegistryImportJob implements Job {
 

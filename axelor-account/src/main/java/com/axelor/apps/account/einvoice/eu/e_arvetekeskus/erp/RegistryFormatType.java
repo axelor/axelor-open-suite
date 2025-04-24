@@ -1,15 +1,15 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.XmlEnum;
 import jakarta.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for RegistryFormatType.
- * 
+ * Java class for RegistryFormatType.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
+ *
  * <p>
+ *
  * <pre>
  * &lt;simpleType name="RegistryFormatType"&gt;
  *   &lt;restriction base="{http://e-arvetekeskus.eu/erp}ShortTextType"&gt;
@@ -18,21 +18,18 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
- * 
  */
 @XmlType(name = "RegistryFormatType")
 @XmlEnum
 public enum RegistryFormatType {
+  STANDARD,
+  AXAPTA;
 
-    STANDARD,
-    AXAPTA;
+  public String value() {
+    return name();
+  }
 
-    public String value() {
-        return name();
-    }
-
-    public static RegistryFormatType fromValue(String v) {
-        return valueOf(v);
-    }
-
+  public static RegistryFormatType fromValue(String v) {
+    return valueOf(v);
+  }
 }

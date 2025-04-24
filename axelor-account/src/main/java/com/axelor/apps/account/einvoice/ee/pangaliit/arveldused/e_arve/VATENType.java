@@ -1,16 +1,14 @@
-
 package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
- * <p>Java class for VATENType complex type.
- * 
+ * Java class for VATENType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="VATENType">
  *   &lt;complexContent>
@@ -24,98 +22,77 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VATENType", propOrder = {
-    "categoryCode",
-    "exemptionReasonCode",
-    "exemptionReasonText"
-})
+@XmlType(
+    name = "VATENType",
+    propOrder = {"categoryCode", "exemptionReasonCode", "exemptionReasonText"})
 public class VATENType {
 
-    @XmlElement(name = "CategoryCode", required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    @XmlSchemaType(name = "normalizedString")
-    protected String categoryCode;
-    @XmlElement(name = "ExemptionReasonCode")
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    @XmlSchemaType(name = "normalizedString")
-    protected String exemptionReasonCode;
-    @XmlElement(name = "ExemptionReasonText")
-    protected String exemptionReasonText;
+  @XmlElement(name = "CategoryCode", required = true)
+  @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+  @XmlSchemaType(name = "normalizedString")
+  protected String categoryCode;
 
-    /**
-     * Gets the value of the categoryCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCategoryCode() {
-        return categoryCode;
-    }
+  @XmlElement(name = "ExemptionReasonCode")
+  @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+  @XmlSchemaType(name = "normalizedString")
+  protected String exemptionReasonCode;
 
-    /**
-     * Sets the value of the categoryCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCategoryCode(String value) {
-        this.categoryCode = value;
-    }
+  @XmlElement(name = "ExemptionReasonText")
+  protected String exemptionReasonText;
 
-    /**
-     * Gets the value of the exemptionReasonCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getExemptionReasonCode() {
-        return exemptionReasonCode;
-    }
+  /**
+   * Gets the value of the categoryCode property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getCategoryCode() {
+    return categoryCode;
+  }
 
-    /**
-     * Sets the value of the exemptionReasonCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setExemptionReasonCode(String value) {
-        this.exemptionReasonCode = value;
-    }
+  /**
+   * Sets the value of the categoryCode property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setCategoryCode(String value) {
+    this.categoryCode = value;
+  }
 
-    /**
-     * Gets the value of the exemptionReasonText property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getExemptionReasonText() {
-        return exemptionReasonText;
-    }
+  /**
+   * Gets the value of the exemptionReasonCode property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getExemptionReasonCode() {
+    return exemptionReasonCode;
+  }
 
-    /**
-     * Sets the value of the exemptionReasonText property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setExemptionReasonText(String value) {
-        this.exemptionReasonText = value;
-    }
+  /**
+   * Sets the value of the exemptionReasonCode property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setExemptionReasonCode(String value) {
+    this.exemptionReasonCode = value;
+  }
 
+  /**
+   * Gets the value of the exemptionReasonText property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getExemptionReasonText() {
+    return exemptionReasonText;
+  }
+
+  /**
+   * Sets the value of the exemptionReasonText property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setExemptionReasonText(String value) {
+    this.exemptionReasonText = value;
+  }
 }

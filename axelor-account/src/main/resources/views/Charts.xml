@@ -331,12 +331,14 @@ from InvoiceTerm as self
     <field name="_company" expr="eval:__repo__(User).find(__user__.id)?.activeCompany"/>
   </action-record>
 
-  <chart name="chart.account.invoice.summary" title="Account Invoice Summary" onInit="select.default.invoice.category">
+  <chart name="chart.account.invoice.summary" title="Account Invoice Summary"
+    onInit="select.default.invoice.category">
     <search-fields>
-      <field title="Operation" type="string" name="operation" selection="select.invoice.type.revenue.cost"
-             x-required="true"/>
-      <field name="companyCode" title="Company" type="string" selection="select.invoice.company.code"
-             x-required="true" hideIf="operation == 'EBITDA' || operation == 'WORKFORCE_COST'"/>
+      <field title="Operation" type="string" name="operation"
+        selection="select.invoice.type.revenue.cost" x-required="true"/>
+      <field name="companyCode" title="Company" type="string"
+        selection="select.invoice.company.code" x-required="true"
+        hideIf="operation == 'EBITDA' || operation == 'WORKFORCE_COST'"/>
     </search-fields>
 
     <dataset type="rpc">com.axelor.apps.account.web.AccountInvoiceSummaryChartController:calculate</dataset>
@@ -345,11 +347,11 @@ from InvoiceTerm as self
   </chart>
 
 
-  <chart name="chart.invoiced.turnover.ytd.vs.lastyear" title="Invoiced Turnover This year vs Last year"
-         onInit="select.default.invoice.type.revenue">
+  <chart name="chart.invoiced.turnover.ytd.vs.lastyear"
+    title="Invoiced Turnover This year vs Last year" onInit="select.default.invoice.type.revenue">
     <search-fields>
-      <field type="string" name="operation" title="Revenue vs Cost" selection="select.invoice.type.revenue.cost"
-             x-required="true"/>
+      <field type="string" name="operation" title="Revenue vs Cost"
+        selection="select.invoice.type.revenue.cost" x-required="true"/>
 
     </search-fields>
     <dataset type="rpc">com.axelor.apps.account.web.InvoicedTurnoverThisVsLastYearChartController:calculate</dataset>
@@ -515,13 +517,15 @@ from InvoiceTerm as self
   </chart>
 
 
-  <chart name="chart.invoice.turnover.by.customer" title="Business turnover research by customer" stacked="true"
-         onInit="action.account.chart.set.from.to.date.month">
+  <chart name="chart.invoice.turnover.by.customer"
+    title="Business turnover research by customer" stacked="true"
+    onInit="action.account.chart.set.from.to.date.month">
     <search-fields>
-      <field name="partnerFilter" title="Filter partners by" selection="base.partner.type.select" x-required="true"/>
-      <field name="partner" type="reference" target="com.axelor.apps.base.db.Partner" widget="many-to-one"
-             title="Partner"  x-required="true"
-             onSelect="action-supplier-cost-by-month-chart-partner-domain" hideIf="partnerFilter == null"/>
+      <field name="partnerFilter" title="Filter partners by"
+        selection="base.partner.type.select" x-required="true"/>
+      <field name="partner" type="reference" target="com.axelor.apps.base.db.Partner"
+        widget="many-to-one" title="Partner" x-required="true"
+        onSelect="action-supplier-cost-by-month-chart-partner-domain" hideIf="partnerFilter == null"/>
     </search-fields>
 
     <dataset type="sql">
@@ -555,10 +559,11 @@ from InvoiceTerm as self
   </chart>
   <chart name="chart.supplier.cost.by.months" title="Partner cost by months" stacked="true">
     <search-fields>
-      <field name="partnerFilter" title="Filter partners by" selection="base.partner.type.select" x-required="true"/>
-      <field name="partner" type="reference" target="com.axelor.apps.base.db.Partner" widget="many-to-one"
-             title="Partner"  x-required="true"
-             onSelect="action-supplier-cost-by-month-chart-partner-domain" hideIf="partnerFilter == null"/>
+      <field name="partnerFilter" title="Filter partners by"
+        selection="base.partner.type.select" x-required="true"/>
+      <field name="partner" type="reference" target="com.axelor.apps.base.db.Partner"
+        widget="many-to-one" title="Partner" x-required="true"
+        onSelect="action-supplier-cost-by-month-chart-partner-domain" hideIf="partnerFilter == null"/>
     </search-fields>
     <dataset type="sql">
       <![CDATA[

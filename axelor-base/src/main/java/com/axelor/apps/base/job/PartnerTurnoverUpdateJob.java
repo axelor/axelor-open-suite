@@ -3,13 +3,12 @@ package com.axelor.apps.base.job;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import javax.persistence.Query;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.persistence.Query;
 
 public class PartnerTurnoverUpdateJob implements Job {
 

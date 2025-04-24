@@ -1,15 +1,13 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
- * <p>Java class for CostReportExportResponseType complex type.
- * 
+ * Java class for CostReportExportResponseType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="CostReportExportResponseType"&gt;
  *   &lt;complexContent&gt;
@@ -23,93 +21,74 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CostReportExportResponseType", propOrder = {
-    "any"
-})
+@XmlType(
+    name = "CostReportExportResponseType",
+    propOrder = {"any"})
 public class CostReportExportResponseType {
 
-    @XmlAnyElement(lax = true)
-    protected Object any;
-    @XmlAttribute(name = "includesLatest", required = true)
-    protected YesNoType includesLatest;
-    @XmlAttribute(name = "latestChange", required = true)
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar latestChange;
+  @XmlAnyElement(lax = true)
+  protected Object any;
 
-    /**
-     * Gets the value of the any property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
-     */
-    public Object getAny() {
-        return any;
-    }
+  @XmlAttribute(name = "includesLatest", required = true)
+  protected YesNoType includesLatest;
 
-    /**
-     * Sets the value of the any property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
-     */
-    public void setAny(Object value) {
-        this.any = value;
-    }
+  @XmlAttribute(name = "latestChange", required = true)
+  @XmlSchemaType(name = "dateTime")
+  protected XMLGregorianCalendar latestChange;
 
-    /**
-     * Gets the value of the includesLatest property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link YesNoType }
-     *     
-     */
-    public YesNoType getIncludesLatest() {
-        return includesLatest;
-    }
+  /**
+   * Gets the value of the any property.
+   *
+   * @return possible object is {@link Object }
+   */
+  public Object getAny() {
+    return any;
+  }
 
-    /**
-     * Sets the value of the includesLatest property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link YesNoType }
-     *     
-     */
-    public void setIncludesLatest(YesNoType value) {
-        this.includesLatest = value;
-    }
+  /**
+   * Sets the value of the any property.
+   *
+   * @param value allowed object is {@link Object }
+   */
+  public void setAny(Object value) {
+    this.any = value;
+  }
 
-    /**
-     * Gets the value of the latestChange property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getLatestChange() {
-        return latestChange;
-    }
+  /**
+   * Gets the value of the includesLatest property.
+   *
+   * @return possible object is {@link YesNoType }
+   */
+  public YesNoType getIncludesLatest() {
+    return includesLatest;
+  }
 
-    /**
-     * Sets the value of the latestChange property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setLatestChange(XMLGregorianCalendar value) {
-        this.latestChange = value;
-    }
+  /**
+   * Sets the value of the includesLatest property.
+   *
+   * @param value allowed object is {@link YesNoType }
+   */
+  public void setIncludesLatest(YesNoType value) {
+    this.includesLatest = value;
+  }
 
+  /**
+   * Gets the value of the latestChange property.
+   *
+   * @return possible object is {@link XMLGregorianCalendar }
+   */
+  public XMLGregorianCalendar getLatestChange() {
+    return latestChange;
+  }
+
+  /**
+   * Sets the value of the latestChange property.
+   *
+   * @param value allowed object is {@link XMLGregorianCalendar }
+   */
+  public void setLatestChange(XMLGregorianCalendar value) {
+    this.latestChange = value;
+  }
 }

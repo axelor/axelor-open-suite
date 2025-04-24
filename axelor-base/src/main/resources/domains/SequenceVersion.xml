@@ -23,10 +23,14 @@
       orderBy="-startDate"
       filter="self.sequence = :sequence AND self.startDate &lt;= :date AND (self.endDate IS NULL OR self.endDate &gt;= :date)"/>
 
-    <finder-method name="findEndless" using="sequence,LocalDate:date" filter="self.sequence = :sequence AND self.startDate &lt;= :date AND (self.endDate IS NULL OR self.endDate &gt;= :date)" />
-    <finder-method name="findByDay" using="sequence,LocalDate:date" filter="self.sequence = :sequence AND self.startDate = :date AND self.endDate = :date)" />
-    <finder-method name="findByMonth" using="sequence,int:month,int:year" filter="self.sequence = :sequence AND MONTH(self.startDate) = :month AND YEAR(self.startDate) = :year" />
-    <finder-method name="findByYear" using="sequence,int:year" filter="self.sequence = :sequence AND YEAR(self.startDate) = :year" />
+    <finder-method name="findEndless" using="sequence,LocalDate:date"
+      filter="self.sequence = :sequence AND self.startDate &lt;= :date AND (self.endDate IS NULL OR self.endDate &gt;= :date)"/>
+    <finder-method name="findByDay" using="sequence,LocalDate:date"
+      filter="self.sequence = :sequence AND self.startDate = :date AND self.endDate = :date)"/>
+    <finder-method name="findByMonth" using="sequence,int:month,int:year"
+      filter="self.sequence = :sequence AND MONTH(self.startDate) = :month AND YEAR(self.startDate) = :year"/>
+    <finder-method name="findByYear" using="sequence,int:year"
+      filter="self.sequence = :sequence AND YEAR(self.startDate) = :year"/>
   </entity>
 
 </domain-models>

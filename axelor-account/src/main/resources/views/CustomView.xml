@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <action-record model="com.axelor.apps.account.db.Account" name="action.account.chart.default.forecast.chart">
-        <field name="companyCode" expr="ALL"/>
-        <field name="forecastYear" expr="eval: __date__.getYear().toString() + '-01-01'" />
-    </action-record>
+  <action-record model="com.axelor.apps.account.db.Account"
+    name="action.account.chart.default.forecast.chart">
+    <field name="companyCode" expr="ALL"/>
+    <field name="forecastYear" expr="eval: __date__.getYear().toString() + '-01-01'"/>
+  </action-record>
 
-    <custom name="dashlet.customer.invoices.to.collect.custom.view" title="Customer Invoices remaining To Collect"  >
-        <field name="exTax" type="decimal" x-scale="2"/>
-        <field name="inTax" type="decimal" x-scale="2" css="color:blue;" x-color-field="blue"/>
-        <dataset type="jpql">
+  <custom name="dashlet.customer.invoices.to.collect.custom.view"
+    title="Customer Invoices remaining To Collect">
+    <field name="exTax" type="decimal" x-scale="2"/>
+    <field name="inTax" type="decimal" x-scale="2" css="color:blue;" x-color-field="blue"/>
+    <dataset type="jpql">
             <![CDATA[
                 select self.dueDate as dueDate,
                        self.invoiceDate as invoiceDate,
@@ -26,19 +28,20 @@
                 where self.statusSelect = 3 AND self.operationTypeSelect=3 AND self.companyInTaxTotalRemaining > 0 AND self.hasPendingPayments = FALSE AND self.dueDate >= CURRENT_DATE
                 order by dueDate, invoiceId
             ]]>
-        </dataset>
-        <template>
+    </dataset>
+    <template>
             <![CDATA[
                 <report-table data='data' columns='invoiceId,companyName,partnerName,invoiceDate,dueDate,exTax,inTax' sums='exTax,inTax'></report-table>
             ]]>
-        </template>
-    </custom>
+    </template>
+  </custom>
 
-    <custom name="dashlet.customer.invoices.overdue.custom.view" title="Customer Invoices Overdue">
-        <field name="exTax" type="decimal" x-scale="2"/>
-        <field name="inTax" type="decimal" x-scale="2"/>
-        <field name="pleasedontcacheme"/>
-        <dataset type="jpql">
+  <custom name="dashlet.customer.invoices.overdue.custom.view"
+    title="Customer Invoices Overdue">
+    <field name="exTax" type="decimal" x-scale="2"/>
+    <field name="inTax" type="decimal" x-scale="2"/>
+    <field name="pleasedontcacheme"/>
+    <dataset type="jpql">
             <![CDATA[
                 select self.dueDate as dueDate,
                        self.invoiceDate as invoiceDate,
@@ -53,45 +56,50 @@
                 where self.statusSelect = 3 AND self.operationTypeSelect=3 AND self.companyInTaxTotalRemaining > 0 AND self.hasPendingPayments = FALSE AND self.dueDate < CURRENT_DATE
                 order by dueDate, invoiceId
             ]]>
-        </dataset>
-        <template>
+    </dataset>
+    <template>
             <![CDATA[
                 <report-table style='color:#d9534f' data='data' columns='invoiceId,companyName,partnerName,invoiceDate,dueDate,exTax,inTax' sums='exTax,inTax'></report-table>
             ]]>
-        </template>
-    </custom>
+    </template>
+  </custom>
 
-    <chart name="chart.account.invoice.with.expenses.summary" title="Revenue vs costs" onInit="select.default.five.years">
-        <search-fields>
-            <field type="string" name="year" title="Year" selection="select.translation.five.years" x-required="true"/>
-        </search-fields>
-        <dataset type="rpc">com.axelor.apps.account.web.RevenueVsCostController:calculate</dataset>
-        <category key="_month_no" type="month" title="Month"/>
-        <series key="_amount" type="line" title="Amount" groupBy="_type"/>
-        <config name="colors" value="green, red, blue, black, grey"/>
-    </chart>
+  <chart name="chart.account.invoice.with.expenses.summary" title="Revenue vs costs"
+    onInit="select.default.five.years">
+    <search-fields>
+      <field type="string" name="year" title="Year" selection="select.translation.five.years"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">com.axelor.apps.account.web.RevenueVsCostController:calculate</dataset>
+    <category key="_month_no" type="month" title="Month"/>
+    <series key="_amount" type="line" title="Amount" groupBy="_type"/>
+    <config name="colors" value="green, red, blue, black, grey"/>
+  </chart>
 
-    <chart stacked="true" name="chart.invoice.translation.amount.permonth" title="Translation performance" onInit="select.default.five.years">
-        <search-fields>
-            <field type="string" name="year" title="Year" selection="select.translation.five.years" x-required="true"/>
-            <field type="string" name="type" title="Aggregate by" selection="select.translation.aggregation.type" x-required="true"/>
-        </search-fields>
-        <dataset type="rpc">com.axelor.apps.account.web.TranslationChartController:translationPerMonth</dataset>
-        <category key="month" type="month" title="Month"/>
-        <series key="amount" groupBy="code" type="bar" title="Amount" aggregate="sum"/>
-    </chart>
+  <chart stacked="true" name="chart.invoice.translation.amount.permonth"
+    title="Translation performance" onInit="select.default.five.years">
+    <search-fields>
+      <field type="string" name="year" title="Year" selection="select.translation.five.years"
+        x-required="true"/>
+      <field type="string" name="type" title="Aggregate by"
+        selection="select.translation.aggregation.type" x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">com.axelor.apps.account.web.TranslationChartController:translationPerMonth</dataset>
+    <category key="month" type="month" title="Month"/>
+    <series key="amount" groupBy="code" type="bar" title="Amount" aggregate="sum"/>
+  </chart>
 
 
-<!-- Dashboard doest import this chart-->
-    <chart name="chart.paymentVoucher.customer.forecast.vs.revenue" title="Forecast vs Revenue"
-           onInit="action.account.chart.default.forecast.chart">
-        <search-fields>
-            <field name="companyCode" title="Company" type="string" selection="select.invoice.company.code"
-                   x-required="true"/>
-            <field name="forecastYear" title="Year" type="string" selection="account.forecast.date.select.years"
-                   x-required="true"/>
-        </search-fields>
-        <dataset type="sql">
+  <!-- Dashboard doest import this chart -->
+  <chart name="chart.paymentVoucher.customer.forecast.vs.revenue" title="Forecast vs Revenue"
+    onInit="action.account.chart.default.forecast.chart">
+    <search-fields>
+      <field name="companyCode" title="Company" type="string"
+        selection="select.invoice.company.code" x-required="true"/>
+      <field name="forecastYear" title="Year" type="string"
+        selection="account.forecast.date.select.years" x-required="true"/>
+    </search-fields>
+    <dataset type="sql">
 
             <![CDATA[
             /*
@@ -143,82 +151,86 @@
                                  interval '1 month') mm
 
 			]]>
-        </dataset>
-        <category key="_month" type="month" title="Month"/>
-        <series key="_amount" type="line" groupBy="_type" title="Amount"/>
-        <config name="colors" value="blue, red"/>
-    </chart>
+    </dataset>
+    <category key="_month" type="month" title="Month"/>
+    <series key="_amount" type="line" groupBy="_type" title="Amount"/>
+    <config name="colors" value="blue, red"/>
+  </chart>
 
 
-    <selection name="select.translation.five.years">
-        <option value="2025">2025</option>
-        <option value="2024">2024</option>
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-        <option value="2021">2021</option>
-        <option value="2020">2020</option>
-        <option value="2019">2019</option>
-        <option value="2018">2018</option>
-        <option value="2017">2017</option>
-    </selection>
+  <selection name="select.translation.five.years">
+    <option value="2025">2025</option>
+    <option value="2024">2024</option>
+    <option value="2023">2023</option>
+    <option value="2022">2022</option>
+    <option value="2021">2021</option>
+    <option value="2020">2020</option>
+    <option value="2019">2019</option>
+    <option value="2018">2018</option>
+    <option value="2017">2017</option>
+  </selection>
 
-    <action-record name="select.default.five.years" model="com.axelor.apps.account.db.Account">
-        <field name="year" expr="eval: __date__.getYear()"/>
-    </action-record>
+  <action-record name="select.default.five.years"
+    model="com.axelor.apps.account.db.Account">
+    <field name="year" expr="eval: __date__.getYear()"/>
+  </action-record>
 
-    <action-record name="select.default.five.years.top.company" model="com.axelor.apps.account.db.Account">
-        <field name="year" expr="eval: __date__.getYear()"/>
-        <field name="companyCode" expr="ALL"/>
-    </action-record>
+  <action-record name="select.default.five.years.top.company"
+    model="com.axelor.apps.account.db.Account">
+    <field name="year" expr="eval: __date__.getYear()"/>
+    <field name="companyCode" expr="ALL"/>
+  </action-record>
 
-<!--    Operations select-->
-    <selection name="select.invoice.type.revenue.cost">
-        <option value="REVENUE">Revenue</option>
-        <option value="COST">Cost</option>
-        <option value="GROSS_PROFIT">Gross Profit</option>
-        <option value="WORKFORCE_COST">Workforce Cost</option>
-        <option value="EBITDA">EBITDA</option>
-    </selection>
+  <!-- Operations select -->
+  <selection name="select.invoice.type.revenue.cost">
+    <option value="REVENUE">Revenue</option>
+    <option value="COST">Cost</option>
+    <option value="GROSS_PROFIT">Gross Profit</option>
+    <option value="WORKFORCE_COST">Workforce Cost</option>
+    <option value="EBITDA">EBITDA</option>
+  </selection>
 
 
-<!--    filter by code-->
-    <selection name="select.invoice.top.company.category.code">
-        <option value="ALL" order="1">All</option>
-    </selection>
+  <!-- filter by code -->
+  <selection name="select.invoice.top.company.category.code">
+    <option value="ALL" order="1">All</option>
+  </selection>
 
-<!--    filter by name-->
-    <selection name="select.invoice.company.name">
-        <option value="All" order="1">All</option>
-    </selection>
+  <!-- filter by name -->
+  <selection name="select.invoice.company.name">
+    <option value="All" order="1">All</option>
+  </selection>
 
-    <selection name="select.invoice.company.code">
-        <option value="ALL" order="1">All</option>
-        <option value="TECH" order="2">Krabu tech</option>
-        <option value="12841650" order="3">12841650 Pix invest</option>
-    </selection>
+  <selection name="select.invoice.company.code">
+    <option value="ALL" order="1">All</option>
+    <option value="TECH" order="2">Krabu tech</option>
+    <option value="12841650" order="3">12841650 Pix invest</option>
+  </selection>
 
-    <!--    Operations select for account invoice summary chart -->
-    <selection name="select.invoice.type.operation.chart">
-        <option value="REVENUE">Revenue</option>
-        <option value="COST">Cost</option>
-        <option value="GROSS_PROFIT">Gross Profit</option>
-    </selection>
+  <!-- Operations select for account invoice summary chart -->
+  <selection name="select.invoice.type.operation.chart">
+    <option value="REVENUE">Revenue</option>
+    <option value="COST">Cost</option>
+    <option value="GROSS_PROFIT">Gross Profit</option>
+  </selection>
 
-    <action-record name="select.default.invoice.type.revenue" model="com.axelor.apps.account.db.Account">
-        <field name="operation" expr="REVENUE"/>
-        <field name="companyCode" expr="ALL"/>
-    </action-record>
+  <action-record name="select.default.invoice.type.revenue"
+    model="com.axelor.apps.account.db.Account">
+    <field name="operation" expr="REVENUE"/>
+    <field name="companyCode" expr="ALL"/>
+  </action-record>
 
-    <action-record name="select.default.invoice.category" model="com.axelor.apps.account.db.Account">
-        <field name="companyCode" expr="ALL"/>
-        <field name="operation" expr="REVENUE"/>
-    </action-record>
+  <action-record name="select.default.invoice.category"
+    model="com.axelor.apps.account.db.Account">
+    <field name="companyCode" expr="ALL"/>
+    <field name="operation" expr="REVENUE"/>
+  </action-record>
 
-    <selection name="select.translation.aggregation.type">
-        <option value="price">by money</option>
-        <option value="qty">by pages</option>
-        <option value="priceSummary">by total money</option>
-        <option value="qtySummary">by total pages</option>
-    </selection>
+  <selection name="select.translation.aggregation.type">
+    <option value="price">by money</option>
+    <option value="qty">by pages</option>
+    <option value="priceSummary">by total money</option>
+    <option value="qtySummary">by total pages</option>
+  </selection>
 
 </object-views>

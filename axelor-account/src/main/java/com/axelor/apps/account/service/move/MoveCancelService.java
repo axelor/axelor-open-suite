@@ -78,7 +78,7 @@ public class MoveCancelService {
           I18n.get(AccountExceptionMessage.MOVE_CANCEL_2));
     }
 
-    //Todo commentout to fix cancel if validated
+    // Todo commentout to fix cancel if validated
     /*
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
         || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {

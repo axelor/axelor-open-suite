@@ -1,12 +1,10 @@
 package com.axelor.apps.base.job;
 
-
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_COMPANY;
 import static com.axelor.apps.base.db.repo.SequenceRepository.PARTNER;
 import static java.lang.String.format;
 import static java.nio.file.Files.createTempDirectory;
 import static java.nio.file.Files.createTempFile;
-
 
 import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.*;
@@ -49,7 +47,7 @@ public class BusinessRegistryImportJob implements Job {
   private Country DEFAULT_COUNTRY;
   private Currency DEFAULT_CURRENCY;
   private Language DEFAULT_LANGUAGE;
-  private Localization DEFAULT_LOCALIZATION ;
+  private Localization DEFAULT_LOCALIZATION;
   private SequenceVersion sequenceVersion;
   private Long sequence;
 

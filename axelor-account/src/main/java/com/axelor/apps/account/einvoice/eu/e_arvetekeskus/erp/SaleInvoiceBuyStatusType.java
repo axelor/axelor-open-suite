@@ -1,15 +1,13 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
- * <p>Java class for SaleInvoiceBuyStatusType complex type.
- * 
+ * Java class for SaleInvoiceBuyStatusType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="SaleInvoiceBuyStatusType"&gt;
  *   &lt;complexContent&gt;
@@ -27,189 +25,148 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SaleInvoiceBuyStatusType", propOrder = {
-    "infoCode",
-    "infoText"
-})
+@XmlType(
+    name = "SaleInvoiceBuyStatusType",
+    propOrder = {"infoCode", "infoText"})
 public class SaleInvoiceBuyStatusType {
 
-    protected String infoCode;
-    protected String infoText;
-    @XmlAttribute(name = "changeId", required = true)
-    protected long changeId;
-    @XmlAttribute(name = "changeDateTime", required = true)
-    @XmlSchemaType(name = "dateTime")
-    protected XMLGregorianCalendar changeDateTime;
-    @XmlAttribute(name = "invoiceNr", required = true)
-    protected String invoiceNr;
-    @XmlAttribute(name = "invoiceDate", required = true)
-    @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar invoiceDate;
-    @XmlAttribute(name = "event", required = true)
-    protected BuyInvoiceEventCodeType event;
+  protected String infoCode;
+  protected String infoText;
 
-    /**
-     * Gets the value of the infoCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getInfoCode() {
-        return infoCode;
-    }
+  @XmlAttribute(name = "changeId", required = true)
+  protected long changeId;
 
-    /**
-     * Sets the value of the infoCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInfoCode(String value) {
-        this.infoCode = value;
-    }
+  @XmlAttribute(name = "changeDateTime", required = true)
+  @XmlSchemaType(name = "dateTime")
+  protected XMLGregorianCalendar changeDateTime;
 
-    /**
-     * Gets the value of the infoText property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getInfoText() {
-        return infoText;
-    }
+  @XmlAttribute(name = "invoiceNr", required = true)
+  protected String invoiceNr;
 
-    /**
-     * Sets the value of the infoText property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInfoText(String value) {
-        this.infoText = value;
-    }
+  @XmlAttribute(name = "invoiceDate", required = true)
+  @XmlSchemaType(name = "date")
+  protected XMLGregorianCalendar invoiceDate;
 
-    /**
-     * Gets the value of the changeId property.
-     * 
-     */
-    public long getChangeId() {
-        return changeId;
-    }
+  @XmlAttribute(name = "event", required = true)
+  protected BuyInvoiceEventCodeType event;
 
-    /**
-     * Sets the value of the changeId property.
-     * 
-     */
-    public void setChangeId(long value) {
-        this.changeId = value;
-    }
+  /**
+   * Gets the value of the infoCode property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getInfoCode() {
+    return infoCode;
+  }
 
-    /**
-     * Gets the value of the changeDateTime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getChangeDateTime() {
-        return changeDateTime;
-    }
+  /**
+   * Sets the value of the infoCode property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setInfoCode(String value) {
+    this.infoCode = value;
+  }
 
-    /**
-     * Sets the value of the changeDateTime property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setChangeDateTime(XMLGregorianCalendar value) {
-        this.changeDateTime = value;
-    }
+  /**
+   * Gets the value of the infoText property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getInfoText() {
+    return infoText;
+  }
 
-    /**
-     * Gets the value of the invoiceNr property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getInvoiceNr() {
-        return invoiceNr;
-    }
+  /**
+   * Sets the value of the infoText property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setInfoText(String value) {
+    this.infoText = value;
+  }
 
-    /**
-     * Sets the value of the invoiceNr property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInvoiceNr(String value) {
-        this.invoiceNr = value;
-    }
+  /** Gets the value of the changeId property. */
+  public long getChangeId() {
+    return changeId;
+  }
 
-    /**
-     * Gets the value of the invoiceDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public XMLGregorianCalendar getInvoiceDate() {
-        return invoiceDate;
-    }
+  /** Sets the value of the changeId property. */
+  public void setChangeId(long value) {
+    this.changeId = value;
+  }
 
-    /**
-     * Sets the value of the invoiceDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setInvoiceDate(XMLGregorianCalendar value) {
-        this.invoiceDate = value;
-    }
+  /**
+   * Gets the value of the changeDateTime property.
+   *
+   * @return possible object is {@link XMLGregorianCalendar }
+   */
+  public XMLGregorianCalendar getChangeDateTime() {
+    return changeDateTime;
+  }
 
-    /**
-     * Gets the value of the event property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BuyInvoiceEventCodeType }
-     *     
-     */
-    public BuyInvoiceEventCodeType getEvent() {
-        return event;
-    }
+  /**
+   * Sets the value of the changeDateTime property.
+   *
+   * @param value allowed object is {@link XMLGregorianCalendar }
+   */
+  public void setChangeDateTime(XMLGregorianCalendar value) {
+    this.changeDateTime = value;
+  }
 
-    /**
-     * Sets the value of the event property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BuyInvoiceEventCodeType }
-     *     
-     */
-    public void setEvent(BuyInvoiceEventCodeType value) {
-        this.event = value;
-    }
+  /**
+   * Gets the value of the invoiceNr property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getInvoiceNr() {
+    return invoiceNr;
+  }
 
+  /**
+   * Sets the value of the invoiceNr property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setInvoiceNr(String value) {
+    this.invoiceNr = value;
+  }
+
+  /**
+   * Gets the value of the invoiceDate property.
+   *
+   * @return possible object is {@link XMLGregorianCalendar }
+   */
+  public XMLGregorianCalendar getInvoiceDate() {
+    return invoiceDate;
+  }
+
+  /**
+   * Sets the value of the invoiceDate property.
+   *
+   * @param value allowed object is {@link XMLGregorianCalendar }
+   */
+  public void setInvoiceDate(XMLGregorianCalendar value) {
+    this.invoiceDate = value;
+  }
+
+  /**
+   * Gets the value of the event property.
+   *
+   * @return possible object is {@link BuyInvoiceEventCodeType }
+   */
+  public BuyInvoiceEventCodeType getEvent() {
+    return event;
+  }
+
+  /**
+   * Sets the value of the event property.
+   *
+   * @param value allowed object is {@link BuyInvoiceEventCodeType }
+   */
+  public void setEvent(BuyInvoiceEventCodeType value) {
+    this.event = value;
+  }
 }

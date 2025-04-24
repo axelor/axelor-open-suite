@@ -1,4 +1,3 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.*;
@@ -6,12 +5,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * <p>Java class for InvoiceAttachmentResponseType complex type.
- * 
+ * Java class for InvoiceAttachmentResponseType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="InvoiceAttachmentResponseType"&gt;
  *   &lt;complexContent&gt;
@@ -24,71 +22,56 @@ import java.util.List;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InvoiceAttachmentResponseType", propOrder = {
-    "invoiceAttachment"
-})
+@XmlType(
+    name = "InvoiceAttachmentResponseType",
+    propOrder = {"invoiceAttachment"})
 public class InvoiceAttachmentResponseType {
 
-    @XmlElement(name = "InvoiceAttachment")
-    protected List<InvoiceAttachmentType> invoiceAttachment;
-    @XmlAttribute(name = "nextAttachmentIndex", required = true)
-    protected BigInteger nextAttachmentIndex;
+  @XmlElement(name = "InvoiceAttachment")
+  protected List<InvoiceAttachmentType> invoiceAttachment;
 
-    /**
-     * Gets the value of the invoiceAttachment property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the invoiceAttachment property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getInvoiceAttachment().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link InvoiceAttachmentType }
-     * 
-     * 
-     */
-    public List<InvoiceAttachmentType> getInvoiceAttachment() {
-        if (invoiceAttachment == null) {
-            invoiceAttachment = new ArrayList<InvoiceAttachmentType>();
-        }
-        return this.invoiceAttachment;
+  @XmlAttribute(name = "nextAttachmentIndex", required = true)
+  protected BigInteger nextAttachmentIndex;
+
+  /**
+   * Gets the value of the invoiceAttachment property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the invoiceAttachment property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   *    getInvoiceAttachment().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link InvoiceAttachmentType }
+   */
+  public List<InvoiceAttachmentType> getInvoiceAttachment() {
+    if (invoiceAttachment == null) {
+      invoiceAttachment = new ArrayList<InvoiceAttachmentType>();
     }
+    return this.invoiceAttachment;
+  }
 
-    /**
-     * Gets the value of the nextAttachmentIndex property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getNextAttachmentIndex() {
-        return nextAttachmentIndex;
-    }
+  /**
+   * Gets the value of the nextAttachmentIndex property.
+   *
+   * @return possible object is {@link BigInteger }
+   */
+  public BigInteger getNextAttachmentIndex() {
+    return nextAttachmentIndex;
+  }
 
-    /**
-     * Sets the value of the nextAttachmentIndex property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setNextAttachmentIndex(BigInteger value) {
-        this.nextAttachmentIndex = value;
-    }
-
+  /**
+   * Sets the value of the nextAttachmentIndex property.
+   *
+   * @param value allowed object is {@link BigInteger }
+   */
+  public void setNextAttachmentIndex(BigInteger value) {
+    this.nextAttachmentIndex = value;
+  }
 }

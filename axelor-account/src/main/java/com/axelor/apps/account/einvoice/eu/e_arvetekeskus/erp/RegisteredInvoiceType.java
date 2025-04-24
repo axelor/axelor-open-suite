@@ -1,14 +1,12 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.*;
 
-
 /**
- * <p>Java class for RegisteredInvoiceType complex type.
- * 
+ * Java class for RegisteredInvoiceType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RegisteredInvoiceType"&gt;
  *   &lt;complexContent&gt;
@@ -21,66 +19,52 @@ import jakarta.xml.bind.annotation.*;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RegisteredInvoiceType", propOrder = {
-    "erpDocumentNumber"
-})
+@XmlType(
+    name = "RegisteredInvoiceType",
+    propOrder = {"erpDocumentNumber"})
 public class RegisteredInvoiceType {
 
-    @XmlElement(name = "ErpDocumentNumber", required = true)
-    protected String erpDocumentNumber;
-    @XmlAttribute(name = "invoiceId", required = true)
-    protected String invoiceId;
+  @XmlElement(name = "ErpDocumentNumber", required = true)
+  protected String erpDocumentNumber;
 
-    /**
-     * Gets the value of the erpDocumentNumber property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getErpDocumentNumber() {
-        return erpDocumentNumber;
-    }
+  @XmlAttribute(name = "invoiceId", required = true)
+  protected String invoiceId;
 
-    /**
-     * Sets the value of the erpDocumentNumber property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setErpDocumentNumber(String value) {
-        this.erpDocumentNumber = value;
-    }
+  /**
+   * Gets the value of the erpDocumentNumber property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getErpDocumentNumber() {
+    return erpDocumentNumber;
+  }
 
-    /**
-     * Gets the value of the invoiceId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getInvoiceId() {
-        return invoiceId;
-    }
+  /**
+   * Sets the value of the erpDocumentNumber property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setErpDocumentNumber(String value) {
+    this.erpDocumentNumber = value;
+  }
 
-    /**
-     * Sets the value of the invoiceId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInvoiceId(String value) {
-        this.invoiceId = value;
-    }
+  /**
+   * Gets the value of the invoiceId property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getInvoiceId() {
+    return invoiceId;
+  }
 
+  /**
+   * Sets the value of the invoiceId property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setInvoiceId(String value) {
+    this.invoiceId = value;
+  }
 }

@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-    <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-    <entity name="PartnerTurnover" cacheable="true" logUpdates="false" jsonAttrs="false">
+  <entity name="PartnerTurnover" cacheable="true" logUpdates="false" jsonAttrs="false">
 
-        <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" required="true" index="true"/>
-        <integer name="year" title="Year" required="true"/>
-        <integer name="quarter" title="Quarter" required="true"/>
-        <integer name="saleTurnover" title="Turnover" required="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      required="true" index="true"/>
+    <integer name="year" title="Year" required="true"/>
+    <integer name="quarter" title="Quarter" required="true"/>
+    <integer name="saleTurnover" title="Turnover" required="true"/>
 
-        <unique-constraint columns="partner,year,quarter"/>
-        <finder-method name="findByPartnerAndYear" using="partner,year" all="true"/>
-        <finder-method name="findByPartnerAndYearAndQuarter" using="partner,year,quarter"/>
+    <unique-constraint columns="partner,year,quarter"/>
+    <finder-method name="findByPartnerAndYear" using="partner,year" all="true"/>
+    <finder-method name="findByPartnerAndYearAndQuarter" using="partner,year,quarter"/>
 
-    </entity>
+  </entity>
 
 </domain-models>

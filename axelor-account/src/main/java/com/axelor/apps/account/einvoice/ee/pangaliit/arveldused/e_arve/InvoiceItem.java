@@ -1,16 +1,14 @@
-
 package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
 import jakarta.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * <p>Java class for anonymous complex type.
- * 
+ * Java class for anonymous complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -24,100 +22,78 @@ import java.util.List;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "invoiceTotalGroup",
-    "invoiceItemGroup",
-    "invoiceItemTotalGroup"
-})
+@XmlType(
+    name = "",
+    propOrder = {"invoiceTotalGroup", "invoiceItemGroup", "invoiceItemTotalGroup"})
 @XmlRootElement(name = "InvoiceItem")
 public class InvoiceItem {
 
-    @XmlElement(name = "InvoiceTotalGroup")
-    protected InvoiceTotalGroup invoiceTotalGroup;
-    @XmlElement(name = "InvoiceItemGroup", required = true)
-    protected List<InvoiceItemGroup> invoiceItemGroup;
-    @XmlElement(name = "InvoiceItemTotalGroup")
-    protected InvoiceItemTotalGroup invoiceItemTotalGroup;
+  @XmlElement(name = "InvoiceTotalGroup")
+  protected InvoiceTotalGroup invoiceTotalGroup;
 
-    /**
-     * Gets the value of the invoiceTotalGroup property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link InvoiceTotalGroup }
-     *     
-     */
-    public InvoiceTotalGroup getInvoiceTotalGroup() {
-        return invoiceTotalGroup;
+  @XmlElement(name = "InvoiceItemGroup", required = true)
+  protected List<InvoiceItemGroup> invoiceItemGroup;
+
+  @XmlElement(name = "InvoiceItemTotalGroup")
+  protected InvoiceItemTotalGroup invoiceItemTotalGroup;
+
+  /**
+   * Gets the value of the invoiceTotalGroup property.
+   *
+   * @return possible object is {@link InvoiceTotalGroup }
+   */
+  public InvoiceTotalGroup getInvoiceTotalGroup() {
+    return invoiceTotalGroup;
+  }
+
+  /**
+   * Sets the value of the invoiceTotalGroup property.
+   *
+   * @param value allowed object is {@link InvoiceTotalGroup }
+   */
+  public void setInvoiceTotalGroup(InvoiceTotalGroup value) {
+    this.invoiceTotalGroup = value;
+  }
+
+  /**
+   * Gets the value of the invoiceItemGroup property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the invoiceItemGroup property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   *    getInvoiceItemGroup().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link InvoiceItemGroup }
+   */
+  public List<InvoiceItemGroup> getInvoiceItemGroup() {
+    if (invoiceItemGroup == null) {
+      invoiceItemGroup = new ArrayList<InvoiceItemGroup>();
     }
+    return this.invoiceItemGroup;
+  }
 
-    /**
-     * Sets the value of the invoiceTotalGroup property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link InvoiceTotalGroup }
-     *     
-     */
-    public void setInvoiceTotalGroup(InvoiceTotalGroup value) {
-        this.invoiceTotalGroup = value;
-    }
+  /**
+   * Gets the value of the invoiceItemTotalGroup property.
+   *
+   * @return possible object is {@link InvoiceItemTotalGroup }
+   */
+  public InvoiceItemTotalGroup getInvoiceItemTotalGroup() {
+    return invoiceItemTotalGroup;
+  }
 
-    /**
-     * Gets the value of the invoiceItemGroup property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the invoiceItemGroup property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getInvoiceItemGroup().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link InvoiceItemGroup }
-     * 
-     * 
-     */
-    public List<InvoiceItemGroup> getInvoiceItemGroup() {
-        if (invoiceItemGroup == null) {
-            invoiceItemGroup = new ArrayList<InvoiceItemGroup>();
-        }
-        return this.invoiceItemGroup;
-    }
-
-    /**
-     * Gets the value of the invoiceItemTotalGroup property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link InvoiceItemTotalGroup }
-     *     
-     */
-    public InvoiceItemTotalGroup getInvoiceItemTotalGroup() {
-        return invoiceItemTotalGroup;
-    }
-
-    /**
-     * Sets the value of the invoiceItemTotalGroup property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link InvoiceItemTotalGroup }
-     *     
-     */
-    public void setInvoiceItemTotalGroup(InvoiceItemTotalGroup value) {
-        this.invoiceItemTotalGroup = value;
-    }
-
+  /**
+   * Sets the value of the invoiceItemTotalGroup property.
+   *
+   * @param value allowed object is {@link InvoiceItemTotalGroup }
+   */
+  public void setInvoiceItemTotalGroup(InvoiceItemTotalGroup value) {
+    this.invoiceItemTotalGroup = value;
+  }
 }

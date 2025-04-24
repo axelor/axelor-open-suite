@@ -79,13 +79,13 @@
     <many-to-many name="siteSet" title="Sites" ref="com.axelor.apps.base.db.Site"/>
 
     <!-- Configuration fields -->
-    <boolean name="isShowStatus" title="Status?" default="true"/>
+    <boolean name="isShowStatus" title="Status?" default="false"/>
     <many-to-many name="projectTaskStatusSet"
       ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
-    <boolean name="isShowPriority" title="Priorities?" default="true"/>
+    <boolean name="isShowPriority" title="Priorities?" default="false"/>
     <many-to-many name="projectTaskPrioritySet"
       ref="com.axelor.apps.project.db.ProjectPriority" title="Type of authorized priorities"/>
-    <boolean name="isShowTaskCategory" title="Categories?" default="true"/>
+    <boolean name="isShowTaskCategory" title="Categories?" default="false"/>
     <many-to-many name="projectTaskCategorySet"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Type of authorized categories"/>
     <boolean name="isShowProgress" title="Task progress" default="true"/>

@@ -1,16 +1,14 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
- * <p>Java class for ClientRegistryRequestType complex type.
- * 
+ * Java class for ClientRegistryRequestType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="ClientRegistryRequestType"&gt;
  *   &lt;complexContent&gt;
@@ -25,119 +23,95 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ClientRegistryRequestType", propOrder = {
-    "any"
-})
+@XmlType(
+    name = "ClientRegistryRequestType",
+    propOrder = {"any"})
 public class ClientRegistryRequestType {
 
-    @XmlAnyElement(lax = true)
-    protected Object any;
-    @XmlAttribute(name = "format", required = true)
-    protected RegistryFormatType format;
-    @XmlAttribute(name = "replace")
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String replace;
-    @XmlAttribute(name = "authPhrase", required = true)
-    protected String authPhrase;
+  @XmlAnyElement(lax = true)
+  protected Object any;
 
-    /**
-     * Gets the value of the any property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
-     */
-    public Object getAny() {
-        return any;
-    }
+  @XmlAttribute(name = "format", required = true)
+  protected RegistryFormatType format;
 
-    /**
-     * Sets the value of the any property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
-     */
-    public void setAny(Object value) {
-        this.any = value;
-    }
+  @XmlAttribute(name = "replace")
+  @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+  protected String replace;
 
-    /**
-     * Gets the value of the format property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RegistryFormatType }
-     *     
-     */
-    public RegistryFormatType getFormat() {
-        return format;
-    }
+  @XmlAttribute(name = "authPhrase", required = true)
+  protected String authPhrase;
 
-    /**
-     * Sets the value of the format property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RegistryFormatType }
-     *     
-     */
-    public void setFormat(RegistryFormatType value) {
-        this.format = value;
-    }
+  /**
+   * Gets the value of the any property.
+   *
+   * @return possible object is {@link Object }
+   */
+  public Object getAny() {
+    return any;
+  }
 
-    /**
-     * Gets the value of the replace property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getReplace() {
-        return replace;
-    }
+  /**
+   * Sets the value of the any property.
+   *
+   * @param value allowed object is {@link Object }
+   */
+  public void setAny(Object value) {
+    this.any = value;
+  }
 
-    /**
-     * Sets the value of the replace property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setReplace(String value) {
-        this.replace = value;
-    }
+  /**
+   * Gets the value of the format property.
+   *
+   * @return possible object is {@link RegistryFormatType }
+   */
+  public RegistryFormatType getFormat() {
+    return format;
+  }
 
-    /**
-     * Gets the value of the authPhrase property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAuthPhrase() {
-        return authPhrase;
-    }
+  /**
+   * Sets the value of the format property.
+   *
+   * @param value allowed object is {@link RegistryFormatType }
+   */
+  public void setFormat(RegistryFormatType value) {
+    this.format = value;
+  }
 
-    /**
-     * Sets the value of the authPhrase property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAuthPhrase(String value) {
-        this.authPhrase = value;
-    }
+  /**
+   * Gets the value of the replace property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getReplace() {
+    return replace;
+  }
 
+  /**
+   * Sets the value of the replace property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setReplace(String value) {
+    this.replace = value;
+  }
+
+  /**
+   * Gets the value of the authPhrase property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getAuthPhrase() {
+    return authPhrase;
+  }
+
+  /**
+   * Sets the value of the authPhrase property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setAuthPhrase(String value) {
+    this.authPhrase = value;
+  }
 }

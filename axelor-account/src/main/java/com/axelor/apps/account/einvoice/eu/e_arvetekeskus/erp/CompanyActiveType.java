@@ -1,16 +1,14 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
- * <p>Java class for CompanyActiveType complex type.
- * 
+ * Java class for CompanyActiveType complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="CompanyActiveType"&gt;
  *   &lt;simpleContent&gt;
@@ -21,93 +19,74 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/simpleContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CompanyActiveType", propOrder = {
-    "value"
-})
+@XmlType(
+    name = "CompanyActiveType",
+    propOrder = {"value"})
 public class CompanyActiveType {
 
-    @XmlValue
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String value;
-    @XmlAttribute(name = "regNumber", required = true)
-    protected String regNumber;
-    @XmlAttribute(name = "country")
-    protected String country;
+  @XmlValue
+  @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+  protected String value;
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getValue() {
-        return value;
-    }
+  @XmlAttribute(name = "regNumber", required = true)
+  protected String regNumber;
 
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
+  @XmlAttribute(name = "country")
+  protected String country;
 
-    /**
-     * Gets the value of the regNumber property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRegNumber() {
-        return regNumber;
-    }
+  /**
+   * Gets the value of the value property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getValue() {
+    return value;
+  }
 
-    /**
-     * Sets the value of the regNumber property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRegNumber(String value) {
-        this.regNumber = value;
-    }
+  /**
+   * Sets the value of the value property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-    /**
-     * Gets the value of the country property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCountry() {
-        return country;
-    }
+  /**
+   * Gets the value of the regNumber property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getRegNumber() {
+    return regNumber;
+  }
 
-    /**
-     * Sets the value of the country property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCountry(String value) {
-        this.country = value;
-    }
+  /**
+   * Sets the value of the regNumber property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setRegNumber(String value) {
+    this.regNumber = value;
+  }
 
+  /**
+   * Gets the value of the country property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getCountry() {
+    return country;
+  }
+
+  /**
+   * Sets the value of the country property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setCountry(String value) {
+    this.country = value;
+  }
 }

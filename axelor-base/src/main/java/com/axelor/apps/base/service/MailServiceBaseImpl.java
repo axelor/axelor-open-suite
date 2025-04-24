@@ -304,33 +304,44 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       return;
     }
     final EmailAccount emailAccount = mailAccountService.getDefaultSender();
+
     if (emailAccount == null) {
+      System.out.println("emailAccount is null");
       super.send(message);
       return;
     }
+    System.out.println("Sending email stage - 0");
+    System.out.println(emailAccount.toString());
 
     Preconditions.checkNotNull(message, "mail message can't be null");
 
     final Model related = findEntity(message);
     final MailSender sender = getMailSender(emailAccount);
+    System.out.println("Sending email stage - 1");
 
     final Set<String> recipients = recipients(message, related);
     if (recipients.isEmpty()) {
       return;
     }
+    System.out.println("Sending email stage - 2");
+
     this.updateTemplateAndContext(message, related);
+    System.out.println("Sending email stage - 3");
 
     final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
     MailBuilder builder = sender.compose();
+    System.out.println("Sending email stage - 4");
 
     this.updateRecipientsTemplatesContext(recipients);
     this.setRecipientsFromTemplate(builder, recipients);
+    System.out.println("Sending email stage - 5");
 
     for (MetaAttachment attachment : messages.findAttachments(message)) {
       final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
       final File file = filePath.toFile();
       builder.attach(file.getName(), file.toString());
     }
+    System.out.println("Sending email stage - 6");
 
     MimeMessage email;
     try {
@@ -350,7 +361,18 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     } catch (MessagingException | IOException e) {
       throw new MailException(e);
     }
-
+    System.out.println("Sending email stage - 7");
+    System.out.println("Email before sending:");
+    try {
+      System.out.println(email.toString());
+      System.out.println(email.getContent().toString());
+      System.out.println(email.getContentMD5());
+      System.out.println(String.valueOf(email.getAllHeaderLines()));
+    } catch (MessagingException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     // send email using a separate process to void thread blocking
     executor.submit(
         new Callable<Boolean>() {
@@ -360,6 +382,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
             return true;
           }
         });
+    System.out.println("Email was sent");
   }
 
   @Override

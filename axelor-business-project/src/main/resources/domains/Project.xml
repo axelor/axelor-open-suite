@@ -101,7 +101,7 @@
 
     <one-to-many name="projectHistoryLineList"
       ref="com.axelor.apps.project.db.ProjectHistoryLine" title="Project history" mappedBy="project"/>
-    <boolean name="allowToGetPricesFromFrameworkContract"
+    <boolean name="allowToGetPricesFromFrameworkContract" default="true"
       title="Allows to retrieve prices from a framework contract"
       help="This will allow you to select a framework contract from which to retrieve the prices of products on tasks."/>
     <many-to-many name="frameworkCustomerContractSet"

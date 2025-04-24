@@ -1,14 +1,12 @@
-
 package com.axelor.apps.account.einvoice.eu.e_arvetekeskus.erp;
 
 import jakarta.xml.bind.annotation.*;
 
-
 /**
- * <p>Java class for AuthenticatedRequest complex type.
- * 
+ * Java class for AuthenticatedRequest complex type.
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="AuthenticatedRequest"&gt;
  *   &lt;complexContent&gt;
@@ -18,41 +16,30 @@ import jakarta.xml.bind.annotation.*;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AuthenticatedRequest")
-@XmlSeeAlso({
-    RegistryImportRequest.class
-})
+@XmlSeeAlso({RegistryImportRequest.class})
 public abstract class AuthenticatedRequest {
 
-    @XmlAttribute(name = "authPhrase", required = true)
-    protected String authPhrase;
+  @XmlAttribute(name = "authPhrase", required = true)
+  protected String authPhrase;
 
-    /**
-     * Gets the value of the authPhrase property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAuthPhrase() {
-        return authPhrase;
-    }
+  /**
+   * Gets the value of the authPhrase property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getAuthPhrase() {
+    return authPhrase;
+  }
 
-    /**
-     * Sets the value of the authPhrase property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAuthPhrase(String value) {
-        this.authPhrase = value;
-    }
-
+  /**
+   * Sets the value of the authPhrase property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setAuthPhrase(String value) {
+    this.authPhrase = value;
+  }
 }

@@ -1,4 +1,3 @@
-
 package com.axelor.apps.account.einvoice.ee.pangaliit.arveldused.e_arve;
 
 import jakarta.xml.bind.annotation.*;
@@ -7,9 +6,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * Java class for anonymous complex type.
  *
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
@@ -35,341 +33,279 @@ import java.time.LocalDate;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-        "currency",
-        "paymentDescription",
-        "payable",
-        "payDueDate",
-        "paymentTotalSum",
-        "payerName",
-        "paymentId",
-        "payToAccount",
-        "payToName",
-        "payToBIC",
-        "directDebitPayeeContractNumber",
-        "directDebitPayerNumber"
-})
+@XmlType(
+    name = "",
+    propOrder = {
+      "currency",
+      "paymentDescription",
+      "payable",
+      "payDueDate",
+      "paymentTotalSum",
+      "payerName",
+      "paymentId",
+      "payToAccount",
+      "payToName",
+      "payToBIC",
+      "directDebitPayeeContractNumber",
+      "directDebitPayerNumber"
+    })
 @XmlRootElement(name = "PaymentInfo")
 public class PaymentInfo {
 
-    @XmlElement(name = "Currency", required = true)
-    protected String currency;
-    @XmlElement(name = "PaymentDescription", required = true)
-    protected String paymentDescription;
-    @XmlElement(name = "Payable", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlSchemaType(name = "NMTOKEN")
-    protected String payable;
-    @XmlElement(name = "PayDueDate")
-    @XmlSchemaType(name = "date")
-    protected String payDueDate;
-    @XmlElement(name = "PaymentTotalSum", required = true)
-    protected BigDecimal paymentTotalSum;
-    @XmlElement(name = "PayerName", required = true)
-    protected String payerName;
-    @XmlElement(name = "PaymentId", required = true)
-    protected String paymentId;
-    @XmlElement(name = "PayToAccount", required = true)
-    protected String payToAccount;
-    @XmlElement(name = "PayToName", required = true)
-    protected String payToName;
-    @XmlElement(name = "PayToBIC")
-    protected String payToBIC;
-    @XmlElement(name = "DirectDebitPayeeContractNumber")
-    protected String directDebitPayeeContractNumber;
-    @XmlElement(name = "DirectDebitPayerNumber")
-    protected String directDebitPayerNumber;
+  @XmlElement(name = "Currency", required = true)
+  protected String currency;
 
-    /**
-     * Gets the value of the currency property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getCurrency() {
-        return currency;
-    }
+  @XmlElement(name = "PaymentDescription", required = true)
+  protected String paymentDescription;
 
-    /**
-     * Sets the value of the currency property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setCurrency(String value) {
-        this.currency = value;
-    }
+  @XmlElement(name = "Payable", required = true)
+  @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+  @XmlSchemaType(name = "NMTOKEN")
+  protected String payable;
 
-    /**
-     * Gets the value of the paymentDescription property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPaymentDescription() {
-        return paymentDescription;
-    }
+  @XmlElement(name = "PayDueDate")
+  @XmlSchemaType(name = "date")
+  protected String payDueDate;
 
-    /**
-     * Sets the value of the paymentDescription property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPaymentDescription(String value) {
-        this.paymentDescription = value;
-    }
+  @XmlElement(name = "PaymentTotalSum", required = true)
+  protected BigDecimal paymentTotalSum;
 
-    /**
-     * Gets the value of the payable property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPayable() {
-        return payable;
-    }
+  @XmlElement(name = "PayerName", required = true)
+  protected String payerName;
 
-    /**
-     * Sets the value of the payable property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPayable(String value) {
-        this.payable = value;
-    }
+  @XmlElement(name = "PaymentId", required = true)
+  protected String paymentId;
 
-    /**
-     * Gets the value of the payDueDate property.
-     *
-     * @return
-     *     possible object is
-     *     {@link LocalDate }
-     *
-     */
-    public LocalDate getPayDueDate() {
-        return LocalDate.parse(payDueDate);
-    }
+  @XmlElement(name = "PayToAccount", required = true)
+  protected String payToAccount;
 
-    /**
-     * Sets the value of the payDueDate property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link LocalDate }
-     *
-     */
-    public void setPayDueDate(LocalDate value) {
-        this.payDueDate = value.toString();
-    }
+  @XmlElement(name = "PayToName", required = true)
+  protected String payToName;
 
-    /**
-     * Gets the value of the paymentTotalSum property.
-     *
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *
-     */
-    public BigDecimal getPaymentTotalSum() {
-        return paymentTotalSum;
-    }
+  @XmlElement(name = "PayToBIC")
+  protected String payToBIC;
 
-    /**
-     * Sets the value of the paymentTotalSum property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *
-     */
-    public void setPaymentTotalSum(BigDecimal value) {
-        this.paymentTotalSum = value;
-    }
+  @XmlElement(name = "DirectDebitPayeeContractNumber")
+  protected String directDebitPayeeContractNumber;
 
-    /**
-     * Gets the value of the payerName property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPayerName() {
-        return payerName;
-    }
+  @XmlElement(name = "DirectDebitPayerNumber")
+  protected String directDebitPayerNumber;
 
-    /**
-     * Sets the value of the payerName property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPayerName(String value) {
-        this.payerName = value;
-    }
+  /**
+   * Gets the value of the currency property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getCurrency() {
+    return currency;
+  }
 
-    /**
-     * Gets the value of the paymentId property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPaymentId() {
-        return paymentId;
-    }
+  /**
+   * Sets the value of the currency property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setCurrency(String value) {
+    this.currency = value;
+  }
 
-    /**
-     * Sets the value of the paymentId property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPaymentId(String value) {
-        this.paymentId = value;
-    }
+  /**
+   * Gets the value of the paymentDescription property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPaymentDescription() {
+    return paymentDescription;
+  }
 
-    /**
-     * Gets the value of the payToAccount property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPayToAccount() {
-        return payToAccount;
-    }
+  /**
+   * Sets the value of the paymentDescription property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPaymentDescription(String value) {
+    this.paymentDescription = value;
+  }
 
-    /**
-     * Sets the value of the payToAccount property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPayToAccount(String value) {
-        this.payToAccount = value;
-    }
+  /**
+   * Gets the value of the payable property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPayable() {
+    return payable;
+  }
 
-    /**
-     * Gets the value of the payToName property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPayToName() {
-        return payToName;
-    }
+  /**
+   * Sets the value of the payable property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPayable(String value) {
+    this.payable = value;
+  }
 
-    /**
-     * Sets the value of the payToName property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPayToName(String value) {
-        this.payToName = value;
-    }
+  /**
+   * Gets the value of the payDueDate property.
+   *
+   * @return possible object is {@link LocalDate }
+   */
+  public LocalDate getPayDueDate() {
+    return LocalDate.parse(payDueDate);
+  }
 
-    /**
-     * Gets the value of the payToBIC property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getPayToBIC() {
-        return payToBIC;
-    }
+  /**
+   * Sets the value of the payDueDate property.
+   *
+   * @param value allowed object is {@link LocalDate }
+   */
+  public void setPayDueDate(LocalDate value) {
+    this.payDueDate = value.toString();
+  }
 
-    /**
-     * Sets the value of the payToBIC property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setPayToBIC(String value) {
-        this.payToBIC = value;
-    }
+  /**
+   * Gets the value of the paymentTotalSum property.
+   *
+   * @return possible object is {@link BigDecimal }
+   */
+  public BigDecimal getPaymentTotalSum() {
+    return paymentTotalSum;
+  }
 
-    /**
-     * Gets the value of the directDebitPayeeContractNumber property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getDirectDebitPayeeContractNumber() {
-        return directDebitPayeeContractNumber;
-    }
+  /**
+   * Sets the value of the paymentTotalSum property.
+   *
+   * @param value allowed object is {@link BigDecimal }
+   */
+  public void setPaymentTotalSum(BigDecimal value) {
+    this.paymentTotalSum = value;
+  }
 
-    /**
-     * Sets the value of the directDebitPayeeContractNumber property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setDirectDebitPayeeContractNumber(String value) {
-        this.directDebitPayeeContractNumber = value;
-    }
+  /**
+   * Gets the value of the payerName property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPayerName() {
+    return payerName;
+  }
 
-    /**
-     * Gets the value of the directDebitPayerNumber property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
-    public String getDirectDebitPayerNumber() {
-        return directDebitPayerNumber;
-    }
+  /**
+   * Sets the value of the payerName property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPayerName(String value) {
+    this.payerName = value;
+  }
 
-    /**
-     * Sets the value of the directDebitPayerNumber property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
-    public void setDirectDebitPayerNumber(String value) {
-        this.directDebitPayerNumber = value;
-    }
+  /**
+   * Gets the value of the paymentId property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPaymentId() {
+    return paymentId;
+  }
 
+  /**
+   * Sets the value of the paymentId property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPaymentId(String value) {
+    this.paymentId = value;
+  }
+
+  /**
+   * Gets the value of the payToAccount property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPayToAccount() {
+    return payToAccount;
+  }
+
+  /**
+   * Sets the value of the payToAccount property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPayToAccount(String value) {
+    this.payToAccount = value;
+  }
+
+  /**
+   * Gets the value of the payToName property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPayToName() {
+    return payToName;
+  }
+
+  /**
+   * Sets the value of the payToName property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPayToName(String value) {
+    this.payToName = value;
+  }
+
+  /**
+   * Gets the value of the payToBIC property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getPayToBIC() {
+    return payToBIC;
+  }
+
+  /**
+   * Sets the value of the payToBIC property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setPayToBIC(String value) {
+    this.payToBIC = value;
+  }
+
+  /**
+   * Gets the value of the directDebitPayeeContractNumber property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getDirectDebitPayeeContractNumber() {
+    return directDebitPayeeContractNumber;
+  }
+
+  /**
+   * Sets the value of the directDebitPayeeContractNumber property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setDirectDebitPayeeContractNumber(String value) {
+    this.directDebitPayeeContractNumber = value;
+  }
+
+  /**
+   * Gets the value of the directDebitPayerNumber property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getDirectDebitPayerNumber() {
+    return directDebitPayerNumber;
+  }
+
+  /**
+   * Sets the value of the directDebitPayerNumber property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setDirectDebitPayerNumber(String value) {
+    this.directDebitPayerNumber = value;
+  }
 }

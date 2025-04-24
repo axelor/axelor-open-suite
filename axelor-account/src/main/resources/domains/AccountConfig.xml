@@ -173,7 +173,8 @@
 
 
     <!-- Invoice page -->
-    <boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
+    <boolean name="allowCancelVentilatedInvoice"
+      title="Allow cancelation of ventilated invoice"/>
     <!-- <boolean name="allowRemovalValidatedMove" title="Allow removal of validated move"/> -->
     <boolean name="generateMoveForInvoicePayment"
       title="Generate move for payment on invoice" default="true"/>

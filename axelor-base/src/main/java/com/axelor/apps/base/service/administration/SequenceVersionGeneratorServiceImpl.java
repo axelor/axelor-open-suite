@@ -44,8 +44,7 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
     SequenceVersion sequenceVersion;
     if (sequence.getDailyResetOk()) {
       sequenceVersion = createDailySequenceVersion(sequence, refDate);
-    }
-    else if (sequence.getYearlyResetOk() && !sequence.getMonthlyResetOk()) {
+    } else if (sequence.getYearlyResetOk() && !sequence.getMonthlyResetOk()) {
       sequenceVersion = createYearlySequenceVersion(sequence, refDate);
     } else if (sequence.getYearlyResetOk() && sequence.getMonthlyResetOk()) {
       sequenceVersion = createMonthlySequenceVersion(sequence, refDate);
@@ -58,11 +57,12 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
 
   protected SequenceVersion createDailySequenceVersion(Sequence sequence, LocalDate refDate) {
     return createSequenceVersion(
-            sequence,
-            refDate,
-            findStartDateFromPreviousDailyVersion(sequence, refDate),
-            refDate); // For daily, end date is the same as refDate.
+        sequence,
+        refDate,
+        findStartDateFromPreviousDailyVersion(sequence, refDate),
+        refDate); // For daily, end date is the same as refDate.
   }
+
   protected SequenceVersion createYearlySequenceVersion(Sequence sequence, LocalDate refDate) {
     return createSequenceVersion(
         sequence,
@@ -70,6 +70,7 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
         findStartDateFromPreviousYearVersion(sequence, refDate),
         LocalDate.of(refDate.getYear(), 12, 31));
   }
+
   protected SequenceVersion createMonthlySequenceVersion(Sequence sequence, LocalDate refDate) {
     return createSequenceVersion(
         sequence,
@@ -100,10 +101,11 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
         .map(localDate -> localDate.plusDays(1))
         .orElse(LocalDate.of(refDate.getYear(), 1, 1));
   }
+
   protected LocalDate findStartDateFromPreviousDailyVersion(Sequence sequence, LocalDate refDate) {
     return fetchLastSequenceVersionEndDateIfSameDay(sequence, refDate)
-            .map(localDate -> localDate.plusDays(1)) // Start on the next day after the last end date.
-            .orElse(refDate); // Default to refDate if no previous version exists.
+        .map(localDate -> localDate.plusDays(1)) // Start on the next day after the last end date.
+        .orElse(refDate); // Default to refDate if no previous version exists.
   }
 
   protected LocalDate findStartDateFromPreviousMonthVersion(Sequence sequence, LocalDate refDate) {
@@ -157,9 +159,9 @@ public class SequenceVersionGeneratorServiceImpl implements SequenceVersionGener
    *     is no version on the same day as the refDate
    */
   protected Optional<LocalDate> fetchLastSequenceVersionEndDateIfSameDay(
-          Sequence sequence, LocalDate refDate) {
+      Sequence sequence, LocalDate refDate) {
     return fetchLastSequenceVersionEndDate(sequence)
-            .filter(versionDate -> versionDate.equals(refDate));
+        .filter(versionDate -> versionDate.equals(refDate));
   }
   /**
    * Fetch last active version date

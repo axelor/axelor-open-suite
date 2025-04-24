@@ -74,8 +74,8 @@ public class SequenceController {
       LocalDate endOfDate = todayDate;
       if (sequence.getDailyResetOk()) {
         response.setValue(
-                "sequenceVersionList",
-                sequenceService.updateSequenceVersions(sequence, todayDate, endOfDate));
+            "sequenceVersionList",
+            sequenceService.updateSequenceVersions(sequence, todayDate, endOfDate));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
