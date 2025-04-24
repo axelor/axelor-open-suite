@@ -53,7 +53,23 @@
       <field name="project.sprintManagementSelect" hidden="true"/>
     </panel>
   </form>
-
+  <form name="sprint-tree-form" title="Sprint" model="com.axelor.apps.project.db.Sprint"
+    width="large" onLoad="action-sprint-attrs-manage-hide-project-version" canNew="false"
+    canEdit="false">
+    <panel-include view="sprint-form"/>
+  </form>
+  <grid name="sprint-tree-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint"
+    orderBy="sequence" groupBy="project, targetVersion" canNew="false" canDelete="false"
+    canEdit="false">
+    <field name="name" required="true"/>
+    <field name="fromDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="toDate" required="true" onChange="action-sprint-generator-validate-dates"/>
+    <field name="project" readonly="true"/>
+    <field name="targetVersion" readonly="true"/>
+    <field name="description"/>
+    <field name="sequence" hidden="true"/>
+    <field name="sprintManagementSelect" hidden="true"/>
+  </grid>
   <form model="com.axelor.utils.db.Wizard" title="Sprint generator"
     name="sprint-generator-wizard-form" width="large" onNew="action-sprint-generator-group-onnew">
     <panel name="mainPanel">
