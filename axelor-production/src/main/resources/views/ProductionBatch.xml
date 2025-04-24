@@ -54,6 +54,8 @@
       <button name="fillSopRealValuesBtn" title="Fill SOP real values"
         onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 2"
         readonlyIf="!sopSet || sopSet.length == 0"/>
+      <button name="generatePoBtn" title="Generate production orders"
+              onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 3"/>
       <button name="printBtn" title="Work in progress valuation"
         showIf="actionSelect == 1 &amp;&amp; batchList &amp;&amp; batchList.length &gt; 0"
         onClick="save,action-method-print-template"/>

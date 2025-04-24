@@ -208,7 +208,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     }
   }
 
-  protected boolean isGenerationNeeded(SaleOrderLine line) {
+  @Override
+  public boolean isGenerationNeeded(SaleOrderLine line) {
     return isLineHasCorrectSaleSupply(line)
         && manufOrderSaleOrderService.computeQuantityToProduceLeft(line).compareTo(BigDecimal.ZERO)
             > 0;
