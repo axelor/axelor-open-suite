@@ -49,6 +49,9 @@ public class ProductionBatchService extends AbstractBatchService {
       case ProductionBatchRepository.ACTION_FILL_SOP_REAL_VALUES:
         batch = fillSopRealValues(productionBatch);
         break;
+      case ProductionBatchRepository.ACTION_GENERATE_PO_FOR_SO:
+        batch = generatePoFromSo(productionBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -65,5 +68,9 @@ public class ProductionBatchService extends AbstractBatchService {
 
   public Batch fillSopRealValues(ProductionBatch productionBatch) {
     return Beans.get(BatchFillSopRealValues.class).run(productionBatch);
+  }
+
+  public Batch generatePoFromSo(ProductionBatch productionBatch) {
+    return Beans.get(BatchGeneratePoFromSo.class).run(productionBatch);
   }
 }
