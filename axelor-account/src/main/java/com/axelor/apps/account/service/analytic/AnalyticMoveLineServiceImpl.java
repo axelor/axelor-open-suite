@@ -47,7 +47,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -61,6 +60,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
@@ -247,31 +247,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
-    if (ObjectUtils.isEmpty(analyticMoveLineList)) {
-      return true;
-    }
-
-    Map<String, List<AnalyticMoveLine>> groupedByAnalyticAxis =
-        analyticMoveLineList.stream()
+    return CollectionUtils.isEmpty(analyticMoveLineList)
+        || analyticMoveLineList.stream()
             .collect(
                 Collectors.groupingBy(
-                    a -> a.getAnalyticAxis() == null ? "null" : a.getAnalyticAxis().getCode()));
-    boolean validAnalyticSum = true;
-    for (Map.Entry<String, List<AnalyticMoveLine>> entry : groupedByAnalyticAxis.entrySet()) {
-      if (!validatePercentage(entry.getValue())) {
-        validAnalyticSum = false;
-      }
-    }
-    return validAnalyticSum;
-  }
-
-  protected boolean validatePercentage(List<AnalyticMoveLine> analyticMoveLineList) {
-    return analyticMoveLineList.stream()
-            .map(AnalyticMoveLine::getPercentage)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .compareTo(BigDecimal.valueOf(100))
-        == 0;
+                    AnalyticMoveLine::getAnalyticAxis,
+                    Collectors.reducing(
+                        BigDecimal.ZERO, AnalyticMoveLine::getPercentage, BigDecimal::add)))
+            .values()
+            .stream()
+            .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);
   }
 
   @Override
