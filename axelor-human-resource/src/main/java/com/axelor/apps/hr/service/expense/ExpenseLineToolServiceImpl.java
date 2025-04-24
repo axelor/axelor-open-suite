@@ -33,7 +33,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -140,10 +139,7 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
 
   @Override
   public List<Employee> filterInvitedCollaborators(
-      List<Employee> employeeList,
-      List<Employee> filteredEmployeeList,
-      ExpenseLine expenseLine,
-      LocalDate expenseDate) {
+      List<Employee> employeeList, List<Employee> filteredEmployeeList) {
     if (employeeList == null) {
       return null;
     }

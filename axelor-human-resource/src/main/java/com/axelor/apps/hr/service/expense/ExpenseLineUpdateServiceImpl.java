@@ -96,10 +96,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     List<Employee> filteredEmployeeList = employeeFetchService.getInvitedCollaborators(expenseDate);
     List<Employee> employeeList =
         expenseLineToolService.filterInvitedCollaborators(
-            invitedCollaboratorList,
-            filteredEmployeeList,
-            expenseLine,
-            expenseLine.getExpenseDate());
+            invitedCollaboratorList, filteredEmployeeList);
     if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       updateKilometricExpenseLine(
           expenseLine,

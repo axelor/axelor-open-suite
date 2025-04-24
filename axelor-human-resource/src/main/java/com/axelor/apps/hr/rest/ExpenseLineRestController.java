@@ -85,10 +85,7 @@ public class ExpenseLineRestController {
 
     List<Employee> employeeList =
         expenseLineToolService.filterInvitedCollaborators(
-            requestBody.fetchInvitedCollaboratorList(),
-            filteredEmployeeList,
-            expenseLine,
-            expenseDate);
+            requestBody.fetchInvitedCollaboratorList(), filteredEmployeeList);
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =

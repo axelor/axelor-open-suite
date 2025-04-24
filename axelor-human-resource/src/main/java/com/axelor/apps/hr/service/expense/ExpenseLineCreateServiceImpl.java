@@ -33,11 +33,13 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
@@ -91,9 +93,14 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Currency currency,
       Boolean toInvoice,
       ProjectTask projectTask,
-      List<Employee> employeeList)
+      List<Employee> invitedCollaboratorList)
       throws AxelorException {
+    List<Employee> filteredEmployeeList =
+        Beans.get(EmployeeFetchService.class).getInvitedCollaborators(expenseDate);
 
+    List<Employee> employeeList =
+        expenseLineToolService.filterInvitedCollaborators(
+            invitedCollaboratorList, filteredEmployeeList);
     if (expenseProduct == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
