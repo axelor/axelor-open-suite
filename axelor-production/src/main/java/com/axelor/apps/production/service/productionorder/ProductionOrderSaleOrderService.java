@@ -32,4 +32,6 @@ public interface ProductionOrderSaleOrderService {
   ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
   List<ProductionOrder> getLinkedProductionOrders(SaleOrder saleOrder) throws AxelorException;
+
+  boolean isGenerationNeeded(SaleOrderLine line);
 }
