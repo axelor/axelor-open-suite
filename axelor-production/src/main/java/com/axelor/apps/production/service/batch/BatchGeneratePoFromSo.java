@@ -16,7 +16,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -101,9 +100,9 @@ public class BatchGeneratePoFromSo extends BatchStrategy {
   protected void stop() {
     super.stop();
     addComment(
-            String.format(
-                    I18n.get("%d line(s) treated and %d anomaly(ies) reported !"),
-                    batch.getDone(),
-                    batch.getAnomaly()));
+        String.format(
+            I18n.get("%d line(s) treated and %d anomaly(ies) reported !"),
+            batch.getDone(),
+            batch.getAnomaly()));
   }
 }
