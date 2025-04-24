@@ -318,6 +318,7 @@ import com.axelor.utils.service.translation.TranslationBaseService;
 import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -344,7 +345,9 @@ public class BaseModule extends AxelorModule {
                 && parameters.stream()
                     .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
                 && parameters.stream()
-                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()));
+                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()))
+                && Modifier.isPublic(method.getModifiers())
+                && method.getReturnType().equals(Void.TYPE);
           }
         },
         new ControllerMethodInterceptor());
