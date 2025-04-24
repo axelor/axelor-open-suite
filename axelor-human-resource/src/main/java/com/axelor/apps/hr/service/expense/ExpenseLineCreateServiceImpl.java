@@ -39,7 +39,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
@@ -60,6 +59,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected AppBaseService appBaseService;
   protected ExpenseProofFileService expenseProofFileService;
   protected ExpenseLineToolService expenseLineToolService;
+  protected EmployeeFetchService employeeFetchService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -69,7 +69,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
-      ExpenseLineToolService expenseLineToolService) {
+      ExpenseLineToolService expenseLineToolService,
+      EmployeeFetchService employeeFetchService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
@@ -77,6 +78,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     this.appBaseService = appBaseService;
     this.expenseProofFileService = expenseProofFileService;
     this.expenseLineToolService = expenseLineToolService;
+    this.employeeFetchService = employeeFetchService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -95,8 +97,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       ProjectTask projectTask,
       List<Employee> invitedCollaboratorList)
       throws AxelorException {
-    List<Employee> filteredEmployeeList =
-        Beans.get(EmployeeFetchService.class).getInvitedCollaborators(expenseDate);
+    List<Employee> filteredEmployeeList = employeeFetchService.getInvitedCollaborators(expenseDate);
 
     List<Employee> employeeList =
         expenseLineToolService.filterInvitedCollaborators(

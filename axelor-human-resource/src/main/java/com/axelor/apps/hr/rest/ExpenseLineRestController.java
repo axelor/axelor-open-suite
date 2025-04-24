@@ -24,9 +24,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
-import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
-import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
@@ -42,7 +40,6 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDate;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -69,8 +66,6 @@ public class ExpenseLineRestController {
     new SecurityCheck().createAccess(ExpenseLine.class).check();
 
     ExpenseLineCreateService expenseLineCreateService = Beans.get(ExpenseLineCreateService.class);
-    ExpenseLineToolService expenseLineToolService = Beans.get(ExpenseLineToolService.class);
-
     ExpenseLine expenseLine = new ExpenseLine();
     Project project = requestBody.fetchProject();
     LocalDate expenseDate = requestBody.getExpenseDate();
@@ -79,14 +74,6 @@ public class ExpenseLineRestController {
     String expenseLineType = requestBody.getExpenseLineType();
     Boolean toInvoice = requestBody.getToInvoice();
     ProjectTask projectTask = requestBody.fetchProjectTask();
-
-    List<Employee> filteredEmployeeList =
-        Beans.get(EmployeeFetchService.class).getInvitedCollaborators(expenseDate);
-
-    List<Employee> employeeList =
-        expenseLineToolService.filterInvitedCollaborators(
-            requestBody.fetchInvitedCollaboratorList(), filteredEmployeeList);
-
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
           expenseLineCreateService.createGeneralExpenseLine(
@@ -101,7 +88,7 @@ public class ExpenseLineRestController {
               requestBody.fetchCurrency(),
               toInvoice,
               projectTask,
-              employeeList);
+              requestBody.fetchInvitedCollaboratorList());
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
