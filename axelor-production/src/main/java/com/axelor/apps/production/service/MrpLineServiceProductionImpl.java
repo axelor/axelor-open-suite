@@ -174,7 +174,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     if (billOfMaterial.getProdProcess() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.CBN_PROD_PROCESS_CANNOT_BE_NULL),
+          I18n.get(ProductionExceptionMessage.MRP_PROD_PROCESS_REQUIRED),
           product.getName());
     }
 
