@@ -107,7 +107,7 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
       while (!date.isAfter(toDate)) {
         BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, date);
         if (budgetLine != null && totalDuration > 0) {
-          if (toDate.isBefore(budgetLine.getToDate())) {
+          if (!toDate.isAfter(budgetLine.getToDate())) {
             prorataAmount = missingAmount;
           } else {
             long duration = LocalDateHelper.daysBetween(date, budgetLine.getToDate(), false);
