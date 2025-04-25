@@ -36,8 +36,7 @@
       </panel>
 
       <panel name="cartPanel" title="Cart" colSpan="12">
-        <field name="stockLocationToCartLimit" colSpan="4"
-          onChange="action-app-supplychain-validate-cart-limit" max="100"/>
+        <field name="stockLocationToCartLimit" colSpan="4"/>
       </panel>
     </panel>
     <panel name="purchaseOrderPanel" title="Purchase order">
@@ -132,11 +131,5 @@
     model="com.axelor.studio.db.AppSupplychain">
     <field name="manageStockReservation" expr="eval: false"/>
   </action-record>
-
-  <action-validate name="action-app-supplychain-validate-cart-limit">
-    <error
-      message="You can not add more than 100 lines at once in the cart. Please choose a smaller value."
-      if="stockLocationToCartLimit &gt; 100"/>
-  </action-validate>
 
 </object-views>
