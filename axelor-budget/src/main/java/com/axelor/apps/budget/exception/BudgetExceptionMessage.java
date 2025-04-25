@@ -64,7 +64,7 @@ public final class BudgetExceptionMessage {
       "You can't compute the budget distribution because you are not authorized to." /*)*/;
 
   public static final String NO_BUDGET_VALUES_FOUND = /*$$(*/
-      "The budget distribution has not been computed yet. By launching this action, you can no longer compute the budget distribution. Do you want to proceed ?" /*)*/;
+      "The budget distribution has not been computed yet. By launching this action, you can no longer compute the budget distribution." /*)*/;
 
   public static final String WRONG_DATES_ON_BUDGET = /*$$(*/
       "Please select valid dates for budget %s, dates needs to be in the section period" /*)*/;

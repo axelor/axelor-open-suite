@@ -62,6 +62,7 @@ public class SaleOrderCopyServiceImpl implements SaleOrderCopyService {
         saleOrderLine.setDesiredDeliveryDate(null);
         saleOrderLine.setEstimatedShippingDate(null);
         saleOrderLine.setDiscountDerogation(null);
+        saleOrderLine.setOrderedQty(BigDecimal.ZERO);
       }
     }
     saleOrderDateService.computeEndOfValidityDate(copy);
