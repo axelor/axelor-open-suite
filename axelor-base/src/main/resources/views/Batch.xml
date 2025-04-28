@@ -330,4 +330,8 @@
     <context name="batch" expr="eval: __self__"/>
   </action-view>
 
+  <action-method name="action-batch-method-show-batches">
+    <call class="com.axelor.apps.base.web.BatchController" method="showBatches"/>
+  </action-method>
+
 </object-views>

@@ -288,6 +288,7 @@
 "Hide Unit Amounts",,,
 "Hide unit amounts",,,
 "Historical",,,
+"If you want to enable this configuration, interco sale order can not be created at finalized quotation. Please change the configuration in supplychain application.",,,
 "Ignore missing products",,,
 "Import configurator creators",,,
 "Import log",,,

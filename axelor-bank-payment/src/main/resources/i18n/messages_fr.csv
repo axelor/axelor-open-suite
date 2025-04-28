@@ -93,6 +93,8 @@
 "Amount remaining to reconcile","Montant restant à rapprocher",,
 "Amount value of a bank order line is not valid","Le montant inséré pour une ligne d'ordre bancaire n'est pas valide",,
 "Amount value of the bank order is not valid","Le montant inséré de l'ordre bancaire n'est pas valide",,
+"Analytic","Analytique",,
+"Analytic distribution template","Modèle de distribution analytique",,
 "Anomaly has been detected during file generation for bank order %s","Une anomalie a été détectée lors de la génération du fichier bancaire de l'ordre bancaire %s",,
 "Anomaly has been detected during file generation for the additional detail record of the bank order line %s","Une anomalie a été détectée lors de la génération du fichier bancaire pour l'enregistrement 'details additionnels' de la ligne de l'ordre bancaire %s",,
 "Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s","Une anomalie a été détectée lors de la génération du fichier bancaire pour l'enregistrement 'détails du bénéficiaire' de l'ordre bancaire %s",,

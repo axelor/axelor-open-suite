@@ -78,14 +78,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,9 +119,11 @@ public class InventoryService {
   protected TrackingNumberRepository trackingNumberRepository;
   protected AppBaseService appBaseService;
   protected StockLocationRepository stockLocationRepository;
+  protected InventoryStockLocationUpdateService inventoryStockLocationUpdateService;
 
   @Inject
   public InventoryService(
+      InventoryLineRepository inventoryLineRepository,
       InventoryLineService inventoryLineService,
       SequenceService sequenceService,
       StockConfigService stockConfigService,
@@ -137,7 +137,8 @@ public class InventoryService {
       TrackingNumberRepository trackingNumberRepository,
       AppBaseService appBaseService,
       StockLocationRepository stockLocationRepository,
-      InventoryLineRepository inventoryLineRepository) {
+      InventoryStockLocationUpdateService inventoryStockLocationUpdateService) {
+    this.inventoryLineRepository = inventoryLineRepository;
     this.inventoryLineService = inventoryLineService;
     this.sequenceService = sequenceService;
     this.stockConfigService = stockConfigService;
@@ -151,7 +152,7 @@ public class InventoryService {
     this.trackingNumberRepository = trackingNumberRepository;
     this.appBaseService = appBaseService;
     this.stockLocationRepository = stockLocationRepository;
-    this.inventoryLineRepository = inventoryLineRepository;
+    this.inventoryStockLocationUpdateService = inventoryStockLocationUpdateService;
   }
 
   public Inventory createInventory(
@@ -534,7 +535,7 @@ public class InventoryService {
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMoves(inventory, true);
     generateStockMoves(inventory, false);
-    storeLastInventoryData(inventory);
+    inventoryStockLocationUpdateService.storeLastInventoryData(inventory);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -577,70 +578,6 @@ public class InventoryService {
     }
 
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
-  }
-
-  protected void storeLastInventoryData(Inventory inventory) {
-    Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
-    Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
-    Map<Product, String> realRacks = new HashMap<>();
-
-    List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
-
-    if (inventoryLineList != null) {
-      for (InventoryLine inventoryLine : inventoryLineList) {
-        Product product = inventoryLine.getProduct();
-        TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
-
-        realQties.put(Pair.of(product, trackingNumber), inventoryLine.getRealQty());
-
-        BigDecimal realQty = consolidatedRealQties.getOrDefault(product, BigDecimal.ZERO);
-        realQty = realQty.add(inventoryLine.getRealQty());
-        consolidatedRealQties.put(product, realQty);
-
-        realRacks.put(product, inventoryLine.getRack());
-      }
-    }
-
-    List<StockLocationLine> stockLocationLineList =
-        inventory.getStockLocation().getStockLocationLineList();
-
-    if (stockLocationLineList != null) {
-      for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        Product product = stockLocationLine.getProduct();
-        BigDecimal realQty = consolidatedRealQties.get(product);
-        if (realQty != null) {
-          stockLocationLine.setLastInventoryRealQty(realQty);
-          stockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
-        }
-
-        String rack = realRacks.get(product);
-        if (rack != null) {
-          stockLocationLine.setRack(rack);
-        }
-      }
-    }
-
-    List<StockLocationLine> detailsStockLocationLineList =
-        inventory.getStockLocation().getDetailsStockLocationLineList();
-
-    if (detailsStockLocationLineList != null) {
-      for (StockLocationLine detailsStockLocationLine : detailsStockLocationLineList) {
-        Product product = detailsStockLocationLine.getProduct();
-        TrackingNumber trackingNumber = detailsStockLocationLine.getTrackingNumber();
-        BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
-        if (realQty != null) {
-          detailsStockLocationLine.setLastInventoryRealQty(realQty);
-          detailsStockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
-        }
-
-        String rack = realRacks.get(product);
-        if (rack != null) {
-          detailsStockLocationLine.setRack(rack);
-        }
-      }
-    }
   }
 
   public void generateStockMoves(Inventory inventory, boolean isEnteringStock)

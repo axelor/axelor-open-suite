@@ -46,6 +46,19 @@ public class SaleOrderLineDetailsController {
         saleOrderLineDetailsService.productOnChange(saleOrderLineDetails, saleOrder));
   }
 
+  public void priceOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService =
+        Beans.get(SaleOrderLineDetailsPriceService.class);
+    SaleOrder saleOrder = getSaleOrder(context);
+    Map<String, Object> values = new HashMap<>();
+    values.putAll(
+        saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
+    values.putAll(saleOrderLineDetailsPriceService.computeMarginCoef(saleOrderLineDetails));
+    response.setValues(values);
+  }
+
   public void computePrices(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     Context parentContext = context.getParent();
