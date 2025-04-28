@@ -189,13 +189,19 @@ public class ReconcileInvoiceTermComputationServiceImpl
         } else if (invoicePayment == null) {
           if (foreignExchangePayment != null
               && reconcile.getForeignExchangeMove() != null
-              && !Objects.equals(reconcile.getAmount(), invoice.getCompanyInTaxTotal())) {
+              && !Objects.equals(reconcile.getAmount(), invoice.getCompanyInTaxTotal())
+              && currencyService.isCurrencyRateLower(
+                  invoice.getInvoiceDate(),
+                  foreignExchangePayment.getPaymentDate(),
+                  invoice.getCompanyCurrency(),
+                  invoice.getCurrency())) {
             BigDecimal foreignExchangeAmount =
                 currencyService.getAmountCurrencyConvertedAtDate(
                     invoice.getCompanyCurrency(),
                     invoice.getCurrency(),
                     foreignExchangePayment.getAmount(),
                     invoice.getInvoiceDate());
+
             invoicePaymentAmount = invoicePaymentAmount.add(foreignExchangeAmount);
           }
           invoicePayment =
