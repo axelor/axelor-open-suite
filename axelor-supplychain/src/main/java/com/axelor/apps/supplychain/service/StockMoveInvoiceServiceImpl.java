@@ -218,6 +218,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice.setSaleOrder(saleOrderSet.iterator().next());
       }
 
+      if (!saleOrderSet.isEmpty()) {
+        invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());
+      }
+
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
@@ -307,6 +311,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setExternalReference(fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet));
       invoice.setInternalReference(
           fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
+
+      if (!purchaseOrderSet.isEmpty()) {
+        invoice.setCompanyTaxNumber(purchaseOrder.getTaxNumber());
+      }
 
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
