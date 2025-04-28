@@ -86,6 +86,11 @@
         </field>
       </insert>
     </extend>
+    <extend target="//field[@name='warnDelayFromSupplier']">
+      <insert position="after">
+        <field name="warnDelayFromManufacturing" hidden="true"/>
+      </insert>
+    </extend>
   </form>
 
 </object-views>

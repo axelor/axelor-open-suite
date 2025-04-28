@@ -16,8 +16,9 @@ public class MrpLineProductionRepository extends MrpLineManagementRepository {
     if (mrpLine.getMrpLineType().getElementSelect()
             == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && mrpLine.getMaturityDate() != null
+        && mrpLine.getDeliveryDelayDate() != null
         && !mrpLine.getMaturityDate().isEqual(mrpLine.getDeliveryDelayDate())) {
-      //json.put("respectDeliveryDelayDate", mrpLine.getDeliveryDelayDate());
+      json.put("respectDeliveryDelayDate", mrpLine.getDeliveryDelayDate());
     }
     return mrpLineMap;
   }
