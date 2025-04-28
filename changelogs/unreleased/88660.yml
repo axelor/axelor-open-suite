@@ -1,0 +1,3 @@
+---
+title: "Template: on creating a new template manually, keep email account empty by default so the generated message can use default email account."
+module: axelor-base

@@ -1,3 +1,84 @@
+## [8.3.4] (2025-04-17)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.3.5.
+* Updated axelor-studio dependency to 3.4.2.
+* Base: fixed base roles are not imported.
+* Partner: fixed agencies domain filter.
+
+#### Account
+
+* Reconcile: removed check on tax for opening/closure.
+* Invoice: fixed an issue in the BIRT report where a partner or company partner had multiple accounting situations for different companies.
+* Payment voucher: fixed translation for error message when move amounts have been changed since the imputation.
+* Account management: fixed fields not required in editable grid of payment mode.
+* Invoice: fixed due date when we save with free payment condition.
+* Accounting report: set currency required for 'Bank reconciliation statement' report.
+* Invoice: fixed price list not filled the first time we change the partner.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed issue when try to load bank statement in different currency than bank details.
+
+#### Business Project
+
+* Business project task: fixed an issue where modifying quantity was resetting unit price.
+
+#### CRM
+
+* Partner: fixed 'Generate Project' button still present even with job costing app disabled.
+
+#### Human Resource
+
+* Timesheet: prevent 'To date' edition on completed timesheets.
+* Project allocation: fixed initialization with planned time in mass generation.
+* Leave Request: fixed the NPE caused by the employee's empty week planning.
+* Leave request: leave reason and duration are now required when using multi-leave assistant.
+
+#### Production
+
+* Purchase order: fixed an issue where subcontracted order was reset to standard on validation.
+* Sale order: fixed translation for 'Details Lines (Tree)'.
+
+#### Project
+
+* Project: fixed wrong compute of full name.
+* Project task: fixed npe on project task gantt views.
+
+#### Purchase
+
+* Supplier catalog: fixed wrong fetched information for product without catalog.
+
+#### Sale
+
+* Sale order: fixed 'Generate production order' button displayed when app production is deactivated.
+* Sale order: fixed the issue where stock location was overwritten upon changing the partner when trading name was null.
+* Sale order: fixed missing error message on pack products.
+* Sale order: fixed the alert message before confirming the sale order.
+
+#### Stock
+
+* Stock move line: fixed total net mass calculation when real quantities are generated.
+* Stock location: fixed quantity scaling in stock location line grid and form views.
+
+#### Supply Chain
+
+* Sale Order: do not remove shipment cost line if the line is already invoiced.
+* Sale order: fixed sale order invoicing state when a line has a negative amount.
+
+
+### Developer
+
+#### Sale
+
+The method `confirmCheckAlert` in `SaleOrderCheckService` now returns `List<String>` instead of `String`.
+
+#### Supply Chain
+
+Added `InvoiceRepository` to the constructor of `SaleOrderShipmentServiceImpl`.
+
 ## [8.3.3] (2025-04-03)
 
 ### Fixes
@@ -352,6 +433,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.4]: https://github.com/axelor/axelor-open-suite/compare/v8.3.3...v8.3.4
 [8.3.3]: https://github.com/axelor/axelor-open-suite/compare/v8.3.2...v8.3.3
 [8.3.2]: https://github.com/axelor/axelor-open-suite/compare/v8.3.1...v8.3.2
 [8.3.1]: https://github.com/axelor/axelor-open-suite/compare/v8.3.0...v8.3.1

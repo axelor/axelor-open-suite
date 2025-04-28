@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an error occurring when changing the price of a sale order line details."
+module: axelor-production

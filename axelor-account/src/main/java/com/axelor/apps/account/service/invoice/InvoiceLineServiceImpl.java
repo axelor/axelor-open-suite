@@ -535,9 +535,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal qty =
         invoiceLine
             .getQty()
-            .divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+            .divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
             .multiply(newQty)
-            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     invoiceLine.setQty(qty);
     if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL
         || invoiceLine.getProduct() == null) {

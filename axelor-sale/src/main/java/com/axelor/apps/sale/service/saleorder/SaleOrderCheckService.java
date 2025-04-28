@@ -20,11 +20,12 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import java.util.List;
 
 public interface SaleOrderCheckService {
   String finalizeCheckAlert(SaleOrder saleOrder) throws AxelorException;
 
-  String confirmCheckAlert(SaleOrder saleOrder) throws AxelorException;
+  List<String> confirmCheckAlert(SaleOrder saleOrder) throws AxelorException;
 
   void checkSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 

@@ -170,9 +170,8 @@ public class SprintController {
 
     ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Sprints"));
     actionViewBuilder.model(Sprint.class.getName());
-    actionViewBuilder.add("grid", "sprint-grid");
-    actionViewBuilder.add("form", "sprint-form");
-    actionViewBuilder.param("show-toolbar", Boolean.FALSE.toString());
+    actionViewBuilder.add("grid", "sprint-tree-grid");
+    actionViewBuilder.add("form", "sprint-tree-form");
     actionViewBuilder.domain("self.id IN (:sprintIds)");
     actionViewBuilder.context("sprintIds", sprintIdList);
 

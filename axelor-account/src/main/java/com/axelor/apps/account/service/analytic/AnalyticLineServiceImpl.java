@@ -249,8 +249,12 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
   protected Stream<AnalyticMoveLine> getAnalyticMoveLineOnAxis(
       AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
-    return analyticLine.getAnalyticMoveLineList().stream()
-        .filter(it -> it.getAnalyticAxis().equals(analyticAxis));
+    if (analyticAxis != null) {
+      return analyticLine.getAnalyticMoveLineList().stream()
+          .filter(it -> analyticAxis.equals(it.getAnalyticAxis()));
+    }
+
+    return Stream.empty();
   }
 
   protected void setAxisAccount(

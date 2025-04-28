@@ -2083,18 +2083,6 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="companyOnChange"/>
   </action-method>
 
-  <action-validate name="action-sale-order-validate-check-on-confirm">
-    <alert message="The total amount of quotation is zero. Do you want to proceed ?"
-      if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
-    <error message="Incoterm must be filled"
-      if="__config__.app.isApp('supplychain')
-                &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
-          &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
-          &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code))"/>
-  </action-validate>
-
   <action-record name="action-sale-order-manual-unblock"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="manualUnblock" expr="true"/>

@@ -90,9 +90,9 @@ public class SaleOrderLineComputeSupplychainServiceImpl extends SaleOrderLineCom
 
     BigDecimal qty = saleOrderLine.getQty();
     qty =
-        qty.divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+        qty.divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
             .multiply(newQty)
-            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     saleOrderLine.setQty(qty);
 
     qty =

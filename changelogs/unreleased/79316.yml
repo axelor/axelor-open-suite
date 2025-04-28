@@ -1,3 +1,0 @@
----
-title: "Bank reconciliation: fixed issue when try to load bank statement in different currency than bank details."
-module: axelor-bank-payment

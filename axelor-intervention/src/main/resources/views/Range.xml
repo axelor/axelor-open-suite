@@ -92,7 +92,7 @@
   </action-view>
 
   <action-validate name="action-range-validate-remove-range-questions">
-    <alert message="Are you sure wants to remove selected questions?"/>
+    <alert message="Are you sure you want to remove selected questions?"/>
   </action-validate>
 
   <action-script name="action-range-script-remove-range-questions"

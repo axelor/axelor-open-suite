@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
@@ -81,6 +82,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected AppBusinessProjectService appBusinessProjectService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected AnalyticLineService analyticLineService;
+  protected PartnerAccountService partnerAccountService;
 
   protected int sequence = 0;
 
@@ -100,7 +102,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       AppBusinessProjectService appBusinessProjectService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      PartnerAccountService partnerAccountService) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -116,6 +119,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.appBusinessProjectService = appBusinessProjectService;
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
     this.analyticLineService = analyticLineService;
+    this.partnerAccountService = partnerAccountService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -202,6 +206,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         invoice.setProject(project);
         invoice.setPriceList(project.getPriceList());
         invoice.setFiscalPosition(invoicedPartner.getFiscalPosition());
+        invoice.setThirdPartyPayerPartner(partnerAccountService.getPayedByPartner(invoicedPartner));
         return invoice;
       }
     };

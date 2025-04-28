@@ -64,7 +64,6 @@ public class BatchContractInvoicing extends BatchStrategy {
             + "AND self.invoicing_date <= :invoicingDate "
             + "AND self.status_select != :closedContract "
             + "AND (SELECT automatic_invoicing FROM contract_contract_version WHERE contract_contract_version.id = self.current_contract_version) IS TRUE "
-            + "AND self.id NOT IN (SELECT DISTINCT contract_set FROM account_invoice_contract_set) "
             + "GROUP BY self.invoiced_partner, self.invoicing_date, self.invoice_period_end_date, self.invoice_period_start_date, self.is_grouped_invoicing";
 
     Query query =
