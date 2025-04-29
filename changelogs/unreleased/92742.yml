@@ -1,0 +1,3 @@
+---
+title: "Purchase order line: use the correct account when a purchase order line is set to 'fixed assets'."
+module: axelor-budget
