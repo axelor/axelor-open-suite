@@ -45,38 +45,44 @@ public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheck
   }
 
   @Override
-  public void productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public String productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    super.productOnChangeCheck(saleOrderLine, saleOrder);
-    checkStocks(saleOrderLine, saleOrder);
+    if (!appSupplychainService.isApp("supplychain")) {
+      return super.productOnChangeCheck(saleOrderLine, saleOrder);
+    }
+    return checkStocks(saleOrderLine, saleOrder);
   }
 
   @Override
-  public void qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public String qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    super.qtyOnChangeCheck(saleOrderLine, saleOrder);
-    checkStocks(saleOrderLine, saleOrder);
+    if (!appSupplychainService.isApp("supplychain")) {
+      return super.qtyOnChangeCheck(saleOrderLine, saleOrder);
+    }
+    return checkStocks(saleOrderLine, saleOrder);
   }
 
   @Override
-  public void unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public String unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    super.unitOnChangeCheck(saleOrderLine, saleOrder);
-    checkStocks(saleOrderLine, saleOrder);
+    if (!appSupplychainService.isApp("supplychain")) {
+      return super.unitOnChangeCheck(saleOrderLine, saleOrder);
+    }
+    return checkStocks(saleOrderLine, saleOrder);
   }
 
   @Override
-  public void saleSupplySelectOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public String saleSupplySelectOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    checkStocks(saleOrderLine, saleOrder);
+    return checkStocks(saleOrderLine, saleOrder);
   }
 
-  protected void checkStocks(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  protected String checkStocks(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
     if (!appSupplychainService.isApp("supplychain")
         || !appSupplychainService.getAppSupplychain().getCheckSaleStocks()) {
-      return;
+      return null;
     }
     Product product = saleOrderLine.getProduct();
     StockLocation stockLocation = saleOrder.getStockLocation();
@@ -85,9 +91,9 @@ public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheck
         || stockLocation == null
         || unit == null
         || saleOrderLine.getSaleSupplySelect() != SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK) {
-      return;
+      return null;
     }
-    stockLocationLineService.checkIfEnoughStock(
+    return stockLocationLineService.checkIfEnoughStock(
         stockLocation, product, unit, saleOrderLine.getQty());
   }
 }
