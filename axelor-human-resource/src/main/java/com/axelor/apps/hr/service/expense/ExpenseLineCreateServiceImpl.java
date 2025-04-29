@@ -95,13 +95,11 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Currency currency,
       Boolean toInvoice,
       ProjectTask projectTask,
-      List<Employee> invitedCollaboratorList)
+      List<Long> invitedCollaboratorList)
       throws AxelorException {
-    List<Employee> filteredEmployeeList = employeeFetchService.getInvitedCollaborators(expenseDate);
-
     List<Employee> employeeList =
-        expenseLineToolService.filterInvitedCollaborators(
-            invitedCollaboratorList, filteredEmployeeList);
+        employeeFetchService.filterInvitedCollaborators(invitedCollaboratorList, expenseDate);
+
     if (expenseProduct == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,

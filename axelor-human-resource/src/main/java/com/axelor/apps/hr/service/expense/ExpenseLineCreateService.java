@@ -46,7 +46,7 @@ public interface ExpenseLineCreateService {
       Currency currency,
       Boolean toInvoice,
       ProjectTask projectTask,
-      List<Employee> employeeList)
+      List<Long> invitedCollaboratorList)
       throws AxelorException;
 
   ExpenseLine createKilometricExpenseLine(

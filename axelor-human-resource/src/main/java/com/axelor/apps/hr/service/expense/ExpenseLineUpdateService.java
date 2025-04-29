@@ -53,42 +53,6 @@ public interface ExpenseLineUpdateService {
       Boolean toInvoice,
       Expense newExpense,
       ProjectTask projectTask,
-      List<Employee> employees)
-      throws AxelorException;
-
-  void updateGeneralExpenseLine(
-      ExpenseLine expenseLine,
-      Project project,
-      Product expenseProduct,
-      LocalDate expenseDate,
-      BigDecimal totalAmount,
-      BigDecimal totalTax,
-      MetaFile justificationMetaFile,
-      String comments,
-      Employee employee,
-      Currency currency,
-      Boolean toInvoice,
-      Expense newExpense,
-      ProjectTask projectTask,
-      List<Employee> employeeList)
-      throws AxelorException;
-
-  void updateKilometricExpenseLine(
-      ExpenseLine expenseLine,
-      Project project,
-      LocalDate expenseDate,
-      KilometricAllowParam kilometricAllowParam,
-      Integer kilometricType,
-      BigDecimal distance,
-      String fromCity,
-      String toCity,
-      String comments,
-      Employee employee,
-      Currency currency,
-      Boolean toInvoice,
-      Product expenseProduct,
-      Expense newExpense,
-      ProjectTask projectTask,
-      List<Employee> employeeList)
+      List<Long> invitedCollaboratorList)
       throws AxelorException;
 }

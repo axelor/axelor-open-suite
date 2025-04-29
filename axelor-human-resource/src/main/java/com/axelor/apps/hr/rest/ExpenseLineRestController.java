@@ -88,7 +88,7 @@ public class ExpenseLineRestController {
               requestBody.fetchCurrency(),
               toInvoice,
               projectTask,
-              requestBody.fetchInvitedCollaboratorList());
+              requestBody.getInvitedCollaboratorList());
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -165,7 +165,7 @@ public class ExpenseLineRestController {
                 requestBody.getToInvoice(),
                 requestBody.fetchExpense(),
                 requestBody.fetchProjectTask(),
-                requestBody.fetchInvitedCollaboratorList());
+                requestBody.getInvitedCollaboratorList());
 
     return ResponseConstructor.build(
         Response.Status.OK,

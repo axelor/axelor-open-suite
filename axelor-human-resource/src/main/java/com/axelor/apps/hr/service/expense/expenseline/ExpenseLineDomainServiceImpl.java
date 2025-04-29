@@ -19,10 +19,8 @@ public class ExpenseLineDomainServiceImpl implements ExpenseLineDomainService {
   @Override
   public String getInvitedCollaborators(ExpenseLine expenseLine, Expense expense) {
     List<Employee> employeeList =
-        employeeFetchService.getInvitedCollaborators(expenseLine.getExpenseDate());
-    if (expense != null) {
-      employeeList.remove(expense.getEmployee());
-    }
+        employeeFetchService.getInvitedCollaborators(
+            expenseLine.getExpenseDate(), expense != null ? expense.getEmployee() : null);
     return "self.id IN (" + StringHelper.getIdListString(employeeList) + ")";
   }
 }

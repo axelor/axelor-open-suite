@@ -90,13 +90,12 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Boolean toInvoice,
       Expense newExpense,
       ProjectTask projectTask,
-      List<Employee> invitedCollaboratorList)
+      List<Long> invitedCollaboratorList)
       throws AxelorException {
     expenseDate = expenseDate != null ? expenseDate : expenseLine.getExpenseDate();
-    List<Employee> filteredEmployeeList = employeeFetchService.getInvitedCollaborators(expenseDate);
     List<Employee> employeeList =
-        expenseLineToolService.filterInvitedCollaborators(
-            invitedCollaboratorList, filteredEmployeeList);
+        employeeFetchService.filterInvitedCollaborators(invitedCollaboratorList, expenseDate);
+
     if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       updateKilometricExpenseLine(
           expenseLine,
@@ -146,9 +145,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     return expenseLine;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void updateGeneralExpenseLine(
+  protected void updateGeneralExpenseLine(
       ExpenseLine expenseLine,
       Project project,
       Product expenseProduct,
@@ -185,9 +182,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void updateKilometricExpenseLine(
+  protected void updateKilometricExpenseLine(
       ExpenseLine expenseLine,
       Project project,
       LocalDate expenseDate,
