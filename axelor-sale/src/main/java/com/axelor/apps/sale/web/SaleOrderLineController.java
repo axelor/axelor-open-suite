@@ -153,12 +153,7 @@ public class SaleOrderLineController {
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
 
-        String alert =
-            Beans.get(SaleOrderLineCheckService.class)
-                .productOnChangeCheck(saleOrderLine, saleOrder);
-        if (StringUtils.notEmpty(alert)) {
-          response.setAlert(alert);
-        }
+        Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
@@ -284,11 +279,6 @@ public class SaleOrderLineController {
     response.setAttrs(
         Beans.get(SaleOrderLineViewService.class).getQtyOnChangeAttrs(saleOrderLine, saleOrder));
 
-    String alert =
-        Beans.get(SaleOrderLineCheckService.class).qtyOnChangeCheck(saleOrderLine, saleOrder);
-    if (StringUtils.notEmpty(alert)) {
-      response.setAlert(alert);
-    }
     String notifyMessage =
         Beans.get(SaleOrderLineMultipleQtyService.class).getMultipleQtyErrorMessage(saleOrderLine);
     if (StringUtils.notEmpty(notifyMessage)) {
@@ -354,11 +344,7 @@ public class SaleOrderLineController {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
-    String alert =
-        Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
-    if (StringUtils.notEmpty(alert)) {
-      response.setAlert(alert);
-    }
+    Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
   }
 
   public void addToCart(ActionRequest request, ActionResponse response) {

@@ -27,22 +27,16 @@ import com.axelor.i18n.I18n;
 
 public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService {
   @Override
-  public String productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    return null;
-  }
+  public void productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {}
 
   @Override
-  public String qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    return null;
-  }
+  public void qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {}
 
   @Override
-  public String unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    return null;
-  }
+  public void unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {}
 
   @Override
   public String checkParentLineType(SaleOrderLine parentSaleOrderLine) {
