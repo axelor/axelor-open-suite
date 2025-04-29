@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
@@ -246,12 +245,6 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       String description,
       BankDetails companyBankDetails)
       throws AxelorException {
-
-    if (journal == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.BANK_RECONCILIATION_MISSING_JOURNAL));
-    }
 
     log.debug(
         "Creating a new generic accounting move (journal : {}, company : {}",

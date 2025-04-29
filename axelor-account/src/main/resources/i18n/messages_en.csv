@@ -2226,7 +2226,6 @@
 "Missing date on move line",,,
 "Missing deposit slip sequence for company %s",,,
 "Missing direct debit payment mode in the company's account configuration",,,
-"Missing journal on bank reconciliation.",,,
 "Missing subrogation release sequence for company %s",,,
 "Model Accounting Report",,,
 "Month",,,
