@@ -23,12 +23,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface SaleOrderLineCheckService {
-  String productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  void productOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
-  String qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+  void qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
-  String unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+  void unitOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
   String checkParentLineType(SaleOrderLine parentSaleOrderLine);
 }
