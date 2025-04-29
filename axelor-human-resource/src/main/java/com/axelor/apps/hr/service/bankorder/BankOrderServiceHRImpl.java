@@ -91,15 +91,15 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
     if (bankOrder
         .getFunctionalOriginSelect()
         .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE)) {
-      this.validateExpensePayment(bankOrder);
+      return this.validateExpensePayment(bankOrder);
     }
     return super.generateMoves(bankOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void validateExpensePayment(BankOrder bankOrder) throws AxelorException {
+  protected BankOrder validateExpensePayment(BankOrder bankOrder) throws AxelorException {
     if (!Beans.get(AppService.class).isApp("employee")) {
-      return;
+      return bankOrder;
     }
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
@@ -113,6 +113,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         expensePaymentService.createMoveForExpensePayment(expense);
       }
     }
+
+    return bankOrder;
   }
 
   @Override
