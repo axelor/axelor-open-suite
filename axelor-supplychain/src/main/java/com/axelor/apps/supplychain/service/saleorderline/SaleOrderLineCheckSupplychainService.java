@@ -24,6 +24,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface SaleOrderLineCheckSupplychainService {
 
-  void saleSupplySelectOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  String saleSupplySelectOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 }
