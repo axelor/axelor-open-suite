@@ -1,0 +1,9 @@
+---
+title: "Sale order line: fixed an issue where warnings related to sale order line (like stock control) were not displayed to the user and blocked the process."
+module: axelor-base
+developer: |
+  In `SaleOrderLineCheckService`, the methods `productOnChangeCheck`, `qtyOnChangeCheck`, `unitOnChangeCheck` now return `String` instead of `void`.
+
+  In `StockLocationLineService`, the method `checkIfEnoughStock` now returns `String` instead of `void`.
+
+  In `SaleOrderLineCheckSupplychainService`, the method `saleSupplySelectOnChangeCheck` now returns `String` instead of `void`.
