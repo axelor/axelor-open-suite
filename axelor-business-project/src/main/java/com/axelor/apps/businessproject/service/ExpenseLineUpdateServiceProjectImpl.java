@@ -118,7 +118,7 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
     return false;
   }
 
-  void checkProjectCoherence(Boolean toInvoice, Project project) throws AxelorException {
+  protected void checkProjectCoherence(Boolean toInvoice, Project project) throws AxelorException {
     if (Boolean.TRUE.equals(toInvoice) && !project.getIsInvoicingExpenses()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
