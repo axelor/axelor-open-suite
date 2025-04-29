@@ -30,6 +30,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface ExpenseLineUpdateService {
 
@@ -51,40 +52,7 @@ public interface ExpenseLineUpdateService {
       Currency currency,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
-      throws AxelorException;
-
-  void updateGeneralExpenseLine(
-      ExpenseLine expenseLine,
-      Project project,
-      Product expenseProduct,
-      LocalDate expenseDate,
-      BigDecimal totalAmount,
-      BigDecimal totalTax,
-      MetaFile justificationMetaFile,
-      String comments,
-      Employee employee,
-      Currency currency,
-      Boolean toInvoice,
-      Expense newExpense,
-      ProjectTask projectTask)
-      throws AxelorException;
-
-  void updateKilometricExpenseLine(
-      ExpenseLine expenseLine,
-      Project project,
-      LocalDate expenseDate,
-      KilometricAllowParam kilometricAllowParam,
-      Integer kilometricType,
-      BigDecimal distance,
-      String fromCity,
-      String toCity,
-      String comments,
-      Employee employee,
-      Currency currency,
-      Boolean toInvoice,
-      Product expenseProduct,
-      Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Long> invitedCollaboratorList)
       throws AxelorException;
 }
