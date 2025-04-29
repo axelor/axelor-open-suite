@@ -6,6 +6,7 @@
   <grid title="Invoicing/payment situations" name="invoicing-payment-situation-grid"
     model="com.axelor.apps.account.db.InvoicingPaymentSituation">
     <field name="company"/>
+    <field name="bankDetails"/>
     <field name="activeUmr"/>
   </grid>
 
