@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import java.util.Map;
 
 public interface UmrService {
