@@ -338,7 +338,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     expenseLineRepository.save(expenseLine);
   }
 
-  void checkParentStatus(Expense expense) throws AxelorException {
+  protected void checkParentStatus(Expense expense) throws AxelorException {
     if (expense == null) {
       return;
     }
