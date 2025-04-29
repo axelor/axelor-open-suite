@@ -32,7 +32,6 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -631,8 +630,8 @@ public class BankReconciliationMoveGenerationServiceImpl
 
     if (journal == null) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL));
     }
 
     Move move =
