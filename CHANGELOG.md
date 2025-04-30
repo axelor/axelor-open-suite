@@ -1,3 +1,60 @@
+## [8.1.23] (2025-04-30)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 7.1.14.
+* Product: fixed update product prices process to update company specific prices.
+* Template: on creating a new template manually, keep email account empty by default so the generated message can use default email account.
+
+#### Account
+
+* Analytic move line: set analytic axis required when we create an analytic move line.
+
+#### Budget
+
+* Purchase order line: use the correct account when a purchase order line is set to 'fixed assets'.
+
+#### Business Project
+
+* Invoice: fixed third-party payer when generating an invoice from an invoicing project.
+
+#### Contract
+
+* Contract invoicing batch: fixed an issue where it was not possible to generate more than one invoice for a same contract.
+
+#### Human Resource
+
+* Expense: fixed personal expense and personal expense amount french translation.
+* User: hide create employee button if the partner has already an employee.
+
+#### Production
+
+* Manufacturing order: fixed an issue where producible quantity was taking into account component that were not managed in stock.
+* Prod process line: fixed domain of stock location to take into account only those usable on production.
+
+#### Project
+
+* Project planning: fixed english message in confirmation popup.
+
+#### Stock
+
+* Stock move: prevented generation of invoices when 'generate Invoice from stock move' configuration is disabled in supplychain app.
+
+#### Supply Chain
+
+* Declaration of exchanges: will now reset fiscal year and if necessary country on change of company.
+* Supplychain: fixed total W.T. of invoices generated from a stock move of a purchase order with ATI.
+
+
+### Developer
+
+Fixed ControllerMethodInterceptor to avoid adding exception management on non void and non public methods in controller.
+
+#### Business Project
+
+Added `PartnerAccountService` to the constructor of `ProjectGenerateInvoiceServiceImpl`.
+
 ## [8.1.22] (2025-04-17)
 
 ### Fixes
@@ -1373,6 +1430,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.23]: https://github.com/axelor/axelor-open-suite/compare/v8.1.22...v8.1.23
 [8.1.22]: https://github.com/axelor/axelor-open-suite/compare/v8.1.21...v8.1.22
 [8.1.21]: https://github.com/axelor/axelor-open-suite/compare/v8.1.20...v8.1.21
 [8.1.20]: https://github.com/axelor/axelor-open-suite/compare/v8.1.19...v8.1.20

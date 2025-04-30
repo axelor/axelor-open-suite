@@ -1,3 +1,0 @@
----
-title: "Interceptor: fixed interceptor to avoid non void and non public methods in controller."
-module: axelor-base

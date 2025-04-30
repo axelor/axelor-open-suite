@@ -1,3 +1,0 @@
----
-title: "Manufacturing order: fixed an issue where producible quantity was taking into account component that were not managed in stock."
-module: axelor-production
