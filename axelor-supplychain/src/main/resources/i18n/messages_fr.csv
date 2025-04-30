@@ -679,7 +679,7 @@
 "There is no analytic distribution on %s purchase order line","Veuillez renseigner un modèle de répartition analytique dans les lignes de commandes des produits %s",,
 "There is no analytic distribution on %s sale order line","Veuillez renseigner un modèle de répartition analytique dans les lignes de commandes des produits %s",,
 "There is no supplier catalog for this product","Il n'y a pas de catalogue fournisseur pour ce produit",,
-"There is too many stock location lines to add to the cart. The limit configured is %s.","Il y a trop de lignes d'emplacement à ajouter au panier. La limite configurée est de %s.",,
+"There are too many stock location lines to add to the cart. The limit configured is %s.","Il y a trop de lignes d'emplacement à ajouter au panier. La limite configurée est de %s.",,
 "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.","Cette opération ne peut pas être réalisée. Stock disponible pour le produit %s : %s, stock nécessaire : %s. Veuillez désallouer.",,
 "This option prevents adding by mistake too many products in carts from a stock location.","Cette configuration vous empêche d'ajouter par erreur trop de produits dans les paniers depuis les emplacements de stock.",,
 "This product is not stock managed.","Ce produit n'est pas géré en stock.",,

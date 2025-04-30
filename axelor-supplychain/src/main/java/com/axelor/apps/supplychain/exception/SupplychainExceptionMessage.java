@@ -413,5 +413,5 @@ public final class SupplychainExceptionMessage {
           "Non-deductible tax not authorized for sale orders. Please remove the non-deductible tax on product." /*)*/;
 
   public static final String STOCK_LOCATION_TO_CART_LIMIT_EXCEEDED = /*$$(*/
-      "There is too many stock location lines to add to the cart. The limit configured is %s." /*)*/;
+      "There are too many stock location lines to add to the cart. The limit configured is %s." /*)*/;
 }
