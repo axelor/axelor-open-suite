@@ -11,7 +11,7 @@
       onChange="action-sale-order-line-details-method-product-onchange" showIf="!$readonly()"
       readonlyIf="typeSelect != 1"/>
     <field name="title"/>
-    <field name="qty" min="0" onChange="action-sale-order-line-details-method-compute-price"
+    <field name="qty" min="0" onChange="action-sale-order-line-details-method-qty-onchange"
       x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"/>
     <field name="costPrice" x-scale="$nbDecimalDigitForUnitPrice"
       onChange="action-sale-order-line-details-method-compute-price" readonlyIf="typeSelect == 1"/>
@@ -29,7 +29,7 @@
     <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
       widget="ImageSelect"/>
     <field name="title"/>
-    <field name="qty" min="0" onChange="action-sale-order-line-details-method-compute-price"
+    <field name="qty" min="0" onChange="action-sale-order-line-details-method-qty-onchange"
       x-scale="$nbDecimalDigitForQty" showIf="typeSelect &amp;&amp; typeSelect == 1"/>
     <field name="price" onChange="action-sale-order-line-details-method-price-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -53,7 +53,7 @@
         <field name="unit" colSpan="6" showIf="typeSelect == 1"/>
         <spacer colSpan="6"/>
         <field name="qty" min="0"
-          onChange="action-sale-order-line-details-method-compute-price" colSpan="4"
+          onChange="action-sale-order-line-details-method-qty-onchange" colSpan="4"
           showIf="typeSelect &amp;&amp; typeSelect == 1"/>
         <spacer colSpan="8"/>
         <field name="costPrice" colSpan="6"
@@ -140,6 +140,11 @@
   <action-method name="action-sale-order-line-details-method-margin-coef-onchange">
     <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
       method="marginCoefOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-details-method-qty-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="qtyOnChange"/>
   </action-method>
 
 </object-views>

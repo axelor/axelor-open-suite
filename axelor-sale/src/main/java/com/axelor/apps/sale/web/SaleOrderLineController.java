@@ -164,7 +164,12 @@ public class SaleOrderLineController {
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
 
-        Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
+        try {
+          Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
+        } catch (AxelorException e) {
+          // this is just a warning, displaying it in alert popup
+          response.setAlert(e.getMessage());
+        }
 
         if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
@@ -296,6 +301,12 @@ public class SaleOrderLineController {
     response.setAttrs(
         Beans.get(SaleOrderLineViewService.class).getQtyOnChangeAttrs(saleOrderLine, saleOrder));
 
+    try {
+      Beans.get(SaleOrderLineCheckService.class).qtyOnChangeCheck(saleOrderLine, saleOrder);
+    } catch (AxelorException e) {
+      // this is just a warning, displaying it in alert popup
+      response.setAlert(e.getMessage());
+    }
     String notifyMessage =
         Beans.get(SaleOrderLineMultipleQtyService.class).getMultipleQtyErrorMessage(saleOrderLine);
     if (StringUtils.notEmpty(notifyMessage)) {
@@ -361,7 +372,12 @@ public class SaleOrderLineController {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
-    Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
+    try {
+      Beans.get(SaleOrderLineCheckService.class).unitOnChangeCheck(saleOrderLine, saleOrder);
+    } catch (AxelorException e) {
+      // this is just a warning, displaying it in alert popup
+      response.setAlert(e.getMessage());
+    }
   }
 
   public void addToCart(ActionRequest request, ActionResponse response) {
