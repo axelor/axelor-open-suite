@@ -90,6 +90,10 @@
     <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"
       default="true"/>
 
+    <integer name="stockLocationToCartLimit"
+      title="Limit of stock location line to add to the cart."
+      help="This option prevents adding by mistake too many products in carts from a stock location."/>
+
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>
