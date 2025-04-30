@@ -1,3 +1,66 @@
+## [8.2.14] (2025-04-30)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.2.7.
+* Product: fixed domain filter for product variant values.
+* Product: fixed update product prices process to update company specific prices.
+* Template: on creating a new template manually, keep email account empty by default so the generated message can use default email account.
+* Fixed rounding mode in some quantities computation.
+* Sale order line: fixed an issue where warnings related to sale order line (like stock control) were not displayed to the user and blocked the process.
+
+#### Account
+
+* Bank reconciliation: fixed NPE when validating a bank reconciliation without journal while having an account on a bank reconciliation line.
+* Invoice: fixed 'Terms and Conditions','Client box in invoice' and 'Legal note on sale invoices' to support HTML tags in BIRT report.
+* Analytic move line: set analytic axis required when we create an analytic move line.
+
+#### Budget
+
+* Purchase order line: use the correct account when a purchase order line is set to 'fixed assets'.
+
+#### Business Project
+
+* Business Project Task: fixed an issue where total costs was not computed on unit cost change.
+* Invoice: fixed third-party payer when generating an invoice from an invoicing project.
+
+#### Contract
+
+* Contract invoicing batch: fixed an issue where it was not possible to generate more than one invoice for a same contract.
+
+#### Human Resource
+
+* Expense: fixed personal expense and personal expense amount french translation.
+* User: hide create employee button if the partner has already an employee.
+
+#### Production
+
+* Manufacturing order: fixed an issue where producible quantity was taking into account component that were not managed in stock.
+* Prod process line: fixed domain of stock location to take into account only those usable on production
+
+#### Project
+
+* Project planning: fixed english message in confirmation popup.
+
+#### Stock
+
+* Stock move: prevented generation of invoices when 'generate Invoice from stock move' configuration is disabled in supplychain app.
+
+#### Supply Chain
+
+* Declaration of exchanges: will now reset fiscal year and if necessary country on change of company.
+* Supplychain: fixed total W.T. of invoices generated from a stock move of a purchase order with ATI.
+
+
+### Developer
+
+Fixed ControllerMethodInterceptor to avoid adding exception management on non void and non public methods in controller.
+
+#### Business Project
+
+Added `PartnerAccountService` to the constructor of `ProjectGenerateInvoiceServiceImpl`.
+
 ## [8.2.13] (2025-04-17)
 
 ### Fixes
@@ -941,6 +1004,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.14]: https://github.com/axelor/axelor-open-suite/compare/v8.2.13...v8.2.14
 [8.2.13]: https://github.com/axelor/axelor-open-suite/compare/v8.2.12...v8.2.13
 [8.2.12]: https://github.com/axelor/axelor-open-suite/compare/v8.2.11...v8.2.12
 [8.2.11]: https://github.com/axelor/axelor-open-suite/compare/v8.2.10...v8.2.11
