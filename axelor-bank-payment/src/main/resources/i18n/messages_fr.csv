@@ -519,6 +519,7 @@
 "Merge bank orders","Fusionner les ordres bancaires",,
 "Missing bank statement file","Ficher de relevé bancaire manquant",,
 "Missing bank statement file format","Format de fichier du relevé bancaire manquant",,
+"Missing journal while creating a move from a bank reconciliation.","Journal manquant en créant une écriture depuis un rapprochement bancaire.",,
 "Monthly payment schedules","Échéanciers de mensualisation",,
 "MonthlyPaymentScheduleLines (batch)","Batch de prélèvement",,
 "Move","Ecriture",,
