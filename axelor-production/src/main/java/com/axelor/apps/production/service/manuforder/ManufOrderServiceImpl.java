@@ -1294,6 +1294,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     BigDecimal bomQty = billOfMaterial.getQty();
 
     for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
+      if (billOfMaterialLine.getHasNoManageStock()) {
+        continue;
+      }
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
@@ -1360,6 +1363,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Map<Product, Pair<BigDecimal, Unit>> bomLineMap =
         billOfMaterial.getBillOfMaterialLineList().stream()
+            .filter(bomLine -> !bomLine.getHasNoManageStock())
             .collect(
                 Collectors.toMap(
                     BillOfMaterialLine::getProduct,
