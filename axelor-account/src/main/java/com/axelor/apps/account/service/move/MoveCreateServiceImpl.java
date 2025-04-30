@@ -245,7 +245,6 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       String description,
       BankDetails companyBankDetails)
       throws AxelorException {
-
     log.debug(
         "Creating a new generic accounting move (journal : {}, company : {}",
         new Object[] {journal.getName(), company.getName()});
