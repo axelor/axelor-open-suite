@@ -1,3 +1,41 @@
+## [7.2.38] (2025-04-30)
+
+### Fixes
+#### Base
+
+* Product: fixed update product prices process to update company specific prices.
+* Template: on creating a new template manually, keep email account empty by default so the generated message can use default email account.
+
+#### Account
+
+* Analytic move line: set analytic axis required when we create an analytic move line.
+
+#### Budget
+
+* Purchase order line: use the correct account when a purchase order line is set to 'fixed assets'.
+
+#### Contract
+
+* Contract invoicing batch: fixed an issue where it was not possible to generate more than one invoice for a same contract.
+
+#### Human Resource
+
+* Expense: fixed personal expense and personal expense amount french translation.
+* User: hide create employee button if the partner has already an employee.
+
+#### Stock
+
+* Stock move: prevented generation of invoices when 'generate Invoice from stock move' configuration is disabled in supplychain app.
+
+#### Supply Chain
+
+* Declaration of exchanges: will now reset fiscal year and if necessary country on change of company.
+
+### Developer
+
+Fixed ControllerMethodInterceptor to avoid adding exception management on non void and non public methods in controller.
+
+
 ## [7.2.37] (2025-04-17)
 
 ### Fixes
@@ -1661,6 +1699,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.38]: https://github.com/axelor/axelor-open-suite/compare/v7.2.37...v7.2.38
 [7.2.37]: https://github.com/axelor/axelor-open-suite/compare/v7.2.36...v7.2.37
 [7.2.36]: https://github.com/axelor/axelor-open-suite/compare/v7.2.35...v7.2.36
 [7.2.35]: https://github.com/axelor/axelor-open-suite/compare/v7.2.34...v7.2.35
