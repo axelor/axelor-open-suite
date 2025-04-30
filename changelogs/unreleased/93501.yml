@@ -1,3 +1,0 @@
----
-title: "MRP: added a explicit error message instead of a NPE when prod process is null on manufacturing proposal."
-module: axelor-production
