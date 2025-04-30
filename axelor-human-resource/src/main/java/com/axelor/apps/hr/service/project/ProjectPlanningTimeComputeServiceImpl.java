@@ -160,6 +160,6 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
       return startDateTime.plusHours(timeInHours.longValue());
     }
 
-    return weeklyPlanningService.computeDateTime(startDateTime, weeklyPlanning, timeInHours);
+    return weeklyPlanningService.computeEndDateTime(startDateTime, weeklyPlanning, timeInHours);
   }
 }

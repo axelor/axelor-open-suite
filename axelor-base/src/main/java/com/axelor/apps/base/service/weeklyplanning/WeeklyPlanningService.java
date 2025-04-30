@@ -84,6 +84,6 @@ public interface WeeklyPlanningService {
 
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
 
-  LocalDateTime computeDateTime(
+  LocalDateTime computeEndDateTime(
       LocalDateTime startDateTime, WeeklyPlanning weeklyPlanning, BigDecimal timeInHours);
 }

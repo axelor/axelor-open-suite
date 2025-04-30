@@ -272,13 +272,13 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   }
 
   @Override
-  public LocalDateTime computeDateTime(
+  public LocalDateTime computeEndDateTime(
       LocalDateTime startDateTime, WeeklyPlanning weeklyPlanning, BigDecimal timeInHours) {
     if (startDateTime == null || weeklyPlanning == null || timeInHours.signum() == 0) {
       return startDateTime;
     }
 
-    LocalDateTime endDate = startDateTime;
+    LocalDateTime endDateTime = startDateTime;
     BigDecimal workingHours;
     while (timeInHours.signum() > 0) {
       workingHours =
@@ -289,7 +289,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
         startDateTime =
             LocalDateTime.of(startDateTime.plusDays(1).toLocalDate(), LocalTime.of(0, 0, 0));
       } else {
-        endDate =
+        endDateTime =
             LocalDateTime.of(
                 startDateTime.toLocalDate(),
                 getComputedLocalTime(startDateTime, timeInHours, weeklyPlanning));
@@ -298,7 +298,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       timeInHours = timeInHours.subtract(workingHours);
     }
 
-    return endDate;
+    return endDateTime;
   }
 
   protected LocalTime getComputedLocalTime(
