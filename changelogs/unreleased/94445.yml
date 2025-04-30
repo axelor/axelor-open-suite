@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed NPE when ventilating an invoice linked to a contract that has additional benefits."
+module: axelor-contract

@@ -230,9 +230,10 @@ public class ContractVersionServiceImpl implements ContractVersionService {
       return null;
     }
     return invoiceLineList.stream()
-        .filter(invoiceLine -> invoiceLine.getContractLine() != null)
         .map(InvoiceLine::getContractLine)
+        .filter(Objects::nonNull)
         .map(ContractLine::getContractVersion)
+        .filter(Objects::nonNull)
         .findFirst()
         .orElse(null);
   }
