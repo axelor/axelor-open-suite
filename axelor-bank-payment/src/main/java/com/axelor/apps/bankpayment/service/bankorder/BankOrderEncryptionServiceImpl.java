@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.crypto.BytesEncryptor;
@@ -35,10 +36,13 @@ import java.nio.file.StandardOpenOption;
 public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionService {
 
   protected MetaFiles metaFiles;
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
-  public BankOrderEncryptionServiceImpl(MetaFiles metaFiles) {
+  public BankOrderEncryptionServiceImpl(
+      MetaFiles metaFiles, AppBankPaymentService appBankPaymentService) {
     this.metaFiles = metaFiles;
+    this.appBankPaymentService = appBankPaymentService;
   }
 
   /**
@@ -94,6 +98,9 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
     String algorithm = appSettings.get("encryption.algorithm");
     String encryptPassword = checkAndGetEncryptionPassword();
 
+    if (encryptPassword == null || encryptPassword.isEmpty()) {
+      return null;
+    }
     BytesEncryptor encryptor;
 
     if ("GCM".equalsIgnoreCase(algorithm)) {
@@ -119,6 +126,11 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
     }
     File bankOrderFile = MetaFiles.getPath(bankOrderGeneratedFile).toFile();
     BytesEncryptor encryptor = getEncryptor();
+
+    if (encryptor == null) {
+      return false;
+    }
+
     try {
       return encryptor.isEncrypted(Files.readAllBytes(bankOrderFile.toPath()));
     } catch (IOException e) {
@@ -132,11 +144,17 @@ public class BankOrderEncryptionServiceImpl implements BankOrderEncryptionServic
   @Override
   public String checkAndGetEncryptionPassword() throws AxelorException {
     String encryptPassword = AppSettings.get().get("encryption.bankorder.password");
-    if (encryptPassword == null || encryptPassword.isEmpty()) {
+
+    // throw exception if enableBankOrderFileEncryption is true and password is null or empty
+    if (appBankPaymentService.getAppBankPayment().getEnableBankOrderFileEncryption()
+        && (encryptPassword == null || encryptPassword.isEmpty())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_ENCRYPTION_NO_PASSWORD));
     }
+
+    // if enableBankOrderFileEncryption is false, return either password if exists or null/empty
+    // value
     return encryptPassword;
   }
 
