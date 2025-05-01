@@ -58,7 +58,8 @@
         <button name="seeWebViewBtn" title="See web views"
           onClick="action.mobile.settings.web.view"/>
       </panel>
-      <panel name="configAppPanel" title="App configuration">
+      <panel name="configAppPanel" title="App configuration" hidden="true"
+        showIf="isStockAppEnabled || isProductionAppEnabled || isCrmAppEnabled || isHelpdeskAppEnabled || isHRAppEnabled || isQualityAppEnabled || isInterventionAppEnabled || isSaleAppEnabled || isProjectAppEnabled || isDMSAppEnabled || isPurchaseAppEnabled">
         <button name="stockAppBtn" title="Config Stock" hidden="true"
           hideIf="!isStockAppEnabled" onClick="action.stock.config.view"/>
         <button name="prodAppBtn" title="Config Production" hidden="true"
