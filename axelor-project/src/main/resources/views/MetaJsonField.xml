@@ -14,18 +14,20 @@
 
     <panel name="overViewPanel" title="Overview">
       <field name="title" x-pattern="^[a-zA-Z_$].*$" title="Name"
-        onChange="action-method-project-json-field-compute-fields"/>
-      <field name="$typeSelect" selection="project.json.field.type" title="Type"
-        onChange="action-record-project-json-field-set-type,action-method-project-json-field-compute-fields"/>
-      <field name="required"/>
-      <field name="scale" showIf="$typeSelect == 'decimal'"/>
-      <field name="selectionRef" showIf="['select','multiselect'].includes($typeSelect)"/>
-      <panel-related readonly="false" field="selectionRef.items"
-        showIf="['select','multiselect'].includes($typeSelect)"
-        form-view="project-meta-select-item-form" colSpan="12">
-        <field name="title"/>
-        <field name="color"/>
-      </panel-related>
+        onChange="action-method-project-json-field-compute-fields" required="true"/>
+      <panel hidden="true" showIf="title" colSpan="12">
+        <field name="$typeSelect" selection="project.json.field.type" title="Type"
+          onChange="action-record-project-json-field-set-type,action-method-project-json-field-compute-fields"/>
+        <field name="required"/>
+        <field name="scale" showIf="$typeSelect == 'decimal'"/>
+        <field name="selectionRef" showIf="['select','multiselect'].includes($typeSelect)"/>
+        <panel-related readonly="false" field="selectionRef.items"
+          showIf="['select','multiselect'].includes($typeSelect)"
+          form-view="project-meta-select-item-form" colSpan="12">
+          <field name="title"/>
+          <field name="color"/>
+        </panel-related>
+      </panel>
     </panel>
   </form>
 
