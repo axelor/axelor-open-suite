@@ -566,8 +566,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.MOVE_7),
             move.getReference(),
-            totalDebit,
-            totalCredit);
+            totalDebit.setScale(
+                appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
+            totalCredit.setScale(
+                appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
       }
     }
   }
