@@ -44,7 +44,6 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -554,37 +553,19 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
     BigDecimal plannedTime = BigDecimal.ZERO;
-    BigDecimal spentTime = BigDecimal.ZERO;
-
-    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
-
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
             .map(ProjectPlanningTime::getPlannedTime)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    List<TimesheetLine> timeSheetLines =
-        timesheetLineRepository
-            .all()
-            .filter("self.timesheet.statusSelect = :status AND self.projectTask = :projectTask")
-            .bind("status", TimesheetRepository.STATUS_VALIDATED)
-            .bind("projectTask", projectTask)
-            .fetch();
-
-    for (TimesheetLine timeSheetLine : timeSheetLines) {
-      spentTime =
-          spentTime.add(convertTimesheetLineDurationToProjectTaskUnit(timeSheetLine, timeUnit));
-    }
-
     List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
     for (ProjectTask task : projectTaskList) {
       computeProjectTaskTotals(task);
       plannedTime = plannedTime.add(task.getPlannedTime());
-      spentTime = spentTime.add(task.getSpentTime());
     }
 
     projectTask.setPlannedTime(plannedTime);
-    projectTask.setSpentTime(spentTime);
+    projectTask.setSpentTime(computeProjectTaskSpentTime(projectTask));
 
     if (projectTask.getParentTask() == null) {
       computeProjectTaskReporting(projectTask);
@@ -743,5 +724,32 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       return limit.negate();
     }
     return value;
+  }
+
+  @Override
+  public BigDecimal computeProjectTaskSpentTime(ProjectTask projectTask) throws AxelorException {
+    BigDecimal spentTime = BigDecimal.ZERO;
+    Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
+    List<TimesheetLine> timeSheetLines =
+        timesheetLineRepository
+            .all()
+            .filter("self.projectTask = :projectTask")
+            .bind("projectTask", projectTask)
+            .fetch();
+    for (TimesheetLine timeSheetLine : timeSheetLines) {
+      spentTime =
+          spentTime.add(convertTimesheetLineDurationToProjectTaskUnit(timeSheetLine, timeUnit));
+    }
+
+    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
+    if (projectTaskList != null) {
+      for (ProjectTask task : projectTaskList) {
+        computeProjectTaskSpentTime(task);
+        spentTime = spentTime.add(task.getSpentTime());
+      }
+    }
+
+    projectTask.setSpentTime(spentTime);
+    return spentTime;
   }
 }
