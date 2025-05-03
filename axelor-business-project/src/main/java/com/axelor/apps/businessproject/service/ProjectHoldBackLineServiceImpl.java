@@ -32,38 +32,37 @@ import java.util.Set;
 public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineService {
 
   @Override
-  public Invoice generateInvoiceLinesForHoldBacks(Invoice invoice) throws AxelorException {
+  public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<InvoiceLine> invoiceLines)
+      throws AxelorException {
+
     List<ProjectHoldBackLine> projectHoldBackLineList =
         invoice.getProject().getProjectHoldBackLineList();
     if (projectHoldBackLineList == null || projectHoldBackLineList.isEmpty()) {
-      return invoice;
+      return new ArrayList<>();
     }
-
-    List<InvoiceLine> invoiceLineList =
-        createInvoiceLines(invoice, projectHoldBackLineList, invoice.getInvoiceLineList().size());
-    invoice.getInvoiceLineList().addAll(invoiceLineList);
-    return invoice;
-  }
-
-  protected List<InvoiceLine> createInvoiceLines(
-      Invoice invoice, List<ProjectHoldBackLine> projectHoldBackLineList, int priority)
-      throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     int count = 0;
     for (ProjectHoldBackLine projectHoldBackLine : projectHoldBackLineList) {
       invoiceLineList.addAll(
-          this.createInvoiceLine(invoice, projectHoldBackLine, priority * 100 + count));
+          this.createInvoiceLine(
+              invoice,
+              projectHoldBackLine,
+              invoice.getInvoiceLineList().size() * 100 + count,
+              invoiceLines));
       count++;
     }
     return invoiceLineList;
   }
 
   protected List<InvoiceLine> createInvoiceLine(
-      Invoice invoice, ProjectHoldBackLine projectHoldBackLine, int priority)
+      Invoice invoice,
+      ProjectHoldBackLine projectHoldBackLine,
+      int priority,
+      List<InvoiceLine> invoiceLineList)
       throws AxelorException {
 
-    BigDecimal price = calculateHoldBackLinePrice(invoice, projectHoldBackLine);
+    BigDecimal price = calculateHoldBackLinePrice(invoiceLineList, projectHoldBackLine);
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -71,8 +70,8 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
             projectHoldBackLine.getProjectHoldBack().getProjectHoldBackProduct(),
             projectHoldBackLine.getProjectHoldBack().getName(),
             price,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
+            price,
+            price,
             null,
             BigDecimal.ONE,
             projectHoldBackLine.getProjectHoldBack().getProjectHoldBackProduct().getUnit(),
@@ -80,15 +79,14 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
             priority,
             BigDecimal.ZERO,
             0,
-            price,
-            BigDecimal.ZERO,
+            null,
+            null,
             false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
-
             List<InvoiceLine> invoiceLines = new ArrayList<>();
             invoiceLines.add(invoiceLine);
 
@@ -100,11 +98,10 @@ public class ProjectHoldBackLineServiceImpl implements ProjectHoldBackLineServic
   }
 
   protected BigDecimal calculateHoldBackLinePrice(
-      Invoice invoice, ProjectHoldBackLine projectHoldBackLine) {
+      List<InvoiceLine> invoiceLineList, ProjectHoldBackLine projectHoldBackLine) {
     BigDecimal price;
     BigDecimal percentage = projectHoldBackLine.getPercentage();
     Set<Product> products = projectHoldBackLine.getProjectHoldBack().getProductsHeldBackSet();
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
     if (products == null || products.isEmpty()) {
       price =
           invoiceLineList.stream()
