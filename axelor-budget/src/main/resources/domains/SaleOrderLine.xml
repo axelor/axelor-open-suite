@@ -18,6 +18,8 @@
       mappedBy="saleOrderLine"/>
     <decimal name="budgetRemainingAmountToAllocate"
       title="Remaining amount to allocate on budgets" precision="20" scale="3"/>
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
   </entity>
 
 </domain-models>
