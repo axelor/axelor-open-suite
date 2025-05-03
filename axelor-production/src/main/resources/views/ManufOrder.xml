@@ -395,6 +395,9 @@
         <panel-related field="outsourcingStockMoveList" colSpan="12"
           title="Outgoing outsource stock move"/>
       </panel>
+      <panel name="printingPanel" title="Printing">
+        <field name="hideReportDetails"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
