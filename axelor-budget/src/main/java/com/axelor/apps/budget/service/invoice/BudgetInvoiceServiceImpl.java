@@ -24,26 +24,21 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLine;
-import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.compute.BudgetLineComputeService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.meta.CallMethod;
-import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -61,45 +56,35 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
 
   protected InvoiceRepository invoiceRepo;
   protected AppBaseService appBaseService;
-
-  protected BudgetDistributionRepository budgetDistributionRepo;
   protected BudgetRepository budgetRepository;
   protected BudgetInvoiceLineService budgetInvoiceLineService;
   protected BudgetDistributionService budgetDistributionService;
 
   protected BudgetService budgetService;
-  protected BudgetLineService budgetLineService;
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
-  protected CurrencyScaleService currencyScaleService;
-  protected BudgetLineRepository budgetLineRepository;
+  protected BudgetLineComputeService budgetLineComputeService;
 
   @Inject
   public BudgetInvoiceServiceImpl(
       InvoiceRepository invoiceRepo,
       AppBaseService appBaseService,
-      BudgetDistributionRepository budgetDistributionRepo,
       BudgetRepository budgetRepository,
       BudgetInvoiceLineService budgetInvoiceLineService,
       BudgetDistributionService budgetDistributionService,
       BudgetService budgetService,
-      BudgetLineService budgetLineService,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleService currencyScaleService,
-      BudgetLineRepository budgetLineRepository) {
+      BudgetLineComputeService budgetLineComputeService) {
     this.invoiceRepo = invoiceRepo;
     this.appBaseService = appBaseService;
-    this.budgetDistributionRepo = budgetDistributionRepo;
     this.budgetRepository = budgetRepository;
     this.budgetInvoiceLineService = budgetInvoiceLineService;
     this.budgetDistributionService = budgetDistributionService;
     this.budgetService = budgetService;
-    this.budgetLineService = budgetLineService;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
-    this.currencyScaleService = currencyScaleService;
-    this.budgetLineRepository = budgetLineRepository;
+    this.budgetLineComputeService = budgetLineComputeService;
   }
 
   @Override
@@ -242,71 +227,13 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
         totalAmount = totalAmount.negate();
       }
 
-      boolean isPo =
-          invoiceLine.getInvoice().getPurchaseOrder() != null
-              || invoiceLine.getInvoice().getSaleOrder() != null
-              || invoiceLine.getPurchaseOrderLine() != null
-              || invoiceLine.getSaleOrderLine() != null;
-
-      if (fromDate != null && toDate != null) {
-        long totalDuration = LocalDateHelper.daysBetween(fromDate, toDate, false);
-        LocalDate date = fromDate;
-        BigDecimal prorataAmount;
-        BigDecimal missingAmount = totalAmount;
-
-        while (!date.isAfter(toDate)) {
-          BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, date);
-          if (budgetLine != null && totalDuration > 0) {
-            BigDecimal gap = BigDecimal.valueOf(0.01);
-            if (toDate.isBefore(budgetLine.getToDate())) {
-              prorataAmount = missingAmount;
-            } else {
-              long duration = LocalDateHelper.daysBetween(date, budgetLine.getToDate(), false);
-              prorataAmount =
-                  totalAmount.multiply(
-                      BigDecimal.valueOf(duration)
-                          .divide(
-                              BigDecimal.valueOf(totalDuration),
-                              AppBaseService.COMPUTATION_SCALING,
-                              RoundingMode.HALF_UP));
-              missingAmount = missingAmount.subtract(prorataAmount);
-              if (missingAmount.compareTo(gap) == 0) {
-                prorataAmount = prorataAmount.add(gap);
-              }
-            }
-            updateBudgetAmounts(budgetLine, prorataAmount, isPo);
-            date = budgetLine.getToDate().plusDays(1);
-          } else {
-            break;
-          }
-        }
-      } else {
-        BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, imputationDate);
-        updateBudgetAmounts(budgetLine, totalAmount, isPo);
-      }
-    }
-  }
-
-  protected void updateBudgetAmounts(BudgetLine budgetLine, BigDecimal amount, boolean isPo) {
-    if (budgetLine != null) {
-      amount = currencyScaleService.getCompanyScaledValue(budgetLine.getBudget(), amount);
-      if (isPo) {
-        budgetLine.setRealizedWithPo(budgetLine.getRealizedWithPo().add(amount));
-        budgetLine.setAmountCommitted(budgetLine.getAmountCommitted().subtract(amount));
-      } else {
-        budgetLine.setRealizedWithNoPo(budgetLine.getRealizedWithNoPo().add(amount));
-      }
-
-      budgetLine.setAmountRealized(budgetLine.getAmountRealized().add(amount));
-      BigDecimal firmGap =
-          budgetLine
-              .getAmountExpected()
-              .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
-      budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
-      budgetLine.setAvailableAmount(
-          budgetLine.getAvailableAmount().subtract(amount).compareTo(BigDecimal.ZERO) > 0
-              ? budgetLine.getAvailableAmount().subtract(amount)
-              : BigDecimal.ZERO);
+      budgetLineComputeService.updateBudgetLineAmounts(
+          invoiceLine,
+          budget,
+          totalAmount,
+          invoiceLine.getBudgetFromDate(),
+          invoiceLine.getBudgetToDate(),
+          imputationDate);
     }
   }
 

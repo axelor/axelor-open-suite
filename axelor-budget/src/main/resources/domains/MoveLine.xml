@@ -13,6 +13,8 @@
     <boolean name="isBudgetImputed" title="Budget distribution imputed"/>
     <decimal name="budgetRemainingAmountToAllocate"
       title="Remaining amount to allocate on budgets"/>
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
 
   </entity>
 
