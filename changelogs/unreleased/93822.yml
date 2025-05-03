@@ -1,0 +1,5 @@
+---
+title: "Business Project Task fixed the calculation issues when changing the invoicing unit."
+module: axelor-business-project
+developer: |
+  Added `ProjectTaskRepository` and `UnitConversionForProjectService` to the constructor of `ProjectTaskGroupBusinessServiceImpl`.
