@@ -37,8 +37,6 @@ public interface MoveCheckService {
 
   void checkRemovedLines(Move move) throws AxelorException;
 
-  void checkAnalyticAccount(Move move) throws AxelorException;
-
   boolean isPartnerCompatible(Move move);
 
   String getDuplicatedMoveOriginAlert(Move move);

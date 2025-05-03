@@ -381,7 +381,6 @@
     <action name="action-invoice-line-method-check-analytic-on-invoice-line"/>
     <action name="action-invoice-line-method-create-distribution"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
-    <action name="action-invoice-line-check-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-invoice-line-group-analytic-move-line-onchange">
@@ -521,11 +520,6 @@
     name="action-invoice-line-method-check-analytic-account-on-invoice-line">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="checkAnalyticMoveLineForAxis"/>
-  </action-method>
-
-  <action-method name="action-invoice-line-check-distribution-template-account">
-    <call class="com.axelor.apps.account.web.InvoiceLineController"
-      method="checkAnalyticAccount"/>
   </action-method>
 
   <action-method name="action-invoice-line-method-set-scale">

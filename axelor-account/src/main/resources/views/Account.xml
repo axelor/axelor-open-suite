@@ -152,6 +152,9 @@
                 form-view="analytic-distribution-line-form"/>
             </editor>
           </field>
+          <label name="analyticDistributionTemplateLabel"
+            title="Analytic template must be filled on the partner." hidden="true"
+            css="label-danger"/>
           <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
         </panel>
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
@@ -269,7 +272,6 @@
 
   <action-group name="action-account-group-onsave">
     <action name="action-account-method-check-if-code-already-exist-for-company"/>
-    <action name="action-on-change-distribution-template-account"/>
     <action name="action-account-method-verify-template-value"
       if="__this__.analyticDistributionTemplate != null"/>
   </action-group>
@@ -302,6 +304,7 @@
     <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-status-show-title"/>
+    <action name="action-account-method-show-origin-analytic-template"/>
   </action-group>
 
   <action-group name="action-account-group-new-customer-account">
@@ -322,6 +325,7 @@
   <action-group name="action-account-group-on-change-analytic-distribution-authorized">
     <action name="action-account-record-uncheck-analytic-distribution-required"/>
     <action name="action-account-validate-uncheck-analytic-distribution-authorized"/>
+    <action name="action-account-method-show-origin-analytic-template"/>
   </action-group>
 
   <action-group name="action-group-account-is-tax-authorized-onchange">
@@ -337,7 +341,6 @@
 
   <action-group name="action-account-group-analytic-distribution-onChange">
     <action name="action-account-method-personalize-template"/>
-    <action name="action-on-change-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-account-group-reconcile-onChange">
@@ -479,10 +482,6 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
-  <action-method name="action-on-change-distribution-template-account">
-    <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
-  </action-method>
-
   <action-method name="account-account-method-toggle-status-active">
     <call class="com.axelor.apps.account.web.AccountController" method="toggleStatus"/>
   </action-method>
@@ -562,5 +561,10 @@
     <view-param name="popup" value="true"/>
     <context name="_accountId" expr="eval: __id__"/>
   </action-view>
+
+  <action-method name="action-account-method-show-origin-analytic-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="originAnalyticDistTemplate"/>
+  </action-method>
 
 </object-views>
