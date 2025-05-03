@@ -30,11 +30,13 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceService {
@@ -89,10 +91,32 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException {
 
-    TemporalUnit temporalUnit = ChronoUnit.MONTHS;
-
     Invoice invoice =
         saleOrderInvoiceService.generateInvoice(saleOrderRepo.find(saleOrder.getId()));
+
+    return this.computeSubscriptionInvoice(saleOrder, invoice);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice generateSubscriptionInvoice(
+      SaleOrder saleOrder,
+      int operationSelect,
+      BigDecimal amount,
+      boolean isPercent,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
+      throws AxelorException {
+
+    Invoice invoice =
+        saleOrderInvoiceService.generateInvoice(
+            saleOrder, operationSelect, amount, isPercent, qtyToInvoiceMap, timetableIdList);
+
+    return this.computeSubscriptionInvoice(saleOrder, invoice);
+  }
+
+  protected Invoice computeSubscriptionInvoice(SaleOrder saleOrder, Invoice invoice) {
+    TemporalUnit temporalUnit = ChronoUnit.MONTHS;
 
     if (invoice != null) {
       if (saleOrder.getPeriodicityTypeSelect() == 1) {
