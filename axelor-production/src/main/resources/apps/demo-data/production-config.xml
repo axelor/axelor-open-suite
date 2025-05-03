@@ -69,4 +69,16 @@
     type="com.axelor.apps.production.db.MpsWeeklySchedule" search="self.importId = :importId">
   </input>
 
+  <input file="production_billOfMaterialImportSource.csv" separator=";"
+    type="com.axelor.apps.production.db.BillOfMaterialImportSource"
+    search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportBillOfMaterialImport:importBillOfMaterialImportSource">
+  </input>
+
+  <input file="production_billOfMaterialImport.csv" separator=";"
+    type="com.axelor.apps.production.db.BillOfMaterialImport" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportBillOfMaterialImport:importBillOfMaterialImport">
+  </input>
+
+
 </csv-inputs>
