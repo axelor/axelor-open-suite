@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.address.AddressService;
@@ -32,6 +33,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -270,5 +272,25 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
     }
 
     return address;
+  }
+
+  @Override
+  public BigDecimal computeGrossMass(StockMove stockMove) {
+    BigDecimal grossMass = BigDecimal.ZERO;
+    if (ObjectUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return grossMass;
+    }
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      Product product = stockMoveLine.getProduct();
+      if (product == null) {
+        continue;
+      }
+      BigDecimal productGrossMass = product.getGrossMass();
+      if (productGrossMass.compareTo(BigDecimal.ZERO) != 1) {
+        productGrossMass = product.getNetMass();
+      }
+      grossMass = grossMass.add(productGrossMass.multiply(stockMoveLine.getRealQty()));
+    }
+    return grossMass;
   }
 }

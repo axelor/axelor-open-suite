@@ -103,4 +103,6 @@ public interface StockMoveToolService {
    */
   Address getCompanyAddress(StockMove stockMove, StockMoveLine stockMoveLine)
       throws AxelorException;
+
+  public BigDecimal computeGrossMass(StockMove stockMove);
 }
