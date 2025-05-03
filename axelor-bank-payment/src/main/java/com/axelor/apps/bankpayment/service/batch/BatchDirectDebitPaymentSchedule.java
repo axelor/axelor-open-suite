@@ -231,7 +231,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                       .map(Batch::getAccountingBatch)
                       .map(AccountingBatch::getCompany)
                       .orElse(null);
-              Umr activeUmr = umrService.getActiveUmr(company, partner);
+              Umr activeUmr = umrService.getActiveUmr(company, bankDetails);
               Preconditions.checkNotNull(activeUmr, I18n.get("Partner active UMR is missing."));
             }
           }
