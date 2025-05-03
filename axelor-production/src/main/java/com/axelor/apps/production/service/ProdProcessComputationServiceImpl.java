@@ -77,6 +77,10 @@ public class ProdProcessComputationServiceImpl implements ProdProcessComputation
   protected long getLeadTimeFiniteCapacity(ProdProcess prodProcess, BigDecimal qty)
       throws AxelorException {
 
+    if (prodProcess.getProdProcessLineList() == null
+        || prodProcess.getProdProcessLineList().isEmpty()) {
+      return 0L;
+    }
     // First: Group by Pair<WorkCenter, priority>
     Map<Pair<WorkCenter, Integer>, List<ProdProcessLine>> workCenterPriorityMap =
         prodProcess.getProdProcessLineList().stream()
