@@ -96,8 +96,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
 
   protected void addLineAndComputeOrder(SaleOrder saleOrder, Product shippingCostProduct)
       throws AxelorException {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    saleOrderLines.add(createShippingCostLine(saleOrder, shippingCostProduct));
+    saleOrder.addSaleOrderLineListItem(createShippingCostLine(saleOrder, shippingCostProduct));
     computeSaleOrder(saleOrder);
   }
 
@@ -178,12 +177,11 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
       return null;
     }
     for (SaleOrderLine lineToRemove : linesToRemove) {
-      saleOrderLines.remove(lineToRemove);
+      saleOrder.removeSaleOrderLineListItem(lineToRemove);
       if (lineToRemove.getId() != null) {
-        saleOrderLineRepo.remove(lineToRemove);
+        saleOrderLineRepo.remove(saleOrderLineRepo.find(lineToRemove.getId()));
       }
     }
-    saleOrder.setSaleOrderLineList(saleOrderLines);
     return I18n.get(SupplychainExceptionMessage.SALE_SHIPMENT_THRESHOLD_EXCEEDED);
   }
 

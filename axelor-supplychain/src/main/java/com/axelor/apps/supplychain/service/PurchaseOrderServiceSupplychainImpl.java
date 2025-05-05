@@ -210,7 +210,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
   @Override
   public String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
-    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
     if (shipmentMode == null) {
       return null;
@@ -232,7 +231,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return null;
     }
     PurchaseOrderLine shippingCostLine = createShippingCostLine(purchaseOrder, shippingCostProduct);
-    purchaseOrderLines.add(shippingCostLine);
+    purchaseOrder.addPurchaseOrderLineListItem(shippingCostLine);
     this.computePurchaseOrder(purchaseOrder);
     return null;
   }
@@ -281,12 +280,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return null;
     }
     for (PurchaseOrderLine lineToRemove : linesToRemove) {
-      purchaseOrderLines.remove(lineToRemove);
+      purchaseOrder.removePurchaseOrderLineListItem(lineToRemove);
       if (lineToRemove.getId() != null) {
-        purchaseOrderLineRepository.remove(lineToRemove);
+        purchaseOrderLineRepository.remove(purchaseOrderLineRepository.find(lineToRemove.getId()));
       }
     }
-    purchaseOrder.setPurchaseOrderLineList(purchaseOrderLines);
     return I18n.get("Carriage paid threshold is exceeded, all shipment cost lines are removed");
   }
 
