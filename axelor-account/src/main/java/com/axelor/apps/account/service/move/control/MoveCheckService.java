@@ -58,4 +58,6 @@ public interface MoveCheckService {
   String getPeriodAlert(Move move);
 
   boolean isRelatedToFixedAsset(Move move);
+
+  void checkAnalyticAxisByCompany(Move move) throws AxelorException;
 }

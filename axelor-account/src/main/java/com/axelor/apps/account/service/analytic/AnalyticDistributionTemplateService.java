@@ -42,4 +42,7 @@ public interface AnalyticDistributionTemplateService {
 
   void verifyTemplateValues(AnalyticDistributionTemplate analyticDistributionTemplate)
       throws AxelorException;
+
+  void checkRequiredAxisByCompany(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException;
 }

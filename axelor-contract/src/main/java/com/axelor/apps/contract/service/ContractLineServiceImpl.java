@@ -46,6 +46,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -398,5 +399,21 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     return domain;
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
+    if (contract.getCurrentContractVersion() == null) {
+      return;
+    }
+
+    if (!ObjectUtils.isEmpty(contract.getCurrentContractVersion().getContractLineList())) {
+      for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
+        AnalyticLineContractModel analyticLineModel =
+            new AnalyticLineContractModel(
+                contractLine, contract.getCurrentContractVersion(), contract);
+        analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
+      }
+    }
   }
 }

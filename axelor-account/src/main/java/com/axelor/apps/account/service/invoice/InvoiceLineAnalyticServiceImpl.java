@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -34,12 +35,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticService {
@@ -50,6 +53,7 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public InvoiceLineAnalyticServiceImpl(
@@ -58,13 +62,15 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      AnalyticAxisService analyticAxisService) {
     this.analyticAccountRepository = analyticAccountRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -226,5 +232,22 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   @Override
   public boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
     return analyticMoveLineService.validateAnalyticMoveLines(analyticMoveLineList);
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(Invoice invoice) throws AxelorException {
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return;
+    }
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      if (!ObjectUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+        analyticAxisService.checkRequiredAxisByCompany(
+            invoice.getCompany(),
+            invoiceLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+      }
+    }
   }
 }
