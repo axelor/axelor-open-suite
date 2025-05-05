@@ -50,7 +50,8 @@
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
     onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
-    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
+    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
+    canCopy="false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"
@@ -221,14 +222,15 @@
   </form>
 
   <form name="popup-expense-refusal-form" title="Ground for refusal"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="groundForRefusal" showTitle="false"/>
     </panel>
   </form>
 
   <form name="popup-expense-form" title="Select the expense you want to edit"
-    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select"
+    canCopy="false">
     <panel name="mainPanel">
       <field name="$expenseSelect" title="Select Expense" type="many-to-one"
         target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
@@ -238,7 +240,7 @@
   </form>
 
   <form name="popup-expense-add-payment-form" title="Choose payment mode"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="paymentMode" domain="self.inOutSelect = 2"/>
       <field name="paymentDate" colSpan="4" required="true"/>
@@ -250,7 +252,7 @@
   <form name="complete-my-expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense"
     width="large" onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
-    canNew="false">
+    canNew="false" canCopy="false">
     <panel-include view="expense-form"/>
   </form>
 
