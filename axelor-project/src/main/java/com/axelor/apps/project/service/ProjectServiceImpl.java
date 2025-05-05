@@ -66,6 +66,7 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectCreateTaskService projectCreateTaskService;
   protected WikiRepository wikiRepo;
   protected ResourceBookingService resourceBookingService;
+  protected ProjectNameComputeService projectNameComputeService;
 
   @Inject
   public ProjectServiceImpl(
@@ -74,13 +75,15 @@ public class ProjectServiceImpl implements ProjectService {
       AppProjectService appProjectService,
       ProjectCreateTaskService projectCreateTaskService,
       WikiRepository wikiRepo,
-      ResourceBookingService resourceBookingService) {
+      ResourceBookingService resourceBookingService,
+      ProjectNameComputeService projectNameComputeService) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
     this.projectCreateTaskService = projectCreateTaskService;
     this.wikiRepo = wikiRepo;
     this.resourceBookingService = resourceBookingService;
+    this.projectNameComputeService = projectNameComputeService;
   }
 
   @Override
@@ -105,7 +108,7 @@ public class ProjectServiceImpl implements ProjectService {
       fullName = "project";
     }
     project.setName(fullName);
-    project.setFullName(project.getName());
+    project.setFullName(projectNameComputeService.setProjectFullName(project));
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());

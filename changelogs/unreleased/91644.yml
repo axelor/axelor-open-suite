@@ -1,0 +1,6 @@
+---
+title: "Project/SaleOrder: fixed name computation when generating business project"
+module: axelor-project
+developer: |
+  Creation of a new service ProjectNameComputeService
+  Add ProjectNameComputeService in the ProjectService constructor
