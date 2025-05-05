@@ -186,6 +186,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
           if (foreignExchangePayment != null
               && reconcile.getForeignExchangeMove() != null
               && !Objects.equals(reconcile.getAmount(), invoice.getCompanyInTaxTotal())
+              && invoice.getInTaxTotal().compareTo(invoicePaymentAmount) != 0
               && currencyService.isCurrencyRateLower(
                   invoice.getInvoiceDate(),
                   foreignExchangePayment.getPaymentDate(),
