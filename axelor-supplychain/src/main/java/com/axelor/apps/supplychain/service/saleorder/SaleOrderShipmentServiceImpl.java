@@ -96,8 +96,7 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
 
   protected void addLineAndComputeOrder(SaleOrder saleOrder, Product shippingCostProduct)
       throws AxelorException {
-    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    saleOrderLines.add(createShippingCostLine(saleOrder, shippingCostProduct));
+    saleOrder.addSaleOrderLineListItem(createShippingCostLine(saleOrder, shippingCostProduct));
     computeSaleOrder(saleOrder);
   }
 
