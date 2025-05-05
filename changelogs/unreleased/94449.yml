@@ -1,0 +1,3 @@
+---
+title: "Invoice : fixed invoice term due date when we update invoice due date with free payment condition."
+module: axelor-account
