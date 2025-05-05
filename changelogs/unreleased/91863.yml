@@ -1,0 +1,3 @@
+---
+title: "Payment mode: removed useless column 'bankJournal.importId' from demo data."
+module: "axelor-account"
