@@ -549,7 +549,7 @@ public class InvoiceLineController {
       if (invoiceLine != null && invoice != null) {
         Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(invoiceLine);
         List<AnalyticMoveLine> analyticMoveLineList =
-            Optional.of(invoiceLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
+            Optional.ofNullable(invoiceLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
         Beans.get(AnalyticAxisService.class)
             .checkRequiredAxisByCompany(
                 invoice.getCompany(),

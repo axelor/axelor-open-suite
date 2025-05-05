@@ -521,7 +521,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveLine moveLine) throws AxelorException {
     analyticLineService.checkAnalyticLineForAxis(moveLine);
     List<AnalyticMoveLine> analyticMoveLineList =
-        Optional.of(moveLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
+        Optional.ofNullable(moveLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
     analyticAxisService.checkRequiredAxisByCompany(
         moveLine.getMove().getCompany(),
         analyticMoveLineList.stream()
