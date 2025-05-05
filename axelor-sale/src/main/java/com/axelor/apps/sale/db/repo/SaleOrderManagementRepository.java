@@ -57,7 +57,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setMarginRate(null);
     copy.setEstimatedShippingDate(null);
     copy.setOrderBeingEdited(false);
-    copy.setManualUnblock(false);
     if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
       copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
       copy.setAdvancePaymentNeeded(false);
