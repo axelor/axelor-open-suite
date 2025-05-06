@@ -329,4 +329,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_ACCOUNT_DIFFERENT_THAN_CASH_ACCOUNT = /*$$(*/
       "Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement." /*)*/;
+
+  public static final String BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL = /*$$(*/
+      "Missing journal while creating a move from a bank reconciliation." /*)*/;
 }

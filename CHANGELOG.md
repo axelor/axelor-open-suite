@@ -1,3 +1,74 @@
+## [8.3.5] (2025-04-30)
+
+### Fixes
+#### Base
+
+* Updated Axelor Open Platform to 7.3.6.
+* Product: fixed domain filter for product variant values.
+* Product: fixed update product prices process to update company specific prices.
+* Template: on creating a new template manually, keep email account empty by default so the generated message can use default email account.
+* Fixed rounding mode in some quantities computation.
+* Sale order line: fixed an issue where warnings related to sale order line (like stock control) were not displayed to the user and blocked the process.
+
+#### Account
+
+* Bank reconciliation: fixed NPE when validating a bank reconciliation without journal while having an account on a bank reconciliation line.
+* Invoice: fixed 'Terms and Conditions','Client box in invoice' and 'Legal note on sale invoices' to support HTML tags in BIRT report.
+* Analytic move line: set analytic axis required when we create an analytic move line.
+
+#### Budget
+
+* Purchase order line: use the correct account when a purchase order line is set to 'fixed assets'.
+
+#### Business Project
+
+* Business Project Task: fixed an issue where total costs was not computed on unit cost change.
+* Invoice: fixed third-party payer when generating an invoice from an invoicing project.
+
+#### Contract
+
+* Contract invoicing batch: fixed an issue where it was not possible to generate more than one invoice for a same contract.
+
+#### Human Resource
+
+* Expense: fixed personal expense and personal expense amount french translation.
+* User: hide create employee button if the partner has already an employee.
+
+#### Mobile Settings
+
+* Mobile permissions: fixed demo data.
+
+#### Production
+
+* Manufacturing order: fixed an issue where producible quantity was taking into account component that were not managed in stock.
+* Sale order: fixed an error occurring when changing the price of a sale order line details.
+* MRP: added a explicit error message instead of a NPE when prod process is null on manufacturing proposal.
+* Sale order: fixed an error occurring when generating sale order line details with no cost price.
+* Sale order line details: fixed the unit price getting recomputed wrongly when changing quantity.
+* Prod process line: fixed domain of stock location to take into account only those usable on production
+
+#### Project
+
+* Project planning: fixed english message in confirmation popup.
+* Sprint: added a sprint form and grid with editing and adding functionalities disabled.
+
+#### Stock
+
+* Stock move: prevented generation of invoices when 'generate Invoice from stock move' configuration is disabled in supplychain app.
+
+#### Supply Chain
+
+* Declaration of exchanges: will now reset fiscal year and if necessary country on change of company.
+* Supplychain: fixed total W.T. of invoices generated from a stock move of a purchase order with ATI.
+
+### Developer
+
+Fixed ControllerMethodInterceptor to avoid adding exception management on non void and non public methods in controller.
+
+#### Business Project
+
+Added `PartnerAccountService` to the constructor of `ProjectGenerateInvoiceServiceImpl`.
+
 ## [8.3.4] (2025-04-17)
 
 ### Fixes
@@ -433,6 +504,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.5]: https://github.com/axelor/axelor-open-suite/compare/v8.3.4...v8.3.5
 [8.3.4]: https://github.com/axelor/axelor-open-suite/compare/v8.3.3...v8.3.4
 [8.3.3]: https://github.com/axelor/axelor-open-suite/compare/v8.3.2...v8.3.3
 [8.3.2]: https://github.com/axelor/axelor-open-suite/compare/v8.3.1...v8.3.2

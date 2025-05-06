@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service.move;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -153,8 +154,16 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
     Optional<BudgetLine> optBudgetLine =
         budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
 
-    optBudgetLine.ifPresent(
-        budgetLine -> budgetService.updateBudgetLineAmounts(budgetLine, budget, amount));
+    if (optBudgetLine.isPresent()) {
+      Invoice invoice =
+          Optional.of(moveLine).map(MoveLine::getMove).map(Move::getInvoice).orElse(null);
+      if (invoice != null
+          && (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null)) {
+        budgetService.updateBudgetLineAmountWithPo(optBudgetLine.get(), budget, amount);
+      } else {
+        budgetService.updateBudgetLineAmounts(optBudgetLine.get(), budget, amount);
+      }
+    }
 
     budgetService.computeTotalAmountRealized(budget);
     budgetService.computeTotalFirmGap(budget);

@@ -6,4 +6,9 @@
 105;mobile.helpdesk;MOBILE HELPDESK;;;"true";role.mobile.base|role.mobile.helpdesk;"false";"false";
 106;mobile.hr;MOBILE HR;;;"true";role.mobile.base|role.mobile.hr;"false";"false";
 107;mobile.quality;MOBILE QUALITY;;;"true";role.mobile.base|role.mobile.stock|role.mobile.manuf|role.mobile.crm|role.mobile.hr|role.mobile.quality;"false";"false";
-108;mobile.all;MOBILE;;;"true";role.mobile.base|role.mobile.stock|role.mobile.manuf|role.mobile.crm|role.mobile.helpdesk|role.mobile.hr|role.mobile.quality;"false";"false";
+108;mobile.all;MOBILE;;;"true";role.mobile.base|role.mobile.stock|role.mobile.manuf|role.mobile.crm|role.mobile.helpdesk|role.mobile.hr|role.mobile.quality|role.mobile.intervention|role.mobile.project|role.mobile.sale|role.mobile.purchase|role.mobile.dms;"false";"false";
+109;mobile.intervention;MOBILE INTERVENTION;;;"true";role.mobile.base|role.mobile.intervention;"false";"false";
+110;mobile.project;MOBILE PROJECT;;;"true";role.mobile.base|role.mobile.project;"false";"false";
+111;mobile.sale;MOBILE SALE;;;"true";role.mobile.base|role.mobile.sale;"false";"false";
+112;mobile.purchase;MOBILE PURCHASE;;;"true";role.mobile.base|role.mobile.purchase;"false";"false";
+113;mobile.dms;MOBILE DMS;;;"true";role.mobile.base|role.mobile.dms;"false";"false";
