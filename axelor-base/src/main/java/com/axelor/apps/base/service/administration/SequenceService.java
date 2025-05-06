@@ -177,9 +177,14 @@ public class SequenceService {
         CollectionUtils.isNotEmpty(
             JPA.em()
                 .createQuery(
-                    "SELECT self FROM " + table + " self WHERE " + fieldName + " = :nextSeq",
+                    "SELECT self FROM "
+                        + table
+                        + " self WHERE "
+                        + fieldName
+                        + " = :nextSeq AND self.company = :company",
                     objectClass)
                 .setParameter("nextSeq", nextSeq)
+                .setParameter("company", seq.getCompany())
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .setFlushMode(FlushModeType.COMMIT)
                 .getResultList());
