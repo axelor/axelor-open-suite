@@ -387,6 +387,15 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                   || move.getJournal().getJournalType().getTechnicalTypeSelect()
                       == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER),
           attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.vatSystemSelect",
+          "hidden",
+          technicalTypeSelectIsNotNull
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+          attrsMap);
     }
   }
 
