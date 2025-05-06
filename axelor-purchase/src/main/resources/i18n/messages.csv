@@ -320,6 +320,7 @@
 "Tax type",,,
 "Taxes",,,
 "Team",,,
+"The ATI configuration must be the same for all purchase orders",,,
 "The company %s doesn't have any configured sequence for the purchase orders",,,
 "The company is required and must be the same for all purchase orders",,,
 "The contact partner and price list must be the same for all purchase orders.",,,
