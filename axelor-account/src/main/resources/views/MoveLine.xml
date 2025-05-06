@@ -29,6 +29,8 @@
     <field name="amountRemaining" aggregate="sum" width="100"
       x-scale="companyCurrencyDecimals"/>
     <field name="taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
@@ -159,7 +161,8 @@
       readonlyIf="amountPaid &gt; 0" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" hidden="true" width="80" x-scale="companyCurrencyDecimals"/>
     <field name="amountPaid" hidden="true"/>
-    <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine" canNew="false"
+    <field name="taxLineSet"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3" canNew="false"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80" widget="TagSelect"/>
@@ -247,7 +250,8 @@
     <field name="credit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="taxLineSet"
-      requiredIf="!account.isTaxAuthorizedOnMoveLine || ['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect)"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
     <field name="analyticDistributionTemplate"
@@ -283,7 +287,8 @@
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
     <field name="taxLineSet"
-      requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
     <field name="analyticDistributionTemplate"
