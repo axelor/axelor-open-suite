@@ -380,6 +380,7 @@
 "Old qty","Ancienne Qté",,
 "Old version sale order",,,
 "On change",,,
+"One of the lines has its quantity inferior to its ordered quantity.","Une des lignes a sa quantité plus petite que sa quantité commandée.",,
 "One product is sold at loss, are you sure you want to finalize the quotation ?","Un produit est vendu à perte, êtes-vous sur de vouloir finaliser le devis ?",,
 "One-off sale","Vente exceptionnelle",,
 "Only if","Seulement si",,

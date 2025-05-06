@@ -380,6 +380,7 @@
 "Old qty",,,
 "Old version sale order",,,
 "On change",,,
+"One of the lines has its quantity inferior to its ordered quantity.",,,
 "One product is sold at loss, are you sure you want to finalize the quotation ?",,,
 "One-off sale",,,
 "Only if",,,
