@@ -84,8 +84,7 @@ public class MoveDueService {
     List<? extends MoveLine> othersDebitMoveLines = null;
     if (useOthersInvoiceDue) {
       othersDebitMoveLines =
-          moveLineToolService.getMoveExcessDueList(
-              false, company, invoice.getPartner(), invoice.getId());
+          moveLineToolService.getMoveExcessDueList(false, company, invoice.getPartner(), invoice);
       debitMoveLines.addAll(othersDebitMoveLines);
     }
 
