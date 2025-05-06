@@ -48,6 +48,8 @@ public final class SaleExceptionMessage {
       "The fiscal position must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_TAX_NUMBER = /*$$(*/
       "The tax number must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_ATI_CONFIG = /*$$(*/
+      "The ATI configuration must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
       "List of sale orders to merge is empty" /*)*/;
 
