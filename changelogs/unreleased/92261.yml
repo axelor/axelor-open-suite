@@ -1,0 +1,3 @@
+---
+title: "Sequence: fixed issue where similar sequences from different companies were wrongly seen as duplicates."
+module: axelor-base
