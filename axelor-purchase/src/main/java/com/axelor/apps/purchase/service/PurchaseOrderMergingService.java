@@ -97,6 +97,10 @@ public interface PurchaseOrderMergingService {
     boolean isExistFiscalPositionDiff();
 
     void setExistFiscalPositionDiff(boolean existFiscalPositionDiff);
+
+    boolean isExistAtiDiff();
+
+    void setExistAtiDiff(boolean existAtiDiff);
   }
 
   interface PurchaseOrderMergingResult {

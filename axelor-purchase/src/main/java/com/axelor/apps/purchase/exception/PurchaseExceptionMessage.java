@@ -52,6 +52,8 @@ public final class PurchaseExceptionMessage {
       "The trading name must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION = /*$$(*/
       "The fiscal position must be the same for all purchase orders" /*)*/;
+  public static final String PURCHASE_ORDER_MERGE_ERROR_ATI_CONFIG = /*$$(*/
+      "The ATI configuration must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
       "The contact partner and price list must be the same for all purchase orders." /*)*/;
 
