@@ -349,31 +349,59 @@ public class PartnerServiceImpl implements PartnerService {
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner, int emailType) {
-
-    String query =
-        String.format(
-            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
-                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
-            partner.getId());
-
     String emailAddress =
-        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
+        Optional.ofNullable(partner)
+            .map(Partner::getEmailAddress)
+            .map(EmailAddress::getAddress)
+            .orElse(null);
+
+    Set<Long> resultSet = new HashSet<>();
+
+    StringBuilder relatedQuery =
+        new StringBuilder(
+            "SELECT DISTINCT email.id"
+                + " FROM Message AS email"
+                + " JOIN email.multiRelatedList AS related"
+                + " WHERE related.relatedToSelect = :relatedToSelect"
+                + " AND related.relatedToSelectId = :partnerId"
+                + " AND email.mediaTypeSelect = :mediaType"
+                + " AND email.typeSelect = :emailType");
+
+    javax.persistence.Query q1 = JPA.em().createQuery(relatedQuery.toString());
+    q1.setParameter("partnerId", partner.getId());
+    q1.setParameter("relatedToSelect", "com.axelor.apps.base.db.Partner");
+    q1.setParameter("emailType", emailType);
+    q1.setParameter("mediaType", MessageRepository.MEDIA_TYPE_EMAIL);
+
+    resultSet.addAll(q1.getResultList());
+
     if (emailAddress != null) {
-      query +=
-          " OR (:emailAddress IN ("
-              + ((emailType == MessageRepository.TYPE_RECEIVED)
-                  ? "email.fromEmailAddress.address"
-                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
-              + "))";
-    } else {
-      query += " AND email.typeSelect = " + emailType;
-    }
-    javax.persistence.Query q = JPA.em().createQuery(query);
-    if (emailAddress != null) {
-      q.setParameter("emailAddress", emailAddress);
+      String addressQuery;
+
+      if (emailType == MessageRepository.TYPE_RECEIVED) {
+        addressQuery =
+            "SELECT DISTINCT email.id FROM Message AS email"
+                + " WHERE email.fromEmailAddress.address = :emailAddress"
+                + " AND email.mediaTypeSelect = :mediaType"
+                + " AND email.typeSelect = :emailType";
+      } else {
+        addressQuery =
+            "SELECT DISTINCT email.id FROM Message AS email"
+                + " JOIN email.toEmailAddressSet AS addr"
+                + " WHERE addr.address = :emailAddress"
+                + " AND email.mediaTypeSelect = :mediaType"
+                + " AND email.typeSelect = :emailType";
+      }
+
+      javax.persistence.Query q2 = JPA.em().createQuery(addressQuery);
+      q2.setParameter("emailAddress", emailAddress);
+      q2.setParameter("mediaType", MessageRepository.MEDIA_TYPE_EMAIL);
+      q2.setParameter("emailType", emailType);
+
+      resultSet.addAll(q2.getResultList());
     }
 
-    return q.getResultList();
+    return new ArrayList<>(resultSet);
   }
 
   protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
