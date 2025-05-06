@@ -171,6 +171,7 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     private boolean existPriceListDiff = false;
     private boolean existTradingNameDiff = false;
     private boolean existFiscalPositionDiff = false;
+    private boolean existAtiDiff = false;
 
     @Override
     public boolean isExistCurrencyDiff() {
@@ -240,6 +241,16 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     @Override
     public void setExistFiscalPositionDiff(boolean existFiscalPositionDiff) {
       this.existFiscalPositionDiff = existFiscalPositionDiff;
+    }
+
+    @Override
+    public boolean isExistAtiDiff() {
+      return existAtiDiff;
+    }
+
+    @Override
+    public void setExistAtiDiff(boolean existAtiDiff) {
+      this.existAtiDiff = existAtiDiff;
     }
   }
 
@@ -411,11 +422,9 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
           I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_LIST_EMPTY));
     }
 
+    PurchaseOrder firstPurchaseOrder = purchaseOrdersToMerge.get(0);
     fillCommonFields(purchaseOrdersToMerge, result);
-    purchaseOrdersToMerge.forEach(
-        purchaseOrder -> {
-          updateDiffsCommonFields(purchaseOrder, result);
-        });
+    checkDiffs(purchaseOrdersToMerge, result, firstPurchaseOrder);
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
@@ -531,6 +540,10 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
       fieldErrors.add(
           I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
+
+    if (getChecks(result).isExistAtiDiff()) {
+      fieldErrors.add(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_ATI_CONFIG));
+    }
   }
 
   protected void updateDiffsCommonFields(
@@ -633,5 +646,20 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
                     .map(id -> purchaseOrderRepository.find(Long.valueOf(id)))
                     .collect(Collectors.toList()))
         .orElse(List.of());
+  }
+
+  protected void checkDiffs(
+      List<PurchaseOrder> purchaseOrdersToMerge,
+      PurchaseOrderMergingResult result,
+      PurchaseOrder firstPurchaseOrder) {
+    purchaseOrdersToMerge.forEach(
+        purchaseOrder -> {
+          updateDiffsCommonFields(purchaseOrder, result);
+        });
+    if (purchaseOrdersToMerge.stream()
+        .anyMatch(order -> order.getInAti() != firstPurchaseOrder.getInAti())) {
+      Checks checks = getChecks(result);
+      checks.setExistAtiDiff(true);
+    }
   }
 }
