@@ -187,9 +187,13 @@ public class ReconcileInvoiceTermComputationServiceImpl
                   invoice, invoicePaymentAmount, reconcile.getForeignExchangeMove());
           invoicePayment.setReconcile(reconcile);
         } else if (invoicePayment == null) {
+          BigDecimal finalInvoicePaymentAmount = invoicePaymentAmount;
           if (foreignExchangePayment != null
               && reconcile.getForeignExchangeMove() != null
               && !Objects.equals(reconcile.getAmount(), invoice.getCompanyInTaxTotal())
+              && !invoice.getInvoiceTermList().stream()
+                  .map(InvoiceTerm::getAmountRemaining)
+                  .anyMatch(i -> i.compareTo(finalInvoicePaymentAmount) == 0)
               && invoice.getInTaxTotal().compareTo(invoicePaymentAmount) != 0
               && currencyService.isCurrencyRateLower(
                   invoice.getInvoiceDate(),
