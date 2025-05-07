@@ -1696,6 +1696,7 @@
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-record-reset-company-tax-number-field"/>
+    <action name="action-invoice-method-set-default-company-tax-number"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
