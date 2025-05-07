@@ -198,4 +198,10 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_QUOTATION_NO_LINE_GENERATED = /*$$(*/
       "No lines were generated. Please check that at least one line has a quantity to order." /*)*/;
+
+  public static final String SALE_QUOTATION_CHECK_ORDERED_QTY = /*$$(*/
+      "Quantity should not be less than the ordered quantity." /*)*/;
+
+  public static final String SALE_QUOTATION_CONFIRM_CHECK_ORDERED_QTY = /*$$(*/
+      "One of the lines has its quantity inferior to its ordered quantity." /*)*/;
 }
