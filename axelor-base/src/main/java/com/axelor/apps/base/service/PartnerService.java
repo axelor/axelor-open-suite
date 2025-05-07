@@ -89,8 +89,6 @@ public interface PartnerService {
 
   String getSIRENNumber(Partner partner) throws AxelorException;
 
-  void convertToIndividualPartner(Partner partner);
-
   /**
    * Check if the partner in view has a duplicate.
    *
