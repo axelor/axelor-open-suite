@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
@@ -44,6 +45,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -51,6 +53,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashboardService {
 
@@ -67,8 +71,6 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   public Map<String, Object> getData(LocalDate startDate, LocalDate endDate, Long projectId) {
     Map<String, Object> dataMap = new HashMap<>();
 
-    List<MailMessage> mailMessageList = getMailMessages(startDate, endDate);
-
     Map<String, List<Map<String, List<Map<String, Object>>>>> activityDataMap =
         new LinkedHashMap<>();
 
@@ -82,6 +84,8 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
       projectIdSet = projectToolService.getActiveProjectIds();
     }
+
+    List<MailMessage> mailMessageList = getMailMessages(startDate, endDate, project);
 
     for (MailMessage message : mailMessageList) {
       LocalDateTime createdOn = message.getCreatedOn();
@@ -221,17 +225,35 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
     return LocalDate.now().equals(date) ? I18n.get("Today") : date.format(DATE_FORMATTER);
   }
 
-  protected List<MailMessage> getMailMessages(LocalDate startDate, LocalDate endDate) {
-    return mailMessageRepo
-        .all()
-        .filter(
-            "self.type = :type AND self.relatedModel IN :relatedModels AND self.createdOn <= :endDate AND self.createdOn >= :startDate")
-        .bind("type", MailConstants.MESSAGE_TYPE_NOTIFICATION)
-        .bind("relatedModels", getRelatedModels())
-        .bind("startDate", startDate.atTime(LocalTime.MIN))
-        .bind("endDate", endDate.atTime(LocalTime.MAX))
-        .order("-id")
-        .fetch();
+  protected List<MailMessage> getMailMessages(
+      LocalDate startDate, LocalDate endDate, Project project) {
+    List<String> relatedModelList = getRelatedModels();
+    if (project == null || CollectionUtils.isEmpty(relatedModelList)) {
+      return Collections.emptyList();
+    }
+    String relatedQuery =
+        relatedModelList.stream()
+            .map(
+                model -> {
+                  return String.format(
+                      "(self.relatedModel = '%s' AND self.relatedId IN (SELECT model.id FROM %s model WHERE model.project = :project))",
+                      model, model);
+                })
+            .collect(Collectors.joining(" OR "));
+
+    String query =
+        "SELECT self FROM MailMessage self"
+            + " WHERE self.type = :type AND self.createdOn <= :endDate AND self.createdOn >= :startDate AND ("
+            + relatedQuery
+            + ") ORDER BY self.id DESC";
+
+    return JPA.em()
+        .createQuery(query, MailMessage.class)
+        .setParameter("type", MailConstants.MESSAGE_TYPE_NOTIFICATION)
+        .setParameter("project", project)
+        .setParameter("startDate", startDate.atTime(LocalTime.MIN))
+        .setParameter("endDate", endDate.atTime(LocalTime.MAX))
+        .getResultList();
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
