@@ -1505,26 +1505,16 @@ public class InvoiceController {
   public void manageFiscalPositionFromCompanyTaxNumber(
       ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    FiscalPosition invoiceFiscalPosition = invoice.getFiscalPosition();
     TaxNumber companyTaxNumber = invoice.getCompanyTaxNumber();
 
     if (companyTaxNumber == null) {
       return;
     }
 
-    if (invoiceFiscalPosition == null) {
-      Set<FiscalPosition> fiscalPositionSet = companyTaxNumber.getFiscalPositionSet();
-      FiscalPosition fiscalPosition =
-          (fiscalPositionSet.size() == 1) ? fiscalPositionSet.iterator().next() : null;
-      response.setValue("fiscalPosition", fiscalPosition);
-    } else {
-      boolean hasMatch =
-          invoiceFiscalPosition.getTaxNumberSet().stream()
-              .anyMatch(taxNumber -> taxNumber.equals(companyTaxNumber));
-      if (!hasMatch) {
-        response.setValue("fiscalPosition", null);
-      }
-    }
+    Set<FiscalPosition> fiscalPositionSet = companyTaxNumber.getFiscalPositionSet();
+    FiscalPosition fiscalPosition =
+        (fiscalPositionSet.size() == 1) ? fiscalPositionSet.iterator().next() : null;
+    response.setValue("fiscalPosition", fiscalPosition);
   }
 
   @ErrorException
