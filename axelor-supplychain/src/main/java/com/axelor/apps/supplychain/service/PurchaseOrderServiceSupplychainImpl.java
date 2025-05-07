@@ -210,7 +210,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
   @Override
   public String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
-    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
     ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
     if (shipmentMode == null) {
       return null;
@@ -232,7 +231,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return null;
     }
     PurchaseOrderLine shippingCostLine = createShippingCostLine(purchaseOrder, shippingCostProduct);
-    purchaseOrderLines.add(shippingCostLine);
+    purchaseOrder.addPurchaseOrderLineListItem(shippingCostLine);
     this.computePurchaseOrder(purchaseOrder);
     return null;
   }
