@@ -435,4 +435,7 @@ public final class ProductionExceptionMessage {
 
   public static final String SALE_ORDER_SELECT_WRONG_LINE = /*$$(*/
       "There is no production or manufacturing order to generate for one of the selected lines." /*)*/;
+
+  public static final String SOL_LINKED_TO_MO_DELETE_ERROR = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in manufacturing order(s): <br> %s" /*)*/;
 }
