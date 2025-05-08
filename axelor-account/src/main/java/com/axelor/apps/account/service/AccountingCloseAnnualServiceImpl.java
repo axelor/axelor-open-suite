@@ -505,7 +505,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateResultMove(
+  public Move generateResultMove(
       Company company,
       LocalDate date,
       String description,
@@ -597,5 +597,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     if (generatedMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
       moveValidateService.accounting(move);
     }
+    return move;
   }
 }
