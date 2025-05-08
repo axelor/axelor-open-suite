@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed an issue where the generated result entry (move) was not correctly linked to the corresponding close/open account batch."
+module: "axelor-account"
