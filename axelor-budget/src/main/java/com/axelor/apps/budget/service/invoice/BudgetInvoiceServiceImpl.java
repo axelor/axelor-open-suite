@@ -143,11 +143,8 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
           }
         } else {
           Budget budget = invoiceLine.getBudget();
-          if (budget != null) {
-
-            budgetToolsService.fillAmountPerBudgetMap(
-                budget, invoiceLine.getCompanyExTaxTotal(), amountPerBudgetMap);
-          }
+          budgetToolsService.fillAmountPerBudgetMap(
+              budget, invoiceLine.getCompanyExTaxTotal(), amountPerBudgetMap);
         }
       }
 
