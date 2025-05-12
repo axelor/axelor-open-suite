@@ -1,0 +1,3 @@
+---
+title: "Mass entry: fixed critical error when we validate more than ten moves in mass entry process"
+module: "axelor-account"
