@@ -118,6 +118,9 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
                             BigDecimal.valueOf(totalDuration),
                             AppBaseService.COMPUTATION_SCALING,
                             RoundingMode.HALF_UP));
+            prorataAmount =
+                prorataAmount.setScale(
+                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
             missingAmount = missingAmount.subtract(prorataAmount);
             BigDecimal gap = BigDecimal.valueOf(0.01);
             if (missingAmount.compareTo(gap) == 0) {
