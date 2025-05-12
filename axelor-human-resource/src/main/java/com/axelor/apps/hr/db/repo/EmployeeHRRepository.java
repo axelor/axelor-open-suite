@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
+import com.axelor.apps.hr.service.PartnerEmployeeService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -39,10 +40,13 @@ import java.util.Optional;
 public class EmployeeHRRepository extends EmployeeRepository {
 
   protected final PartnerRepository partnerRepository;
+  protected final PartnerEmployeeService partnerEmployeeService;
 
   @Inject
-  public EmployeeHRRepository(PartnerRepository partnerRepository) {
+  public EmployeeHRRepository(
+      PartnerRepository partnerRepository, PartnerEmployeeService partnerEmployeeService) {
     this.partnerRepository = partnerRepository;
+    this.partnerEmployeeService = partnerEmployeeService;
   }
 
   @Override
@@ -71,20 +75,12 @@ public class EmployeeHRRepository extends EmployeeRepository {
         && employmentContract != null) {
       partner.addCompanySetItem(employmentContract.getPayCompany());
     }
-    if (!partner.getIsEmployee()) {
-      partner.setIsEmployee(true);
 
-      if (entity.getExternal()) {
-        partner.setIsContact(true);
-      } else {
-        partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-      }
-
-      partnerRepository.save(partner);
-    }
     if (employmentContract != null && employmentContract.getEmployee() == null) {
       employmentContract.setEmployee(entity);
     }
+
+    partnerEmployeeService.editPartner(entity);
 
     return super.save(entity);
   }

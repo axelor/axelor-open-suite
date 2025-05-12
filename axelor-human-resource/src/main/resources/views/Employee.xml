@@ -85,8 +85,6 @@
 
             <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone"/>
-            <field name="isContact"/>
-            <field name="partnerTypeSelect"/>
           </panel>
         </editor>
       </field>
