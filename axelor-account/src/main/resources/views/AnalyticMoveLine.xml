@@ -76,7 +76,7 @@
     <panel name="mainPanel">
       <field name="analyticAxis"
         onSelect="action-method-domain-onselect-axis-analytic-move-line"
-        onChange="action-record-onchange-axis-analytic-move-line"/>
+        onChange="action-record-onchange-axis-analytic-move-line" required="true"/>
       <field name="analyticAccount" onSelect="action-group-domain-onselect-analytic-account"
         readonlyIf="!analyticAxis"/>
       <field name="percentage" min="0" max="100"
@@ -140,7 +140,7 @@
         form-view="analytic-journal-form"
         onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onSelect="action-method-domain-onselect-axis-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-axis-analytic-move-line" required="true"/>
       <field name="analyticAccount" showIf="analyticAxis" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onSelect="action-group-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>

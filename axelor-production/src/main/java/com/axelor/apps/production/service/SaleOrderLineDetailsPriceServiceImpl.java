@@ -130,10 +130,15 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
   public Map<String, Object> computeMarginCoef(SaleOrderLineDetails saleOrderLineDetails) {
     Map<String, Object> lineMap = new HashMap<>();
     BigDecimal costPrice = saleOrderLineDetails.getCostPrice();
-    BigDecimal price = saleOrderLineDetails.getPrice();
-    BigDecimal marginCoef =
-        price.divide(
-            costPrice, appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    BigDecimal marginCoef;
+    if (costPrice.compareTo(BigDecimal.ZERO) == 0) {
+      marginCoef = BigDecimal.ZERO;
+    } else {
+      BigDecimal price = saleOrderLineDetails.getPrice();
+      marginCoef =
+          price.divide(
+              costPrice, appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    }
     saleOrderLineDetails.setMarginCoefficient(marginCoef);
     lineMap.put("marginCoefficient", saleOrderLineDetails.getMarginCoefficient());
     return lineMap;
