@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -230,8 +231,13 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   protected boolean checkMoveLineAmount(
       Reconcile reconcile, MoveLine moveLine, MoveLine otherMoveLine, BigDecimal moveLineAmount)
       throws AxelorException {
+    BigDecimal amountPaid =
+        moveLine.getInvoiceTermList().stream()
+            .filter(it -> BigDecimal.ZERO.compareTo(it.getCompanyAmountRemaining()) == 0)
+            .map(InvoiceTerm::getCompanyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     if (currencyScaleService.isGreaterThan(
-        reconcile.getAmount(), moveLineAmount.subtract(moveLine.getAmountPaid()), moveLine, true)) {
+        reconcile.getAmount(), moveLineAmount.subtract(amountPaid), moveLine, true)) {
       return currencyService.isSameCurrencyRate(
           moveLine.getDate(),
           otherMoveLine.getDate(),
