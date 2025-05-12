@@ -19,8 +19,8 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.service.project.ProjectTaskPPTGenerateService;
-import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateUpdateService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeWarningService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
@@ -33,14 +33,8 @@ public class ProjectTaskController {
   public void validateSprintPlanification(ActionRequest request, ActionResponse response) {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-    String warning = null;
-    if (projectTask.getActiveSprint() == null) {
-      warning =
-          Beans.get(ProjectTaskPPTGenerateService.class)
-              .getSprintOnChangeWarningWithoutSprint(projectTask);
-    } else {
-      warning = Beans.get(ProjectTaskSprintService.class).getSprintOnChangeWarning(projectTask);
-    }
+    String warning =
+        Beans.get(ProjectPlanningTimeWarningService.class).getSprintWarning(projectTask);
 
     if (StringUtils.notEmpty(warning)) {
       response.setAlert(warning);
@@ -51,12 +45,7 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask =
         EntityHelper.getEntity(request.getContext().asType(ProjectTask.class));
-    if (projectTask.getActiveSprint() == null) {
-      Beans.get(ProjectTaskPPTGenerateService.class)
-          .createUpdatePlanningTimeWithoutSprint(projectTask);
-    } else {
-      Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
-    }
+    Beans.get(ProjectPlanningTimeCreateUpdateService.class).createOrMovePlannification(projectTask);
     response.setValue("oldActiveSprint", projectTask.getActiveSprint());
     response.setValue("oldBudgetedTime", projectTask.getBudgetedTime());
     response.setValue("projectPlanningTimeList", projectTask.getProjectPlanningTimeList());

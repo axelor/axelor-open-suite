@@ -244,12 +244,16 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateUpdateService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateUpdateServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeToolService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeToolServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeWarningService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeWarningServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectTaskPPTGenerateService;
 import com.axelor.apps.hr.service.project.ProjectTaskPPTGenerateServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
@@ -489,5 +493,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetEmployeeService.class).to(TimesheetEmployeeServiceImpl.class);
     bind(ExpenseLineDomainService.class).to(ExpenseLineDomainServiceImpl.class);
     bind(ProjectTaskPPTGenerateService.class).to(ProjectTaskPPTGenerateServiceImpl.class);
+    bind(ProjectPlanningTimeWarningService.class).to(ProjectPlanningTimeWarningServiceImpl.class);
+    bind(ProjectPlanningTimeCreateUpdateService.class)
+        .to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
   }
 }
