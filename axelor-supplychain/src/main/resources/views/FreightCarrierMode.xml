@@ -11,8 +11,8 @@
     <field name="calculatedPrice"/>
   </grid>
 
-  <form name="freight-carrier-pricing-form" model="com.axelor.apps.stock.db.FreightCarrierMode"
-    title="Freight carrier pricing"
+  <form name="freight-carrier-pricing-mode-form"
+    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier pricing"
     onLoad="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
     <panel name="mainPanel">
       <field name="name"/>
