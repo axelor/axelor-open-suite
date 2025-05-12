@@ -118,23 +118,29 @@ public class StockMoveInvoiceController {
                     stockMove, saleOrderSet.iterator().next(), qtyToInvoiceMap);
           }
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
-          PurchaseOrderMergingResult result =
-              Beans.get(PurchaseOrderMergingService.class)
-                  .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(PurchaseOrderMergingViewService.class)
-                    .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
-            confirmView.context("toStockMove", true);
+          if (purchaseOrderSet.size() > 1) {
+            PurchaseOrderMergingResult result =
+                Beans.get(PurchaseOrderMergingService.class)
+                    .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(PurchaseOrderMergingViewService.class)
+                      .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
+              confirmView.context("toStockMove", true);
 
-            response.setView(confirmView.map());
-            return;
+              response.setView(confirmView.map());
+              return;
+            }
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                    stockMove, result.getPurchaseOrder(), qtyToInvoiceMap);
+          } else {
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                    stockMove, purchaseOrderSet.iterator().next(), qtyToInvoiceMap);
           }
-          invoice =
-              stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                  stockMove, result.getPurchaseOrder(), qtyToInvoiceMap);
         } else {
           invoice =
               stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(

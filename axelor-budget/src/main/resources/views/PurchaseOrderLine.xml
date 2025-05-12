@@ -42,6 +42,11 @@
         value="action-budget-group-purchase-purchase-orderline-product-onchange"/>
     </extend>
 
+    <extend target="//field[@name='fixedAssets']">
+      <attribute name="onChange"
+        value="action-method-budget-purchase-orderline-set-product-account"/>
+    </extend>
+
     <extend target="//panel[@name='analyticDistributionPanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget"

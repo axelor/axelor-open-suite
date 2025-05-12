@@ -653,6 +653,48 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
+  public void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
+    budgetLine.setRealizedWithNoPo(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getRealizedWithNoPo().add(amount)));
+    updateOtherAmounts(budgetLine, budget, amount);
+  }
+
+  @Override
+  public void updateBudgetLineAmountWithPo(
+      BudgetLine budgetLine, Budget budget, BigDecimal amount) {
+    budgetLine.setRealizedWithPo(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getRealizedWithPo().add(amount)));
+    budgetLine.setAmountCommitted(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getAmountCommitted().subtract(amount)));
+    updateOtherAmounts(budgetLine, budget, amount);
+  }
+
+  protected void updateOtherAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
+    budgetLine.setAmountRealized(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getAmountRealized().add(amount)));
+    budgetLine.setToBeCommittedAmount(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getToBeCommittedAmount().subtract(amount)));
+    BigDecimal firmGap =
+        currencyScaleService.getCompanyScaledValue(
+            budget,
+            budgetLine
+                .getAmountExpected()
+                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
+    budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
+    budgetLine.setAvailableAmount(
+        currencyScaleService.getCompanyScaledValue(
+            budget,
+            (budgetLine.getAvailableAmount().subtract(amount)).compareTo(BigDecimal.ZERO) > 0
+                ? budgetLine.getAvailableAmount().subtract(amount)
+                : BigDecimal.ZERO));
+  }
+
+  @Override
   public void createBudgetKey(Budget budget, Company company) throws AxelorException {
     if (budget == null || company == null) {
       return;

@@ -13243,7 +13243,7 @@ else {'Invoice.totalTaxes'}</value>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["SaleLegalNote"]
@@ -13471,7 +13471,7 @@ else {'Invoice.totalTaxes'}</value>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["ClientBox"]
@@ -14175,7 +14175,7 @@ else {'Invoice.totalTaxes'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["termsAndConditions"]

@@ -521,6 +521,7 @@
 "Merge bank orders",,,
 "Missing bank statement file",,,
 "Missing bank statement file format",,,
+"Missing journal while creating a move from a bank reconciliation.",,,
 "Monthly payment schedules",,,
 "MonthlyPaymentScheduleLines (batch)",,,
 "Move",,,

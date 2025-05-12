@@ -53,7 +53,7 @@
 
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
-      <field name="stockLocation"/>
+      <field name="stockLocation" domain="self.usableOnProduction is true"/>
       <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12"
         hideIf="outsourcing">
         <field name="minCapacityPerCycle" colSpan="4"/>

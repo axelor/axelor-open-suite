@@ -12,7 +12,7 @@
       <field name="printingOnSOFinalization" widget="boolean-switch"
         readonlyIf="manageSaleOrderVersion"/>
       <field name="isPastVersionRecovery" widget="boolean-switch"
-        readonlyIf="!manageSaleOrderVersion"/>
+        readonlyIf="!manageSaleOrderVersion || isQuotationAndOrderSplitEnabled"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
       <field name="enableConfiguratorEdition" widget="boolean-switch"
         showIf="enableConfigurator"/>
