@@ -1,0 +1,6 @@
+---
+title: "Invoice: merging invoices from contracts link the new invoice to the original contracts."
+module: axelor-contract
+developer: |
+  Added 'PurchaseOrderInvoiceContractServiceImpl' between 'PurchaseOrderInvoiceServiceImpl' and 'PurchaseOrderInvoiceProjectServiceImpl'.
+  Added 'SaleOrderInvoiceContractServiceImpl' between 'SaleOrderInvoiceServiceImpl' and 'SaleOrderInvoiceProjectServiceImpl'.
