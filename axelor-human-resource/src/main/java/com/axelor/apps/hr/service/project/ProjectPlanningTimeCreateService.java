@@ -46,8 +46,4 @@ public interface ProjectPlanningTimeCreateService {
       Site site,
       Unit defaultTimeUnit)
       throws AxelorException;
-
-  BigDecimal getOldBudgetedTime(ProjectTask projectTask);
-
-  Unit getTimeUnit(ProjectTask projectTask);
 }

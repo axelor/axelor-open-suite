@@ -3,13 +3,11 @@ package com.axelor.apps.hr.service.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -25,40 +23,22 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
   protected AppProjectService appProjectService;
   protected ProjectPlanningTimeComputeService projectPlanningTimeComputeService;
   protected ProjectPlanningTimeCreateService projectPlanningTimeCreateService;
+  protected ProjectPlanningTimeService projectPlanningTimeService;
 
   @Inject
   public ProjectTaskPPTGenerateServiceImpl(
       AppProjectService appProjectService,
       ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
-      ProjectPlanningTimeCreateService projectPlanningTimeCreateService) {
+      ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
+      ProjectPlanningTimeService projectPlanningTimeService) {
     this.appProjectService = appProjectService;
     this.projectPlanningTimeComputeService = projectPlanningTimeComputeService;
     this.projectPlanningTimeCreateService = projectPlanningTimeCreateService;
+    this.projectPlanningTimeService = projectPlanningTimeService;
   }
 
   @Override
-  public String getSprintOnChangeWarningWithoutSprint(ProjectTask projectTask) {
-    BigDecimal oldBudgetedTime = projectPlanningTimeCreateService.getOldBudgetedTime(projectTask);
-
-    Set<ProjectPlanningTime> projectPlanningTimeSet =
-        getProjectPlanningTimeOnOldDuration(
-            projectTask, projectTask.getTaskDate(), oldBudgetedTime);
-
-    if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
-      if (ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
-        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
-      } else {
-        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
-      }
-    } else {
-      if (projectPlanningTimeSet.size() == 1)
-        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_UPDATE);
-      return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_ON_DURATION);
-    }
-  }
-
-  @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createUpdatePlanningTimeWithoutSprint(ProjectTask projectTask)
       throws AxelorException {
 
@@ -66,7 +46,7 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
         getProjectPlanningTimeOnOldDuration(
             projectTask,
             projectTask.getTaskDate(),
-            projectPlanningTimeCreateService.getOldBudgetedTime(projectTask));
+            projectPlanningTimeService.getOldBudgetedTime(projectTask));
     if (projectPlanningTimeSet.size() == 1) {
       updateProjectPlanningTimeDatesAndDurationWithoutSprint(
           projectPlanningTimeSet.stream().findFirst().get(), projectTask);
@@ -94,14 +74,14 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
             employee.get().getDailyWorkHours(),
             null,
             projectTask.getSite(),
-            projectPlanningTimeCreateService.getTimeUnit(projectTask));
+            projectPlanningTimeService.getTimeUnit(projectTask));
     LocalDateTime taskEndDateTime =
         projectPlanningTimeComputeService.computeEndDateTime(
             projectPlanningTime, projectTask.getProject());
     projectPlanningTime.setEndDateTime(taskEndDateTime);
 
     projectPlanningTime.setDisplayPlannedTime(projectTask.getBudgetedTime());
-    Unit timeUnit = projectPlanningTimeCreateService.getTimeUnit(projectTask);
+    Unit timeUnit = projectPlanningTimeService.getTimeUnit(projectTask);
     if (timeUnit != null) {
       projectPlanningTime.setDisplayTimeUnit(timeUnit);
     }
@@ -110,7 +90,8 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
     projectTask.addProjectPlanningTimeListItem(projectPlanningTime);
   }
 
-  protected void updateProjectPlanningTimeDatesAndDurationWithoutSprint(
+  @Override
+  public void updateProjectPlanningTimeDatesAndDurationWithoutSprint(
       ProjectPlanningTime projectPlanningTime, ProjectTask projectTask) throws AxelorException {
     if (projectTask.getTaskDate() == null || projectTask.getBudgetedTime() == null) {
       return;
@@ -121,7 +102,7 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
         projectPlanningTimeComputeService.computeEndDateTime(
             projectPlanningTime, projectTask.getProject());
     projectPlanningTime.setEndDateTime(taskEndDateTime);
-    Unit timeUnit = projectPlanningTimeCreateService.getTimeUnit(projectTask);
+    Unit timeUnit = projectPlanningTimeService.getTimeUnit(projectTask);
     if (timeUnit != null) {
       projectPlanningTime.setDisplayTimeUnit(timeUnit);
     }
@@ -129,7 +110,8 @@ public class ProjectTaskPPTGenerateServiceImpl implements ProjectTaskPPTGenerate
     projectPlanningTimeComputeService.computePlannedTimeValues(projectPlanningTime);
   }
 
-  protected Set<ProjectPlanningTime> getProjectPlanningTimeOnOldDuration(
+  @Override
+  public Set<ProjectPlanningTime> getProjectPlanningTimeOnOldDuration(
       ProjectTask projectTask, LocalDate fromDate, BigDecimal duration) {
     Set<ProjectPlanningTime> projectPlanningTimeSet = new HashSet<>();
     if (!ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
