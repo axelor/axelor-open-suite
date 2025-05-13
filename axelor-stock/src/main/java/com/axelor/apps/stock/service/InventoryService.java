@@ -68,6 +68,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -587,7 +588,7 @@ public class InventoryService {
         if (realQty != null) {
           stockLocationLine.setLastInventoryRealQty(realQty);
           stockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneId.systemDefault()));
         }
 
         String rack = realRacks.get(product);
@@ -608,7 +609,7 @@ public class InventoryService {
         if (realQty != null) {
           detailsStockLocationLine.setLastInventoryRealQty(realQty);
           detailsStockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneId.systemDefault()));
         }
 
         String rack = realRacks.get(product);
