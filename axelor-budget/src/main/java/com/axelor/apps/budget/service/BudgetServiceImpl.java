@@ -685,7 +685,8 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
     budgetLine.setRealizedWithNoPo(
-        computePositiveAmount(budget, budgetLine.getRealizedWithNoPo().add(amount)));
+        currencyScaleService.getCompanyScaledValue(
+            budget, BigDecimal.ZERO.max(budgetLine.getRealizedWithNoPo().add(amount))));
     updateOtherAmounts(budgetLine, budget, amount);
   }
 
@@ -693,17 +694,21 @@ public class BudgetServiceImpl implements BudgetService {
   public void updateBudgetLineAmountWithPo(
       BudgetLine budgetLine, Budget budget, BigDecimal amount) {
     budgetLine.setRealizedWithPo(
-        computePositiveAmount(budget, budgetLine.getRealizedWithPo().add(amount)));
+        currencyScaleService.getCompanyScaledValue(
+            budget, BigDecimal.ZERO.max(budgetLine.getRealizedWithPo().add(amount))));
     budgetLine.setAmountCommitted(
-        computePositiveAmount(budget, budgetLine.getAmountCommitted().subtract(amount)));
+        currencyScaleService.getCompanyScaledValue(
+            budget, BigDecimal.ZERO.max(budgetLine.getAmountCommitted().subtract(amount))));
     updateOtherAmounts(budgetLine, budget, amount);
   }
 
   protected void updateOtherAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
     budgetLine.setAmountRealized(
-        computePositiveAmount(budget, budgetLine.getAmountRealized().add(amount)));
+        currencyScaleService.getCompanyScaledValue(
+            budget, BigDecimal.ZERO.max(budgetLine.getAmountRealized().add(amount))));
     budgetLine.setToBeCommittedAmount(
-        computePositiveAmount(budget, budgetLine.getToBeCommittedAmount().subtract(amount)));
+        currencyScaleService.getCompanyScaledValue(
+            budget, BigDecimal.ZERO.max(budgetLine.getToBeCommittedAmount().subtract(amount))));
     BigDecimal firmGap =
         currencyScaleService.getCompanyScaledValue(
             budget,
@@ -712,7 +717,8 @@ public class BudgetServiceImpl implements BudgetService {
                 .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
     budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
     budgetLine.setAvailableAmount(
-        computePositiveAmount(budget, budgetLine.getAvailableAmount().subtract(amount)));
+        currencyScaleService.getCompanyScaledValue(
+            budget, BigDecimal.ZERO.max(budgetLine.getAvailableAmount().subtract(amount))));
   }
 
   @Override
@@ -1004,13 +1010,5 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     budgetRepository.save(optBudget);
-  }
-
-  protected BigDecimal computePositiveAmount(Budget budget, BigDecimal amount) {
-    if (amount.signum() > 0) {
-      return currencyScaleService.getCompanyScaledValue(budget, amount);
-    }
-
-    return BigDecimal.ZERO;
   }
 }
