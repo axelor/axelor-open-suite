@@ -24,7 +24,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.budget.service.date.BudgetDateService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -85,7 +84,7 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
   }
 
   protected void checkBudgetDates(Move move) throws AxelorException {
-    String error = Beans.get(BudgetDateService.class).checkBudgetDates(move);
+    String error = budgetDateService.checkBudgetDates(move);
     if (StringUtils.isNotEmpty(error)) {
       throw new AxelorException(move, TraceBackRepository.CATEGORY_MISSING_FIELD, error);
     }

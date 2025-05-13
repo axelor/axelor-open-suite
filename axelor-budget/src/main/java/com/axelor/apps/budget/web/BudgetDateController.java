@@ -17,6 +17,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,22 +73,18 @@ public class BudgetDateController {
   public void checkBudgetDates(ActionRequest request, ActionResponse response)
       throws AxelorException {
     String labelError = "";
-    if (Invoice.class.equals(request.getContext().getContextClass())) {
-      labelError =
-          Beans.get(BudgetDateService.class)
-              .checkBudgetDates(request.getContext().asType(Invoice.class));
-    } else if (Move.class.equals(request.getContext().getContextClass())) {
-      labelError =
-          Beans.get(BudgetDateService.class)
-              .checkBudgetDates(request.getContext().asType(Move.class));
-    } else if (PurchaseOrder.class.equals(request.getContext().getContextClass())) {
-      labelError =
-          Beans.get(BudgetDateService.class)
-              .checkBudgetDates(request.getContext().asType(PurchaseOrder.class));
-    } else if (SaleOrder.class.equals(request.getContext().getContextClass())) {
-      labelError =
-          Beans.get(BudgetDateService.class)
-              .checkBudgetDates(request.getContext().asType(SaleOrder.class));
+    BudgetDateService budgetDateService = Beans.get(BudgetDateService.class);
+    Context currentContext = request.getContext();
+    Class<?> currentClass = currentContext.getContextClass();
+
+    if (Invoice.class.equals(currentClass)) {
+      labelError = budgetDateService.checkBudgetDates(currentContext.asType(Invoice.class));
+    } else if (Move.class.equals(currentClass)) {
+      labelError = budgetDateService.checkBudgetDates(currentContext.asType(Move.class));
+    } else if (PurchaseOrder.class.equals(currentClass)) {
+      labelError = budgetDateService.checkBudgetDates(currentContext.asType(PurchaseOrder.class));
+    } else if (SaleOrder.class.equals(currentClass)) {
+      labelError = budgetDateService.checkBudgetDates(currentContext.asType(SaleOrder.class));
     } else {
       return;
     }

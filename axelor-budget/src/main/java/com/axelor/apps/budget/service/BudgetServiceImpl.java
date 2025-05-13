@@ -136,13 +136,13 @@ public class BudgetServiceImpl implements BudgetService {
         LocalDate budgetToDate = null;
         BigDecimal amount = BigDecimal.ZERO;
 
-        if (budgetDistribution.getPurchaseOrderLine() != null
-            && budgetDistribution.getPurchaseOrderLine().getPurchaseOrder() != null) {
-          PurchaseOrderLine purchaseOrderLine = budgetDistribution.getPurchaseOrderLine();
+        PurchaseOrderLine purchaseOrderLine = budgetDistribution.getPurchaseOrderLine();
+        SaleOrderLine saleOrderLine = budgetDistribution.getSaleOrderLine();
+
+        if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder() != null) {
           amountInvoiced =
               currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getAmountInvoiced());
+                  budget, purchaseOrderLine.getPurchaseOrder().getAmountInvoiced());
           budgetFromDate = purchaseOrderLine.getBudgetFromDate();
           budgetToDate = purchaseOrderLine.getBudgetToDate();
           amount =
@@ -151,16 +151,15 @@ public class BudgetServiceImpl implements BudgetService {
                   ? budgetDistribution.getAmount().negate()
                   : budgetDistribution.getAmount();
 
-        } else if (budgetDistribution.getSaleOrderLine() != null
-            && budgetDistribution.getSaleOrderLine().getSaleOrder() != null) {
-          SaleOrderLine saleOrderLine = budgetDistribution.getSaleOrderLine();
+        } else if (saleOrderLine != null && saleOrderLine.getSaleOrder() != null) {
+
           orderDate =
               saleOrderLine.getSaleOrder().getOrderDate() != null
                   ? saleOrderLine.getSaleOrder().getOrderDate()
                   : saleOrderLine.getSaleOrder().getCreationDate();
           amountInvoiced =
               currencyScaleService.getCompanyScaledValue(
-                  budget, budgetDistribution.getSaleOrderLine().getSaleOrder().getAmountInvoiced());
+                  budget, saleOrderLine.getSaleOrder().getAmountInvoiced());
           budgetFromDate = saleOrderLine.getBudgetFromDate();
           budgetToDate = saleOrderLine.getBudgetToDate();
           amount =

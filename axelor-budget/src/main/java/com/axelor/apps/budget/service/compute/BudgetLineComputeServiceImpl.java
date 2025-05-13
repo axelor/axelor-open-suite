@@ -20,6 +20,8 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
   protected CurrencyScaleService currencyScaleService;
   protected BudgetLineRepository budgetLineRepository;
 
+  public static final BigDecimal gap = BigDecimal.valueOf(0.01);
+
   @Inject
   public BudgetLineComputeServiceImpl(
       CurrencyScaleService currencyScaleService, BudgetLineRepository budgetLineRepository) {
@@ -122,7 +124,7 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
                 prorataAmount.setScale(
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
             missingAmount = missingAmount.subtract(prorataAmount);
-            BigDecimal gap = BigDecimal.valueOf(0.01);
+
             if (missingAmount.compareTo(gap) == 0) {
               prorataAmount = prorataAmount.add(gap);
             }
