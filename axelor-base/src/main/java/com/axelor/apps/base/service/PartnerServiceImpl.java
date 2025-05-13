@@ -739,19 +739,25 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String checkIfRegistrationCodeExists(Partner partner) {
     String message = "";
-    String registrationCode = partner.getRegistrationCode();
+    String registrationCode = partner.getRegistrationCode().replaceAll("\\s+", "");
     if (StringUtils.isEmpty(registrationCode)) {
       return message;
     }
     Query<Partner> query = partnerRepo.all();
-    StringBuilder filter = new StringBuilder("self.registrationCode = :registrationCode");
-
+    StringBuilder filter =
+        new StringBuilder("REPLACE(self.registrationCode, ' ', '') = :registrationCode");
     if (partner.getId() != null) {
       filter.append(" AND self.id != :id");
+    }
+
+    query = query.filter(filter.toString());
+
+    query = query.bind("registrationCode", registrationCode);
+    if (partner.getId() != null) {
       query = query.bind("id", partner.getId());
     }
-    Partner existingPartner =
-        query.filter(filter.toString()).bind("registrationCode", registrationCode).fetchOne();
+
+    Partner existingPartner = query.fetchOne();
 
     if (existingPartner != null) {
       message =
@@ -759,6 +765,7 @@ public class PartnerServiceImpl implements PartnerService {
               I18n.get(BaseExceptionMessage.PARTNER_REGISTRATION_CODE_ALREADY_EXISTS),
               existingPartner.getFullName());
     }
+
     return message;
   }
 }
