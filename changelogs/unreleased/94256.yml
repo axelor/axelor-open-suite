@@ -1,0 +1,3 @@
+---
+title: "Stock location: fixed last inventory date in stock location line when validating an inventory."
+module: axelor-stock
