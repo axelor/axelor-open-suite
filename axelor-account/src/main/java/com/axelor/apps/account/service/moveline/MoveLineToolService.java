@@ -70,7 +70,7 @@ public interface MoveLineToolService {
   boolean isCutOffActive(MoveLine moveLine);
 
   List<MoveLine> getMoveExcessDueList(
-      boolean excessPayment, Company company, Partner partner, Long invoiceId);
+      boolean excessPayment, Company company, Partner partner, Invoice originInvoice);
 
   boolean isMoveLineSpecialAccount(MoveLine moveLine);
 
