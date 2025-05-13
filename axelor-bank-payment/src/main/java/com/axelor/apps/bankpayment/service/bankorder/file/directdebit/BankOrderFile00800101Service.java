@@ -430,7 +430,7 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
       BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
       Umr receiverUmr =
           Beans.get(UmrService.class)
-              .getActiveUmr(bankOrderLine.getReceiverCompany(), bankOrderLine.getPartner());
+              .getActiveUmr(bankOrderLine.getReceiverCompany(), receiverBankDetails);
 
       if (receiverUmr == null) {
         throw new AxelorException(
