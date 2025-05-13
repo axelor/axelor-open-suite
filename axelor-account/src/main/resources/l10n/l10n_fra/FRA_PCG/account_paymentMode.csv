@@ -4,10 +4,10 @@
 120;"Enc. Carte bancaire";"ENC_CB";"Carte bancaire";1;6;;;;1;;;;;
 130;"Enc. Internet";"ENC_WEB";"Internet";1;8;;;;1;;;;;
 140;"Enc. Prélèvement";"ENC_PRE";"Prélèvement";1;2;"true";7;1;1;;;;;
-150;"Enc. LCR Direct Banque";"ENC_LCR";"LCR";1;10;;;;1;"true";"true";8;"/tmp/";"pain.xxx.cfonb160.dco - LCR"
+150;"Enc. LCR Direct Banque";"ENC_LCR";"LCR";1;10;;;;1;"true";"true";8;"${com.axelor.app.AppSettings.get().get(""data.export.dir"")}";"pain.xxx.cfonb160.dco - LCR"
 160;"Enc. Espèces";"ENC_ESP";"Espèces";1;5;;;;1;;;;;
 170;"Enc. Autre";"ENC_OTH";"Autres moyens de paiement";1;1;;;;1;;;;;
-200;"Dec. Virement";"DEC_VIR";"Virement";2;9;"true";7;1;1;"true";;1;"/tmp/";"pain.001.001.02.sct - Virement SEPA"
+200;"Dec. Virement";"DEC_VIR";"Virement";2;9;"true";7;1;1;"true";;1;"${com.axelor.app.AppSettings.get().get(""data.export.dir"")}";"pain.001.001.02.sct - Virement SEPA"
 210;"Dec. Chèque";"DEC_CHQ";"Chèque";2;7;;;;1;;;;;
 220;"Dec. Carte bancaire";"DEC_CB";"Carte bancaire";2;6;;;;1;;;;;
 230;"Dec. Prélèvement";"DEC_PRE";"Prélèvement";2;2;"true";7;1;1;;;;;

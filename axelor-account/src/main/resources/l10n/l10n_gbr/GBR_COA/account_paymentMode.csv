@@ -6,7 +6,7 @@
 "GBR_COA140";"Inc. Direct debit";"INC_DBT";"Direct debit";1;2;"true";7;1;1;;;;;
 "GBR_COA160";"Inc. Cash";"INC_CSH";"Cash";1;5;;;;1;;;;;
 "GBR_COA170";"Inc. Other";"INC_OTH";"Other payment means";1;1;;;;1;;;;;
-"GBR_COA200";"Out. Wire transfer";"OUT_WT";"Wire transfer";2;9;"true";7;1;1;true;;1;"/tmp/";
+"GBR_COA200";"Out. Wire transfer";"OUT_WT";"Wire transfer";2;9;"true";7;1;1;true;;1;"${com.axelor.app.AppSettings.get().get(""data.export.dir"")}";
 "GBR_COA210";"Out. Cheque";"OUT_CHQ";"Cheque";2;7;;;;1;;;;;
 "GBR_COA220";"Out. Credit card";"OUT_CC";"Credit card";2;6;;;;1;;;;;
 "GBR_COA230";"Out. Direct debit";"OUT_DBT";"Direct debit";2;2;"true";7;1;1;;;;;
