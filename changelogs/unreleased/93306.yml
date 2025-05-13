@@ -1,0 +1,5 @@
+---
+title: "Auto reconcile/Partner: restricted auto reconcile between customer and supplier invoices on partner with compensation enabled."
+module: axelor-account
+developer: |
+  In `MoveLineToolService.getMoveExcessDueList`, changed `Long invoiceId` parameter to `Invoice invoice`. 
