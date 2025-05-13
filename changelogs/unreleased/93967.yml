@@ -1,0 +1,3 @@
+---
+title: "Invoice: prevent automatic mail and hide mail panel for supplier invoices."
+module: axelor-account
