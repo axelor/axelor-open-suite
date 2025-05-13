@@ -512,10 +512,10 @@
           </field>
         </panel>
         <panel name="taxPanel" title="Tax" colSpan="6"
-          showIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'tax'">
+          showIf="account.isTaxAuthorizedOnMoveLine || account.accountType.technicalTypeSelect == 'tax'">
           <field name="taxLineSet" canEdit="false" canNew="false"
             readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
-            showIf="account.isTaxRequiredOnMoveLine" colSpan="6" form-view="tax-line-form"
+            showIf="account.isTaxAuthorizedOnMoveLine" colSpan="6" form-view="tax-line-form"
             grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
             onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
           <field name="vatSystemSelect"
