@@ -232,13 +232,15 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       try {
         if (accountingBatch.getGenerateResultMove() && batch.getDone() > 0) {
           Company company = companyRepo.find(accountingBatch.getCompany().getId());
-          accountingCloseAnnualService.generateResultMove(
-              company,
-              accountingBatch.getYear().getReportedBalanceDate(),
-              accountingBatch.getResultMoveDescription(),
-              accountingBatch.getBankDetails(),
-              accountingBatch.getGeneratedMoveStatusSelect(),
-              resultMoveAmount);
+          Move resultMove =
+              accountingCloseAnnualService.generateResultMove(
+                  company,
+                  accountingBatch.getYear().getReportedBalanceDate(),
+                  accountingBatch.getResultMoveDescription(),
+                  accountingBatch.getBankDetails(),
+                  accountingBatch.getGeneratedMoveStatusSelect(),
+                  resultMoveAmount);
+          updateAccountMove(resultMove, false);
         }
       } catch (AxelorException e) {
         TraceBackService.trace(new AxelorException(e, e.getCategory(), null, batch.getId()));
