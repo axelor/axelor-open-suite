@@ -492,7 +492,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           updateMaturityDate(maturityDate, billOfMaterial, reorderQty)
               .minusDays(mrpLineType.getSecurityDelay());
     }
-
     MrpLine mrpLine =
         super.createProposalMrpLine(
             mrp,
@@ -511,6 +510,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && billOfMaterial != null) {
+
+      if (maturityDate.isBefore(mrpLine.getMaturityDate())) {
+        mrpLine.setWarnDelayFromManufacturing(true);
+        mrpLine.setDeliveryDelayDate(maturityDate);
+      }
 
       MrpLineType manufProposalNeedMrpLineType =
           mrpLineTypeService.getMrpLineType(
