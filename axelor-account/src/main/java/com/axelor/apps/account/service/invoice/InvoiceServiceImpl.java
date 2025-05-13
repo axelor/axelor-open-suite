@@ -282,7 +282,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void ventilate(Invoice invoice) throws AxelorException {
     ventilateProcess(invoice);
-    if (invoice.getInvoiceAutomaticMail()) {
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (invoice.getInvoiceAutomaticMail()
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       sendMail(invoice, invoice.getInvoiceMessageTemplate());
     }
   }
