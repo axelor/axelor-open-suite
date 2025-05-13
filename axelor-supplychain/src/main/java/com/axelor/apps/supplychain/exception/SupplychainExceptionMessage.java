@@ -404,4 +404,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED = /*$$(*/
       "More than one freight carrier pricing line selected, please select only one line." /*)*/;
+
+  public static final String FREIGHT_CARRIER_MODE_PRICING_ERROR = /*$$(*/
+      "An error have been detected on following pricings : %s." /*)*/;
 }

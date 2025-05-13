@@ -20,8 +20,11 @@ package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -33,12 +36,14 @@ import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
 
@@ -239,6 +244,38 @@ public class SaleOrderShipmentServiceImpl implements SaleOrderShipmentService {
               I18n.get(
                   SupplychainExceptionMessage
                       .SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED)));
+    }
+  }
+
+  @Override
+  public void applyPricing(Set<FreightCarrierMode> freightCarrierModeSet) throws AxelorException {
+    String errors = "";
+
+    for (FreightCarrierMode freightCarrierMode : freightCarrierModeSet) {
+      if (freightCarrierMode != null) {
+        Pricing pricing = freightCarrierMode.getFreightCarrierPricing();
+        if (pricing != null) {
+          try {
+            PricingComputer pricingComputer =
+                PricingComputer.of(pricing, freightCarrierMode)
+                    .putInContext("calculatedPrice", EntityHelper.getEntity(freightCarrierMode));
+            pricingComputer.apply();
+          } catch (AxelorException e) {
+            TraceBackService.trace(e);
+            if (errors.length() > 0) {
+              errors = errors.concat(", ");
+            }
+            errors = errors.concat(pricing.getName());
+          }
+        }
+      }
+    }
+
+    if (errors.length() > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.FREIGHT_CARRIER_MODE_PRICING_ERROR),
+          errors);
     }
   }
 }

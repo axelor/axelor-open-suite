@@ -77,6 +77,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -842,6 +843,18 @@ public class SaleOrderController {
                 freightCarrierModeList, Long.valueOf(context.get("_id").toString()));
         response.setCanClose(true);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computePricings(ActionRequest request, ActionResponse response) {
+    try {
+      Set<FreightCarrierMode> freightCarrierModeSet =
+          (Set<FreightCarrierMode>) request.getContext().get("freightCarrierPricingsSet");
+      Beans.get(SaleOrderShipmentService.class).applyPricing(freightCarrierModeSet);
+
+      response.setValue("freightCarrierPricingsSet", freightCarrierModeSet);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
