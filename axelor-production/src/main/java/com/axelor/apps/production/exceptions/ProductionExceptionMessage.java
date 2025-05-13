@@ -393,4 +393,46 @@ public final class ProductionExceptionMessage {
 
   public static final String CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER = /*$$(*/
       "This stock move is linked to a manufacturing order and can't be canceled." /*)*/;
+
+  public static final String CAN_NOT_RENGENERATE_PRODUCT_LINKED_TO_MO = /*$$(*/
+      "Cannot regenerate because the product is already in production (one manuf order exist)" /*)*/;
+
+  public static final String CAN_NOT_REGENERATE_BOM_AS_ALREADY_IN_PRODUCTION = /*$$(*/
+      "Cannot regenerate because the bill of material is in use in production (one manuf order exist)" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY = /*$$(*/
+      "Calculation quantity should not be zero." /*)*/;
+
+  public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s" /*)*/;
+
+  public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more" /*)*/;
+
+  public static final String MRP_PROD_PROCESS_REQUIRED = /*$$(*/
+      "The manufacturing order for %s could not be generated because the bill of material has no production process." /*)*/;
+
+  public static final String SALE_ORDER_EVERY_PO_ALREADY_GENERATED = /*$$(*/
+      "Every sale order lines have already generated a production order." /*)*/;
+
+  public static final String SALE_ORDER_EVERY_PO_ALREADY_GENERATED_FOR_SELECTED = /*$$(*/
+      "Every selected sale order lines have already generated a production order." /*)*/;
+
+  public static final String SALE_ORDER_MO_ADDED_TO_EXISTENT_PO = /*$$(*/
+      "Manufacturing orders have been added to the existent production order." /*)*/;
+
+  public static final String SALE_ORDER_MO_ALREADY_GENERATED = /*$$(*/
+      "Every manufacturing orders have already been generated." /*)*/;
+
+  public static final String SALE_ORDER_MO_ALREADY_GENERATED_SELECTED = /*$$(*/
+      "Every manufacturing orders have already been generated for selected lines." /*)*/;
+
+  public static final String SALE_ORDER_NEW_PO_GENERATED = /*$$(*/
+      "New production order(s) have been created." /*)*/;
+
+  public static final String SALE_ORDER_NEW_PO_GENERATED_SELECTED = /*$$(*/
+      "New production order(s) have been created for selected lines." /*)*/;
+
+  public static final String SALE_ORDER_SELECT_WRONG_LINE = /*$$(*/
+      "There is no production or manufacturing order to generate for one of the selected lines." /*)*/;
 }

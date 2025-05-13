@@ -67,12 +67,15 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
+import com.axelor.apps.base.quickmenu.TradingNameUpdateQuickMenuCreator;
 import com.axelor.apps.base.rest.PartnerRestService;
 import com.axelor.apps.base.rest.PartnerRestServiceImpl;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AlternativeBarcodeService;
+import com.axelor.apps.base.service.AlternativeBarcodeServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.AnonymizerLineService;
@@ -135,6 +138,8 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PfxCertificateCheckService;
+import com.axelor.apps.base.service.PfxCertificateCheckServiceImpl;
 import com.axelor.apps.base.service.PfxCertificateService;
 import com.axelor.apps.base.service.PfxCertificateServiceImpl;
 import com.axelor.apps.base.service.PricedOrderDomainService;
@@ -151,6 +156,8 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPriceListService;
+import com.axelor.apps.base.service.ProductPriceListServiceImpl;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.ProductPriceServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -246,6 +253,8 @@ import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateService;
@@ -330,6 +339,7 @@ import com.axelor.utils.service.translation.TranslationBaseService;
 import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -345,7 +355,7 @@ public class BaseModule extends AxelorModule {
           public boolean matches(Class<?> aClass) {
             return aClass.getSimpleName().endsWith("Controller")
                 && aClass.getPackageName().startsWith("com.axelor.apps")
-                && aClass.getPackageName().endsWith("web");
+                && aClass.getPackageName().contains(".web");
           }
         },
         new AbstractMatcher<>() {
@@ -356,13 +366,16 @@ public class BaseModule extends AxelorModule {
                 && parameters.stream()
                     .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
                 && parameters.stream()
-                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()));
+                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()))
+                && Modifier.isPublic(method.getModifiers())
+                && method.getReturnType().equals(Void.TYPE);
           }
         },
         new ControllerMethodInterceptor());
 
     addQuickMenu(InstanceInfoQuickMenuCreator.class);
     addQuickMenu(ActiveCompanyUpdateQuickMenuCreator.class);
+    addQuickMenu(TradingNameUpdateQuickMenuCreator.class);
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
@@ -526,7 +539,11 @@ public class BaseModule extends AxelorModule {
     bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
     bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
     bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
+    bind(PartnerGenerateService.class).to(PartnerGenerateServiceImpl.class);
     bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
+    bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
+    bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
+    bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
   }
 }

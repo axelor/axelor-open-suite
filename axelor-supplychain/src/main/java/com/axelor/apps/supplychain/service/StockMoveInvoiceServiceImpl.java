@@ -215,7 +215,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           fillInternalReferenceInvoiceFromOutStockMove(stockMove, saleOrderSet));
 
       if (saleOrderSet.size() == 1) {
-        invoice.setSaleOrder(saleOrder);
+        invoice.setSaleOrder(saleOrderSet.iterator().next());
       }
 
       invoice.setDeliveryAddress(stockMove.getToAddress());

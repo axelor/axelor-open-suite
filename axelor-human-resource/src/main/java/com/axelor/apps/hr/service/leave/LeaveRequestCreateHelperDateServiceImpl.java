@@ -1,5 +1,24 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.WorkingDayService;
@@ -21,7 +40,8 @@ public class LeaveRequestCreateHelperDateServiceImpl
   }
 
   @Override
-  public LocalDate computeNextStartDate(LocalDate toDate, int endOnSelect, int nextStartOnSelect) {
+  public LocalDate computeNextStartDate(LocalDate toDate, int endOnSelect, int nextStartOnSelect)
+      throws AxelorException {
     Employee employee =
         Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
     if (endOnSelect == LeaveRequestRepository.SELECT_MORNING) {
@@ -44,7 +64,8 @@ public class LeaveRequestCreateHelperDateServiceImpl
   }
 
   @Override
-  public LocalDate computeNextToDate(LocalDate fromDate, BigDecimal duration, int startOnSelect) {
+  public LocalDate computeNextToDate(LocalDate fromDate, BigDecimal duration, int startOnSelect)
+      throws AxelorException {
     Employee employee =
         Optional.ofNullable(AuthUtils.getUser()).map(User::getEmployee).orElse(null);
 
@@ -59,7 +80,7 @@ public class LeaveRequestCreateHelperDateServiceImpl
   }
 
   protected LocalDate getNextToDateFromMorningStart(
-      LocalDate fromDate, BigDecimal duration, Employee employee) {
+      LocalDate fromDate, BigDecimal duration, Employee employee) throws AxelorException {
     if (duration.compareTo(BigDecimal.valueOf(1)) <= 0) {
       return fromDate;
     }
@@ -83,7 +104,7 @@ public class LeaveRequestCreateHelperDateServiceImpl
   }
 
   protected LocalDate getNextToDateFromAfternoonStart(
-      LocalDate fromDate, BigDecimal duration, Employee employee) {
+      LocalDate fromDate, BigDecimal duration, Employee employee) throws AxelorException {
     if (duration.compareTo(BigDecimal.valueOf(0.5)) == 0) {
       return fromDate;
     }

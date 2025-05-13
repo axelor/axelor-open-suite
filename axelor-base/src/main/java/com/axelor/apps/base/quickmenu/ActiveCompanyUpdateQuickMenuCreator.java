@@ -24,9 +24,11 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.web.UserController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
@@ -67,7 +69,9 @@ public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
 
   protected boolean hasConfigEnabled() {
     AppBase appBase = appBaseService.getAppBase();
-    return !appBase.getIsActivateCompanyChangeShortcut() || !appBase.getEnableMultiCompany();
+    return !appBase.getEnableMultiCompany()
+        || StringUtils.isBlank(appBase.getShortcutMultiSelect())
+        || !appBase.getShortcutMultiSelect().contains(AppBaseRepository.SHORTCUT_ACTIVE_COMPANY);
   }
 
   protected List<QuickMenuItem> getItems() {

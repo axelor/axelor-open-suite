@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -199,6 +199,28 @@ public class PurchaseRequestRestController {
             requestBody.getProductTitle(),
             requestBody.fetchUnit(),
             requestBody.getQuantity());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.PURCHASE_REQUEST_UPDATED),
+        new PurchaseRequestResponse(purchaseRequest));
+  }
+
+  @Operation(
+      summary = "Draft purchase request",
+      tags = {"Draft"})
+  @Path("/draft/{id}")
+  @PUT
+  @HttpExceptionHandler
+  public Response draftPurchaseRequest(
+      @PathParam("id") Long purchaseRequestId, RequestStructure requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(PurchaseRequest.class, purchaseRequestId).check();
+
+    PurchaseRequest purchaseRequest =
+        ObjectFinder.find(PurchaseRequest.class, purchaseRequestId, requestBody.getVersion());
+    Beans.get(PurchaseRequestWorkflowService.class).draftPurchaseRequest(purchaseRequest);
 
     return ResponseConstructor.build(
         Response.Status.OK,

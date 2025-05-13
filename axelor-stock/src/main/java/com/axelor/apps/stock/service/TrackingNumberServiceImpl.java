@@ -21,6 +21,7 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.TrackingNumberConfigurationProfile;
@@ -36,12 +37,15 @@ import java.util.Set;
 public class TrackingNumberServiceImpl implements TrackingNumberService {
 
   protected static final int MAX_ITERATION = 1000;
+  protected final UserService userService;
 
   protected TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService;
 
   @Inject
   public TrackingNumberServiceImpl(
+      UserService userService,
       TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService) {
+    this.userService = userService;
     this.trackingNumberConfigurationProfileService = trackingNumberConfigurationProfileService;
   }
 

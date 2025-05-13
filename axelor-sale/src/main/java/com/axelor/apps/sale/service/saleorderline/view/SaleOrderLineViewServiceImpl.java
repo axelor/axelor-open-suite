@@ -47,11 +47,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
-  public static final String HIDDEN_ATTR = "hidden";
-  public static final String TITLE_ATTR = "title";
-  public static final String SCALE_ATTR = "scale";
-  public static final String SELECTION_IN_ATTR = "selection-in";
-  public static final String READONLY_ATTR = "readonly";
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
@@ -91,6 +86,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     MapTools.addMap(attrs, getPriceAndQtyScale());
     MapTools.addMap(attrs, getTypeSelectSelection());
     MapTools.addMap(attrs, getMultipleQtyLabel(saleOrderLine));
+    MapTools.addMap(attrs, getDeliveryAddressAttrs(saleOrder));
     return attrs;
   }
 
@@ -253,6 +249,15 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
 
     attrs.put("multipleQtyNotRespectedLabel", attrsMap);
 
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> getDeliveryAddressAttrs(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    int statusSelect = saleOrder.getStatusSelect();
+    boolean orderBeingEdited = saleOrder.getOrderBeingEdited();
+    attrs.put("deliveryAddress", Map.of(HIDDEN_ATTR, statusSelect > 1 && !orderBeingEdited));
+    attrs.put("deliveryAddressStr", Map.of(READONLY_ATTR, statusSelect > 1 && !orderBeingEdited));
     return attrs;
   }
 }

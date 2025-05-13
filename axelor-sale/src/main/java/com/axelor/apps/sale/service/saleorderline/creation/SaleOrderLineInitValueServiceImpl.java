@@ -34,7 +34,8 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
   public SaleOrderLineInitValueServiceImpl() {}
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol)
       throws AxelorException {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
@@ -52,7 +53,7 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
     values.putAll(initQty(saleOrderLine));

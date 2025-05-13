@@ -72,7 +72,7 @@ public class PartnerSaleController {
           averagePrice =
               qtyAndPrice
                   .get("price")
-                  .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+                  .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", product.getName());

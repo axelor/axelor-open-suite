@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,9 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectVersion;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.SprintService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -57,14 +58,22 @@ public class ProjectVersionController {
       }
     }
 
-    response.setAttr("generateSprintsBtn", "hidden", isHidden);
-    response.setAttr("sprintList", "hidden", isHidden);
-    response.setAttr("sprintList.project", "hidden", true);
+    response.setAttr("generateSprintsBtn", "hidden", isHidden || projectVersion.getId() == null);
+    response.setAttr("sprintDashletPanel", "hidden", isHidden);
   }
 
-  public void generateBacklogSprint(ActionRequest request, ActionResponse response) {
+  public void checkIfProjectOrVersionConflicts(ActionRequest request, ActionResponse response) {
     ProjectVersion projectVersion = request.getContext().asType(ProjectVersion.class);
-    Beans.get(SprintService.class).generateBacklogSprint(projectVersion);
-    response.setValue("backlogSprint", projectVersion.getBacklogSprint());
+    Project project = null;
+    Context parentContext = request.getContext().getParent();
+    if (parentContext != null && Project.class.equals(parentContext.getContextClass())) {
+      project = parentContext.asType(Project.class);
+    }
+    String error =
+        Beans.get(ProjectVersionService.class)
+            .checkIfProjectOrVersionConflicts(projectVersion, project);
+    if (StringUtils.notEmpty(error)) {
+      response.setError(error);
+    }
   }
 }

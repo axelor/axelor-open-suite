@@ -97,6 +97,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected AppProductionService appProductionService;
 
   protected ProdProcessLineService prodProcessLineService;
+  protected final ProdProcessLineComputationService prodProcessLineComputationService;
+  protected final ProdProcessComputationService prodProcessComputationService;
   protected final BillOfMaterialMrpLineService billOfMaterialMrpLineService;
 
   @Inject
@@ -127,6 +129,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       BillOfMaterialService billOfMaterialService,
       AppProductionService appProductionService,
       ProdProcessLineService prodProcessLineService,
+      ProdProcessLineComputationService prodProcessLineComputationService,
+      ProdProcessComputationService prodProcessComputationService,
       BillOfMaterialMrpLineService billOfMaterialMrpLineService) {
     super(
         mrpRepository,
@@ -155,6 +159,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     this.billOfMaterialService = billOfMaterialService;
     this.appProductionService = appProductionService;
     this.prodProcessLineService = prodProcessLineService;
+    this.prodProcessLineComputationService = prodProcessLineComputationService;
+    this.prodProcessComputationService = prodProcessComputationService;
     this.billOfMaterialMrpLineService = billOfMaterialMrpLineService;
   }
 
@@ -586,7 +592,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
       long durationInDays =
           TimeUnit.SECONDS.toDays(
-              prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty));
+              prodProcessLineComputationService.computeEntireCycleDuration(
+                  null, prodProcessLine, reorderQty));
       calculatedMaturityDate = nextPriorityCalculatedMaturityDate.minusDays(durationInDays);
 
       LocalDate minMaturityDateOfPriority = minMaturityDateByPriority.get(priority);
@@ -631,7 +638,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     long totalDuration = 0;
     ProdProcess prodProcess = defaultBillOfMaterial.getProdProcess();
     if (prodProcess != null) {
-      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, reorderQty);
+      totalDuration = prodProcessComputationService.getLeadTime(prodProcess, reorderQty);
     }
     // If days should be rounded to a upper value
     if (totalDuration != 0 && totalDuration % TimeUnit.DAYS.toSeconds(1) != 0) {

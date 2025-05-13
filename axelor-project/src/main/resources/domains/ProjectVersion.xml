@@ -15,8 +15,8 @@
     <string name="content" title="Content" large="true"/>
     <one-to-many name="sprintList" ref="com.axelor.apps.project.db.Sprint"
       title="Sprints" mappedBy="targetVersion"/>
-    <many-to-one name="backlogSprint" ref="com.axelor.apps.project.db.Sprint"
-      title="Backlog sprint"/>
+
+    <finder-method name="findByTitle" using="title" all="true"/>
 
     <extra-code>
 	   		<![CDATA[

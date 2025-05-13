@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -36,8 +37,9 @@ public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTime
   public TimesheetProjectPPTServiceImpl(
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TimesheetLineService timesheetLineService,
-      AppBaseService appBaseService) {
-    super(projectPlanningTimeRepository, timesheetLineService, appBaseService);
+      AppBaseService appBaseService,
+      UserHrService userHrService) {
+    super(projectPlanningTimeRepository, timesheetLineService, appBaseService, userHrService);
   }
 
   @Override

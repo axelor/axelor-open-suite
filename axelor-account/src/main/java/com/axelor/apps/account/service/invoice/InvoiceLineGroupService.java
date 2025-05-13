@@ -25,4 +25,6 @@ public interface InvoiceLineGroupService {
 
   void setInvoiceLineScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
+
+  void setInvoiceLineTaxLineSetDomain(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
 }

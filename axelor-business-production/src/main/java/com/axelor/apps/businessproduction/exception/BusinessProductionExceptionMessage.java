@@ -41,4 +41,7 @@ public final class BusinessProductionExceptionMessage {
 
   public static final String TIMESHEET_MANUF_ORDER_NOT_ENABLED = /*$$(*/
       "Timesheet on manuf order is not enabled." /*)*/;
+
+  public static final String SALE_ORDER_EDIT_SO_LINK_TO_PROJECT_ERROR = /*$$(*/
+      "You can not edit a confirmed sale order linked to a project." /*)*/;
 }

@@ -31,7 +31,13 @@
     </extend>
 
     <extend target="//field[@name='purchaseOrderSeq']">
-      <attribute name="colSpan" value="8"/>
+      <attribute name="colSpan" value="6"/>
+    </extend>
+    <extend target="//field[@name='typeSelect']">
+      <replace>
+        <field name="typeSelect" showTitle="false" colSpan="2" widget="SingleSelect"
+          if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
+      </replace>
     </extend>
 
   </form>
@@ -42,5 +48,57 @@
     <view type="form" name="manuf-order-form"/>
     <domain>:id member of self.purchaseOrderSet</domain>
   </action-view>
+
+  <action-record name="action-purchase-order-record-set-type-select"
+    model="com.axelor.apps.purchase.db.PurchaseOrder"
+    id="action-production-purchase-order-record-set-type-select">
+    <field name="typeSelect" expr="eval: 1"
+      if="!supplierPartner || !supplierPartner.isSubcontractor"/>
+    <field name="typeSelect" expr="eval: 2"
+      if="supplierPartner &amp;&amp; supplierPartner.isSubcontractor"/>
+  </action-record>
+
+  <search-filters name="purchase-order-filters"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters"
+    id="production-purchase-order-filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="versionNumber" hidden="true"
+      if="!__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()"/>
+    <field name="project" hidden="true"
+      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
+    <field name="tradingName" hidden="true"
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="companyBankDetails" hidden="true"
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
+    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="fromStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="expectedRealisationDate" hidden="true"
+      if="!__config__.app.isApp('supplychain')"/>
+    <field name="amountToBeSpreadOverTheTimetable" hidden="true"
+      if="!__config__.app.isApp('supplychain')"/>
+    <field name="timetableList" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <filter name="purchase-order-filters-my-rfqs" title="My RFQs">
+      <domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id =
+        :_internalUser</domain>
+    </filter>
+    <filter name="purchase-order-filters-my-sales" title="My Sales">
+      <domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id =
+        :_internalUser</domain>
+    </filter>
+    <filter name="purchase-order-filters-standard-purchases" title="Standard purchases"
+      if="__config__.app.getApp('production')?.getManageOutsourcing()">
+      <domain>self.typeSelect = 1</domain>
+    </filter>
+    <filter name="purchase-order-filters-standard-purchases" title="Outsourcing purchases"
+      if="__config__.app.getApp('production')?.getManageOutsourcing()">
+      <domain>self.typeSelect = 2</domain>
+    </filter>
+  </search-filters>
 
 </object-views>

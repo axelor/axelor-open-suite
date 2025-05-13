@@ -53,6 +53,4 @@ public interface ProductVariantService {
   ProductVariant getStockProductVariant(ProductVariant productVariant);
 
   Product getProductVariant(Product parentProduct, Product productModel);
-
-  Product copyAdditionalFields(Product product, Product productModel);
 }

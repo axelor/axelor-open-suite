@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
@@ -354,11 +355,18 @@ public class MoveController {
 
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
       User user = request.getUser();
-      boolean isMassEntryMove =
-          "move-mass-entry-form".equals(request.getContext().get("_viewName").toString());
+      boolean isMassEntryMove = "move-mass-entry-form".equals(context.get("_viewName").toString());
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      JournalRepository journalRepository = Beans.get(JournalRepository.class);
+      move.setJournal(
+          Optional.ofNullable(context.get("_journalId"))
+              .map(Object::toString)
+              .map(Long::valueOf)
+              .map(journalRepository::find)
+              .orElse(null));
 
       response.setValues(moveGroupService.getOnNewValuesMap(move, isMassEntryMove));
       response.setAttrs(moveGroupService.getOnNewAttrsMap(move, user));
@@ -939,5 +947,11 @@ public class MoveController {
     actionViewBuilder.context("_moveId", move.getId());
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void moveCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    response.setAttrs(
+        Beans.get(MoveGroupService.class).getCompanyBankDetailsOnSelectAttrsMap(move));
   }
 }

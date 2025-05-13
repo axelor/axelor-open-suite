@@ -17,7 +17,7 @@
     <many-to-one name="responsiblePartner" title="Responsible partner"
       ref="com.axelor.apps.base.db.Partner" required="true"/>
     <string name="description" title="Description" large="true" multiline="true"/>
-    <many-to-many name="qiResolutionDefaultsSet" title="Defaults"
+    <many-to-many name="qiResolutionDefaultsSet" title="Defects"
       ref="com.axelor.apps.quality.db.QIResolutionDefault" required="true"/>
     <many-to-one name="qiAnalysis" ref="com.axelor.apps.quality.db.QIAnalysis"
       title="Analysis"/>

@@ -20,14 +20,19 @@ package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,10 +40,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class EmployeeFetchServiceImpl implements EmployeeFetchService {
 
   protected EmployeeRepository employeeRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public EmployeeFetchServiceImpl(EmployeeRepository employeeRepository) {
+  public EmployeeFetchServiceImpl(
+      EmployeeRepository employeeRepository, AppBaseService appBaseService) {
     this.employeeRepository = employeeRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -73,5 +81,41 @@ public class EmployeeFetchServiceImpl implements EmployeeFetchService {
     }
 
     return Joiner.on(" AND ").join(query);
+  }
+
+  @Override
+  public List<Employee> getInvitedCollaborators(LocalDate expenseDate, Employee employeeToRemove) {
+    QueryBuilder<Employee> queryBuilder = getInvitedCollaborators(expenseDate);
+    if (employeeToRemove != null) {
+      queryBuilder
+          .add("self.id != :excludedEmployee")
+          .bind("excludedEmployee", employeeToRemove.getId());
+    }
+    return queryBuilder.build().fetch();
+  }
+
+  @Override
+  public List<Employee> filterInvitedCollaborators(
+      List<Long> invitedCollaboratorList, LocalDate expenseDate) {
+    if (invitedCollaboratorList == null || invitedCollaboratorList.isEmpty()) {
+      return new ArrayList<>();
+    }
+    return getInvitedCollaborators(expenseDate)
+        .add("self.id IN :invitedCollaboratorList")
+        .bind("invitedCollaboratorList", invitedCollaboratorList)
+        .build()
+        .fetch();
+  }
+
+  protected QueryBuilder<Employee> getInvitedCollaborators(LocalDate expenseDate) {
+    return QueryBuilder.of(Employee.class)
+        .add(
+            "self.user.blocked = false AND self.hireDate <= :expenseDate"
+                + " AND (self.leavingDate=null OR self.leavingDate >= :expenseDate)"
+                + " AND (self.user.expiresOn is null OR self.user.expiresOn> :currentDate)"
+                + " AND self.mainEmploymentContract.payCompany IN :companySet")
+        .bind("expenseDate", expenseDate)
+        .bind("companySet", AuthUtils.getUser().getCompanySet())
+        .bind("currentDate", appBaseService.getTodayDate(null));
   }
 }

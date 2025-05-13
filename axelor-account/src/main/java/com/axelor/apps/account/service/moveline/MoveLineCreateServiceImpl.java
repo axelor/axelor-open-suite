@@ -377,6 +377,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     log.debug("Creation of move lines of the invoice : {}", invoice.getInvoiceId());
 
     List<MoveLine> moveLines = new ArrayList<>();
+    LocalDate originDate = isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate();
 
     if (partner == null) {
       throw new AxelorException(
@@ -414,7 +415,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               isDebitCustomer,
               invoice.getInvoiceDate(),
               invoice.getDueDate(),
-              invoice.getOriginDate(),
+              originDate,
               1,
               origin,
               null);
@@ -472,7 +473,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
-                invoice.getOriginDate(),
+                originDate,
                 moveLineId++,
                 origin,
                 invoiceLine.getProductName());
@@ -508,7 +509,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 !isDebitCustomer,
                 invoice.getInvoiceDate(),
                 null,
-                invoice.getOriginDate(),
+                originDate,
                 moveLineId++,
                 origin,
                 null);
@@ -590,6 +591,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     MoveLine holdBackMoveLine;
     LocalDate latestDueDate = invoiceTermService.getLatestInvoiceTermDueDate(invoice);
     BigDecimal companyAmount;
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    LocalDate originDate = isPurchase ? invoice.getOriginDate() : invoice.getInvoiceDate();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       companyAmount =
@@ -613,7 +616,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
                 invoiceTerm.getDueDate(),
-                invoice.getOriginDate(),
+                originDate,
                 moveLineId++,
                 origin,
                 null);
@@ -632,7 +635,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   isDebitCustomer,
                   invoice.getInvoiceDate(),
                   latestDueDate,
-                  invoice.getOriginDate(),
+                  originDate,
                   moveLineId++,
                   origin,
                   null);
@@ -678,7 +681,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       TaxLine taxLine,
       String accountType,
       Account newAccount,
-      boolean percentMoveTemplate)
+      boolean percentMoveTemplate,
+      List<TaxLine> nonDeductibleTaxList)
       throws AxelorException {
     BigDecimal debit = moveLine.getDebit();
     BigDecimal credit = moveLine.getCredit();
@@ -760,7 +764,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 move.getJournal(), move.getOrigin(), move.getDescription())));
     moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
-    BigDecimal taxLineValue = taxLine.getValue();
+    BigDecimal taxLineValue = this.computeTaxLineValue(taxLine, nonDeductibleTaxList);
 
     if (percentMoveTemplate) {
       debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
@@ -806,6 +810,51 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newMoveLineCredit);
 
     return newOrUpdatedMoveLine;
+  }
+
+  protected BigDecimal computeTaxLineValue(TaxLine taxLine, List<TaxLine> nonDeductibleTaxList) {
+    BigDecimal taxValue = taxLine.getValue();
+    if (taxLine.getTax().getIsNonDeductibleTax()) {
+      taxValue = this.getAdjustedNonDeductibleTaxValue(taxValue, nonDeductibleTaxList);
+    } else {
+      taxValue = this.getAdjustedTaxValue(taxValue, nonDeductibleTaxList);
+    }
+
+    return taxValue;
+  }
+
+  protected BigDecimal getAdjustedTaxValue(
+      BigDecimal taxValue, List<TaxLine> nonDeductibleTaxList) {
+    BigDecimal deductibleTaxValue =
+        nonDeductibleTaxList.stream()
+            .map(TaxLine::getValue)
+            .reduce(BigDecimal::multiply)
+            .orElse(BigDecimal.ZERO)
+            .divide(
+                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+    return BigDecimal.ONE
+        .subtract(deductibleTaxValue)
+        .multiply(taxValue)
+        .setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getAdjustedNonDeductibleTaxValue(
+      BigDecimal taxValue, List<TaxLine> deductibleTaxList) {
+    BigDecimal nonDeductibleTaxValue = BigDecimal.ZERO;
+
+    for (TaxLine taxLine : deductibleTaxList) {
+      nonDeductibleTaxValue =
+          nonDeductibleTaxValue.add(
+              taxValue.multiply(
+                  taxLine
+                      .getValue()
+                      .divide(
+                          BigDecimal.valueOf(100),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)));
+    }
+    return nonDeductibleTaxValue.setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 
   protected void createMoveLineRCForAutoTax(

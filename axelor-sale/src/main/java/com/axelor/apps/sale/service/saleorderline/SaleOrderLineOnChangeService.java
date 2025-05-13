@@ -24,7 +24,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.Map;
 
 public interface SaleOrderLineOnChangeService {
-  Map<String, Object> qtyOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  Map<String, Object> qtyOnChange(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSol)
       throws AxelorException;
 
   Map<String, Object> taxLineOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)

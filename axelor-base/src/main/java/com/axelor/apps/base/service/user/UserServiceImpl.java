@@ -525,6 +525,14 @@ public class UserServiceImpl implements UserService {
   @Transactional(rollbackOn = Exception.class)
   public void setActiveCompany(User user, Company company) {
     user.setActiveCompany(company);
+    user.setTradingName(null);
+    userRepo.save(user);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setTradingName(User user, TradingName tradingName) {
+    user.setTradingName(tradingName);
     userRepo.save(user);
   }
 }

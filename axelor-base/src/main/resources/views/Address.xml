@@ -18,43 +18,14 @@
     width="large" onLoad="action-group-base-address-onload"
     onSave="action-group-base-address-onsave" onNew="action-group-base-address-onnnew"
     onCopy="action-group-base-address-onload">
-    <panel name="mainPanel" title="Address details" colSpan="12">
-      <field name="country" colSpan="12" canEdit="false"
-        onChange="action-group-base-address-country-change" required="true" form-view="country-form"
-        grid-view="country-grid"/>
-      <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-        <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
-        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
-        <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
-        <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
-        <field name="buildingNumber" onChange="action-address-record-change-streetName"
-          x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
-        <field name="street" canNew="true" colSpan="12"
-          onChange="action-address-record-change-streetName"
-          onSelect="action-address-attrs-update-domain-street" form-view="street-form"
-          grid-view="street-grid"/>
-        <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
-        <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
-        <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
-        <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
-        <field name="townLocationName" colSpan="12" x-bind="{{townLocationName|uppercase}}"/>
-        <field name="districtName" colSpan="12" x-bind="{{districtName|uppercase}}"/>
-        <field name="countrySubDivision" colSpan="12"
-          x-bind="{{countrySubDivision|uppercase}}"/>
-        <field name="city" colSpan="12" canNew="true" canEdit="false"
-          onChange="action-address-change-city, action-address-validate-change-city"
-          onSelect="action-address-attrs-update-domain-city" form-view="city-form"
-          grid-view="city-grid"/>
-        <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
-        <panel name="addressTypePanel">
-          <field name="isInvoicingAddr" title="Invoicing address"
-            showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-          <field name="isDeliveryAddr" title="Delivery address"
-            showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-          <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
-            type="boolean"/>
-        </panel>
-      </panel>
+    <panel-include view="incl-address-main-panel-form"/>
+    <panel name="addressTypePanel">
+      <field name="isInvoicingAddr" title="Invoicing address"
+        showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+      <field name="isDeliveryAddr" title="Delivery address"
+        showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+      <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
+        type="boolean"/>
     </panel>
 
     <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12">
@@ -90,6 +61,41 @@
           field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"/>
       </panel>
 
+    </panel>
+  </form>
+
+  <form name="incl-address-main-panel-form" title="Address"
+    model="com.axelor.apps.base.db.Address" onNew="action-group-base-address-onnnew"
+    onLoad="action-group-base-address-onload" onSave="action-group-base-address-onsave">
+    <panel name="mainPanel" title="Address details" colSpan="12">
+      <field name="country" colSpan="12" canEdit="false"
+        onChange="action-group-base-address-country-change" required="true" form-view="country-form"
+        grid-view="country-grid"/>
+      <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
+        <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
+        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
+        <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
+        <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
+        <field name="buildingNumber" onChange="action-address-record-change-streetName"
+          x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
+        <field name="street" canNew="true" colSpan="12"
+          onChange="action-address-record-change-streetName"
+          onSelect="action-address-attrs-update-domain-street" form-view="street-form"
+          grid-view="street-grid"/>
+        <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
+        <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
+        <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
+        <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
+        <field name="townLocationName" colSpan="12" x-bind="{{townLocationName|uppercase}}"/>
+        <field name="districtName" colSpan="12" x-bind="{{districtName|uppercase}}"/>
+        <field name="countrySubDivision" colSpan="12"
+          x-bind="{{countrySubDivision|uppercase}}"/>
+        <field name="city" colSpan="12" canNew="true" canEdit="false"
+          onChange="action-address-change-city, action-address-validate-change-city"
+          onSelect="action-address-attrs-update-domain-city" form-view="city-form"
+          grid-view="city-grid"/>
+        <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
+      </panel>
     </panel>
   </form>
 

@@ -66,4 +66,7 @@ public interface PrintingTemplatePrintService {
   <T extends Model> String getPrintLinkForList(
       List<Integer> idList, Class<T> contextClass, PrintingTemplate template)
       throws IOException, AxelorException;
+
+  String getPrintFileName(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException;
 }

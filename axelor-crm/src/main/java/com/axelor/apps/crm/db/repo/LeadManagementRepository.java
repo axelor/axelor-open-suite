@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.service.LeadComputeNameService;
@@ -29,12 +32,19 @@ public class LeadManagementRepository extends LeadRepository {
 
   protected AppCrmService appCrmService;
   protected LeadComputeNameService leadComputeNameService;
+  protected AddressTemplateService addressTemplateService;
+  protected AddressService addressService;
 
   @Inject
   public LeadManagementRepository(
-      AppCrmService appCrmService, LeadComputeNameService leadComputeNameService) {
+      AppCrmService appCrmService,
+      LeadComputeNameService leadComputeNameService,
+      AddressTemplateService addressTemplateService,
+      AddressService addressService) {
     this.appCrmService = appCrmService;
     this.leadComputeNameService = leadComputeNameService;
+    this.addressTemplateService = addressTemplateService;
+    this.addressService = addressService;
   }
 
   @Override
@@ -49,6 +59,12 @@ public class LeadManagementRepository extends LeadRepository {
         entity.setLeadStatus(appCrmService.getLeadDefaultStatus());
       }
 
+      Address address = entity.getAddress();
+      if (address != null) {
+        addressTemplateService.setFormattedFullName(address);
+        address.setFullName(addressService.computeFullName(address).toUpperCase());
+        addressTemplateService.checkRequiredAddressFields(address);
+      }
       return super.save(entity);
 
     } catch (Exception e) {

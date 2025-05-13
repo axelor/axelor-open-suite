@@ -75,20 +75,6 @@ public class ProjectPlanningTimeController {
     response.setReload(true);
   }
 
-  public void removeSingleProjectPlanningTime(ActionRequest request, ActionResponse response) {
-
-    ProjectPlanningTime projectPlanningTime =
-        request.getContext().asType(ProjectPlanningTime.class);
-
-    if (projectPlanningTime != null) {
-      Beans.get(ProjectPlanningTimeService.class)
-          .removeProjectPlanningLine(
-              JPA.find(ProjectPlanningTime.class, projectPlanningTime.getId()));
-    }
-
-    response.setReload(true);
-  }
-
   public void setDefaultSiteFromProjectTask(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     if (Beans.get(AppBaseService.class).getAppBase().getEnableSiteManagementForProject()) {

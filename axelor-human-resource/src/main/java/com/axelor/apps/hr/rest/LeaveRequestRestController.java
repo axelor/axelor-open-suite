@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
@@ -13,6 +31,7 @@ import com.axelor.apps.hr.rest.dto.LeaveRequestDurationResponse;
 import com.axelor.apps.hr.rest.dto.LeaveRequestRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckResponseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
@@ -35,6 +54,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -239,7 +259,8 @@ public class LeaveRequestRestController {
   @Path("/compute-leave-available")
   @POST
   @HttpExceptionHandler
-  public Response getLeaveDaysToDate(LeaveDaysToDatePostRequest requestBody) {
+  public Response getLeaveDaysToDate(LeaveDaysToDatePostRequest requestBody)
+      throws AxelorException {
     new SecurityCheck().readAccess(LeaveReason.class, requestBody.getLeaveReasonId()).check();
 
     Employee employee =
@@ -254,5 +275,23 @@ public class LeaveRequestRestController {
                     requestBody.getToDate().atStartOfDay(),
                     employee,
                     requestBody.fetchLeaveReason())));
+  }
+
+  @Operation(
+      summary = "Check leave request",
+      tags = {"Leave request"})
+  @Path("/check/{leaveRequestId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkLeaveRequest(@PathParam("leaveRequestId") Long leaveRequestId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(LeaveRequest.class, leaveRequestId).check();
+    LeaveRequest leaveRequest =
+        ObjectFinder.find(LeaveRequest.class, leaveRequestId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
+        Beans.get(LeaveRequestCheckResponseService.class).createResponse(leaveRequest));
   }
 }

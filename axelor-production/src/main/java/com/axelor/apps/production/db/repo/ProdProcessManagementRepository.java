@@ -18,9 +18,38 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.service.ProdProcessComputationService;
+import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public class ProdProcessManagementRepository extends ProdProcessRepository {
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+
+    Long id = (Long) json.get("id");
+    ProdProcess prodProcess = find(id);
+
+    try {
+      if (prodProcess != null) {
+        BigDecimal qty =
+            prodProcess.getLaunchQty() != null
+                    && prodProcess.getLaunchQty().compareTo(BigDecimal.ZERO) > 0
+                ? prodProcess.getLaunchQty()
+                : BigDecimal.ONE;
+        json.put(
+            "leadTime",
+            Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    return super.populate(json, context);
+  }
 
   @Override
   public ProdProcess save(ProdProcess prodProcess) {

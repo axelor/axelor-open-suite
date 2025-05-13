@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <action-group id="production-action-stock-move-group-cancel"
+    name="action-stock-move-group-cancel">
+    <action name="action-stock-move-method-cancel"
+      if="_contextParent == null || _contextParent?._model != 'com.axelor.apps.production.db.ManufOrder'"/>
+    <action name="action-stock-move-method-cancel-from-manuf-order"
+      if="_contextParent != null &amp;&amp; _contextParent?._model == 'com.axelor.apps.production.db.ManufOrder'"/>
+  </action-group>
+
+  <action-method name="action-stock-move-method-cancel-from-manuf-order">
+    <call class="com.axelor.apps.production.web.StockMoveController"
+      method="cancelFromManufOrder"/>
+  </action-method>
+</object-views>

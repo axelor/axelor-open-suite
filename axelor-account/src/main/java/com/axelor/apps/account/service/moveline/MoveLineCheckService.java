@@ -20,8 +20,10 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import java.util.List;
+import java.util.Set;
 
 public interface MoveLineCheckService {
   void checkAnalyticByTemplate(MoveLine moveLine) throws AxelorException;
@@ -35,4 +37,8 @@ public interface MoveLineCheckService {
   void checkAnalyticAccount(List<MoveLine> moveLineList) throws AxelorException;
 
   void checkAnalyticMoveLinesPercentage(MoveLine moveLine) throws AxelorException;
+
+  void nonDeductibleTaxAuthorized(Move move, MoveLine moveLine) throws AxelorException;
+
+  void checkMoveLineTaxes(Set<TaxLine> taxLineSet) throws AxelorException;
 }

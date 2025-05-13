@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
@@ -1442,5 +1443,17 @@ public class InvoiceController {
             .add("grid", "invoice-grid")
             .context("_showRecord", lateInvoice.getId())
             .map());
+  }
+
+  public void applyGlobalDiscount(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(InvoiceGlobalDiscountService.class).applyGlobalDiscountOnLines(invoice);
+    response.setValues(invoice);
+  }
+
+  public void setDiscountDummies(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setAttrs(Beans.get(InvoiceGlobalDiscountService.class).setDiscountDummies(invoice));
   }
 }

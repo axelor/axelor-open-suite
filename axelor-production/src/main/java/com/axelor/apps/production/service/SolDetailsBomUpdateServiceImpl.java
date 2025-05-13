@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -26,7 +44,6 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BomLineCreationService bomLineCreationService;
-  protected final SaleOrderBomRemoveLineService saleOrderBomRemoveLineService;
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -34,40 +51,31 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   public SolDetailsBomUpdateServiceImpl(
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
-      BomLineCreationService bomLineCreationService,
-      SaleOrderBomRemoveLineService saleOrderBomRemoveLineService) {
+      BomLineCreationService bomLineCreationService) {
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.bomLineCreationService = bomLineCreationService;
-    this.saleOrderBomRemoveLineService = saleOrderBomRemoveLineService;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void updateSolDetailslWithBillOfMaterial(SaleOrderLine saleOrderLine)
+  public void updateSolDetailslWithBillOfMaterial(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetailsList)
       throws AxelorException {
     // Easiest cases where a line has been added or modified.
     logger.debug("Updating {}", saleOrderLine);
 
     var bom = saleOrderLine.getBillOfMaterial();
-    List<SaleOrderLineDetails> saleOrderLineDetailsList =
-        saleOrderLine.getSaleOrderLineDetailsList().stream()
+    List<SaleOrderLineDetails> filteredSaleOrderLineDetailsList =
+        saleOrderLineDetailsList.stream()
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .collect(Collectors.toList());
 
-    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
-      for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
+    if (CollectionUtils.isNotEmpty(filteredSaleOrderLineDetailsList)) {
+      for (SaleOrderLineDetails saleOrderLineDetails : filteredSaleOrderLineDetailsList) {
         updateBomLineSolDetails(saleOrderLineDetails, bom);
       }
     }
-
-    List<BillOfMaterialLine> saleOrderLineBomLineList =
-        saleOrderLine.getSaleOrderLineDetailsList().stream()
-            .map(SaleOrderLineDetails::getBillOfMaterialLine)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    saleOrderBomRemoveLineService.removeBomLines(
-        saleOrderLineBomLineList, bom, ProductRepository.PRODUCT_SUB_TYPE_COMPONENT);
     logger.debug("Updated saleOrderLine {} with bom {}", saleOrderLine, bom);
   }
 
@@ -107,31 +115,38 @@ public class SolDetailsBomUpdateServiceImpl implements SolDetailsBomUpdateServic
   }
 
   @Override
-  public boolean isSolDetailsUpdated(SaleOrderLine saleOrderLine) {
-
-    if (saleOrderLine.getBillOfMaterial() == null) {
+  public boolean isSolDetailsUpdated(
+      SaleOrderLine saleOrderLine, List<SaleOrderLineDetails> saleOrderLineDetails) {
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+    if (billOfMaterial == null) {
       return true;
     }
 
+    var containsAllSubBomLines =
+        Optional.ofNullable(saleOrderLineDetails).orElse(List.of()).stream()
+            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+            .map(SaleOrderLineDetails::getBillOfMaterialLine)
+            .allMatch(
+                subBomLine -> billOfMaterial.getBillOfMaterialLineList().contains(subBomLine));
+
     var nbBomLinesAccountable =
-        saleOrderLine.getBillOfMaterial().getBillOfMaterialLineList().stream()
+        billOfMaterial.getBillOfMaterialLineList().stream()
             .map(BillOfMaterialLine::getProduct)
             .map(Product::getProductSubTypeSelect)
             .filter(type -> type.equals(ProductRepository.PRODUCT_SUB_TYPE_COMPONENT))
             .count();
 
     var nbSaleOrderLineDetails =
-        Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList()).orElse(List.of()).stream()
+        Optional.ofNullable(saleOrderLineDetails).orElse(List.of()).stream()
             .map(SaleOrderLineDetails::getTypeSelect)
             .filter(type -> type == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
             .count();
 
     return nbBomLinesAccountable == nbSaleOrderLineDetails
-        && Optional.ofNullable(saleOrderLine.getSaleOrderLineDetailsList())
-            .orElse(List.of())
-            .stream()
+        && Optional.ofNullable(saleOrderLineDetails).orElse(List.of()).stream()
             .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
-            .allMatch(this::isSolDetailsSyncWithBomLine);
+            .allMatch(this::isSolDetailsSyncWithBomLine)
+        && containsAllSubBomLines;
   }
 
   protected boolean isSolDetailsSyncWithBomLine(SaleOrderLineDetails saleOrderLineDetails) {

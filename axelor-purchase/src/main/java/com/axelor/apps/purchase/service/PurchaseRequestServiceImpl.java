@@ -110,7 +110,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             appBaseService.getTodayDate(purchaseRequest.getCompany()),
             null,
             purchaseRequest.getSupplierPartner(),
-            null));
+            purchaseRequest.getTradingName()));
   }
 
   protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {

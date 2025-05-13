@@ -32,6 +32,7 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -42,6 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -72,6 +74,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   protected BillOfMaterialService billOfMaterialService;
 
+  protected CostSheetService costSheetService;
+
   @Inject
   public BillOfMaterialServiceImpl(
       BillOfMaterialRepository billOfMaterialRepo,
@@ -79,14 +83,15 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService) {
-
+      BillOfMaterialService billOfMaterialService,
+      CostSheetService costSheetService) {
     this.billOfMaterialRepo = billOfMaterialRepo;
     this.tempBomTreeRepo = tempBomTreeRepo;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.billOfMaterialService = billOfMaterialService;
+    this.costSheetService = costSheetService;
   }
 
   private List<Long> processedBom;
@@ -111,9 +116,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         billOfMaterial
             .getCostPrice()
             .divide(
-                billOfMaterial.getQty(),
+                costSheetService.getQtyRatio(billOfMaterial),
                 Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                BigDecimal.ROUND_HALF_UP),
+                RoundingMode.HALF_UP),
         billOfMaterial.getCompany());
 
     if ((Boolean)

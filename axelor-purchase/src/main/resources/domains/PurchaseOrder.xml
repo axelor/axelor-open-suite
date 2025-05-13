@@ -6,7 +6,7 @@
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity name="PurchaseOrder"
-    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.ShippableOrder">
 
     <string name="fullName" namecolumn="true">
   	<![CDATA[
@@ -97,6 +97,9 @@
 	    ]]>
     </many-to-one>
 
+    <integer name="typeSelect" title="Type" selection="purchase.purchase.order.type.select"
+      default="1"/>
+
     <unique-constraint columns="purchaseOrderSeq,company"/>
 
     <extra-code>
@@ -120,6 +123,8 @@
 
 		  public static final int INVOICING_BY_DELIVERY = 2;
 		  public static final int INVOICING_PER_ORDER = 3;
+
+		  public static final int TYPE_STANDARD = 1;
    		]]>
     </extra-code>
 

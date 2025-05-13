@@ -118,23 +118,29 @@ public class StockMoveInvoiceController {
                     stockMove, saleOrderSet.iterator().next(), qtyToInvoiceMap);
           }
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
-          PurchaseOrderMergingResult result =
-              Beans.get(PurchaseOrderMergingService.class)
-                  .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(PurchaseOrderMergingViewService.class)
-                    .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
-            confirmView.context("toStockMove", true);
+          if (purchaseOrderSet.size() > 1) {
+            PurchaseOrderMergingResult result =
+                Beans.get(PurchaseOrderMergingService.class)
+                    .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(PurchaseOrderMergingViewService.class)
+                      .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("qtyToInvoiceMap", qtyToInvoiceMap);
+              confirmView.context("toStockMove", true);
 
-            response.setView(confirmView.map());
-            return;
+              response.setView(confirmView.map());
+              return;
+            }
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                    stockMove, result.getPurchaseOrder(), qtyToInvoiceMap);
+          } else {
+            invoice =
+                stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
+                    stockMove, purchaseOrderSet.iterator().next(), qtyToInvoiceMap);
           }
-          invoice =
-              stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                  stockMove, result.getPurchaseOrder(), qtyToInvoiceMap);
         } else {
           invoice =
               stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(
@@ -240,7 +246,7 @@ public class StockMoveInvoiceController {
             ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-cust-invoice-confirm-form")
-                .param("popup", "true")
+                .param("popup", "reload")
                 .param("show-toolbar", "false")
                 .param("show-confirm", "false")
                 .param("popup-save", "false")
@@ -286,6 +292,7 @@ public class StockMoveInvoiceController {
                                 .getTodayDate(stockMove.getCompany()))
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .map());
+                response.setReload(true);
               } catch (Exception e) {
                 TraceBackService.trace(response, e);
               }
@@ -412,7 +419,7 @@ public class StockMoveInvoiceController {
             ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-suppl-invoice-confirm-form")
-                .param("popup", "true")
+                .param("popup", "reload")
                 .param("show-toolbar", "false")
                 .param("show-confirm", "false")
                 .param("popup-save", "false")
@@ -458,6 +465,7 @@ public class StockMoveInvoiceController {
                             "todayDate",
                             Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
                         .map());
+                response.setReload(true);
               } catch (Exception e) {
                 TraceBackService.trace(response, e);
               }
@@ -584,6 +592,7 @@ public class StockMoveInvoiceController {
                             .orElse(null)));
 
         response.setView(viewBuilder.map());
+        response.setReload(true);
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
         response.setInfo(warningMessage);
@@ -634,6 +643,7 @@ public class StockMoveInvoiceController {
                             .orElse(null)));
 
         response.setView(viewBuilder.map());
+        response.setReload(true);
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
         response.setInfo(warningMessage);

@@ -49,3 +49,5 @@
 "axelor-base";"Product";"product-form";"shippingCoef";"Shipping cost is the final cost associated with the reception of a stocked product"
 "axelor-base";"Partner";"partner-form";"user";"Fill here the salesman assigned to this partner. ""Salesman"" field on sale order will auto-fill with this value if ""User to fill salesman"" in Sales App Config is set to ""User assigned to customer"""
 "axelor-base";"Partner";"partner-form";"payerQuality";"You have to fill payer quality on app account to see a value on this field."
+"axelor-base";"Company";"company-form";"publicHolidayEventsPlanning";"This allows you to define a default holiday planning for your company. This planning will be used to manage your human resources or to keep track of your company's opening times."
+"axelor-base";"Company";"company-form";"weeklyPlanning";"This allows you to define a default weekly planning for your company. This planning will be used to manage your human resources or to keep track of your company's opening times."

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
@@ -25,8 +26,10 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SolBomUpdateService;
+import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.i18n.I18n;
@@ -120,15 +123,35 @@ public class SaleOrderLineController {
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 
     if (billOfMaterial != null && saleOrder != null) {
-      if (!Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)) {
+      if (!Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)
+          || !Beans.get(SolDetailsBomUpdateService.class)
+              .isSolDetailsUpdated(saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
         response.setValue(
             "subSaleOrderLineList",
             saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder));
         response.setValue(
             "saleOrderLineDetailsList",
             Beans.get(SaleOrderLineDetailsBomService.class)
-                .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder));
+                .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine));
       }
+    }
+  }
+
+  public void prodProcessOnChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    var saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    ProdProcess prodProcess = saleOrderLine.getProdProcess();
+    var saleOrder = saleOrderLine.getSaleOrder();
+
+    if (saleOrder == null) {
+      saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
+    }
+
+    if (prodProcess != null) {
+      response.setValue(
+          "saleOrderLineDetailsList",
+          Beans.get(SaleOrderLineDetailsProdProcessService.class)
+              .createSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrder, saleOrderLine));
     }
   }
 }

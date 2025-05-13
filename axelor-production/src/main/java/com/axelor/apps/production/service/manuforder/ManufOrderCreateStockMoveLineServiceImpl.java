@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -45,6 +46,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
   protected ProductCompanyService productCompanyService;
   protected StockMoveLineService stockMoveLineService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected final StockMoveProductionService stockMoveProductionService;
 
   @Inject
   public ManufOrderCreateStockMoveLineServiceImpl(
@@ -53,13 +55,15 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockMoveService stockMoveService,
       ProductCompanyService productCompanyService,
       StockMoveLineService stockMoveLineService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      StockMoveProductionService stockMoveProductionService) {
     this.manufOrderResidualProductService = manufOrderResidualProductService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.stockMoveService = stockMoveService;
     this.productCompanyService = productCompanyService;
     this.stockMoveLineService = stockMoveLineService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.stockMoveProductionService = stockMoveProductionService;
   }
 
   @Override
@@ -227,7 +231,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     }
     StockMove stockMove = stockMoveOpt.get();
 
-    stockMoveService.cancel(stockMove);
+    stockMoveProductionService.cancelFromManufOrder(stockMove);
 
     // clear all lists
     manufOrder
@@ -359,7 +363,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
 
     StockMove stockMove = stockMoveOpt.get();
 
-    stockMoveService.cancel(stockMove);
+    stockMoveProductionService.cancelFromManufOrder(stockMove);
 
     // clear all lists from planned lines
     manufOrder

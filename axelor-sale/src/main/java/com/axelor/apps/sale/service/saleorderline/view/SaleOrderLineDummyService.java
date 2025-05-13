@@ -29,7 +29,8 @@ public interface SaleOrderLineDummyService {
   Map<String, Object> getOnLoadDummies(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
-  Map<String, Object> getOnNewEditableDummies(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+  Map<String, Object> getOnNewEditableDummies(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSaleOrderLine);
 
   Map<String, Object> getOnProductChangeDummies(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;

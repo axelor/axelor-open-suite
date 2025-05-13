@@ -1,10 +1,29 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.PartnerApiConfiguration;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,17 +36,24 @@ import wslite.json.JSONObject;
 public class PartnerApiFetchServiceImpl extends GenericApiFetchService
     implements PartnerApiFetchService {
 
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public PartnerApiFetchServiceImpl(AppBaseService appBaseService) {
+    super(appBaseService);
+    this.appBaseService = appBaseService;
+  }
+
   @Override
-  public String fetch(PartnerApiConfiguration partnerApiConfiguration, String siretNumber)
-      throws AxelorException {
-    if (partnerApiConfiguration == null || StringUtils.isEmpty(siretNumber)) {
+  public String fetch(String siretNumber) throws AxelorException {
+    if (StringUtils.isEmpty(siretNumber)) {
       return StringUtil.EMPTY_STRING;
     }
     siretNumber = cleanAndValidateSiret(siretNumber);
     if (siretNumber == null) {
       return I18n.get(BaseExceptionMessage.API_INVALID_SIRET_NUMBER);
     }
-    return getData(partnerApiConfiguration, siretNumber);
+    return getData(siretNumber);
   }
 
   protected String cleanAndValidateSiret(String siretNumber) {
@@ -41,16 +67,17 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
   }
 
   @Override
-  protected Map<String, String> getHeaders(PartnerApiConfiguration configuration) {
+  protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-    headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + configuration.getApiKey());
+    headers.put(
+        HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getAppBase().getSireneAccessToken());
     return headers;
   }
 
   @Override
-  protected String getUrl(PartnerApiConfiguration partnerApiConfiguration, String siretNumber) {
-    return partnerApiConfiguration.getApiUrl() + "/siret/" + siretNumber;
+  protected String getUrl(String siretNumber) throws AxelorException {
+    return appBaseService.getSireneUrl() + "/siret/" + siretNumber;
   }
 
   @Override

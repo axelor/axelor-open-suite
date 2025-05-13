@@ -182,15 +182,8 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       PrintingGenFactoryContext context,
       boolean toAttach)
       throws AxelorException {
-    try {
-      outputFileName = templateComputeNameService.computeFileName(outputFileName, context);
-    } catch (Exception e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.PRINTING_TEMPLATE_SCRIPT_ERROR),
-          template.getName(),
-          e.getMessage());
-    }
+
+    outputFileName = getPrintFileName(template, outputFileName, context);
     List<File> printFiles = getPrintFilesList(prints);
     File file = PrintingTemplateHelper.mergeToFile(printFiles, outputFileName);
     if (toAttach && context != null && context.getModel() != null) {
@@ -224,5 +217,25 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
       return template.getScriptFieldName();
     }
     return template.getName();
+  }
+
+  @Override
+  public String getPrintFileName(PrintingTemplate template, PrintingGenFactoryContext context)
+      throws AxelorException {
+    return getPrintFileName(template, getTemplateName(template), context);
+  }
+
+  protected String getPrintFileName(
+      PrintingTemplate template, String outputFileName, PrintingGenFactoryContext context)
+      throws AxelorException {
+    try {
+      return templateComputeNameService.computeFileName(outputFileName, context);
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PRINTING_TEMPLATE_SCRIPT_ERROR),
+          template.getName(),
+          e.getMessage());
+    }
   }
 }

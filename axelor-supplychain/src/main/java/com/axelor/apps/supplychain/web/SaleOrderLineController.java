@@ -38,9 +38,9 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDomainSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -52,7 +52,6 @@ import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -408,19 +407,14 @@ public class SaleOrderLineController {
   public void saleSupplySelectOnChange(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService =
-        Beans.get(SaleOrderLineProductSupplychainService.class);
     SaleOrder saleOrder =
         SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
-    Map<String, Object> saleOrderLineMap = new HashMap<>();
-    saleOrderLineMap.putAll(
-        saleOrderLineProductSupplychainService.getProductionInformation(saleOrderLine, saleOrder));
-    saleOrderLineMap.putAll(
-        saleOrderLineProductSupplychainService.setSupplierPartnerDefault(saleOrderLine, saleOrder));
+    SaleOrderLineOnSaleSupplyChangeService saleOrderLineOnSaleSupplyChangeService =
+        Beans.get(SaleOrderLineOnSaleSupplyChangeService.class);
     response.setAttrs(
-        Beans.get(SaleOrderLineViewSupplychainService.class)
-            .getSaleSupplySelectOnChangeAttrs(saleOrderLine, saleOrder));
-    response.setValues(saleOrderLineMap);
+        saleOrderLineOnSaleSupplyChangeService.onSaleSupplyChangeAttrs(saleOrderLine, saleOrder));
+    response.setValues(
+        saleOrderLineOnSaleSupplyChangeService.onSaleSupplyChangeValues(saleOrderLine, saleOrder));
 
     // Check
     Beans.get(SaleOrderLineCheckSupplychainService.class)

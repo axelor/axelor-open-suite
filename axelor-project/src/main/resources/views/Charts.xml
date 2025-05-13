@@ -50,5 +50,50 @@
     <category key="employee" title="Employee"/>
     <series key="charge" type="bar" title="Planned charge"/>
   </chart>
+  <grid name="project-task-dashboard-grid" title="Project"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="projectTaskCategory.name" title="Project task category"
+      type="com.axelor.apps.project.db.ProjectTaskCategory"/>
+    <field name="ticketNumber" title="Ticket number" type="String"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name" title="Name"/>
+    <field name="assignedTo.fullName" title="AssignedTo" type="com.axelor.auth.db.User"/>
+    <field name="status.name" title="Status" type="com.axelor.apps.project.db.TaskStatus"/>
+    <field name="taskDate" title="Start date" type="date"/>
+    <field name="priority.name" title="Priority"
+      type="com.axelor.apps.project.db.ProjectPriority"/>
+    <field name="progress" title="Progress" type="BigDecimal" aggregate="avg"
+      widget="Progress"/>
+    <field name="budgetedTime" title="Budgeted time" aggregate="sum" type="String"/>
+  </grid>
+
+  <grid name="project-planning-time-dashboard-grid" title="Project"
+    model="com.axelor.apps.project.db.ProjectPlanningTime">
+    <field name="project.name" type="com.axelor.apps.project.db.Project"/>
+    <field name="employee.name" title="Employee" type="com.axelor.apps.hr.db.Employee"/>
+    <field name="projectTask.name" title="Project task"
+      type="com.axelor.apps.project.db.ProjectTask"/>
+    <field name="timeUnit.name" title="Time unit" type="String"/>
+    <field name="plannedTime" title="Planned time" aggregate="sum" type="String"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+      if-module="axelor-human-resource"/>
+    <field name="startDateTime" title="Start date"/>
+    <field name="endDateTime" title="End date"/>
+  </grid>
+  <grid name="project-allocation-line-grid" title="Project"
+    model="com.axelor.apps.hr.db.AllocationLine" orderBy="period.name,project.name,employee.name">
+    <field name="project.name" type="com.axelor.apps.project.db.Project"/>
+    <field name="employee.name" title="Employee" type="com.axelor.apps.hr.db.Employee"/>
+    <field name="period.name" title="Period" type="com.axelor.apps.base.db.Period"/>
+    <field name="allocated" title="Allocated" aggregate="sum" type="String"/>
+  </grid>
+
+  <grid name="project-sprint-grid" title="Sprints" model="com.axelor.apps.project.db.Sprint">
+    <field name="name" title="Name"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="sequence" hidden="true"/>
+    <field name="sprintManagementSelect" hidden="true"/>
+  </grid>
 
 </object-views>

@@ -104,7 +104,6 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
             .map(User::getActiveCompany)
             .map(Company::getPrintingSettings)
             .orElse(null);
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
 
     saleOrderMap.put("exTaxTotal", BigDecimal.ZERO);
     saleOrderMap.put("taxTotal", BigDecimal.ZERO);
@@ -124,6 +123,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     saleOrderMap.put("template", saleOrder.getTemplate());
 
     if (company != null) {
+      SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
       saleOrderMap.put("duration", saleConfig.getDefaultValidityDuration());
       saleOrderMap.put("currency", company.getCurrency());
     }
@@ -133,9 +133,9 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
 
   protected Map<String, Object> getInAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(saleOrder.getCompany());
     Company company = companyService.getDefaultCompany(null);
     if (company != null) {
+      SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
       int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
       boolean inAti =
           saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS

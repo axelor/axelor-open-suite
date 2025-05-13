@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.ProdProcessWorkflowService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -35,6 +36,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Singleton
@@ -184,6 +186,20 @@ public class ProdProcessController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void recomputeLeadTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+    BigDecimal qty =
+        prodProcess.getLaunchQty() != null
+                && prodProcess.getLaunchQty().compareTo(BigDecimal.ZERO) > 0
+            ? prodProcess.getLaunchQty()
+            : BigDecimal.ONE;
+    if (prodProcess.getCompany() != null) {
+      response.setValue(
+          "leadTime", Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
     }
   }
 }

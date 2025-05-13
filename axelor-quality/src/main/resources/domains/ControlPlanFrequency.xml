@@ -6,15 +6,7 @@
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
   <entity name="ControlPlanFrequency" cacheable="true">
-    <string name="name" translatable="true">
-      <![CDATA[
-    	String fullName = "";
-    	if(sampleQty != null && sampleFrequency != null && sampleQtyUnit != null && sampleFrequencyUnit != null){
-    		return sampleQty.toString() + " (" + sampleQtyUnit.getName() + ") " + "each" + " " + sampleFrequency.toString() + " (" + sampleFrequencyUnit.getName() + ") ";
-    	}
-    	return "";
-    ]]>
-    </string>
+    <string name="name" translatable="true" readonly="true"/>
     <integer name="sampleTypeSelect" selection="quality.control.plan.frequency.type.select"
       title="Sample type"/>
     <decimal name="sampleQty" title="Sample quantity" required="true"/>

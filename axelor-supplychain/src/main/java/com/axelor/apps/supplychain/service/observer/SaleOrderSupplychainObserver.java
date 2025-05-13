@@ -21,6 +21,8 @@ package com.axelor.apps.supplychain.service.observer;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
+import com.axelor.apps.sale.service.event.SaleOrderCopy;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderConfirmSupplychainService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
@@ -31,5 +33,10 @@ public class SaleOrderSupplychainObserver {
     SaleOrder saleOrder = event.getSaleOrder();
     event.setNotifyMessage(
         Beans.get(SaleOrderConfirmSupplychainService.class).confirmProcess(saleOrder));
+  }
+
+  public void copySaleOrder(@Observes SaleOrderCopy event) {
+    SaleOrder saleOrder = event.getSaleOrder();
+    Beans.get(SaleOrderCopySupplychainService.class).copySaleOrderSupplychainProcess(saleOrder);
   }
 }

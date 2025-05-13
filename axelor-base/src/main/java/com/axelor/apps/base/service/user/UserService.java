@@ -198,4 +198,6 @@ public interface UserService {
   List<MetaPermissionRule> getMetaPermissionRules(User user);
 
   void setActiveCompany(User user, Company company);
+
+  void setTradingName(User user, TradingName tradingName);
 }

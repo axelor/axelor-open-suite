@@ -42,17 +42,18 @@ public class SaleOrderLineInitValueProjectServiceImpl
   }
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol)
       throws AxelorException {
-    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine);
+    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine, parentSol);
     values.putAll(fillProject(saleOrder, saleOrderLine));
     return values;
   }
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine);
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
+    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine, parentSol);
     values.putAll(fillProject(saleOrder, saleOrderLine));
     return values;
   }

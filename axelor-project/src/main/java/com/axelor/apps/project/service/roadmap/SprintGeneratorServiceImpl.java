@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.project.service.roadmap;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -11,16 +29,21 @@ import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SprintGeneratorServiceImpl implements SprintGeneratorService {
 
@@ -49,7 +72,7 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
 
     addDatesFields(project, projectVersion, valuesMap);
     valuesMap.put("project", project);
-    valuesMap.put("projectVersion", projectVersion);
+    valuesMap.put("targetVersion", projectVersion);
 
     return valuesMap;
   }
@@ -164,6 +187,24 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
     return sprintSet;
   }
 
+  @Override
+  public List<Sprint> getProjectSprintList(Project project) {
+    List<Sprint> sprintList = new ArrayList<>();
+    if (Objects.equals(
+        project.getSprintManagementSelect(), ProjectRepository.SPRINT_MANAGEMENT_PROJECT)) {
+      sprintList = project.getSprintList();
+    }
+    if (Objects.equals(
+        project.getSprintManagementSelect(), ProjectRepository.SPRINT_MANAGEMENT_VERSION)) {
+      sprintList =
+          project.getRoadmapSet().stream()
+              .map(ProjectVersion::getSprintList)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
+    }
+    return sprintList;
+  }
+
   @Transactional(rollbackOn = Exception.class)
   protected Sprint createSprint(
       Project project,
@@ -186,5 +227,15 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
             + DATE_FORMATTER.format(toDate));
 
     return sprintRepository.save(sprint);
+  }
+
+  @CallMethod
+  public List<Long> getSprintList(Long projectId) {
+    List<Sprint> sprintList = new ArrayList<>();
+    if (projectId != null) {
+      Project project = projectRepository.find(projectId);
+      sprintList = getProjectSprintList(project);
+    }
+    return sprintList.stream().map(Sprint::getId).collect(Collectors.toList());
   }
 }

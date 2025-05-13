@@ -73,25 +73,30 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   @Override
   protected void process() {
-    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    try {
+      AccountingBatch accountingBatch = batch.getAccountingBatch();
 
-    LocalDate moveDate = accountingBatch.getMoveDate();
-    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-    updateBatch(moveDate, accountingCutOffTypeSelect);
+      LocalDate moveDate = accountingBatch.getMoveDate();
+      int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
+      updateBatch(moveDate, accountingCutOffTypeSelect);
 
-    if (accountingCutOffTypeSelect
-        < AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
-      if (this.recordIdList == null) {
-        this._processStockMovesByQuery(accountingBatch);
+      if (accountingCutOffTypeSelect
+          < AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
+        if (this.recordIdList == null) {
+          this._processStockMovesByQuery(accountingBatch);
+        } else {
+          this._processStockMovesByIds(accountingBatch);
+        }
       } else {
-        this._processStockMovesByIds(accountingBatch);
+        if (this.recordIdList == null) {
+          this._processByQuery(accountingBatch);
+        } else {
+          this._processByIds(accountingBatch);
+        }
       }
-    } else {
-      if (this.recordIdList == null) {
-        this._processByQuery(accountingBatch);
-      } else {
-        this._processByIds(accountingBatch);
-      }
+    } catch (Exception e) {
+      TraceBackService.trace(e, null, batch.getId());
+      incrementAnomaly();
     }
   }
 

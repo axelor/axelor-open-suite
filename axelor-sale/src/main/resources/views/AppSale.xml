@@ -12,8 +12,11 @@
       <field name="printingOnSOFinalization" widget="boolean-switch"
         readonlyIf="manageSaleOrderVersion"/>
       <field name="isPastVersionRecovery" widget="boolean-switch"
-        readonlyIf="!manageSaleOrderVersion"/>
+        readonlyIf="!manageSaleOrderVersion || isQuotationAndOrderSplitEnabled"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
+      <field name="enableConfiguratorEdition" widget="boolean-switch"
+        showIf="enableConfigurator"/>
+      <field name="enableLineDuplication" widget="boolean-switch"/>
       <field name="allowPendingOrderModification" widget="boolean-switch"/>
       <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
       <field name="printingConfigPerSaleOrder" widget="boolean-switch"/>
@@ -28,12 +31,13 @@
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
       <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
-      <field name="isGlobalDiscountEnabledOnSaleOrder" widget="boolean-switch"/>
       <field name="isCartManagementEnabled" widget="boolean-switch"/>
+      <field name="isQuotationAndOrderSplitEnabled" widget="boolean-switch"
+        onChange="action-app-sale-validate-split-onchange"/>
 
     </panel>
     <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
-      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.<br>Tree line: Activate multi-level sale order lines. (Older version of the Editable tree display. Will be removed in the next version.)]]></help>
+      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.]]></help>
       <field name="listDisplayTypeSelect" colSpan="6"
         onChange="action-app-sale-attrs-reset-discount-enabled"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
@@ -77,5 +81,16 @@
   <action-attrs name="action-app-sale-attrs-reset-discount-enabled">
     <attribute for="isDiscountEnabledOnEditableGrid" name="value" expr="eval: false"
       if="eval: listDisplayTypeSelect == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
+  </action-attrs>
+
+  <action-validate name="action-app-sale-validate-split-onchange">
+    <error
+      message="If you want to enable this configuration, interco sale order can not be created at finalized quotation. Please change the configuration in supplychain application."
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.intercoSaleCreatingStatusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"
+      action="action-app-sale-attrs-reset-split-enabled"/>
+  </action-validate>
+
+  <action-attrs name="action-app-sale-attrs-reset-split-enabled">
+    <attribute for="isQuotationAndOrderSplitEnabled" name="value" expr="eval: false"/>
   </action-attrs>
 </object-views>

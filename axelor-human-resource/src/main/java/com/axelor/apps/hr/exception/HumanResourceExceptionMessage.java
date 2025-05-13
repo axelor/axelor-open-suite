@@ -108,6 +108,8 @@ public final class HumanResourceExceptionMessage {
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   public static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
       "You now have a negative number of leaves available for the reason %s" /*)*/;
+  public static final String LEAVE_ALLOW_NEGATIVE_ALERT_2 = /*$$(*/
+      "You will have a negative number of leaves available." /*)*/;
   public static final String LEAVE_REASON_NO_UNIT = /*$$(*/
       "Please, choose unit in leave reason %s." /*)*/;
   public static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
@@ -418,4 +420,21 @@ public final class HumanResourceExceptionMessage {
 
   public static final String API_LEAVE_REQUEST_NONE_CREATED = /*$$(*/
       "No leave requests were created." /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_FIRST_REQUEST = /*$$(*/
+      "No project planning time exists for this task. Do you want to create new project planning lines?" /*)*/;
+  public static final String PROJECT_PLANNING_TIME_NEW_REQUEST = /*$$(*/
+      "Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create new project planning lines?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT = /*$$(*/
+      "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_EXISTING_WITH_OLD_DURATION = /*$$(*/
+      "Project planning time on the sprint dates are existing, do you want to update these with the new budgeted time?" /*)*/;
+
+  public static final String LEAVE_REQUEST_NOT_ENOUGH_DAYS = /*$$(*/
+      "You will not have enough leaves available for this request." /*)*/;
+
+  public static final String TIMESHEET_CREATE_NO_USER_ERROR = /*$$(*/
+      "No user was found when creating the timesheet." /*)*/;
 }

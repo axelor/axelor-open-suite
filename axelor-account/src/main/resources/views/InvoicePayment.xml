@@ -36,7 +36,7 @@
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
       <field name="amount" onChange="action-invoice-payment-group-change-amounts"
-        x-scale="$currencyScale"/>
+        x-scale="$currencyScale" validIf="amount &gt; 0"/>
       <field name="currency" canEdit="false" readonlyIf="$isMultiCurrency"
         form-view="currency-form" grid-view="currency-grid"
         onChange="action-invoice-payment-group-change-amounts"/>

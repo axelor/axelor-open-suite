@@ -49,7 +49,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Objects;
 import javax.inject.Singleton;
 
 @Singleton
@@ -248,7 +247,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public Unit getUnitDays() throws AxelorException {
     AppBase appBase = getAppBase();
     Unit daysUnit = appBase.getUnitDays();
-    if (Objects.isNull(daysUnit)) {
+    if (daysUnit == null) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -261,7 +260,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public Unit getUnitHours() throws AxelorException {
     AppBase appBase = getAppBase();
     Unit hoursUnit = appBase.getUnitHours();
-    if (Objects.isNull(hoursUnit)) {
+    if (hoursUnit == null) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -271,10 +270,23 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
+  public Unit getUnitMinutes() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit minuteUnit = appBase.getUnitMinutes();
+    if (minuteUnit == null) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_MINUTES));
+    }
+    return minuteUnit;
+  }
+
+  @Override
   public BigDecimal getDailyWorkHours() throws AxelorException {
     AppBase appBase = getAppBase();
     BigDecimal dailyWorkHours = appBase.getDailyWorkHours();
-    if (Objects.isNull(dailyWorkHours) || dailyWorkHours.signum() <= 0) {
+    if (dailyWorkHours == null || dailyWorkHours.signum() <= 0) {
       throw new AxelorException(
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -297,6 +309,62 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       return 10;
     } else {
       return processTimeout;
+    }
+  }
+
+  @Override
+  public String getSireneTokenGeneratorUrl() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String tokenGeneratorUrl = appBase.getSireneTokenGeneratorUrl();
+    if (tokenGeneratorUrl != null) {
+      return tokenGeneratorUrl;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING));
+    }
+  }
+
+  @Override
+  public String getSireneUrl() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String sireneUrl = appBase.getSireneUrl();
+    if (sireneUrl != null) {
+      return sireneUrl;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_URL_MISSING));
+    }
+  }
+
+  @Override
+  public String getSireneKey() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String sireneKey = appBase.getSireneKey();
+    if (sireneKey != null) {
+      return sireneKey;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_KEY_MISSING));
+    }
+  }
+
+  @Override
+  public String getSireneSecret() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String sireneSecret = appBase.getSireneSecret();
+    if (sireneSecret != null) {
+      return sireneSecret;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_SECRET_MISSING));
     }
   }
 }

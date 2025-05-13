@@ -101,9 +101,13 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
     TaxEquiv taxEquiv = null;
 
     if (move.getFiscalPosition() != null) {
-      taxEquiv = fiscalPositionAccountService.getTaxEquiv(move.getFiscalPosition(), taxSet);
+      taxEquiv =
+          fiscalPositionAccountService.getTaxEquivFromOrToTaxSet(
+              move.getFiscalPosition(), taxLineSet);
     } else if (partner != null && partner.getFiscalPosition() != null) {
-      taxEquiv = fiscalPositionAccountService.getTaxEquiv(partner.getFiscalPosition(), taxSet);
+      taxEquiv =
+          fiscalPositionAccountService.getTaxEquivFromOrToTaxSet(
+              partner.getFiscalPosition(), taxLineSet);
     }
 
     if (taxEquiv != null) {

@@ -30,6 +30,7 @@
 
     <panel name="otherDetailsPanel">
       <field name="name"/>
+      <field name="configuratorVersion" readonly="true"/>
       <button name="configureBtn" title="Configure" showIf="id == null" onClick="save"/>
       <panel-related name="attributesPanel" field="attributes" hideIf="id == null"
         onChange="action-configurator-creator-record-desactivate,save,action-configurator-creator-method-update-attributes"
@@ -141,6 +142,10 @@
         </editor>
       </field>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
   <form name="import-configurator-creator-form" title="Import configurator creators"
@@ -184,6 +189,7 @@
 
   <action-record name="action-configurator-creator-record-desactivate"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
+    <field name="configuratorVersion" expr="eval: configuratorVersion + 1" if="isActive"/>
     <field name="isActive" expr="eval: false"/>
   </action-record>
 

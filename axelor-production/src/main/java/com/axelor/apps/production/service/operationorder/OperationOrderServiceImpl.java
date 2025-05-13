@@ -31,6 +31,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
@@ -69,6 +70,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   protected ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService;
   protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
   protected ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService;
+  protected final ProdProcessLineComputationService prodProcessLineComputationService;
 
   @Inject
   public OperationOrderServiceImpl(
@@ -79,7 +81,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       OperationOrderOutsourceService operationOrderOutsourceService,
       ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService,
+      ProdProcessLineComputationService prodProcessLineComputationService) {
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.prodProcessLineService = prodProcessLineService;
@@ -88,6 +91,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     this.manufOrderCheckStockMoveLineService = manufOrderCheckStockMoveLineService;
     this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
     this.manufOrderUpdateStockMoveService = manufOrderUpdateStockMoveService;
+    this.prodProcessLineComputationService = prodProcessLineComputationService;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -278,7 +282,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    return prodProcessLineService.computeEntireCycleDuration(operationOrder, prodProcessLine, qty);
+    return prodProcessLineComputationService.computeEntireCycleDuration(
+        operationOrder, prodProcessLine, qty);
   }
 
   /**

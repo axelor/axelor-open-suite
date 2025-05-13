@@ -6,11 +6,11 @@
   <form id="business-production-business-project-form" name="business-project-form"
     title="Business project" model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
-    onNew="action-business-project-project-group-on-new"
-    onSave="action-project-method-check-resource-availibility" extension="true">
+    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save"
+    extension="true">
 
-    <extend target="//panel[@name='saleOrderPanel']">
-      <insert position="inside">
+    <extend target="//panel-dashlet[@name='saleOrderLinePanelDashlet']">
+      <insert position="after">
         <button name="generateProdOrdersBtn" title="Generate production orders"
           onClick="action-project-method-generate-prod-orders"/>
       </insert>
@@ -21,5 +21,4 @@
     <call class="com.axelor.apps.businessproduction.web.ProjectController"
       method="generateProdOrders"/>
   </action-method>
-
 </object-views>

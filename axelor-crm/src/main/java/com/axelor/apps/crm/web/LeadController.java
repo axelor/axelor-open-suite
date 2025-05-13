@@ -20,8 +20,10 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
@@ -46,6 +48,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class LeadController {
@@ -224,6 +227,20 @@ public class LeadController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getAddressMetaField(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    Address address = lead.getAddress();
+    if (address != null && address.getCountry() != null) {
+      Map<String, Map<String, Object>> map =
+          Beans.get(AddressAttrsService.class).getCountryAddressMetaFieldOnChangeAttrsMap(address);
+      Map<String, Map<String, Object>> attrsMap =
+          map.entrySet().stream()
+              .collect(Collectors.toMap(entry -> "address." + entry.getKey(), Map.Entry::getValue));
+
+      response.setAttrs(attrsMap);
     }
   }
 }

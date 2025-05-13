@@ -32,4 +32,6 @@ public interface ITranslation {
   public static final String PRICING_CUSTOM_TITLE_PREVIOUS_PRICING = /*$$(*/
       "Previous pricing"; /*)*/
   public static final String PRICING_CUSTOM_TITLE_NEXT_PRICING = /*$$(*/ "Next pricing"; /*)*/
+  public static final String CONFIGURATOR_VERSION_IS_DIFFERENT =
+      /*$$(*/ "Configurator version is different than the version of its configurator creator, therefore only a simple duplicate will be created, proceed ?"; /*)*/
 }

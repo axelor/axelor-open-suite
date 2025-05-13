@@ -36,15 +36,18 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
   protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected AppPurchaseService appPurchaseService;
+  protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
 
   @Inject
   public PurchaseOrderWorkflowServiceImpl(
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepo,
-      AppPurchaseService appPurchaseService) {
+      AppPurchaseService appPurchaseService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.appPurchaseService = appPurchaseService;
+    this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
   }
 
   @Override
@@ -81,6 +84,7 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
     purchaseOrder.setValidatedByUser(AuthUtils.getUser());
 
     purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
+    purchaseOrderTypeSelectService.setTypeSelect(purchaseOrder);
 
     purchaseOrderService.updateCostPrice(purchaseOrder);
   }

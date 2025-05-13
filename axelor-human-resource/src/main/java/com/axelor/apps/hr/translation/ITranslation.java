@@ -90,6 +90,8 @@ public interface ITranslation {
   public static final String EXPENSE_LINE_UPDATED = /*$$(*/
       "Expense line successfully updated." /*)*/;
   public static final String EXPENSE_UPDATED = /*$$(*/ "Expense successfully updated." /*)*/;
+  public static final String EXPENSE_UPDATED_NO_MAIL = /*$$(*/
+      "Expense successfully updated. An error occurred while sending the mail." /*)*/;
   public static final String TIMESHEET_UPDATED = /*$$(*/ "Timesheet successfully updated." /*)*/;
   public static final String TIMESHEET_LINE_UPDATED = /*$$(*/
       "Timesheet line successfully updated." /*)*/;

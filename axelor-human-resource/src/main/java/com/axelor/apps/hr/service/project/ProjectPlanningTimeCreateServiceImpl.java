@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
@@ -46,6 +64,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
   protected TimesheetLineRepository timesheetLineRepository;
   protected AppBaseService appBaseService;
   protected ProjectTimeUnitService projectTimeUnitService;
+  protected ProjectPlanningTimeToolService projectPlanningTimeToolService;
 
   @Inject
   public ProjectPlanningTimeCreateServiceImpl(
@@ -56,7 +75,10 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       PublicHolidayHrService holidayService,
       ProductRepository productRepo,
       EmployeeRepository employeeRepo,
-      TimesheetLineRepository timesheetLineRepository) {
+      TimesheetLineRepository timesheetLineRepository,
+      AppBaseService appBaseService,
+      ProjectTimeUnitService projectTimeUnitService,
+      ProjectPlanningTimeToolService projectPlanningTimeToolService) {
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskRepo;
@@ -67,6 +89,7 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBaseService = appBaseService;
     this.projectTimeUnitService = projectTimeUnitService;
+    this.projectPlanningTimeToolService = projectPlanningTimeToolService;
   }
 
   @Override
@@ -187,14 +210,33 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
     if (defaultTimeUnit != null) {
       planningTime.setTimeUnit(defaultTimeUnit);
     } else {
-      planningTime.setTimeUnit(projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask));
+      planningTime.setTimeUnit(projectPlanningTimeToolService.getDefaultTimeUnit(planningTime));
     }
+    planningTime.setDisplayTimeUnit(planningTime.getTimeUnit());
+
+    if (planningTime.getTimeUnit() == null) {
+      return planningTime;
+    }
+
+    computePlannedTime(planningTime, totalHours);
+
+    return planningTime;
+  }
+
+  protected void computePlannedTime(ProjectPlanningTime planningTime, BigDecimal totalHours)
+      throws AxelorException {
+    if (planningTime.getTimeUnit() == null) {
+      return;
+    }
+
     if (planningTime.getTimeUnit().equals(appBaseService.getUnitDays())) {
-      BigDecimal numberHoursADay = projectTimeUnitService.getDefaultNumberHoursADay(project);
+      BigDecimal numberHoursADay =
+          projectTimeUnitService.getDefaultNumberHoursADay(planningTime.getProject());
       planningTime.setPlannedTime(totalHours.divide(numberHoursADay, 2, RoundingMode.HALF_UP));
+    } else if (planningTime.getTimeUnit().equals(appBaseService.getUnitMinutes())) {
+      planningTime.setPlannedTime(totalHours.multiply(new BigDecimal(60)));
     } else {
       planningTime.setPlannedTime(totalHours);
     }
-    return planningTime;
   }
 }

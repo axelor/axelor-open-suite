@@ -19,12 +19,12 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -74,13 +74,13 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
     LocalDate toDate = timesheet.getToDate();
 
     Employee employee = timesheet.getEmployee();
-    HRConfig config = timesheet.getCompany().getHrConfig();
+    Company company = timesheet.getCompany();
     WeeklyPlanning weeklyPlanning =
-        employee != null ? employee.getWeeklyPlanning() : config.getWeeklyPlanning();
+        employee != null ? employee.getWeeklyPlanning() : company.getWeeklyPlanning();
     EventsPlanning holidayPlanning =
         employee != null
             ? employee.getPublicHolidayEventsPlanning()
-            : config.getPublicHolidayEventsPlanning();
+            : company.getPublicHolidayEventsPlanning();
     removeGeneratedLines(timesheet);
     createTimesheetLines(timesheet, fromDate, toDate, weeklyPlanning, holidayPlanning, employee);
   }

@@ -141,12 +141,20 @@
   </selection>
 
   <selection name="crm.lead.size.select">
-    <option value="1">1 to 20</option>
-    <option value="2">20 to 100</option>
-    <option value="3">100 to 500</option>
-    <option value="4">500 to 1000</option>
-    <option value="5">1000 to 2000</option>
-    <option value="6">Over 2000</option>
+    <option value="1">1 to 2</option>
+    <option value="2">3 to 5</option>
+    <option value="3">6 to 9</option>
+    <option value="11">10 to 19</option>
+    <option value="12">20 to 49</option>
+    <option value="21">50 to 99</option>
+    <option value="22">100 to 199</option>
+    <option value="31">200 to 249</option>
+    <option value="32">250 to 499</option>
+    <option value="41">500 to 999</option>
+    <option value="42">1000 to 1999</option>
+    <option value="51">2000 to 4999</option>
+    <option value="52">5000 to 9999</option>
+    <option value="53">Over 10000</option>
   </selection>
 
   <selection name="crm.reporting.type.select">

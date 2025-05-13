@@ -10,6 +10,10 @@
       ref="com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid"
       title="Customer shipping carriage paid configuration" mappedBy="customer"/>
 
+    <one-to-many name="supplierShippingCarriagePaidList"
+      ref="com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid"
+      title="Supplier shipping carriage paid configuration" mappedBy="supplier"/>
+
   </entity>
 
 </domain-models>

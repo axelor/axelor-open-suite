@@ -50,6 +50,12 @@
     <boolean name="isGlobalDiscountEnabledOnSaleOrder"
       title="Enable global discount on sale order"
       help="Allow the user to apply a global discount on a sale order. Global discount and discount per line are not cumulative."/>
+    <boolean name="enableConfiguratorEdition" title="Enable edition of configurators"
+      help="Allow to edit configurator values inside the generated sale order line. Product will then be modified and line regenerated."/>
+    <boolean name="enableLineDuplication" title="Enable line duplication"
+      help="Allow the duplication of sale quotation line. The line will be recomputed from its configurator if possible."/>
+    <boolean name="isQuotationAndOrderSplitEnabled" title="Split quotations and orders"
+      help="When enabled, confirming a sale quotation will generate a new sale order. This configuration allow the partial validation of a sale quotation."/>
 
     <extra-code>
       <![CDATA[
@@ -61,7 +67,6 @@
 		public static final int APP_SALE_LINE_DISPLAY_TYPE_CLASSIC = 0;
 		public static final int APP_SALE_LINE_DISPLAY_TYPE_EDITABLE = 1;
         public static final int APP_SALE_LINE_DISPLAY_TYPE_MULTI = 2;
-        public static final int APP_SALE_LINE_DISPLAY_TYPE_TREE_LINE = 3;
       ]]>
     </extra-code>
 
@@ -85,6 +90,12 @@
       <field name="isEnableCalculationEntireQuotation" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
       <field name="isCartManagementEnabled" on="UPDATE"/>
+      <field name="isPastVersionRecovery" on="UPDATE"/>
+      <field name="isDiscountEnabledOnEditableGrid" on="UPDATE"/>
+      <field name="listDisplayTypeSelect" on="UPDATE"/>
+      <field name="isSOLPriceTotalOfSubLines" on="UPDATE"/>
+      <field name="enableConfiguratorEdition" on="UPDATE"/>
+      <field name="enableLineDuplication" on="UPDATE"/>
     </track>
   </entity>
 

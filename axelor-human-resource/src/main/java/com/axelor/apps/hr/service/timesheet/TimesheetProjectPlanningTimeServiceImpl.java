@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -27,6 +28,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
@@ -36,6 +38,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -46,15 +49,18 @@ public class TimesheetProjectPlanningTimeServiceImpl
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
   protected TimesheetLineService timesheetLineService;
   protected AppBaseService appBaseService;
+  protected UserHrService userHrService;
 
   @Inject
   public TimesheetProjectPlanningTimeServiceImpl(
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TimesheetLineService timesheetLineService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      UserHrService userHrService) {
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.timesheetLineService = timesheetLineService;
     this.appBaseService = appBaseService;
+    this.userHrService = userHrService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -70,7 +76,8 @@ public class TimesheetProjectPlanningTimeServiceImpl
   protected List<ProjectPlanningTime> getExpectedProjectPlanningTimeList(Timesheet timesheet) {
     List<ProjectPlanningTime> planningList;
 
-    if (timesheet.getToDate() == null) {
+    LocalDate toDate = timesheet.getToDate();
+    if (toDate == null) {
       planningList =
           projectPlanningTimeRepository
               .all()
@@ -86,19 +93,20 @@ public class TimesheetProjectPlanningTimeServiceImpl
                   timesheet)
               .fetch();
     } else {
+      LocalDateTime toDateEndDay = toDate.plusDays(1).atStartOfDay();
       planningList =
           projectPlanningTimeRepository
               .all()
               .filter(
                   "self.employee.id = ?1 "
-                      + "AND self.startDateTime >= ?2 AND self.endDateTime <= ?3 "
+                      + "AND self.startDateTime >= ?2 AND self.endDateTime < ?3 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
                       + "AND timesheetLine.timesheet = ?4) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
-                  timesheet.getToDate(),
+                  toDateEndDay,
                   timesheet)
               .fetch();
     }
@@ -115,7 +123,13 @@ public class TimesheetProjectPlanningTimeServiceImpl
         timesheetLineService.computeHoursDuration(timesheet, plannedTime, true));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
-    timesheetLine.setProduct(projectPlanningTime.getProduct());
+    Product product = projectPlanningTime.getProduct();
+    if (product == null) {
+      product =
+          userHrService.getTimesheetProduct(
+              timesheetLine.getEmployee(), projectPlanningTime.getProjectTask());
+    }
+    timesheetLine.setProduct(product);
     if (project.getManageTimeSpent()) {
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());

@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -177,7 +178,9 @@ public class PricingComputer extends AbstractObservablePricing {
    */
   protected Optional<PricingLine> applyPricing(Pricing pricing) throws AxelorException {
     LOG.debug("Applying pricing {} with model {}", pricing, this.model);
-    if (pricing.getClass1PricingRule() != null && pricing.getResult1PricingRule() != null) {
+    if (pricing.getClass1PricingRule() != null
+        && pricing.getResult1PricingRule() != null
+        && ObjectUtils.notEmpty(pricingService.appendFormulaFilter(List.of(pricing), this.model))) {
 
       notifyPricing(pricing);
       List<PricingLine> pricingLines = getMatchedPricingLines(pricing);

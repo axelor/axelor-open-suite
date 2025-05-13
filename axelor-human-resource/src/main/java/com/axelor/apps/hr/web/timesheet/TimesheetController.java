@@ -162,15 +162,17 @@ public class TimesheetController {
       response.setView(
           ActionView.define(I18n.get("Timesheet"))
               .model(Timesheet.class.getName())
-              .add("form", "timesheet-form")
+              .add("form", "complete-my-timesheet-form")
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else if (timesheetList.size() == 1) {
       response.setView(
           ActionView.define(I18n.get("Timesheet"))
               .model(Timesheet.class.getName())
-              .add("form", "timesheet-form")
+              .add("form", "complete-my-timesheet-form")
               .param("forceEdit", "true")
               .context("_showRecord", String.valueOf(timesheetList.get(0).getId()))
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else {
       response.setView(
@@ -274,10 +276,11 @@ public class TimesheetController {
     response.setView(
         ActionView.define(I18n.get("Timesheet"))
             .model(Timesheet.class.getName())
-            .add("form", "timesheet-form")
+            .add("form", "complete-my-timesheet-form")
             .param("forceEdit", "true")
             .domain("self.id = " + timesheetMap.get("id"))
             .context("_showRecord", String.valueOf(timesheet.getId()))
+            .context("_isEmployeeReadOnly", true)
             .map());
   }
 
@@ -691,5 +694,19 @@ public class TimesheetController {
       response.setValue("$generationDate", null);
       response.setNotify(I18n.get(HumanResourceExceptionMessage.INVALID_DATES));
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void clearProjectPlanningTimesDuration(ActionRequest request, ActionResponse response) {
+    if (request.getContext().get("projectPlanningTimeList") == null) {
+      return;
+    }
+    List<Map<String, Object>> projectPlanningTimeList =
+        (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeList");
+    projectPlanningTimeList.forEach(
+        it -> {
+          it.put("$duration", BigDecimal.ZERO);
+        });
+    response.setValue("$projectPlanningTimeList", projectPlanningTimeList);
   }
 }

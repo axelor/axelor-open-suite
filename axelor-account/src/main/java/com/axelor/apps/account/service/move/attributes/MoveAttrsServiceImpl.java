@@ -18,10 +18,12 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -41,8 +43,11 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.Query;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -227,13 +232,19 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       return;
     }
 
+    Query<Journal> journalQuery = journalRepository.all();
+    String query = "self.company.id = :company AND self.statusSelect = :statusSelect";
+    BankDetails companyBankDetails = move.getCompanyBankDetails();
+    if (companyBankDetails != null && companyBankDetails.getJournal() != null) {
+      query += " AND (self.id = :journal OR self.journalType.technicalTypeSelect != :journalType)";
+      journalQuery.bind("journal", companyBankDetails.getJournal());
+      journalQuery.bind("journalType", JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY);
+    }
     List<Journal> journalList =
-        journalRepository
-            .all()
-            .filter(
-                String.format(
-                    "self.company.id = %d AND self.statusSelect = %d",
-                    move.getCompany().getId(), JournalRepository.STATUS_ACTIVE))
+        journalQuery
+            .filter(query)
+            .bind("company", move.getCompany().getId())
+            .bind("statusSelect", JournalRepository.STATUS_ACTIVE)
             .fetch();
     String journalIdList =
         journalList.stream()
@@ -459,5 +470,53 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     String domain = String.format("self.id IN (%s)", companyIds.isEmpty() ? "0" : companyIds);
 
     this.addAttr("company", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addCompanyBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+
+    String domain = getCompanyBankDetailsDomain(move);
+    this.addAttr("companyBankDetails", "domain", domain, attrsMap);
+  }
+
+  protected String getCompanyBankDetailsDomain(Move move) {
+    Partner partner = move.getPartner();
+    Company company = move.getCompany();
+
+    if (!appAccountService.isApp("account")
+        || !appAccountService.getAppBase().getManageMultiBanks()) {
+      return getBankDetailsDomain(company);
+    } else if (Boolean.TRUE.equals(appAccountService.getAppAccount().getManageFactors())
+        && partner != null
+        && Boolean.TRUE.equals(partner.getFactorizedCustomer())) {
+      return "self.partner.isFactor = true AND self.active = true";
+    } else {
+      PaymentMode paymentMode = move.getPaymentMode();
+      if (paymentMode == null) {
+        return getBankDetailsDomain(company);
+      }
+      List<BankDetails> authorizedBankDetails = new ArrayList<>();
+      paymentMode.getAccountManagementList().stream()
+          .filter(am -> am.getCompany().equals(move.getCompany()))
+          .map(AccountManagement::getBankDetails)
+          .filter(Objects::nonNull)
+          .forEach(authorizedBankDetails::add);
+
+      return authorizedBankDetails.isEmpty()
+          ? "self.id IN (0)"
+          : getBankDetailsListDomain(authorizedBankDetails);
+    }
+  }
+
+  protected String getBankDetailsDomain(Company company) {
+    return company == null
+        ? "self.id IN (0)"
+        : getBankDetailsListDomain(company.getBankDetailsList());
+  }
+
+  protected String getBankDetailsListDomain(List<BankDetails> bankDetailsList) {
+    return "self.id IN ("
+        + StringHelper.getIdListString(bankDetailsList)
+        + ") AND self.active = true";
   }
 }

@@ -28,4 +28,8 @@ public interface TranslationBaseService {
 
   List<MetaTranslation> getLocalizationTranslations(String language, String key)
       throws AxelorException;
+
+  void createValueTranslation(String language, String key, String message);
+
+  void updateValueTranslation(String language, String oldKey, String newKey, String message);
 }

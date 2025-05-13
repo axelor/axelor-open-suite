@@ -44,6 +44,9 @@
       return bankReconciliation != null ? bankReconciliation.getCompanyCurrency() : null;
 	    ]]>
     </many-to-one>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
     <finder-method name="findByBankReconciliation" using="bankReconciliation"
       all="true"/>

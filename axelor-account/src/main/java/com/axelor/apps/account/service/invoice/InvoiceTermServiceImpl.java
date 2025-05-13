@@ -95,6 +95,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceTermPfpUpdateService invoiceTermPfpUpdateService;
   protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
+  protected InvoiceTermDateComputeService invoiceTermDateComputeService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -112,7 +113,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       AppBaseService appBaseService,
       InvoiceTermPfpUpdateService invoiceTermPfpUpdateService,
       InvoiceTermToolService invoiceTermToolService,
-      InvoiceTermPfpToolService invoiceTermPfpToolService) {
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      InvoiceTermDateComputeService invoiceTermDateComputeService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -128,6 +130,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoiceTermPfpUpdateService = invoiceTermPfpUpdateService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
+    this.invoiceTermDateComputeService = invoiceTermDateComputeService;
   }
 
   @Override
@@ -525,18 +528,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (!invoiceTerm.getIsCustomized()) {
-        LocalDate dueDate =
-            PaymentConditionToolService.getDueDate(
-                invoiceTerm.getPaymentConditionLine(), invoiceDate);
-        invoiceTerm.setDueDate(dueDate);
-
-        if (appAccountService.getAppAccount().getManageFinancialDiscount()
-            && invoiceTerm.getApplyFinancialDiscount()
-            && invoiceTerm.getFinancialDiscount() != null) {
-          invoiceTerm.setFinancialDiscountDeadlineDate(
-              invoiceTermFinancialDiscountService.computeFinancialDiscountDeadlineDate(
-                  invoiceTerm));
-        }
+        invoiceTermDateComputeService.computeDueDateValues(invoiceTerm, invoiceDate);
       }
     }
 
@@ -1713,20 +1705,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         || checkIfCustomizedInvoiceTerms(invoice)) {
       return;
     }
-    if (InvoiceToolService.isPurchase(invoice)) {
-      if (invoice.getOriginDate() != null) {
-        invoice = setDueDates(invoice, invoice.getOriginDate());
-      } else {
-        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
-      }
-    } else {
-      if (invoice.getInvoiceDate() != null) {
-        invoice = setDueDates(invoice, invoice.getInvoiceDate());
-      } else {
-        invoice = setDueDates(invoice, appBaseService.getTodayDate(invoice.getCompany()));
-      }
-    }
-    return;
+    LocalDate invoiceDate = invoiceTermDateComputeService.getInvoiceDateForTermGeneration(invoice);
+    setDueDates(invoice, invoiceDate);
   }
 
   @Override

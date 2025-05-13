@@ -53,6 +53,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -314,15 +315,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   public void filterInvoiceTerms(
       Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
-    List<InvoiceTerm> invoiceTermList;
+    List<Long> invoiceTermIdList =
+        eligibleInvoiceTermQuery.select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
-    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+    for (List<Long> idList : Lists.partition(invoiceTermIdList, jpaLimit)) {
+      for (InvoiceTerm invoiceTerm :
+          invoiceTermRepository.all().filter("self.id in :ids").bind("ids", idList).fetch()) {
         if (this.isNotAwaitingPayment(invoiceTerm)
             && !this.isBlocking(invoiceTerm, paymentSession)) {
           this.saveFilledInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
         }
       }
+
       JPA.clear();
       paymentSession = paymentSessionRepository.find(paymentSession.getId());
     }

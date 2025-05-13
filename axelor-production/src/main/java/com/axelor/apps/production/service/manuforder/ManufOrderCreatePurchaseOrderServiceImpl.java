@@ -32,6 +32,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockConfig;
@@ -99,6 +100,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
               null);
 
       purchaseOrder.setOutsourcingOrder(true);
+      purchaseOrder.setTypeSelect(PurchaseOrderRepository.TYPE_SUBCONTRACTING);
       purchaseOrder.setFiscalPosition(outsourcePartner.getFiscalPosition());
       StockConfig stockConfig =
           stockConfigProductionService.getStockConfig(manufOrder.getCompany());

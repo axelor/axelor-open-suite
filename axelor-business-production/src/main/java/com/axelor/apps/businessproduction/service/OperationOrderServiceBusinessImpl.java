@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
@@ -52,7 +53,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       OperationOrderOutsourceService operationOrderOutsourceService,
       ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService,
+      ProdProcessLineComputationService prodProcessLineComputationService) {
     super(
         appProductionService,
         manufOrderStockMoveService,
@@ -61,7 +63,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
         operationOrderOutsourceService,
         manufOrderCheckStockMoveLineService,
         manufOrderPlanStockMoveService,
-        manufOrderUpdateStockMoveService);
+        manufOrderUpdateStockMoveService,
+        prodProcessLineComputationService);
   }
 
   @Override

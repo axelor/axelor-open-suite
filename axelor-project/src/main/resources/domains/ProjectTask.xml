@@ -89,6 +89,8 @@
     <string name="projectJson" title="Project json" json="true"/>
     <string name="categoryJson" title="Category json" json="true"/>
 
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
     <one-to-many name="projectCheckListItemList"
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
       mappedBy="projectTask"/>
@@ -97,6 +99,9 @@
       ref="com.axelor.apps.project.db.ProjectVersion"/>
     <many-to-one name="activeSprint" title="Active sprint"
       ref="com.axelor.apps.project.db.Sprint"/>
+    <many-to-one name="oldActiveSprint" title="Old sprint"
+      ref="com.axelor.apps.project.db.Sprint" transient="true"/>
+    <decimal name="oldBudgetedTime" title="Old budgeted time" transient="true"/>
 
     <extra-code>
 
@@ -119,6 +124,9 @@
       <field name="targetVersion"/>
       <field name="activeSprint"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.project.db.repo.ProjectTaskListener"/>
+
 
   </entity>
 

@@ -43,4 +43,12 @@ public class InvoiceLineGroupServiceImpl implements InvoiceLineGroupService {
       invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, prefix);
     }
   }
+
+  @Override
+  public void setInvoiceLineTaxLineSetDomain(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+    if (invoice != null) {
+      invoiceLineAttrsService.addTaxLineSetDomain(invoice.getOperationTypeSelect(), attrsMap);
+    }
+  }
 }

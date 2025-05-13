@@ -80,11 +80,26 @@
       method="createShipmentCostLine"/>
   </action-method>
 
-
-
   <action-method name="action-purchase-order-method-get-from-stock-location">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="getFromStockLocation"/>
+  </action-method>
+
+  <action-group name="action-purchase-order-group-stock-location-change">
+    <action name="action-purchase-order-validate-purchase-order-lines-stock-location"
+      if="purchaseOrderLineList != null &amp;&amp; !purchaseOrderLineList.isEmpty()"/>
+    <action name="action-purchase-order-method-update-purchase-order-lines-stock-location"/>
+  </action-group>
+
+  <action-validate
+    name="action-purchase-order-validate-purchase-order-lines-stock-location">
+    <alert message="Would you like to update all lines with this stock location?"/>
+  </action-validate>
+
+  <action-method
+    name="action-purchase-order-method-update-purchase-order-lines-stock-location">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="updatePurchaseOrderLinesStockLocation"/>
   </action-method>
 
 </object-views>

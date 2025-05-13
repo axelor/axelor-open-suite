@@ -6,7 +6,7 @@
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleOrder"
-    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.ShippableOrder,com.axelor.apps.base.interfaces.GlobalDiscounter">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
@@ -177,9 +177,19 @@
 	    ]]>
     </many-to-one>
 
+    <boolean name="isDisplaySubLinesOnReport" title="Display sublines on report"/>
+
+    <many-to-one name="originSaleQuotation" ref="com.axelor.apps.sale.db.SaleOrder"/>
+    <integer name="orderingStatus" selection="sale.sale.order.ordering.status.select"
+      title="Ordering status" readonly="true" default="0"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
+
+    <extra-imports>
+      import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
+    </extra-imports>
 
     <extra-code>
    		<![CDATA[
@@ -189,6 +199,10 @@
 			public static final int STATUS_ORDER_CONFIRMED = 3;
 			public static final int STATUS_ORDER_COMPLETED = 4;
 			public static final int STATUS_CANCELED = 5;
+
+			// ORDERING STATUS
+			public static final int ORDERING_STATUS_PARTIALLY_ORDERED = 1;
+			public static final int ORDERING_STATUS_CLOSED = 2;
    		]]>
     </extra-code>
 

@@ -21,13 +21,14 @@ package com.axelor.apps.hr.service;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.google.inject.Inject;
 
 public class MoveLineTaxHRServiceImpl extends MoveLineTaxServiceImpl {
@@ -41,7 +42,8 @@ public class MoveLineTaxHRServiceImpl extends MoveLineTaxServiceImpl {
       MoveRepository moveRepository,
       TaxAccountToolService taxAccountToolService,
       MoveLineToolService moveLineToolService,
-      TaxService taxService) {
+      TaxAccountService taxAccountService,
+      MoveLineCheckService moveLineCheckService) {
     super(
         moveLineRepository,
         taxPaymentMoveLineService,
@@ -50,7 +52,8 @@ public class MoveLineTaxHRServiceImpl extends MoveLineTaxServiceImpl {
         moveRepository,
         taxAccountToolService,
         moveLineToolService,
-        taxService);
+        taxAccountService,
+        moveLineCheckService);
   }
 
   @Override

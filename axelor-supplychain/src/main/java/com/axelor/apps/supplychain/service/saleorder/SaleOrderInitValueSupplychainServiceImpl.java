@@ -140,7 +140,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
 
   protected Map<String, Object> getShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
-    saleOrderShipmentService.createShipmentCostLine(saleOrder);
+    saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
     saleOrderMap.put("saleOrderLineList", saleOrder.getSaleOrderLineList());
     return saleOrderMap;
   }

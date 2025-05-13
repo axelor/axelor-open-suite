@@ -120,7 +120,7 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
       moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
 
       if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
-        taxEquiv = fiscalPositionService.getTaxEquivFromTaxLines(fiscalPosition, taxLineSet);
+        taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
 
         if (taxEquiv != null) {
           moveLine.setTaxLineBeforeReverseSet(taxLineSet);

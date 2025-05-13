@@ -4664,10 +4664,9 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on  Partner.id = SupplierAccountingSituation.partner
-left outer join account_accounting_situation as CompanyAccountingSituation on  CompanyPartner.id = CompanyAccountingSituation.partner
-where Invoice.id = InvoiceId
-and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = CompanyAccountingSituation.company);
+left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
+left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
+where Invoice.id = InvoiceId;
 ELSE
 return query
 select distinct
@@ -4768,10 +4767,9 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on  Partner.id = SupplierAccountingSituation.partner
-left outer join account_accounting_situation as CompanyAccountingSituation on  CompanyPartner.id = CompanyAccountingSituation.partner
-where Invoice.id = InvoiceId
-and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = CompanyAccountingSituation.company);
+left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
+left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
+where Invoice.id = InvoiceId;
 END IF;
 END;
 $func$ LANGUAGE plpgsql;]]></xml-property>
@@ -9055,7 +9053,7 @@ else{ 1.00 }
                                         </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["ex_tax_total"] != 0) {Formatter.format(row["ex_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5731">
                                         <property name="fontFamily">sans-serif</property>
@@ -9099,7 +9097,7 @@ else{ 1.00 }
                                         </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["ex_tax_total"] != 0){row["currencycode"]}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["currencycode"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5429">
                                         <property name="fontSize">8pt</property>
@@ -13245,7 +13243,7 @@ else {'Invoice.totalTaxes'}</value>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["SaleLegalNote"]
@@ -13473,7 +13471,7 @@ else {'Invoice.totalTaxes'}</value>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["ClientBox"]
@@ -14177,7 +14175,7 @@ else {'Invoice.totalTaxes'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["termsAndConditions"]

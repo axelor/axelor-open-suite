@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -32,15 +33,18 @@ public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateSto
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderService manufOrderService;
   protected StockMoveService stockMoveService;
+  protected final StockMoveProductionService stockMoveProductionService;
 
   @Inject
   public ManufOrderUpdateStockMoveServiceImpl(
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderService manufOrderService,
-      StockMoveService stockMoveService) {
+      StockMoveService stockMoveService,
+      StockMoveProductionService stockMoveProductionService) {
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderService = manufOrderService;
     this.stockMoveService = stockMoveService;
+    this.stockMoveProductionService = stockMoveProductionService;
   }
 
   @Override
@@ -99,7 +103,7 @@ public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateSto
           .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
     }
     // update stock location by cancelling then planning stock move.
-    stockMoveService.cancel(stockMove);
+    stockMoveProductionService.cancelFromManufOrder(stockMove);
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }

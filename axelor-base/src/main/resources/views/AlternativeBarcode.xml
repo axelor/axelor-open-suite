@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="alternative-barcode-grid" title="Alternative barcodes"
+    model="com.axelor.apps.base.db.AlternativeBarcode" editable="true"
+    onNew="action-alternative-barcode-record-set-barcode-type-config" edit-icon="true">
+    <field name="barCode" widget="Image" width="105px" readonlyIf="!barCode"/>
+    <field name="serialNumber" required="true" readonlyIf="barCode"/>
+    <field name="barcodeTypeConfig" required="true" readonlyIf="barCode"/>
+    <field name="alternativeBarcodeType" canNew="true"/>
+    <button name="generateBarcodeBtn" title="Generate barcode" icon="qr-code-scan"
+      onClick="action-alternative-barcode-method-generate-barcode"
+      readonlyIf="barCode || !serialNumber || !barcodeTypeConfig"/>
+  </grid>
+
+  <form name="alternative-barcode-form" title="Alternative barcode"
+    model="com.axelor.apps.base.db.AlternativeBarcode"
+    onNew="action-alternative-barcode-record-set-barcode-type-config">
+    <panel name="mainPanel">
+      <panel name="infoPanel" stacked="true">
+        <field name="serialNumber" required="true" readonlyIf="barCode"/>
+        <field name="barcodeTypeConfig" required="true" readonlyIf="barCode"/>
+        <field name="alternativeBarcodeType" canNew="true"/>
+      </panel>
+      <panel name="barcodePanel" stacked="true">
+        <field name="barCode" showTitle="false" widget="Image" readonlyIf="!barCode"/>
+        <button name="generateBarcodeBtn" title="Generate barcode"
+          onClick="action-alternative-barcode-method-generate-barcode"
+          readonlyIf="barCode || !serialNumber || !barcodeTypeConfig"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-record name="action-alternative-barcode-record-set-barcode-type-config"
+    model="com.axelor.apps.base.db.AlternativeBarcode">
+    <field name="barcodeTypeConfig"
+      expr="eval: __parent__?.barcodeTypeConfig ? __parent__?.barcodeTypeConfig : __config__.app.getApp('base')?.getBarcodeTypeConfig()"/>
+  </action-record>
+
+  <action-method name="action-alternative-barcode-method-generate-barcode">
+    <call class="com.axelor.apps.base.web.AlternativeBarcodeController"
+      method="generateBarcode"/>
+  </action-method>
+
+</object-views>

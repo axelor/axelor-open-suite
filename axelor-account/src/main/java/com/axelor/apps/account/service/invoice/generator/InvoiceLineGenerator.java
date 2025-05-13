@@ -43,7 +43,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -129,7 +129,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.product = product;
     this.productName = productName;
     this.description = description;
-    this.qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+    this.qty = qty;
     this.unit = unit;
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
@@ -232,15 +232,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
   }
 
-  public void setTaxEquiv(InvoiceLine invoiceLine, Company company, boolean isPurchase)
-      throws AxelorException {
-    if (product != null) {
-      TaxEquiv taxEquiv =
-          Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
+  public void setTaxEquiv(InvoiceLine invoiceLine) {
+    TaxEquiv taxEquiv =
+        Beans.get(FiscalPositionServiceImpl.class)
+            .getTaxEquivFromOrToTaxSet(invoice.getFiscalPosition(), taxLineSet);
 
-      invoiceLine.setTaxEquiv(taxEquiv);
-    }
+    invoiceLine.setTaxEquiv(taxEquiv);
   }
 
   /**
@@ -266,7 +263,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setInTaxPrice(inTaxPrice);
 
     invoiceLine.setPriceDiscounted(priceDiscounted);
-    invoiceLine.setQty(qty);
     invoiceLine.setUnit(unit);
 
     if (coefficient == null) {
@@ -281,7 +277,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       this.determineTaxLine();
     }
 
-    setTaxEquiv(invoiceLine, company, isPurchase);
+    setTaxEquiv(invoiceLine);
 
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
@@ -292,7 +288,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if ((exTaxTotal == null || inTaxTotal == null)) {
       this.computeTotal();
     }
-
+    invoiceLine.setQty(
+        qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
     invoiceLine.setExTaxTotal(exTaxTotal);
     invoiceLine.setInTaxTotal(inTaxTotal);
 

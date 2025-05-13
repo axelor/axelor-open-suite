@@ -11,6 +11,24 @@
     <one-to-many name="projectPlanningTimeList" title="Project planning time lines"
       ref="com.axelor.apps.project.db.ProjectPlanningTime" mappedBy="projectTask"/>
 
+    <finder-method name="findByEmployeeProjectAndPeriod"
+      using="com.axelor.apps.hr.db.Employee:employee,project,LocalDate:fromDate,LocalDate:toDate"
+      filter="(self.assignedTo IS NOT NULL AND self.assignedTo.employee IS NOT NULL AND self.assignedTo.employee
+      = :employee) AND (self.project IS NOT NULL AND self.project = :project) AND ((self.taskDate BETWEEN :fromDate
+      AND :toDate) OR (self.taskEndDate BETWEEN :fromDate AND :toDate))"
+      all="true"/>
+
+    <finder-method name="findByEmployeeAndPeriod"
+      using="com.axelor.apps.hr.db.Employee:employee,LocalDate:fromDate,LocalDate:toDate"
+      filter="(self.assignedTo IS NOT NULL AND self.assignedTo.employee IS NOT NULL AND self.assignedTo.employee
+      = :employee) AND ((self.taskDate BETWEEN :fromDate AND :toDate) OR (self.taskEndDate BETWEEN :fromDate
+      AND :toDate))"
+      all="true"/>
+    <finder-method name="findByProjectAndPeriod"
+      using="project,LocalDate:fromDate,LocalDate:toDate"
+      filter="(self.project IS NOT NULL AND self.project = :project) AND ((self.taskDate BETWEEN :fromDate
+      AND :toDate) OR (self.taskEndDate BETWEEN :fromDate AND :toDate))"
+      all="true"/>
   </entity>
 
 </domain-models>

@@ -56,6 +56,7 @@
       <field name="importTypeSelect" type="string" title="Import type"
         selection="base.city.import.type.select"
         help="Uploaded file must have the same format as the selected type."/>
+      <help showIf="importTypeSelect == 'manual'" colSpan="12"><![CDATA[You can download import files <a href="https://download.geonames.org/export/zip/" target="_blank">here</a>]]></help>
     </panel>
     <panel name="importPanel" colSpan="12">
       <field name="metaFile" title="Input file" type="many-to-one"

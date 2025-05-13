@@ -59,6 +59,11 @@ public abstract class RegistrationNumberValidator {
   protected void checkRegistrationCode(Partner partner) throws AxelorException {
 
     String registrationCode = partner.getRegistrationCode();
+
+    if (registrationCode == null) {
+      registrationCode = "";
+    }
+
     registrationCode = registrationCode.replace(" ", "");
     RegistrationNumberTemplate registrationNumberTemplate =
         Optional.of(partner)

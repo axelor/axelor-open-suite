@@ -8,6 +8,45 @@
     <extend target="/">
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
     </extend>
+
+    <extend target="//panel[@name='productionPanel']">
+      <insert position="after">
+        <panel name="businessProjectPanel" title="Business project"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()">
+          <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
+            form-view="business-project-form" grid-view="project-grid" edit-window="blank"
+            onChange="action-business-project-sale-order-method-update-lines"/>
+          <field name="contract" readonly="true" hidden="true" showIf="contract"
+            form-view="contract-form" grid-view="contract-grid"/>
+
+          <panel name="projectAndTaskGenerationPanel" title="Project and task generation"
+            colSpan="12">
+            <field name="$_projectGeneratorType" title="Project generation method"
+              x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"
+              help="You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has &quot;Produce&quot; as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration."/>
+            <field name="$_elementStartDate" title="Start date" widget="date-time"
+              type="datetime" colSpan="3"/>
+            <field name="$projectTemplate" domain="self.company = :company"
+              showIf="$_projectGeneratorType &amp;&amp; $_projectGeneratorType == 'PROJECT_ALONE' &amp;&amp; project == null"
+              colSpan="3" type="many-to-one" target="com.axelor.apps.project.db.ProjectTemplate"
+              title="Project template"/>
+            <panel name="fillOrGenerateProjectPanel" stacked="true">
+              <button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType"
+                title="Generate Project/Business"
+                if="!__config__.app.getApp('business-project').automaticProject"
+                showIf="project == null" hidden="true"
+                onClick="save,action-business-project-method-generate-project"/>
+              <button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType"
+                title="Fill project"
+                if="__config__.app.getApp('business-project').projectSaleOrderLines"
+                showIf="project != null" hidden="true"
+                onClick="save,action-business-project-method-fill-project"/>
+            </panel>
+
+          </panel>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-template-form" title="Template"

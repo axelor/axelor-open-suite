@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2089,7 +2089,7 @@ $func$ LANGUAGE plpgsql;
             <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS customer_situation_invoice(bigint,bigint,bigint,date,date,varchar);
 CREATE OR REPLACE FUNCTION customer_situation_invoice(partnerId bigint,companyId bigint,tradingNameId bigint,fromDate date,toDate date,invoiceStatus varchar)
 RETURNS table(id bigint, invoice_date date, invoice_id varchar,
-internal_reference varchar, external_reference varchar,
+internal_reference text, external_reference text,
 ex_tax_total numeric, in_tax_total numeric, tax_total numeric, company_in_tax_total_remaining numeric,
 due_date date, term_sequence integer, term_amount numeric(19,2), term_amount_remaining numeric(19,2),term_due_date date, currency varchar, term_currency varchar,
 enable_trading_names_management boolean, trading_name varchar) as

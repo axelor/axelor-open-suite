@@ -434,7 +434,7 @@ public class BudgetServiceImpl implements BudgetService {
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
       GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
-      if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey()) && globalBudget != null) {
+      if (checkBudgetKey && globalBudget != null) {
         String error = computeBudgetKey(budget, globalBudget.getCompany());
         if (!Strings.isNullOrEmpty(error)) {
           throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, error);
@@ -672,64 +672,56 @@ public class BudgetServiceImpl implements BudgetService {
         if ((move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
                 || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
             && !moveLine.getIsBudgetImputed()) {
-          budgetLine.setRealizedWithNoPo(
-              currencyScaleService.getCompanyScaledValue(
-                  budget, budgetLine.getRealizedWithNoPo().add(budgetDistribution.getAmount())));
-          budgetLine.setAmountRealized(
-              currencyScaleService.getCompanyScaledValue(
-                  budget, budgetLine.getAmountRealized().add(budgetDistribution.getAmount())));
-          budgetLine.setToBeCommittedAmount(
-              currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  budgetLine.getToBeCommittedAmount().subtract(budgetDistribution.getAmount())));
-          BigDecimal firmGap =
-              currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  budgetLine
-                      .getAmountExpected()
-                      .subtract(
-                          budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
-          budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
-          budgetLine.setAvailableAmount(
-              currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  (budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount()))
-                              .compareTo(BigDecimal.ZERO)
-                          > 0
-                      ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
-                      : BigDecimal.ZERO));
+          updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount());
           return true;
         } else if (move.getStatusSelect() == MoveRepository.STATUS_CANCELED) {
-          budgetLine.setRealizedWithNoPo(
-              currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  budgetLine.getRealizedWithNoPo().subtract(budgetDistribution.getAmount())));
-          budgetLine.setAmountRealized(
-              currencyScaleService.getCompanyScaledValue(
-                  budget, budgetLine.getAmountRealized().subtract(budgetDistribution.getAmount())));
-          budgetLine.setToBeCommittedAmount(
-              currencyScaleService.getCompanyScaledValue(
-                  budget, budgetLine.getToBeCommittedAmount().add(budgetDistribution.getAmount())));
-          BigDecimal firmGap =
-              currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  budgetLine
-                      .getAmountExpected()
-                      .subtract(
-                          budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
-          budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
-          budgetLine.setAvailableAmount(
-              currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  (budgetLine.getAvailableAmount().add(budgetDistribution.getAmount()))
-                              .compareTo(BigDecimal.ZERO)
-                          > 0
-                      ? budgetLine.getAvailableAmount().add(budgetDistribution.getAmount())
-                      : BigDecimal.ZERO));
+          updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount().negate());
         }
       }
     }
     return false;
+  }
+
+  @Override
+  public void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
+    budgetLine.setRealizedWithNoPo(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getRealizedWithNoPo().add(amount)));
+    updateOtherAmounts(budgetLine, budget, amount);
+  }
+
+  @Override
+  public void updateBudgetLineAmountWithPo(
+      BudgetLine budgetLine, Budget budget, BigDecimal amount) {
+    budgetLine.setRealizedWithPo(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getRealizedWithPo().add(amount)));
+    budgetLine.setAmountCommitted(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getAmountCommitted().subtract(amount)));
+    updateOtherAmounts(budgetLine, budget, amount);
+  }
+
+  protected void updateOtherAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
+    budgetLine.setAmountRealized(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getAmountRealized().add(amount)));
+    budgetLine.setToBeCommittedAmount(
+        currencyScaleService.getCompanyScaledValue(
+            budget, budgetLine.getToBeCommittedAmount().subtract(amount)));
+    BigDecimal firmGap =
+        currencyScaleService.getCompanyScaledValue(
+            budget,
+            budgetLine
+                .getAmountExpected()
+                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
+    budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
+    budgetLine.setAvailableAmount(
+        currencyScaleService.getCompanyScaledValue(
+            budget,
+            (budgetLine.getAvailableAmount().subtract(amount)).compareTo(BigDecimal.ZERO) > 0
+                ? budgetLine.getAvailableAmount().subtract(amount)
+                : BigDecimal.ZERO));
   }
 
   @Override

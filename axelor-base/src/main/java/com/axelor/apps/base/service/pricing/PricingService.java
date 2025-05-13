@@ -56,6 +56,8 @@ public interface PricingService {
 
   List<Pricing> getAllPricings(Company company, Model model, String typeSelect);
 
+  List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model);
+
   public void historizePricing(Pricing pricing) throws AxelorException;
 
   public void checkDates(Pricing pricing) throws AxelorException;

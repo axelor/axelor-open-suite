@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -31,6 +32,7 @@ import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -51,6 +53,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -69,6 +72,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   protected BillOfMaterialService billOfMaterialService;
   protected ProdProcessLineService prodProcessLineService;
   protected ProductionConfigService productionConfigService;
+  protected final ProdProcessComputationService prodProcessComputationService;
 
   @Inject
   public MrpLineServiceProductionImpl(
@@ -87,7 +91,8 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       MrpLineRepository mrpLineRepo,
       BillOfMaterialService billOfMaterialService,
       ProdProcessLineService prodProcessLineService,
-      ProductionConfigService productionConfigService) {
+      ProductionConfigService productionConfigService,
+      ProdProcessComputationService prodProcessComputationService) {
     super(
         appBaseService,
         purchaseOrderCreateSupplychainService,
@@ -105,6 +110,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     this.billOfMaterialService = billOfMaterialService;
     this.prodProcessLineService = prodProcessLineService;
     this.productionConfigService = productionConfigService;
+    this.prodProcessComputationService = prodProcessComputationService;
   }
 
   @Override
@@ -165,6 +171,13 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
               getTotalDurationInMinutes(billOfMaterial.getProdProcess(), qty));
     }
 
+    if (billOfMaterial.getProdProcess() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.MRP_PROD_PROCESS_REQUIRED),
+          product.getName());
+    }
+
     ManufOrder manufOrder =
         manufOrderService.generateManufOrder(
             product,
@@ -185,7 +198,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       throws AxelorException {
     long totalDuration = 0;
     if (prodProcess != null) {
-      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, qty);
+      totalDuration = prodProcessComputationService.getLeadTime(prodProcess, qty);
     }
     return TimeUnit.SECONDS.toMinutes(totalDuration);
   }

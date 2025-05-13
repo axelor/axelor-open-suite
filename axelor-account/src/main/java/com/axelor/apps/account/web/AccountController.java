@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -346,5 +347,18 @@ public class AccountController {
     actionViewBuilder.context("moveTemplateIds", moveTemplateIdList);
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void checkDefaultTaxSet(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (account != null && account.getDefaultTaxSet() != null) {
+        TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+        taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(account.getDefaultTaxSet());
+        taxAccountService.checkSumOfNonDeductibleTaxes(account.getDefaultTaxSet());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

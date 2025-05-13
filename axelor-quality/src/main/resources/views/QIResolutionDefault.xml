@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
-  <grid name="qi-resolution-default-grid" title="QI Resolution Defaults"
+  <grid name="qi-resolution-default-grid" title="QI Resolution Defects"
     model="com.axelor.apps.quality.db.QIResolutionDefault">
     <field name="name"/>
     <field name="qiDefault"/>
@@ -12,7 +12,7 @@
     <field name="identification"/>
   </grid>
 
-  <form name="qi-resolution-default-form" title="QI Resolution Default"
+  <form name="qi-resolution-default-form" title="QI Resolution Defect"
     model="com.axelor.apps.quality.db.QIResolutionDefault">
     <panel name="mainPanel">
       <field name="name"/>

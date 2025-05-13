@@ -206,10 +206,10 @@
     <view type="form" name="qi-status-form"/>
   </action-view>
 
-  <menuitem name="qi.default" parent="quality-improvement-configurations" title="Defaults"
+  <menuitem name="qi.default" parent="quality-improvement-configurations" title="Defects"
     action="qi.default" order="300"/>
 
-  <action-view name="qi.default" title="Defaults"
+  <action-view name="qi.default" title="Defects"
     model="com.axelor.apps.quality.db.QIDefault">
     <view type="grid" name="qi-default-grid"/>
     <view type="form" name="qi-default-form"/>

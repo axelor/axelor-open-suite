@@ -42,7 +42,6 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.file.FileHelper;
 import com.google.inject.Inject;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -673,25 +672,14 @@ public class CfonbExportService {
    * @param ZonedDateTime La date permettant de déterminer le nom du fichier créé
    * @param destinationFolder Le répertoire de destination
    * @param prefix Le préfix utilisé
-   * @throws AxelorException
    */
   protected void createCFONBFile(
-      List<String> cFONB, ZonedDateTime zonedDateTime, String destinationFolder, String prefix)
-      throws AxelorException {
+      List<String> cFONB, ZonedDateTime zonedDateTime, String destinationFolder, String prefix) {
     DateFormat yyyyMMddHHmmssFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     String dateFileName = yyyyMMddHHmmssFormat.format(zonedDateTime);
     String fileName = String.format("%s%s.dat", prefix, dateFileName);
 
-    try {
-      FileHelper.writer(destinationFolder, fileName, cFONB);
-    } catch (IOException e) {
-      throw new AxelorException(
-          e.getCause(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.CFONB_EXPORT_2),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
-          e);
-    }
+    FileHelper.writer(destinationFolder, fileName, cFONB);
   }
 
   /**

@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.invoice.attributes;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -108,5 +109,17 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
         "scale",
         appBaseService.getNbDecimalDigitForUnitPrice() + 2,
         attrsMap);
+  }
+
+  @Override
+  public void addTaxLineSetDomain(
+      int operationTypeSelect, Map<String, Map<String, Object>> attrsMap) {
+    String domain = "(self.endDate > :__date__ OR self.endDate IS NULL) ";
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      domain += " AND self.tax.isNonDeductibleTax = false ";
+    }
+
+    this.addAttr("taxLineSet", "domain", domain, attrsMap);
   }
 }

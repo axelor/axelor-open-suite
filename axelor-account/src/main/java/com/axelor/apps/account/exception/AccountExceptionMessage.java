@@ -615,8 +615,6 @@ public final class AccountExceptionMessage {
   public static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
 
-  public static final String CFONB_EXPORT_2 = /*$$(*/
-      "%s : Error detected during CFONB file's writing : %s" /*)*/;
   public static final String CFONB_EXPORT_3 = /*$$(*/
       "%s : You must configure a Sort Code for the RIB %s of third-payer %s" /*)*/;
   public static final String CFONB_EXPORT_4 = /*$$(*/
@@ -1809,4 +1807,16 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
       "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special or commitment should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
+
+  public static final String TAX_ONLY_NON_DEDUCTIBLE_TAXES_SELECTED_ERROR = /*$$(*/
+      "Only one non-deductible tax is configured. A non deductible tax should always be paired with at least one other deductible tax." /*)*/;
+
+  public static final String SUM_OF_NON_DEDUCTIBLE_TAXES_EXCEEDS_ONE_HUNDRED = /*$$(*/
+      "The sum of non-deductible taxes should not exceed 100%." /*)*/;
+
+  public static final String MOVE_LINE_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
+      "Non-deductible tax only authorized when functional origin is purchase. Please remove the non-deductible tax on move line." /*)*/;
+
+  public static final String INVOICE_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
+      "Non-deductible tax not authorized for customer invoice. Please remove the non-deductible tax on product." /*)*/;
 }

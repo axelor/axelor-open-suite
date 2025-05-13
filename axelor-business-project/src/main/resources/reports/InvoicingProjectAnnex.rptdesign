@@ -1727,7 +1727,7 @@ WHERE invproj.id =?]]></xml-property>
                     <structure>
                         <property name="position">5</property>
                         <property name="name">progress</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
@@ -1780,7 +1780,7 @@ WHERE invproj.id =?]]></xml-property>
                     <property name="position">5</property>
                     <property name="name">progress</property>
                     <property name="nativeName">progress</property>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
@@ -1810,7 +1810,7 @@ WHERE invproj.id =?]]></xml-property>
 	task.name as task_name,
 	task.task_date as task_date,
 	task.status as status,
-	task.progress_select as progress,
+	task.progress as progress,
 	task.ex_tax_total as ex_tax_total,
 	task.to_invoice as to_invoice,
 	task.invoiced as invoiced
@@ -5406,7 +5406,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="name">progress</property>
                     <text-property name="displayName">progress</text-property>
                     <expression name="expression" type="javascript">dataSetRow["progress"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">ex_tax_total</property>

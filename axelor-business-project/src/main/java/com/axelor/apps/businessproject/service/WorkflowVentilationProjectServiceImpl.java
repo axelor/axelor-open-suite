@@ -33,6 +33,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.service.ContractVersionService;
+import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -49,15 +51,13 @@ import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class WorkflowVentilationProjectServiceImpl
-    extends WorkflowVentilationServiceSupplychainImpl {
+public class WorkflowVentilationProjectServiceImpl extends WorkflowVentilationContractServiceImpl {
 
   protected InvoicingProjectRepository invoicingProjectRepo;
 
@@ -84,7 +84,8 @@ public class WorkflowVentilationProjectServiceImpl
       StockMoveLineRepository stockMoveLineRepository,
       AppAccountService appAccountService,
       InvoiceFinancialDiscountService invoiceFinancialDiscountService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      ContractVersionService contractVersionService) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -103,7 +104,8 @@ public class WorkflowVentilationProjectServiceImpl
         stockMoveLineRepository,
         appAccountService,
         invoiceFinancialDiscountService,
-        invoiceTermService);
+        invoiceTermService,
+        contractVersionService);
     this.invoicingProjectRepo = invoicingProjectRepo;
     this.timesheetLineRepo = timesheetLineRepo;
   }

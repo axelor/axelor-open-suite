@@ -18,26 +18,17 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
-import java.util.Objects;
+import java.util.List;
 
-public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSyncService {
-
-  protected final SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService;
-  protected final SaleOrderLineBomService saleOrderLineBomService;
-  protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
-  protected final SolBomCustomizationService solBomCustomizationService;
-  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
-  protected final SolBomUpdateService solBomUpdateService;
-  protected final AppProductionService appProductionService;
+public class SaleOrderProductionSyncServiceImpl extends SaleOrderSyncAbstractService
+    implements SaleOrderProductionSyncService {
 
   @Inject
-  public SaleOrderProductionSyncServiceImpl(
+  protected SaleOrderProductionSyncServiceImpl(
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
@@ -45,69 +36,18 @@ public class SaleOrderProductionSyncServiceImpl implements SaleOrderProductionSy
       SolDetailsBomUpdateService solDetailsBomUpdateService,
       SolBomUpdateService solBomUpdateService,
       AppProductionService appProductionService) {
-    this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
-    this.saleOrderLineBomService = saleOrderLineBomService;
-    this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
-    this.solBomCustomizationService = solBomCustomizationService;
-    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
-    this.solBomUpdateService = solBomUpdateService;
-    this.appProductionService = appProductionService;
+    super(
+        saleOrderLineBomLineMappingService,
+        saleOrderLineBomService,
+        saleOrderLineDetailsBomService,
+        solBomCustomizationService,
+        solDetailsBomUpdateService,
+        solBomUpdateService,
+        appProductionService);
   }
 
   @Override
-  public void syncSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
-    Objects.requireNonNull(saleOrder);
-    AppProduction appProduction = appProductionService.getAppProduction();
-
-    if (!appProduction.getAllowPersonalizedBOM()
-        || appProduction.getIsBomLineGenerationInSODisabled()) {
-      return;
-    }
-
-    if (saleOrder.getSaleOrderLineList() != null) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        syncSaleOrderLine(saleOrderLine);
-      }
-    }
-  }
-
-  protected void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
-    Objects.requireNonNull(saleOrderLine);
-    // No personalized BOM = no synchronization
-    if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()) {
-      return;
-    }
-    if (!saleOrderLine.getIsToProduce()) {
-      return;
-    }
-    // First we sync sub lines, because if a change occurs is one of them
-    // We take it into account when sync the current sale order line
-    if (saleOrderLine.getSubSaleOrderLineList() != null) {
-      for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-        syncSaleOrderLine(subSaleOrderLine);
-      }
-    }
-
-    // if bom lines list is same size as sub line list (checking if more line or less)
-    // and if each lines are sync
-    var isUpdated = solBomUpdateService.isUpdated(saleOrderLine);
-    var isSolDetailsUpdated = solDetailsBomUpdateService.isSolDetailsUpdated(saleOrderLine);
-
-    if (isUpdated && isSolDetailsUpdated) {
-      return;
-    }
-
-    if (!isUpdated || !isSolDetailsUpdated) {
-      if (!saleOrderLine.getBillOfMaterial().getPersonalized()) {
-        solBomCustomizationService.customizeBomOf(saleOrderLine);
-      } else {
-        if (!isUpdated) {
-          solBomUpdateService.updateSolWithBillOfMaterial(saleOrderLine);
-        }
-        if (!isSolDetailsUpdated) {
-          solDetailsBomUpdateService.updateSolDetailslWithBillOfMaterial(saleOrderLine);
-        }
-      }
-    }
+  protected List<SaleOrderLineDetails> getSaleOrderListDetailsList(SaleOrderLine saleOrderLine) {
+    return saleOrderLine.getSaleOrderLineDetailsList();
   }
 }

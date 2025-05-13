@@ -139,7 +139,7 @@
           <editor x-viewer="true">
             <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"
               hideIf="$get('qi.type') == 2"/>
-            <panel name="defaultPanel" title="Observed defaults" colSpan="12">
+            <panel name="defaultPanel" title="Observed defects" colSpan="12">
               <field name="defaultWrittenBy" form-view="user-form" grid-view="user-grid"
                 onChange="action-quality-improvement-record-set-default-written-on"/>
               <field name="defaultWrittenOn"/>

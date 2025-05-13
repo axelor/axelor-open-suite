@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
@@ -48,6 +49,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -210,7 +213,39 @@ public class ProductServiceImpl implements ProductService {
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
       this.updateSalePrice(productVariant, null);
+      this.updatePriceOfVariantProductCompany(productVariant, product.getProductCompanyList());
     }
+  }
+
+  protected void updatePriceOfVariantProductCompany(
+      Product productVariant, List<ProductCompany> productCompanyList) throws AxelorException {
+    List<ProductCompany> productVariantCompanyList = productVariant.getProductCompanyList();
+    if (CollectionUtils.isEmpty(productCompanyList)
+        || CollectionUtils.isEmpty(productVariantCompanyList)) {
+      return;
+    }
+    for (ProductCompany productVariantCompany : productVariantCompanyList) {
+      Company company = productVariantCompany.getCompany();
+      if (company == null) {
+        continue;
+      }
+      Optional<ProductCompany> optionalProductCompany =
+          productCompanyList.stream().filter(pc -> company.equals(pc.getCompany())).findFirst();
+      if (optionalProductCompany.isPresent()) {
+        setPriceOfVariantProductCompany(productVariant, optionalProductCompany.get(), company);
+      }
+    }
+  }
+
+  protected void setPriceOfVariantProductCompany(
+      Product productVariant, ProductCompany productCompany, Company company)
+      throws AxelorException {
+    productCompanyService.set(productVariant, "costPrice", productCompany.getCostPrice(), company);
+    productCompanyService.set(
+        productVariant, "purchasePrice", productCompany.getPurchasePrice(), company);
+    productCompanyService.set(productVariant, "salePrice", productCompany.getSalePrice(), company);
+    productCompanyService.set(
+        productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
   }
 
   public boolean hasActivePriceList(Product product) {
@@ -269,39 +304,22 @@ public class ProductServiceImpl implements ProductService {
     description += "<br>" + productVariant.getName();
     internalDescription += "<br>" + productVariant.getName();
 
-    Product product =
-        new Product(
-            productModel.getName() + " (" + productVariant.getName() + ")",
-            productModel.getCode() + "-" + seq,
-            description,
-            internalDescription,
-            productModel.getPicture(),
-            productModel.getProductCategory(),
-            productModel.getProductFamily(),
-            productModel.getUnit(),
-            productModel.getSaleSupplySelect(),
-            productModel.getProductTypeSelect(),
-            productModel.getProcurementMethodSelect(),
-            productModel.getSaleCurrency(),
-            productModel.getPurchaseCurrency(),
-            productModel.getStartDate(),
-            productModel.getEndDate());
+    Product generatedProduct = productRepo.copy(productModel, true);
+
+    generatedProduct.setName(productModel.getName() + " (" + productVariant.getName() + ")");
+    generatedProduct.setCode(productModel.getCode() + "-" + seq);
+    generatedProduct.setDescription(internalDescription);
+    generatedProduct.setDescription(description);
 
     productModel.setIsModel(true);
 
-    product.setIsModel(false);
-    product.setParentProduct(productModel);
-    product.setProductVariant(productVariant);
+    generatedProduct.setIsModel(false);
+    generatedProduct.setParentProduct(productModel);
+    generatedProduct.setProductVariant(productVariant);
 
-    product.setCostPrice(productModel.getCostPrice());
-    product.setSalePrice(productModel.getSalePrice());
-    product.setManagPriceCoef(productModel.getManagPriceCoef());
+    this.updateSalePrice(generatedProduct, null);
 
-    product = productVariantService.copyAdditionalFields(product, productModel);
-
-    this.updateSalePrice(product, null);
-
-    return product;
+    return generatedProduct;
   }
 
   /**

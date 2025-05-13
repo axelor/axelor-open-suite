@@ -195,8 +195,9 @@
         selection="supplychain.stock.move.invoicing.wizard.select"/>
     </panel>
     <panel-related name="stockMoveLineListPanel" field="$stockMoveLines"
-      canNew="false" target="com.axelor.apps.stock.db.StockMoveLine" type="one-to-many"
-      editable="true" showIf="operationSelect == 2" form-view="partial-invoice-stock-move-line-form">
+      title="Stock move lines" canNew="false" target="com.axelor.apps.stock.db.StockMoveLine"
+      type="one-to-many" editable="true" showIf="operationSelect == 2"
+      form-view="partial-invoice-stock-move-line-form">
       <field name="productCode" readonly="true"/>
       <field name="productName" readonly="true"/>
       <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"

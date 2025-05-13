@@ -26,13 +26,25 @@
       <spacer/>
       <field name="projectTaskStatusSet" widget="TagSelect"
         requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
-        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
-        onChange="action-category-group-task-status-onchange,action-project-task-category-method-validate-progress"/>
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory" readonly="true"/>
       <field name="completedTaskStatus"
         requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         form-view="task-status-form" grid-view="task-status-grid"
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         onSelect="action-project-task-category-attrs-set-completed-task-status-domain"/>
+      <panel name="taskStatusManagementPanel" colSpan="12" showIf="!$readonly()"
+        if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory">
+        <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
+          title="Status to add" onSelect="action-category-attrs-status-to-add-domain" colSpan="3"
+          target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="addStatusBtn" onClick="action-category-group-add-status"
+          title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
+        <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
+          title="Status to remove" onSelect="action-category-attrs-status-to-remove-domain"
+          colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
+        <button name="removeStatusBtn" onClick="action-category-group-remove-status"
+          title="Remove status" colSpan="3" showIf="$statusToRemoveSet.length &gt; 0"/>
+      </panel>
       <panel-related field="taskCustomFieldsList" colSpan="12" showIf="id"
         form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
     </panel>
@@ -52,6 +64,20 @@
   <action-group name="action-category-group-task-status-onchange">
     <action name="action-project-task-category-method-manage-completed-task-status"/>
     <action name="action-category-method-fill-progress-by-category"/>
+    <action name="action-project-task-category-method-validate-progress"/>
+  </action-group>
+
+  <action-group name="action-category-group-add-status">
+    <action name="action-category-attrs-add-task-status"/>
+    <action name="action-category-method-manage-completed-task-status"/>
+    <action name="action-category-group-task-status-onchange"/>
+  </action-group>
+
+  <action-group name="action-category-group-remove-status">
+    <action name="save"/>
+    <action name="action-category-method-remove-task-status"/>
+    <action name="action-category-group-task-status-onchange"/>
+    <action name="save"/>
   </action-group>
 
   <action-attrs
@@ -61,6 +87,22 @@
       if="projectTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
     <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
       if="projectTaskStatusSet?.collect{it.id}?.size == 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-category-attrs-status-to-add-domain">
+    <attribute for="$statusToAddSet" name="domain"
+      expr="eval: &quot; self.id NOT IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-category-attrs-status-to-remove-domain">
+    <attribute for="$statusToRemoveSet" name="domain"
+      expr="eval: &quot; self.id IN (${(projectTaskStatusSet?.collect{it.id}+[0]).join(',')}) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-category-attrs-add-task-status">
+    <attribute for="projectTaskStatusSet" name="value"
+      expr="eval: projectTaskStatusSet+statusToAddSet"/>
+    <attribute for="$statusToAddSet" name="value" expr="eval: null"/>
   </action-attrs>
 
   <action-record name="action-project-task-category-record-status-new"
@@ -87,6 +129,11 @@
   <action-method name="action-project-task-category-method-validate-progress">
     <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
       method="validateProgress"/>
+  </action-method>
+
+  <action-method name="action-category-method-remove-task-status">
+    <call class="com.axelor.apps.project.web.ProjectTaskCategoryController"
+      method="removeTaskStatus"/>
   </action-method>
 
   <search-filters name="project-task-category-filters"

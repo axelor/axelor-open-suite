@@ -22,6 +22,8 @@
       readonly="true"/>
     <many-to-one name="validatorUser" title="Validator" ref="com.axelor.auth.db.User"
       readonly="true"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
 
     <unique-constraint columns="purchaseRequestSeq"/>
 

@@ -27,6 +27,9 @@
       <field name="billOfMaterial"/>
       <field name="wasteRate"/>
     </track>
+
+    <entity-listener
+      class="com.axelor.apps.production.db.repo.BillOfMaterialLineListener"/>
   </entity>
 
 

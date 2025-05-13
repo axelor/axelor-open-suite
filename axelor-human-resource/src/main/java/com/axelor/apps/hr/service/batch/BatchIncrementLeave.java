@@ -82,6 +82,7 @@ public class BatchIncrementLeave extends BatchStrategy {
     LeaveReason leaveReason = leaveReasonRepository.find(id);
     Query<Employee> query = getEmployeeQuery(leaveReason);
     while (!(employeeList = query.fetch(getFetchLimit(), offset)).isEmpty()) {
+      leaveReason = leaveReasonRepository.find(id);
       for (Employee employee : employeeList) {
         ++offset;
         employee = employeeRepository.find(employee.getId());

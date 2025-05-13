@@ -57,6 +57,7 @@ public class TimesheetLineCreateBusinessServiceImpl implements TimesheetLineCrea
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       String comments,
       boolean toInvoice,
       ManufOrder manufOrder,
@@ -73,7 +74,15 @@ public class TimesheetLineCreateBusinessServiceImpl implements TimesheetLineCrea
 
     TimesheetLine timesheetLine =
         timesheetLineCreateService.createTimesheetLine(
-            project, projectTask, product, date, timesheet, duration, comments, toInvoice);
+            project,
+            projectTask,
+            product,
+            date,
+            timesheet,
+            duration,
+            hoursDuration,
+            comments,
+            toInvoice);
 
     timesheetLine.setManufOrder(manufOrder);
     timesheetLine.setOperationOrder(operationOrder);

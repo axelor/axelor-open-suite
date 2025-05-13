@@ -78,6 +78,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       String comments,
       boolean toInvoice)
       throws AxelorException {
@@ -91,11 +92,22 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
     if (product == null) {
       product = userHrService.getTimesheetProduct(employee, projectTask);
     }
+    if (hoursDuration == null && duration == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_LINE_GENERATED));
+    }
+    if (duration != null) {
+      hoursDuration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
+    }
     timesheetLineCheckService.checkActivity(project, product);
     TimesheetLine timesheetLine =
-        createTimesheetLine(project, product, employee, date, timesheet, duration, comments);
+        createTimesheetLine(project, product, employee, date, timesheet, hoursDuration, comments);
     timesheetLine.setProjectTask(projectTask);
     timesheetLine.setToInvoice(toInvoice);
+    if (duration != null) {
+      timesheetLine.setDuration(duration);
+    }
     return timesheetLineRepository.save(timesheetLine);
   }
 
@@ -206,16 +218,14 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       duration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
       Employee employee = timesheet.getEmployee();
       ProjectTask projectTask = projectPlanningTime.getProjectTask();
+      Product product = projectPlanningTime.getProduct();
+      if (product == null) {
+        product = userHrService.getTimesheetProduct(employee, projectTask);
+      }
 
       TimesheetLine timesheetLine =
           createTimesheetLine(
-              projectPlanningTime.getProject(),
-              userHrService.getTimesheetProduct(employee, projectTask),
-              employee,
-              date,
-              timesheet,
-              duration,
-              "");
+              projectPlanningTime.getProject(), product, employee, date, timesheet, duration, "");
       timesheetLine.setProjectTask(projectTask);
     }
   }
