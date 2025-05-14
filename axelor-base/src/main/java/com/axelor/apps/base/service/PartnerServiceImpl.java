@@ -713,10 +713,11 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String checkIfRegistrationCodeExists(Partner partner) {
     String message = "";
-    String registrationCode = partner.getRegistrationCode().replaceAll("\\s+", "");
-    if (StringUtils.isEmpty(registrationCode)) {
+    String registrationCode = partner.getRegistrationCode();
+    if (StringUtils.isBlank(registrationCode)) {
       return message;
     }
+    registrationCode = registrationCode.replaceAll("\\s+", "");
     Query<Partner> query = partnerRepo.all();
     StringBuilder filter =
         new StringBuilder("REPLACE(self.registrationCode, ' ', '') = :registrationCode");
