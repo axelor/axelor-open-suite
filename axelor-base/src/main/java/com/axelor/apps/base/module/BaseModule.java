@@ -110,6 +110,8 @@ import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerMailQueryService;
+import com.axelor.apps.base.service.PartnerMailQueryServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -331,6 +333,7 @@ public class BaseModule extends AxelorModule {
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(PartnerMailQueryService.class).to(PartnerMailQueryServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
     bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
