@@ -101,44 +101,69 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     }
 
     if (fromDate != null && toDate != null) {
-      long totalDuration = LocalDateHelper.daysBetween(fromDate, toDate, false);
-      LocalDate date = fromDate;
-      BigDecimal prorataAmount;
-      BigDecimal missingAmount = amount;
-
-      while (!date.isAfter(toDate)) {
-        BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, date);
-        if (budgetLine != null && totalDuration > 0) {
-          if (!toDate.isAfter(budgetLine.getToDate())) {
-            prorataAmount = missingAmount;
-          } else {
-            long duration = LocalDateHelper.daysBetween(date, budgetLine.getToDate(), false);
-            prorataAmount =
-                amount.multiply(
-                    BigDecimal.valueOf(duration)
-                        .divide(
-                            BigDecimal.valueOf(totalDuration),
-                            AppBaseService.COMPUTATION_SCALING,
-                            RoundingMode.HALF_UP));
-            prorataAmount =
-                prorataAmount.setScale(
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-            missingAmount = missingAmount.subtract(prorataAmount);
-
-            if (missingAmount.compareTo(gap) == 0) {
-              prorataAmount = prorataAmount.add(gap);
-            }
-          }
-          computeMethod.computeBudgetLineAmounts(budgetLine, prorataAmount);
-          date = budgetLine.getToDate().plusDays(1);
-        } else {
-          break;
-        }
-      }
+      computeBudgetLinesUsingDates(budget, amount, fromDate, toDate, computeMethod);
     } else {
       BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, defaultDate);
       computeMethod.computeBudgetLineAmounts(budgetLine, amount);
     }
+  }
+
+  protected void computeBudgetLinesUsingDates(
+      Budget budget,
+      BigDecimal amount,
+      LocalDate fromDate,
+      LocalDate toDate,
+      ComputeMethod computeMethod) {
+    long totalDuration = LocalDateHelper.daysBetween(fromDate, toDate, false);
+    LocalDate date = fromDate;
+    BigDecimal prorataAmount;
+    BigDecimal missingAmount = amount;
+
+    while (!date.isAfter(toDate)) {
+      BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, date);
+      if (budgetLine != null && totalDuration > 0) {
+        if (!toDate.isAfter(budgetLine.getToDate())) {
+          prorataAmount = missingAmount;
+        } else {
+          prorataAmount =
+              computeProrataAmountOnDates(
+                  amount, date, budgetLine.getToDate(), missingAmount, totalDuration);
+          missingAmount = missingAmount.subtract(prorataAmount);
+        }
+        computeMethod.computeBudgetLineAmounts(budgetLine, prorataAmount);
+        date = budgetLine.getToDate().plusDays(1);
+      } else {
+        break;
+      }
+    }
+  }
+
+  protected BigDecimal computeProrataAmountOnDates(
+      BigDecimal amount,
+      LocalDate fromDate,
+      LocalDate toDate,
+      BigDecimal missingAmount,
+      long totalDuration) {
+    if (totalDuration == 0 || fromDate == null || toDate == null || amount.signum() == 0) {
+      return BigDecimal.ZERO;
+    }
+
+    long duration = LocalDateHelper.daysBetween(fromDate, toDate, false);
+    BigDecimal prorataAmount =
+        amount.multiply(
+            BigDecimal.valueOf(duration)
+                .divide(
+                    BigDecimal.valueOf(totalDuration),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP));
+    prorataAmount =
+        prorataAmount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+    if (missingAmount.subtract(prorataAmount).compareTo(gap) == 0) {
+      prorataAmount = prorataAmount.add(gap);
+    }
+
+    return prorataAmount;
   }
 
   protected void updateBudgetLineAmountsOnOrder(BudgetLine budgetLine, BigDecimal amount) {
