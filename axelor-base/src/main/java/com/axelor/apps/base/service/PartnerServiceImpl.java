@@ -45,7 +45,6 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
-import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -346,34 +345,9 @@ public class PartnerServiceImpl implements PartnerService {
     return idList;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner, int emailType) {
-
-    String query =
-        String.format(
-            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
-                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
-            partner.getId());
-
-    String emailAddress =
-        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
-    if (emailAddress != null) {
-      query +=
-          " OR (:emailAddress IN ("
-              + ((emailType == MessageRepository.TYPE_RECEIVED)
-                  ? "email.fromEmailAddress.address"
-                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
-              + "))";
-    } else {
-      query += " AND email.typeSelect = " + emailType;
-    }
-    javax.persistence.Query q = JPA.em().createQuery(query);
-    if (emailAddress != null) {
-      q.setParameter("emailAddress", emailAddress);
-    }
-
-    return q.getResultList();
+    return Beans.get(PartnerMailQueryService.class).findMailsFromPartner(partner, emailType);
   }
 
   protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
