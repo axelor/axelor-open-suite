@@ -451,7 +451,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
-    if (!accountConfig.getAutoReconcileOnInvoice()) {
+    if (!accountConfig.getAutoReconcileOnInvoice()
+        || !Optional.of(invoice)
+            .map(Invoice::getPartner)
+            .map(Partner::getIsCompensation)
+            .orElse(true)) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
