@@ -272,7 +272,7 @@
     <view type="form" name="pricing-form"/>
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect"
-      expr="eval: PricingRepository.PRICING_TYPE_SELECT_CARRIER_MODE_PRICING"/>
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING"/>
   </action-view>
 
   <menuitem title="Pricing rules" name="stock-pricing-carrier-freight-conf-pricing-rule"

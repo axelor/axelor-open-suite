@@ -380,31 +380,32 @@
 
   <form title="Freight carrier pricings" name="freight-carrier-pricings-wizard-form"
     model="com.axelor.utils.db.Wizard"
-    onNew="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set,action-supplychain-sale-order-method-compute-pricings">
+    onNew="action-supplychain-sale-order-method-set-freight-carrier-pricings-set,action-supplychain-sale-order-method-compute-pricings">
     <panel name="main">
       <field name="$freightCarrierPricingsSet" type="many-to-many" showTitle="false"
-        target="com.axelor.apps.stock.db.FreightCarrierMode"
-        form-view="freight-carrier-pricing-mode-form" grid-view="freight-carrier-pricings-grid"
+        target="com.axelor.apps.supplychain.db.FreightCarrierPricing"
+        form-view="freight-carrier-pricing-form" grid-view="freight-carrier-pricing-grid"
         colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false"/>
       <button name="selectBtn" title="Select"
         onClick="action-supplychain-sale-order-method-select-freight-carrier-pricings" colSpan="12"/>
     </panel>
   </form>
 
-  <action-attrs
-    name="action-supplychain-sale-order-attrs-set-freight-carrier-pricings-set">
-    <attribute for="$freightCarrierPricingsSet" name="value"
-      expr="eval: __repo__(FreightCarrierMode).all().filter('self.shipmentMode.id = ?1', _shipmentMode?.id).fetch().toSet()"/>
-  </action-attrs>
+  <action-method
+    name="action-supplychain-sale-order-method-set-freight-carrier-pricings-set">
+    <call class="com.axelor.apps.supplychain.web.FreightCarrierPricingController"
+      method="setFreightCarrierPricing"/>
+  </action-method>
 
   <action-method
     name="action-supplychain-sale-order-method-select-freight-carrier-pricings">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
-      method="selectFreightCarrierPricings"/>
+    <call class="com.axelor.apps.supplychain.web.FreightCarrierPricingController"
+      method="selectFreightCarrierPricing"/>
   </action-method>
 
   <action-method name="action-supplychain-sale-order-method-compute-pricings">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="computePricings"/>
+    <call class="com.axelor.apps.supplychain.web.FreightCarrierPricingController"
+      method="computePricings"/>
   </action-method>
 
 </object-views>

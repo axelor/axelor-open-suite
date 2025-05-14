@@ -35,15 +35,14 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
-import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
+import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ShippingAbstractService;
 import com.axelor.apps.supplychain.service.ShippingService;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -167,52 +166,23 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     return saleOrder;
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  public void computeFreightCarrierMode(
-      List<FreightCarrierMode> freightCarrierModeList, Long saleOrderId) throws AxelorException {
-    SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
-    if (saleOrder != null) {
-      this.checkSelectedFreightCarrierMode(freightCarrierModeList);
-      FreightCarrierMode freightCarrierMode = freightCarrierModeList.get(0);
-      saleOrder.setFreightCarrierMode(freightCarrierMode);
-      saleOrder.setCarrierPartner(freightCarrierMode.getCarrierPartner());
-
-      saleOrderRepository.save(saleOrder);
-    }
-  }
-
-  protected void checkSelectedFreightCarrierMode(List<FreightCarrierMode> freightCarrierModeList)
-      throws AxelorException {
-    if (freightCarrierModeList.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(
-                  SupplychainExceptionMessage.SALE_ORDER_NO_FREIGHT_CARRIER_PRICING_SELECTED)));
-    }
-
-    if (freightCarrierModeList.size() > 1) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(
-                  SupplychainExceptionMessage
-                      .SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED)));
-    }
-  }
-
   @Override
-  public void applyPricing(Set<FreightCarrierMode> freightCarrierModeSet) throws AxelorException {
+  public void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet, Long saleOrderId)
+      throws AxelorException {
     String errors = "";
+    SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
 
-    for (FreightCarrierMode freightCarrierMode : freightCarrierModeSet) {
-      if (freightCarrierMode != null) {
-        Pricing pricing = freightCarrierMode.getFreightCarrierPricing();
+    for (FreightCarrierPricing freightCarrierPricing : freightCarrierPricingSet) {
+      if (freightCarrierPricing != null) {
+        Pricing pricing = freightCarrierPricing.getPricing();
         if (pricing != null) {
           try {
             PricingComputer pricingComputer =
-                PricingComputer.of(pricing, freightCarrierMode)
-                    .putInContext("calculatedPrice", EntityHelper.getEntity(freightCarrierMode));
+                PricingComputer.of(pricing, freightCarrierPricing)
+                    .putInContext(
+                        "priceAmount",
+                        EntityHelper.getEntity(freightCarrierPricing.getFreightCarrierMode()));
+
             pricingComputer.apply();
           } catch (AxelorException e) {
             TraceBackService.trace(e);

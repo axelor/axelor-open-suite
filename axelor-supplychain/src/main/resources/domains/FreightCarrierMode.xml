@@ -9,7 +9,6 @@
 
     <many-to-one ref="com.axelor.apps.base.db.Pricing" name="freightCarrierPricing"
       title="Freight carrier pricing"/>
-    <decimal name="calculatedPrice" title="Price" readonly="true" precision="20" scale="3"/>
   </entity>
 
 </domain-models>

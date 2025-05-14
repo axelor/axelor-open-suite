@@ -20,17 +20,14 @@ package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.interfaces.ShippableOrder;
-import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.ShipmentMode;
-import java.util.List;
+import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import java.util.Set;
 
 public interface SaleOrderShipmentService {
   String createShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
       throws AxelorException;
 
-  void computeFreightCarrierMode(List<FreightCarrierMode> freightCarrierModeList, Long saleOrderId)
+  void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet, Long saleOrderId)
       throws AxelorException;
-
-  void applyPricing(Set<FreightCarrierMode> freightCarrierModeSet) throws AxelorException;
 }

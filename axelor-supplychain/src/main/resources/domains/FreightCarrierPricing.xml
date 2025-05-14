@@ -5,10 +5,12 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="FreightCarrierPricing">
+  <entity name="FreightCarrierPricing" persistable="false">
     <string name="name" title="Name" required="true"/>
     <many-to-one name="freightCarrierMode"
       ref="com.axelor.apps.stock.db.FreightCarrierMode" required="true" title="Freight carrier mode"/>
+    <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Freight Carrier"/>
     <many-to-one ref="com.axelor.apps.base.db.Pricing" name="pricing" title="Pricing"/>
     <decimal name="pricingAmount" title="Price" readonly="true" precision="20" scale="3"/>
 
