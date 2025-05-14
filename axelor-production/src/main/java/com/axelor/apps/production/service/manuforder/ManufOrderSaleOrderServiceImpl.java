@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderSaleOrderServiceImpl implements ManufOrderSaleOrderService {
 
@@ -74,6 +75,10 @@ public class ManufOrderSaleOrderServiceImpl implements ManufOrderSaleOrderServic
     BigDecimal qtyToProduce = saleOrderLine.getQtyToProduce();
     Product product = saleOrderLine.getProduct();
     List<ManufOrder> manufOrderList = saleOrderLine.getManufOrderList();
+
+    if (CollectionUtils.isEmpty(manufOrderList)) {
+      return qtyToProduce;
+    }
 
     List<StockMoveLine> producedStockMoveLineList =
         manufOrderList.stream()
