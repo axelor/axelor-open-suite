@@ -65,8 +65,19 @@ public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateCompute
 
   @Override
   public void computeDueDateValues(InvoiceTerm invoiceTerm, LocalDate invoiceDate) {
-    LocalDate dueDate =
-        PaymentConditionToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
+    LocalDate dueDate;
+
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice != null
+        && invoice.getPaymentCondition() != null
+        && invoice.getPaymentCondition().getIsFree()) {
+      dueDate = invoiceDate;
+    } else {
+      dueDate =
+          PaymentConditionToolService.getDueDate(
+              invoiceTerm.getPaymentConditionLine(), invoiceDate);
+    }
+
     invoiceTerm.setDueDate(dueDate);
 
     if (appAccountService.getAppAccount().getManageFinancialDiscount()
