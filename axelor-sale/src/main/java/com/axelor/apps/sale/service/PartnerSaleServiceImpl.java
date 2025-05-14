@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class PartnerSaleServiceImpl extends PartnerServiceImpl implements PartnerSaleService {
 
@@ -44,66 +43,34 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     super(partnerRepo, appBaseService);
   }
 
-  @Deprecated
   @Override
-  public List<Long> findPartnerMails(Partner partner, int emailType) {
+  public List<Long> findMailsFromPartner(Partner partner, int emailType) {
+    List<Long> mailIdList = super.findMailsFromPartner(partner, emailType);
     if (!Beans.get(AppSaleService.class).isApp("sale")) {
-      return super.findPartnerMails(partner, emailType);
+      return mailIdList;
     }
-
-    List<Long> idList = new ArrayList<Long>();
-
-    idList.addAll(this.findMailsFromPartner(partner, emailType));
-
-    if (partner.getIsContact()) {
-      idList.addAll(this.findMailsFromSaleOrderContact(partner, emailType));
-      return idList;
-    } else {
-      idList.addAll(this.findMailsFromSaleOrder(partner, emailType));
-    }
-
-    Set<Partner> contactSet = partner.getContactPartnerSet();
-    if (contactSet != null && !contactSet.isEmpty()) {
-      for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact, emailType));
-        idList.addAll(this.findMailsFromSaleOrderContact(contact, emailType));
-      }
-    }
-    return idList;
-  }
-
-  @Deprecated
-  public List<Long> findMailsFromSaleOrder(Partner partner, int emailType) {
-    return findMailsFromSaleOrder(
-        partner, emailType, "com.axelor.apps.sale.db.SaleOrder", "clientPartner");
-  }
-
-  @Deprecated
-  public List<Long> findMailsFromSaleOrderContact(Partner partner, int emailType) {
-    return findMailsFromSaleOrder(
-        partner, emailType, "com.axelor.apps.sale.db.SaleOrder", "contactPartner");
+    mailIdList.addAll(
+        findMailsFromSaleOrder(
+            partner, emailType, partner.getIsContact() ? "contactPartner" : "clientPartner"));
+    return mailIdList;
   }
 
   @SuppressWarnings("unchecked")
-  protected List<Long> findMailsFromSaleOrder(
-      Partner partner, int emailType, String relatedToSelect, String partnerField) {
-    StringBuilder query =
-        new StringBuilder(
+  protected List<Long> findMailsFromSaleOrder(Partner partner, int emailType, String partnerField) {
+    return JPA.em()
+        .createQuery(
             "SELECT DISTINCT email.id"
                 + " FROM Message AS email"
-                + " JOIN email.multiRelatedList AS related	"
+                + " JOIN email.multiRelatedList AS related"
                 + " JOIN SaleOrder AS so ON so.id = related.relatedToSelectId"
                 + " JOIN Partner AS part ON part.id = so."
                 + partnerField
                 + " WHERE part.id = :partnerId"
                 + " AND related.relatedToSelect = :relatedToSelect"
                 + " AND email.typeSelect = :emailType"
-                + " AND email.mediaTypeSelect = :mediaType");
-
-    return JPA.em()
-        .createQuery(query.toString())
+                + " AND email.mediaTypeSelect = :mediaType")
         .setParameter("partnerId", partner.getId())
-        .setParameter("relatedToSelect", relatedToSelect)
+        .setParameter("relatedToSelect", "com.axelor.apps.sale.db.SaleOrder")
         .setParameter("emailType", emailType)
         .setParameter("mediaType", MessageRepository.MEDIA_TYPE_EMAIL)
         .getResultList();
