@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="AllocationLine" cacheable="true">
+
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+    <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+    <decimal name="allocated" title="Allocated"/>
+    <string name="description" title="Description" large="true" multiline="true"/>
+
+    <finder-method name="findByProjectAndDates"
+      using="project,LocalDate:fromDate,LocalDate:toDate" all="true"
+      filter="(self.project IS NOT NULL AND self.project = :project)
+    AND ((self.period.fromDate BETWEEN :fromDate AND :toDate) OR (self.period.toDate BETWEEN :fromDate AND :toDate) OR (self.period.fromDate &lt;
+    :fromDate AND self.period.toDate &gt; :toDate))"/>
+
+    <finder-method name="findByEmployeeAndDates"
+      using="employee,LocalDate:fromDate,LocalDate:toDate" all="true"
+      filter="self.employee = :employee
+    AND ((self.period.fromDate BETWEEN :fromDate AND :toDate) OR (self.period.toDate BETWEEN :fromDate AND :toDate) OR (self.period.fromDate &lt;
+    :fromDate AND self.period.toDate &gt; :toDate))"/>
+
+    <finder-method name="findByProjectAndEmployeeAndDates"
+      using="project,employee,LocalDate:fromDate,LocalDate:toDate" all="true"
+      filter="self.employee = :employee AND ((self.project IS NOT NULL AND self.project = :project))
+    AND ((self.period.fromDate BETWEEN :fromDate AND :toDate) OR (self.period.toDate BETWEEN :fromDate AND :toDate) OR (self.period.fromDate &lt;
+    :fromDate AND self.period.toDate &gt; :toDate))"/>
+    <finder-method name="findByPeriodAndProject" using="period,project"/>
+    <finder-method name="findByPeriodAndEmployee" using="period,employee" all="true"/>
+    <finder-method name="findByProject" using="project" all="true"/>
+    <finder-method name="findByPeriodAndProjectAndEmployee"
+      using="period, project, employee"/>
+  </entity>
+
+</domain-models>

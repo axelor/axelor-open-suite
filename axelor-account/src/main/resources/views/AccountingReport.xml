@@ -108,7 +108,7 @@
       <panel name="filterPanel" title="Filter">
         <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true"
           hideIf="reportType.typeSelect == 25">
-          <field name="currency"/>
+          <field name="currency" requiredIf="reportType.typeSelect == 18"/>
           <field name="minAmountExcl"
             showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
           <field name="journal"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -81,16 +80,11 @@ public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCrea
             .getAnalyticMoveLineList()
             .forEach(analyticMoveLine -> analyticMoveLine.setSaleOrderLine(soLine));
       }
+      SupplyChainConfig supplyChainConfig =
+          supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
 
-      try {
-        SupplyChainConfig supplyChainConfig =
-            supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
-
-        if (supplyChainConfig.getAutoRequestReservedQty()) {
-          reservedQtyService.requestQty(soLine);
-        }
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
+      if (supplyChainConfig.getAutoRequestReservedQty()) {
+        reservedQtyService.requestQty(soLine);
       }
     }
     return soLine;

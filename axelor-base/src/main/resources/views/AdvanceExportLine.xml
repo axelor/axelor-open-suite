@@ -20,7 +20,7 @@
         onSelect="action-advanced-export-line-method-change-domain"
         onChange="action-advanced-export-line-method-fill-title"/>
       <field name="title" required="true"/>
-      <field name="targetField"/>
+      <field name="targetField" required="true"/>
       <field name="orderBy" colSpan="2"/>
       <field name="orderByType" requiredIf="orderBy" hideIf="!orderBy" colSpan="4"/>
       <field name="$isValidate" type="boolean" title="Validate" hidden="true" required="true"

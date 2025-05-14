@@ -27,9 +27,14 @@
 
     <boolean name="isActive" title="Is Active" default="false"/>
     <boolean name="copyNeedingUpdate"/>
+    <integer name="configuratorVersion" title="Version" min="0" default="0" readonly="true"/>
 
+    <track>
+      <field name="configuratorVersion" on="UPDATE"/>
+    </track>
 
     <entity-listener
       class="com.axelor.apps.sale.db.repo.ConfiguratorCreatorListener"/>
   </entity>
+
 </domain-models>

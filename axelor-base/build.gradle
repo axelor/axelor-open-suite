@@ -75,7 +75,7 @@ dependencies {
 	implementation libs.pdfbox
 	implementation libs.openpdf
 	implementation libs.jsoup
-	implementation libs.bcprov_jdk15on
-	implementation libs.bcpkix_jdk15on
+	implementation libs.bcprov_jdk18on
+	implementation libs.bcpkix_jdk18on
 	implementation libs.flyingsaucer_openpdf
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -249,8 +249,12 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
   protected Stream<AnalyticMoveLine> getAnalyticMoveLineOnAxis(
       AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
-    return analyticLine.getAnalyticMoveLineList().stream()
-        .filter(it -> it.getAnalyticAxis().equals(analyticAxis));
+    if (analyticAxis != null) {
+      return analyticLine.getAnalyticMoveLineList().stream()
+          .filter(it -> analyticAxis.equals(it.getAnalyticAxis()));
+    }
+
+    return Stream.empty();
   }
 
   protected void setAxisAccount(

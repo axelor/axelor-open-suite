@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -42,6 +43,7 @@ import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -86,15 +88,17 @@ public class LeaveController {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())
-                .add("form", "leave-request-form")
+                .add("form", "complete-my-leave-request-form")
+                .context("_isEmployeeReadOnly", true)
                 .map());
       } else if (leaveList.size() == 1) {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())
-                .add("form", "leave-request-form")
+                .add("form", "complete-my-leave-request-form")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(leaveList.get(0).getId()))
+                .context("_isEmployeeReadOnly", true)
                 .map());
       } else {
         response.setView(
@@ -126,10 +130,11 @@ public class LeaveController {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())
-                .add("form", "leave-request-form")
+                .add("form", "complete-my-leave-request-form")
                 .param("forceEdit", "true")
                 .domain("self.id = " + leaveId)
                 .context("_showRecord", leaveId)
+                .context("_isEmployeeReadOnly", true)
                 .map());
       }
     } catch (Exception e) {
@@ -451,5 +456,29 @@ public class LeaveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getLeaveReasonDomain(ActionRequest request, ActionResponse response) {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    response.setAttr(
+        "leaveReason",
+        "domain",
+        Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(leave.getEmployee()));
+  }
+
+  public void computeLeaveToDate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    response.setValue(
+        "leaveDaysToDate", Beans.get(LeaveRequestService.class).getLeaveDaysToDate(leave));
+  }
+
+  public void computeLeaveQuantity(ActionRequest request, ActionResponse response) {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    response.setValue(
+        "$leavequantity",
+        Beans.get(EmployeeComputeAvailableLeaveService.class)
+            .computeAvailableLeaveQuantityForActiveUser(
+                leave.getEmployee(), leave.getLeaveReason()));
   }
 }

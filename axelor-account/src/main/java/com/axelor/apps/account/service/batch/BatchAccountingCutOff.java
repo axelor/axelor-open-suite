@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,13 +60,18 @@ public class BatchAccountingCutOff extends PreviewBatch {
 
   @Override
   protected void process() {
-    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    try {
+      AccountingBatch accountingBatch = batch.getAccountingBatch();
 
-    LocalDate moveDate = accountingBatch.getMoveDate();
-    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-    this.updateBatch(moveDate, accountingCutOffTypeSelect);
+      LocalDate moveDate = accountingBatch.getMoveDate();
+      int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
+      this.updateBatch(moveDate, accountingCutOffTypeSelect);
 
-    super.process();
+      super.process();
+    } catch (Exception e) {
+      TraceBackService.trace(e, null, batch.getId());
+      incrementAnomaly();
+    }
   }
 
   @Override

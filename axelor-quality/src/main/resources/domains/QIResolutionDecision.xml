@@ -13,7 +13,7 @@
       ref="com.axelor.apps.quality.db.QIDecision" required="true"/>
     <decimal name="quantity" title="Quantity"/>
     <string name="description" title="Description" large="true"/>
-    <many-to-one name="qiResolutionDefault" title="Default"
+    <many-to-one name="qiResolutionDefault" title="Defect"
       ref="com.axelor.apps.quality.db.QIResolutionDefault" required="true"/>
     <integer name="responsible" title="Responsible" required="true"
       selection="quality.qi.resolution.decision.responsible.select" default="1"/>

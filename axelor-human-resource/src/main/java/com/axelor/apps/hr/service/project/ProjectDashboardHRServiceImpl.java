@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,7 +40,6 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = super.getData(project);
     dataMap.put("$spentTime", getSpentTime(project));
-    dataMap.put("$manageTimeSpent", project.getManageTimeSpent());
     return dataMap;
   }
 

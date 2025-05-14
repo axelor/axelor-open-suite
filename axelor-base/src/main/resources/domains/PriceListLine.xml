@@ -38,6 +38,9 @@
 				public static final int ANOMALY_UNAVAILABLE_FOR_SALE = 1;
 				public static final int ANOMALY_NOT_RENEWED = 2;
 				public static final int ANOMALY_UNAVAILABLE_FOR_PURCHASE = 3;
+
+				// DISCOUNTED AMOUNT AND PRICE SCALE
+				public static final int DISCOUNT_SCALE = 20;
 			]]>
     </extra-code>
   </entity>

@@ -485,20 +485,20 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 as "SoldeClient",
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
-from public.account_accounting_report as AccountingReport 
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
-left outer join public.account_invoice_term as InvoiceTerm on (InvoiceTerm.move_line = MoveLine.id)
-left outer join public.account_invoice as Invoice on (InvoiceTerm.invoice = Invoice.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.account_account as Account on (MoveLine.account  = Account.id )
-left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
-left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+from account_accounting_report as AccountingReport 
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join base_company as Company on (AccountingReport.company = Company.id)
+left outer join base_currency as Currency on (Currency.id = Company.currency)
+left outer join account_invoice_term as InvoiceTerm on (InvoiceTerm.move_line = MoveLine.id)
+left outer join account_invoice as Invoice on (InvoiceTerm.invoice = Invoice.id)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join account_account as Account on (MoveLine.account  = Account.id )
+left outer join account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND
@@ -715,9 +715,9 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
             <xml-property name="queryText"><![CDATA[select Company.name as comapny_name, Period.name as period_name, AccountingReport.detailed , 
 AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "date", AccountingReport.publication_date_time as "ReportDateEdition" ,
 Currency.code as currency, AccountingReport.ref
-from public.account_accounting_report as AccountingReport
-inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+from account_accounting_report as AccountingReport
+inner join base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
+left outer join base_period as Period on (AccountingReport.period = Period.id)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">

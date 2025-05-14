@@ -652,34 +652,34 @@ MoveLine.origin,
 Currency.number_of_decimals,
 CompanyCurrency.number_of_decimals as cc_number_of_decimals,
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
-from public.account_accounting_report as AccountingReport
-left outer join public.account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
-left outer join public.account_reconcile_group as ReconcileGroup on (ReconcileGroup.id = MoveLine.reconcile_group)
+from account_accounting_report as AccountingReport
+left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
+left outer join account_reconcile_group as ReconcileGroup on (ReconcileGroup.id = MoveLine.reconcile_group)
 
-left outer join public.account_account as Account on (MoveLine.account  = Account.id )
-left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
-left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
-left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
-left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
-left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
-left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
+left outer join account_account as Account on (MoveLine.account  = Account.id )
+left outer join account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 
-left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
-left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
-left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
-left outer join public.base_currency as Currency on (Currency.id = Move.currency)
-left outer join public.base_currency as CompanyCurrency on (CompanyCurrency.id = Company.currency)
-left outer join public.base_period as Period on (Move.period = Period.id) 
-left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
+left outer join base_company as Company on (AccountingReport.company = Company.id)
+left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join base_currency as Currency on (Currency.id = Move.currency)
+left outer join base_currency as CompanyCurrency on (CompanyCurrency.id = Company.currency)
+left outer join base_period as Period on (Move.period = Period.id) 
+left outer join account_journal as Journal on (Move.journal = Journal.id) 
 left outer join (SELECT cast(meta_select_item.value as int) AS select_value, meta_select_item.title AS select_title 
 	FROM meta_select JOIN meta_select_item 
 	ON meta_select.name = 'iaccount.move.status.select'
@@ -1113,13 +1113,13 @@ AccountingReport.display_name_account_column_on_printing as display_name_account
 AccountingReport.display_only_not_completely_lettered_move_lines,
 AccountingReport.display_cumulative_balance,
 AccountingReport.ref
-from public.account_accounting_report as AccountingReport
-inner join public.base_company as Company on (AccountingReport.company = Company.id)
+from account_accounting_report as AccountingReport
+inner join base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join public.account_payment_mode as PaymentMode on (AccountingReport.payment_mode = PaymentMode.id)
-left outer join public.account_journal as Journal on (AccountingReport.journal = Journal.id)
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+left outer join account_payment_mode as PaymentMode on (AccountingReport.payment_mode = PaymentMode.id)
+left outer join account_journal as Journal on (AccountingReport.journal = Journal.id)
+left outer join base_period as Period on (AccountingReport.period = Period.id)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id
 where AccountingReport.id = ? ]]></xml-property>
         </oda-data-set>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="SaleOrderLineDetails">
+
+    <many-to-one name="projectSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sale order line"/>
+    <many-to-one name="originSaleOrderLineDetails"
+      title="Origin sale order line details"
+      ref="com.axelor.apps.production.db.SaleOrderLineDetails"/>
+
+    <entity-listener
+      class="com.axelor.apps.businessproduction.db.repo.SaleOrderLineDetailsBusinessProductionListener"/>
+
+  </entity>
+</domain-models>

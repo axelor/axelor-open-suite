@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,10 +44,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
@@ -134,25 +137,23 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       return null;
     }
 
-    @SuppressWarnings("unchecked")
     List<SupplierCatalog> supplierCatalogList =
-        (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
+        supplierPartner.getSupplierCatalogList().stream()
+            .filter(catalog -> catalog.getProduct().equals(product))
+            .collect(Collectors.toList());
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
-        && supplierCatalogList != null) {
-      SupplierCatalog resSupplierCatalog = null;
-
-      for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-        if (supplierCatalog.getSupplierPartner().equals(supplierPartner)) {
-          resSupplierCatalog =
-              (resSupplierCatalog == null
-                      || resSupplierCatalog.getMinQty().compareTo(supplierCatalog.getMinQty()) > 0)
-                  ? supplierCatalog
-                  : resSupplierCatalog;
-        }
+        && CollectionUtils.isNotEmpty(supplierCatalogList)) {
+      if (supplierCatalogList.stream().anyMatch(catalog -> catalog.getUpdateDate() != null)) {
+        return supplierCatalogList.stream()
+            .filter(catalog -> catalog.getUpdateDate() != null)
+            .max(Comparator.comparing(SupplierCatalog::getUpdateDate))
+            .orElse(null);
+      } else {
+        return supplierCatalogList.stream()
+            .min(Comparator.comparing(SupplierCatalog::getMinQty))
+            .orElse(null);
       }
-
-      return resSupplierCatalog;
     }
     return null;
   }

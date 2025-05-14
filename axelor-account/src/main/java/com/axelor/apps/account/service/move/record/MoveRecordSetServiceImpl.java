@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -211,7 +211,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     PaymentMode paymentMode = move.getPaymentMode();
     Company company = move.getCompany();
     Partner partner = move.getPartner();
-
+    BankDetails companyBankDetails = move.getCompanyBankDetails();
     if (company == null) {
       move.setCompanyBankDetails(null);
       return;
@@ -223,7 +223,8 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
     BankDetails defaultBankDetails =
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    move.setCompanyBankDetails(defaultBankDetails);
+    move.setCompanyBankDetails(
+        defaultBankDetails != null ? defaultBankDetails : companyBankDetails);
   }
 
   @Override

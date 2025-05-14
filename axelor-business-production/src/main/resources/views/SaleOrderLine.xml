@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="business-production-sale-order-line-editable-grid" title="SO lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine" editable="true"
+    onNew="action-sale-order-line-attrs-set-compute-with-sol" widget="tree-grid"
+    summary-view="business-production-sale-order-line-summary-project-form"
+    x-tree-field="subSaleOrderLineList, projectSaleOrderLineDetailsList"
+    groupBy="saleOrder.statusSelect, saleOrder"
+    orderBy="-saleOrder.statusSelect, -saleOrder.createdOn" canNew="false">
+
+    <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
+      width="51" readonly="true"/>
+    <button name="addToCartBtn" title="Add to cart"
+      onClick="action-sale-order-line-method-add-to-cart" icon="cart-plus-fill"
+      if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+    <field name="typeSelect" readonly="true"/>
+    <field name="product" readonly="true" x-image-field="picture" form-view="product-form"
+      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+    <field name="product" readonly="true" form-view="product-form"
+      grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+    <field name="product.code" width="120"/>
+    <field name="productName" readonly="true"/>
+    <field name="qty" colSpan="3" readonly="true"/>
+    <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="price" colSpan="3" readonly="true"/>
+    <field name="inTaxPrice" readonly="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="discountTypeSelect" colSpan="3" readonly="true"/>
+    <field name="discountAmount" colSpan="3" readonly="true"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
+    <field name="taxLineSet" widget="TagSelect" readonly="true"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
+    <field name="description" readonly="true"/>
+    <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
+      <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+      <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
+    </field>
+    <field name="saleOrder.statusSelect"/>
+    <field name="saleOrder"/>
+    <field name="saleOrder.createdOn"/>
+  </grid>
+
+  <form name="business-production-sale-order-line-summary-project-form"
+    title="Sale order line details" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <panel-related name="projectSaleOrderLineDetailsEditablePanel"
+      title="Project details" field="projectSaleOrderLineDetailsList"
+      form-view="sale-order-line-details-form" grid-view="sale-order-line-details-grid"
+      editable="true"
+      showIf="!$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)"
+      onChange="business-production-action-sale-order-line-method-sol-details-onchange"/>
+
+    <panel-related name="projectSaleOrderLineDetailsReadonlyPanel"
+      field="projectSaleOrderLineDetailsList" form-view="sale-order-line-details-form"
+      grid-view="sale-order-line-details-readonly-grid"
+      showIf="$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)
+      &amp;&amp; projectSaleOrderLineDetailsList &amp;&amp; projectSaleOrderLineDetailsList.length > 0"/>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="saleSupplySelect" hidden="true"/>
+      <field name="billOfMaterial" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-method
+    name="business-production-action-sale-order-line-method-sol-details-onchange">
+    <call
+      class="com.axelor.apps.businessproduction.web.SaleOrderLineBusinessProductionController"
+      method="solDetailsListOnChange"/>
+  </action-method>
+</object-views>

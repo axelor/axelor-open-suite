@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
-  <grid name="qi-default-grid" title="Defaults" model="com.axelor.apps.quality.db.QIDefault">
+  <grid name="qi-default-grid" title="Defects" model="com.axelor.apps.quality.db.QIDefault">
     <field name="code"/>
     <field name="name"/>
     <field name="company"/>
@@ -12,7 +12,7 @@
     <field name="isDocumentary"/>
   </grid>
 
-  <form name="qi-default-form" title="Default" model="com.axelor.apps.quality.db.QIDefault">
+  <form name="qi-default-form" title="Defect" model="com.axelor.apps.quality.db.QIDefault">
     <panel name="mainPanel">
       <field name="code"/>
       <field name="name"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -123,7 +123,7 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
                 ? packLine
                     .getQuantity()
                     .multiply(packqty)
-                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
                 : packqty);
         break;
 

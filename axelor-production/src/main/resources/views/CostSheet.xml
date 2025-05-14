@@ -39,6 +39,7 @@
       <field name="costPrice"/>
       <field name="calculationTypeSelect"/>
       <field name="calculationDate"/>
+      <field name="calculationQty"/>
       <field name="currency" readonly="true" grid-view="currency-grid"
         form-view="currency-form"/>
       <panel-dashlet name="costSheetLineTreePanel"
@@ -54,6 +55,7 @@
       <field name="costPrice" readonly="true"/>
       <field name="calculationTypeSelect" readonly="true"/>
       <field name="calculationDate" readonly="true"/>
+      <field name="calculationQty" readonly="true"/>
       <field name="manufOrderProducedRatio" readonly="true"/>
       <field name="currency" readonly="true" grid-view="currency-grid"
         form-view="currency-form"/>

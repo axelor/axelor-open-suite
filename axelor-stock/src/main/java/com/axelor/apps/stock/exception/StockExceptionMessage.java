@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -313,7 +313,7 @@ public final class StockExceptionMessage {
       "You can only split line in draft or planned stock move." /*)*/;
 
   public static final String SPLIT_MOVE_LINE_WRONG_TYPE = /*$$(*/
-      "You can only split line in incoming stock move." /*)*/;
+      "You can only split line in incoming or outgoing stock move." /*)*/;
 
   public static final String SPLIT_MOVE_LINE_WRONG_REAL_QTY = /*$$(*/
       "Real quantity must not be equal to 0 and should be less than expected quantity." /*)*/;

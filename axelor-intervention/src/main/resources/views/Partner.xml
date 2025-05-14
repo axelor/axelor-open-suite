@@ -11,7 +11,7 @@
           colSpan="12">
           <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
             colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            widget="TagSelect" domain="self.company IS NULL OR self.company IN :companySet"/>
+            widget="TagSelect" onSelect="action-partner-attrs-set-trading-name-domain"/>
         </panel>
       </insert>
     </extend>
@@ -55,5 +55,10 @@
       expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
       if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
   </action-record>
+
+  <action-attrs name="action-partner-attrs-set-trading-name-domain">
+    <attribute name="domain" for="tradingNameSet"
+      expr="eval: &quot; self.company IS NULL OR self.company IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
+  </action-attrs>
 
 </object-views>

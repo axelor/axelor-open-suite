@@ -73,9 +73,9 @@
     <panel name="guestsPanel" title="Guests" showIf="attendees.length != 0" colSpan="12"
       sidebar="true">
       <field name="attendees" showTitle="false" colSpan="12" canSelect="false" canNew="false">
-        <editor layout="table" x-show-titles="false">
-          <field name="name" readonly="true"/>
-          <field name="statusSelect"/>
+        <editor x-show-titles="false">
+          <field name="name" readonly="true" colSpan="12"/>
+          <field name="statusSelect" widget="RadioSelect" colSpan="12"/>
         </editor>
       </field>
     </panel>

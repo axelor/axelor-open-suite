@@ -20,6 +20,8 @@
       selection="production.cost.sheet.calculation.type.select"/>
     <date name="calculationDate" title="Date of calculation"/>
     <decimal name="manufOrderProducedRatio" title="Produced ratio" precision="20" scale="5"/>
+    <decimal name="calculationQty" title="Calculation quantity" precision="20" scale="10"
+      readonly="true"/>
 
     <extra-code><![CDATA[
 		// CALCULATION TYPE SELECT

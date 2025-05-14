@@ -52,7 +52,7 @@
         showIf="statusSelect == 1 || !id"
         readonlyIf="paidAmount == 0 || (moveLine != null &amp;&amp; payVoucherElementToPayList.length == 0)"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
-        icon="fa-print" onClick="save,action-method-print-template"/>
+        icon="fa-print" onClick="action-payment-voucher-group-print-template"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
@@ -201,6 +201,11 @@
     <action name="action-payment-voucher-record-cheque-due-date"/>
   </action-group>
 
+  <action-group name="action-payment-voucher-group-print-template">
+    <action name="save"/>
+    <action name="action-method-print-template"/>
+    <action name="close" if="_invoice || __parent__"/>
+  </action-group>
 
   <action-method name="action-method-account-payment-voucher-set-num">
     <call class="com.axelor.apps.account.web.PaymentVoucherController"

@@ -41,6 +41,25 @@
 	  	]]>
     </string>
 
+    <finder-method name="findByEmployeeProjectAndPeriod"
+      using="employee,project,LocalDate:fromDate,LocalDate:toDate"
+      filter="self.employee = :employee AND ((self.project IS NOT NULL AND self.project = :project) OR (self.projectTask IS NOT NULL AND self.projectTask.project = :project))
+                   AND ((self.startDateTime BETWEEN :fromDate AND :toDate) OR (self.endDateTime BETWEEN :fromDate AND :toDate) OR (self.startDateTime &lt;
+                   :fromDate AND self.endDateTime &gt; :toDate))"
+      all="true"/>
+
+    <finder-method name="findByProjectAndPeriod"
+      using="project,LocalDate:fromDate,LocalDate:toDate"
+      filter="((self.project IS NOT NULL AND self.project = :project) OR (self.projectTask IS NOT NULL AND self.projectTask.project = :project))
+                   AND ((self.startDateTime BETWEEN :fromDate AND :toDate) OR (self.endDateTime BETWEEN :fromDate AND :toDate) OR (self.startDateTime &lt;
+                   :fromDate AND self.endDateTime &gt; :toDate))"
+      all="true"/>
+    <finder-method name="findByEmployeeAndPeriod"
+      using="employee,LocalDate:fromDate,LocalDate:toDate"
+      filter="(self.employee IS NOT NULL AND self.employee = :employee)
+                   AND ((self.startDateTime BETWEEN :fromDate AND :toDate) OR (self.endDateTime BETWEEN :fromDate AND :toDate) OR (self.startDateTime &lt;
+                   :fromDate AND self.endDateTime &gt; :toDate))"
+      all="true"/>
     <extra-imports>
       <![CDATA[
 	      import com.axelor.inject.Beans;

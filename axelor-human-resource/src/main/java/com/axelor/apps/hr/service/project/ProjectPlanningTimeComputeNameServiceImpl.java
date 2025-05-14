@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,11 +50,13 @@ public class ProjectPlanningTimeComputeNameServiceImpl
         fullName += "-" + project.getCode();
       }
 
-      String dateStr = startDateTime.format(dateService.getDateFormat());
-      if (!fullName.isEmpty()) {
-        fullName += "-" + dateStr;
-      } else {
-        fullName = dateStr;
+      if (startDateTime != null) {
+        String dateStr = startDateTime.format(dateService.getDateFormat());
+        if (!fullName.isEmpty()) {
+          fullName += "-" + dateStr;
+        } else {
+          fullName = dateStr;
+        }
       }
     } catch (Exception e) {
       Logger logger = LoggerFactory.getLogger(getClass());

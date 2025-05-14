@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Invoice"
-    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.GlobalDiscounter">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -48,6 +48,12 @@
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
+
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="priceBeforeGlobalDiscount" title="Total W.T. before discount"
+      precision="20" scale="10"/>
 
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice date"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -48,7 +49,8 @@ public class PurchaseOrderWorkflowServiceProjectImpl
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -56,7 +58,8 @@ public class PurchaseOrderWorkflowServiceProjectImpl
         appSupplychainService,
         purchaseOrderStockService,
         appAccountService,
-        purchaseOrderSupplychainService);
+        purchaseOrderSupplychainService,
+        purchaseOrderTypeSelectService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 

@@ -473,29 +473,29 @@ AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", YYear.reported_balance_date,
 AccountingReport.date_from, Reconcile.amount as amountReconciled, ABS(MoveLine.amount_remaining) as amount_remaining, count(Reconcile.id) as countMoveLine,
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle", Currency.number_of_decimals
-from public.account_accounting_report as AccountingReport 
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
+from account_accounting_report as AccountingReport 
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_move as Move on (MoveLine.move = Move.id)
 
-left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
+left outer join account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
 
-left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
-left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
-left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
-left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
-left outer join public.base_period as Period on (Period.id = Move.period)
-left outer join public.base_year as YYear on (YYear.id = Period.year)
-left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id AND Reconcile.status_select = 2)
-left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
-left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
-left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join account_invoice as Invoice on (Move.invoice = Invoice.id)
+left outer join base_period as Period on (Period.id = Move.period)
+left outer join base_year as YYear on (YYear.id = Period.year)
+left outer join account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id AND Reconcile.status_select = 2)
+left outer join account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
+left outer join account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
+left outer join account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
+left outer join base_company as Company on (AccountingReport.company = Company.id)
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
@@ -720,9 +720,9 @@ InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_f
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, AccountingReport.global_by_partner , 
 AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "ReportDate", AccountingReport.publication_date_time as "ReportDateEdition", Currency.code as currency, AccountingReport.ref
-from   public.account_accounting_report as AccountingReport 
-inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
+from   account_accounting_report as AccountingReport 
+inner join base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
+left outer join base_period as Period on (AccountingReport.period = Period.id)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id
 ]]></xml-property>
         </oda-data-set>

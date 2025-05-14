@@ -113,6 +113,11 @@
 
       <field name="allowPersonalizedBOM" on="UPDATE"/>
       <field name="allowPersonalizedProdProcess" on="UPDATE"/>
+      <field name="operationContinuitySelect" on="UPDATE"/>
+      <field name="generatePurchaseOrderOnMoPlanning" on="UPDATE"/>
+      <field name="isCostPerProcessLine" on="UPDATE"/>
+      <field name="employeeScheduling" on="UPDATE"/>
+      <field name="isBomLineGenerationInSODisabled" on="UPDATE"/>
     </track>
   </entity>
 

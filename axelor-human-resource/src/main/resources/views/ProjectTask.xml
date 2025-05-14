@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
+    name="resume-project-task-form" canEdit="false">
+    <panel>
+      <field name="name"/>
+      <field name="project"/>
+      <field name="parentTask"/>
+      <field name="assignedTo"/>
+    </panel>
+  </form>
+
+  <form name="incl-characteristics-panel-form" title="Characteristics"
+    id="hr-incl-characteristics-panel-form" model="com.axelor.apps.project.db.ProjectTask"
+    extension="true">
+    <extend target="//field[@name='activeSprint']">
+      <attribute name="onChange" value="action-project-task-group-sprint-onchange"/>
+
+      <insert position="after">
+        <field name="projectPlanningTimeList" hidden="true"/>
+        <field name="oldActiveSprint" hidden="true"/>
+        <field name="oldBudgetedTime" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="incl-time-follow-task-panel-form" id="hr-incl-time-follow-task-panel-form"
+    title="Time follow up" model="com.axelor.apps.project.db.ProjectTask" extension="true">
+    <extend target="//field[@name='budgetedTime']">
+      <attribute name="onChange" value="action-project-task-group-sprint-onchange"/>
+    </extend>
+  </form>
+
+  <form name="incl-planning-panel-task-form" title="Planning"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <panel name="fullNamePanel" readonly="true">
+      <field name="fullName"/>
+    </panel>
+    <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
+      showIf="project.isShowPlanning">
+      <field name="budgetedTime" colSpan="4"/>
+      <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
+        onSelect="action-project-task-attrs-set-time-unit-domain"/>
+      <spacer name="budgetedTimeSpacer" colSpan="4"/>
+      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
+        x-show-bars="true" action="action-project-task-dashlet-project-planning-time" colSpan="12"
+        canSearch="true"/>
+      <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
+      <field name="project.isShowPlanning" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="project-task-form" id="hr-project-task-form" extension="true" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" width="large">
+    <extend target="//button[@name='doneBtn']">
+      <insert position="after">
+        <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+          onClick="save,action-project-task-view-show-planning"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+          showIf="project.isShowPlanning"/>
+      </insert>
+    </extend>
+  </form>
+
+  <kanban columnBy="activeSprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    id="hr-project-task-sprint-kanban" draggable="true" limit="10">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+      <![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
+  <action-group name="action-project-task-group-sprint-onchange">
+    <action name="action-project-task-method-validate-sprint-planification"/>
+    <action name="action-project-task-method-create-sprint-planification"/>
+  </action-group>
+
+  <action-method name="action-project-task-method-validate-sprint-planification">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="validateSprintPlanification"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-create-sprint-planification">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="createSprintPlanification"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-save-project-planning">
+    <call class="com.axelor.apps.hr.web.project.ProjectTaskController"
+      method="saveProjectPlanning"/>
+  </action-method>
+
+  <action-view name="action-project-task-view-show-planning" title="Planning"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="incl-planning-panel-task-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+</object-views>

@@ -67,8 +67,9 @@
         title="Total amounts" showIf="id">
         <field name="totalAmountExpected" x-scale="$currencyNumberOfDecimals"/>
         <field name="totalAmountAvailable" x-scale="$currencyNumberOfDecimals"/>
-        <field name="availableAmountWithSimulated" x-scale="$currencyNumberOfDecimals"/>
-        <field name="simulatedAmount" x-scale="$currencyNumberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="$currencyNumberOfDecimals"
+          hidden="true"/>
+        <field name="simulatedAmount" x-scale="$currencyNumberOfDecimals" hidden="true"/>
         <field name="totalAmountCommitted" x-scale="$currencyNumberOfDecimals"/>
         <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
         <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
@@ -147,6 +148,7 @@
     <action name="action-budget-level-attrs-set-attrs"/>
     <action name="action-global-budget-method-hide-amounts" if="!id"/>
     <action name="action-budget-level-method-show-validate-fields"/>
+    <action name="action-account-attrs-budget-level-simulated-amounts"/>
   </action-group>
 
   <action-group name="action-budget-level-group-validate">
@@ -262,6 +264,10 @@
     <view type="form" name="budget-level-form"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+  <action-attrs name="action-account-attrs-budget-level-simulated-amounts"
+    model="com.axelor.apps.budget.db.BudgetLevel">
 
-
+    <attribute name="hidden" for="availableAmountWithSimulated,simulatedAmount"
+      expr="eval:!__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.isActivateSimulatedMove"/>
+  </action-attrs>
 </object-views>

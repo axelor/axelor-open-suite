@@ -20,7 +20,7 @@
     onLoad="action-base-attrs-set-tax-line-value-scale">
     <panel name="mainPanel">
       <field name="tax" readonly="true" form-view="tax-form" grid-view="tax-grid"/>
-      <field name="value"/>
+      <field name="value" readonlyIf="id"/>
       <field name="startDate" onChange="action-tax-line-condition-dates"/>
       <field name="endDate" onChange="action-tax-line-condition-dates"/>
     </panel>
@@ -36,7 +36,7 @@
   <form name="tax-line-tax-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine"
     onNew="action-base-group-tax-line-onnew" onLoad="action-base-attrs-set-tax-line-value-scale">
     <panel name="mainPanel">
-      <field name="value"/>
+      <field name="value" readonlyIf="id"/>
       <field name="startDate" onChange="action-tax-line-condition-dates"/>
       <field name="endDate" onChange="action-tax-line-condition-dates"/>
     </panel>

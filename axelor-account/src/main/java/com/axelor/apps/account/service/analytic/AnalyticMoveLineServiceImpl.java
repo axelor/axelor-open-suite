@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -401,7 +401,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   @Override
   public void setAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
     if (analyticMoveLine != null) {
-      analyticMoveLine.setCurrency(Optional.of(company).map(Company::getCurrency).orElse(null));
+      analyticMoveLine.setCurrency(
+          Optional.ofNullable(company).map(Company::getCurrency).orElse(null));
     }
   }
 }

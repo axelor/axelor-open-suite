@@ -32,7 +32,20 @@
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
-  <input file="base_unitConversion.csv" separator=";"
-    type="com.axelor.apps.base.db.UnitConversion" search="self.importId = :importId"/>
+
+  <input file="project_project_config.csv" type="com.axelor.apps.project.db.ProjectConfig"
+    separator=";" update="true" search="self.importId = :importId"/>
+
+  <input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year"
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportYear:importYear">
+    <bind to="company" search="self.importId = :company_importId"/>
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
+    <bind to="reportedBalanceDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(reportedBalanceDate)"
+      column="reportedBalanceDate"/>
+  </input>
 </csv-inputs>
 

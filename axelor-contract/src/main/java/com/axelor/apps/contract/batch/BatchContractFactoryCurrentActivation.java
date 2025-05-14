@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,7 +42,7 @@ public class BatchContractFactoryCurrentActivation extends BatchContractFactory 
   }
 
   @Override
-  Query<Contract> prepare(Batch batch) {
+  protected Query<Contract> prepare(Batch batch) {
     return repository
         .all()
         .filter(
@@ -59,7 +59,7 @@ public class BatchContractFactoryCurrentActivation extends BatchContractFactory 
   }
 
   @Override
-  void process(Contract contract) throws AxelorException {
+  protected void process(Contract contract) throws AxelorException {
     service.ongoingCurrentVersion(contract, baseService.getTodayDate(contract.getCompany()));
   }
 }

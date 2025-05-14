@@ -254,11 +254,11 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", PaymentVoucher.payment_date, PaymentVoucher.paid_amount, PaymentVoucher.remaining_amount,
 PaymentMode.name as "PaymentModeName", PaymentVoucher.receipt_no, Currency.number_of_decimals
-from public.account_payment_voucher as PaymentVoucher
-left outer join public.base_company as Company on (PaymentVoucher.company = Company.id)
-left outer join public.base_currency as Currency on (PaymentVoucher.currency = Currency.id)
-left outer join public.base_partner as Partner on (PaymentVoucher.partner = Partner.id)
-left outer join public.account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id)
+from account_payment_voucher as PaymentVoucher
+left outer join base_company as Company on (PaymentVoucher.company = Company.id)
+left outer join base_currency as Currency on (PaymentVoucher.currency = Currency.id)
+left outer join base_partner as Partner on (PaymentVoucher.partner = Partner.id)
+left outer join account_payment_mode as PaymentMode on (PaymentVoucher.payment_mode = PaymentMode.id)
 where PaymentVoucher.id = ?]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PayVoucherDueElementLineDS" id="2629">
@@ -451,16 +451,16 @@ Invoice.invoice_id, MoveLineGenerated.name as "Reference",
 PaymentScheduleLine.name as "PaymentScheduleName", PaymentScheduleLine.id as "PaymentScheID",
 Partner.name as "PartnerName",
 Currency.number_of_decimals
-from public.account_payment_voucher as PaymentVoucher
-left outer join public.account_pay_voucher_element_to_pay as InvoiceToPay on (InvoiceToPay.payment_voucher = PaymentVoucher.id)
-left outer join public.account_move_line as MoveLineGenerated on (InvoiceToPay.move_line_generated = MoveLineGenerated.id)
-left outer join public.base_partner as Partner on (MoveLineGenerated.partner = Partner.id)
-left outer join public.account_account as Account on (MoveLineGenerated.account = Account.id)
-left outer join public.account_move_line as MoveLine on (InvoiceToPay.move_line = MoveLine.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.account_payment_schedule_line as PaymentScheduleLine on (MoveLine.payment_schedule_line = PaymentScheduleLine.id)
-left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
-left outer join public.base_currency as Currency on (Currency.id = PaymentVoucher.currency)
+from account_payment_voucher as PaymentVoucher
+left outer join account_pay_voucher_element_to_pay as InvoiceToPay on (InvoiceToPay.payment_voucher = PaymentVoucher.id)
+left outer join account_move_line as MoveLineGenerated on (InvoiceToPay.move_line_generated = MoveLineGenerated.id)
+left outer join base_partner as Partner on (MoveLineGenerated.partner = Partner.id)
+left outer join account_account as Account on (MoveLineGenerated.account = Account.id)
+left outer join account_move_line as MoveLine on (InvoiceToPay.move_line = MoveLine.id)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join account_payment_schedule_line as PaymentScheduleLine on (MoveLine.payment_schedule_line = PaymentScheduleLine.id)
+left outer join account_invoice as Invoice on (Move.invoice = Invoice.id)
+left outer join base_currency as Currency on (Currency.id = PaymentVoucher.currency)
 where PaymentVoucher.id = ? and MoveLineGenerated.amount_paid > 0.00]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">

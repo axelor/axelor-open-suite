@@ -52,26 +52,7 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>
     <boolean name="generatePurchaseOrderOnMoPlanning"
       title="Generate a purchase order on MO planning"/>
-    <long name="leadTime" title="Lead time" formula="true" readonly="true">
-    <![CDATA[
-           SELECT
-                SUM(
-                    GREATEST(
-                             COALESCE(pppl.starting_duration, 0) + COALESCE(pppl.duration_per_cycle, 0) + COALESCE(pppl.ending_duration, 0),
-                             COALESCE(pppl.human_duration, 0)
-                            )
-                             + COALESCE(pppl.time_before_next_operation, 0)
-                            )
-            FROM
-                production_prod_process pp
-            JOIN
-                production_prod_process_line pppl ON pp.id = pppl.prod_process
-            WHERE
-                pp.id = id
-            GROUP BY
-                pp.id
-    ]]>
-    </long>
+    <long name="leadTime" title="Lead time" formula="true" readonly="true" transient="true"/>
     <many-to-many name="generatedPurchaseOrderProductSet"
       ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
     <boolean name="isPersonalized" title="Personalized"/>

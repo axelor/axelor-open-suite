@@ -24,9 +24,8 @@
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
 
       <field name="description" showTitle="false" colSpan="12"/>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid" canNew="false" canEdit="false"
-        canRemove="false"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-batch-method-show-batches" canSearch="true"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="generateInterventionsBtn" title="Generate interventions"

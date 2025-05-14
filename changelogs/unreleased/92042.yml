@@ -1,0 +1,3 @@
+---
+title: "App project: fixed issue where custom fields for Project/Task caused save errors when name was not entered first with type 'select' or 'multiselect'."
+module: "axelor-project"

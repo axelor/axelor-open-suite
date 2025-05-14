@@ -78,5 +78,8 @@
   <input file="project_check_list_template_line.csv"
     type="com.axelor.apps.project.db.ProjectCheckListItem" separator=";"
     search="self.importId = :importId" update="true"/>
+
+  <input file="base_unitConversion.csv" separator=";"
+    type="com.axelor.apps.base.db.UnitConversion" search="self.importId = :importId"/>
 </csv-inputs>
 

@@ -42,6 +42,11 @@
         value="action-budget-group-purchase-purchase-orderline-product-onchange"/>
     </extend>
 
+    <extend target="//field[@name='fixedAssets']">
+      <attribute name="onChange"
+        value="action-method-budget-purchase-orderline-set-product-account"/>
+    </extend>
+
     <extend target="//panel[@name='analyticDistributionPanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget"
@@ -123,6 +128,7 @@
     id="budget-purchase-order-see-purchase-order-lines">
     <view type="grid" name="purchase-order-line-grid"/>
     <view type="form" name="purchase-order-line-all-form"/>
+    <view-param name="search-filters" value="purchase-order-line-filters"/>
     <domain><![CDATA[self.purchaseOrder.project = :_project OR self.purchaseOrder.statusSelect IN (:status)]]></domain>
     <context name="_project" expr="eval: _project"/>
     <context name="status" expr="eval: _status"/>

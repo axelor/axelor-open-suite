@@ -21,7 +21,8 @@
       <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
         widget="NavSelect" x-order="sequence"/>
       <field name="sequence" colSpan="4"/>
-      <field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
+      <field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"
+        readonlyIf="company &amp;&amp; type &amp;&amp; qiDetection"/>
       <field name="type" colSpan="4"/>
       <field name="qiDetection" colSpan="4"
         onSelect="action-quality-improvement-attrs-set-qi-detection-domain"
@@ -138,7 +139,7 @@
           <editor x-viewer="true">
             <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"
               hideIf="$get('qi.type') == 2"/>
-            <panel name="defaultPanel" title="Observed defaults" colSpan="12">
+            <panel name="defaultPanel" title="Observed defects" colSpan="12">
               <field name="defaultWrittenBy" form-view="user-form" grid-view="user-grid"
                 onChange="action-quality-improvement-record-set-default-written-on"/>
               <field name="defaultWrittenOn"/>

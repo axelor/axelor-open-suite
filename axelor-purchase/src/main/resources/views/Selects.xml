@@ -43,4 +43,8 @@
     <option value="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl">Purchase</option>
   </selection>
 
+  <selection name="purchase.purchase.order.type.select">
+    <option value="1" color="blue">Standard</option>
+  </selection>
+
 </object-views>

@@ -24,8 +24,10 @@
       <field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
       <field name="year.statusSelect"/>
       <field name="year.typeSelect"/>
-      <field name="fromDate" colSpan="3" required="true"/>
-      <field name="toDate" colSpan="3" required="true"/>
+      <field name="fromDate" onChange="action-period-year-on-change-from-date-validate"
+        colSpan="3" required="true"/>
+      <field name="toDate" onChange="action-period-year-on-change-to-date-validate"
+        colSpan="3" required="true"/>
       <field name="allowExpenseCreation" if-module="axelor-human-resource"
         if="__config__.app.isApp('expense')"/>
     </panel>
@@ -65,9 +67,9 @@
       <field name="year.statusSelect"/>
       <field name="year.typeSelect"/>
       <field name="fromDate" onChange="action-period-year-on-change-from-date-validate"
-        colSpan="3"/>
+        colSpan="3" required="true"/>
       <field name="toDate" onChange="action-period-year-on-change-to-date-validate"
-        colSpan="3"/>
+        colSpan="3" required="true"/>
       <field name="allowExpenseCreation" if-module="axelor-human-resource"
         if="__config__.app.isApp('expense')"/>
     </panel>
@@ -142,9 +144,10 @@
 
   <action-validate name="action-period-year-on-change-from-date-validate">
     <error message="The from date is incorrect"
-      if="fromDate != null &amp;&amp; fromDate &lt; __parent__.fromDate ||
-			   	   fromDate != null &amp;&amp; fromDate &gt; __parent__.toDate ||
-			   	   fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate"
+      if="fromDate != null &amp;&amp;
+      (__parent__ != null &amp;&amp; (fromDate &lt; __parent__.fromDate || fromDate &gt; __parent__.toDate) ||
+	  year != null &amp;&amp; (fromDate &lt; year.fromDate || fromDate &gt; year.toDate) ||
+	  toDate != null &amp;&amp; fromDate &gt; toDate)"
       action="action-period-year-on-change-from-date"/>
   </action-validate>
 
@@ -154,9 +157,10 @@
 
   <action-validate name="action-period-year-on-change-to-date-validate">
     <error message="The to date is incorrect"
-      if="toDate != null &amp;&amp; toDate &gt; __parent__.toDate ||
-			       toDate != null &amp;&amp; toDate &lt; __parent__.fromDate ||
-			       toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate"
+      if="toDate != null &amp;&amp;
+        (__parent__ != null &amp;&amp; (toDate &lt; __parent__.fromDate || toDate &gt; __parent__.toDate) ||
+         year != null &amp;&amp; (toDate &lt; year.fromDate || toDate &gt; year.toDate) ||
+         fromDate != null &amp;&amp; toDate &lt; fromDate)"
       action="action-period-year-on-change-to-date"/>
   </action-validate>
 

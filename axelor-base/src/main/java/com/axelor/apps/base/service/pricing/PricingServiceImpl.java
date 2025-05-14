@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -164,7 +164,8 @@ public class PricingServiceImpl implements PricingService {
     }
   }
 
-  protected List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model) {
+  @Override
+  public List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model) {
     Context scriptContext = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
     List<Pricing> filteredPricings = new ArrayList<>();

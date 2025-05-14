@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
   protected AppHumanResourceService appHumanResourceService;
@@ -113,8 +114,10 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
 
     if (expenseProduct != null) {
       checkExpenseProduct(expenseProduct);
-
-      expenseLine.setIsAloneMeal(expenseProduct.getDeductLunchVoucher());
+      if (expenseProduct.getDeductLunchVoucher()) {
+        expenseLine.setIsAloneMeal(
+            CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
+      }
       expenseLine.setExpenseProduct(expenseProduct);
     }
 

@@ -11,6 +11,9 @@
       title="Inheritate the finished products from the MO to the deliveries"
       help="This config allows to automatically fill the deliveries from the finished products of the manufacturing orders."/>
 
+    <track>
+      <field name="deliveriesCopyFromManufOrder" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

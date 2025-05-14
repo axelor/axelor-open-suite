@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,9 @@ public class TimesheetLinePutRequest extends RequestStructure {
   @Min(0)
   private BigDecimal duration;
 
+  @Min(0)
+  private BigDecimal hoursDuration;
+
   private LocalDate date;
 
   private String comments;
@@ -77,6 +80,14 @@ public class TimesheetLinePutRequest extends RequestStructure {
 
   public void setDuration(BigDecimal duration) {
     this.duration = duration;
+  }
+
+  public BigDecimal getHoursDuration() {
+    return hoursDuration;
+  }
+
+  public void setHoursDuration(BigDecimal hoursDuration) {
+    this.hoursDuration = hoursDuration;
   }
 
   public LocalDate getDate() {

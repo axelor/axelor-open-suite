@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -42,10 +43,13 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,6 +74,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   protected BillOfMaterialService billOfMaterialService;
 
+  protected CostSheetService costSheetService;
+
   @Inject
   public BillOfMaterialServiceImpl(
       BillOfMaterialRepository billOfMaterialRepo,
@@ -77,14 +83,15 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService) {
-
+      BillOfMaterialService billOfMaterialService,
+      CostSheetService costSheetService) {
     this.billOfMaterialRepo = billOfMaterialRepo;
     this.tempBomTreeRepo = tempBomTreeRepo;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.billOfMaterialService = billOfMaterialService;
+    this.costSheetService = costSheetService;
   }
 
   private List<Long> processedBom;
@@ -109,9 +116,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         billOfMaterial
             .getCostPrice()
             .divide(
-                billOfMaterial.getQty(),
+                costSheetService.getQtyRatio(billOfMaterial),
                 Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                BigDecimal.ROUND_HALF_UP),
+                RoundingMode.HALF_UP),
         billOfMaterial.getCompany());
 
     if ((Boolean)
@@ -584,5 +591,19 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     return new ArrayList<>();
+  }
+
+  @Override
+  public Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(
+      BillOfMaterial billOfMaterial) {
+
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
+      return billOfMaterial.getBillOfMaterialLineList().stream()
+          .filter(boml -> boml.getBillOfMaterial() != null)
+          .collect(
+              Collectors.toMap(BillOfMaterialLine::getBillOfMaterial, BillOfMaterialLine::getQty));
+    }
+
+    return new HashMap<>();
   }
 }

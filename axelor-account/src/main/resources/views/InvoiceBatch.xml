@@ -38,8 +38,8 @@
         <field name="createdBy" title="Created by"/>
         <field name="description" showTitle="false" colSpan="12"/>
       </panel>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-batch-method-show-batches" canSearch="true"/>
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="statusBatchBtn" title="Run"

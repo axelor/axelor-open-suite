@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,7 +58,9 @@ public class InvoiceToolService {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
     return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
-        ? PaymentConditionToolService.getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
+            || PaymentConditionToolService.isFreePaymentCondition(invoice)
+        ? PaymentConditionToolService.getMaxDueDate(
+            invoice.getPaymentCondition(), invoiceDate, invoice.getDueDate())
         : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 

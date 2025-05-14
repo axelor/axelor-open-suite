@@ -217,7 +217,7 @@
     type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
   <input file="account_accountConfig_accounts.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig">
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
     <bind column="clearanceAccountSet" to="clearanceAccountSet"
       search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
   </input>
@@ -330,7 +330,7 @@
     <bind to="reportExportTypeSelect" eval="'1'"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" column="company" search="self.importId = :company"/>
-    <bind to="comparison" eval="'0'"/>
+    <bind to="comparison" eval="typeSelect == '3000' ? '1' : '0'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"

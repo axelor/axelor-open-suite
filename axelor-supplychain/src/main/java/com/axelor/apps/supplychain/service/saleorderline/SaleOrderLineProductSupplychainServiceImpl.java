@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -65,6 +67,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLineDiscountService saleOrderLineDiscountService,
       SaleOrderLinePriceService saleOrderLinePriceService,
       SaleOrderLineTaxService saleOrderLineTaxService,
+      ProductCompanyService productCompanyService,
+      CurrencyScaleService currencyScaleService,
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
@@ -79,7 +83,9 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
         saleOrderLinePricingService,
         saleOrderLineDiscountService,
         saleOrderLinePriceService,
-        saleOrderLineTaxService);
+        saleOrderLineTaxService,
+        productCompanyService,
+        currencyScaleService);
     this.blockingService = blockingService;
     this.analyticLineModelService = analyticLineModelService;
     this.appSupplychainService = appSupplychainService;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,6 +72,7 @@ public class TimesheetLineBusinessRestController {
                 requestBody.getDate(),
                 timesheet,
                 requestBody.getDuration(),
+                requestBody.getHoursDuration(),
                 requestBody.getComments(),
                 requestBody.isToInvoice(),
                 requestBody.fetchManufOrder(),
@@ -104,6 +105,7 @@ public class TimesheetLineBusinessRestController {
             requestBody.fetchProjectTask(),
             requestBody.fetchProduct(),
             requestBody.getDuration(),
+            requestBody.getHoursDuration(),
             requestBody.getDate(),
             requestBody.getComments(),
             requestBody.isToInvoice(),

@@ -299,21 +299,21 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.name as "MoveLineName", MoveLine.description, MoveLine.debit, MoveLine.credit, MoveLine.date_val as "date", MoveLine.partner_full_name as contact_name,
  MoveLine.partner_seq as "contract_id", Currency.number_of_decimals
-from public.account_accounting_report as AccountingReport
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+from account_accounting_report as AccountingReport
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join base_company as Company on (AccountingReport.company = Company.id)
 
-left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join account_account as Account on (MoveLine.account  = Account.id )
 
-left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
-left outer join public.account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join public.base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
-left outer join public.account_account_config as AccountConfig on (Company.id = AccountConfig.company)
-left outer join public.base_currency as Currency on (Currency.id = Company.currency)
+left outer join account_account_config as AccountConfig on (Company.id = AccountConfig.company)
+left outer join base_currency as Currency on (Currency.id = Company.currency)
 
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
@@ -504,10 +504,10 @@ AND (AccountingReport.display_opening_accounting_moves is true
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, AccountingReport.date_from, AccountingReport.date_val as "ReportDate",
 AccountingReport.date_to, AccountingReport.publication_date_time as "ReportDateEdition",
 Currency.code as currency, AccountingReport.ref
-from public.account_accounting_report as AccountingReport 
-inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)  
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
-left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
+from account_accounting_report as AccountingReport 
+inner join base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)  
+left outer join base_period as Period on (AccountingReport.period = Period.id)
+left outer join base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>

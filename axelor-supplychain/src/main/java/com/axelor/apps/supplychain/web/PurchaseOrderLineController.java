@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -190,6 +191,20 @@ public class PurchaseOrderLineController {
           String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkTaxLineSet(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      if (purchaseOrderLine != null && purchaseOrderLine.getTaxLineSet() != null) {
+        TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+        taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(purchaseOrderLine.getTaxLineSet());
+        taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(purchaseOrderLine.getTaxLineSet());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

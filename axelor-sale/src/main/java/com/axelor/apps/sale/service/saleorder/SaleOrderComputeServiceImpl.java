@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -74,13 +74,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)
-          && appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
-        saleOrderLine.setPrice(
-            subSaleOrderLineComputeService.computeSumSubLineList(subSaleOrderLineList, saleOrder));
-        saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
-      }
+      subSaleOrderLineComputeService.computeSumSubLineList(saleOrderLine, saleOrder);
     }
 
     return saleOrder;

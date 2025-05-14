@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -59,6 +59,11 @@ public abstract class RegistrationNumberValidator {
   protected void checkRegistrationCode(Partner partner) throws AxelorException {
 
     String registrationCode = partner.getRegistrationCode();
+
+    if (registrationCode == null) {
+      registrationCode = "";
+    }
+
     registrationCode = registrationCode.replace(" ", "");
     RegistrationNumberTemplate registrationNumberTemplate =
         Optional.of(partner)

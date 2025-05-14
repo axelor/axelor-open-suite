@@ -74,7 +74,7 @@
     <error message="To generate periods, please fill in the limits of the year."
       if="fromDate == null || toDate == null"/>
     <error message="To generate periods, please fill in the Period duration."
-      if="periodDurationSelect == null || periodDurationSelect == 0"/>
+      if="periodDurationSelect == null"/>
     <error message="Please clear all existing periods before generating new ones"
       if="!periodList.empty"/>
   </action-validate>

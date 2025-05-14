@@ -669,7 +669,7 @@ FROM hr_employee as employee
 LEFT JOIN auth_user AS user_val ON (user_val.employee = employee.id)
 LEFT JOIN base_company Company ON (Company.id = user_val.active_company )
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
-LEFT JOIN public.base_printing_settings AS PrintingSetting ON (Company.printing_settings = PrintingSetting.id)
+LEFT JOIN base_printing_settings AS PrintingSetting ON (Company.printing_settings = PrintingSetting.id)
 LEFT JOIN base_year AS year_val ON (year_val.id = ?)
 WHERE employee.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

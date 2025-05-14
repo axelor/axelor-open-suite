@@ -13,6 +13,15 @@
       </insert>
     </extend>
 
+    <extend target="//panel[@name='taskStatusMgtPanel']">
+      <insert position="after">
+        <panel name="planificationPanel" title="Planification"
+          if-module="axelor-human-resource">
+          <field name="enablePlanification"/>
+        </panel>
+      </insert>
+    </extend>
+
   </form>
 
 

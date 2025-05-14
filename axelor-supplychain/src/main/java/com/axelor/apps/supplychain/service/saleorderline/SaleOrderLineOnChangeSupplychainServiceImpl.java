@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,10 +67,11 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
   }
 
   @Override
-  public Map<String, Object> qtyOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public Map<String, Object> qtyOnChange(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSol)
       throws AxelorException {
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
-    Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder, parentSol);
     if (appSupplychain.getManageStockReservation()) {
       saleOrderLineMap.putAll(
           saleOrderLineServiceSupplyChain.updateRequestedReservedQty(saleOrderLine));

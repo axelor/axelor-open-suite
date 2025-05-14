@@ -44,7 +44,7 @@
     <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
-      onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
+      onChange="account-move-line-update-tax-equiv" widget="TagSelect" canNew="false"/>
     <field name="currencyRate"
       onChange="action-move-line-method-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
       readonlyIf="!isOtherCurrency">

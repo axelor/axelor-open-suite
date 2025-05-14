@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -102,6 +102,8 @@ public interface AppBaseService extends AppService {
 
   Unit getUnitHours() throws AxelorException;
 
+  Unit getUnitMinutes() throws AxelorException;
+
   BigDecimal getDailyWorkHours() throws AxelorException;
 
   /**
@@ -116,4 +118,12 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  String getSireneTokenGeneratorUrl() throws AxelorException;
+
+  String getSireneUrl() throws AxelorException;
+
+  String getSireneKey() throws AxelorException;
+
+  String getSireneSecret() throws AxelorException;
 }

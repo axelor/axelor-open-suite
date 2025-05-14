@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="InvoiceLine"
-    implements="com.axelor.apps.account.db.repo.AnalyticLine,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.account.db.repo.AnalyticLine,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.GlobalDiscounterLine">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -18,7 +18,7 @@
 
     <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
-    <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
+    <decimal name="priceDiscounted" title="Unit price discounted" precision="30" scale="20"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="qty" title="Qty" precision="20" scale="10"/>
     <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
@@ -31,7 +31,7 @@
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
 
-    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="discountAmount" title="Discount amount" precision="30" scale="20"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
 
@@ -70,6 +70,11 @@
       ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
 
     <integer name="typeSelect" title="Type" selection="line.type.select"/>
+    <integer name="typeSelectNormal" title="Type select normal">
+      <![CDATA[
+        return InvoiceLineRepository.TYPE_NORMAL;
+	  ]]>
+    </integer>
 
     <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
@@ -113,6 +118,10 @@
 
     <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
       min="0" max="1" nullable="true"/>
+
+    <extra-imports>
+      import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+    </extra-imports>
 
     <extra-code>
 		<![CDATA[

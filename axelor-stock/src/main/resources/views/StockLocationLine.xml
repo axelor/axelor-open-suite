@@ -8,16 +8,16 @@
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="stockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="currentQty" aggregate="sum" x-scale="2"/>
-    <field name="futureQty" aggregate="sum" x-scale="2"/>
+    <field name="currentQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
+    <field name="futureQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
-      x-scale="2"/>
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="reservedQty" if-module="axelor-supplychain"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
-      x-scale="2"/>
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="avgPrice" x-scale="2"/>
+    <field name="avgPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="rack"/>
     <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
@@ -206,8 +206,8 @@
       domain="self.dtype = 'Product'"/>
     <field name="detailsStockLocation" title="Stock location" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="currentQty" aggregate="sum" x-scale="2"/>
-    <field name="futureQty" aggregate="sum" x-scale="2"/>
+    <field name="currentQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
+    <field name="futureQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" domain="self.product = :product"/>
     <field name="rack"/>
@@ -217,7 +217,7 @@
 
   <form name="stock-location-line-details-form" title="Stock Location content"
     model="com.axelor.apps.stock.db.StockLocationLine"
-    onLoad="action-stock-location-line-atts-avg-price-scale"
+    onLoad="action-stock-location-line-group-details-onload"
     onNew="action-stock-location-line-group-onnew">
     <panel name="mainPanel">
       <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
@@ -249,6 +249,11 @@
     <action name="action-stock-location-line-atts-avg-price-scale"/>
     <action name="action-stock-location-line-attrs-scale-and-precision"/>
     <action name="action-stock-location-line-record-total-quantities"/>
+  </action-group>
+
+  <action-group name="action-stock-location-line-group-details-onload">
+    <action name="action-stock-location-line-atts-avg-price-scale"/>
+    <action name="action-stock-location-line-attrs-scale-and-precision"/>
   </action-group>
 
   <action-group name="action-stock-location-line-group-onnew">
@@ -313,6 +318,8 @@
     <attribute name="scale" for="lastInventoryRealQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="scale" for="reservedQty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="lastInventoryRealQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 

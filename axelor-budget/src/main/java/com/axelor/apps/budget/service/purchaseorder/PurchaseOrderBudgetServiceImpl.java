@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -85,7 +86,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       BudgetDistributionRepository budgetDistributionRepository,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -94,7 +96,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
         purchaseOrderStockService,
         appAccountService,
         purchaseOrderSupplychainService,
-        analyticMoveLineRepository);
+        analyticMoveLineRepository,
+        purchaseOrderTypeSelectService);
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
     this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;

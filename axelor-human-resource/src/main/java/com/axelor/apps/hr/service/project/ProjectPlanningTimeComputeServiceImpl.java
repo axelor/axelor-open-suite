@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,19 +20,22 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTimeComputeService {
@@ -42,6 +45,9 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
   protected PlannedTimeValueService plannedTimeValueService;
   protected AppBaseService appBaseService;
   protected UnitConversionForProjectService unitConversionForProjectService;
+  protected ProjectPlanningTimeToolService projectPlanningTimeToolService;
+  protected EmployeeService employeeService;
+  protected WeeklyPlanningService weeklyPlanningService;
 
   @Inject
   public ProjectPlanningTimeComputeServiceImpl(
@@ -49,24 +55,37 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
       ProjectConfigService projectConfigService,
       PlannedTimeValueService plannedTimeValueService,
       AppBaseService appBaseService,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      UnitConversionForProjectService unitConversionForProjectService,
+      ProjectPlanningTimeToolService projectPlanningTimeToolService,
+      EmployeeService employeeService,
+      WeeklyPlanningService weeklyPlanningService) {
     this.projectPlanningTimeService = projectPlanningTimeService;
     this.projectConfigService = projectConfigService;
     this.plannedTimeValueService = plannedTimeValueService;
     this.appBaseService = appBaseService;
     this.unitConversionForProjectService = unitConversionForProjectService;
+    this.projectPlanningTimeToolService = projectPlanningTimeToolService;
+    this.employeeService = employeeService;
+    this.weeklyPlanningService = weeklyPlanningService;
   }
 
   @Override
-  public Map<String, Object> computePlannedTimeValues(ProjectPlanningTime projectPlanningTime)
+  public void computePlannedTimeValues(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
-    Map<String, Object> valuesMap = new HashMap<>();
     if (projectPlanningTime == null) {
-      return valuesMap;
+      return;
     }
+
+    Unit timeUnit = projectPlanningTimeToolService.getDefaultTimeUnit(projectPlanningTime);
+    if (projectPlanningTime.getTimeUnit() == null) {
+      projectPlanningTime.setTimeUnit(timeUnit);
+    }
+    if (projectPlanningTime.getDisplayTimeUnit() == null) {
+      projectPlanningTime.setDisplayTimeUnit(timeUnit);
+    }
+
     projectPlanningTime.setPlannedTime(
         projectPlanningTimeService.computePlannedTime(projectPlanningTime));
-    valuesMap.put("plannedTime", projectPlanningTime.getPlannedTime());
 
     Project project = getProject(projectPlanningTime);
     Company company = Optional.ofNullable(project).map(Project::getCompany).orElse(null);
@@ -74,23 +93,19 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
     if (company != null
         && projectConfigService.getProjectConfig(company).getIsSelectionOnDisplayPlannedTime()) {
       if (projectPlanningTime.getDisplayPlannedTimeRestricted() != null) {
-        valuesMap.put(
-            "displayPlannedTime",
+        projectPlanningTime.setDisplayPlannedTime(
             Optional.of(projectPlanningTime)
                 .map(ProjectPlanningTime::getDisplayPlannedTimeRestricted)
                 .map(PlannedTimeValue::getPlannedTime)
                 .orElse(BigDecimal.ZERO));
       }
     } else {
-      valuesMap.put(
-          "displayPlannedTimeRestricted",
+      projectPlanningTime.setDisplayPlannedTimeRestricted(
           plannedTimeValueService.createPlannedTimeValue(
               projectPlanningTime.getDisplayPlannedTime()));
     }
 
-    valuesMap.put("endDateTime", computeEndDateTime(projectPlanningTime, project));
-
-    return valuesMap;
+    projectPlanningTime.setEndDateTime(computeEndDateTime(projectPlanningTime, project));
   }
 
   protected Project getProject(ProjectPlanningTime projectPlanningTime) {
@@ -106,32 +121,45 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
     return project;
   }
 
-  protected LocalDateTime computeEndDateTime(
-      ProjectPlanningTime projectPlanningTime, Project project) throws AxelorException {
+  @Override
+  public LocalDateTime computeEndDateTime(ProjectPlanningTime projectPlanningTime, Project project)
+      throws AxelorException {
     if (projectPlanningTime == null || projectPlanningTime.getStartDateTime() == null) {
       return null;
     }
 
     AppBase appBase = appBaseService.getAppBase();
-    BigDecimal timeInDays = BigDecimal.ZERO;
+    BigDecimal timeInHours = BigDecimal.ZERO;
     if (projectPlanningTime.getTimeUnit() == null || appBase == null) {
       return projectPlanningTime.getStartDateTime();
     }
 
     if (projectPlanningTime.getTimeUnit() == appBase.getUnitDays()) {
-      timeInDays = projectPlanningTime.getPlannedTime();
-    } else if (projectPlanningTime.getTimeUnit() == appBase.getUnitHours()) {
-      timeInDays =
+      timeInHours =
           unitConversionForProjectService.convert(
               projectPlanningTime.getTimeUnit(),
-              appBase.getUnitDays(),
+              appBase.getUnitHours(),
               projectPlanningTime.getPlannedTime(),
               AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
               project);
+    } else if (projectPlanningTime.getTimeUnit() == appBase.getUnitHours()) {
+      timeInHours = projectPlanningTime.getPlannedTime();
     }
 
-    return projectPlanningTime
-        .getStartDateTime()
-        .plusHours(timeInDays.multiply(new BigDecimal(24)).longValue());
+    Employee employee = projectPlanningTime.getEmployee();
+    WeeklyPlanning weeklyPlanning =
+        Optional.ofNullable(employee)
+            .map(Employee::getWeeklyPlanning)
+            .orElse(
+                Optional.ofNullable(employeeService.getDefaultCompany(employee))
+                    .map(Company::getWeeklyPlanning)
+                    .orElse(null));
+
+    LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
+    if (weeklyPlanning == null || timeInHours.signum() == 0) {
+      return startDateTime.plusHours(timeInHours.longValue());
+    }
+
+    return weeklyPlanningService.computeEndDateTime(startDateTime, weeklyPlanning, timeInHours);
   }
 }

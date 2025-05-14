@@ -30,19 +30,31 @@
 
     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
       title="Task"/>
-
     <many-to-one name="timer" ref="com.axelor.apps.hr.db.TSTimer" title="Timer"/>
     <boolean name="isAutomaticallyGenerated" title="Automatically generated"/>
-
     <unique-constraint
       columns="timesheet,project,product,date,enableEditor,projectTask"/>
+    <finder-method name="findByEmployeeProjectAndPeriod"
+      using="employee,project,LocalDate:fromDate,LocalDate:toDate"
+      filter="self.employee = :employee AND ((self.project IS NOT NULL AND self.project = :project) OR (self.projectTask IS NOT NULL AND self.projectTask.project = :project))
+                   AND (self.date BETWEEN :fromDate AND :toDate)"
+      all="true"/>
+    <finder-method name="findByEmployeeAndPeriod"
+      using="employee,LocalDate:fromDate,LocalDate:toDate"
+      filter="self.employee = :employee
+                   AND (self.date BETWEEN :fromDate AND :toDate)"
+      all="true"/>
 
+    <finder-method name="findByProjectAndPeriod"
+      using="project,LocalDate:fromDate,LocalDate:toDate"
+      filter="((self.project IS NOT NULL AND self.project = :project) OR (self.projectTask IS NOT NULL AND self.projectTask.project = :project))
+                   AND (self.date BETWEEN :fromDate AND :toDate)"
+      all="true"/>
     <track>
       <field name="duration"/>
     </track>
-
     <entity-listener class="com.axelor.apps.hr.db.repo.TimesheetLineListener"/>
-
   </entity>
+
 
 </domain-models>

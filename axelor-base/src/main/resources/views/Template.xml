@@ -186,4 +186,16 @@
     <call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
   </action-method>
 
+  <action-record id="action-base-template-record-new"
+    name="action-template-record-new" model="com.axelor.message.db.Template">
+    <field name="metaModel"
+      expr="eval: __parent__?.targetSelect == 1 ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (__parent__?.targetSelect == 2 ? __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)"
+      if="__parent__?.targetSelect"/>
+    <field name="metaModel" expr="eval: __parent__?.metaModel" if="__parent__?.metaModel"/>
+    <field name="metaModel" expr="eval: __parent__?.__parent__?.metaModel"
+      if="__parent__?.__parent__?.metaModel"/>
+    <field if="_mediaType != null" name="mediaTypeSelect" expr="eval:_mediaType"/>
+    <field name="mailAccount" expr="eval: null"/>
+  </action-record>
+
 </object-views>

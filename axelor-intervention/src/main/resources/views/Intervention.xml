@@ -250,7 +250,7 @@
   </action-view>
 
   <action-validate name="action-intervention-validate-remove-stock-move-lines">
-    <alert message="Are you sure wants to remove selected lines?"/>
+    <alert message="Are you sure you want to remove selected lines?"/>
   </action-validate>
 
   <action-view name="action-intervention-view-confirm-planification"

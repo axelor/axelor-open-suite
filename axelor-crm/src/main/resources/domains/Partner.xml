@@ -79,6 +79,8 @@
 
     <track>
       <field name="partnerStatus"/>
+      <field name="isDoNotCall"/>
+      <field name="isDoNotEmail"/>
     </track>
   </entity>
 

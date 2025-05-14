@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,11 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.meta.CallMethod;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface BillOfMaterialService {
@@ -97,4 +99,6 @@ public interface BillOfMaterialService {
   int getPriority(BillOfMaterial billOfMaterial);
 
   List<BillOfMaterial> getSubBillOfMaterial(BillOfMaterial billOfMaterial);
+
+  Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(BillOfMaterial billOfMaterial);
 }

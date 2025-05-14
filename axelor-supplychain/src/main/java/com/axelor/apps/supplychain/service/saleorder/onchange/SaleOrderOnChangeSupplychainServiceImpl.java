@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,11 +32,11 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeServiceImpl;
@@ -79,6 +79,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleConfigService saleConfigService,
       SaleOrderBankDetailsService saleOrderBankDetailsService,
       AppBaseService appBaseService,
+      SaleOrderDateService saleOrderDateService,
       AccountConfigService accountConfigService,
       AccountingSituationService accountingSituationService,
       PartnerStockSettingsRepository partnerStockSettingsRepository,
@@ -86,7 +87,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
       AppBaseService appBaseService1,
-      AppSaleService appSaleService,
       SaleOrderTaxNumberService saleOrderTaxNumberService) {
     super(
         partnerService,
@@ -99,7 +99,8 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
         saleOrderComputeService,
         saleConfigService,
         saleOrderBankDetailsService,
-        appBaseService);
+        appBaseService,
+        saleOrderDateService);
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
     this.partnerStockSettingsRepository = partnerStockSettingsRepository;

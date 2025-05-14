@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -43,7 +44,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
-import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -78,7 +79,8 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
       CurrencyScaleService currencyScaleService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
-      TaxService taxService) {
+      TaxAccountService taxAccountService,
+      UserService userService) {
     super(
         moveLineControlService,
         moveLineToolService,
@@ -101,7 +103,8 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
         companyConfigService,
         currencyScaleService,
         moveLineFinancialDiscountService,
-        taxService);
+        taxAccountService,
+        userService);
     this.expenseRepository = expenseRepository;
   }
 

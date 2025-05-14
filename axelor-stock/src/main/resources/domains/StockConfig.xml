@@ -187,6 +187,8 @@
       <field name="inventoryPrintTemplate" on="UPDATE"/>
       <field name="stockLocationPrintTemplate" on="UPDATE"/>
       <field name="cartStockLocation" on="UPDATE"/>
+      <field name="supplierArrivalCancellationAutomaticMail" on="UPDATE"/>
+      <field name="supplierArrivalCancellationMessageTemplate" on="UPDATE"/>
     </track>
   </entity>
 

@@ -39,6 +39,7 @@
       <panel name="generalConfigPanel" title="General configuration" colSpan="12">
         <field name="isLoginUserQrcodeEnabled" widget="boolean-switch" colSpan="4"/>
         <field name="isTrackerMessageEnabled" widget="boolean-switch" colSpan="4"/>
+        <field name="isInboxAccessEnabled" widget="boolean-switch" colSpan="4"/>
       </panel>
     </panel>
     <panel name="versionPanel" sidebar="true">

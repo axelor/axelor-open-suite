@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,6 +57,7 @@ public class TimesheetLineCreateBusinessServiceImpl implements TimesheetLineCrea
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       String comments,
       boolean toInvoice,
       ManufOrder manufOrder,
@@ -73,7 +74,15 @@ public class TimesheetLineCreateBusinessServiceImpl implements TimesheetLineCrea
 
     TimesheetLine timesheetLine =
         timesheetLineCreateService.createTimesheetLine(
-            project, projectTask, product, date, timesheet, duration, comments, toInvoice);
+            project,
+            projectTask,
+            product,
+            date,
+            timesheet,
+            duration,
+            hoursDuration,
+            comments,
+            toInvoice);
 
     timesheetLine.setManufOrder(manufOrder);
     timesheetLine.setOperationOrder(operationOrder);

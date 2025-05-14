@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -140,7 +140,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     TaxEquiv taxEquiv = null;
     if (CollectionUtils.isNotEmpty(taxLineSet) && move.getFiscalPosition() != null) {
       taxEquiv =
-          fiscalPositionService.getTaxEquivFromTaxLines(
+          fiscalPositionService.getTaxEquivFromOrToTaxSet(
               move.getFiscalPosition(), taxLineBeforeReverseSet);
       if (taxEquiv != null) {
         moveLine.setTaxLineBeforeReverseSet(taxLineBeforeReverseSet);

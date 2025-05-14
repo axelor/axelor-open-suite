@@ -315,17 +315,17 @@ Invoice.invoice_date,
 Invoice.in_tax_total,
 Invoice.operation_type_select,
 Currency.code as currency
-from public.account_invoice as Invoice
+from account_invoice as Invoice
 left outer join base_currency as Currency on Invoice.currency = Currency.id
 where (Invoice.id in 
 	(select InvoiceBatchSet.account_invoice
-	 from public.account_invoice_batch_set as InvoiceBatchSet
-	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?))
+	 from account_invoice_batch_set as InvoiceBatchSet
+	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?))
 OR Invoice.operation_type_select = 4 AND  Invoice.status_select = 3 AND Invoice.original_invoice in
     (select InvoiceBatchSet.account_invoice
-	 from public.account_invoice_batch_set as InvoiceBatchSet
-	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?)))
-AND Invoice.partner = (select NoteBills.partner from public.account_note_bills as NoteBills where NoteBills.id = ?)
+	 from account_invoice_batch_set as InvoiceBatchSet
+	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?)))
+AND Invoice.partner = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)
 ORDER BY Invoice.operation_type_select
 ]]></xml-property>
         </oda-data-set>
@@ -371,8 +371,8 @@ ORDER BY Invoice.operation_type_select
             </list-property>
             <xml-property name="queryText"><![CDATA[select
 Partner.partner_seq
-from public.base_partner as Partner
-where Partner.id = (select NoteBills.partner from public.account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
+from base_partner as Partner
+where Partner.id = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -449,8 +449,8 @@ where Partner.id = (select NoteBills.partner from public.account_note_bills as N
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Invoice.address_str
-from public.account_invoice as Invoice
-where Invoice.partner = (select NoteBills.partner from public.account_note_bills as NoteBills where NoteBills.id = ?)
+from account_invoice as Invoice
+where Invoice.partner = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)
 LIMIT 1]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -527,8 +527,8 @@ LIMIT 1]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Batch.end_date
-from public.base_batch as Batch
-where Batch.id = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
+from base_batch as Batch
+where Batch.id = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -699,14 +699,14 @@ PrintingSettings.logo_position_select as "logoPosition",
 Company.height as "logo_height",
 Company.width as "logo_width",
 MetaFile.file_path as "logo_path"
-from public.account_accounting_batch as AccountingBatch
-left join public.base_company as Company on Company.id = AccountingBatch.company
-left join public.base_printing_settings as PrintingSettings on Company.printing_settings = PrintingSettings.id
-left outer join public.meta_file as MetaFile on (MetaFile.id = Company.logo)
+from account_accounting_batch as AccountingBatch
+left join base_company as Company on Company.id = AccountingBatch.company
+left join base_printing_settings as PrintingSettings on Company.printing_settings = PrintingSettings.id
+left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 where AccountingBatch.id in 
 	(select Batch.accounting_batch
-	 from public.base_batch as Batch
-	 where Batch.id = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?))]]></xml-property>
+	 from base_batch as Batch
+	 where Batch.id = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?))]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
@@ -916,7 +916,7 @@ NoteBills.due_date,
 NoteBills.bill_of_exchange_type_select,
 NoteBills.note_bills_seq,
 NoteBills.created_on
-from public.account_note_bills as NoteBills
+from account_note_bills as NoteBills
 where NoteBills.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

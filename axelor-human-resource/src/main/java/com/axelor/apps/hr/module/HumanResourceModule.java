@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,8 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationServiceI
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
+import com.axelor.apps.hr.db.repo.AllocationLineManagementRepository;
+import com.axelor.apps.hr.db.repo.AllocationLineRepository;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractHRRepository;
@@ -49,6 +51,7 @@ import com.axelor.apps.hr.db.repo.PartnerHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.hr.db.repo.SprintManagementRepository;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineHRRepository;
@@ -57,10 +60,16 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
+import com.axelor.apps.hr.rest.LeaveRequestCreateRestService;
+import com.axelor.apps.hr.rest.LeaveRequestCreateRestServiceImpl;
 import com.axelor.apps.hr.service.BankCardService;
 import com.axelor.apps.hr.service.BankCardServiceImpl;
+import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
+import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveServiceImpl;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
 import com.axelor.apps.hr.service.EmployeeComputeStatusServiceImpl;
+import com.axelor.apps.hr.service.EmployeeDashboardService;
+import com.axelor.apps.hr.service.EmployeeDashboardServiceImpl;
 import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.hr.service.EmployeeFileDMSServiceImpl;
 import com.axelor.apps.hr.service.HRDashboardService;
@@ -75,10 +84,12 @@ import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
 import com.axelor.apps.hr.service.SchedulerCreationService;
 import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
-import com.axelor.apps.hr.service.UnitConversionForProjectService;
-import com.axelor.apps.hr.service.UnitConversionForProjectServiceImpl;
 import com.axelor.apps.hr.service.WorkingDayService;
 import com.axelor.apps.hr.service.WorkingDayServiceImpl;
+import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
+import com.axelor.apps.hr.service.allocation.AllocationLineComputeServiceImpl;
+import com.axelor.apps.hr.service.allocation.AllocationLineService;
+import com.axelor.apps.hr.service.allocation.AllocationLineServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -144,8 +155,12 @@ import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseServiceImpl;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainService;
@@ -160,6 +175,8 @@ import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.LeaveLineServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckResponseService;
+import com.axelor.apps.hr.service.leave.LeaveRequestCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDateService;
@@ -202,6 +219,8 @@ import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysServ
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursServiceImpl;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonDomainServiceImpl;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
@@ -217,14 +236,22 @@ import com.axelor.apps.hr.service.project.PlannedTimeValueService;
 import com.axelor.apps.hr.service.project.PlannedTimeValueServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectIndicatorsService;
+import com.axelor.apps.hr.service.project.ProjectIndicatorsServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeToolService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeToolServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
+import com.axelor.apps.hr.service.project.ProjectTaskSprintServiceImpl;
 import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsServiceImpl;
@@ -238,6 +265,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetEmployeeService;
+import com.axelor.apps.hr.service.timesheet.TimesheetEmployeeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
@@ -285,6 +314,7 @@ import com.axelor.apps.hr.service.user.UserHrServiceImpl;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
+import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
@@ -403,7 +433,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(BankOrderValidationServiceImpl.class).to(BankOrderValidationServiceHRImpl.class);
     bind(ICalendarEventObserver.class);
     bind(BankCardService.class).to(BankCardServiceImpl.class);
-    bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
     bind(TimesheetLeaveService.class).to(TimesheetLeaveServiceImpl.class);
     bind(PlannedTimeValueService.class).to(PlannedTimeValueServiceImpl.class);
     bind(ProjectPlanningTimeResponseComputeService.class)
@@ -432,6 +461,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExtraHoursDomainService.class).to(ExtraHoursDomainServiceImpl.class);
     bind(TaskTemplateServiceImpl.class).to(TaskTemplateHrServiceImpl.class);
     bind(TimesheetAttrsService.class).to(TimesheetAttrsServiceImpl.class);
+    bind(ProjectPlanningTimeCreateService.class).to(ProjectPlanningTimeCreateServiceImpl.class);
     bind(LeaveRequestCreateHelperService.class).to(LeaveRequestCreateHelperServiceImpl.class);
     bind(LeaveRequestCreateHelperDurationService.class)
         .to(LeaveRequestCreateHelperDurationServiceImpl.class);
@@ -440,5 +470,21 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestCreateService.class).to(LeaveRequestCreateServiceImpl.class);
     bind(LeaveRequestInitValueService.class).to(LeaveRequestInitValueServiceImpl.class);
     bind(WorkingDayService.class).to(WorkingDayServiceImpl.class);
+    bind(LeaveRequestCreateRestService.class).to(LeaveRequestCreateRestServiceImpl.class);
+    bind(AllocationLineService.class).to(AllocationLineServiceImpl.class);
+    bind(LeaveReasonDomainService.class).to(LeaveReasonDomainServiceImpl.class);
+    bind(ExpenseWorkflowService.class).to(ExpenseWorkflowServiceImpl.class);
+    bind(AllocationLineRepository.class).to(AllocationLineManagementRepository.class);
+    bind(AllocationLineComputeService.class).to(AllocationLineComputeServiceImpl.class);
+    bind(EmployeeComputeAvailableLeaveService.class)
+        .to(EmployeeComputeAvailableLeaveServiceImpl.class);
+    bind(ProjectTaskSprintService.class).to(ProjectTaskSprintServiceImpl.class);
+    bind(LeaveRequestCheckResponseService.class).to(LeaveRequestCheckResponseServiceImpl.class);
+    bind(SprintRepository.class).to(SprintManagementRepository.class);
+    bind(EmployeeDashboardService.class).to(EmployeeDashboardServiceImpl.class);
+    bind(ProjectIndicatorsService.class).to(ProjectIndicatorsServiceImpl.class);
+    bind(ProjectPlanningTimeToolService.class).to(ProjectPlanningTimeToolServiceImpl.class);
+    bind(TimesheetEmployeeService.class).to(TimesheetEmployeeServiceImpl.class);
+    bind(ExpenseLineDomainService.class).to(ExpenseLineDomainServiceImpl.class);
   }
 }

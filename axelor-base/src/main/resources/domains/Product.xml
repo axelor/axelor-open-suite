@@ -93,6 +93,8 @@
     <many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
+    <one-to-many name="alternativeBarcodeList" title="Alternative barcodes"
+      ref="com.axelor.apps.base.db.AlternativeBarcode" mappedBy="product"/>
     <string name="fullName" title="Full name" namecolumn="true" translatable="true"/>
 
 

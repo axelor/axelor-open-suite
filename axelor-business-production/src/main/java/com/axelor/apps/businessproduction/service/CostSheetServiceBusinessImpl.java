@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
+import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
@@ -42,18 +43,19 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
   @Inject
   public CostSheetServiceBusinessImpl(
+      ProdProcessLineComputationService prodProcessLineComputationService,
       AppProductionService appProductionService,
-      UnitConversionService unitConversionService,
-      CostSheetLineService costSheetLineService,
       AppBaseService appBaseService,
-      BillOfMaterialRepository billOfMaterialRepo) {
-
+      BillOfMaterialRepository billOfMaterialRepo,
+      CostSheetLineService costSheetLineService,
+      UnitConversionService unitConversionService) {
     super(
+        prodProcessLineComputationService,
         appProductionService,
-        unitConversionService,
-        costSheetLineService,
         appBaseService,
-        billOfMaterialRepo);
+        billOfMaterialRepo,
+        costSheetLineService,
+        unitConversionService);
   }
 
   @Override

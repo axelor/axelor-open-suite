@@ -14,6 +14,9 @@
     <decimal name="budgetRemainingAmountToAllocate"
       title="Remaining amount to allocate on budgets" scale="3" precision="20"/>
 
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
+
   </entity>
 
 </domain-models>

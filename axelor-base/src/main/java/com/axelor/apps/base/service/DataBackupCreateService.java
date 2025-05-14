@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,7 @@ import com.axelor.db.Query;
 import com.axelor.db.internal.DBHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
@@ -57,6 +58,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -77,6 +79,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.naming.NamingException;
+import javax.persistence.OneToOne;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -211,12 +214,10 @@ public class DataBackupCreateService {
             }
             if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
               temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
-            }
-            if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
-              temcsv.setSearch("self.code = :code");
-            }
-            if (!AutoImportModelMap.containsKey(csvInput.getTypeName())
-                && !((Class.forName(metaModel.getFullName()).getSuperclass()).equals(App.class))) {
+            } else if (metaModel.getName().startsWith("App")
+                && isAppOneToOneProperty(metaModel.getFullName())) {
+              temcsv.setSearch("self.app.code = :code");
+            } else {
               temcsv.setSearch("self.importId = :importId");
             }
             simpleCsvs.add(temcsv);
@@ -300,10 +301,10 @@ public class DataBackupCreateService {
     String filterStr = "";
     if (anonymizeData) {
       filterStr =
-          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name NOT IN ('DataBackup','MailMessage') AND self.tableName IS NOT NULL";
+          "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name NOT IN ('DataBackup','MailMessage') AND self.tableName IS NOT NULL";
     } else {
       filterStr =
-          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+          "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
     }
 
     List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
@@ -520,8 +521,9 @@ public class DataBackupCreateService {
 
       if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
-      } else if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
-        csvInput.setSearch("self.code = :code");
+      } else if (metaModel.getName().startsWith("App")
+          && isAppOneToOneProperty(metaModel.getFullName())) {
+        csvInput.setSearch("self.app.code = :code");
       } else {
         csvInput.setSearch("self.importId = :importId");
       }
@@ -608,6 +610,12 @@ public class DataBackupCreateService {
           relationship.equalsIgnoreCase("ONE")
               ? "self.name = :" + columnName
               : "self.name in :" + columnName;
+    }
+    if (property.getTarget() != null
+        && property.getTarget() == App.class
+        && property.getType() == PropertyType.ONE_TO_ONE) {
+      columnName = "code";
+      search = "self.code = :" + columnName;
     }
     csvBind.setColumn(columnName);
     csvBind.setField(property.getName());
@@ -789,6 +797,10 @@ public class DataBackupCreateService {
       } catch (Exception e) {
         return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
       }
+    } else if (property.getTarget() != null
+        && property.getTarget() == App.class
+        && property.getType() == PropertyType.ONE_TO_ONE) {
+      return Mapper.of(val.getClass()).get(val, "code").toString();
     } else {
       return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
     }
@@ -888,5 +900,15 @@ public class DataBackupCreateService {
       }
     }
     return errorsCount;
+  }
+
+  protected boolean isAppOneToOneProperty(String className) {
+    try {
+      Class<?> klass = Class.forName(className);
+      Field field = klass.getDeclaredField("app");
+      return field.isAnnotationPresent(OneToOne.class);
+    } catch (NoSuchFieldException | SecurityException | ClassNotFoundException e) {
+      return false;
+    }
   }
 }

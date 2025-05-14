@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLineService {
 
@@ -44,7 +45,11 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
 
   @Override
   public SaleOrder updateLines(SaleOrder saleOrder) {
-    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return saleOrder;
+    }
+    for (SaleOrderLine orderLine : saleOrderLineList) {
       orderLine.setProject(saleOrder.getProject());
       List<AnalyticMoveLine> analyticMoveLines = orderLine.getAnalyticMoveLineList();
       if (ObjectUtils.notEmpty(analyticMoveLines)) {

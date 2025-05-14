@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -138,6 +139,9 @@ public class InvoicingProjectService {
       StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
       Map<String, Object> logTimesQueryMap = new HashMap<>();
       logTimesQueryMap.put("project", project);
+
+      logTimesQueryBuilder.append(" AND self.timesheet.statusSelect = :statusValidated");
+      logTimesQueryMap.put("statusValidated", TimesheetRepository.STATUS_VALIDATED);
 
       if (invoicingProject.getDeadlineDate() != null) {
         logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");

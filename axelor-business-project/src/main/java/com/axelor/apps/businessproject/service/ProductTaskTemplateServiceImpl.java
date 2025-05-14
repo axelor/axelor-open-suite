@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -141,8 +141,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     task.setTotalCosts(costPrice.multiply(qty).setScale(2, RoundingMode.HALF_UP));
     task.setInvoicingUnit(product.getUnit());
     task.setCurrency(product.getSaleCurrency());
-    task.setUnitPrice(
-        (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
+    task.setUnitPrice(saleOrderLine.getPrice());
 
     if (Objects.isNull(parent)) {
       task.setSaleOrderLine(saleOrderLine);

@@ -32,8 +32,39 @@
     </panel>
   </form>
 
+  <form name="year-hr-allocation-form" title="Allocation year"
+    model="com.axelor.apps.base.db.Year" onNew="action-year-hr-record-new-type-allocation"
+    onSave="action-year-check-date">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="fromDate"/>
+      <field name="toDate"/>
+      <field name="company" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid" canEdit="false"/>
+      <field name="typeSelect" readonly="true"/>
+    </panel>
+    <panel-related name="periodListPanel" field="periodList" colSpan="12"
+      readonlyIf="statusSelect == 2" form-view="period-hr-allocation-form" grid-view="period-grid"/>
+    <panel sidebar="true" name="periodsGenerationAssistantPanel"
+      title="Periods generation assistant" hideIf="statusSelect == 2" readonlyIf="!id">
+      <field name="periodDurationSelect"/>
+      <button name="generatePeriodsBtn" title="Generate periods"
+        onClick="action-year-group-generate-period-click"/>
+    </panel>
+  </form>
+
   <action-record name="action-year-hr-record-new" model="com.axelor.apps.base.db.Year">
     <field name="typeSelect" expr="eval:2"/>
+  </action-record>
+
+  <action-record name="action-year-hr-record-new-type-allocation"
+    model="com.axelor.apps.base.db.Year">
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="typeSelect" expr="eval: 4"/>
   </action-record>
 
 </object-views>

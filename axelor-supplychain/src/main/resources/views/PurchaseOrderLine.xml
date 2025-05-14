@@ -30,6 +30,11 @@
         value="supplychain-action-purchase-purchase-order-line-group-product-onchange"/>
     </extend>
 
+    <extend target="//field[@name='taxLineSet']">
+      <attribute name="onChange"
+        value="supplychain-action-group-purchase-purchase-orderline-taxline-onchange"/>
+    </extend>
+
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
       <insert position="after">
         <panel name="analyticDistributionPanel" title="Analytics"
@@ -93,6 +98,7 @@
   <action-group
     name="supplychain-action-purchase-purchase-order-line-group-product-onchange">
     <action name="action-group-purchase-purchase-orderline-product-onchange"/>
+    <action name="action-purchase-order-line-method-check-tax-line-set"/>
     <action name="action-purchase-order-line-group-manage-analytic"/>
   </action-group>
 
@@ -106,6 +112,12 @@
     name="action-purchase-order-line-group-analytic-move-line-list-onchange">
     <action name="action-purchase-order-line-method-print-analytic-account"/>
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+  </action-group>
+
+  <action-group
+    name="supplychain-action-group-purchase-purchase-orderline-taxline-onchange">
+    <action name="action-group-purchase-purchase-orderline-taxline-onchange"/>
+    <action name="action-purchase-order-line-method-check-tax-line-set"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
@@ -158,5 +170,19 @@
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="addToCart"/>
   </action-method>
+
+  <action-method name="action-purchase-order-line-method-check-tax-line-set">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="checkTaxLineSet"/>
+  </action-method>
+
+  <action-attrs name="action-purchase-order-line-attrs-set-stock-location-domain">
+    <attribute name="domain" for="stockLocation"
+      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(__parent__?.tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <attribute name="domain" for="stockLocation"
+      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;"
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+  </action-attrs>
 
 </object-views>

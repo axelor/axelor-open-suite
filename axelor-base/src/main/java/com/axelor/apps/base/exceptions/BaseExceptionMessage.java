@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -702,6 +702,42 @@ public final class BaseExceptionMessage {
   public static final String APP_BASE_NO_UNIT_HOURS = /*$$(*/
       "There is no configured unit hours in the app base config" /*)*/;
 
+  public static final String APP_BASE_NO_UNIT_MINUTES = /*$$(*/
+      "There is no configured unit minutes in the app base config" /*)*/;
+
   public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
       "There is no configured daily work hours in the app base config" /*)*/;
+
+  public static final String API_BAD_REQUEST = /*$$(*/
+      "Bad request please check api configuration information." /*)*/;
+
+  public static final String API_WRONG_CREDENTIALS = /*$$(*/
+      "Bad request please check credentials." /*)*/;
+
+  public static final String API_WRONG_SIRET_NUMBER = /*$$(*/
+      "Cannot get information with siret: %s ." /*)*/;
+
+  public static final String API_INVALID_SIRET_NUMBER = /*$$(*/
+      "Invalid SIRET number. It must contain exactly 14 digits." /*)*/;
+
+  public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
+      "Registration number already exists for partner %s." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING = /*$$(*/
+      "Please fill API Sirene token generator url in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_URL_MISSING = /*$$(*/
+      "Please fill API Sirene url in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_KEY_MISSING = /*$$(*/
+      "Please fill API Sirene key in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_SECRET_MISSING = /*$$(*/
+      "Please fill API Sirene secret in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_ACCESS_TOKEN_MISSING = /*$$(*/
+      "Please fill API Sirene access token in app base." /*)*/;
+
+  public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
+      "Signature certificate is expired. Please change to a new certificate." /*)*/;
 }

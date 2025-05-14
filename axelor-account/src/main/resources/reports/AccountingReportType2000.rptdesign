@@ -379,22 +379,22 @@ AccountType.name as account_type_name,
 Currency.number_of_decimals,
 SUM(AnalyticMoveLine.amount * sign(MoveLine.debit - MoveLine.credit)) as amount
 
-from public.account_accounting_report as AccountingReport 
+from account_accounting_report as AccountingReport 
 
-left outer join public.account_analytic_move_line as AnalyticMoveLine on (AccountingReport.id = ?) 
-left outer join public.account_move_line as MoveLine on (AnalyticMoveLine.move_line = MoveLine.id)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.account_analytic_account as AnalyticAccount on (AnalyticMoveLine.analytic_account  = AnalyticAccount.id )
-left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
-left outer join public.account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 
-left outer join public.account_account_type as AccountType on (AnalyticMoveLine.account_type  = AccountType.id )
-left outer join public.base_currency as Currency on (Currency.id = AnalyticMoveLine.currency)
+left outer join account_analytic_move_line as AnalyticMoveLine on (AccountingReport.id = ?) 
+left outer join account_move_line as MoveLine on (AnalyticMoveLine.move_line = MoveLine.id)
+left outer join account_move as Move on (MoveLine.move = Move.id)
+left outer join account_analytic_account as AnalyticAccount on (AnalyticMoveLine.analytic_account  = AnalyticAccount.id )
+left outer join account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
+left outer join account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 
+left outer join account_account_type as AccountType on (AnalyticMoveLine.account_type  = AccountType.id )
+left outer join base_currency as Currency on (Currency.id = AnalyticMoveLine.currency)
 
-left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
+left outer join base_company as Company on (AccountingReport.company = Company.id) 
 
-left outer join public.account_accounting_report_account_type_set as AccountTypeSet on (AccountTypeSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_analytic_account_set as AnalyticAccountSet on (AnalyticAccountSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_analytic_axis_set as AnalyticAxisSet on (AnalyticAxisSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_type_set as AccountTypeSet on (AccountTypeSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_analytic_account_set as AnalyticAccountSet on (AnalyticAccountSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_analytic_axis_set as AnalyticAxisSet on (AnalyticAxisSet.account_accounting_report = AccountingReport.id)
 
 
 
@@ -654,11 +654,11 @@ AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val 
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path, AnalyticJournal.name as journal_name,
 Currency.code as currency,
 AccountingReport.ref
-from public.account_accounting_report as AccountingReport 
-inner join public.base_company as Company on (AccountingReport.company = Company.id)
+from account_accounting_report as AccountingReport 
+inner join base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join public.account_analytic_journal as AnalyticJournal on (AccountingReport.analytic_journal = AnalyticJournal.id)
-left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)
+left outer join account_analytic_journal as AnalyticJournal on (AccountingReport.analytic_journal = AnalyticJournal.id)
+left outer join base_currency as Currency on (AccountingReport.currency = Currency.id)
 where AccountingReport.id = ? ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">

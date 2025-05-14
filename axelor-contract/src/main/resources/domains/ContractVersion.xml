@@ -74,7 +74,12 @@
 					fullName += " " +  contract.getVersionNumber();
 				}
 			}
-
+			else if (contractHistory != null && contractHistory.getName() != null) {
+				fullName += contractHistory.getName();
+				if (contractHistory.getVersionNumber() != null && contractHistory.getVersionNumber() != 0) {
+					fullName += " " +  contractHistory.getVersionNumber();
+				}
+			}
 	  		return fullName;
 	  	]]>
     </string>

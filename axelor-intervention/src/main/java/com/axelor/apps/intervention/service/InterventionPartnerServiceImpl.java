@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,12 +37,12 @@ public class InterventionPartnerServiceImpl implements InterventionPartnerServic
       return partner;
     }
 
-    // Retrieve all Invoiced by Type
+    // Retrieve all Invoiced to Type
     List<PartnerLink> partnerLinkInvoicedByList =
         partner.getManagedByPartnerLinkList().stream()
             .filter(
                 partnerSupplychainLink ->
-                    PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
+                    PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO.equals(
                         partnerSupplychainLink.getPartnerLinkType().getTypeSelect()))
             .collect(Collectors.toList());
     // If there is only one, then it is the default one

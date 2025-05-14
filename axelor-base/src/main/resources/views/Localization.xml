@@ -6,7 +6,8 @@
   <grid name="localization-grid" title="Localization"
     model="com.axelor.apps.base.db.Localization">
     <field name="name" title="Name" required="true"/>
-    <field name="code" title="Code" required="true" readonly="true"/>
+    <field name="_code" title="Code"/>
+    <field name="code" title="Code" required="true" readonly="true" hidden="true"/>
     <field name="country" title="Country"/>
     <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
     <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" hidden="true"
@@ -19,8 +20,9 @@
     model="com.axelor.apps.base.db.Localization" onSave="action-localization-method-validate-locale">
     <panel name="mainPanel" colSpan="12">
       <field name="name" title="Name" required="true" colSpan="6"/>
-      <field name="code" title="Code" required="true" colSpan="6" readonly="true"
-        x-bind="{{language.code + '_' + country.alpha2Code}}"/>
+      <field name="_code" title="Code" readonly="true" type="string"
+        help="Code to use for the translations"
+        x-bind="{{language.code + '-' + country.alpha2Code|lowercase}}"/>
       <field name="country" title="Country" grid-view="country-grid" form-view="country-form"
         colSpan="6" onChange="action-localization-group-set-name-and-formats-on-change"/>
       <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"
@@ -29,6 +31,8 @@
         readonly="true"/>
       <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"
         readonly="true"/>
+      <field name="code" title="Code" required="true" colSpan="6" readonly="true"
+        x-bind="{{language.code + '_' + country.alpha2Code}}" hidden="true"/>
       <field name="country.alpha2Code" hidden="true"/>
     </panel>
   </form>

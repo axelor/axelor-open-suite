@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,21 +55,9 @@ public class SaleOrderLineContextHelper {
     }
 
     // Is a subline
-    SaleOrderLine parentSol = getParentSol(saleOrderLine);
+    SaleOrderLine parentSol = SaleOrderLineUtils.getParentSol(saleOrderLine);
     parentSol = saleOrderLineRepository.find(parentSol.getId());
     saleOrder = parentSol.getSaleOrder();
     return saleOrder;
-  }
-
-  protected static SaleOrderLine getParentSol(SaleOrderLine saleOrderLine) {
-    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
-    if (parentSaleOrderLine != null) {
-      return getParentSol(parentSaleOrderLine);
-    } else {
-      if (saleOrderLine.getSaleOrder() != null) {
-        return saleOrderLine;
-      }
-    }
-    return saleOrderLine;
   }
 }

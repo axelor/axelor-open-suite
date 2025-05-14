@@ -431,13 +431,13 @@ Asset.computation_method_select AS computation_method,
 Asset.duration_in_month AS duration, 
 Type.name AS type,
 Currency.number_of_decimals
-FROM public.account_accounting_report as AccountingReport
-LEFT JOIN public.account_fixed_asset AS Asset ON (AccountingReport.id = ?)   
-LEFT JOIN public.account_fixed_asset_category AS Category ON Asset.fixed_asset_category = Category.id
-LEFT JOIN public.account_fixed_asset_type AS Type ON Category.fixed_asset_type = Type.id
-LEFT JOIN public.account_account AS Account ON Asset.purchase_account = Account.id 
-LEFT JOIN public.base_company AS Company ON (Company.id = Asset.company)
-LEFT JOIN public.base_currency AS Currency ON (Currency.id = Company.currency)
+FROM account_accounting_report as AccountingReport
+LEFT JOIN account_fixed_asset AS Asset ON (AccountingReport.id = ?)   
+LEFT JOIN account_fixed_asset_category AS Category ON Asset.fixed_asset_category = Category.id
+LEFT JOIN account_fixed_asset_type AS Type ON Category.fixed_asset_type = Type.id
+LEFT JOIN account_account AS Account ON Asset.purchase_account = Account.id 
+LEFT JOIN base_company AS Company ON (Company.id = Asset.company)
+LEFT JOIN base_currency AS Currency ON (Currency.id = Company.currency)
 WHERE Asset.status_select in (2,3)
 AND (AccountingReport.date_from IS NULL OR Asset.acquisition_date >= AccountingReport.date_from) 
 AND (AccountingReport.date_to IS NULL OR Asset.acquisition_date <= AccountingReport.date_to)
@@ -454,14 +454,14 @@ null AS computation_method,
 null AS duration ,
 Type.name AS type,
 Currency.number_of_decimals
-FROM public.account_accounting_report as AccountingReport
-LEFT JOIN public.account_invoice_line AS InvoiceLine ON (AccountingReport.id = ?)    
-LEFT JOIN public.account_invoice AS Invoice ON InvoiceLine. invoice = Invoice.id 
-LEFT JOIN public.account_account AS InvoiceAccount ON InvoiceLine.account = InvoiceAccount.id
-LEFT JOIN public.account_fixed_asset_category AS Category ON InvoiceLine.fixed_asset_category = Category.id
-LEFT JOIN public.account_fixed_asset_type AS Type ON Category.fixed_asset_type = Type.id
+FROM account_accounting_report as AccountingReport
+LEFT JOIN account_invoice_line AS InvoiceLine ON (AccountingReport.id = ?)    
+LEFT JOIN account_invoice AS Invoice ON InvoiceLine. invoice = Invoice.id 
+LEFT JOIN account_account AS InvoiceAccount ON InvoiceLine.account = InvoiceAccount.id
+LEFT JOIN account_fixed_asset_category AS Category ON InvoiceLine.fixed_asset_category = Category.id
+LEFT JOIN account_fixed_asset_type AS Type ON Category.fixed_asset_type = Type.id
 LEFT JOIN account_fixed_asset AS Asset ON Asset.invoice_line = InvoiceLine.id 
-LEFT JOIN public.base_currency AS Currency ON Currency.id = Invoice.currency
+LEFT JOIN base_currency AS Currency ON Currency.id = Invoice.currency
 WHERE InvoiceLine.fixed_assets = true AND Asset.invoice_line IS NULL AND Invoice.company = AccountingReport.company
 AND (AccountingReport.date_from IS NULL OR Invoice.invoice_date >= AccountingReport.date_from) 
 AND (AccountingReport.date_to IS NULL OR Invoice.invoice_date <= AccountingReport.date_to))
@@ -726,11 +726,11 @@ MetaFile.file_path as logo_path,
 Period.name as period_name, 
 Currency.code as currency,
 AccountingReport.ref
-from public.account_accounting_report as AccountingReport
-inner join public.base_company as Company on (AccountingReport.company = Company.id)
+from account_accounting_report as AccountingReport
+inner join base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
-left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
+left outer join base_period as Period on (AccountingReport.period = Period.id)
+left outer join base_year as AcYear on (AccountingReport.year = AcYear.id)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id
 where AccountingReport.id = ?
 ]]></xml-property>
