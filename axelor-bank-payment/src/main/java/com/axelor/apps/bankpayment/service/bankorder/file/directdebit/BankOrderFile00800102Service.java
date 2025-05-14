@@ -54,6 +54,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ServiceLevel8Choice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -463,9 +464,13 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
     for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
       BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+      Company company = bankOrderLine.getReceiverCompany();
+      if (company == null && bankOrderLine.getBankOrder() != null) {
+        company = bankOrderLine.getBankOrder().getSenderCompany();
+      }
+
       Umr receiverUmr =
-          Beans.get(UmrService.class)
-              .getActiveUmr(bankOrderLine.getReceiverCompany(), bankOrderLine.getPartner());
+          Beans.get(UmrService.class).getActiveUmr(company, bankOrderLine.getPartner());
 
       if (receiverUmr == null) {
         throw new AxelorException(
