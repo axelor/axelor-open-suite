@@ -55,7 +55,6 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     return mailIdList;
   }
 
-  @SuppressWarnings("unchecked")
   protected List<Long> findMailsFromSaleOrder(Partner partner, int emailType, String partnerField) {
     return JPA.em()
         .createQuery(
@@ -68,7 +67,8 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
                 + " WHERE part.id = :partnerId"
                 + " AND related.relatedToSelect = :relatedToSelect"
                 + " AND email.typeSelect = :emailType"
-                + " AND email.mediaTypeSelect = :mediaType")
+                + " AND email.mediaTypeSelect = :mediaType",
+            Long.class)
         .setParameter("partnerId", partner.getId())
         .setParameter("relatedToSelect", "com.axelor.apps.sale.db.SaleOrder")
         .setParameter("emailType", emailType)
