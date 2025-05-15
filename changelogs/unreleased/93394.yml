@@ -1,0 +1,3 @@
+---
+title: "Sale order: reset the 'manual unlock' state when duplicating a sale order."
+module: axelor-sale

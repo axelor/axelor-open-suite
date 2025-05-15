@@ -188,7 +188,9 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       Invoice invoice,
       List<InvoiceTerm> newInvoiceTermList,
       List<InvoiceTerm> invoiceTermListToRemove) {
-    if (ObjectUtils.isEmpty(newInvoiceTermList) || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
+    if (invoice == null
+        || ObjectUtils.isEmpty(newInvoiceTermList)
+        || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
       return;
     }
 

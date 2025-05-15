@@ -261,6 +261,10 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   @Override
   public void fillAmountPerBudgetMap(
       Budget budget, BigDecimal amount, Map<Budget, BigDecimal> amountPerBudgetMap) {
+    if (budget == null) {
+      return;
+    }
+
     if (!amountPerBudgetMap.containsKey(budget)) {
       amountPerBudgetMap.put(budget, amount);
     } else {

@@ -1,0 +1,3 @@
+---
+title: "BankOrder/Umr: fixed the selection of the partner active umr in bank order confirmation."
+module: axelor-bank-payment

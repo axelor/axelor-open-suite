@@ -1,0 +1,3 @@
+---
+title: "Sale order: display an error message when trying to delete a line linked to manufacturing orders."
+module: axelor-production
