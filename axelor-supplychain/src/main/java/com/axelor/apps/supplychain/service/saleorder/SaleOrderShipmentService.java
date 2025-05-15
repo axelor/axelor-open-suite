@@ -21,12 +21,11 @@ package com.axelor.apps.supplychain.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.interfaces.ShippableOrder;
 import com.axelor.apps.stock.db.ShipmentMode;
-import com.axelor.apps.supplychain.db.FreightCarrierPricing;
-import java.util.Set;
 
 public interface SaleOrderShipmentService {
   String createShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
       throws AxelorException;
 
-  void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet) throws AxelorException;
+  String updateShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
+      throws AxelorException;
 }

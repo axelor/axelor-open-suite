@@ -80,6 +80,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImp
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
@@ -282,6 +283,8 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderVersionSupplyChain
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingViewServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderLineOnProductChangeSupplyChainService;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderLineOnProductChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.opportunity.OpportunitySaleOrderSupplychainServiceImpl;
@@ -516,5 +519,9 @@ public class SupplychainModule extends AxelorModule {
     bind(FreightCarrierPricingService.class).to(FreightCarrierPricingServiceImpl.class);
     bind(SaleOrderCopySupplychainService.class).to(SaleOrderCopySupplychainServiceImpl.class);
     bind(PricingGroupSaleServiceImpl.class).to(PricingGroupSupplychainServiceImpl.class);
+    bind(SaleOrderLineOnProductChangeServiceImpl.class)
+        .to(SaleOrderLineOnProductChangeSupplyChainServiceImpl.class);
+    bind(SaleOrderLineOnProductChangeSupplyChainService.class)
+        .to(SaleOrderLineOnProductChangeSupplyChainServiceImpl.class);
   }
 }

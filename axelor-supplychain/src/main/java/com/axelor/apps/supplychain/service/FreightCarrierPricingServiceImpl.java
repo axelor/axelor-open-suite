@@ -90,8 +90,8 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
     return freightCarrierPricings;
   }
 
-  protected FreightCarrierPricing createFreightCarrierPricing(
-      FreightCarrierMode freightCarrierMode, SaleOrder saleOrder) {
+  @Override
+  public FreightCarrierPricing createFreightCarrierPricing(FreightCarrierMode freightCarrierMode, SaleOrder saleOrder) {
     FreightCarrierPricing freightCarrierPricing = new FreightCarrierPricing();
     freightCarrierPricing.setFreightCarrierMode(freightCarrierMode);
     freightCarrierPricing.setCarrierPartner(freightCarrierMode.getCarrierPartner());

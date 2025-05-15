@@ -3,7 +3,8 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import com.axelor.apps.supplychain.service.FreightCarrierPricingService;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderLineOnProductChangeSupplyChainService;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderLineOnProductChangeSupplyChainService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -59,7 +60,8 @@ public class FreightCarrierPricingController {
 
       Set<FreightCarrierPricing> freightCarrierPricingsSet =
           (Set<FreightCarrierPricing>) context.get("freightCarrierPricingsSet");
-      Beans.get(SaleOrderShipmentService.class).applyPricing(freightCarrierPricingsSet);
+      Long saleOrder = Long.valueOf(context.get("_id").toString());
+      Beans.get(SaleOrderLineOnProductChangeSupplyChainService.class).applyPricing(freightCarrierPricingsSet, saleOrder);
 
       response.setValue("freightCarrierPricingsSet", freightCarrierPricingsSet);
     } catch (Exception e) {

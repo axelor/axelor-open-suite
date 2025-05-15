@@ -20,32 +20,22 @@ package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.interfaces.ShippableOrder;
 import com.axelor.apps.base.interfaces.ShippableOrderLine;
-import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
-import com.axelor.apps.supplychain.db.FreightCarrierPricing;
-import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ShippingAbstractService;
 import com.axelor.apps.supplychain.service.ShippingService;
-import com.axelor.db.EntityHelper;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     implements SaleOrderShipmentService {
@@ -56,7 +46,6 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
   protected InvoiceRepository invoiceRepository;
-  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
@@ -66,8 +55,7 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
       SaleOrderLineInitValueService saleOrderLineInitValueService,
-      InvoiceRepository invoiceRepository,
-      SaleOrderRepository saleOrderRepository) {
+      InvoiceRepository invoiceRepository) {
     super(shippingService);
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
@@ -75,7 +63,6 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
     this.invoiceRepository = invoiceRepository;
-    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -164,41 +151,5 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
       saleOrder = (SaleOrder) shippableOrder;
     }
     return saleOrder;
-  }
-
-  @Override
-  public void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet)
-      throws AxelorException {
-    String errors = "";
-
-    for (FreightCarrierPricing freightCarrierPricing : freightCarrierPricingSet) {
-      if (freightCarrierPricing != null) {
-        Pricing pricing = freightCarrierPricing.getPricing();
-        if (pricing != null) {
-          try {
-            PricingComputer pricingComputer =
-                PricingComputer.of(pricing, freightCarrierPricing)
-                    .putInContext(
-                        "priceAmount",
-                        EntityHelper.getEntity(freightCarrierPricing.getFreightCarrierMode()));
-
-            pricingComputer.apply();
-          } catch (AxelorException e) {
-            TraceBackService.trace(e);
-            if (errors.length() > 0) {
-              errors = errors.concat(", ");
-            }
-            errors = errors.concat(pricing.getName());
-          }
-        }
-      }
-    }
-
-    if (errors.length() > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(SupplychainExceptionMessage.FREIGHT_CARRIER_MODE_PRICING_ERROR),
-          errors);
-    }
   }
 }
