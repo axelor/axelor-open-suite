@@ -1,3 +1,44 @@
+## [7.2.39] (2025-05-15)
+
+### Fixes
+#### Base
+
+* Partner: fixed performance issues when opening emails tab on partner form view.
+
+#### Account
+
+* Mass entry: fixed critical error when we validate more than ten moves in mass entry process.
+* Auto reconcile/Partner: restricted auto reconcile between customer and supplier invoices on partner with compensation enabled.
+
+#### Bank Payment
+
+* Bank payment config: removed the possibility to select view type account on internal and external bank to bank account.
+
+#### Human Resource
+
+* Expense: removed the possibility to duplicate an expense.
+* Expense: fixed duplicate move when we confirmed a bank order from an expense.
+
+#### Project
+
+* Project: fixed Project activity dashboard to fetch only relevant messages, avoiding unnecessary loading and filtering.
+
+#### Sale
+
+* Sale order: reset the 'manual unlock' state when duplicating a sale order.
+* Configurator formula: fixed message type to show an info message instead of an alert when the formula works correctly.
+
+#### Supply Chain
+
+* Stock move: fixed error message when checking available stock for requested and reserved quantities.
+
+
+### Developer
+
+#### Account
+
+In `MoveLineToolService.getMoveExcessDueList`, changed `Long invoiceId` parameter to `Invoice invoice`.
+
 ## [7.2.38] (2025-04-30)
 
 ### Fixes
@@ -1699,6 +1740,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.39]: https://github.com/axelor/axelor-open-suite/compare/v7.2.38...v7.2.39
 [7.2.38]: https://github.com/axelor/axelor-open-suite/compare/v7.2.37...v7.2.38
 [7.2.37]: https://github.com/axelor/axelor-open-suite/compare/v7.2.36...v7.2.37
 [7.2.36]: https://github.com/axelor/axelor-open-suite/compare/v7.2.35...v7.2.36
