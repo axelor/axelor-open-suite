@@ -522,7 +522,22 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    updateChildrenOrder(saleOrdersToMerge, saleOrderMerged);
+
     return saleOrderMerged;
+  }
+
+  protected void updateChildrenOrder(List<SaleOrder> saleOrdersToMerge, SaleOrder saleOrderMerged) {
+    for (SaleOrder saleOrder : saleOrdersToMerge) {
+      for (SaleOrder childOrder :
+          saleOrderRepository
+              .all()
+              .filter("self.originSaleQuotation = :saleOrder")
+              .bind("saleOrder", saleOrder)
+              .fetch()) {
+        childOrder.setOriginSaleQuotation(saleOrderMerged);
+      }
+    }
   }
 
   protected String computeConcatenatedString(
