@@ -138,10 +138,10 @@
     type="com.axelor.apps.account.db.PaymentMode" search="self.code = :code">
     <bind to="importOrigin" eval="_dataFileName"/>
     <bind column="generateBankOrder" to="generateBankOrder" adapter="Boolean"/>
-    <bind column="generateMoveAutoFromBankOrder" to="generateMoveAutoFromBankOrder"
-      adapter="Boolean"/>
     <bind column="consoBankOrderLinePerPartner" to="consoBankOrderLinePerPartner"
       adapter="Boolean"/>
+    <bind column="bankOrderExportFolderPath" to="bankOrderExportFolderPath"
+      eval="bankOrderExportFolderPath == '1' ? com.axelor.app.AppSettings.get().get('data.export.dir') : 'rate'"/>
   </input>
 
   <input file="account_accountingReportType.csv" separator=";"
