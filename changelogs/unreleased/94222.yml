@@ -1,3 +1,0 @@
----
-title: "PurchaseOrder/Budget: fixed budget exceed error when using mono budget on purchase order."
-module: axelor-budget

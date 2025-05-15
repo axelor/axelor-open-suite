@@ -1,3 +1,65 @@
+## [8.2.15] (2025-05-15)
+
+### Fixes
+#### Base
+
+* Partner: fixed performance issues when opening emails tab on partner form view.
+* Partner: fixed form view for project panel.
+
+#### Account
+
+* BillOfExchange/PaymentSession: fixed technical error when cancelling bank order payment then pay the exactly same invoice term.
+* Mass entry: fixed critical error when we validate more than ten moves in mass entry process.
+* Accounting batch: fixed an issue where the generated result entry (move) was not correctly linked to the corresponding close/open account batch.
+* Auto reconcile/Partner: restricted auto reconcile between customer and supplier invoices on partner with compensation enabled.
+
+#### Bank Payment
+
+* BankOrder/Umr: fixed the selection of the partner active umr in bank order confirmation.
+* Bank payment config: removed the possibility to select view type account on internal and external bank to bank account.
+* Bank order: fixed an error message on missing bank order encryption password even if 'Enable bank order file encryption' was disabled.
+
+#### Budget
+
+* PurchaseOrder/Budget: fixed budget exceed error when using mono budget on purchase order.
+* Move/Budget: fixed an issue where only 'realized with no po' was imputed when creating budget on move line related to an invoice line.
+* Move/Budget: fixed negative amounts on realized and committed on daybook moveline budget imputation.
+
+#### Human Resource
+
+* Expense: removed the possibility to duplicate an expense.
+* Expense: fixed duplicate move when we confirmed a bank order from an expense.
+
+#### Project
+
+* Project: fixed Project activity dashboard to fetch only relevant messages, avoiding unnecessary loading and filtering.
+
+#### Sale
+
+* Sale order: fixed the issue of finalizing a sale order without sale order lines.
+* Sale order: reset the 'manual unlock' state when duplicating a sale order.
+* Configurator formula: fixed message type to show an info message instead of an alert when the formula works correctly.
+
+#### Stock
+
+* Stock location: fixed date time issue in location financial data report.
+
+#### Supply Chain
+
+* Stock move: fixed error message when checking available stock for requested and reserved quantities.
+* Sale/Purchase order: fixed NPE when changing shipment mode directly without adding any order lines.
+
+
+### Developer
+
+#### Account
+
+In `AccountingCloseAnnualService`, the method `generateResultMove` now returns a `Move` instead of `void`.
+
+---
+
+In `MoveLineToolService.getMoveExcessDueList`, changed `Long invoiceId` parameter to `Invoice invoice`.
+
 ## [8.2.14] (2025-04-30)
 
 ### Fixes
@@ -1004,6 +1066,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.15]: https://github.com/axelor/axelor-open-suite/compare/v8.2.14...v8.2.15
 [8.2.14]: https://github.com/axelor/axelor-open-suite/compare/v8.2.13...v8.2.14
 [8.2.13]: https://github.com/axelor/axelor-open-suite/compare/v8.2.12...v8.2.13
 [8.2.12]: https://github.com/axelor/axelor-open-suite/compare/v8.2.11...v8.2.12
