@@ -1,5 +1,0 @@
----
-title: "Accounting batch: fixed an issue where the generated result entry (move) was not correctly linked to the corresponding close/open account batch."
-module: "axelor-account"
-developer: |
-  In `AccountingCloseAnnualService`, the method `generateResultMove` now returns a `Move` instead of `void`.

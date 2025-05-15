@@ -1,3 +1,0 @@
----
-title: "Move/Budget: fixed an issue where only 'realized with no po' was imputed when creating budget on move line related to an invoice line."
-module: axelor-budget

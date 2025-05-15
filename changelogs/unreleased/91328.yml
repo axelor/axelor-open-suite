@@ -1,3 +1,0 @@
----
-title: "Timesheet line: fixed the error when creating a timesheet without an employee from the project view."
-module: "axelor-human-resource"

@@ -1,3 +1,0 @@
----
-title: "BillOfExchange/PaymentSession: fixed technical error when cancelling bank order payment then pay the exactly same invoice term."
-module: axelor-account

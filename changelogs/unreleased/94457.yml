@@ -1,3 +1,0 @@
----
-title: "Project: fixed Project activity dashboard to fetch only relevant messages, avoiding unnecessary loading and filtering."
-module: axelor-project
