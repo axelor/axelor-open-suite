@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1124,10 +1124,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <text-property name="heading">bar_code</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">real_qty</property>
+                    <property name="columnName">qty</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">real_qty</text-property>
-                    <text-property name="heading">real_qty</text-property>
+                    <text-property name="displayName">qty</text-property>
+                    <text-property name="heading">qty</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">unit_code</property>
@@ -1219,7 +1219,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">real_qty</property>
+                        <property name="name">qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -1305,8 +1305,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">real_qty</property>
-                    <property name="nativeName">real_qty</property>
+                    <property name="name">qty</property>
+                    <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -1362,7 +1362,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
 BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
-StockMoveLine.real_qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq,
+StockMoveLine.qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 StockMoveLine.sequence,
 ( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine"
@@ -1376,7 +1376,7 @@ left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = Sto
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
 left join stock_stock_location as Location on (Location.id = StockMove.from_stock_location)
 left join stock_stock_location_line as StockLocationLine on (Location.id = StockLocationLine.stock_location AND StockLocationLine.product = Product.id)
-where StockMove.id = ?
+where StockMove.id = ? AND StockMoveLine.qty > 0
 order by StockMoveLine.sequence]]></xml-property>
         </oda-data-set>
     </data-sets>
@@ -2471,7 +2471,7 @@ row._outer["first_name"]
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["real_qty"]</expression>
+                                        <expression name="value" type="javascript">row["qty"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2556,9 +2556,9 @@ row._outer["first_name"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">real_qty</property>
-                                <text-property name="displayName">real_qty</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["real_qty"]</expression>
+                                <property name="name">qty</property>
+                                <text-property name="displayName">qty</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
@@ -3997,7 +3997,7 @@ rowNumD=0;]]></method>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["real_qty"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["qty"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4366">
