@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed error message when checking available stock for requested and reserved quantities."
-module: "axelor-supplychain"

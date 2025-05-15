@@ -1,3 +1,0 @@
----
-title: "Sale/Purchase order: fixed NPE when changing shipment mode directly without adding any order lines."
-module: "axelor-supplychain"

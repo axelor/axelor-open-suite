@@ -1,3 +1,60 @@
+## [8.1.24] (2025-05-15)
+
+### Fixes
+#### Base
+
+* Partner: fixed performance issues when opening emails tab on partner form view.
+
+#### Account
+
+* BillOfExchange/PaymentSession: fixed technical error when cancelling bank order payment then pay the exactly same invoice term.
+* Mass entry: fixed critical error when we validate more than ten moves in mass entry process.
+* Accounting batch: fixed an issue where the generated result entry (move) was not correctly linked to the corresponding close/open account batch.
+* Auto reconcile/Partner: restricted auto reconcile between customer and supplier invoices on partner with compensation enabled.
+
+#### Bank Payment
+
+* BankOrder/Umr: fixed the selection of the partner active umr in bank order confirmation.
+* Bank payment config: removed the possibility to select view type account on internal and external bank to bank account.
+
+#### Budget
+
+* PurchaseOrder/Budget: fixed budget exceed error when using mono budget on purchase order.
+
+#### Human Resource
+
+* Expense: removed the possibility to duplicate an expense.
+* Expense: fixed duplicate move when we confirmed a bank order from an expense.
+
+#### Project
+
+* Project: fixed Project activity dashboard to fetch only relevant messages, avoiding unnecessary loading and filtering.
+
+#### Sale
+
+* Sale order: reset the 'manual unlock' state when duplicating a sale order.
+* Configurator formula: fixed message type to show an info message instead of an alert when the formula works correctly.
+
+#### Stock
+
+* Stock location: fixed date time issue in location financial data report.
+
+#### Supply Chain
+
+* Stock move: fixed error message when checking available stock for requested and reserved quantities.
+* Sale/Purchase order: fixed NPE when changing shipment mode directly without adding any order lines.
+
+
+### Developer
+
+#### Account
+
+In `AccountingCloseAnnualService`, the method `generateResultMove` now returns a `Move` instead of `void`.
+
+---
+
+In `MoveLineToolService.getMoveExcessDueList`, changed `Long invoiceId` parameter to `Invoice invoice`.
+
 ## [8.1.23] (2025-04-30)
 
 ### Fixes
@@ -1430,6 +1487,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.24]: https://github.com/axelor/axelor-open-suite/compare/v8.1.23...v8.1.24
 [8.1.23]: https://github.com/axelor/axelor-open-suite/compare/v8.1.22...v8.1.23
 [8.1.22]: https://github.com/axelor/axelor-open-suite/compare/v8.1.21...v8.1.22
 [8.1.21]: https://github.com/axelor/axelor-open-suite/compare/v8.1.20...v8.1.21
