@@ -757,6 +757,7 @@
 "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal.",,,
 "You can not choose this product for this order: %s",,,
 "You can not create sale order as some products are not in stock.",,,
+"You can not delete lines with an ordered quantity superior to 0.",,,
 "You can not enable quotation and order split if past version recovery is enabled.",,,
 "You can not order more than %s for the line with the product %s.",,,
 "You can not order more than the quantity to order left.",,,
