@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.inject.Beans;
@@ -33,8 +34,10 @@ import javax.persistence.PersistenceException;
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
   @Inject
-  public SaleOrderSupplychainRepository(SaleOrderCopyService saleOrderCopyService) {
-    super(saleOrderCopyService);
+  public SaleOrderSupplychainRepository(
+      SaleOrderCopyService saleOrderCopyService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+    super(saleOrderCopyService, saleOrderOrderingStatusService);
   }
 
   @Override
