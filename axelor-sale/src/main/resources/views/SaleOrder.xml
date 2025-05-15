@@ -680,6 +680,10 @@
         <panel-dashlet name="pastVersionsPanel"
           action="action-sale-order-view-previous-versions" colSpan="12" readonly="true"/>
       </panel>
+      <panel-dashlet name="childrenOrdersPanel" title="Children sale orders"
+        action="action-sale-order-view-children-order" colSpan="12" readonly="true"
+        showIf="statusSelect &lt;= 2"
+        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -878,6 +882,7 @@
           <![CDATA[<><Badge bg="warning">{_t('Reference already existing')}</Badge></>]]>
         </viewer>
       </field>
+      <field name="originSaleQuotation" showIf="originSaleQuotation" colSpan="12"/>
     </panel>
     <panel name="marginPanel" title="Margin" readonly="true" hideIf="clientPartner == null"
       itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
@@ -2329,6 +2334,13 @@
     title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrder">
     <view type="form" name="sale-order-editable-multi-lines-form"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-sale-order-view-children-order" title="Children sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>self.originSaleQuotation.id = :id</domain>
   </action-view>
 
 </object-views>
