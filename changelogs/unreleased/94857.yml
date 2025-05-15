@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an error occurring when adding lines to an order without production module."
+module: axelor-sale
