@@ -1,3 +1,0 @@
----
-title: "Partner: when checking for duplicated registration code, correctly ignore whitespaces."
-module: "axelor-base"
