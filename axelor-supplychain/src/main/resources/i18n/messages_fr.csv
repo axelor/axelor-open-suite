@@ -42,6 +42,7 @@
 "Amount remaining to use","Montant restant à utiliser",,
 "Amount to invoice","Montant à facturer",,
 "An active stock move (%s) already exists for the sale order %s.","Un BR actif (%s) existe déjà pour cette commande client %s.",,
+"An error have been detected on following pricings : %s.","Une erreur a été detecté sur le(s) barème(s) suivant : %s.",,
 "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes.","Une facture au statut brouillon ou validé est liée au mouvement de stock %s. Merci de contacter le service Facturation/Comptabilité avant toute modification.",,
 "An invoice not canceled already exists for the incoming stock move %s","Une facture non annulée existe déjà pour le BR %s",,
 "An invoice not canceled already exists for the outgoing stock move %s","Une facture non annulée existe déjà pour le BL %s",,
