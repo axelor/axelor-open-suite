@@ -466,5 +466,7 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineMOGenerationMultiLineServiceImpl.class);
     bind(SaleOrderCopyProductionService.class).to(SaleOrderCopyProductionServiceImpl.class);
     bind(ManufOrderSaleOrderService.class).to(ManufOrderSaleOrderServiceImpl.class);
+    bind(SaleOrderLineCheckProductionService.class)
+        .to(SaleOrderLineCheckProductionServiceImpl.class);
   }
 }
