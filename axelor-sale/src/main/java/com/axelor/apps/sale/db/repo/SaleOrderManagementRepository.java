@@ -30,6 +30,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -42,10 +43,14 @@ import javax.persistence.PersistenceException;
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   protected final SaleOrderCopyService saleOrderCopyService;
+  protected final SaleOrderOrderingStatusService saleOrderOrderingStatusService;
 
   @Inject
-  public SaleOrderManagementRepository(SaleOrderCopyService saleOrderCopyService) {
+  public SaleOrderManagementRepository(
+      SaleOrderCopyService saleOrderCopyService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
     this.saleOrderCopyService = saleOrderCopyService;
+    this.saleOrderOrderingStatusService = saleOrderOrderingStatusService;
   }
 
   @Override
@@ -76,6 +81,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
       computeSubMargin(saleOrder);
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+      if (appSale.getIsQuotationAndOrderSplitEnabled()) {
+        saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
+      }
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

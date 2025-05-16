@@ -30,6 +30,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   protected final SaleOrderConfirmService saleOrderConfirmService;
   protected final SaleOrderComputeService saleOrderComputeService;
   protected final AppBaseService appBaseService;
+  protected final SaleOrderOrderingStatusService saleOrderOrderingStatusService;
 
   @Inject
   public SaleOrderSplitServiceImpl(
@@ -39,7 +40,8 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
       SaleOrderFinalizeService saleOrderFinalizeService,
       SaleOrderConfirmService saleOrderConfirmService,
       SaleOrderComputeService saleOrderComputeService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
     this.saleOrderRepository = saleOrderRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderLineOnChangeService = saleOrderLineOnChangeService;
@@ -47,6 +49,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     this.saleOrderConfirmService = saleOrderConfirmService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.appBaseService = appBaseService;
+    this.saleOrderOrderingStatusService = saleOrderOrderingStatusService;
   }
 
   @Transactional(rollbackOn = {AxelorException.class})
@@ -59,7 +62,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     saleOrderComputeService.computeSaleOrder(confirmedSaleOrder);
     saleOrderFinalizeService.finalizeQuotation(confirmedSaleOrder);
     saleOrderConfirmService.confirmSaleOrder(confirmedSaleOrder);
-    updateOrderingStatus(saleOrder);
+    saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
     return confirmedSaleOrder;
   }
 
@@ -136,16 +139,5 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   @Override
   public BigDecimal getQtyToOrderLeft(SaleOrderLine saleOrderLine) {
     return saleOrderLine.getQty().subtract(saleOrderLine.getOrderedQty());
-  }
-
-  protected void updateOrderingStatus(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (saleOrderLineList.stream()
-        .allMatch(line -> line.getQty().compareTo(line.getOrderedQty()) == 0)) {
-      saleOrder.setOrderingStatus(SaleOrderRepository.ORDERING_STATUS_CLOSED);
-    } else if (saleOrderLineList.stream()
-        .anyMatch(line -> line.getOrderedQty().compareTo(BigDecimal.ZERO) > 0)) {
-      saleOrder.setOrderingStatus(SaleOrderRepository.ORDERING_STATUS_PARTIALLY_ORDERED);
-    }
   }
 }
