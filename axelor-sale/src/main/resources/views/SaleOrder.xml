@@ -785,7 +785,7 @@
     <panel name="globalDiscountPanel" title="Global discount"
       if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
-      sidebar="true">
+      sidebar="true" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited">
       <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
         x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
