@@ -19,14 +19,16 @@ public class FreightCarrierPricingController {
   public void setFreightCarrierPricing(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 
-    if (context.get("_shipmentMode") == null) {
+    if (context.get("_shipmentMode") == null || context.get("_id") == null) {
       return;
     }
     Map shipmentModeMap = (Map<String, Object>) context.get("_shipmentMode");
 
     Set<FreightCarrierPricing> freightCarrierPricings =
         Beans.get(FreightCarrierPricingService.class)
-            .getFreightCarrierPricingSet(Long.parseLong(shipmentModeMap.get("id").toString()));
+            .getFreightCarrierPricingSet(
+                Long.parseLong(shipmentModeMap.get("id").toString()),
+                Long.valueOf(context.get("_id").toString()));
     response.setValue("$freightCarrierPricingsSet", freightCarrierPricings);
   }
 
@@ -57,8 +59,7 @@ public class FreightCarrierPricingController {
 
       Set<FreightCarrierPricing> freightCarrierPricingsSet =
           (Set<FreightCarrierPricing>) context.get("freightCarrierPricingsSet");
-      Long saleOrder = Long.valueOf(context.get("_id").toString());
-      Beans.get(SaleOrderShipmentService.class).applyPricing(freightCarrierPricingsSet, saleOrder);
+      Beans.get(SaleOrderShipmentService.class).applyPricing(freightCarrierPricingsSet);
 
       response.setValue("freightCarrierPricingsSet", freightCarrierPricingsSet);
     } catch (Exception e) {

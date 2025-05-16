@@ -12,6 +12,8 @@
     <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner"
       title="Freight Carrier"/>
     <many-to-one ref="com.axelor.apps.base.db.Pricing" name="pricing" title="Pricing"/>
+    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
+      title="Sale order"/>
     <decimal name="pricingAmount" title="Price" readonly="true" precision="20" scale="3"/>
 
   </entity>

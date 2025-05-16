@@ -28,6 +28,5 @@ public interface SaleOrderShipmentService {
   String createShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
       throws AxelorException;
 
-  void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet, Long saleOrderId)
-      throws AxelorException;
+  void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet) throws AxelorException;
 }

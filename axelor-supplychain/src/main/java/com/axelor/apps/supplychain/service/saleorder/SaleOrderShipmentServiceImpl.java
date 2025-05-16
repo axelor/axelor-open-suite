@@ -167,10 +167,9 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   }
 
   @Override
-  public void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet, Long saleOrderId)
+  public void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet)
       throws AxelorException {
     String errors = "";
-    SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
 
     for (FreightCarrierPricing freightCarrierPricing : freightCarrierPricingSet) {
       if (freightCarrierPricing != null) {

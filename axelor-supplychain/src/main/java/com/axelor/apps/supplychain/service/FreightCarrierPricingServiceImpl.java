@@ -68,8 +68,11 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
     }
   }
 
-  public Set<FreightCarrierPricing> getFreightCarrierPricingSet(Long shipmentModeId) {
+  public Set<FreightCarrierPricing> getFreightCarrierPricingSet(
+      Long shipmentModeId, Long saleOrderId) {
     Set<FreightCarrierPricing> freightCarrierPricings = new HashSet<>();
+    SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
+
     List<FreightCarrierMode> freightCarrierModeList =
         freightCarrierModeRepository
             .all()
@@ -77,10 +80,10 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
             .bind("id", shipmentModeId)
             .fetch();
 
-    if (!freightCarrierModeList.isEmpty()) {
+    if (!freightCarrierModeList.isEmpty() && saleOrder != null) {
       freightCarrierModeList.forEach(
           fc -> {
-            freightCarrierPricings.add(this.createFreightCarrierPricing(fc));
+            freightCarrierPricings.add(this.createFreightCarrierPricing(fc, saleOrder));
           });
     }
 
@@ -88,11 +91,12 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
   }
 
   protected FreightCarrierPricing createFreightCarrierPricing(
-      FreightCarrierMode freightCarrierMode) {
+      FreightCarrierMode freightCarrierMode, SaleOrder saleOrder) {
     FreightCarrierPricing freightCarrierPricing = new FreightCarrierPricing();
     freightCarrierPricing.setFreightCarrierMode(freightCarrierMode);
     freightCarrierPricing.setCarrierPartner(freightCarrierMode.getCarrierPartner());
     freightCarrierPricing.setPricing(freightCarrierMode.getFreightCarrierPricing());
+    freightCarrierPricing.setSaleOrder(saleOrder);
     return freightCarrierPricing;
   }
 

@@ -28,5 +28,5 @@ public interface FreightCarrierPricingService {
       List<FreightCarrierPricing> freightCarrierPricingList, Long saleOrderId)
       throws AxelorException;
 
-  Set<FreightCarrierPricing> getFreightCarrierPricingSet(Long shipmentModeId);
+  Set<FreightCarrierPricing> getFreightCarrierPricingSet(Long shipmentModeId, Long saleOrderId);
 }
