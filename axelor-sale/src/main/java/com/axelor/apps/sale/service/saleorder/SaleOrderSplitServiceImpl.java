@@ -69,6 +69,8 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     confirmedSaleOrder.clearSaleOrderLineTaxList();
     confirmedSaleOrder.clearBatchSet();
     confirmedSaleOrder.setOriginSaleQuotation(saleOrder);
+    // If we are at this step of the SO, then the user must have unblocked the quotation
+    confirmedSaleOrder.setManualUnblock(true);
     return confirmedSaleOrder;
   }
 
