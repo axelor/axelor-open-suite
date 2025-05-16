@@ -515,18 +515,6 @@ public class PartnerServiceImpl implements PartnerService {
     return new String(Str);
   }
 
-  @Transactional
-  @Override
-  public void convertToIndividualPartner(Partner partner) {
-    partner.setIsContact(false);
-    partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    Address mainAddress = partner.getMainAddress();
-    if (mainAddress != null) {
-      addPartnerAddress(partner, mainAddress, true, false, false);
-    }
-    partner.setMainAddress(null);
-  }
-
   public boolean isThereDuplicatePartner(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, false) != null;
   }
