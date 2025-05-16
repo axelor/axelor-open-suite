@@ -934,7 +934,7 @@
     <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
     <view type="grid" name="move-line-account-reconcile-group-grid" if="reconcileOk"/>
     <view type="form" name="move-line-form"/>
-    <domain>self.account.id = :_id</domain>
+    <domain>self.account.id = :_id AND self.move IS NOT NULL</domain>
   </action-view>
 
   <action-view name="action-move-line-view-bank-reconciliation-lines"
