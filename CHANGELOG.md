@@ -1,3 +1,89 @@
+## [8.3.6] (2025-05-15)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 7.3.7.
+* Partner: fixed performance issues when opening emails tab on partner form view.
+* Partner: when checking for duplicated registration code, correctly ignore whitespaces.
+* PriceList: Set the currency to match the currency of the active company.
+* Partner: fixed form view for project panel.
+
+#### Account
+
+* Accounting configuration/Move line: ensured consistent tax display and editability.
+* BillOfExchange/PaymentSession: fixed technical error when cancelling bank order payment then pay the exactly same invoice term.
+* Invoice: fixed invoice term due date when we update invoice due date with free payment condition.
+* Mass entry: fixed critical error when we validate more than ten moves in mass entry process.
+* Accounting batch: fixed an issue where the generated result entry (move) was not correctly linked to the corresponding close/open account batch.
+* Journal: fixed issue allowing moves or mass entry sessions to be created from journal buttons on inactive journals.
+* Auto reconcile/Partner: restricted auto reconcile between customer and supplier invoices on partner with compensation enabled.
+
+#### Bank Payment
+
+* BankOrder/Umr: fixed the selection of the partner active umr in bank order confirmation.
+* Bank payment config: removed the possibility to select view type account on internal and external bank to bank account.
+* Bank order: fixed an error message on missing bank order encryption password even if 'Enable bank order file encryption' was disabled.
+
+#### Budget
+
+* PurchaseOrder/Budget: fixed budget exceed error when using mono budget on purchase order.
+* Move/Budget: fixed an issue where only 'realized with no po' was imputed when creating budget on move line related to an invoice line.
+* Move/Budget: fixed negative amounts on realized and committed on daybook moveline budget imputation.
+
+#### Contract
+
+* Contract: fixed NPE when ventilating an invoice linked to a contract that has additional benefits.
+
+#### Human Resource
+
+* Expense: removed the possibility to duplicate an expense.
+* Allocation line: added x-order on from date for period field.
+* Timesheet line: fixed the error when creating a timesheet without an employee from the project view.
+* Expense: fixed duplicate move when we confirmed a bank order from an expense.
+
+#### Production
+
+* Configurator: fixed an issue where bill of material and prod process were generated twice.
+* Sale order: display an error message when trying to delete a line linked to manufacturing orders.
+
+#### Project
+
+* Project: added project time unit in demo data and set it to 'Day'.
+* Project: fixed Project activity dashboard to fetch only relevant messages, avoiding unnecessary loading and filtering.
+* Project/SaleOrder: fixed name computation when generating business project.
+* App project: fixed issue where custom fields for Project/Task caused save errors when name was not entered first with type 'select' or 'multiselect'.
+
+#### Sale
+
+* Sale order: fixed the issue of finalizing a sale order without sale order lines.
+* Sale order: reset the 'manual unlock' state when duplicating a sale order.
+* Configurator formula: fixed message type to show an info message instead of an alert when the formula works correctly.
+* Sale order: fixed an error occurring when adding lines to an order without production module.
+
+#### Stock
+
+* Stock location: fixed date time issue in location financial data report.
+
+#### Supply Chain
+
+* Stock move: fixed error message when checking available stock for requested and reserved quantities.
+
+
+### Developer
+
+#### Account
+
+In `AccountingCloseAnnualService`, the method `generateResultMove` now returns a `Move` instead of `void`.
+
+---
+
+In `MoveLineToolService.getMoveExcessDueList`, changed `Long invoiceId` parameter to `Invoice invoice`.
+
+#### Project
+
+Creation of a new service `ProjectNameComputeService`, and added `ProjectNameComputeService` in the `ProjectService` constructor.
+
 ## [8.3.5] (2025-04-30)
 
 ### Fixes
@@ -504,6 +590,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.6]: https://github.com/axelor/axelor-open-suite/compare/v8.3.5...v8.3.6
 [8.3.5]: https://github.com/axelor/axelor-open-suite/compare/v8.3.4...v8.3.5
 [8.3.4]: https://github.com/axelor/axelor-open-suite/compare/v8.3.3...v8.3.4
 [8.3.3]: https://github.com/axelor/axelor-open-suite/compare/v8.3.2...v8.3.3

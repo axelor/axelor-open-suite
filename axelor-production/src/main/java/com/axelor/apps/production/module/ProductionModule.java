@@ -450,6 +450,8 @@ public class ProductionModule extends AxelorModule {
     bind(ProdProcessComputationService.class).to(ProdProcessComputationServiceImpl.class);
     bind(BillOfMaterialDummyService.class).to(BillOfMaterialDummyServiceImpl.class);
     bind(BomTreeRemoveService.class).to(BomTreeRemoveServiceImpl.class);
+    bind(SaleOrderLineCheckProductionService.class)
+        .to(SaleOrderLineCheckProductionServiceImpl.class);
     bind(SaleOrderLineDetailsProdProcessService.class)
         .to(SaleOrderLineDetailsProdProcessServiceImpl.class);
     bind(SolDetailsProdProcessLineMappingService.class)
