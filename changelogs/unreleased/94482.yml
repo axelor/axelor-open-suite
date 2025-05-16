@@ -1,0 +1,3 @@
+---
+title: "Invoice/Pfp : fixed the pfp status when all invoice terms are pfp validated"
+module: axelor-account
