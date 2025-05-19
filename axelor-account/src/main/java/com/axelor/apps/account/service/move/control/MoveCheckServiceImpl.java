@@ -45,10 +45,8 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -308,8 +306,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       if (!ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
         analyticAxisService.checkRequiredAxisByCompany(
             move.getCompany(),
-            Optional.ofNullable(moveLine.getAnalyticMoveLineList()).stream()
-                .flatMap(Collection::stream)
+            moveLine.getAnalyticMoveLineList().stream()
                 .map(AnalyticMoveLine::getAnalyticAxis)
                 .collect(Collectors.toList()));
       }
