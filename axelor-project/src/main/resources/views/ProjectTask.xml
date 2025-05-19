@@ -216,6 +216,7 @@
         showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
         onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
         form-view="sprint-form" grid-view="sprint-grid"/>
+      <field name="imputable"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
