@@ -86,9 +86,10 @@ public class FixedAssetDisposalServiceImpl implements FixedAssetDisposalService 
             transferredReason,
             assetDisposalReason,
             comments);
-    if (generateSaleMove && CollectionUtils.isNotEmpty(saleTaxLineSet)) {
+    if (generateSaleMove
+        && CollectionUtils.isNotEmpty(saleTaxLineSet)
+        && fixedAsset.getGrossValue().signum() >= 0) {
       if (createdFixedAsset != null) {
-
         fixedAssetLineMoveService.generateSaleMove(
             createdFixedAsset, saleTaxLineSet, disposalAmount, disposalDate);
       } else {
@@ -140,6 +141,7 @@ public class FixedAssetDisposalServiceImpl implements FixedAssetDisposalService 
           fixedAsset.getQty().toString());
     }
     if (generateSaleMove
+        && fixedAsset.getGrossValue().signum() >= 0
         && CollectionUtils.isNotEmpty(saleTaxLineSet)
         && fixedAsset.getCompany().getAccountConfig().getCustomerSalesJournal() == null) {
       throw new AxelorException(

@@ -71,6 +71,10 @@ public final class AccountExceptionMessage {
       /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
+
+  public static final String NO_VALIDATED_DEPRECIATED_FIXED_ASSET_SELECTED =
+      /*$$(*/ "Please select validated or depreciated fixed asset before running this process." /*)*/;
+
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
 
   /** Bank statement service */

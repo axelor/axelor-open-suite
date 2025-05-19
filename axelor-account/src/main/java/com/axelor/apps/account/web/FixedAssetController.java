@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
@@ -516,16 +517,24 @@ public class FixedAssetController {
 
   public void computeDisposalWizardDisposalAmount(ActionRequest request, ActionResponse response) {
     try {
-      int disposalTypeSelect = (int) request.getContext().get("disposalTypeSelect");
-      FixedAsset disposal = request.getContext().asType(FixedAsset.class);
-      FixedAsset fixedAsset =
-          Beans.get(FixedAssetRepository.class)
-              .find(Long.valueOf(request.getContext().get("_id").toString()));
+      Context context = request.getContext();
+      FixedAsset fixedAsset = null;
+      Integer disposalTypeSelect =
+          context.get("disposalTypeSelect") != null
+              ? (Integer) context.get("disposalTypeSelect")
+              : null;
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (context.get("_fixedAssetId") != null) {
+        fixedAsset =
+            Beans.get(FixedAssetRepository.class)
+                .find(Long.valueOf(request.getContext().get("_fixedAssetId").toString()));
+      }
+
       FixedAssetGroupService fixedAssetGroupService = Beans.get(FixedAssetGroupService.class);
 
       response.setValues(
           fixedAssetGroupService.getDisposalWizardValuesMap(
-              disposal, fixedAsset, disposalTypeSelect));
+              fixedAsset, disposalTypeSelect, idList));
       response.setAttrs(
           fixedAssetGroupService.getDisposalWizardAttrsMap(disposalTypeSelect, fixedAsset));
     } catch (Exception e) {
@@ -544,6 +553,16 @@ public class FixedAssetController {
       response.setAttr("changeOriginBtn", "title", I18n.get(btnTitle));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateIds(ActionRequest request, ActionResponse response) {
+    if (ObjectUtils.isEmpty(
+        Beans.get(FixedAssetManagementRepository.class)
+            .findValidatedAndDepreciatedByIds((List<Integer>) request.getContext().get("_ids"))
+            .fetch())) {
+      response.setError(
+          I18n.get(AccountExceptionMessage.NO_VALIDATED_DEPRECIATED_FIXED_ASSET_SELECTED));
     }
   }
 }
