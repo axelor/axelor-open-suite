@@ -26,6 +26,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
@@ -33,6 +34,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckSupplychainServiceImpl
@@ -44,11 +46,12 @@ public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckSupplychainSe
   @Inject
   public SaleOrderCheckBudgetServiceImpl(
       AppBaseService appBaseService,
+      AppSaleService appSaleService,
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
       SaleOrderBudgetService saleOrderBudgetService,
       AppBudgetService appBudgetService) {
-    super(appBaseService, appSupplychainService, appStockService);
+    super(appBaseService, appSaleService, appSupplychainService, appStockService);
     this.saleOrderBudgetService = saleOrderBudgetService;
     this.appBudgetService = appBudgetService;
   }
@@ -67,17 +70,18 @@ public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckSupplychainSe
   }
 
   @Override
-  public String confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+  public List<String> confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+    List<String> alertList = super.confirmCheckAlert(saleOrder);
     if (!appSupplychainService.isApp("budget")) {
-      return super.confirmCheckAlert(saleOrder);
+      return alertList;
     }
     String alert = checkNoComputeBudgetAlert(saleOrder);
 
     if (StringUtils.notEmpty(alert)) {
-      return alert;
+      alertList.add(alert);
     }
 
-    return "";
+    return alertList;
   }
 
   protected String checkNoComputeBudgetAlert(SaleOrder saleOrder) {

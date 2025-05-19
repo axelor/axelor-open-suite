@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
@@ -38,6 +39,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
 
@@ -46,6 +51,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
   protected ExpenseLineToolService expenseLineToolService;
   protected ExpenseLineRepository expenseLineRepository;
   protected ExpenseRepository expenseRepository;
+  protected EmployeeFetchService employeeFetchService;
 
   @Inject
   public ExpenseLineUpdateServiceImpl(
@@ -53,12 +59,14 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       ExpenseComputationService expenseComputationService,
       ExpenseLineToolService expenseLineToolService,
       ExpenseLineRepository expenseLineRepository,
-      ExpenseRepository expenseRepository) {
+      ExpenseRepository expenseRepository,
+      EmployeeFetchService employeeFetchService) {
     this.expenseToolService = expenseToolService;
     this.expenseComputationService = expenseComputationService;
     this.expenseLineToolService = expenseLineToolService;
     this.expenseLineRepository = expenseLineRepository;
     this.expenseRepository = expenseRepository;
+    this.employeeFetchService = employeeFetchService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -81,8 +89,13 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Currency currency,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Long> invitedCollaboratorList)
       throws AxelorException {
+    expenseDate = expenseDate != null ? expenseDate : expenseLine.getExpenseDate();
+    List<Employee> employeeList =
+        employeeFetchService.filterInvitedCollaborators(invitedCollaboratorList, expenseDate);
+
     if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
       updateKilometricExpenseLine(
           expenseLine,
@@ -99,7 +112,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           toInvoice,
           expenseProduct,
           newExpense,
-          projectTask);
+          projectTask,
+          employeeList);
     } else {
       updateGeneralExpenseLine(
           expenseLine,
@@ -114,7 +128,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           currency,
           toInvoice,
           newExpense,
-          projectTask);
+          projectTask,
+          employeeList);
     }
 
     if (newExpense != null) {
@@ -130,9 +145,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     return expenseLine;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void updateGeneralExpenseLine(
+  protected void updateGeneralExpenseLine(
       ExpenseLine expenseLine,
       Project project,
       Product expenseProduct,
@@ -145,7 +158,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Currency currency,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
 
     checkParentStatus(expenseLine.getExpense());
@@ -159,7 +173,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseProduct,
         toInvoice,
         newExpense,
-        projectTask);
+        projectTask,
+        employeeList);
     expenseProduct = expenseProduct != null ? expenseProduct : expenseLine.getExpenseProduct();
     totalAmount = totalAmount != null ? totalAmount : expenseLine.getTotalAmount();
     totalTax = totalTax != null ? totalTax : expenseLine.getTotalTax();
@@ -167,9 +182,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void updateKilometricExpenseLine(
+  protected void updateKilometricExpenseLine(
       ExpenseLine expenseLine,
       Project project,
       LocalDate expenseDate,
@@ -184,7 +197,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Boolean toInvoice,
       Product expenseProduct,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
     checkParentStatus(expenseLine.getExpense());
     updateBasicExpenseLine(
@@ -197,7 +211,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseProduct,
         toInvoice,
         newExpense,
-        projectTask);
+        projectTask,
+        employeeList);
     updateKilometricExpenseLineInfo(
         expenseLine, kilometricAllowParam, kilometricType, fromCity, toCity, distance);
   }
@@ -252,7 +267,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Product expenseProduct,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
     updateLineCurrency(expenseLine, currency, newExpense);
     if (project != null) {
@@ -272,6 +288,17 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
     if (expenseProduct != null) {
       expenseLine.setExpenseProduct(expenseProduct);
+    }
+
+    if (expenseLine.getExpenseProduct() != null
+        && expenseLine.getExpenseProduct().getDeductLunchVoucher()) {
+      if (employeeList != null) {
+        Set<Employee> employeeSet = new HashSet<>(employeeList);
+        expenseLine.setInvitedCollaboratorSet(employeeSet);
+      }
+      expenseLine.setIsAloneMeal(CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
+    } else {
+      expenseLine.setIsAloneMeal(false);
     }
     if (projectTask != null) {
       expenseLine.setProjectTask(projectTask);
@@ -338,7 +365,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     expenseLineRepository.save(expenseLine);
   }
 
-  void checkParentStatus(Expense expense) throws AxelorException {
+  protected void checkParentStatus(Expense expense) throws AxelorException {
     if (expense == null) {
       return;
     }

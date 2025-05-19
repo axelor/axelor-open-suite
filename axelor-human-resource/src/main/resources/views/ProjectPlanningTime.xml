@@ -63,7 +63,8 @@
         onChange="action-project-planning-time-method-compute-planned-time"
         onSelect="action-project-planning-time-method-compute-display-time-unit-domain"/>
       <field name="employee" onSelect="action-project-planning-time-attrs-project-domain"
-        canEdit="false" onChange="action-project-planning-time-attrs-employee-change"
+        canEdit="false"
+        onChange="action-project-planning-time-attrs-employee-change,action-project-planning-time-method-compute-planned-time"
         form-view="employee-form"/>
       <field name="product" canEdit="false"
         onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox"
@@ -234,7 +235,7 @@
   </action-method>
 
   <action-validate name="action-project-validate-remove-project-planning-time">
-    <alert message="Are you sure wants to remove selected lines?"/>
+    <alert message="Are you sure you want to remove selected lines?"/>
   </action-validate>
 
   <action-group name="action-project-planning-time-group-project-task-on-change">

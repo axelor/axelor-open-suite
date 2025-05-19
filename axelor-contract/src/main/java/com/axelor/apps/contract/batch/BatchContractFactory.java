@@ -46,7 +46,7 @@ abstract class BatchContractFactory {
     this.baseService = baseService;
   }
 
-  abstract Query<Contract> prepare(Batch batch);
+  protected abstract Query<Contract> prepare(Batch batch);
 
-  abstract void process(Contract contract) throws AxelorException;
+  protected abstract void process(Contract contract) throws AxelorException;
 }

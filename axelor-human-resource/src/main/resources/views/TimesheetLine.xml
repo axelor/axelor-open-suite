@@ -332,7 +332,7 @@
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
-      <field name="employee" readonly="false"
+      <field name="employee" readonly="false" required="true"
         onChange="action-timesheet-line-method-set-timesheet"
         onSelect="action-timesheet-line-attrs-domain-employee" form-view="employee-form"
         grid-view="employee-grid" canNew="false" canEdit="false" canView="false"/>

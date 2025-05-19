@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
@@ -35,6 +36,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppStock;
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceImpl {
@@ -45,20 +47,22 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
   @Inject
   public SaleOrderCheckSupplychainServiceImpl(
       AppBaseService appBaseService,
+      AppSaleService appSaleService,
       AppSupplychainService appSupplychainService,
       AppStockService appStockService) {
-    super(appBaseService);
+    super(appBaseService, appSaleService);
     this.appSupplychainService = appSupplychainService;
     this.appStockService = appStockService;
   }
 
   @Override
-  public String confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+  public List<String> confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+    List<String> alertList = super.confirmCheckAlert(saleOrder);
     if (!appSupplychainService.isApp("supplychain")) {
-      return super.confirmCheckAlert(saleOrder);
+      return alertList;
     }
     isIncotermFilled(saleOrder);
-    return "";
+    return alertList;
   }
 
   protected void isIncotermFilled(SaleOrder saleOrder) throws AxelorException {

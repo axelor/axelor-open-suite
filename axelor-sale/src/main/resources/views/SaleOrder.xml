@@ -314,7 +314,14 @@
           </viewer>
         </field>
       </panel>
-      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        selection-in="[1,2,5]" if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+        showIf="statusSelect &lt;= 2 || statusSelect == 5"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        selection-in="[3,4]" if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+        showIf="statusSelect &gt; 2 &amp;&amp; statusSelect != 5"/>
       <field name="saleOrderSeq" showTitle="false">
         <viewer depends="statusSelect,saleOrderSeq"><![CDATA[
 	          <>
@@ -357,6 +364,15 @@
 	             {deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
 	             {deliveryState == 2 && <Badge bg="warning">{_t('Partially delivered')}</Badge>}
 	             {deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
+	          </>
+	      ]]></viewer>
+        </field>
+        <field if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+          showTitle="false" name="orderingStatus" showIf="statusSelect &lt;= 2">
+          <viewer><![CDATA[
+	          <>
+                 {orderingStatus == 1 && <Badge bg="warning">{_t('Partially ordered')}</Badge>}
+	             {orderingStatus == 2 && <Badge bg="success">{_t('orderingStatus.closed')}</Badge>}
 	          </>
 	      ]]></viewer>
         </field>
@@ -675,7 +691,13 @@
       <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
         colSpan="12" onClick="action-sale-group-confirmed"
         readonlyIf="(advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)) || !saleOrderLineList || saleOrderLineList.length == 0"
-        icon="check-all" css="btn-success"/>
+        icon="check-all" css="btn-success"
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+      <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
+        colSpan="12" onClick="action-sale-order-group-split-confirm"
+        readonlyIf="(advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)) || !saleOrderLineList || saleOrderLineList.length == 0"
+        icon="check-all" css="btn-success"
+        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
       <button
         if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))"
         name="completeManuallySaleOrderBtn" title="Complete manually sale order"
@@ -1292,7 +1314,8 @@
   </form>
 
   <form name="sale-order-incoterm-wizard-form" title="Fill incoterm"
-    model="com.axelor.apps.sale.db.SaleOrder" onSave="action-sale-group-confirmed">
+    model="com.axelor.apps.sale.db.SaleOrder"
+    onSave="action-sale-order-group-incoterm-wizard-onsave">
     <panel name="mainPanel" colSpan="12">
       <field name="incoterm" required="true" grid-view="incoterm-grid"
         form-view="incoterm-form"/>
@@ -1533,6 +1556,21 @@
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-method-confirm"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-split-confirm">
+    <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+    <action name="save"/>
+    <action name="action-sale-order-confirm-wizard-method-open-wizard"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-incoterm-wizard-onsave">
+    <action name="action-sale-group-confirmed"
+      if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+    <action name="action-sale-order-group-split-confirm"
+      if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -2099,18 +2137,6 @@
   <action-method name="action-sale-order-method-company-onchange">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="companyOnChange"/>
   </action-method>
-
-  <action-validate name="action-sale-order-validate-check-on-confirm">
-    <alert message="The total amount of quotation is zero. Do you want to proceed ?"
-      if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
-    <error message="Incoterm must be filled"
-      if="__config__.app.isApp('supplychain')
-                &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
-          &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
-          &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code))"/>
-  </action-validate>
 
   <action-record name="action-sale-order-manual-unblock"
     model="com.axelor.apps.sale.db.SaleOrder">

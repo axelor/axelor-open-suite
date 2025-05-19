@@ -50,6 +50,8 @@ public class SaleOrderCopyServiceImpl implements SaleOrderCopyService {
     copy.setMarginRate(null);
     copy.setEstimatedShippingDate(null);
     copy.setOrderBeingEdited(false);
+    copy.setManualUnblock(false);
+    copy.setBlockedOnCustCreditExceed(false);
     if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
       copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
       copy.setAdvancePaymentNeeded(false);
@@ -62,6 +64,7 @@ public class SaleOrderCopyServiceImpl implements SaleOrderCopyService {
         saleOrderLine.setDesiredDeliveryDate(null);
         saleOrderLine.setEstimatedShippingDate(null);
         saleOrderLine.setDiscountDerogation(null);
+        saleOrderLine.setOrderedQty(BigDecimal.ZERO);
       }
     }
     saleOrderDateService.computeEndOfValidityDate(copy);

@@ -25,6 +25,8 @@
     <field name="productName"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
+    <field name="orderedQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"
+      if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"/>
     <field name="reservedQty"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
     <button name="allocateAll"
@@ -96,6 +98,8 @@
     <field name="productName" readonlyIf="$isParentTitleLine"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
       validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty" readonlyIf="$isParentTitleLine"/>
+    <field name="orderedQty" colSpan="3" x-scale="$nbDecimalDigitForQty"
+      if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"
       readonlyIf="$isParentTitleLine"/>
     <field name="price" colSpan="3"
@@ -314,6 +318,8 @@
             onChange="action-group-sale-saleorderline-qty-onchange"
             readonlyIf="$availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))"
             validIf="$qtyValid != false"/>
+          <field name="orderedQty" colSpan="3" x-scale="$nbDecimalDigitForQty"
+            if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"/>
           <field name="unit" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
             onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"

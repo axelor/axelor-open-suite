@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -418,12 +419,23 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public List<MoveLine> getMoveExcessDueList(
-      boolean excessPayment, Company company, Partner partner, Long invoiceId) {
+      boolean excessPayment, Company company, Partner partner, Invoice originInvoice) {
     String filter = "";
+    int operationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
     if (excessPayment) {
       filter = "self.credit > 0";
+      operationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
     } else {
       filter = "self.debit > 0";
+    }
+
+    if (!List.of(
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
+            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+        .contains(originInvoice.getOperationTypeSelect())) {
+      filter =
+          filter.concat(
+              " AND (self.partner.isCompensation = true OR (self.move.invoice IS NULL OR self.move.invoice.operationTypeSelect != :operationTypeSelect))");
     }
 
     filter =
@@ -442,7 +454,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         "technicalTypesToExclude",
         Arrays.asList(AccountTypeRepository.TYPE_VIEW, AccountTypeRepository.TYPE_TAX));
     bindings.put("partner", partner);
-    bindings.put("invoiceId", invoiceId);
+    bindings.put("invoiceId", originInvoice.getId());
+    bindings.put("operationTypeSelect", operationTypeSelect);
 
     return moveLineRepository.all().filter(filter).bind(bindings).fetch();
   }

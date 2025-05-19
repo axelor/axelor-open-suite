@@ -33,6 +33,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
@@ -44,6 +45,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
 
@@ -54,6 +59,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected AppBaseService appBaseService;
   protected ExpenseProofFileService expenseProofFileService;
   protected ExpenseLineToolService expenseLineToolService;
+  protected EmployeeFetchService employeeFetchService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -63,7 +69,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
-      ExpenseLineToolService expenseLineToolService) {
+      ExpenseLineToolService expenseLineToolService,
+      EmployeeFetchService employeeFetchService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
@@ -71,6 +78,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     this.appBaseService = appBaseService;
     this.expenseProofFileService = expenseProofFileService;
     this.expenseLineToolService = expenseLineToolService;
+    this.employeeFetchService = employeeFetchService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -86,22 +94,27 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Long> invitedCollaboratorList)
       throws AxelorException {
+    List<Employee> employeeList =
+        employeeFetchService.filterInvitedCollaborators(invitedCollaboratorList, expenseDate);
 
     if (expenseProduct == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_MISSING_EXPENSE_PRODUCT));
     }
-
     ExpenseLine expenseLine =
         createBasicExpenseLine(
             project, employee, expenseDate, comments, currency, toInvoice, projectTask);
+    if (expenseProduct.getDeductLunchVoucher() && !CollectionUtils.isEmpty(employeeList)) {
+      Set<Employee> employeeSet = new HashSet<>(employeeList);
+      expenseLine.setInvitedCollaboratorSet(employeeSet);
+    }
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
     convertJustificationFileToPdf(expenseLine);
-
     return expenseLineRepository.save(expenseLine);
   }
 

@@ -128,8 +128,12 @@ import com.axelor.apps.base.service.MetaFileService;
 import com.axelor.apps.base.service.MetaFileServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerConvertService;
+import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerMailQueryService;
+import com.axelor.apps.base.service.PartnerMailQueryServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -339,6 +343,7 @@ import com.axelor.utils.service.translation.TranslationBaseService;
 import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -365,7 +370,9 @@ public class BaseModule extends AxelorModule {
                 && parameters.stream()
                     .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
                 && parameters.stream()
-                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()));
+                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()))
+                && Modifier.isPublic(method.getModifiers())
+                && method.getReturnType().equals(Void.TYPE);
           }
         },
         new ControllerMethodInterceptor());
@@ -431,6 +438,7 @@ public class BaseModule extends AxelorModule {
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(PartnerMailQueryService.class).to(PartnerMailQueryServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
     bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
@@ -542,5 +550,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
     bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
     bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
+    bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
   }
 }

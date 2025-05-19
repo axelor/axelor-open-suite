@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed an issue where subcontracted order was reset to standard on validation."
-module: axelor-production

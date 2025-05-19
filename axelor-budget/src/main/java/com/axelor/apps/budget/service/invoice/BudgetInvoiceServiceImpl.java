@@ -24,11 +24,13 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -41,6 +43,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.meta.CallMethod;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -68,6 +71,8 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
   protected BudgetLineService budgetLineService;
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
+  protected CurrencyScaleService currencyScaleService;
+  protected BudgetLineRepository budgetLineRepository;
 
   @Inject
   public BudgetInvoiceServiceImpl(
@@ -80,7 +85,9 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
       BudgetService budgetService,
       BudgetLineService budgetLineService,
       AppBudgetService appBudgetService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleService currencyScaleService,
+      BudgetLineRepository budgetLineRepository) {
     this.invoiceRepo = invoiceRepo;
     this.appBaseService = appBaseService;
     this.budgetDistributionRepo = budgetDistributionRepo;
@@ -91,6 +98,8 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
     this.budgetLineService = budgetLineService;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
+    this.currencyScaleService = currencyScaleService;
+    this.budgetLineRepository = budgetLineRepository;
   }
 
   @Override
@@ -143,11 +152,8 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
           }
         } else {
           Budget budget = invoiceLine.getBudget();
-          if (budget != null) {
-
-            budgetToolsService.fillAmountPerBudgetMap(
-                budget, invoiceLine.getCompanyExTaxTotal(), amountPerBudgetMap);
-          }
+          budgetToolsService.fillAmountPerBudgetMap(
+              budget, invoiceLine.getCompanyExTaxTotal(), amountPerBudgetMap);
         }
       }
 
@@ -192,14 +198,13 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
       throws AxelorException {
     if (!ObjectUtils.isEmpty(budgetDistributionList)) {
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        if (invoiceLine.getInvoice().getPurchaseOrder() != null
-            || invoiceLine.getInvoice().getSaleOrder() != null
-            || invoiceLine.getPurchaseOrderLine() != null
-            || invoiceLine.getSaleOrderLine() != null) {
-          updateLineWithPO(budgetDistribution, invoice, invoiceLine);
-        } else {
-          updateLineWithNoPO(budgetDistribution, invoice);
-        }
+        updateLineAmounts(
+            budgetDistribution,
+            invoice,
+            invoiceLine,
+            invoiceLine.getBudgetFromDate(),
+            invoiceLine.getBudgetToDate());
+
         Budget budget = budgetDistribution.getBudget();
         if (budget != null) {
           budgetService.computeTotalAmountRealized(budget);
@@ -213,98 +218,127 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
 
   @Override
   @Transactional
-  public void updateLineWithNoPO(BudgetDistribution budgetDistribution, Invoice invoice) {
-    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
-      LocalDate date =
-          invoice.getInvoiceDate() != null
-              ? invoice.getInvoiceDate()
-              : appBaseService.getTodayDate(invoice.getCompany());
-      budgetDistribution.setImputationDate(date);
-      Budget budget = budgetDistribution.getBudget();
-      Optional<BudgetLine> optBudgetLine =
-          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
-      if (optBudgetLine.isPresent()) {
-        BudgetLine budgetLine = optBudgetLine.get();
-        BigDecimal amount = budgetDistribution.getAmount();
-        budgetLine.setRealizedWithNoPo(budgetLine.getRealizedWithNoPo().add(amount));
-        budgetLine.setAmountRealized(budgetLine.getAmountRealized().add(amount));
-        budgetLine.setToBeCommittedAmount(budgetLine.getToBeCommittedAmount().subtract(amount));
-        BigDecimal firmGap =
-            budgetLine
-                .getAmountExpected()
-                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
-        budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
+  public void updateLineAmounts(
+      BudgetDistribution budgetDistribution,
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      LocalDate fromDate,
+      LocalDate toDate)
+      throws AxelorException {
 
-        budgetLine.setAvailableAmount(
-            budgetLine.getAvailableAmount().subtract(amount).compareTo(BigDecimal.ZERO) > 0
-                ? budgetLine.getAvailableAmount().subtract(amount)
-                : BigDecimal.ZERO);
+    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
+      LocalDate imputationDate = computeImputationDate(invoice, invoiceLine);
+
+      budgetDistribution.setImputationDate(imputationDate);
+      Budget budget = budgetDistribution.getBudget();
+      BigDecimal totalAmount = budgetDistribution.getAmount();
+      if ((invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+              && !InvoiceToolService.isRefund(invoice))
+          || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
+              && InvoiceToolService.isRefund(invoice))) {
+        totalAmount = totalAmount.negate();
+      }
+
+      boolean isPo =
+          invoiceLine.getInvoice().getPurchaseOrder() != null
+              || invoiceLine.getInvoice().getSaleOrder() != null
+              || invoiceLine.getPurchaseOrderLine() != null
+              || invoiceLine.getSaleOrderLine() != null;
+
+      if (fromDate != null && toDate != null) {
+        long totalDuration = LocalDateHelper.daysBetween(fromDate, toDate, false);
+        LocalDate date = fromDate;
+        BigDecimal prorataAmount;
+        BigDecimal missingAmount = totalAmount;
+
+        while (!date.isAfter(toDate)) {
+          BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, date);
+          if (budgetLine != null && totalDuration > 0) {
+            BigDecimal gap = BigDecimal.valueOf(0.01);
+            if (toDate.isBefore(budgetLine.getToDate())) {
+              prorataAmount = missingAmount;
+            } else {
+              long duration = LocalDateHelper.daysBetween(date, budgetLine.getToDate(), false);
+              prorataAmount =
+                  totalAmount.multiply(
+                      BigDecimal.valueOf(duration)
+                          .divide(
+                              BigDecimal.valueOf(totalDuration),
+                              AppBaseService.COMPUTATION_SCALING,
+                              RoundingMode.HALF_UP));
+              missingAmount = missingAmount.subtract(prorataAmount);
+              if (missingAmount.compareTo(gap) == 0) {
+                prorataAmount = prorataAmount.add(gap);
+              }
+            }
+            updateBudgetAmounts(budgetLine, prorataAmount, isPo);
+            date = budgetLine.getToDate().plusDays(1);
+          } else {
+            break;
+          }
+        }
+      } else {
+        BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, imputationDate);
+        updateBudgetAmounts(budgetLine, totalAmount, isPo);
       }
     }
   }
 
-  @Override
-  @Transactional
-  public void updateLineWithPO(
-      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine)
-      throws AxelorException {
-
-    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
-      LocalDate date = null;
-      PurchaseOrder purchaseOrder =
-          Optional.of(invoiceLine)
-              .map(InvoiceLine::getInvoice)
-              .map(Invoice::getPurchaseOrder)
-              .orElse(
-                  Optional.of(invoiceLine)
-                      .map(InvoiceLine::getPurchaseOrderLine)
-                      .map(PurchaseOrderLine::getPurchaseOrder)
-                      .orElse(null));
-      SaleOrder saleOrder =
-          Optional.of(invoiceLine)
-              .map(InvoiceLine::getInvoice)
-              .map(Invoice::getSaleOrder)
-              .orElse(
-                  Optional.of(invoiceLine)
-                      .map(InvoiceLine::getSaleOrderLine)
-                      .map(SaleOrderLine::getSaleOrder)
-                      .orElse(null));
-
-      if (purchaseOrder != null && purchaseOrder.getOrderDate() != null) {
-        date = purchaseOrder.getOrderDate();
-      } else if (saleOrder != null) {
-        date =
-            saleOrder.getOrderDate() != null
-                ? saleOrder.getOrderDate()
-                : saleOrder.getCreationDate();
-      }
-      budgetDistribution.setImputationDate(date);
-      Budget budget = budgetDistribution.getBudget();
-      Optional<BudgetLine> optBudgetLine =
-          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
-      if (optBudgetLine.isPresent()) {
-        BudgetLine budgetLine = optBudgetLine.get();
-        BigDecimal amount = budgetDistribution.getAmount();
-        if ((invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-                && !InvoiceToolService.isRefund(invoice))
-            || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
-                && InvoiceToolService.isRefund(invoice))) {
-          amount = amount.negate();
-        }
+  protected void updateBudgetAmounts(BudgetLine budgetLine, BigDecimal amount, boolean isPo) {
+    if (budgetLine != null) {
+      amount = currencyScaleService.getCompanyScaledValue(budgetLine.getBudget(), amount);
+      if (isPo) {
         budgetLine.setRealizedWithPo(budgetLine.getRealizedWithPo().add(amount));
-        budgetLine.setAmountRealized(budgetLine.getAmountRealized().add(amount));
         budgetLine.setAmountCommitted(budgetLine.getAmountCommitted().subtract(amount));
-        BigDecimal firmGap =
-            budgetLine
-                .getAmountExpected()
-                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
-        budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
-        budgetLine.setAvailableAmount(
-            budgetLine.getAvailableAmount().subtract(amount).compareTo(BigDecimal.ZERO) > 0
-                ? budgetLine.getAvailableAmount().subtract(amount)
-                : BigDecimal.ZERO);
+      } else {
+        budgetLine.setRealizedWithNoPo(budgetLine.getRealizedWithNoPo().add(amount));
       }
+
+      budgetLine.setAmountRealized(budgetLine.getAmountRealized().add(amount));
+      BigDecimal firmGap =
+          budgetLine
+              .getAmountExpected()
+              .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
+      budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
+      budgetLine.setAvailableAmount(
+          budgetLine.getAvailableAmount().subtract(amount).compareTo(BigDecimal.ZERO) > 0
+              ? budgetLine.getAvailableAmount().subtract(amount)
+              : BigDecimal.ZERO);
     }
+  }
+
+  protected LocalDate computeImputationDate(Invoice invoice, InvoiceLine invoiceLine) {
+    LocalDate imputationDate =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
+    PurchaseOrder purchaseOrder =
+        Optional.of(invoiceLine)
+            .map(InvoiceLine::getInvoice)
+            .map(Invoice::getPurchaseOrder)
+            .orElse(
+                Optional.of(invoiceLine)
+                    .map(InvoiceLine::getPurchaseOrderLine)
+                    .map(PurchaseOrderLine::getPurchaseOrder)
+                    .orElse(null));
+    SaleOrder saleOrder =
+        Optional.of(invoiceLine)
+            .map(InvoiceLine::getInvoice)
+            .map(Invoice::getSaleOrder)
+            .orElse(
+                Optional.of(invoiceLine)
+                    .map(InvoiceLine::getSaleOrderLine)
+                    .map(SaleOrderLine::getSaleOrder)
+                    .orElse(null));
+
+    if (purchaseOrder != null && purchaseOrder.getOrderDate() != null) {
+      imputationDate = purchaseOrder.getOrderDate();
+    } else if (saleOrder != null) {
+      imputationDate =
+          saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
+    }
+
+    return imputationDate;
   }
 
   @Override

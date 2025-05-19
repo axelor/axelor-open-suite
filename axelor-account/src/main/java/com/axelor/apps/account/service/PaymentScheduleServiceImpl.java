@@ -43,6 +43,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -340,8 +341,10 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
           paymentSchedule,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH),
-          total,
-          paymentSchedule.getInTaxAmount());
+          total.setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
+          paymentSchedule
+              .getInTaxAmount()
+              .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
     }
   }
 

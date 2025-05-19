@@ -31,6 +31,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.constraints.Min;
 
 public class ExpenseLinePutRequest extends RequestStructure {
@@ -81,6 +82,7 @@ public class ExpenseLinePutRequest extends RequestStructure {
   private Long expenseId;
 
   private Long projectTaskId;
+  private List<Long> invitedCollaboratorList;
 
   public Long getProjectId() {
     return projectId;
@@ -224,6 +226,14 @@ public class ExpenseLinePutRequest extends RequestStructure {
 
   public void setProjectTaskId(Long projectTaskId) {
     this.projectTaskId = projectTaskId;
+  }
+
+  public List<Long> getInvitedCollaboratorList() {
+    return invitedCollaboratorList;
+  }
+
+  public void setInvitedCollaboratorList(List<Long> invitedCollaboratorList) {
+    this.invitedCollaboratorList = invitedCollaboratorList;
   }
 
   public Project fetchProject() {
