@@ -72,7 +72,8 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
     return freightCarrierPricings;
   }
 
-  protected FreightCarrierPricing createFreightCarrierPricing(
+  @Override
+  public FreightCarrierPricing createFreightCarrierPricing(
       FreightCarrierMode freightCarrierMode, SaleOrder saleOrder) {
     FreightCarrierPricing freightCarrierPricing = new FreightCarrierPricing();
     freightCarrierPricing.setFreightCarrierMode(freightCarrierMode);

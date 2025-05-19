@@ -48,17 +48,11 @@ public abstract class ShippingAbstractService {
       return null;
     }
 
-    List<CustomerShippingCarriagePaid> customerShippingCarriagePaidList =
-        getShippingCarriagePaidList(shippableOrder);
-
     CustomerShippingCarriagePaid supplierShippingCarriagePaid =
-        customerShippingCarriagePaidList.stream()
-            .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
-            .findFirst()
-            .orElse(null);
-
+        getCustomerShippingCarriagePaid(shippableOrder, shipmentMode);
     Product shippingCostProduct =
         shippingService.getShippingCostProduct(shipmentMode, supplierShippingCarriagePaid);
+
     if (shippingCostProduct == null) {
       return null;
     }
@@ -73,6 +67,47 @@ public abstract class ShippingAbstractService {
 
     addLineAndComputeOrder(shippableOrder, shippingCostProduct);
     return null;
+  }
+
+  public String updateShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
+      throws AxelorException {
+    if (shipmentMode == null) {
+      return null;
+    }
+
+    CustomerShippingCarriagePaid supplierShippingCarriagePaid =
+        getCustomerShippingCarriagePaid(shippableOrder, shipmentMode);
+
+    Product shippingCostProduct =
+        shippingService.getShippingCostProduct(shipmentMode, supplierShippingCarriagePaid);
+
+    if (shippingCostProduct == null) {
+      return null;
+    }
+
+    if (isThresholdUsedAndExceeded(shippableOrder, shipmentMode, supplierShippingCarriagePaid)) {
+      return removeLineAndComputeOrder(shippableOrder);
+    }
+
+    if (alreadyHasShippingCostLine(shippableOrder, shippingCostProduct)) {
+      removeLineAndComputeOrder(shippableOrder);
+      addLineAndComputeOrder(shippableOrder, shippingCostProduct);
+      return null;
+    }
+
+    addLineAndComputeOrder(shippableOrder, shippingCostProduct);
+    return null;
+  }
+
+  protected CustomerShippingCarriagePaid getCustomerShippingCarriagePaid(
+      ShippableOrder shippableOrder, ShipmentMode shipmentMode) {
+    List<CustomerShippingCarriagePaid> customerShippingCarriagePaidList =
+        getShippingCarriagePaidList(shippableOrder);
+
+    return customerShippingCarriagePaidList.stream()
+        .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
+        .findFirst()
+        .orElse(null);
   }
 
   protected BigDecimal getCarriagePaidThreshold(

@@ -31,7 +31,7 @@ public class FreightCarrierApplyPricingServiceImpl implements FreightCarrierAppl
     }
   }
 
-  protected String applyPricing(FreightCarrierPricing freightCarrierPricing) {
+  public String applyPricing(FreightCarrierPricing freightCarrierPricing) {
     String errors = "";
     Pricing pricing =
         Optional.ofNullable(freightCarrierPricing)
