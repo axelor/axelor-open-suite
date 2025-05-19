@@ -62,8 +62,6 @@
     <bind column="generateBankOrder" to="generateBankOrder" adapter="Boolean"/>
     <bind column="consoBankOrderLinePerPartner" to="consoBankOrderLinePerPartner"
       adapter="Boolean"/>
-    <bind column="bankOrderExportFolderPath" to="bankOrderExportFolderPath"
-      eval="bankOrderExportFolderPath == '1' ? com.axelor.app.AppSettings.get().get('data.export.dir') : 'rate'"/>
   </input>
 
   <input file="account_paymentCondition.csv" separator=";"
