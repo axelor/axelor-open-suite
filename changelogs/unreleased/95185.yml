@@ -1,0 +1,3 @@
+---
+title: "Purchese order: Fixed main panel visibility to respect the enableTradingNamesManagement configuration."
+module: axelor-base
