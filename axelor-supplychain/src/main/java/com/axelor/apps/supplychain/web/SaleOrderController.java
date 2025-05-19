@@ -73,7 +73,7 @@ import java.util.stream.Collectors;
 public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
-  private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
+  private final String SO_LINES_WIZARD_PRICE_FIELD = "priceDiscounted";
   private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
