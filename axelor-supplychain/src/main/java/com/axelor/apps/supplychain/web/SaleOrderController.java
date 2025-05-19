@@ -84,7 +84,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderController {
 
-  private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
+  private final String SO_LINES_WIZARD_PRICE_FIELD = "priceDiscounted";
   private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
   private final String SO_LINES_WIZARD_INVOICE_ALL_FIELD = "invoiceAll";
 
