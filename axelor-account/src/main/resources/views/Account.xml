@@ -229,7 +229,7 @@
       <field name="statusSelect" type="integer" title="Status" widget="single-select"
         selection="iaccount.status.select.selection"
         showIf="_metaModel == 'com.axelor.apps.account.db.Account'" required="true"/>
-      <field name="statusSelect" type="integer" title="Status"
+      <field name="statusSelect" type="integer" title="Status" widget="single-select"
         selection="ianalytic.account.status.select"
         showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticAccount'" required="true"/>
       <field name="statusSelect" type="integer" title="Status"
