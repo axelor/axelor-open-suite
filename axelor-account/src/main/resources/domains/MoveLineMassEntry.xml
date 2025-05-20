@@ -29,6 +29,7 @@
     <one-to-many name="analyticMoveLineMassEntryList"
       ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"
       mappedBy="moveLineMassEntry"/>
+    <boolean name="isGenerated" title="Is generated"/>
 
     <extra-code><![CDATA[
 
