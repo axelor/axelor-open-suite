@@ -21,7 +21,7 @@
       grid-view="fixed-asset-category-grid"/>
     <field name="acquisitionDate"/>
     <field name="firstDepreciationDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="fixed-asset-move-grid" title="Fixed assets"
@@ -34,7 +34,7 @@
     <field name="grossValue"/>
     <field name="firstDepreciationDate"/>
     <field name="accountingValue"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="fixed-asset-form" title="Fixed asset"
