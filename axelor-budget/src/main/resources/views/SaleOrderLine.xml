@@ -36,8 +36,15 @@
               ]]>
             </viewer>
           </field>
+          <panel name="datesPanel" colSpan="12">
+            <field name="budgetFromDate" requiredIf="budgetToDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <label name="budgetDatesLabel" hidden="true" css="label-danger" colSpan="12"/>
+          </panel>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
-            onChange="action-budget-sale-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"
+            onChange="action-sale-order-line-group-budget-onchange"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
           <panel name="accountPanel" colSpan="12">
             <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"
@@ -63,6 +70,13 @@
     <action name="action-method-sale-order-line-budget-distribution-validate-amount"/>
     <action name="action-sale-order-method-compute-budget-remaining-amount-to-allocate"/>
     <action name="action-budget-sale-order-line-method-fill-budget-str"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-group-budget-onchange">
+    <action name="action-budget-sale-order-line-method-fill-budget-str"/>
+    <action name="action-reset-budget-distribution-list-method"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
   </action-group>
 
   <action-method
