@@ -137,15 +137,16 @@ public class ProjectPlanningTimeCreateUpdateServiceImpl
               .collect(Collectors.toSet());
     }
 
-    if (savedSprint != null && !savedSprint.equals(backlogSprint)) {
-      if (!ObjectUtils.isEmpty(projectPlanningTimeSet)) {
+    if (savedSprint != null
+        && !savedSprint.equals(backlogSprint)
+        && !ObjectUtils.isEmpty(projectPlanningTimeSet)) {
         for (ProjectPlanningTime projectPlanningTime : projectPlanningTimeSet) {
           projectTaskSprintService.moveProjectPlanningTime(projectPlanningTime, projectTask);
         }
 
         return;
       }
-    }
+
     projectTaskSprintService.createProjectPlanningTime(projectTask);
   }
 }
