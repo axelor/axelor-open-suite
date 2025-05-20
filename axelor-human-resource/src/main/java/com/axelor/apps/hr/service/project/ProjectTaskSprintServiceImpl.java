@@ -21,7 +21,6 @@ package com.axelor.apps.hr.service.project;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -31,8 +30,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProject;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -48,6 +45,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
   protected AppProjectService appProjectService;
   protected ProjectPlanningTimeComputeService projectPlanningTimeComputeService;
   protected ProjectPlanningTimeCreateService projectPlanningTimeCreateService;
+  protected ProjectPlanningTimeService projectPlanningTimeService;
   protected ProjectTaskRepository projectTaskRepository;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
 
@@ -56,83 +54,15 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
       AppProjectService appProjectService,
       ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
       ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
+      ProjectPlanningTimeService projectPlanningTimeService,
       ProjectTaskRepository projectTaskRepository,
       ProjectPlanningTimeRepository projectPlanningTimeRepository) {
     this.appProjectService = appProjectService;
     this.projectPlanningTimeComputeService = projectPlanningTimeComputeService;
     this.projectPlanningTimeCreateService = projectPlanningTimeCreateService;
+    this.projectPlanningTimeService = projectPlanningTimeService;
     this.projectTaskRepository = projectTaskRepository;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
-  }
-
-  @Override
-  public String getSprintOnChangeWarning(ProjectTask projectTask) {
-    if (validateConfigAndSprint(projectTask) == null) {
-      return "";
-    }
-
-    Sprint savedSprint = getOldActiveSprint(projectTask);
-    BigDecimal oldBudgetedTime = getOldBudgetedTime(projectTask);
-
-    Sprint backlogSprint =
-        Optional.of(projectTask)
-            .map(ProjectTask::getProject)
-            .map(Project::getBacklogSprint)
-            .orElse(null);
-
-    if (projectTask.getActiveSprint().equals(backlogSprint)) {
-      return "";
-    }
-
-    Set<ProjectPlanningTime> projectPlanningTimeSet =
-        getProjectPlanningTimeOnOldSprint(projectTask, savedSprint);
-
-    String warning =
-        getBudgetedTimeOnChangeWarning(projectPlanningTimeSet, oldBudgetedTime, projectTask);
-    if (StringUtils.notEmpty(warning)) {
-      return warning;
-    }
-
-    if (ObjectUtils.isEmpty(projectPlanningTimeSet)
-        || savedSprint == null
-        || savedSprint.equals(backlogSprint)
-        || savedSprint.equals(projectTask.getActiveSprint())) {
-      if (ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
-        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
-      } else {
-        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
-      }
-    } else {
-      return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT);
-    }
-  }
-
-  protected String getBudgetedTimeOnChangeWarning(
-      Set<ProjectPlanningTime> projectPlanningTimeSet,
-      BigDecimal oldBudgetedTime,
-      ProjectTask projectTask) {
-    if (projectTask.getBudgetedTime().signum() == 0
-        || projectTask.getBudgetedTime().compareTo(oldBudgetedTime) == 0
-        || ObjectUtils.isEmpty(projectPlanningTimeSet)) {
-      return "";
-    }
-
-    projectPlanningTimeSet =
-        projectPlanningTimeSet.stream()
-            .filter(ppt -> ppt.getDisplayPlannedTime().compareTo(oldBudgetedTime) == 0)
-            .collect(Collectors.toSet());
-
-    if (ObjectUtils.isEmpty(projectPlanningTimeSet)) {
-      if (ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
-        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_FIRST_REQUEST);
-      } else {
-        return I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_NEW_REQUEST);
-      }
-
-    } else {
-      return I18n.get(
-          HumanResourceExceptionMessage.PROJECT_PLANNING_TIME_EXISTING_WITH_OLD_DURATION);
-    }
   }
 
   @Override
@@ -142,7 +72,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     }
 
     Sprint savedSprint = getOldActiveSprint(projectTask);
-    BigDecimal oldBudgetedTime = getOldBudgetedTime(projectTask);
+    BigDecimal oldBudgetedTime = projectPlanningTimeService.getOldBudgetedTime(projectTask);
 
     Sprint backlogSprint =
         Optional.of(projectTask)
@@ -177,7 +107,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     createProjectPlanningTime(projectTask);
   }
 
-  protected Sprint validateConfigAndSprint(ProjectTask projectTask) {
+  @Override
+  public Sprint validateConfigAndSprint(ProjectTask projectTask) {
     Sprint currentSprint =
         Optional.ofNullable(projectTask).map(ProjectTask::getActiveSprint).orElse(null);
     return Optional.ofNullable(appProjectService.getAppProject())
@@ -192,7 +123,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
         : null;
   }
 
-  protected Set<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
+  @Override
+  public Set<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
       ProjectTask projectTask, Sprint savedSprint) {
     Set<ProjectPlanningTime> projectPlanningTimeSet = new HashSet<>();
     if (savedSprint != null && !ObjectUtils.isEmpty(projectTask.getProjectPlanningTimeList())) {
@@ -211,7 +143,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     return projectPlanningTimeSet;
   }
 
-  protected void moveProjectPlanningTime(
+  @Override
+  public void moveProjectPlanningTime(
       ProjectPlanningTime projectPlanningTime, ProjectTask projectTask) throws AxelorException {
     Sprint activeSprint = projectTask.getActiveSprint();
     if (activeSprint == null
@@ -223,7 +156,8 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     updateProjectPlanningTimeDatesAndDuration(projectPlanningTime, projectTask);
   }
 
-  protected void createProjectPlanningTime(ProjectTask projectTask) throws AxelorException {
+  @Override
+  public void createProjectPlanningTime(ProjectTask projectTask) throws AxelorException {
     Optional<LocalDateTime> startDateTime =
         Optional.of(projectTask)
             .map(ProjectTask::getActiveSprint)
@@ -252,23 +186,10 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
             employee.get().getDailyWorkHours(),
             endDateTime.get(),
             projectTask.getSite(),
-            getTimeUnit(projectTask));
+            projectPlanningTimeService.getTimeUnit(projectTask));
 
     updateProjectPlanningTimeDatesAndDuration(projectPlanningTime, projectTask);
     projectTask.addProjectPlanningTimeListItem(projectPlanningTime);
-  }
-
-  protected Unit getTimeUnit(ProjectTask projectTask) {
-    Unit unit = projectTask.getTimeUnit();
-    if (unit == null) {
-      unit =
-          Optional.of(projectTask)
-              .map(ProjectTask::getProject)
-              .map(Project::getProjectTimeUnit)
-              .orElse(null);
-    }
-
-    return unit;
   }
 
   protected void updateProjectPlanningTimeDatesAndDuration(
@@ -283,7 +204,7 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     projectPlanningTime.setStartDateTime(activeSprint.getFromDate().atStartOfDay());
     projectPlanningTime.setEndDateTime(activeSprint.getToDate().atTime(23, 59));
     projectPlanningTime.setDisplayPlannedTime(projectTask.getBudgetedTime());
-    Unit timeUnit = getTimeUnit(projectTask);
+    Unit timeUnit = projectPlanningTimeService.getTimeUnit(projectTask);
     if (timeUnit != null) {
       projectPlanningTime.setDisplayTimeUnit(timeUnit);
     }
@@ -292,21 +213,13 @@ public class ProjectTaskSprintServiceImpl implements ProjectTaskSprintService {
     projectPlanningTime.setEndDateTime(activeSprint.getToDate().atTime(23, 59));
   }
 
-  protected Sprint getOldActiveSprint(ProjectTask projectTask) {
+  @Override
+  public Sprint getOldActiveSprint(ProjectTask projectTask) {
     Sprint savedSprint = projectTask.getOldActiveSprint();
     if (savedSprint == null && projectTask.getId() != null) {
       savedSprint = projectTaskRepository.find(projectTask.getId()).getActiveSprint();
     }
 
     return savedSprint;
-  }
-
-  protected BigDecimal getOldBudgetedTime(ProjectTask projectTask) {
-    BigDecimal oldBudgetedTime = projectTask.getOldBudgetedTime();
-    if ((oldBudgetedTime == null || oldBudgetedTime.signum() == 0) && projectTask.getId() != null) {
-      oldBudgetedTime = projectTaskRepository.find(projectTask.getId()).getBudgetedTime();
-    }
-
-    return oldBudgetedTime;
   }
 }
