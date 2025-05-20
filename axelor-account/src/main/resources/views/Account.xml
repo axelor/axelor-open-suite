@@ -18,7 +18,7 @@
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="defaultTaxSet" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="account-simple-grid" title="Accounting.Accounts"
@@ -223,7 +223,7 @@
   <form name="mass-update-status-wizard-form" title="Mass update status"
     model="com.axelor.utils.db.Wizard" width="large">
     <panel name="mainPanel">
-      <field name="statusSelect" type="integer" title="Status"
+      <field name="statusSelect" type="integer" title="Status" widget="single-select"
         selection="iaccount.status.select.selection"
         showIf="_metaModel == 'com.axelor.apps.account.db.Account'" required="true"/>
       <field name="statusSelect" type="integer" title="Status"

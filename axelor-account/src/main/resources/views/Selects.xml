@@ -702,8 +702,8 @@
   </selection>
 
   <selection name='iaccount.status.select.selection'>
-    <option value="0">Inactive</option>
-    <option value="1">Active</option>
+    <option value="0" color="red">Inactive</option>
+    <option value="1" color="green">Active</option>
   </selection>
 
   <selection name='ianalytic.journal.status.select'>
