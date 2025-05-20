@@ -368,8 +368,8 @@
         showIf="disposalTypeSelect == 2" hidden="true"/>
       <field name="$originalQty" type="decimal" hidden="true"/>
       <field name="_moveGenerationException" hidden="true"/>
-      <field name="_fixedAssetId"/>
-      <field name="_fixedAssetIds"/>
+      <field name="_fixedAssetId" hidden="true"/>
+      <field name="_fixedAssetIds" hidden="true"/>
     </panel>
   </form>
 
@@ -410,6 +410,7 @@
 
   <action-group name="action-fixed-asset-disposal-wizard-onnew">
     <action name="action-fixed-asset-disposal-wizard-record-onnew"/>
+    <action name="action-fixed-asset-disposal-wizard-attrs-onnew"/>
     <action name="action-account-fixed-asset-disposal-wizard-method-compute-disposal-amount"/>
     <action name="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line"/>
   </action-group>
@@ -440,7 +441,7 @@
 
   <action-validate
     name="action-validate-account-fixed-asset-wizard-form-validate-qty">
-    <error if="disposalQtySelect == 2 &amp;&amp; (qty &lt;= 0) "
+    <error if="disposalQtySelect == 2 &amp;&amp; (new BigDecimal(qty) &lt;= 0)"
       message="Disposal Quantity must be greater than 0"/>
   </action-validate>
 
@@ -466,6 +467,7 @@
     <field name="disposalDate" expr="eval: __config__.date"/>
     <field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
     <field name="disposalQtySelect" expr="eval: 1"/>
+    <field name="disposalTypeSelect" expr="eval: 1"/>
     <field name="qty" expr="eval:_fixedAsset?.qty"/>
     <field name="$originalQty" expr="eval: _fixedAsset?.qty"/>
     <field name="_moveGenerationException" expr="eval: _fixedAsset?.moveGenerationException"/>
