@@ -661,6 +661,7 @@
 "Template created by",,,
 "Templates",,,
 "Test this creator",,,
+"The ATI configuration must be the same for all sale orders",,,
 "The client Partner is required and must be the same for all sale orders",,,
 "The client provided is not a customer of the given company: %s.",,,
 "The company %s doesn't have any configured sequence for sale orders",,,
