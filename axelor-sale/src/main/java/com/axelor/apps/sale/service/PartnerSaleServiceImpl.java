@@ -28,13 +28,13 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.MessageRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class PartnerSaleServiceImpl extends PartnerServiceImpl implements PartnerSaleService {
 
@@ -43,64 +43,37 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     super(partnerRepo, appBaseService);
   }
 
-  @Deprecated
   @Override
-  public List<Long> findPartnerMails(Partner partner, int emailType) {
+  public List<Long> findMailsFromPartner(Partner partner, int emailType) {
+    List<Long> mailIdList = super.findMailsFromPartner(partner, emailType);
     if (!Beans.get(AppSaleService.class).isApp("sale")) {
-      return super.findPartnerMails(partner, emailType);
+      return mailIdList;
     }
-
-    List<Long> idList = new ArrayList<Long>();
-
-    idList.addAll(this.findMailsFromPartner(partner, emailType));
-
-    if (partner.getIsContact()) {
-      idList.addAll(this.findMailsFromSaleOrderContact(partner, emailType));
-      return idList;
-    } else {
-      idList.addAll(this.findMailsFromSaleOrder(partner, emailType));
-    }
-
-    Set<Partner> contactSet = partner.getContactPartnerSet();
-    if (contactSet != null && !contactSet.isEmpty()) {
-      for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact, emailType));
-        idList.addAll(this.findMailsFromSaleOrderContact(contact, emailType));
-      }
-    }
-    return idList;
+    mailIdList.addAll(
+        findMailsFromSaleOrder(
+            partner, emailType, partner.getIsContact() ? "contactPartner" : "clientPartner"));
+    return mailIdList;
   }
 
-  @Deprecated
-  @SuppressWarnings("unchecked")
-  public List<Long> findMailsFromSaleOrder(Partner partner, int emailType) {
-
-    String query =
-        "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
-            + " WHERE part.id = "
-            + partner.getId()
-            + " AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)"
-            + " AND email.typeSelect = "
-            + emailType;
-
-    return JPA.em().createQuery(query).getResultList();
-  }
-
-  @Deprecated
-  @SuppressWarnings("unchecked")
-  public List<Long> findMailsFromSaleOrderContact(Partner partner, int emailType) {
-
-    String query =
-        "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
-            + " WHERE part.id = "
-            + partner.getId()
-            + " AND so.contactPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)"
-            + " AND email.typeSelect = "
-            + emailType;
-
-    return JPA.em().createQuery(query).getResultList();
+  protected List<Long> findMailsFromSaleOrder(Partner partner, int emailType, String partnerField) {
+    return JPA.em()
+        .createQuery(
+            "SELECT DISTINCT email.id"
+                + " FROM Message AS email"
+                + " JOIN email.multiRelatedList AS related"
+                + " JOIN SaleOrder AS so ON so.id = related.relatedToSelectId"
+                + " JOIN Partner AS part ON part.id = so."
+                + partnerField
+                + " WHERE part.id = :partnerId"
+                + " AND related.relatedToSelect = :relatedToSelect"
+                + " AND email.typeSelect = :emailType"
+                + " AND email.mediaTypeSelect = :mediaType",
+            Long.class)
+        .setParameter("partnerId", partner.getId())
+        .setParameter("relatedToSelect", "com.axelor.apps.sale.db.SaleOrder")
+        .setParameter("emailType", emailType)
+        .setParameter("mediaType", MessageRepository.MEDIA_TYPE_EMAIL)
+        .getResultList();
   }
 
   public List<Product> getProductBoughtByCustomer(Partner customer) {

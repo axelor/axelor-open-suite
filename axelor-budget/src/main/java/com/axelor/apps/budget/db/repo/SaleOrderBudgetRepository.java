@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -42,8 +43,10 @@ import org.apache.commons.collections.CollectionUtils;
 public class SaleOrderBudgetRepository extends SaleOrderSupplychainRepository {
 
   @Inject
-  public SaleOrderBudgetRepository(SaleOrderCopyService saleOrderCopyService) {
-    super(saleOrderCopyService);
+  public SaleOrderBudgetRepository(
+      SaleOrderCopyService saleOrderCopyService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+    super(saleOrderCopyService, saleOrderOrderingStatusService);
   }
 
   @Override

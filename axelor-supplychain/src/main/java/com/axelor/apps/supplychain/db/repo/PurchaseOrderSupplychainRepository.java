@@ -18,13 +18,18 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
+import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
 
@@ -56,5 +61,16 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
     }
 
     return copy;
+  }
+
+  @Override
+  public PurchaseOrder save(PurchaseOrder purchaseOrder) {
+    try {
+      Beans.get(PurchaseOrderSupplychainService.class).checkAnalyticAxisByCompany(purchaseOrder);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    return super.save(purchaseOrder);
   }
 }

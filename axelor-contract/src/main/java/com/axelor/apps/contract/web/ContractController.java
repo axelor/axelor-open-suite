@@ -328,6 +328,8 @@ public class ContractController {
     try {
       Contract contract = this.getContract(request);
 
+      Beans.get(ContractLineService.class).checkAnalyticAxisByCompany(contract);
+
       response.setAttrs(
           Beans.get(ContractLineAttrsService.class)
               .setScaleAndPrecision(contract, "contractLineList."));

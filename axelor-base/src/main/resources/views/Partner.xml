@@ -168,6 +168,9 @@
     onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
     onSave="action-partner-group-onsave" width="large">
     <toolbar>
+      <button name="convertToContactPartnerBtn" title="Convert into a contact partner"
+        icon="fa-user" onClick="save,action-partner-method-change-employee-type"
+        showIf="id != null &amp;&amp; !isContact &amp;&amp; isEmployee &amp;&amp; partnerTypeSelect == 2"/>
       <button name="showMapBtn" title="Map" icon="fa-map-marker"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
     </toolbar>
@@ -1803,7 +1806,7 @@
   <action-view name="action-partner-view-related-projects" title="Projects"
     model="com.axelor.apps.project.db.Project">
     <view type="grid" name="project-grid"/>
-    <view type="form" name="project-form"/>
+    <view type="form" name="business-project-form"/>
     <domain>self.clientPartner = :id</domain>
   </action-view>
 

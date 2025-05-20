@@ -50,6 +50,9 @@ public class SaleOrderCopyServiceImpl implements SaleOrderCopyService {
     copy.setMarginRate(null);
     copy.setEstimatedShippingDate(null);
     copy.setOrderBeingEdited(false);
+    copy.setManualUnblock(false);
+    copy.setBlockedOnCustCreditExceed(false);
+    copy.setOrderingStatus(null);
     if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
       copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
       copy.setAdvancePaymentNeeded(false);

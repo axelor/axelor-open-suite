@@ -291,10 +291,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           }
         } else {
           Budget budget = saleOrderLine.getBudget();
-          if (budget != null) {
-            budgetToolsService.fillAmountPerBudgetMap(
-                budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
-          }
+          budgetToolsService.fillAmountPerBudgetMap(
+              budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
         }
       }
 

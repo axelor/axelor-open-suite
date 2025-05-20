@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -41,8 +42,10 @@ import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -69,6 +72,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected StockConfigService stockConfigService;
   protected CurrencyScaleService currencyScaleService;
   protected AdvancePaymentRefundService refundService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -82,7 +86,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       CurrencyScaleService currencyScaleService,
-      AdvancePaymentRefundService refundService) {
+      AdvancePaymentRefundService refundService,
+      AnalyticLineModelService analyticLineModelService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -95,6 +100,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.stockConfigService = stockConfigService;
     this.currencyScaleService = currencyScaleService;
     this.refundService = refundService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -235,5 +241,17 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
     }
     return fromStockLocation;
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (purchaseOrder == null || ObjectUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return;
+    }
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+      analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
+    }
   }
 }

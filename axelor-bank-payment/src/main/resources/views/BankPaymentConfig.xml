@@ -20,11 +20,11 @@
       <panel colSpan="12" name="detailsPanel">
         <panel name="accountingSettingsPanel" title="Accounting settings" colSpan="8">
           <field name="internalBankToBankAccount"
-            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-            form-view="account-form"/>
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect != 'view'"
+            grid-view="account-grid" form-view="account-form"/>
           <field name="externalBankToBankAccount"
-            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-            form-view="account-form"/>
+            domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect != 'view'"
+            grid-view="account-grid" form-view="account-form"/>
         </panel>
         <panel name="directDebitDetailsPanel" title="Direct debit" colSpan="4"
           if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment">

@@ -16,13 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.FreightCarrierMode;
-import java.util.List;
+import com.axelor.apps.sale.db.SaleOrderLine;
 
-public interface FreightCarrierModeService {
-  void computeFreightCarrierMode(List<FreightCarrierMode> freightCarrierModeList, Long saleOrderId)
-      throws AxelorException;
+public interface SaleOrderLineCheckProductionService {
+  void checkLinkedMo(SaleOrderLine saleOrderLine) throws AxelorException;
 }

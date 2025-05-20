@@ -25,7 +25,7 @@
 
   <grid name="account-management-product-grid" title="Account managements"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
-    onNew="action-account-management-record-default, action-account-management-attrs-type, action-account-management-attrs-hide-type">
+    onNew="action-account-management-record-default, action-account-management-attrs-type, action-account-management-attrs-hide-type,action-account-management-attrs-hide-sale">
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
@@ -260,6 +260,7 @@
     <action name="action-account-management-attrs-hide-type"/>
     <action name="action-account-management-attrs-display-payment-mode"/>
     <action name="action-account-management-attrs-display-tax-panel"/>
+    <action name="action-account-management-attrs-hide-sale"/>
   </action-group>
 
   <action-group name="action-account-management-group-on-load">
@@ -268,6 +269,7 @@
     <action name="action-account-management-attrs-hide-type"/>
     <action name="action-account-management-attrs-display-payment-mode"/>
     <action name="action-account-management-attrs-display-tax-panel"/>
+    <action name="action-account-management-attrs-hide-sale"/>
   </action-group>
 
   <action-attrs name="action-account-management-attrs-display-product-fields">

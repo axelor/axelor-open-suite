@@ -20,21 +20,34 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.service.EmployeeComputeStatusService;
+import com.axelor.apps.hr.service.PartnerEmployeeService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 public class EmployeeHRRepository extends EmployeeRepository {
+
+  protected final PartnerRepository partnerRepository;
+  protected final PartnerEmployeeService partnerEmployeeService;
+
+  @Inject
+  public EmployeeHRRepository(
+      PartnerRepository partnerRepository, PartnerEmployeeService partnerEmployeeService) {
+    this.partnerRepository = partnerRepository;
+    this.partnerEmployeeService = partnerEmployeeService;
+  }
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
@@ -62,14 +75,12 @@ public class EmployeeHRRepository extends EmployeeRepository {
         && employmentContract != null) {
       partner.addCompanySetItem(employmentContract.getPayCompany());
     }
-    if (!partner.getIsEmployee()) {
-      partner.setIsContact(true);
-      partner.setIsEmployee(true);
-      Beans.get(PartnerHRRepository.class).save(partner);
-    }
+
     if (employmentContract != null && employmentContract.getEmployee() == null) {
       employmentContract.setEmployee(entity);
     }
+
+    partnerEmployeeService.editPartner(entity);
 
     return super.save(entity);
   }

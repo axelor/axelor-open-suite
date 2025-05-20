@@ -19,6 +19,9 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import java.util.List;
 
 public interface AnalyticAxisService {
@@ -29,4 +32,11 @@ public interface AnalyticAxisService {
 
   public List<Integer> getSameAnalyticGroupingValues(
       AnalyticAxis analyticAxis, String analyticGroupingChanged);
+
+  void checkAnalyticDistributionLinesRequiredAxisByCompany(
+      Company company, List<AnalyticDistributionLine> analyticDistributionLineList)
+      throws AxelorException;
+
+  void checkRequiredAxisByCompany(Company company, List<AnalyticAxis> analyticAxisList)
+      throws AxelorException;
 }

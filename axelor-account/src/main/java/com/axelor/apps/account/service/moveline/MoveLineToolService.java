@@ -73,7 +73,7 @@ public interface MoveLineToolService {
   void setDecimals(MoveLine moveLine, Move move);
 
   List<MoveLine> getMoveExcessDueList(
-      boolean excessPayment, Company company, Partner partner, Long invoiceId);
+      boolean excessPayment, Company company, Partner partner, Invoice originInvoice);
 
   boolean isMoveLineTaxAccount(MoveLine moveLine);
 

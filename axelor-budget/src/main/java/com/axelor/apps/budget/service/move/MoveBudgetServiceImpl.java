@@ -117,8 +117,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
                   budgetDistribution.getAmount(),
                   amountPerBudgetMap);
             }
-          } else if (!appBudgetService.getAppBudget().getManageMultiBudget()
-              && moveLine.getBudget() != null) {
+          } else if (!appBudgetService.getAppBudget().getManageMultiBudget()) {
             budgetToolsService.fillAmountPerBudgetMap(
                 moveLine.getBudget(),
                 moveLine.getCredit().max(moveLine.getDebit()),
