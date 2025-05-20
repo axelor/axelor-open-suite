@@ -465,10 +465,10 @@
   </selection>
 
   <selection name="account.fixed.asset.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Depreciated</option>
-    <option value="4">Transferred</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="deeporange">Depreciated</option>
+    <option value="4" color="purple">Transferred</option>
   </selection>
 
   <selection name="account.fixed.asset.line.status.select">
