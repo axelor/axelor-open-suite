@@ -74,6 +74,7 @@ import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingServ
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
@@ -261,6 +262,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainSer
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderDummySupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInitValueSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderIntercoService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderIntercoServiceImpl;
@@ -519,5 +521,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderCopySupplychainService.class).to(SaleOrderCopySupplychainServiceImpl.class);
     bind(PricingGroupSaleServiceImpl.class).to(PricingGroupSupplyChainServiceImpl.class);
     bind(FreightCarrierApplyPricingService.class).to(FreightCarrierApplyPricingServiceImpl.class);
+    bind(SaleOrderDummyServiceImpl.class).to(SaleOrderDummySupplychainServiceImpl.class);
   }
 }
