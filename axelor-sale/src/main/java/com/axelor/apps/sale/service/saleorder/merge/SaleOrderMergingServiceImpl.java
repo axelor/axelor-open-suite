@@ -529,6 +529,8 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
             getCommonFields(result).getCommonFiscalPosition(),
             getCommonFields(result).getCommonTradingName());
 
+    saleOrderMerged.setInAti(saleOrdersToMerge.stream().anyMatch(SaleOrder::getInAti));
+
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
     return saleOrderMerged;
