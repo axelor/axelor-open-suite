@@ -236,7 +236,7 @@
         selection="account.journal.status.select"
         showIf="_metaModel == 'com.axelor.apps.account.db.Journal'" required="true"/>
       <field name="statusSelect" type="integer" title="Status"
-        selection="ianalytic.journal.status.select"
+        selection="ianalytic.journal.status.select" widget="single-select"
         showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticJournal'" required="true"/>
       <button name="massUpdateSelectedBtn" title="Mass update selected"
         onClick="action-method-wizard-mass-update-selected"/>
