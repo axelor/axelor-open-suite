@@ -31,8 +31,13 @@
 
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='pfpAccountConfigPanel']">
       <insert position="after">
-        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')"
-          showIf="(statusSelect >= 2 &amp;&amp; statusSelect &lt; 4) || budgetDistributionGenerated">
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+          <panel name="datesPanel" colSpan="12" itemSpan="4" readonlyIf="statusSelect == 4">
+            <field name="budgetFromDate" requiredIf="budgetToDate"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"/>
+            <button name="initBudgetDatesBtn" title="Init budget dates"
+              onClick="action-invoice-group-initialize-budget-dates"/>
+          </panel>
           <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
             action="action-budget-distribution-view-budget-distribution" colSpan="12"
             readonly="true"/>
@@ -71,6 +76,11 @@
     <action name="action-invoice-group-ventilate"/>
   </action-group>
 
+  <action-group name="action-invoice-group-initialize-budget-dates">
+    <action name="action-invoice-method-initialize-budget-dates"/>
+    <action name="action-budget-validate-budget-dates"/>
+  </action-group>
+
   <action-method name="action-invoice-method-budget-auto-compute-budget-distribution">
     <call class="com.axelor.apps.budget.web.InvoiceController"
       method="autoComputeBudgetDistribution"/>
@@ -100,6 +110,10 @@
 
   <action-method name="action-method-invoice-budget-no-compute-budget-distribution">
     <call class="com.axelor.apps.budget.web.InvoiceController" method="checkNoComputeBudget"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.InvoiceController" method="initializeBudgetDates"/>
   </action-method>
 
   <action-validate name="action-validate-budget-recompute-budget-distribution">

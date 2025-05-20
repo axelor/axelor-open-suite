@@ -4,6 +4,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
@@ -138,11 +140,9 @@ public class BudgetDateServiceImpl implements BudgetDateService {
       return "";
     }
 
-    if (fromDate == null || toDate == null) {
-      return I18n.get(BudgetExceptionMessage.BUDGET_MISSING_DATES);
-    }
-    if (fromDate.isAfter(toDate)) {
-      return I18n.get(BudgetExceptionMessage.BUDGET_WRONG_DATES);
+    String coherenceError = checkDateCoherence(fromDate, toDate);
+    if (StringUtils.notEmpty(coherenceError)) {
+      return coherenceError;
     }
 
     if (budget == null && ObjectUtils.isEmpty(budgetDistributionList)) {
@@ -160,6 +160,17 @@ public class BudgetDateServiceImpl implements BudgetDateService {
 
     if (sj.length() > 0) {
       return I18n.get(sj.toString());
+    }
+
+    return "";
+  }
+
+  protected String checkDateCoherence(LocalDate fromDate, LocalDate toDate) {
+    if (fromDate == null || toDate == null) {
+      return I18n.get(BudgetExceptionMessage.BUDGET_MISSING_DATES);
+    }
+    if (fromDate.isAfter(toDate)) {
+      return I18n.get(BudgetExceptionMessage.BUDGET_WRONG_DATES);
     }
 
     return "";
@@ -196,6 +207,44 @@ public class BudgetDateServiceImpl implements BudgetDateService {
       }
 
       date = budgetLine.getToDate().plusDays(1);
+    }
+  }
+
+  @Override
+  public void initializeBudgetDates(Invoice invoice) throws AxelorException {
+    String coherenceError =
+        checkDateCoherence(invoice.getBudgetFromDate(), invoice.getBudgetToDate());
+    if (StringUtils.notEmpty(coherenceError)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, coherenceError, invoice);
+    }
+
+    if (ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return;
+    }
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      invoiceLine.setBudgetFromDate(invoice.getBudgetFromDate());
+      invoiceLine.setBudgetToDate(invoice.getBudgetToDate());
+    }
+  }
+
+  @Override
+  public void initializeBudgetDates(PurchaseOrder purchaseOrder) throws AxelorException {
+    String coherenceError =
+        checkDateCoherence(purchaseOrder.getBudgetFromDate(), purchaseOrder.getBudgetToDate());
+    if (StringUtils.notEmpty(coherenceError)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, coherenceError, purchaseOrder);
+    }
+
+    if (ObjectUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return;
+    }
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      purchaseOrderLine.setBudgetFromDate(purchaseOrder.getBudgetFromDate());
+      purchaseOrderLine.setBudgetToDate(purchaseOrder.getBudgetToDate());
     }
   }
 }

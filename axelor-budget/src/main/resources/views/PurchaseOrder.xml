@@ -28,6 +28,12 @@
         <panel name="budgetDistributionPanel" title="Budget distribution"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           showIf="statusSelect &lt;= 4">
+          <panel name="datesPanel" colSpan="12" itemSpan="4" readonlyIf="statusSelect == 5">
+            <field name="budgetFromDate" requiredIf="budgetToDate"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"/>
+            <button name="initBudgetDatesBtn" title="Init budget dates"
+              onClick="action-purchase-order-group-initialize-budget-dates"/>
+          </panel>
           <field name="project" colSpan="3"
             onChange="action-business-project-purchase-order-method-update-lines"
             hideIf="orderTypeSelect == 4"/>
@@ -121,6 +127,11 @@
     <action name="save"/>
   </action-group>
 
+  <action-group name="action-purchase-order-group-initialize-budget-dates">
+    <action name="action-purchase-order-method-initialize-budget-dates"/>
+    <action name="action-budget-validate-budget-dates"/>
+  </action-group>
+
   <action-method
     name="action-purchase-order-method-budget-auto-compute-budget-distribution">
     <call class="com.axelor.apps.budget.web.PurchaseOrderController"
@@ -129,6 +140,11 @@
 
   <action-method name="action-purchase-order-method-budget-validate-request">
     <call class="com.axelor.apps.budget.web.PurchaseOrderController" method="validateRequest"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="initializeBudgetDates"/>
   </action-method>
 
   <action-record name="action-budget-purchase-order-record-get-budget-balance"

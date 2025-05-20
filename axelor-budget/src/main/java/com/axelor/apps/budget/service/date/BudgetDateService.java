@@ -2,6 +2,7 @@ package com.axelor.apps.budget.service.date;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -23,4 +24,8 @@ public interface BudgetDateService {
       LocalDate toDate,
       Budget budget,
       List<BudgetDistribution> budgetDistributionList);
+
+  void initializeBudgetDates(Invoice invoice) throws AxelorException;
+
+  void initializeBudgetDates(PurchaseOrder purchaseOrder) throws AxelorException;
 }
