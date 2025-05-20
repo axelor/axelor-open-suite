@@ -473,6 +473,8 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
             getCommonFields(result).getCommonTradingName(),
             getCommonFields(result).getCommonFiscalPosition());
 
+    purchaseOrderMerged.setInAti(purchaseOrdersToMerge.stream().anyMatch(PurchaseOrder::getInAti));
+
     this.attachToNewPurchaseOrder(purchaseOrdersToMerge, purchaseOrderMerged);
     purchaseOrderService.computePurchaseOrder(purchaseOrderMerged);
     return purchaseOrderMerged;
