@@ -17,6 +17,7 @@ import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
@@ -52,6 +53,7 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
       PfpService pfpService,
       AnalyticAttrsService analyticAttrsService,
       MoveLineRecordService moveLineRecordService,
+      MoveLineService moveLineService,
       BudgetDateService budgetDateService) {
     super(
         moveDefaultService,
@@ -72,7 +74,8 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
         moveLineMassEntryRecordService,
         pfpService,
         analyticAttrsService,
-        moveLineRecordService);
+        moveLineRecordService,
+        moveLineService);
     this.budgetDateService = budgetDateService;
   }
 
