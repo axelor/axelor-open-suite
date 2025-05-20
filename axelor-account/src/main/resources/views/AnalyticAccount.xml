@@ -13,7 +13,7 @@
     <field name="name"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="company"/>
   </grid>
 
