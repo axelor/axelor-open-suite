@@ -21,7 +21,7 @@
     <field name="totalDebit" aggregate="sum"/>
     <field name="totalCredit" aggregate="sum"/>
     <field name="balance"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="publicationDateTime"/>
     <field name="company" hidden="true"/>
   </grid>
@@ -65,7 +65,7 @@
       <button name="createAccountingExportBtn" title="Create accounting export"
         icon="fa-cogs" showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
         onClick="save,action-accounting-report-method-create-export-from-report"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="publicationDateTime" hideIf="[23,24].includes(reportType.typeSelect)"/>
     </panel>
     <panel name="periodPanel" title="Period"
@@ -272,7 +272,7 @@
     <field name="totalDebit" aggregate="sum"/>
     <field name="totalCredit" aggregate="sum"/>
     <field name="balance"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="accounting-report-export-form" title="Accounting export"
@@ -307,7 +307,7 @@
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <button name="searchBtn" title="Search"
         showIf="(statusSelect != 2 &amp;&amp; reportType.typeSelect != 1011) || $contains([1000, 1010, 1001], reportType.typeSelect)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
