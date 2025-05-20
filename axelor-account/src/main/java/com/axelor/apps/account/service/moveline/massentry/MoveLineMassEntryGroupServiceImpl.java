@@ -450,7 +450,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
 
   @Override
   public Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
-      MoveLineMassEntry moveLine) {
+      MoveLineMassEntry moveLine) throws AxelorException {
     Map<String, Object> valuesMap =
         moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine);
     moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);

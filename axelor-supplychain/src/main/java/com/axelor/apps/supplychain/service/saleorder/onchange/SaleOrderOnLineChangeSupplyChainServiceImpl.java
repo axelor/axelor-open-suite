@@ -32,6 +32,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
 
   protected SaleOrderSupplychainService saleOrderSupplychainService;
   protected SaleOrderShipmentService saleOrderShipmentService;
+  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderOnLineChangeSupplyChainServiceImpl(
@@ -56,7 +58,8 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
       SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderSupplychainService saleOrderSupplychainService,
-      SaleOrderShipmentService saleOrderShipmentService) {
+      SaleOrderShipmentService saleOrderShipmentService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appSaleService,
         saleOrderService,
@@ -69,6 +72,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
         saleOrderGlobalDiscountService);
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
+    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   @Override
@@ -76,6 +80,11 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
     super.onLineChange(saleOrder);
     List<String> messages = new ArrayList<>();
     saleOrderSupplychainService.setAdvancePayment(saleOrder);
+    try {
+      saleOrderLineAnalyticService.checkAnalyticAxisByCompany(saleOrder);
+    } catch (AxelorException e) {
+      messages.add(e.getMessage());
+    }
     messages.add(saleOrderSupplychainService.updateTimetableAmounts(saleOrder));
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
     messages.add(

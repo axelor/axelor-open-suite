@@ -149,6 +149,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveSe
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDisposalService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDisposalServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -588,6 +590,8 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetRepository.class).to(FixedAssetManagementRepository.class);
 
     bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
+
+    bind(FixedAssetDisposalService.class).to(FixedAssetDisposalServiceImpl.class);
 
     bind(FixedAssetLineMoveService.class).to(FixedAssetLineMoveServiceImpl.class);
 

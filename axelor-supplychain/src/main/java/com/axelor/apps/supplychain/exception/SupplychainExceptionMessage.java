@@ -414,4 +414,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_LOCATION_TO_CART_LIMIT_EXCEEDED = /*$$(*/
       "There are too many stock location lines to add to the cart. The limit configured is %s." /*)*/;
+
+  public static final String FREIGHT_CARRIER_MODE_PRICING_ERROR = /*$$(*/
+      "An error have been detected on following pricings : %s." /*)*/;
 }

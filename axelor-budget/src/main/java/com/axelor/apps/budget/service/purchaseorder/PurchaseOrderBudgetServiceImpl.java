@@ -135,12 +135,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
 
         } else {
           Budget budget = purchaseOrderLine.getBudget();
-          if (budget == null && purchaseOrder.getBudget() != null) {
-            budget = purchaseOrder.getBudget();
-
-            budgetToolsService.fillAmountPerBudgetMap(
-                budget, purchaseOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
-          }
+          budgetToolsService.fillAmountPerBudgetMap(
+              budget, purchaseOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
         }
       }
 
