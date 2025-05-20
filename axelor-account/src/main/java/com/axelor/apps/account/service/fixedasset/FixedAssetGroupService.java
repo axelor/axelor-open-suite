@@ -21,13 +21,11 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.base.db.Company;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 public interface FixedAssetGroupService {
 
-  Map<String, Object> getDisposalWizardValuesMap(
-      FixedAsset fixedAsset, Integer disposalTypeSelect, List<Integer> idList);
+  Map<String, Object> getDisposalWizardValuesMap(FixedAsset fixedAsset, Integer disposalTypeSelect);
 
   Map<String, Map<String, Object>> getDisposalWizardAttrsMap(
       Integer disposalTypeSelect, FixedAsset fixedAsset);

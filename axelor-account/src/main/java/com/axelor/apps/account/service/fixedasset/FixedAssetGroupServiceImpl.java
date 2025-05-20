@@ -22,12 +22,9 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -46,16 +43,11 @@ public class FixedAssetGroupServiceImpl implements FixedAssetGroupService {
 
   @Override
   public Map<String, Object> getDisposalWizardValuesMap(
-      FixedAsset fixedAsset, Integer disposalTypeSelect, List<Integer> idList) {
+      FixedAsset fixedAsset, Integer disposalTypeSelect) {
     Map<String, Object> valuesMap = new HashMap<>();
 
     if (!Objects.equals(FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION, disposalTypeSelect)) {
       valuesMap.put("disposalQtySelect", FixedAssetRepository.DISPOSABLE_QTY_SELECT_TOTAL);
-    }
-
-    if (ObjectUtils.isEmpty(idList) && fixedAsset != null) {
-      idList = new ArrayList<>();
-      idList.add(fixedAsset.getId().intValue());
     }
 
     valuesMap.put(

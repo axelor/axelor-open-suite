@@ -501,23 +501,20 @@ public class FixedAssetController {
   public void computeDisposalWizardDisposalAmount(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      FixedAsset fixedAsset = null;
-      Integer disposalTypeSelect =
-          context.get("disposalTypeSelect") != null
-              ? (Integer) context.get("disposalTypeSelect")
-              : null;
-      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-      if (context.get("_fixedAssetId") != null) {
-        fixedAsset =
-            Beans.get(FixedAssetRepository.class)
-                .find(Long.valueOf(request.getContext().get("_fixedAssetId").toString()));
-      }
+
+      FixedAssetRepository fixedAssetRepository = Beans.get(FixedAssetRepository.class);
+      FixedAsset fixedAsset =
+          Optional.ofNullable(context.get("_fixedAssetId"))
+              .map(Object::toString)
+              .map(Long::valueOf)
+              .map(fixedAssetRepository::find)
+              .orElse(null);
+      Integer disposalTypeSelect = (Integer) context.get("disposalTypeSelect");
 
       FixedAssetGroupService fixedAssetGroupService = Beans.get(FixedAssetGroupService.class);
 
       response.setValues(
-          fixedAssetGroupService.getDisposalWizardValuesMap(
-              fixedAsset, disposalTypeSelect, idList));
+          fixedAssetGroupService.getDisposalWizardValuesMap(fixedAsset, disposalTypeSelect));
       response.setAttrs(
           fixedAssetGroupService.getDisposalWizardAttrsMap(disposalTypeSelect, fixedAsset));
     } catch (Exception e) {
