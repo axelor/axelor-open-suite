@@ -14,7 +14,7 @@
     <one-to-many name="callTenderSupplierList"
       ref="com.axelor.apps.purchase.db.CallTenderSupplier" title="Suppliers" mappedBy="callTender"/>
     <one-to-many name="callTenderOfferList"
-      ref="com.axelor.apps.purchase.db.CallTenderOffer" title="Offers"/>
+      ref="com.axelor.apps.purchase.db.CallTenderOffer" title="Offers" mappedBy="callTender"/>
 
 
     <track on="UPDATE">
