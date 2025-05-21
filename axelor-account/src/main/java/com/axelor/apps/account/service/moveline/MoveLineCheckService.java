@@ -22,19 +22,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
-import java.util.List;
 import java.util.Set;
 
 public interface MoveLineCheckService {
   void checkAnalyticByTemplate(MoveLine moveLine) throws AxelorException;
 
-  void checkAnalyticAxes(MoveLine moveLine) throws AxelorException;
-
   void checkDebitCredit(MoveLine moveLine) throws AxelorException;
 
   void checkDates(Move move) throws AxelorException;
-
-  void checkAnalyticAccount(List<MoveLine> moveLineList) throws AxelorException;
 
   void checkAnalyticMoveLinesPercentage(MoveLine moveLine) throws AxelorException;
 
