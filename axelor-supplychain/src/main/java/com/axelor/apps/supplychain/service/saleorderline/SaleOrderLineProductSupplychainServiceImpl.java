@@ -218,7 +218,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
-    if (saleOrder.getFreightCarrierMode() == null) {
+    if (saleOrder.getFreightCarrierMode() == null
+        || !saleOrderLine.getProduct().getIsShippingCostsProduct()) {
       return saleOrderLineMap;
     }
 
