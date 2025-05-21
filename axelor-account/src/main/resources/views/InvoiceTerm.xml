@@ -97,7 +97,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
@@ -136,7 +136,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="applyFinancialDiscount" hidden="true"/>
     <field name="amountRemaining" hidden="true"/>
@@ -171,7 +171,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="company.currency.numberOfDecimals" hidden="true"/>
