@@ -400,8 +400,8 @@
   </selection>
 
   <selection name="account.notification.status.select">
-    <option value="1">New notification</option>
-    <option value="2">Notification validated</option>
+    <option value="1" color="cyan">New notification</option>
+    <option value="2" color="green">Notification validated</option>
   </selection>
 
   <selection name="iaccount.payment.schedule.type.select">
