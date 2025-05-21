@@ -247,4 +247,41 @@ public class BudgetDateServiceImpl implements BudgetDateService {
       purchaseOrderLine.setBudgetToDate(purchaseOrder.getBudgetToDate());
     }
   }
+
+  @Override
+  public void initializeBudgetDates(SaleOrder saleOrder) throws AxelorException {
+    String coherenceError =
+        checkDateCoherence(saleOrder.getBudgetFromDate(), saleOrder.getBudgetToDate());
+    if (StringUtils.notEmpty(coherenceError)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, coherenceError, saleOrder);
+    }
+
+    if (ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      return;
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      saleOrderLine.setBudgetFromDate(saleOrder.getBudgetFromDate());
+      saleOrderLine.setBudgetToDate(saleOrder.getBudgetToDate());
+    }
+  }
+
+  @Override
+  public void initializeBudgetDates(Move move) throws AxelorException {
+    String coherenceError = checkDateCoherence(move.getBudgetFromDate(), move.getBudgetToDate());
+    if (StringUtils.notEmpty(coherenceError)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, coherenceError, move);
+    }
+
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setBudgetFromDate(move.getBudgetFromDate());
+      moveLine.setBudgetToDate(move.getBudgetToDate());
+    }
+  }
 }

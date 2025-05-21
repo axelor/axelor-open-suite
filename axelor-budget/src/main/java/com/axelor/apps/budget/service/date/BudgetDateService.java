@@ -28,4 +28,8 @@ public interface BudgetDateService {
   void initializeBudgetDates(Invoice invoice) throws AxelorException;
 
   void initializeBudgetDates(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  void initializeBudgetDates(SaleOrder saleOrder) throws AxelorException;
+
+  void initializeBudgetDates(Move move) throws AxelorException;
 }

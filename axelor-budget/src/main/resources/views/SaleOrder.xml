@@ -36,6 +36,21 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='pastVersionRecoveryPanel']">
+      <insert position="after">
+        <panel name="budgetDistributionPanel" title="Budget distribution"
+          if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
+          showIf="statusSelect &lt;= 4" colSpan="12">
+          <panel name="datesPanel" colSpan="12" itemSpan="4" readonlyIf="statusSelect == 5">
+            <field name="budgetFromDate" requiredIf="budgetToDate"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"/>
+            <button name="initBudgetDatesBtn" title="Init budget dates"
+              onClick="action-sale-order-group-initialize-budget-dates"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-budget-sale-order-group-on-save">
@@ -69,6 +84,11 @@
     <action name="action-sale-order-method-finalize-quotation"/>
   </action-group>
 
+  <action-group name="action-sale-order-group-initialize-budget-dates">
+    <action name="action-sale-order-method-initialize-budget-dates"/>
+    <action name="action-budget-validate-budget-dates"/>
+  </action-group>
+
   <action-method
     name="action-sale-order-method-budget-auto-compute-budget-distribution">
     <call class="com.axelor.apps.budget.web.SaleOrderController"
@@ -96,6 +116,10 @@
 
   <action-method name="action-budget-sale-order-method-update-budget-lines">
     <call class="com.axelor.apps.budget.web.SaleOrderController" method="updateBudgetLines"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="initializeBudgetDates"/>
   </action-method>
 
 </object-views>
