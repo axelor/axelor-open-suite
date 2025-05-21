@@ -503,11 +503,11 @@
   </selection>
 
   <selection name="invoiceterm.pfp.validate.status.select">
-    <option value="0">No PFP</option>
-    <option value="1">Awaiting</option>
-    <option value="2" order="3">PFP validated</option>
-    <option value="3" order="4">Litigation</option>
-    <option value="4" order="2">Partially validated</option>
+    <option value="0" color="grey">No PFP</option>
+    <option value="1" color="yellow">Awaiting</option>
+    <option value="2" order="3" color="green">PFP validated</option>
+    <option value="3" order="4" color="red">Litigation</option>
+    <option value="4" order="2" color="lime">Partially validated</option>
   </selection>
 
   <selection name='move.line.reimbursement.status.select'>
