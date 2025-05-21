@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public interface WeeklyPlanningService {
@@ -82,4 +83,7 @@ public interface WeeklyPlanningService {
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
 
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
+
+  LocalDateTime computeEndDateTime(
+      LocalDateTime startDateTime, WeeklyPlanning weeklyPlanning, BigDecimal timeInHours);
 }

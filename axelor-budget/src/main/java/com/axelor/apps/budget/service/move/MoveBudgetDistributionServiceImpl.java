@@ -24,16 +24,14 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.compute.BudgetLineComputeService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,22 +41,22 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
 
   protected AppBudgetService appBudgetService;
   protected BudgetService budgetService;
-  protected BudgetLineService budgetLineService;
   protected MoveLineRepository moveLineRepository;
   protected BudgetRepository budgetRepository;
+  protected BudgetLineComputeService budgetLineComputeService;
 
   @Inject
   public MoveBudgetDistributionServiceImpl(
       AppBudgetService appBudgetService,
       BudgetService budgetService,
-      BudgetLineService budgetLineService,
       MoveLineRepository moveLineRepository,
-      BudgetRepository budgetRepository) {
+      BudgetRepository budgetRepository,
+      BudgetLineComputeService budgetLineComputeService) {
     this.appBudgetService = appBudgetService;
     this.budgetService = budgetService;
-    this.budgetLineService = budgetLineService;
     this.moveLineRepository = moveLineRepository;
     this.budgetRepository = budgetRepository;
+    this.budgetLineComputeService = budgetLineComputeService;
   }
 
   @Override
@@ -149,12 +147,13 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
       return;
     }
 
-    LocalDate date = moveLine.getMove().getDate();
-    Optional<BudgetLine> optBudgetLine =
-        budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
-
-    optBudgetLine.ifPresent(
-        budgetLine -> budgetService.updateBudgetLineAmounts(budgetLine, budget, amount));
+    budgetLineComputeService.updateBudgetLineAmounts(
+        moveLine.getMove(),
+        budget,
+        amount,
+        moveLine.getBudgetFromDate(),
+        moveLine.getBudgetToDate(),
+        moveLine.getMove().getDate());
 
     budgetService.computeTotalAmountRealized(budget);
     budgetService.computeTotalFirmGap(budget);

@@ -41,6 +41,7 @@ public interface TimesheetLineCreateService {
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       String comments,
       boolean toInvoice)
       throws AxelorException;

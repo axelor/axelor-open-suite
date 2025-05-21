@@ -26,4 +26,6 @@ import java.util.Map;
 public interface SaleOrderLineAnalyticService {
   Map<String, Object> printAnalyticAccounts(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  void checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException;
 }

@@ -1287,6 +1287,9 @@ public final class AccountExceptionMessage {
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
 
+  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS = /*$$(*/
+      "The following analytic axis are required : %s (company: %s)" /*)*/;
+
   public static final String MOVE_CHECK_ORIGIN = /*$$(*/
       "The move field origin is empty, do you wish to continue ?" /*)*/;
 

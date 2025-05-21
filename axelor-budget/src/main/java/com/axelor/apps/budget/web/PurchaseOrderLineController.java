@@ -128,11 +128,7 @@ public class PurchaseOrderLineController {
                     purchaseOrder.getFiscalPosition(),
                     true,
                     purchaseOrderLine.getFixedAssets());
-        if (account.getCode().startsWith("2")
-            || account.getCode().startsWith("4")
-            || account.getCode().startsWith("6")) {
-          response.setValue("account", account);
-        }
+        response.setValue("account", account);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);

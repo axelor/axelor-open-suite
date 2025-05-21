@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
@@ -71,6 +72,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLineProductService saleOrderLineProductService,
       SaleOrderLinePriceService saleOrderLinePriceService,
+      SaleOrderDateService saleOrderDateService,
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       SaleOrderStockLocationService saleOrderStockLocationService,
@@ -84,7 +86,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         saleOrderComputeService,
         saleOrderLineComputeService,
         saleOrderLineProductService,
-        saleOrderLinePriceService);
+        saleOrderLinePriceService,
+        saleOrderDateService);
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;

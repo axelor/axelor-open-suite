@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServ
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDisposalService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGroupService;
@@ -134,7 +135,7 @@ public class FixedAssetController {
       FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
       FixedAsset createdFixedAsset =
-          Beans.get(FixedAssetService.class)
+          Beans.get(FixedAssetDisposalService.class)
               .fullDisposal(
                   fixedAsset,
                   disposalDate,

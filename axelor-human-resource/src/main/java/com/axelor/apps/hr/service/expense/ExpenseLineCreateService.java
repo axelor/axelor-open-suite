@@ -30,6 +30,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface ExpenseLineCreateService {
 
@@ -44,7 +45,8 @@ public interface ExpenseLineCreateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Long> invitedCollaboratorList)
       throws AxelorException;
 
   ExpenseLine createKilometricExpenseLine(

@@ -35,6 +35,9 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.rest.dto.sirene.AdresseEtablissementResponse;
 import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
 import com.axelor.apps.base.rest.dto.sirene.UniteLegaleResponse;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -56,6 +59,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
   protected final CityRepository cityRepository;
   protected final PartnerApiFetchService partnerApiFetchService;
   protected final MainActivityRepository mainActivityRepository;
+  protected final PartnerService partnerService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public PartnerGenerateServiceImpl(
@@ -64,13 +69,17 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       CountryRepository countryRepository,
       CityRepository cityRepository,
       PartnerApiFetchService partnerApiFetchService,
-      MainActivityRepository mainActivityRepository) {
+      MainActivityRepository mainActivityRepository,
+      PartnerService partnerService,
+      AppBaseService appBaseService) {
     this.partnerRepository = partnerRepository;
     this.partnerCategoryRepository = partnerCategoryRepository;
     this.countryRepository = countryRepository;
     this.cityRepository = cityRepository;
     this.partnerApiFetchService = partnerApiFetchService;
     this.mainActivityRepository = mainActivityRepository;
+    this.partnerService = partnerService;
+    this.appBaseService = appBaseService;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -91,9 +100,18 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     }
   }
 
-  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData) {
+  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData)
+      throws AxelorException {
     safeSetString(
         partner::setRegistrationCode, partner::getRegistrationCode, partnerData.getSiret());
+
+    String registrationCodeMessage = partnerService.checkIfRegistrationCodeExists(partner);
+
+    if (!StringUtils.isEmpty(registrationCodeMessage)
+        && appBaseService.getAppBase().getIsRegistrationCodeCheckBlocking()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, registrationCodeMessage);
+    }
 
     String sirenNb = partnerData.getSiren();
     if (sirenNb != null) {
@@ -126,6 +144,9 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     if (mainActivity != null) {
       partner.setMainActivity(mainActivity);
     }
+
+    String nic = uniteLegale.getNicSiegeUniteLegale();
+    safeSetString(partner::setNic, partner::getNic, nic);
 
     String categorieJuridique = uniteLegale.getCategorieJuridiqueUniteLegale();
     if (categorieJuridique != null && Integer.parseInt(categorieJuridique) == 1000) {

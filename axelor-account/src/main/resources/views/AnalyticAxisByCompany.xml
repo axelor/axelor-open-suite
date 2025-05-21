@@ -7,6 +7,7 @@
     onNew="action-record-analytic-axis-by-company-on-new">
     <field name="analyticAxis"/>
     <field name="accountConfig.company.code" title="Company" hidden="true"/>
+    <field name="isRequired"/>
   </grid>
 
   <form name="analytic-axis-by-company-form" title="Analytic Axis By company"
@@ -15,6 +16,7 @@
     <panel name="mainPanel">
       <field name="analyticAxis"/>
       <field name="accountConfig.company.code" title="Company" hidden="true"/>
+      <field name="isRequired"/>
     </panel>
   </form>
 
@@ -24,6 +26,7 @@
     <panel name="mainPanel">
       <field name="analyticAxis" onSelect="action-method-axis-by-company-set-axis-domain"/>
       <field name="accountConfig.company.code" title="Company" hidden="true"/>
+      <field name="isRequired"/>
     </panel>
   </form>
 

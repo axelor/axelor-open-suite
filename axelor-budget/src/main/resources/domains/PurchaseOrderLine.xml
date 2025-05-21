@@ -18,6 +18,8 @@
     <decimal name="unassignedAmt" title="Unassigned amount" readonly="true" precision="20"
       scale="3"/>
     <string name="budgetStr" title="Budgets related"/>
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
   </entity>
 
 </domain-models>

@@ -64,7 +64,7 @@ public final class BudgetExceptionMessage {
       "You can't compute the budget distribution because you are not authorized to." /*)*/;
 
   public static final String NO_BUDGET_VALUES_FOUND = /*$$(*/
-      "The budget distribution has not been computed yet. By launching this action, you can no longer compute the budget distribution. Do you want to proceed ?" /*)*/;
+      "The budget distribution has not been computed yet. By launching this action, you can no longer compute the budget distribution." /*)*/;
 
   public static final String WRONG_DATES_ON_BUDGET = /*$$(*/
       "Please select valid dates for budget %s, dates needs to be in the section period" /*)*/;
@@ -102,4 +102,13 @@ public final class BudgetExceptionMessage {
 
   public static final String BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_MOVE = /*$$(*/
       "The sum of the budget distribution amount for budget exceeds the amount of the move line %s, please correct it" /*)*/;
+
+  public static final String ON_LINE = /*$$(*/ "On the line" /*)*/;
+
+  public static final String BUDGET_MISSING_DATES = /*$$(*/ "A budget date is missing" /*)*/;
+
+  public static final String BUDGET_WRONG_DATES = /*$$(*/ "Invalid dates, please fix this." /*)*/;
+
+  public static final String BUDGET_LINE_MISSING_ON_DATES = /*$$(*/
+      "The period %s to %s is not covered by any budget line for budget %s. Please correct it." /*)*/;
 }

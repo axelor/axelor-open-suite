@@ -118,7 +118,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    *
    * @return
    */
-  abstract String getB1Area();
+  protected abstract String getB1Area();
 
   /**
    * B3. Numéro d'émetteur Attribué par la banque du donneur d'ordre (ou numéro d'identification
@@ -129,7 +129,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    *
    * @return
    */
-  abstract String getB3Area();
+  protected abstract String getB3Area();
 
   /**
    * C1-1. Code " CCD " (comportement en cas de décalage) Utilisé pour le Virement "E-3" code
@@ -139,7 +139,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    *
    * @return
    */
-  abstract String getC11Area();
+  protected abstract String getC11Area();
 
   /**
    * C1-3. Date Facultative mais recommandée pour les Virements ordinaires, particuliers et de
@@ -164,7 +164,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    *
    * @return
    */
-  abstract String getSenderEArea();
+  protected abstract String getSenderEArea();
 
   /**
    * D1. Domiciliation ¾ Si le compte du bénéficiaire est un compte de résident : Désignation en

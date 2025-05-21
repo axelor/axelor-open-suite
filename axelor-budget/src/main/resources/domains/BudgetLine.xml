@@ -33,6 +33,10 @@
       scale="3"/>
     <decimal name="firmGap" title="Firm gap" precision="20" scale="3"
       help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
+
+    <finder-method name="findCurrentByDate" using="budget,LocalDate:date"
+      orderBy="-fromDate"
+      filter="self.budget = :budget AND self.fromDate &lt;= :date AND (self.toDate IS NULL OR self.toDate &gt;= :date)"/>
   </entity>
 
 </domain-models>

@@ -42,6 +42,7 @@ import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
+import com.axelor.apps.project.service.ProjectNameComputeService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.ResourceBookingService;
@@ -100,6 +101,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectCreateTaskService projectCreateTaskService,
       WikiRepository wikiRepo,
       ResourceBookingService resourceBookingService,
+      ProjectNameComputeService projectNameComputeService,
       PartnerService partnerService,
       AddressService addressService,
       AppBusinessProjectService appBusinessProjectService,
@@ -117,7 +119,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         appProjectService,
         projectCreateTaskService,
         wikiRepo,
-        resourceBookingService);
+        resourceBookingService,
+        projectNameComputeService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;

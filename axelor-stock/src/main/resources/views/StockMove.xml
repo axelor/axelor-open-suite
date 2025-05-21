@@ -395,8 +395,10 @@
         <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2"
           prompt="Are you sure you want to realize this stock move?"
           onClick="action-group-stock-stockmove-realize-click"/>
-        <button if-module="axelor-supplychain" name="generateInvoiceBtn"
-          title="Generate invoice" hidden="true" icon="fa-file-o"
+        <button
+          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"
+          if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice"
+          hidden="true" icon="fa-file-o"
           onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
         <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
           onClick="save,action-stock-move-method-generate-reversion"

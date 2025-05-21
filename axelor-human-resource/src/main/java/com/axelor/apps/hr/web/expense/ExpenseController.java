@@ -524,7 +524,8 @@ public class ExpenseController {
     }
   }
 
-  public void validateAndCompute(ActionRequest request, ActionResponse response) {
+  public void validateAndCompute(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
     ExpenseLineService expenseLineService = Beans.get(ExpenseLineService.class);
@@ -564,6 +565,7 @@ public class ExpenseController {
     }
 
     compute(request, response);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)
@@ -763,5 +765,11 @@ public class ExpenseController {
       response.setValue("generalExpenseLineList", generalExpenseLineList);
       response.setValue("kilometricExpenseLineList", kilometricExpenseLineList);
     }
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 }

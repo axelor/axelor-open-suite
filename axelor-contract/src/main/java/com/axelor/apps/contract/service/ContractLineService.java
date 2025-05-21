@@ -97,4 +97,6 @@ public interface ContractLineService {
   PriceListLine getPriceListLine(ContractLine contractLine, PriceList priceList, BigDecimal price);
 
   String computeProductDomain(Contract contract);
+
+  void checkAnalyticAxisByCompany(Contract contract) throws AxelorException;
 }

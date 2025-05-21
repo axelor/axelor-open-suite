@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
@@ -70,6 +71,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected PfpService pfpService;
   protected AnalyticAttrsService analyticAttrsService;
   protected MoveLineRecordService moveLineRecordService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -91,7 +93,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       PfpService pfpService,
       AnalyticAttrsService analyticAttrsService,
-      MoveLineRecordService moveLineRecordService) {
+      MoveLineRecordService moveLineRecordService,
+      MoveLineService moveLineService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodCheckService = periodCheckService;
@@ -111,6 +114,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.pfpService = pfpService;
     this.analyticAttrsService = analyticAttrsService;
     this.moveLineRecordService = moveLineRecordService;
+    this.moveLineService = moveLineService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -139,6 +143,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
+    moveCheckService.checkAnalyticAxisByCompany(move);
     moveCheckService.checkCurrencyAmountSum(move);
   }
 
@@ -407,6 +412,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getMoveLineListOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
+    moveCheckService.checkAnalyticAxisByCompany(move);
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);

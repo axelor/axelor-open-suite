@@ -246,6 +246,7 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     response.setValues(
-        Beans.get(ProjectTaskGroupBusinessService.class).updateFinancialDatas(projectTask));
+        Beans.get(ProjectTaskGroupBusinessService.class)
+            .updateFinancialDatasWithoutPriceUnits(projectTask));
   }
 }

@@ -138,6 +138,8 @@
     <many-to-one name="configurator" ref="com.axelor.apps.sale.db.Configurator"
       title="Configurator"/>
 
+    <decimal name="orderedQty" title="Ordered qty" default="0" precision="20" scale="10"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-imports>
@@ -159,6 +161,8 @@
 
 	  	]]>
     </extra-code>
+
+    <entity-listener class="com.axelor.apps.sale.db.repo.SaleOrderLineListener"/>
 
   </entity>
 
