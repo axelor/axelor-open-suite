@@ -62,10 +62,10 @@
   </selection>
 
   <selection name='iaccount.payment.schedule.status.select'>
-    <option value='1'>Draft</option>
-    <option value='2'>Confirmed</option>
-    <option value='3'>Closed</option>
-    <option value='4'>Canceled</option>
+    <option value='1' color="blue">Draft</option>
+    <option value='2' color="green">Confirmed</option>
+    <option value='3' color="bluegrey">Closed</option>
+    <option value='4' color="red">Canceled</option>
   </selection>
 
   <selection name='accounting.report.type.select'>
