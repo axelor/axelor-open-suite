@@ -154,6 +154,7 @@
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
+    <field name="isGenerated" readonly="true" hidden="true"/>
   </grid>
 
   <!-- Action group -->
