@@ -565,9 +565,9 @@
   </selection>
 
   <selection name='iaccount.move.mass.entry.status.select'>
-    <option value='0'/>
-    <option value='1'>Ongoing</option>
-    <option value='2'>Closed</option>
+    <option value='0' color="grey"/>
+    <option value='1' color="green">Ongoing</option>
+    <option value='2' color="amber">Closed</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
