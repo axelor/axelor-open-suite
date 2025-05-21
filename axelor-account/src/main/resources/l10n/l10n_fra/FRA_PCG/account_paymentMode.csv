@@ -1,16 +1,16 @@
-"importId";"name";"code";"invoiceLabel";"inOutSelect";"typeSelect";"canSelectInPaymentSession";"daysMarginOnPaySession";"accountingMethodSelect";"accountingTriggerSelect";"generateBankOrder";"generateMoveAutoFromBankOrder";"consoBankOrderLinePerPartner";"orderTypeSelect";"bankOrderExportFolderPath";"bankOrderFileFormat.name"
-100;"Enc. Virement";"ENC_VIR";"Virement";1;9;;7;1;1;;;;;;
-110;"Enc. Chèque";"ENC_CHQ";"Chèque";1;7;;;;1;;;;;;
-120;"Enc. Carte bancaire";"ENC_CB";"Carte bancaire";1;6;;;;1;;;;;;
-130;"Enc. Internet";"ENC_WEB";"Internet";1;8;;;;1;;;;;;
-140;"Enc. Prélèvement";"ENC_PRE";"Prélèvement";1;2;"true";7;1;1;;;;;;
-150;"Enc. LCR Direct Banque";"ENC_LCR";"LCR";1;10;;;;1;"true";"true";"true";8;"/tmp/";"pain.xxx.cfonb160.dco - LCR"
-160;"Enc. Espèces";"ENC_ESP";"Espèces";1;5;;;;1;;;;;;
-170;"Enc. Autre";"ENC_OTH";"Autres moyens de paiement";1;1;;;;1;;;;;;
-200;"Dec. Virement";"DEC_VIR";"Virement";2;9;"true";7;1;1;;;;;;
-210;"Dec. Chèque";"DEC_CHQ";"Chèque";2;7;;;;1;;;;;;
-220;"Dec. Carte bancaire";"DEC_CB";"Carte bancaire";2;6;;;;1;;;;;;
-230;"Dec. Prélèvement";"DEC_PRE";"Prélèvement";2;2;"true";7;1;1;;;;;;
-240;"Dec. Espèces";"DEC_ESP";"Espèces";2;5;;;;1;;;;;;
-250;"Dec. TIP";"DEC_TIP";"TIP";2;3;;;;1;;;;;;
-260;"Dec. Autres";"DEC_OTH";"Autres moyens de paiement";2;1;;;;1;;;;;;
+"importId";"name";"code";"invoiceLabel";"inOutSelect";"typeSelect";"canSelectInPaymentSession";"daysMarginOnPaySession";"accountingMethodSelect";"accountingTriggerSelect";"generateBankOrder";"consoBankOrderLinePerPartner";"orderTypeSelect";"bankOrderExportFolderPath";"bankOrderFileFormat.name"
+100;"Enc. Virement";"ENC_VIR";"Virement";1;9;;7;1;1;;;;;
+110;"Enc. Chèque";"ENC_CHQ";"Chèque";1;7;;;;1;;;;;
+120;"Enc. Carte bancaire";"ENC_CB";"Carte bancaire";1;6;;;;1;;;;;
+130;"Enc. Internet";"ENC_WEB";"Internet";1;8;;;;1;;;;;
+140;"Enc. Prélèvement";"ENC_PRE";"Prélèvement";1;2;"true";7;1;1;;;;;
+150;"Enc. LCR Direct Banque";"ENC_LCR";"LCR";1;10;;;;1;"true";"true";8;"/bankOrder/";"pain.xxx.cfonb160.dco - LCR"
+160;"Enc. Espèces";"ENC_ESP";"Espèces";1;5;;;;1;;;;;
+170;"Enc. Autre";"ENC_OTH";"Autres moyens de paiement";1;1;;;;1;;;;;
+200;"Dec. Virement";"DEC_VIR";"Virement";2;9;"true";7;1;1;"true";;1;"/bankOrder/";"pain.001.001.02.sct - Virement SEPA"
+210;"Dec. Chèque";"DEC_CHQ";"Chèque";2;7;;;;1;;;;;
+220;"Dec. Carte bancaire";"DEC_CB";"Carte bancaire";2;6;;;;1;;;;;
+230;"Dec. Prélèvement";"DEC_PRE";"Prélèvement";2;2;"true";7;1;1;;;;;
+240;"Dec. Espèces";"DEC_ESP";"Espèces";2;5;;;;1;;;;;
+250;"Dec. TIP";"DEC_TIP";"TIP";2;3;;;;1;;;;;
+260;"Dec. Autres";"DEC_OTH";"Autres moyens de paiement";2;1;;;;1;;;;;

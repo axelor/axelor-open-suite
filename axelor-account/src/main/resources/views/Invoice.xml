@@ -805,7 +805,7 @@
         </panel>
       </panel>
       <panel name="automaticMailPanel" title="Automatic mail"
-        hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate">
+        hideIf="(statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate) || operationTypeSelect &lt;= 2">
         <panel name="afterValidationAutomaticMailPanel"
           hideIf="statusSelect &gt;= 2 &amp;&amp; !invoiceAutomaticMailOnValidate" colSpan="12">
           <field name="invoiceAutomaticMailOnValidate"/>
