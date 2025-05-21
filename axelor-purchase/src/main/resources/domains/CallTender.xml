@@ -10,8 +10,7 @@
     <string name="name"/>
     <string name="description" title="Description"/>
     <one-to-many name="callTenderNeedList"
-      ref="com.axelor.apps.purchase.db.CallTenderNeed" title="Product needs"/>
-
+      ref="com.axelor.apps.purchase.db.CallTenderNeed" title="Product needs" mappedBy="callTender"/>
 
     <track on="UPDATE">
       <field name="callTenderNeedList"/>

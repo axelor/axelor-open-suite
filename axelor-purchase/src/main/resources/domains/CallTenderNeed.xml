@@ -15,6 +15,7 @@
     <date name="requestedDate" title="Date"/>
     <integer name="typeSelect" selection="purchase.call.tender.need.type.select"
       title="Type"/>
+    <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
 
 
     <track on="UPDATE">
