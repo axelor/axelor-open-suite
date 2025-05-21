@@ -66,13 +66,17 @@ public class CallTenderGenerateServiceImpl implements CallTenderGenerateService 
     var template = callTender.getCallForTenderMailTemplate();
 
     // Generate callTenderMail
-    var offerToGenerateMailList =
+    var offerToGenerateMailGroupBySupplier =
         callTender.getCallTenderOfferList().stream()
             .filter(offer -> offer.getOfferMail() == null)
-            .collect(Collectors.toList());
+            .collect(Collectors.groupingBy(CallTenderOffer::getSupplierPartner));
 
-    for (CallTenderOffer offer : offerToGenerateMailList) {
-      callTenderMailService.generateOfferMail(offer, template);
+    if (offerToGenerateMailGroupBySupplier.isEmpty()) {
+      return;
+    }
+
+    for (List<CallTenderOffer> offerList : offerToGenerateMailGroupBySupplier.values()) {
+      callTenderMailService.generateOfferMail(offerList, template);
     }
 
     callTenderMailService.sendMails(callTender);

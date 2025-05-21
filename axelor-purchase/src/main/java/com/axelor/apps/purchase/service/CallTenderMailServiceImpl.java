@@ -3,6 +3,7 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderMail;
 import com.axelor.apps.purchase.db.CallTenderOffer;
@@ -23,9 +24,12 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
@@ -34,34 +38,44 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
 
   protected final MessageService messageService;
   protected final TemplateMessageService templateMessageService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public CallTenderMailServiceImpl(
-      MessageService messageService, TemplateMessageService templateMessageService) {
+      MessageService messageService,
+      TemplateMessageService templateMessageService,
+      AppBaseService appBaseService) {
     this.messageService = messageService;
     this.templateMessageService = templateMessageService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public void sendMails(CallTender callTender) throws ClassNotFoundException, MessagingException {
 
-    for (CallTenderOffer offer : callTender.getCallTenderOfferList()) {
-      if (offer.getStatusSelect().equals(CallTenderOfferRepository.STATUS_DRAFT)) {
-        CallTenderMail offerMail = offer.getOfferMail();
-        var messageToSend =
-            templateMessageService.generateMessage(offer, offerMail.getMailTemplate());
-        // Add all contacts to email address
-        var contacts =
-            getContactPartnerList(
-                offer.getSupplierPartner(), callTender.getCallTenderSupplierList());
-        contacts.stream()
-            .map(Partner::getEmailAddress)
-            .filter(Objects::nonNull)
-            .forEach(messageToSend::addToEmailAddressSetItem);
-        messageService.attachMetaFiles(messageToSend, Set.of(offerMail.getMetaFile()));
-        var sentMessage = messageService.sendByEmail(messageToSend);
-        offerMail.setSentMessage(sentMessage);
-      }
+    var offersGroupBySupplier =
+        callTender.getCallTenderOfferList().stream()
+            .filter(offer -> offer.getStatusSelect().equals(CallTenderOfferRepository.STATUS_DRAFT))
+            .collect(Collectors.groupingBy(CallTenderOffer::getSupplierPartner));
+
+    for (List<CallTenderOffer> offerList : offersGroupBySupplier.values()) {
+      // Offer list should not be empty there
+      // We will pick one randomly as it should be the same mail
+      var anyOffer = offerList.get(0);
+      CallTenderMail offerMail = anyOffer.getOfferMail();
+      var messageToSend =
+          templateMessageService.generateMessage(anyOffer, offerMail.getMailTemplate());
+      // Add all contacts to email address
+      var contacts =
+          getContactPartnerList(
+              anyOffer.getSupplierPartner(), callTender.getCallTenderSupplierList());
+      contacts.stream()
+          .map(Partner::getEmailAddress)
+          .filter(Objects::nonNull)
+          .forEach(messageToSend::addToEmailAddressSetItem);
+      messageService.attachMetaFiles(messageToSend, Set.of(offerMail.getMetaFile()));
+      var sentMessage = messageService.sendByEmail(messageToSend);
+      offerMail.setSentMessage(sentMessage);
     }
   }
 
@@ -78,11 +92,15 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
     return List.of();
   }
 
-  @Override
   @Transactional(rollbackOn = Exception.class)
-  public void generateOfferMail(CallTenderOffer offer, Template template)
+  @Override
+  public void generateOfferMail(List<CallTenderOffer> offerList, Template template)
       throws AxelorException, IOException {
-    Objects.requireNonNull(offer);
+    Objects.requireNonNull(offerList);
+
+    if (offerList.isEmpty()) {
+      return;
+    }
 
     if (template == null) {
       throw new AxelorException(
@@ -94,20 +112,32 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
     callTenderMail.setMailTemplate(template);
 
     // Generate csv here
-    var csv = generateCsvFile(offer);
+    var csv = generateCsvFile(offerList);
     callTenderMail.setMetaFile(csv);
-    offer.setOfferMail(callTenderMail);
+
+    for (CallTenderOffer offer : offerList) {
+      offer.setOfferMail(callTenderMail);
+    }
   }
 
-  protected MetaFile generateCsvFile(CallTenderOffer offer) throws IOException {
+  protected MetaFile generateCsvFile(List<CallTenderOffer> offerList) throws IOException {
 
-    List<String[]> list = getValues(offer);
+    Partner supplier = null;
+    String callTenderName = null;
+    if (!offerList.isEmpty()) {
+      supplier = offerList.get(0).getSupplierPartner();
+      callTenderName = offerList.get(0).getCallTender().getName();
+    }
+    List<String[]> list = getValues(offerList);
 
     var fileName =
         StringHelper.cutTooLongString(
             String.format(
-                "CFT%s-%s",
-                offer.getSupplierPartner().getSimpleFullName(), offer.getProduct().getName()));
+                "CFT%s-%s-%s",
+                callTenderName,
+                Optional.ofNullable(supplier).map(Partner::getSimpleFullName).orElse(""),
+                DateTimeFormatter.ofPattern("ddMMyyyyhhmm")
+                    .format(appBaseService.getTodayDateTime())));
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
     fileName += ".csv";
 
@@ -117,21 +147,24 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
     return Beans.get(MetaFiles.class).upload(inStream, fileName);
   }
 
-  protected List<String[]> getValues(CallTenderOffer offer) {
+  protected List<String[]> getValues(List<CallTenderOffer> offerList) {
     List<String[]> list = new ArrayList<>();
 
-    String[] lineValue =
-        new String[] {
-          offer.getProduct().getCode(),
-          offer.getProduct().getName(),
-          offer.getRequestedQty().toString(),
-          offer.getRequestedDate().toString(),
-          "",
-          "",
-          ""
-        };
+    for (CallTenderOffer offer : offerList) {
+      String[] lineValue =
+          new String[] {
+            offer.getProduct().getCode(),
+            offer.getProduct().getName(),
+            offer.getRequestedQty().toString(),
+            Optional.ofNullable(offer.getRequestedDate()).map(LocalDate::toString).orElse(""),
+            "",
+            "",
+            ""
+          };
 
-    list.add(lineValue);
+      list.add(lineValue);
+    }
+
     return list;
   }
 

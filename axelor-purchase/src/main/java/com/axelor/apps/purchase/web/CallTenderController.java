@@ -51,5 +51,6 @@ public class CallTenderController {
       Beans.get(CallTenderGenerateService.class).sendCallTenderOffers(callTender);
       response.setInfo(I18n.get("Mails successfully planned for sending."));
     }
+    response.setReload(true);
   }
 }
