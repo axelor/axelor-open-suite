@@ -5,11 +5,15 @@
 
   <form name="sale-order-confirm-wizard-form" title="Confirm"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <panel-related name="saleOrderLineListPanel" field="saleOrderLineList"
-      canNew="false" grid-view="confirm-wizard-sale-order-line-grid" editable="true"/>
-    <panel name="actionPanel">
-      <button name="confirmBtn" title="Generate the order"
-        onClick="validate, action-sale-order-confirm-wizard-method-generate"/>
+    <panel name="mainPanel">
+      <panel-related name="saleOrderLineListPanel" field="saleOrderLineList"
+        canNew="false" grid-view="confirm-wizard-sale-order-line-grid" editable="true" colSpan="12"/>
+      <field name="advanceTotal" title="Advance payment A.T.I. total" colSpan="4"/>
+      <spacer colSpan="8"/>
+      <panel name="actionPanel" colSpan="12">
+        <button name="confirmBtn" title="Generate the order"
+          onClick="validate, action-sale-order-confirm-wizard-method-generate"/>
+      </panel>
     </panel>
   </form>
 
