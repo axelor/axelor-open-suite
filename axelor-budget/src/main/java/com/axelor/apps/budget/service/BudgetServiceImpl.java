@@ -978,6 +978,7 @@ public class BudgetServiceImpl implements BudgetService {
     optBudget.setAvailableAmountWithSimulated(
         currencyScaleService.getCompanyScaledValue(budget, budget.getTotalAmountExpected()));
     optBudget.setBudgetStructure(null);
+    optBudget.setGlobalBudget(globalBudget);
     generatePeriods(optBudget);
     if (parent != null) {
       parent.addBudgetListItem(optBudget);
