@@ -9,6 +9,7 @@
 
     <many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner"
       title="Supplier partner" required="true"/>
+    <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
 
     <track on="UPDATE">
       <field name="supplierPartner"/>
