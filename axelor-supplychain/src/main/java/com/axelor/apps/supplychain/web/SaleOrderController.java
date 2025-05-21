@@ -703,6 +703,21 @@ public class SaleOrderController {
     }
   }
 
+  public void updateShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      ShipmentMode shipmentMode = saleOrder.getShipmentMode();
+      String message =
+          Beans.get(SaleOrderShipmentService.class).updateShipmentCostLine(saleOrder, shipmentMode);
+      if (message != null) {
+        response.setInfo(message);
+      }
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
    * PartnerLinkService#computePartnerFilter}

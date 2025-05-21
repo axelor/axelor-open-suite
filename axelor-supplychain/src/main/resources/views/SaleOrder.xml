@@ -26,6 +26,10 @@
           showIf="!$readonly() &amp;&amp; shipmentMode"/>
       </insert>
     </extend>
+    <extend target="//field[@name='freightCarrierMode']">
+      <attribute name="onChange"
+        value="action-sale-order-record-freight-carrier,supplychain-action-update-shipment-cost-line"/>
+    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
@@ -327,6 +331,11 @@
   <action-method name="supplychain-action-create-shipment-cost-line">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="createShipmentCostLine"/>
+  </action-method>
+
+  <action-method name="supplychain-action-update-shipment-cost-line">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateShipmentCostLine"/>
   </action-method>
 
   <action-method

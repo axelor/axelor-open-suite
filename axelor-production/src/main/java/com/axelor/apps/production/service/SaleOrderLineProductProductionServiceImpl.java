@@ -40,6 +40,8 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplemen
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.studio.db.AppProduction;
@@ -81,6 +83,8 @@ public class SaleOrderLineProductProductionServiceImpl
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      FreightCarrierPricingService freightCarrierPricingService,
+      FreightCarrierApplyPricingService freightCarrierApplyPricingService,
       AppProductionService appProductionService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
@@ -103,7 +107,9 @@ public class SaleOrderLineProductProductionServiceImpl
         blockingService,
         analyticLineModelService,
         appSupplychainService,
-        saleOrderLineAnalyticService);
+        saleOrderLineAnalyticService,
+        freightCarrierPricingService,
+        freightCarrierApplyPricingService);
     this.appProductionService = appProductionService;
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
