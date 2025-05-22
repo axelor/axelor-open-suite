@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -93,6 +94,6 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
           .filter(bankDetails -> umrService.getActiveUmr(company, bankDetails) != null)
           .collect(Collectors.toList());
     }
-    return null;
+    return Collections.emptyList();
   }
 }

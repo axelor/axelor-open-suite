@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimburse
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
@@ -59,8 +60,9 @@ import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
-import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.invoiceterm.InvoiceTermBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.invoiceterm.InvoiceTermFilterBankPaymentService;
+import com.axelor.apps.bankpayment.service.invoiceterm.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderService;
@@ -314,5 +316,6 @@ public class BankPaymentModule extends AxelorModule {
         .to(AccountingSituationAttrsServiceBankPaymentImpl.class);
     bind(AccountingSituationBankDetailsServiceImpl.class)
         .to(AccountingSituationBankDetailsServiceBankPaymentImpl.class);
+    bind(InvoiceTermServiceImpl.class).to(InvoiceTermBankPaymentServiceImpl.class);
   }
 }
