@@ -793,9 +793,9 @@
   </selection>
 
   <selection name="account.closure.assistant.status.select">
-    <option value="1">New</option>
-    <option value="2">In progress</option>
-    <option value="3">Finished</option>
+    <option value="1" color="blue">New</option>
+    <option value="2" color="deeporange">In progress</option>
+    <option value="3" color="green">Finished</option>
   </selection>
 
   <selection name='iaccount.vat.system.invoice.line.tax.select'>

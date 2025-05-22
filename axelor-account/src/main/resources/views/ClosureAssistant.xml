@@ -8,7 +8,7 @@
     <field name="fiscalYear.code" title="Fiscal Year" width="300"/>
     <field name="fiscalYear.company.code" title="Company" width="300"/>
     <field name="progress" title="Progress" widget="Progress" width="600"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
 
