@@ -19,7 +19,6 @@
 
 
     <track on="UPDATE">
-      <field name="callTenderNeedList"/>
       <field name="requestedQty"/>
       <field name="requestedDate"/>
       <field name="type"/>
