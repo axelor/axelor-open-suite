@@ -411,4 +411,7 @@ public final class SupplychainExceptionMessage {
   public static final String
       SALE_ORDER_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
           "Non-deductible tax not authorized for sale orders. Please remove the non-deductible tax on product." /*)*/;
+
+  public static final String SALE_ORDER_LINES_CANNOT_DELIVER = /*$$(*/
+      "Warning : One or more lines are blocked for delivery" /*)*/;
 }

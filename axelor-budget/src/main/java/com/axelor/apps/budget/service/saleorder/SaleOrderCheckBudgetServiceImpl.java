@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -48,8 +49,13 @@ public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckSupplychainSe
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
       SaleOrderBudgetService saleOrderBudgetService,
-      AppBudgetService appBudgetService) {
-    super(appBaseService, appSupplychainService, appStockService);
+      AppBudgetService appBudgetService,
+      SaleOrderBlockingSupplychainService saleOrderBlockingSupplychainService) {
+    super(
+        appBaseService,
+        appSupplychainService,
+        appStockService,
+        saleOrderBlockingSupplychainService);
     this.saleOrderBudgetService = saleOrderBudgetService;
     this.appBudgetService = appBudgetService;
   }
