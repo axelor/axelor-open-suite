@@ -88,6 +88,9 @@
       message="If you want to enable this configuration, interco sale order can not be created at finalized quotation. Please change the configuration in supplychain application."
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.intercoSaleCreatingStatusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"
       action="action-app-sale-attrs-reset-split-enabled"/>
+    <error
+      message="You can not enable quotation and order split if past version recovery is enabled."
+      if="isPastVersionRecovery" action="action-app-sale-attrs-reset-split-enabled"/>
   </action-validate>
 
   <action-attrs name="action-app-sale-attrs-reset-split-enabled">

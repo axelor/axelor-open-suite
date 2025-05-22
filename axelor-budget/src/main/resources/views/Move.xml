@@ -48,6 +48,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-move-method-budget-validate-accounting"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-account-move-group-accounting-click"/>
   </action-group>
 

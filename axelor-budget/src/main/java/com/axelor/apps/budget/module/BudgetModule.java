@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationServiceImpl;
@@ -77,6 +78,8 @@ import com.axelor.apps.budget.service.ReconcileInvoiceTermComputationBudgetServi
 import com.axelor.apps.budget.service.ReconcileToolBudgetService;
 import com.axelor.apps.budget.service.ReconcileToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.UnreconcileBudgetServiceImpl;
+import com.axelor.apps.budget.service.compute.BudgetLineComputeService;
+import com.axelor.apps.budget.service.compute.BudgetLineComputeServiceImpl;
 import com.axelor.apps.budget.service.date.BudgetDateService;
 import com.axelor.apps.budget.service.date.BudgetDateServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
@@ -103,6 +106,7 @@ import com.axelor.apps.budget.service.move.MoveBudgetDistributionService;
 import com.axelor.apps.budget.service.move.MoveBudgetDistributionServiceImpl;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveBudgetServiceImpl;
+import com.axelor.apps.budget.service.move.MoveGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl;
@@ -142,9 +146,9 @@ import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineComputeSupplychainServiceImpl;
 import java.util.concurrent.Callable;
@@ -224,7 +228,7 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderCheckBudgetService.class).to(SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderFinalizeSupplychainServiceImpl.class)
         .to(SaleOrderFinalizeBudgetServiceImpl.class);
-    bind(SaleOrderCheckSupplychainServiceImpl.class).to(SaleOrderCheckBudgetServiceImpl.class);
+    bind(SaleOrderCheckServiceImpl.class).to(SaleOrderCheckBudgetServiceImpl.class);
     bind(SaleOrderBudgetObserver.class);
     bind(SaleOrderLineViewBudgetService.class).to(SaleOrderLineViewBudgetServiceImpl.class);
     bind(SaleOrderLineBudgetObserver.class);
@@ -232,5 +236,8 @@ public class BudgetModule extends AxelorModule {
 
     bind(MoveBudgetDistributionService.class).to(MoveBudgetDistributionServiceImpl.class);
     bind(BudgetDateService.class).to(BudgetDateServiceImpl.class);
+
+    bind(BudgetLineComputeService.class).to(BudgetLineComputeServiceImpl.class);
+    bind(MoveGroupServiceImpl.class).to(MoveGroupBudgetServiceImpl.class);
   }
 }
