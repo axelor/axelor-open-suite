@@ -145,7 +145,7 @@
     </field>
     <field name="vatSystemSelect"
       onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"/>
-    <field name="moveStatusSelect"/>
+    <field name="moveStatusSelect" widget="single-select"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="fieldsErrorList" hidden="true"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
