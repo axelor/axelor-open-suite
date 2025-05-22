@@ -4,9 +4,9 @@ import com.axelor.apps.account.db.Move;
 
 public interface MassEntryMoveUpdateService {
 
-  void updateMassEntryMoveLines(Move move, Move generatedMove, int temporaryMoveNumber);
+  void updateMassEntryMoveLines(Long moveId, Move generatedMove, int temporaryMoveNumber);
 
-  void resetMassEntryMoveLinesStatus(Move move, int errorId);
+  void resetMassEntryMoveLinesStatus(Long moveId, int errorId);
 
-  void updateMassEntryMoveStatus(Move move);
+  void updateMassEntryMoveStatus(Long moveId);
 }

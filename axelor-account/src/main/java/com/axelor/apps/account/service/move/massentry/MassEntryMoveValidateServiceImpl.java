@@ -38,6 +38,7 @@ public class MassEntryMoveValidateServiceImpl implements MassEntryMoveValidateSe
     String errors = "";
     List<Long> moveIdList = new ArrayList<>();
     move = moveRepository.find(move.getId());
+    Long massEntryMove = move.getId();
 
     if (massEntryToolService.verifyJournalAuthorizeNewMove(
             move.getMoveLineMassEntryList(), move.getJournal())
@@ -50,9 +51,9 @@ public class MassEntryMoveValidateServiceImpl implements MassEntryMoveValidateSe
               .sorted()
               .collect(Collectors.toList());
       for (Integer x : uniqueIdList) {
-        Move element = massEntryMoveCreateService.createMoveFromMassEntryList(move, x);
+        Move element = massEntryMoveCreateService.createMoveFromMassEntryList(massEntryMove, x);
         Map.Entry<Move, Integer> moveMap =
-            this.validateMove(element, move).entrySet().iterator().next();
+            this.validateMove(element, massEntryMove).entrySet().iterator().next();
 
         if (moveMap.getKey() != null) {
           moveIdList.add(moveMap.getKey().getId());
@@ -66,16 +67,15 @@ public class MassEntryMoveValidateServiceImpl implements MassEntryMoveValidateSe
         }
 
         JPA.clear();
-        move = moveRepository.find(move.getId());
       }
     }
-    massEntryMoveUpdateService.updateMassEntryMoveStatus(move);
+    massEntryMoveUpdateService.updateMassEntryMoveStatus(move.getId());
     resultMap.put(moveIdList, errors);
 
     return resultMap;
   }
 
-  protected Map<Move, Integer> validateMove(Move move, Move massEntryMove) {
+  protected Map<Move, Integer> validateMove(Move move, Long massEntryMoveId) {
     Map<Move, Integer> resultMap = new HashMap<>();
     int moveTemporaryMoveNumber = Integer.parseInt(move.getReference());
     try {
@@ -83,14 +83,14 @@ public class MassEntryMoveValidateServiceImpl implements MassEntryMoveValidateSe
 
       Move generatedMove = massEntryMoveCreateService.generateMassEntryMove(move);
       massEntryMoveUpdateService.updateMassEntryMoveLines(
-          massEntryMove, generatedMove, moveTemporaryMoveNumber);
+          massEntryMoveId, generatedMove, moveTemporaryMoveNumber);
       resultMap.put(generatedMove, null);
 
     } catch (Exception e) {
       TraceBackService.trace(e);
       resultMap.put(null, moveTemporaryMoveNumber);
       massEntryMoveUpdateService.resetMassEntryMoveLinesStatus(
-          massEntryMove, moveTemporaryMoveNumber);
+          massEntryMoveId, moveTemporaryMoveNumber);
     }
 
     return resultMap;
