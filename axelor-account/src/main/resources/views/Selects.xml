@@ -7,10 +7,10 @@
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name='iaccount.payment.voucher.status.select'>
-    <option value='1'>Draft</option>
+    <option value='1' color="blue">Draft</option>
     <!-- Delete #47990 <option value='2'>Waiting for deposit slip</option> -->
-    <option value='2'>Confirmed</option>
-    <option value='3'>Canceled</option>
+    <option value='2' color="green">Confirmed</option>
+    <option value='3' color="red">Canceled</option>
   </selection>
 
   <selection name='account.account.technical.type.select'>

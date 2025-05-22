@@ -18,7 +18,7 @@
     <field name="generatedMove" width="120" form-view="move-form" grid-view="move-grid"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="payment-voucher-form" title="Payment voucher"
@@ -56,7 +56,7 @@
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <panel hidden="true" showIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
         <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
           hidden="true"
