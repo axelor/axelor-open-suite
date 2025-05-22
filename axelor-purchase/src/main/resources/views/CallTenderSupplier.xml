@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="call-tender-supplier-grid" title="Supplier partners"
+    model="com.axelor.apps.purchase.db.CallTenderNeed">
+    <field name="supplierPartner"/>
+  </grid>
+
+  <form name="call-tender-supplier-form" model="com.axelor.apps.purchase.db.CallTenderSupplier"
+    title="Supplier" width="large">
+    <panel name="mainPanel" showTitle="false">
+      <field name="supplierPartner" domain="self.isSupplier IS true" form-view="partner-form"
+        grid-view="partner-grid"/>
+    </panel>
+  </form>
+
+</object-views>
