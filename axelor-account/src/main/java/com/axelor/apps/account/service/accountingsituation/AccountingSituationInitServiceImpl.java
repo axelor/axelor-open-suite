@@ -22,15 +22,12 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
@@ -49,19 +46,19 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
 
   protected SequenceService sequenceService;
   protected AccountingSituationRepository accountingSituationRepository;
-  protected PaymentModeService paymentModeService;
   protected AccountConfigService accountConfigService;
+  protected AccountingSituationBankDetailsService accountingSituationBankDetailsService;
 
   @Inject
   public AccountingSituationInitServiceImpl(
       SequenceService sequenceService,
       AccountingSituationRepository accountingSituationRepository,
-      PaymentModeService paymentModeService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AccountingSituationBankDetailsService accountingSituationBankDetailsService) {
     this.sequenceService = sequenceService;
     this.accountingSituationRepository = accountingSituationRepository;
-    this.paymentModeService = paymentModeService;
     this.accountConfigService = accountConfigService;
+    this.accountingSituationBankDetailsService = accountingSituationBankDetailsService;
   }
 
   @Override
@@ -90,25 +87,8 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     accountingSituation.setCompany(company);
     partner.addCompanySetItem(company);
 
-    PaymentMode inPaymentMode = partner.getInPaymentMode();
-    PaymentMode outPaymentMode = partner.getOutPaymentMode();
-    BankDetails defaultBankDetails = company.getDefaultBankDetails();
-
-    if (inPaymentMode != null) {
-      List<BankDetails> authorizedInBankDetails =
-          paymentModeService.getCompatibleBankDetailsList(inPaymentMode, company);
-      if (authorizedInBankDetails.contains(defaultBankDetails)) {
-        accountingSituation.setCompanyInBankDetails(defaultBankDetails);
-      }
-    }
-
-    if (outPaymentMode != null) {
-      List<BankDetails> authorizedOutBankDetails =
-          paymentModeService.getCompatibleBankDetailsList(outPaymentMode, company);
-      if (authorizedOutBankDetails.contains(defaultBankDetails)) {
-        accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
-      }
-    }
+    accountingSituationBankDetailsService.setAccountingSituationBankDetails(
+        accountingSituation, partner, company);
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     accountingSituation.setInvoiceAutomaticMail(accountConfig.getInvoiceAutomaticMail());
