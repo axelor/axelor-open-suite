@@ -205,7 +205,7 @@
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
-          <field name="paymentStatusSelect" colSpan="4"/>
+          <field name="paymentStatusSelect" colSpan="4" widget="single-select"/>
           <field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
           <field name="paymentDate" showIf="paymentDate" colSpan="4" readonly="true"/>
           <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
