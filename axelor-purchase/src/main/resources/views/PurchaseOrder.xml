@@ -219,7 +219,7 @@
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="supplierPartner == null || ($enablePurchasesProductByTradName &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="supplierPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content" colSpan="12">
         <panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList"
           canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3"
@@ -682,8 +682,8 @@
 
   <action-record name="action-purchase-order-record-load-trading-name-config"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="$enablePurchasesProductByTradName"
-      expr="eval: __config__.app.getApp('purchase')?.enablePurchasesProductByTradName"/>
+    <field name="$enableTradingNamesManagement"
+      expr="eval:__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-in-ati"
