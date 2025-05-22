@@ -14,7 +14,7 @@
     <field name="journalType"/>
     <field name="exportCode"/>
     <field name="notExportOk"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="company" form-view="company-form" grid-view="company-grid"/>
     <button name="inputEntryBtn" title="Input entry"
       onClick="action-journal-view-input-entry" icon="file-plus" readonlyIf="statusSelect != 1"/>
