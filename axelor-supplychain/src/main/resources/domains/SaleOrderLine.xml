@@ -54,6 +54,25 @@
 
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
 
+    <!-- Blocking information -->
+    <boolean name="deliveryBlocking" title="Block delivery"/>
+    <many-to-one name="deliveryBlockingReason" ref="com.axelor.apps.base.db.StopReason"
+                 title="Blocking delivery reason"/>
+    <date name="deliveryBlockingToDate" title="Blocking delivery until"/>
+    <many-to-one name="deliveryBlockingByUser" ref="com.axelor.auth.db.User"
+                 title="Delivery blocking done by"/>
+    <string name="commentDeliveryBlocking" title="Blocking comment for delivery"
+            large="true"/>
+
+    <boolean name="productionBlocking" title="Block production"/>
+    <many-to-one name="deliveryBlockingReason" ref="com.axelor.apps.base.db.StopReason"
+                 title="Blocking delivery reason"/>
+    <date name="deliveryBlockingToDate" title="Blocking delivery until"/>
+    <many-to-one name="deliveryBlockingByUser" ref="com.axelor.auth.db.User"
+                 title="Delivery blocking done by"/>
+    <string name="commentDeliveryBlocking" title="Blocking comment for delivery"
+            large="true"/>
+
 
 
     <extra-code>
