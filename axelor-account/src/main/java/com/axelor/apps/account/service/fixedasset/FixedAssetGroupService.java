@@ -25,11 +25,10 @@ import java.util.Map;
 
 public interface FixedAssetGroupService {
 
-  Map<String, Object> getDisposalWizardValuesMap(
-      FixedAsset disposal, FixedAsset fixedAsset, int disposalTypeSelect);
+  Map<String, Object> getDisposalWizardValuesMap(FixedAsset fixedAsset, Integer disposalTypeSelect);
 
   Map<String, Map<String, Object>> getDisposalWizardAttrsMap(
-      int disposalTypeSelect, FixedAsset fixedAsset);
+      Integer disposalTypeSelect, FixedAsset fixedAsset);
 
   Map<String, Map<String, Object>> getInitSplitWizardAttrsMap(BigDecimal qty, Company company);
 }

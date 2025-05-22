@@ -25,9 +25,11 @@ import java.util.Map;
 
 public interface FixedAssetAttrsService {
 
-  void addDisposalAmountTitle(int disposalTypeSelect, Map<String, Map<String, Object>> attrsMap);
+  void addDisposalAmountTitle(
+      Integer disposalTypeSelect, Map<String, Map<String, Object>> attrsMap);
 
-  void addDisposalAmountReadonly(int disposalTypeSelect, Map<String, Map<String, Object>> attrsMap);
+  void addDisposalAmountReadonly(
+      Integer disposalTypeSelect, Map<String, Map<String, Object>> attrsMap);
 
   void addDisposalAmountScale(FixedAsset fixedAsset, Map<String, Map<String, Object>> attrsMap);
 
