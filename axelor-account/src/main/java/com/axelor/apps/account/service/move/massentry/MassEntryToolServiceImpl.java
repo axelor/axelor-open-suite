@@ -175,4 +175,12 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
     }
     return true;
   }
+
+  @Override
+  public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList) {
+    return moveLineList.stream()
+        .map(MoveLineMassEntry::getTemporaryMoveNumber)
+        .max(Comparator.naturalOrder())
+        .get();
+  }
 }

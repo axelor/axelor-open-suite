@@ -28,7 +28,7 @@ import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
-import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -65,7 +65,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
-  protected MassEntryService massEntryService;
+  protected MassEntryCheckService massEntryCheckService;
   protected MassEntryVerificationService massEntryVerificationService;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected PfpService pfpService;
@@ -88,7 +88,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      MassEntryService massEntryService,
+      MassEntryCheckService massEntryCheckService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       PfpService pfpService,
@@ -108,7 +108,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
-    this.massEntryService = massEntryService;
+    this.massEntryCheckService = massEntryCheckService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
     this.pfpService = pfpService;
@@ -417,7 +417,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      massEntryService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
+      massEntryCheckService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
       valuesMap.put("massEntryErrors", move.getMassEntryErrors());
       valuesMap.put("moveLineMassEntryList", move.getMoveLineMassEntryList());
     }

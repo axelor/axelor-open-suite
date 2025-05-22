@@ -10,7 +10,7 @@ import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
-import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
@@ -47,7 +47,7 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      MassEntryService massEntryService,
+      MassEntryCheckService massEntryCheckService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       PfpService pfpService,
@@ -69,7 +69,7 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
         moveLineTaxService,
         periodService,
         moveRepository,
-        massEntryService,
+        massEntryCheckService,
         massEntryVerificationService,
         moveLineMassEntryRecordService,
         pfpService,

@@ -20,7 +20,8 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryCheckService;
+import com.axelor.apps.account.service.move.massentry.MassEntryMoveValidateService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -58,7 +59,7 @@ public class MassEntryMoveController {
       Move move = request.getContext().asType(Move.class);
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-        Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
+        Beans.get(MassEntryCheckService.class).checkMassEntryMoveGeneration(move);
         if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
           response.setNotify(I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL));
         } else {
@@ -89,7 +90,7 @@ public class MassEntryMoveController {
 
       if (move != null) {
         entryMap =
-            Beans.get(MassEntryService.class)
+            Beans.get(MassEntryMoveValidateService.class)
                 .validateMassEntryMove(move)
                 .entrySet()
                 .iterator()
