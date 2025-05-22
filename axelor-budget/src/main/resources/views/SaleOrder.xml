@@ -42,7 +42,8 @@
         <panel name="budgetDistributionPanel" title="Budget distribution"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           showIf="statusSelect &lt;= 4" colSpan="12">
-          <panel name="datesPanel" colSpan="12" itemSpan="4" readonlyIf="statusSelect == 5">
+          <panel name="datesPanel" colSpan="12" itemSpan="4"
+            readonlyIf="statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4">
             <field name="budgetFromDate" requiredIf="budgetToDate"/>
             <field name="budgetToDate" requiredIf="budgetFromDate"/>
             <button name="initBudgetDatesBtn" title="Init budget dates"

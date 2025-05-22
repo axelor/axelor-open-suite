@@ -32,7 +32,8 @@
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='pfpAccountConfigPanel']">
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
-          <panel name="datesPanel" colSpan="12" itemSpan="4" readonlyIf="statusSelect == 4">
+          <panel name="datesPanel" colSpan="12" itemSpan="4"
+            readonlyIf="statusSelect == 4 || statusSelect == 3 || partner == null">
             <field name="budgetFromDate" requiredIf="budgetToDate"/>
             <field name="budgetToDate" requiredIf="budgetFromDate"/>
             <button name="initBudgetDatesBtn" title="Init budget dates"
