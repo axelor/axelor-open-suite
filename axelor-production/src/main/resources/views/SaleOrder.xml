@@ -58,5 +58,15 @@
       method="createProductionOrders"/>
   </action-method>
 
+  <action-method name="action-sale-order-method-check-blocking">
+    <call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController"
+      method="checkBlocking"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-create-production-order">
+    <action name="action-sale-order-method-check-blocking"/>
+    <action name="action-sale-order-method-create-production-order"/>
+  </action-group>
+
 
 </object-views>

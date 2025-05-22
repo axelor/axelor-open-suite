@@ -42,18 +42,18 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
 
   protected AppSupplychainService appSupplychainService;
   protected AppStockService appStockService;
-  protected final SaleOrderBlockingSupplychainService saleOrderBlockingSupplychainService;
+  protected final SaleOrderCheckBlockingSupplychainService saleOrderCheckBlockingSupplychainService;
 
   @Inject
   public SaleOrderCheckSupplychainServiceImpl(
       AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
-      SaleOrderBlockingSupplychainService saleOrderBlockingSupplychainService) {
+      SaleOrderCheckBlockingSupplychainService saleOrderCheckBlockingSupplychainService) {
     super(appBaseService);
     this.appSupplychainService = appSupplychainService;
     this.appStockService = appStockService;
-    this.saleOrderBlockingSupplychainService = saleOrderBlockingSupplychainService;
+    this.saleOrderCheckBlockingSupplychainService = saleOrderCheckBlockingSupplychainService;
   }
 
   @Override
@@ -62,10 +62,7 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
     if (!appSupplychainService.isApp("supplychain")) {
       return alertList;
     }
-    if (saleOrderBlockingSupplychainService.hasOnGoingBlocking(saleOrder)
-        && appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()) {
-      alertList.add(I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINES_CANNOT_DELIVER));
-    }
+    alertList.addAll(saleOrderCheckBlockingSupplychainService.checkBlocking(saleOrder));
     isIncotermFilled(saleOrder);
     return alertList;
   }
