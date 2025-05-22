@@ -673,6 +673,7 @@
 "The sale order %s invoiced amount cannot be greater than its total amount.",,,
 "The stock location must be the same for all purchase orders.",,,
 "The supplier is required and must be the same for all purchase orders",,,
+"The total of the order must be equal or superior than the advance payment total.",,,
 "The trading name must be the same for all purchase orders.",,,
 "The trading name must be the same for all sale orders.",,,
 "There are no lines to invoice",,,
