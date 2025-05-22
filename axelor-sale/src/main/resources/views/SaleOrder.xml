@@ -379,7 +379,7 @@
           form-view="company-form" grid-view="company-grid" colSpan="3"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName"
-          readonlyIf="(saleOrderLineList &amp;&amp; saleOrderLineList.length > 0) || statusSelect >= 2"
+          readonlyIf="!createdByInterco &amp;&amp; ((saleOrderLineList &amp;&amp; saleOrderLineList.length > 0) || statusSelect >= 2)"
           canEdit="false"
           onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location"
           domain="self.company = :company" form-view="trading-name-form"
