@@ -728,6 +728,7 @@
 "Update from","Choix de la méthode de génération",,
 "Update from configurator","Générer depuis le configurateur",,
 "Update from product","Générer depuis le produit",,
+"Used credit has been exceeded. The quotation must be manually unblocked to generate the order.","L'encours utilisé a été dépassé. Le devis doit être débloqué manuellement afin de générer la commande.",,
 "User","Utilisateur",,
 "User assigned to customer","Utilisateur assigné sur le client",,
 "User to fill salesperson","Mode de remplissage du commercial sur les devis/commandes",,
