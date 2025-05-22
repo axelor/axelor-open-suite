@@ -48,7 +48,7 @@
       x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="paymentDelay"/>
@@ -96,7 +96,7 @@
     <field name="inTaxTotal" aggregate="sum" width="120"/>
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="billOfExchangeBlockingOk"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -146,7 +146,7 @@
     <field name="inTaxTotal" aggregate="sum" width="120"/>
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentDelay"/>
     <field name="paymentDelayReason"/>
@@ -205,7 +205,7 @@
       x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -258,9 +258,9 @@
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="paymentProgress" widget="Progress"/>
-    <field name="pfpValidateStatusSelect" title="PFP"
+    <field name="pfpValidateStatusSelect" title="PFP" widget="single-select"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" title="PFP val."
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -320,9 +320,9 @@
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
-      name="pfpValidateStatusSelect" title="PFP"/>
+      name="pfpValidateStatusSelect" title="PFP" widget="single-select"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidatorUser" title="PFP val."/>
     <field name="paymentDelay"/>
@@ -368,7 +368,7 @@
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -388,7 +388,7 @@
     <field name="operationTypeSelect"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -1423,7 +1423,7 @@
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
     <field name="currency"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <!-- invoice-direct-debit -->
@@ -1440,7 +1440,7 @@
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="directDebitAmount" aggregate="sum"/>
     <field name="currency"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <!-- VIEW LITE -->
@@ -1450,7 +1450,7 @@
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid model="com.axelor.apps.account.db.Invoice" title="Release details"

@@ -290,10 +290,10 @@
   </selection>
 
   <selection name="iaccount.invoice.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Ventilated</option>
-    <option value="4">Canceled</option>
+    <option value="1" color="cyan">Draft</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="teal">Ventilated</option>
+    <option value="4" color="red">Canceled</option>
   </selection>
 
   <selection name="iaccount.reimbursement.status.select">
@@ -496,10 +496,10 @@
   </selection>
 
   <selection name="invoice.pfp.validate.status.select">
-    <option value="0">No PFP</option>
-    <option value="1">Awaiting</option>
-    <option value="2">PFP validated</option>
-    <option value="3">Litigation</option>
+    <option value="0" color="grey">No PFP</option>
+    <option value="1" color="yellow">Awaiting</option>
+    <option value="2" color="green">PFP validated</option>
+    <option value="3" color="red">Litigation</option>
   </selection>
 
   <selection name="invoiceterm.pfp.validate.status.select">
