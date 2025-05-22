@@ -1,0 +1,3 @@
+---
+title: "Lunch voucher: fixed outdated expenses wrongly deducted in lunch vouchers calculation."
+module: axelor-human-resource
