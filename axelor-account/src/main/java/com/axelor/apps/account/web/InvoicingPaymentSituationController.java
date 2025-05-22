@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.account.service.InvoicingPaymentSituationService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -32,9 +33,13 @@ import com.axelor.db.EntityHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class InvoicingPaymentSituationController {
 
@@ -116,5 +121,19 @@ public class InvoicingPaymentSituationController {
     }
 
     return invoicingPaymentSituation.getPartner();
+  }
+
+  @ErrorException
+  public void selectBankDetails(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    if (Objects.equals(parentContext.getContextClass(), Partner.class)) {
+      Partner partner = parentContext.asType(Partner.class);
+      List<Long> bankDetailsIdList =
+          partner.getBankDetailsList().stream()
+              .map(BankDetails::getId)
+              .collect(Collectors.toList());
+      String domain = "self.id IN (" + StringUtils.join(bankDetailsIdList, ',') + ")";
+      response.setAttr("bankDetails", "domain", domain);
+    }
   }
 }
