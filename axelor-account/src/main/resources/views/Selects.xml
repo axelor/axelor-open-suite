@@ -472,8 +472,8 @@
   </selection>
 
   <selection name="account.fixed.asset.line.status.select">
-    <option value="1">Planned</option>
-    <option value="2">Realized</option>
+    <option value="1" color="blue">Planned</option>
+    <option value="2" color="green">Realized</option>
   </selection>
 
   <selection name="account.move.template.type.type.select">
