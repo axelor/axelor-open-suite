@@ -101,6 +101,7 @@ import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionI
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
+import com.axelor.apps.production.service.SaleOrderCheckBlockingServiceProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
@@ -296,6 +297,7 @@ import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImp
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.TrackingNumberCompanySupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDummySupplychainServiceImpl;
@@ -490,5 +492,6 @@ public class ProductionModule extends AxelorModule {
     bind(SolDetailsProdProcessComputeQtyService.class)
         .to(SolDetailsProdProcessComputeQtyServiceImpl.class);
     bind(SolDetailsDurationService.class).to(SolDetailsDurationServiceImpl.class);
+    bind(SaleOrderCheckBlockingSupplychainServiceImpl.class).to(SaleOrderCheckBlockingServiceProductionServiceImpl.class);
   }
 }
