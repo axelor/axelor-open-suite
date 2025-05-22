@@ -259,7 +259,7 @@
   </action-view>
 
   <!-- Pricing menus -->
-  <menuitem title="Freight carrier pricings" name="stock-root-freight-carrier-pricing"
+  <menuitem title="Transport rates" name="stock-root-freight-carrier-pricing"
     parent="stock-root-conf" order="510"/>
 
   <menuitem title="Pricing" name="stock-pricing-freight-carrier-pricing-pricing"
