@@ -116,6 +116,7 @@
 
     <string name="customFieldManagementSelect" title="Custom fields management"
       selection="project.custom.field.management.select" default="app"/>
+    <string name="appJson" title="App json" json="true"/>
 
     <boolean name="enableStatusProgressByCategory"
       title="Enable status progress by category."

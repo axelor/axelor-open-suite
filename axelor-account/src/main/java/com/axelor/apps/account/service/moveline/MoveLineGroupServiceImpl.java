@@ -256,8 +256,6 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
     }
 
-    moveLineCheckService.checkAnalyticAxes(moveLine);
-
     return createAnalyticValuesMap(moveLine);
   }
 
