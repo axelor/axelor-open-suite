@@ -290,6 +290,8 @@ import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderWorkflowSer
 import com.axelor.apps.supplychain.service.saleorder.views.SaleOrderViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineComputeSupplychainServiceImpl;
@@ -513,5 +515,7 @@ public class SupplychainModule extends AxelorModule {
     bind(ShippingService.class).to(ShippingServiceImpl.class);
     bind(FreightCarrierModeService.class).to(FreightCarrierModeServiceImpl.class);
     bind(SaleOrderCopySupplychainService.class).to(SaleOrderCopySupplychainServiceImpl.class);
+    bind(SaleOrderLineBlockingSupplychainService.class)
+        .to(SaleOrderLineBlockingSupplychainServiceImpl.class);
   }
 }

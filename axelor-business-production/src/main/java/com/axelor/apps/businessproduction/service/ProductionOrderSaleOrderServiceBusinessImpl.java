@@ -21,6 +21,7 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
@@ -36,12 +37,14 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      ManufOrderSaleOrderService manufOrderSaleOrderService) {
+      ManufOrderSaleOrderService manufOrderSaleOrderService,
+      SaleOrderLineBlockingProductionService saleOrderLineBlockingProductionService) {
     super(
         productionOrderService,
         productionOrderRepo,
         appProductionService,
-        manufOrderSaleOrderService);
+        manufOrderSaleOrderService,
+        saleOrderLineBlockingProductionService);
   }
 
   @Override
