@@ -179,7 +179,8 @@
 
     <boolean name="isDisplaySubLinesOnReport" title="Display sublines on report"/>
 
-    <many-to-one name="originSaleQuotation" ref="com.axelor.apps.sale.db.SaleOrder"/>
+    <many-to-one name="originSaleQuotation" ref="com.axelor.apps.sale.db.SaleOrder"
+      readonly="true"/>
     <integer name="orderingStatus" selection="sale.sale.order.ordering.status.select"
       title="Ordering status" readonly="true" default="0"/>
 

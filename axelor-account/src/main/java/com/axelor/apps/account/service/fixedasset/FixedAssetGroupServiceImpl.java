@@ -19,12 +19,14 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsService;
 import com.axelor.apps.base.db.Company;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class FixedAssetGroupServiceImpl implements FixedAssetGroupService {
 
@@ -41,24 +43,23 @@ public class FixedAssetGroupServiceImpl implements FixedAssetGroupService {
 
   @Override
   public Map<String, Object> getDisposalWizardValuesMap(
-      FixedAsset disposal, FixedAsset fixedAsset, int disposalTypeSelect) {
-    fixedAssetRecordService.resetAssetDisposalReason(disposal);
-    fixedAssetRecordService.setDisposalQtySelect(disposal, disposalTypeSelect);
-
+      FixedAsset fixedAsset, Integer disposalTypeSelect) {
     Map<String, Object> valuesMap = new HashMap<>();
+
+    if (!Objects.equals(FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION, disposalTypeSelect)) {
+      valuesMap.put("disposalQtySelect", FixedAssetRepository.DISPOSABLE_QTY_SELECT_TOTAL);
+    }
 
     valuesMap.put(
         "disposalAmount",
         fixedAssetRecordService.setDisposalAmount(fixedAsset, disposalTypeSelect));
-    valuesMap.put("assetDisposalReason", disposal.getAssetDisposalReason());
-    valuesMap.put("disposalQtySelect", disposal.getDisposalQtySelect());
 
     return valuesMap;
   }
 
   @Override
   public Map<String, Map<String, Object>> getDisposalWizardAttrsMap(
-      int disposalTypeSelect, FixedAsset fixedAsset) {
+      Integer disposalTypeSelect, FixedAsset fixedAsset) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     fixedAssetAttrsService.addDisposalAmountTitle(disposalTypeSelect, attrsMap);

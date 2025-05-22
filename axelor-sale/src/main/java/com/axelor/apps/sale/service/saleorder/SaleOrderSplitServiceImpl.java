@@ -74,6 +74,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     confirmedSaleOrder.clearSaleOrderLineTaxList();
     confirmedSaleOrder.clearBatchSet();
     confirmedSaleOrder.setOriginSaleQuotation(saleOrder);
+    confirmedSaleOrder.setManualUnblock(saleOrder.getManualUnblock());
     return confirmedSaleOrder;
   }
 
