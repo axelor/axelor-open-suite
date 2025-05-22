@@ -258,6 +258,8 @@ import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingServiceI
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainServiceImpl;
@@ -530,5 +532,7 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderDummyServiceImpl.class).to(SaleOrderDummySupplychainServiceImpl.class);
     bind(SaleOrderLineBlockingSupplychainService.class)
         .to(SaleOrderLineBlockingSupplychainServiceImpl.class);
+    bind(SaleOrderBlockingSupplychainService.class)
+        .to(SaleOrderBlockingSupplychainServiceImpl.class);
   }
 }

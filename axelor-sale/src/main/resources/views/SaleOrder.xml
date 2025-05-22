@@ -791,7 +791,7 @@
         name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
         readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0" colSpan="12"
-        onClick="save, action-supplychain-sale-order-create-stock-move" icon="truck"/>
+        onClick="save,action-supplychain-group-sale-order-create-stock-move" icon="truck"/>
       <button
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp;
         !__config__.app.getApp('production')?.productionOrderGenerationAuto"

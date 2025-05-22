@@ -154,6 +154,15 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
   </action-method>
 
+  <action-group name="action-supplychain-group-sale-order-create-stock-move">
+    <action name="action-supplychain-method-sale-order-check-blocking"/>
+    <action name="action-supplychain-sale-order-create-stock-move"/>
+  </action-group>
+
+  <action-method name="action-supplychain-method-sale-order-check-blocking">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkBlocking"/>
+  </action-method>
+
   <action-method
     name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"

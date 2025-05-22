@@ -44,6 +44,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderServiceSupplychainImpl;
@@ -83,6 +84,14 @@ public class SaleOrderController {
   private final String SO_LINES_WIZARD_PRICE_FIELD = "priceDiscounted";
   private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
   private final String SO_LINES_WIZARD_INVOICE_ALL_FIELD = "invoiceAll";
+
+  public void checkBlocking(ActionRequest request, ActionResponse response) {
+    SaleOrder saleorder = request.getContext().asType(SaleOrder.class);
+
+    if (Beans.get(SaleOrderBlockingSupplychainService.class).hasOnGoingBlocking(saleorder)) {
+      response.setAlert(I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINES_CANNOT_DELIVER));
+    }
+  }
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
