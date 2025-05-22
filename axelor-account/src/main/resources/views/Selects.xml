@@ -320,10 +320,10 @@
   </selection>
 
   <selection name="iaccount.payment.schedule.line.status.select">
-    <option value="1">Draft</option>
-    <option value="2">In progress</option>
-    <option value="3">Validated</option>
-    <option value="4">Closed</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">In progress</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="red">Closed</option>
   </selection>
 
   <selection name="iaccount.irrecoverable.status.select">
