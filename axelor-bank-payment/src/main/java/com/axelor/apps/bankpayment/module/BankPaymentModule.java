@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsServiceImpl;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationBankDetailsServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
@@ -68,7 +68,7 @@ import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.accountingsituation.AccountingSituationAttrsServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.accountingsituation.AccountingSituationInitServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.accountingsituation.AccountingSituationBankDetailsServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
@@ -312,7 +312,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankOrderEncryptionService.class).to(BankOrderEncryptionServiceImpl.class);
     bind(AccountingSituationAttrsServiceImpl.class)
         .to(AccountingSituationAttrsServiceBankPaymentImpl.class);
-    bind(AccountingSituationInitServiceImpl.class)
-        .to(AccountingSituationInitServiceBankPaymentImpl.class);
+    bind(AccountingSituationBankDetailsServiceImpl.class)
+        .to(AccountingSituationBankDetailsServiceBankPaymentImpl.class);
   }
 }
