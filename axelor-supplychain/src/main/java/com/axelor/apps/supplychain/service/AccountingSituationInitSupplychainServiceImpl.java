@@ -20,10 +20,10 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationBankDetailsService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -44,12 +44,16 @@ public class AccountingSituationInitSupplychainServiceImpl
   public AccountingSituationInitSupplychainServiceImpl(
       SequenceService sequenceService,
       AccountingSituationRepository accountingSituationRepository,
-      PaymentModeService paymentModeService,
       AccountConfigService accountConfigService,
+      AccountingSituationBankDetailsService accountingSituationBankDetailsService,
       AppAccountService appAccountService,
       SaleConfigService saleConfigService,
       CurrencyScaleService currencyScaleService) {
-    super(sequenceService, accountingSituationRepository, paymentModeService, accountConfigService);
+    super(
+        sequenceService,
+        accountingSituationRepository,
+        accountConfigService,
+        accountingSituationBankDetailsService);
     this.appAccountService = appAccountService;
     this.saleConfigService = saleConfigService;
     this.currencyScaleService = currencyScaleService;

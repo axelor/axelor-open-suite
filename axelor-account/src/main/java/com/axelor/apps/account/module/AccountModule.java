@@ -77,6 +77,8 @@ import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.*;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationBankDetailsService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationBankDetailsServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupService;
@@ -982,5 +984,8 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermDateComputeService.class).to(InvoiceTermDateComputeServiceImpl.class);
     bind(InvoiceLineCheckService.class).to(InvoiceLineCheckServiceImpl.class);
     bind(InvoiceGlobalDiscountService.class).to(InvoiceGlobalDiscountServiceImpl.class);
+
+    bind(AccountingSituationBankDetailsService.class)
+        .to(AccountingSituationBankDetailsServiceImpl.class);
   }
 }
