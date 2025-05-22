@@ -369,8 +369,8 @@
   </action-method>
 
   <!-- Shipment process -->
-  <action-view name="action-suppplychain-view-pricing-list"
-    title="Freight carrier pricings" model="com.axelor.utils.db.Wizard">
+  <action-view name="action-suppplychain-view-pricing-list" title="Transport rates"
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="freight-carrier-pricings-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
@@ -378,7 +378,7 @@
     <context name="_shipmentMode" expr="eval: shipmentMode"/>
   </action-view>
 
-  <form title="Freight carrier pricings" name="freight-carrier-pricings-wizard-form"
+  <form title="Transport rates" name="freight-carrier-pricings-wizard-form"
     model="com.axelor.utils.db.Wizard"
     onNew="action-supplychain-sale-order-method-set-freight-carrier-pricings-set,action-supplychain-sale-order-method-compute-pricings">
     <panel name="main">
