@@ -140,6 +140,19 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
   }
 
   @Override
+  public Map<String, Object> getOnNewValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = super.getOnNewValuesMap(moveLine, move);
+
+    if (move != null) {
+      valuesMap.put("budgetFromDate", move.getBudgetFromDate());
+      valuesMap.put("budgetToDate", move.getBudgetToDate());
+    }
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Object> getDebitOnChangeValuesMap(
       MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
 

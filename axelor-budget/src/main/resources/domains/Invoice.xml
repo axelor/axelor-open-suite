@@ -10,6 +10,9 @@
     <boolean name="budgetDistributionGenerated" title="Budget distribution generated"
       default="false"/>
 
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
+
   </entity>
 
 </domain-models>
