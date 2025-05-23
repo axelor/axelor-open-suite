@@ -251,6 +251,21 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void refreshInvoicePfpStatus(Invoice invoice) {
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return;
+    }
+
+    Integer pfpStatus = checkOtherInvoiceTerms(invoice.getInvoiceTermList());
+
+    if (pfpStatus != null && pfpStatus != invoice.getPfpValidateStatusSelect()) {
+      invoice.setPfpValidateStatusSelect(pfpStatus);
+      invoiceRepo.save(invoice);
+    }
+  }
+
+  @Override
   public boolean getUserCondition(User pfpValidatorUser, User user) {
     return user.equals(pfpValidatorUser) || user.getIsSuperPfpUser();
   }
