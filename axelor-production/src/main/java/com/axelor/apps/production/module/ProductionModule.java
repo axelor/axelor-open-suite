@@ -99,6 +99,8 @@ import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionI
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionService;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderCheckBlockingServiceProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
@@ -468,6 +470,8 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderSaleOrderService.class).to(ManufOrderSaleOrderServiceImpl.class);
     bind(SaleOrderLineBlockingProductionService.class)
         .to(SaleOrderLineBlockingProductionServiceImpl.class);
-    bind(SaleOrderCheckBlockingSupplychainServiceImpl.class).to(SaleOrderCheckBlockingServiceProductionServiceImpl.class);
+    bind(SaleOrderCheckBlockingSupplychainServiceImpl.class)
+        .to(SaleOrderCheckBlockingServiceProductionServiceImpl.class);
+    bind(SaleOrderBlockingProductionService.class).to(SaleOrderBlockingProductionServiceImpl.class);
   }
 }
