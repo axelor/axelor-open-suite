@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -48,6 +49,9 @@ public interface InvoiceTermPfpService {
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException;
 
   Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
+
+  @Transactional(rollbackOn = {Exception.class})
+  void refreshInvoicePfpStatus(Invoice invoice);
 
   boolean getUserCondition(User pfpValidatorUser, User user);
 
