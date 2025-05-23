@@ -104,6 +104,8 @@ import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderCopyProductionService;
 import com.axelor.apps.production.service.SaleOrderCopyProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionService;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
@@ -466,5 +468,7 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineMOGenerationMultiLineServiceImpl.class);
     bind(SaleOrderCopyProductionService.class).to(SaleOrderCopyProductionServiceImpl.class);
     bind(ManufOrderSaleOrderService.class).to(ManufOrderSaleOrderServiceImpl.class);
+    bind(SaleOrderLineBlockingProductionService.class)
+        .to(SaleOrderLineBlockingProductionServiceImpl.class);
   }
 }
