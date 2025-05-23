@@ -78,7 +78,8 @@
         <panel name="trackingNumberConfigPanel" colSpan="12">
           <field name="trackingNumberConfiguration" canNew="true"
             grid-view="tracking-number-configuration-grid"
-            form-view="tracking-number-configuration-form"/>
+            form-view="tracking-number-configuration-form"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})"/>
         </panel>
       </panel>
     </panel-tabs>
