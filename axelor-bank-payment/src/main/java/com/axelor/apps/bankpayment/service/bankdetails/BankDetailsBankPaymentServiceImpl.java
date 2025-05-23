@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankdetails;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.umr.UmrService;
+import com.axelor.apps.account.service.umr.UmrActiveService;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
@@ -41,7 +41,7 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
   protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankDetailsRepository bankDetailsRepository;
   protected CurrencyScaleService currencyScaleService;
-  protected UmrService umrService;
+  protected UmrActiveService umrActiveService;
   protected AppBankPaymentService appBankPaymentService;
 
   @Inject
@@ -49,12 +49,12 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
       BankStatementLineFetchService bankStatementLineFetchService,
       BankDetailsRepository bankDetailsRepository,
       CurrencyScaleService currencyScaleService,
-      UmrService umrService,
+      UmrActiveService umrActiveService,
       AppBankPaymentService appBankPaymentService) {
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankDetailsRepository = bankDetailsRepository;
     this.currencyScaleService = currencyScaleService;
-    this.umrService = umrService;
+    this.umrActiveService = umrActiveService;
     this.appBankPaymentService = appBankPaymentService;
   }
 
@@ -86,17 +86,16 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
   @Override
   public List<BankDetails> getBankDetailsLinkedToActiveUmr(
       PaymentMode paymentMode, Partner partner, Company company) {
-    if (paymentMode != null && partner != null && company != null) {
-      boolean isManageDirectDebitPayment =
-          appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment();
-      if (isManageDirectDebitPayment
-          && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
-          && !partner.getBankDetailsList().isEmpty()) {
-        return partner.getBankDetailsList().stream()
-            .filter(bankDetails -> umrService.getActiveUmr(company, bankDetails) != null)
-            .collect(Collectors.toList());
+      if (paymentMode != null && partner != null && company != null) {
+          boolean isManageDirectDebitPayment =
+                  appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment();
+          if (isManageDirectDebitPayment
+                  && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)) {
+              return partner.getBankDetailsList().stream()
+                      .filter(bankDetails -> umrActiveService.getActiveUmr(company, bankDetails) != null)
+                      .collect(Collectors.toList());
+          }
       }
-    }
     return Collections.emptyList();
   }
 
@@ -106,7 +105,7 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
     if (paymentMode != null && company != null && bankDetails != null) {
       return ((paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
           && appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment()
-          && (umrService.getActiveUmr(company, bankDetails) == null));
+          && (umrActiveService.getActiveUmr(company, bankDetails) == null));
     }
     return false;
   }
