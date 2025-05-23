@@ -19,7 +19,7 @@
 package com.axelor.apps.bankpayment.service.bankorder.file.directdebit;
 
 import com.axelor.apps.account.db.Umr;
-import com.axelor.apps.account.service.umr.UmrService;
+import com.axelor.apps.account.service.umr.UmrActiveService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -434,7 +434,8 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
         company = bankOrderLine.getBankOrder().getSenderCompany();
       }
       Umr receiverUmr =
-          Beans.get(UmrService.class).getActiveUmr(company, bankOrderLine.getPartner());
+          Beans.get(UmrActiveService.class)
+              .getActiveUmr(bankOrderLine.getReceiverCompany(), receiverBankDetails);
 
       if (receiverUmr == null) {
         throw new AxelorException(

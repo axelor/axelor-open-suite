@@ -77,6 +77,8 @@ import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.*;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsServiceImpl;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationBankDetailsService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationBankDetailsServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupService;
@@ -437,6 +439,8 @@ import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServ
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterService;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterServiceImpl;
+import com.axelor.apps.account.service.umr.UmrActiveService;
+import com.axelor.apps.account.service.umr.UmrActiveServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.account.service.umr.UmrService;
@@ -982,5 +986,9 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermDateComputeService.class).to(InvoiceTermDateComputeServiceImpl.class);
     bind(InvoiceLineCheckService.class).to(InvoiceLineCheckServiceImpl.class);
     bind(InvoiceGlobalDiscountService.class).to(InvoiceGlobalDiscountServiceImpl.class);
+
+    bind(AccountingSituationBankDetailsService.class)
+        .to(AccountingSituationBankDetailsServiceImpl.class);
+    bind(UmrActiveService.class).to(UmrActiveServiceImpl.class);
   }
 }
