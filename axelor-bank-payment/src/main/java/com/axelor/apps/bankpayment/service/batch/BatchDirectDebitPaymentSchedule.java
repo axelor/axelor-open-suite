@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.umr.UmrActiveService;
 import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
@@ -67,7 +68,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
   protected BatchBankPaymentService batchBankPaymentService;
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
-  protected UmrService umrService;
+  protected UmrActiveService umrActiveService;
 
   @Inject
   public BatchDirectDebitPaymentSchedule(
@@ -76,7 +77,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
       UmrService umrService) {
     this.batchBankPaymentService = batchBankPaymentService;
     this.paymentScheduleLineRepo = paymentScheduleLineRepo;
-    this.umrService = umrService;
+    this.umrActiveService = umrActiveService;
   }
 
   @Override
@@ -231,7 +232,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                       .map(Batch::getAccountingBatch)
                       .map(AccountingBatch::getCompany)
                       .orElse(null);
-              Umr activeUmr = umrService.getActiveUmr(company, bankDetails);
+              Umr activeUmr = umrActiveService.getActiveUmr(company, bankDetails);
               Preconditions.checkNotNull(activeUmr, I18n.get("Partner active UMR is missing."));
             }
           }

@@ -439,6 +439,8 @@ import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServ
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServiceImpl;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterService;
 import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupUnletterServiceImpl;
+import com.axelor.apps.account.service.umr.UmrActiveService;
+import com.axelor.apps.account.service.umr.UmrActiveServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
 import com.axelor.apps.account.service.umr.UmrService;
@@ -987,5 +989,6 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountingSituationBankDetailsService.class)
         .to(AccountingSituationBankDetailsServiceImpl.class);
+    bind(UmrActiveService.class).to(UmrActiveServiceImpl.class);
   }
 }

@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankdetails;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.umr.UmrService;
+import com.axelor.apps.account.service.umr.UmrActiveService;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
@@ -41,20 +41,20 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
   protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankDetailsRepository bankDetailsRepository;
   protected CurrencyScaleService currencyScaleService;
-  private final UmrService umrService;
-  private final AppBankPaymentService appBankPaymentService;
+  protected UmrActiveService umrActiveService;
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
   public BankDetailsBankPaymentServiceImpl(
       BankStatementLineFetchService bankStatementLineFetchService,
       BankDetailsRepository bankDetailsRepository,
       CurrencyScaleService currencyScaleService,
-      UmrService umrService,
+      UmrActiveService umrActiveService,
       AppBankPaymentService appBankPaymentService) {
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankDetailsRepository = bankDetailsRepository;
     this.currencyScaleService = currencyScaleService;
-    this.umrService = umrService;
+    this.umrActiveService = umrActiveService;
     this.appBankPaymentService = appBankPaymentService;
   }
 
@@ -91,7 +91,7 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
     if (isManageDirectDebitPayment
         && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)) {
       return partner.getBankDetailsList().stream()
-          .filter(bankDetails -> umrService.getActiveUmr(company, bankDetails) != null)
+          .filter(bankDetails -> umrActiveService.getActiveUmr(company, bankDetails) != null)
           .collect(Collectors.toList());
     }
     return Collections.emptyList();
