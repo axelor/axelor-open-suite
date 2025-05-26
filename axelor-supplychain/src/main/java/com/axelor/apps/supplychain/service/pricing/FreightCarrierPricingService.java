@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface FreightCarrierPricingService {
 
-  void computeFreightCarrierPricing(
+  String computeFreightCarrierPricing(
       List<FreightCarrierPricing> freightCarrierPricingList, Long saleOrderId)
       throws AxelorException;
 

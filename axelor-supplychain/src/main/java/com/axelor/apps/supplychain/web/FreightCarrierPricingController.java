@@ -43,9 +43,13 @@ public class FreightCarrierPricingController {
                   .collect(Collectors.toList());
 
       if (context.get("_id") != null) {
-        Beans.get(FreightCarrierPricingService.class)
-            .computeFreightCarrierPricing(
-                freightCarrierPricingList, Long.valueOf(context.get("_id").toString()));
+        String message =
+            Beans.get(FreightCarrierPricingService.class)
+                .computeFreightCarrierPricing(
+                    freightCarrierPricingList, Long.valueOf(context.get("_id").toString()));
+        if (message != null) {
+          response.setInfo(message);
+        }
         response.setCanClose(true);
       }
     } catch (Exception e) {

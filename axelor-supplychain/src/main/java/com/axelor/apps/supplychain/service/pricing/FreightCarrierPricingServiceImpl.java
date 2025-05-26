@@ -9,6 +9,7 @@ import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.repo.FreightCarrierModeRepository;
 import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -21,20 +22,23 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
   protected final SaleOrderRepository saleOrderRepository;
   protected final FreightCarrierModeRepository freightCarrierModeRepository;
   protected final PartnerRepository partnerRepository;
+  protected final SaleOrderShipmentService saleOrderShipmentService;
 
   @Inject
   public FreightCarrierPricingServiceImpl(
       SaleOrderRepository saleOrderRepository,
       FreightCarrierModeRepository freightCarrierModeRepository,
-      PartnerRepository partnerRepository) {
+      PartnerRepository partnerRepository,
+      SaleOrderShipmentService saleOrderShipmentService) {
     this.saleOrderRepository = saleOrderRepository;
     this.freightCarrierModeRepository = freightCarrierModeRepository;
     this.partnerRepository = partnerRepository;
+    this.saleOrderShipmentService = saleOrderShipmentService;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void computeFreightCarrierPricing(
+  public String computeFreightCarrierPricing(
       List<FreightCarrierPricing> freightCarrierPricingList, Long saleOrderId)
       throws AxelorException {
     SaleOrder saleOrder = saleOrderRepository.find(saleOrderId);
@@ -46,8 +50,12 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
       saleOrder.setCarrierPartner(
           partnerRepository.find(freightCarrierPricing.getCarrierPartner().getId()));
 
+      String message =
+          saleOrderShipmentService.updateShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
       saleOrderRepository.save(saleOrder);
+      return message;
     }
+    return null;
   }
 
   public Set<FreightCarrierPricing> getFreightCarrierPricingSet(
