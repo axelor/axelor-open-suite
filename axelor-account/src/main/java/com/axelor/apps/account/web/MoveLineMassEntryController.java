@@ -18,14 +18,18 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryDomainService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.EntityHelper;
 import com.axelor.inject.Beans;
@@ -286,4 +290,19 @@ public class MoveLineMassEntryController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  @ErrorException
+  public void addMovePartnerBankDetailsDomain(ActionRequest request, ActionResponse response){
+    MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+
+    String domain =
+            Beans.get(MoveLineMassEntryDomainService.class).createDomainForMovePartnerBankDetails(moveLineMassEntry);
+
+    if (domain.isEmpty()) {
+      response.setAttr("movePartnerBankDetails", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("movePartnerBankDetails", "domain", domain);
+    }
+  }
+
 }
