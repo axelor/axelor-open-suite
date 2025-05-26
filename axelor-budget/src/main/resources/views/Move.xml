@@ -26,7 +26,7 @@
           <field name="budgetFromDate" requiredIf="budgetToDate"/>
           <field name="budgetToDate" requiredIf="budgetFromDate"/>
           <button name="initBudgetDatesBtn" title="Init budget dates"
-            onClick="action-move-group-initialize-budget-dates"/>
+            onClick="action-move-method-initialize-budget-dates"/>
         </panel>
       </insert>
     </extend>
@@ -62,11 +62,6 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-account-move-group-accounting-click"/>
-  </action-group>
-
-  <action-group name="action-move-group-initialize-budget-dates">
-    <action name="action-move-method-initialize-budget-dates"/>
-    <action name="action-budget-validate-budget-dates"/>
   </action-group>
 
   <action-method name="action-move-method-budget-auto-compute-budget-distribution">

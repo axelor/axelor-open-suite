@@ -47,7 +47,7 @@
             <field name="budgetFromDate" requiredIf="budgetToDate"/>
             <field name="budgetToDate" requiredIf="budgetFromDate"/>
             <button name="initBudgetDatesBtn" title="Init budget dates"
-              onClick="action-sale-order-group-initialize-budget-dates"/>
+              onClick="action-sale-order-method-initialize-budget-dates"/>
           </panel>
         </panel>
       </insert>
@@ -83,11 +83,6 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-method-finalize-quotation"/>
-  </action-group>
-
-  <action-group name="action-sale-order-group-initialize-budget-dates">
-    <action name="action-sale-order-method-initialize-budget-dates"/>
-    <action name="action-budget-validate-budget-dates"/>
   </action-group>
 
   <action-method

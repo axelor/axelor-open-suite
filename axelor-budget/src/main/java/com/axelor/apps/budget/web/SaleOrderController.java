@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.date.BudgetDateService;
+import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
@@ -148,7 +148,7 @@ public class SaleOrderController {
   public void initializeBudgetDates(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(BudgetDateService.class).initializeBudgetDates(saleOrder);
+    Beans.get(BudgetInitDateService.class).initializeBudgetDates(saleOrder);
 
     response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }

@@ -37,7 +37,7 @@
             <field name="budgetFromDate" requiredIf="budgetToDate"/>
             <field name="budgetToDate" requiredIf="budgetFromDate"/>
             <button name="initBudgetDatesBtn" title="Init budget dates"
-              onClick="action-invoice-group-initialize-budget-dates"/>
+              onClick="action-invoice-method-initialize-budget-dates"/>
           </panel>
           <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
             action="action-budget-distribution-view-budget-distribution" colSpan="12"
@@ -75,11 +75,6 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-group-ventilate"/>
-  </action-group>
-
-  <action-group name="action-invoice-group-initialize-budget-dates">
-    <action name="action-invoice-method-initialize-budget-dates"/>
-    <action name="action-budget-validate-budget-dates"/>
   </action-group>
 
   <action-method name="action-invoice-method-budget-auto-compute-budget-distribution">
