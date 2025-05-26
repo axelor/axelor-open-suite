@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
@@ -52,6 +53,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
   protected final ConfiguratorService configuratorService;
   protected final ConfiguratorSaleOrderLineService configuratorSaleOrderLineService;
   protected final ConfiguratorCheckService configuratorCheckService;
+  protected final SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public ConfiguratorSaleOrderDuplicateServiceImpl(
@@ -61,7 +63,8 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       SaleOrderRepository saleOrderRepository,
       ConfiguratorService configuratorService,
       ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
-      ConfiguratorCheckService configuratorCheckService) {
+      ConfiguratorCheckService configuratorCheckService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.configuratorRepository = configuratorRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderComputeService = saleOrderComputeService;
@@ -69,6 +72,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
     this.configuratorService = configuratorService;
     this.configuratorSaleOrderLineService = configuratorSaleOrderLineService;
     this.configuratorCheckService = configuratorCheckService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -222,6 +226,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       toRemoveLines.remove(saleOrderLine);
     }
     manageLines(saleOrder, toRemoveLines);
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
   }
 
   @Transactional(rollbackOn = Exception.class)
