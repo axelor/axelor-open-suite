@@ -1,0 +1,5 @@
+---
+title: "Sale order: fixed an error that could occur when the bill of material linked to a line was personalized."
+module: axelor-production
+developer: |
+  The constructor of SaleOrderLineBomSyncServiceImpl now requires `AppSaleRepository`.
