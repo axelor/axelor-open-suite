@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -182,4 +183,20 @@ public class PaymentScheduleController {
       TraceBackService.trace(response, e);
     }
   }
+
+  @ErrorException
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+
+    String domain = Beans.get(InvoiceDomainService.class).createDomainForBankDetails(invoice);
+
+    response.setAttr("bankDetails", "domain", domain);
+  }
+
+
+  <action-attrs name="action-payment-schedule-record-bank-details-domain">
+    <attribute name="domain" for="bankDetails"
+  expr="eval: &quot;self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = TRUE&quot;"
+          if="partner &amp;&amp; partner.bankDetailsList"/>
+  </action-attrs>
 }
