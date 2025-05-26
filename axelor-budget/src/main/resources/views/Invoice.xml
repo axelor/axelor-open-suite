@@ -47,7 +47,8 @@
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-compute-budget-distribution" hidden="true"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"
+          icon="clipboard2-data-fill" readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
       </insert>
     </extend>
 
@@ -66,6 +67,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-method-budget-validate-ventilation"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-group-ventilate"/>
   </action-group>
 
@@ -112,6 +114,7 @@
       if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
     <action name="action-budget-invoice-validate-budget-balance"
       if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-record name="action-budget-invoice-record-get-budget-balance"

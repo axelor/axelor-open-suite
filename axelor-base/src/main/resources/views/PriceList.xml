@@ -85,6 +85,8 @@
     <field name="typeSelect" expr="eval: _typeSelect" if="!__parent__"/>
     <field name="typeSelect" expr="eval: __parent__?.typeSelect" if="__parent__"/>
     <field name="currency" expr="eval: __parent__?.currency" if="__parent__"/>
+    <field name="currency" expr="eval: __user__.activeCompany.currency"
+      if="__parent__==null  &amp;&amp; __user__.activeCompany!=null &amp;&amp; __user__.activeCompany.currency!=null"/>
   </action-record>
 
   <action-attrs name="action-price-list-attrs-readonly-type-select">

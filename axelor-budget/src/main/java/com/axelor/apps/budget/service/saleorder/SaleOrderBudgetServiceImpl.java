@@ -223,6 +223,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         invoiceLine.setBudget(saleOrderLine.getBudget());
         invoiceLine.setBudgetRemainingAmountToAllocate(
             saleOrderLine.getBudgetRemainingAmountToAllocate());
+        invoiceLine.setBudgetFromDate(saleOrderLine.getBudgetFromDate());
+        invoiceLine.setBudgetToDate(saleOrderLine.getBudgetToDate());
         invoiceToolBudgetService.copyBudgetDistributionList(
             saleOrderLine.getBudgetDistributionList(),
             invoiceLine,
@@ -291,10 +293,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           }
         } else {
           Budget budget = saleOrderLine.getBudget();
-          if (budget != null) {
-            budgetToolsService.fillAmountPerBudgetMap(
-                budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
-          }
+          budgetToolsService.fillAmountPerBudgetMap(
+              budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
         }
       }
 

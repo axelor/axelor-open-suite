@@ -57,6 +57,8 @@
       <field name="partFinishMoAutomaticEmail" on="UPDATE"/>
       <field name="partFinishMoMessageTemplate" on="UPDATE"/>
       <field name="prodProcessPrintTemplate" on="UPDATE"/>
+      <field name="capacity" on="UPDATE"/>
+      <field name="scheduling" on="UPDATE"/>
     </track>
 
   </entity>

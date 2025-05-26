@@ -281,7 +281,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void ventilate(Invoice invoice) throws AxelorException {
     ventilateProcess(invoice);
-    if (invoice.getInvoiceAutomaticMail()) {
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (invoice.getInvoiceAutomaticMail()
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       sendMail(invoice, invoice.getInvoiceMessageTemplate());
     }
   }
@@ -451,7 +454,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
-    if (!accountConfig.getAutoReconcileOnInvoice()) {
+    if (!accountConfig.getAutoReconcileOnInvoice()
+        || !Optional.of(invoice)
+            .map(Invoice::getPartner)
+            .map(Partner::getIsCompensation)
+            .orElse(true)) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(

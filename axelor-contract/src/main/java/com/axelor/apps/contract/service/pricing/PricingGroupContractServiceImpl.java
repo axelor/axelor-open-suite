@@ -22,10 +22,10 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
-import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
+import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
 import com.google.inject.Inject;
 
-public class PricingGroupContractServiceImpl extends PricingGroupSaleServiceImpl {
+public class PricingGroupContractServiceImpl extends PricingGroupSupplyChainServiceImpl {
 
   @Inject
   public PricingGroupContractServiceImpl(PricingGenericService pricingGenericService) {

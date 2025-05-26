@@ -179,6 +179,11 @@
 
     <boolean name="isDisplaySubLinesOnReport" title="Display sublines on report"/>
 
+    <many-to-one name="originSaleQuotation" ref="com.axelor.apps.sale.db.SaleOrder"
+      readonly="true"/>
+    <integer name="orderingStatus" selection="sale.sale.order.ordering.status.select"
+      title="Ordering status" readonly="true" default="0"/>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
@@ -195,6 +200,10 @@
 			public static final int STATUS_ORDER_CONFIRMED = 3;
 			public static final int STATUS_ORDER_COMPLETED = 4;
 			public static final int STATUS_CANCELED = 5;
+
+			// ORDERING STATUS
+			public static final int ORDERING_STATUS_PARTIALLY_ORDERED = 1;
+			public static final int ORDERING_STATUS_CLOSED = 2;
    		]]>
     </extra-code>
 

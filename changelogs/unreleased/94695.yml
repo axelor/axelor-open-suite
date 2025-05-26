@@ -1,3 +1,0 @@
----
-title: "Configurator: fixed an issue where bill of material and prod process were generated twice."
-module: "axelor-production"

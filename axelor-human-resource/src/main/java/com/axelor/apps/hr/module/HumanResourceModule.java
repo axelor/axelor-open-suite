@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
+import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.apps.hr.db.repo.AllocationLineManagementRepository;
 import com.axelor.apps.hr.db.repo.AllocationLineRepository;
@@ -79,6 +80,9 @@ import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
 import com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl;
+import com.axelor.apps.hr.service.PartnerConvertHRServiceImpl;
+import com.axelor.apps.hr.service.PartnerEmployeeService;
+import com.axelor.apps.hr.service.PartnerEmployeeServiceImpl;
 import com.axelor.apps.hr.service.PayrollPreparationExportService;
 import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
@@ -159,6 +163,8 @@ import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseServiceImpl;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainService;
@@ -483,5 +489,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectIndicatorsService.class).to(ProjectIndicatorsServiceImpl.class);
     bind(ProjectPlanningTimeToolService.class).to(ProjectPlanningTimeToolServiceImpl.class);
     bind(TimesheetEmployeeService.class).to(TimesheetEmployeeServiceImpl.class);
+    bind(ExpenseLineDomainService.class).to(ExpenseLineDomainServiceImpl.class);
+    bind(PartnerEmployeeService.class).to(PartnerEmployeeServiceImpl.class);
+    bind(PartnerConvertServiceImpl.class).to(PartnerConvertHRServiceImpl.class);
   }
 }

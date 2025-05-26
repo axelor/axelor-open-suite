@@ -32,6 +32,7 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
@@ -56,6 +57,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
   protected SaleConfigService saleConfigService;
   protected SaleOrderBankDetailsService saleOrderBankDetailsService;
   protected AppBaseService appBaseService;
+  protected SaleOrderDateService saleOrderDateService;
 
   @Inject
   public SaleOrderOnChangeServiceImpl(
@@ -69,7 +71,8 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       SaleOrderComputeService saleOrderComputeService,
       SaleConfigService saleConfigService,
       SaleOrderBankDetailsService saleOrderBankDetailsService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderDateService saleOrderDateService) {
     this.partnerService = partnerService;
     this.saleOrderUserService = saleOrderUserService;
     this.saleOrderService = saleOrderService;
@@ -81,6 +84,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     this.saleConfigService = saleConfigService;
     this.saleOrderBankDetailsService = saleOrderBankDetailsService;
     this.appBaseService = appBaseService;
+    this.saleOrderDateService = saleOrderDateService;
   }
 
   @Override
@@ -234,7 +238,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
 
   protected Map<String, Object> getEndOfValidityDate(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
-    saleOrderService.computeEndOfValidityDate(saleOrder);
+    saleOrderDateService.computeEndOfValidityDate(saleOrder);
     values.put("duration", saleOrder.getDuration());
     values.put("endOfValidityDate", saleOrder.getEndOfValidityDate());
     return values;

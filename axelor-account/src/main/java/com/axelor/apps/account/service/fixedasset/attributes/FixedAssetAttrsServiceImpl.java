@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
 
@@ -48,12 +49,13 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
 
   @Override
   public void addDisposalAmountTitle(
-      int disposalTypeSelect, Map<String, Map<String, Object>> attrsMap) {
+      Integer disposalTypeSelect, Map<String, Map<String, Object>> attrsMap) {
     String title = "";
 
-    if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_SCRAPPING) {
+    if (Objects.equals(FixedAssetRepository.DISPOSABLE_TYPE_SELECT_SCRAPPING, disposalTypeSelect)) {
       title = I18n.get("Amount excluding taxes");
-    } else if (disposalTypeSelect == FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
+    } else if (Objects.equals(
+        FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION, disposalTypeSelect)) {
       title = I18n.get("Sales price excluding taxes");
     }
 
@@ -62,11 +64,11 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
 
   @Override
   public void addDisposalAmountReadonly(
-      int disposalTypeSelect, Map<String, Map<String, Object>> attrsMap) {
+      Integer disposalTypeSelect, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
         "disposalAmount",
         "readonly",
-        disposalTypeSelect != FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION,
+        !Objects.equals(FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION, disposalTypeSelect),
         attrsMap);
   }
 

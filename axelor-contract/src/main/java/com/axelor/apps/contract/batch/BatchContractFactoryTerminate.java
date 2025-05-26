@@ -41,7 +41,7 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
   }
 
   @Override
-  Query<Contract> prepare(Batch batch) {
+  protected Query<Contract> prepare(Batch batch) {
     return repository
         .all()
         .filter(
@@ -59,7 +59,7 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
   }
 
   @Override
-  void process(Contract contract) throws AxelorException {
+  protected void process(Contract contract) throws AxelorException {
     service.terminateContract(contract, false, baseService.getTodayDate(contract.getCompany()));
   }
 }

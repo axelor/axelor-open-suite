@@ -45,9 +45,11 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
 
   @NotNull private LocalDate date;
 
-  @NotNull
   @Min(0)
   private BigDecimal duration;
+
+  @Min(0)
+  private BigDecimal hoursDuration;
 
   private String comments;
 
@@ -99,6 +101,14 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
 
   public void setDuration(BigDecimal duration) {
     this.duration = duration;
+  }
+
+  public BigDecimal getHoursDuration() {
+    return hoursDuration;
+  }
+
+  public void setHoursDuration(BigDecimal hoursDuration) {
+    this.hoursDuration = hoursDuration;
   }
 
   public String getComments() {

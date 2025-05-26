@@ -284,10 +284,8 @@ public class InventoryLineServiceImpl implements InventoryLineService {
       return false;
     }
 
-    StockLocation stockLocation =
-        stockLocationRepository.find(inventoryLine.getStockLocation().getId());
-    return stockLocation.getStockLocationLineList().stream()
-        .map(StockLocationLine::getProduct)
-        .anyMatch(product -> inventoryLine.getProduct().equals(product));
+    return stockLocationLineFetchService.getStockLocationLine(
+            inventoryLine.getStockLocation(), inventoryLine.getProduct())
+        != null;
   }
 }

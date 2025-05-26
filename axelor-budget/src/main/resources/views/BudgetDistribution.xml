@@ -442,4 +442,13 @@
     <attribute name="value" for="$fromBudget" expr="eval:_fromBudget"/>
   </action-attrs>
 
+  <action-method name="action-budget-method-manage-budget-date-label">
+    <call class="com.axelor.apps.budget.web.BudgetDateController"
+      method="manageBudgetDateLabel"/>
+  </action-method>
+
+  <action-method name="action-budget-validate-budget-dates">
+    <call class="com.axelor.apps.budget.web.BudgetDateController" method="checkBudgetDates"/>
+  </action-method>
+
 </object-views>

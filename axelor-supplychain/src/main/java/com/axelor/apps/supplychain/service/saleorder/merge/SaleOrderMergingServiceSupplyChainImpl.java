@@ -293,9 +293,12 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
             getCommonFields(result).getCommonInvoicedPartner(),
             getCommonFields(result).getCommonDeliveredPartner());
 
+    saleOrderMerged.setInAti(saleOrdersToMerge.stream().anyMatch(SaleOrder::getInAti));
+
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    updateChildrenOrder(saleOrdersToMerge, saleOrderMerged);
     return saleOrderMerged;
   }
 

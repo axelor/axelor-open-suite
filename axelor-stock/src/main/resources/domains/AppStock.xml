@@ -52,6 +52,7 @@
       <field name="stockLocationBarcodeTypeConfig" on="UPDATE"/>
       <field name="isManageStockLocationOnStockMoveLine" on="UPDATE"/>
       <field name="isMassStockMoveManaged" on="UPDATE"/>
+      <field name="isIncotermEnabled" on="UPDATE"/>
     </track>
   </entity>
 

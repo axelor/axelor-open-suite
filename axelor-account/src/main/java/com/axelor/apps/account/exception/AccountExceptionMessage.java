@@ -71,6 +71,10 @@ public final class AccountExceptionMessage {
       /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
+
+  public static final String NO_VALIDATED_DEPRECIATED_FIXED_ASSET_SELECTED =
+      /*$$(*/ "Please select validated or depreciated fixed asset before running this process." /*)*/;
+
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
 
   /** Bank statement service */
@@ -1287,6 +1291,9 @@ public final class AccountExceptionMessage {
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
 
+  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS = /*$$(*/
+      "The following analytic axis are required : %s (company: %s)" /*)*/;
+
   public static final String MOVE_CHECK_ORIGIN = /*$$(*/
       "The move field origin is empty, do you wish to continue ?" /*)*/;
 
@@ -1654,9 +1661,6 @@ public final class AccountExceptionMessage {
 
   public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
       "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
-
-  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
-      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
 
   public static final String MOVE_INVOICE_DESCRIPTION_REQUIRED = /*$$(*/
       "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such." /*)*/;
