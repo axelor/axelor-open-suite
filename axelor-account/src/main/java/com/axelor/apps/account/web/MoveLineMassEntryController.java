@@ -18,12 +18,10 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
-import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryDomainService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
@@ -292,11 +290,12 @@ public class MoveLineMassEntryController {
   }
 
   @ErrorException
-  public void addMovePartnerBankDetailsDomain(ActionRequest request, ActionResponse response){
+  public void addMovePartnerBankDetailsDomain(ActionRequest request, ActionResponse response) {
     MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
 
     String domain =
-            Beans.get(MoveLineMassEntryDomainService.class).createDomainForMovePartnerBankDetails(moveLineMassEntry);
+        Beans.get(MoveLineMassEntryDomainService.class)
+            .createDomainForMovePartnerBankDetails(moveLineMassEntry);
 
     if (domain.isEmpty()) {
       response.setAttr("movePartnerBankDetails", "domain", "self.id IN (0)");
@@ -304,5 +303,4 @@ public class MoveLineMassEntryController {
       response.setAttr("movePartnerBankDetails", "domain", domain);
     }
   }
-
 }
