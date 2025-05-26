@@ -29,7 +29,7 @@ import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
-import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
@@ -63,6 +63,7 @@ import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPayme
 import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.InvoiceTermDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
@@ -318,6 +319,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoiceTermServiceImpl.class).to(InvoiceTermBankPaymentServiceImpl.class);
     bind(MoveCreateServiceImpl.class).to(MoveCreateBankPaymentServiceImpl.class);
     bind(MoveRecordSetServiceImpl.class).to(MoveRecordSetBankPaymentServiceImpl.class);
-    bind(MoveLineMassEntryRecordServiceImpl.class).to(MoveLineMassEntryRecordBankPaymentServiceImpl.class);
+    bind(MoveLineMassEntryRecordServiceImpl.class)
+        .to(MoveLineMassEntryRecordBankPaymentServiceImpl.class);
+    bind(InvoiceTermDomainServiceImpl.class).to(InvoiceTermDomainBankPaymentServiceImpl.class);
   }
 }

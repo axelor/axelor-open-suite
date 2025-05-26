@@ -32,36 +32,84 @@ import java.time.LocalDate;
 
 public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl {
 
-    protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
-    @Inject
-    public InvoiceTermBankPaymentServiceImpl(InvoiceTermRepository invoiceTermRepo, InvoiceRepository invoiceRepo, AppAccountService appAccountService, JournalService journalService, InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService, UserRepository userRepo, PfpService pfpService, CurrencyScaleService currencyScaleService, DMSFileRepository DMSFileRepo, InvoiceTermPaymentService invoiceTermPaymentService, CurrencyService currencyService, AppBaseService appBaseService, InvoiceTermPfpUpdateService invoiceTermPfpUpdateService, InvoiceTermToolService invoiceTermToolService, InvoiceTermPfpToolService invoiceTermPfpToolService, InvoiceTermDateComputeService invoiceTermDateComputeService, BankDetailsBankPaymentService bankDetailsBankPaymentService) {
-        super(invoiceTermRepo, invoiceRepo, appAccountService, journalService, invoiceTermFinancialDiscountService, userRepo, pfpService, currencyScaleService, DMSFileRepo, invoiceTermPaymentService, currencyService, appBaseService, invoiceTermPfpUpdateService, invoiceTermToolService, invoiceTermPfpToolService, invoiceTermDateComputeService);
-        this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
-    }
+  @Inject
+  public InvoiceTermBankPaymentServiceImpl(
+      InvoiceTermRepository invoiceTermRepo,
+      InvoiceRepository invoiceRepo,
+      AppAccountService appAccountService,
+      JournalService journalService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      UserRepository userRepo,
+      PfpService pfpService,
+      CurrencyScaleService currencyScaleService,
+      DMSFileRepository DMSFileRepo,
+      InvoiceTermPaymentService invoiceTermPaymentService,
+      CurrencyService currencyService,
+      AppBaseService appBaseService,
+      InvoiceTermPfpUpdateService invoiceTermPfpUpdateService,
+      InvoiceTermToolService invoiceTermToolService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      InvoiceTermDateComputeService invoiceTermDateComputeService,
+      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+    super(
+        invoiceTermRepo,
+        invoiceRepo,
+        appAccountService,
+        journalService,
+        invoiceTermFinancialDiscountService,
+        userRepo,
+        pfpService,
+        currencyScaleService,
+        DMSFileRepo,
+        invoiceTermPaymentService,
+        currencyService,
+        appBaseService,
+        invoiceTermPfpUpdateService,
+        invoiceTermToolService,
+        invoiceTermPfpToolService,
+        invoiceTermDateComputeService);
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+  }
 
-    @Override
-    public InvoiceTerm createInvoiceTerm(
-            Invoice invoice,
-            Move move,
-            MoveLine moveLine,
-            BankDetails bankDetails,
-            User pfpUser,
-            PaymentMode paymentMode,
-            LocalDate date,
-            LocalDate estimatedPaymentDate,
-            BigDecimal amount,
-            BigDecimal percentage,
-            int sequence,
-            boolean isHoldBack)
-            throws AxelorException {
-        InvoiceTerm newInvoiceTerm = super.createInvoiceTerm(invoice,move,moveLine,bankDetails,pfpUser,paymentMode,date,estimatedPaymentDate,amount,percentage,sequence,isHoldBack);
+  @Override
+  public InvoiceTerm createInvoiceTerm(
+      Invoice invoice,
+      Move move,
+      MoveLine moveLine,
+      BankDetails bankDetails,
+      User pfpUser,
+      PaymentMode paymentMode,
+      LocalDate date,
+      LocalDate estimatedPaymentDate,
+      BigDecimal amount,
+      BigDecimal percentage,
+      int sequence,
+      boolean isHoldBack)
+      throws AxelorException {
+    InvoiceTerm newInvoiceTerm =
+        super.createInvoiceTerm(
+            invoice,
+            move,
+            moveLine,
+            bankDetails,
+            pfpUser,
+            paymentMode,
+            date,
+            estimatedPaymentDate,
+            amount,
+            percentage,
+            sequence,
+            isHoldBack);
 
-        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(paymentMode, newInvoiceTerm.getPartner(), newInvoiceTerm.getCompany())
-                .stream()
-                .findAny()
-                .ifPresent(newInvoiceTerm::setBankDetails);
+    bankDetailsBankPaymentService
+        .getBankDetailsLinkedToActiveUmr(
+            paymentMode, newInvoiceTerm.getPartner(), newInvoiceTerm.getCompany())
+        .stream()
+        .findAny()
+        .ifPresent(newInvoiceTerm::setBankDetails);
 
-        return newInvoiceTerm;
-    }
+    return newInvoiceTerm;
+  }
 }

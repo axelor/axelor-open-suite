@@ -18,48 +18,77 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.time.LocalDate;
 
 public class MoveCreateBankPaymentServiceImpl extends MoveCreateServiceImpl {
-    protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
-    @Inject
-    public MoveCreateBankPaymentServiceImpl(AppAccountService appAccountService, PeriodService periodService, MoveRepository moveRepository, CompanyConfigService companyConfigService, PaymentConditionService paymentConditionService, BankDetailsBankPaymentService bankDetailsBankPaymentService) {
-        super(appAccountService, periodService, moveRepository, companyConfigService, paymentConditionService);
-        this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
-    }
+  @Inject
+  public MoveCreateBankPaymentServiceImpl(
+      AppAccountService appAccountService,
+      PeriodService periodService,
+      MoveRepository moveRepository,
+      CompanyConfigService companyConfigService,
+      PaymentConditionService paymentConditionService,
+      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+    super(
+        appAccountService,
+        periodService,
+        moveRepository,
+        companyConfigService,
+        paymentConditionService);
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+  }
 
-    @Override
-    @Transactional(rollbackOn = {Exception.class})
-    public Move createMove(
-            Journal journal,
-            Company company,
-            Currency currency,
-            Partner partner,
-            LocalDate date,
-            LocalDate originDate,
-            PaymentMode paymentMode,
-            FiscalPosition fiscalPosition,
-            BankDetails bankDetails,
-            int technicalOriginSelect,
-            int functionalOriginSelect,
-            boolean ignoreInDebtRecoveryOk,
-            boolean ignoreInAccountingOk,
-            boolean autoYearClosureMove,
-            String origin,
-            String description,
-            BankDetails companyBankDetails)
-            throws AxelorException {
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      LocalDate originDate,
+      PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      boolean ignoreInDebtRecoveryOk,
+      boolean ignoreInAccountingOk,
+      boolean autoYearClosureMove,
+      String origin,
+      String description,
+      BankDetails companyBankDetails)
+      throws AxelorException {
 
-        Move move = super.createMove(journal, company, currency, partner, date, originDate, paymentMode, fiscalPosition, bankDetails, technicalOriginSelect, functionalOriginSelect, ignoreInDebtRecoveryOk, ignoreInAccountingOk, autoYearClosureMove, origin, description, companyBankDetails);
+    Move move =
+        super.createMove(
+            journal,
+            company,
+            currency,
+            partner,
+            date,
+            originDate,
+            paymentMode,
+            fiscalPosition,
+            bankDetails,
+            technicalOriginSelect,
+            functionalOriginSelect,
+            ignoreInDebtRecoveryOk,
+            ignoreInAccountingOk,
+            autoYearClosureMove,
+            origin,
+            description,
+            companyBankDetails);
 
-        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
-                .stream()
-                .findAny()
-                .ifPresent(move::setPartnerBankDetails);
+    bankDetailsBankPaymentService
+        .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+        .stream()
+        .findAny()
+        .ifPresent(move::setPartnerBankDetails);
 
-        moveRepository.save(move);
-        return move;
-    }
+    moveRepository.save(move);
+    return move;
+  }
 }
