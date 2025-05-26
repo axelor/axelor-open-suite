@@ -34,13 +34,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import com.axelor.utils.helpers.StringHelper;
 import org.apache.commons.lang3.StringUtils;
 
 public class InvoicingPaymentSituationController {
@@ -131,7 +129,10 @@ public class InvoicingPaymentSituationController {
     if (Objects.equals(parentContext.getContextClass(), Partner.class)) {
       Partner partner = parentContext.asType(Partner.class);
       List<BankDetails> bankDetailsIdList = partner.getBankDetailsList();
-      String domain = "self.id IN (" + StringUtils.join(StringHelper.getIdListString(bankDetailsIdList), ',') + ")";
+      String domain =
+          "self.id IN ("
+              + StringUtils.join(StringHelper.getIdListString(bankDetailsIdList), ',')
+              + ")";
       response.setAttr("bankDetails", "domain", domain);
     }
   }

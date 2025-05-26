@@ -39,9 +39,9 @@ public class AccountingSituationAttrsServiceBankPaymentImpl
               paymentMode, accountingSituation.getPartner(), accountingSituation.getCompany());
       if (!ObjectUtils.isEmpty(authorizedBankDetailsList)) {
         domain =
-                String.format(
-                        "self.id IN (%s) AND self.active = true",
-                        StringHelper.getIdListString(authorizedBankDetailsList));
+            String.format(
+                "self.id IN (%s) AND self.active = true",
+                StringHelper.getIdListString(authorizedBankDetailsList));
       }
     }
     return domain;
