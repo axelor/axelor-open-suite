@@ -29,6 +29,8 @@ public class AccountingSituationBankDetailsServiceBankPaymentImpl
   public void setAccountingSituationBankDetails(
       AccountingSituation accountingSituation, Partner partner, Company company) {
 
+    super.setAccountingSituationBankDetails(accountingSituation, partner, company);
+
     PaymentMode inPaymentMode = partner.getInPaymentMode();
     PaymentMode outPaymentMode = partner.getOutPaymentMode();
     BankDetails defaultBankDetails = company.getDefaultBankDetails();
@@ -37,25 +39,17 @@ public class AccountingSituationBankDetailsServiceBankPaymentImpl
       List<BankDetails> authorizedInBankDetails =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               inPaymentMode, partner, company);
-      if (authorizedInBankDetails != null && authorizedInBankDetails.isEmpty()) {
-        authorizedInBankDetails =
-            paymentModeService.getCompatibleBankDetailsList(inPaymentMode, company);
-        if (authorizedInBankDetails.contains(defaultBankDetails)) {
-          accountingSituation.setCompanyInBankDetails(defaultBankDetails);
-        }
+      if (authorizedInBankDetails.contains(defaultBankDetails)) {
+        accountingSituation.setCompanyInBankDetails(defaultBankDetails);
       }
     }
 
     if (outPaymentMode != null) {
-      List<BankDetails> authorizedInBankDetails =
+      List<BankDetails> authorizedOutBankDetails =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               outPaymentMode, partner, company);
-      if (authorizedInBankDetails != null && authorizedInBankDetails.isEmpty()) {
-        List<BankDetails> authorizedOutBankDetails =
-            paymentModeService.getCompatibleBankDetailsList(outPaymentMode, company);
-        if (authorizedOutBankDetails.contains(defaultBankDetails)) {
-          accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
-        }
+      if (authorizedOutBankDetails.contains(defaultBankDetails)) {
+        accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
       }
     }
   }

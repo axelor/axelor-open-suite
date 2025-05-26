@@ -31,22 +31,17 @@ public class AccountingSituationAttrsServiceBankPaymentImpl
   @Override
   protected String createDomainForBankDetails(
       AccountingSituation accountingSituation, PaymentMode paymentMode) {
-    String domain = "self.id = 0";
+    String domain = super.createDomainForBankDetails(accountingSituation, paymentMode);
     List<BankDetails> authorizedBankDetailsList;
     if (paymentMode != null) {
       authorizedBankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               paymentMode, accountingSituation.getPartner(), accountingSituation.getCompany());
-      if (authorizedBankDetailsList != null && authorizedBankDetailsList.isEmpty()) {
-        authorizedBankDetailsList =
-            paymentModeService.getCompatibleBankDetailsList(
-                paymentMode, accountingSituation.getCompany());
-        if (!ObjectUtils.isEmpty(authorizedBankDetailsList)) {
-          domain =
-              String.format(
-                  "self.id IN (%s) AND self.active = true",
-                  StringHelper.getIdListString(authorizedBankDetailsList));
-        }
+      if (!ObjectUtils.isEmpty(authorizedBankDetailsList)) {
+        domain =
+                String.format(
+                        "self.id IN (%s) AND self.active = true",
+                        StringHelper.getIdListString(authorizedBankDetailsList));
       }
     }
     return domain;

@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.axelor.utils.helpers.StringHelper;
 import org.apache.commons.lang3.StringUtils;
 
 public class InvoicingPaymentSituationController {
@@ -128,11 +130,8 @@ public class InvoicingPaymentSituationController {
     Context parentContext = request.getContext().getParent();
     if (Objects.equals(parentContext.getContextClass(), Partner.class)) {
       Partner partner = parentContext.asType(Partner.class);
-      List<Long> bankDetailsIdList =
-          partner.getBankDetailsList().stream()
-              .map(BankDetails::getId)
-              .collect(Collectors.toList());
-      String domain = "self.id IN (" + StringUtils.join(bankDetailsIdList, ',') + ")";
+      List<BankDetails> bankDetailsIdList = partner.getBankDetailsList();
+      String domain = "self.id IN (" + StringUtils.join(StringHelper.getIdListString(bankDetailsIdList), ',') + ")";
       response.setAttr("bankDetails", "domain", domain);
     }
   }
