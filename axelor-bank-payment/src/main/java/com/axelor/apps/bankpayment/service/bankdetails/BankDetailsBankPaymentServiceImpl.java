@@ -41,8 +41,8 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
   protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankDetailsRepository bankDetailsRepository;
   protected CurrencyScaleService currencyScaleService;
-  private final UmrService umrService;
-  private final AppBankPaymentService appBankPaymentService;
+  protected UmrService umrService;
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
   public BankDetailsBankPaymentServiceImpl(
@@ -89,7 +89,8 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
     boolean isManageDirectDebitPayment =
         appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment();
     if (isManageDirectDebitPayment
-        && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)) {
+        && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
+        && !partner.getBankDetailsList().isEmpty()) {
       return partner.getBankDetailsList().stream()
           .filter(bankDetails -> umrService.getActiveUmr(company, bankDetails) != null)
           .collect(Collectors.toList());
