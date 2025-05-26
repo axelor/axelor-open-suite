@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.AuthUtils;
@@ -38,17 +39,21 @@ import org.apache.commons.collections.CollectionUtils;
 public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
   protected AppHumanResourceService appHumanResourceService;
   protected KilometricService kilometricService;
+  protected final KilometricExpenseService kilometricExpenseService;
 
   @Inject
   public ExpenseLineToolServiceImpl(
-      AppHumanResourceService appHumanResourceService, KilometricService kilometricService) {
+      AppHumanResourceService appHumanResourceService,
+      KilometricService kilometricService,
+      KilometricExpenseService kilometricExpenseService) {
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
+    this.kilometricExpenseService = kilometricExpenseService;
   }
 
   @Override
   public void computeAmount(Employee employee, ExpenseLine expenseLine) throws AxelorException {
-    BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
+    BigDecimal amount = kilometricExpenseService.computeKilometricExpense(expenseLine, employee);
     expenseLine.setTotalAmount(amount);
     expenseLine.setUntaxedAmount(amount);
   }
