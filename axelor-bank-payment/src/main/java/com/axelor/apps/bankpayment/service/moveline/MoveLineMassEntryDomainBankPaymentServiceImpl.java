@@ -10,8 +10,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 public class MoveLineMassEntryDomainBankPaymentServiceImpl
     extends MoveLineMassEntryDomainServiceImpl {
