@@ -16,6 +16,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Map;
@@ -52,33 +53,18 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
 
   @Override
   public void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    super.addPartnerBankDetailsDomain(move, attrsMap);
     Partner partner = move.getPartner();
-    String domain;
 
-    if (partner == null || CollectionUtils.isEmpty(partner.getBankDetailsList())) {
-      domain = "self = NULL";
-    } else {
+    if (partner != null && !CollectionUtils.isEmpty(partner.getBankDetailsList())) {
       PaymentMode paymentMode = move.getPaymentMode();
       Company company = move.getCompany();
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               paymentMode, partner, company);
-      if (bankDetailsList.isEmpty()) {
-        bankDetailsList =
-            partner.getBankDetailsList().stream()
-                .filter(BankDetails::getActive)
-                .collect(Collectors.toList());
-      }
 
-      String bankDetailsIds =
-          bankDetailsList.stream()
-              .map(BankDetails::getId)
-              .map(Object::toString)
-              .collect(Collectors.joining(","));
-
-      domain = String.format("self.id IN (%s)", bankDetailsIds);
+      String domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
+      this.addAttr("partnerBankDetails", "domain", domain, attrsMap);
     }
-
-    this.addAttr("partnerBankDetails", "domain", domain, attrsMap);
   }
 }

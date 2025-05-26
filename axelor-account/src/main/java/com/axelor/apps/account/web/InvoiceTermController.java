@@ -454,17 +454,13 @@ public class InvoiceTermController {
   }
 
   @ErrorException
-  public void setBankDetailsDomain(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
     String domain =
         Beans.get(InvoiceTermDomainService.class).createDomainForBankDetails(invoiceTerm);
 
-    if (domain.isEmpty()) {
-      response.setAttr("bankDetails", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("bankDetails", "domain", domain);
-    }
+    response.setAttr("bankDetails", "domain", domain);
+
   }
 }

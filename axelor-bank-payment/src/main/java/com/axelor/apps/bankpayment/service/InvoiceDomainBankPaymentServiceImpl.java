@@ -9,6 +9,7 @@ import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentSer
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class InvoiceDomainBankPaymentServiceImpl extends InvoiceDomainServiceImp
   @Override
   public String createDomainForBankDetails(Invoice invoice) {
     Partner partner = invoice.getPartner();
-    String domain = "";
+    String domain = super.createDomainForBankDetails(invoice);
 
     PaymentMode paymentMode = invoice.getPaymentMode();
     Company company = invoice.getCompany();
@@ -38,16 +39,8 @@ public class InvoiceDomainBankPaymentServiceImpl extends InvoiceDomainServiceImp
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               paymentMode, partner, company);
-      if (bankDetailsList.isEmpty()) {
-        bankDetailsList =
-            partner.getBankDetailsList().stream()
-                .filter(BankDetails::getActive)
-                .collect(Collectors.toList());
-      }
-      List<Long> bankDetailsIdList =
-          bankDetailsList.stream().map(BankDetails::getId).collect(Collectors.toList());
-      if (!bankDetailsIdList.isEmpty()) {
-        domain = "self.id IN (" + StringUtils.join(bankDetailsIdList, ',') + ")";
+      if (!bankDetailsList.isEmpty()) {
+        domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
       }
     }
     return domain;

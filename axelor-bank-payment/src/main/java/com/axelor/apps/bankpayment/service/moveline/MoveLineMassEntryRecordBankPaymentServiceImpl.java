@@ -47,26 +47,17 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
 
   @Override
   public void setMovePartnerBankDetails(MoveLineMassEntry moveLine) {
-
+    super.setMovePartnerBankDetails(moveLine);
     PaymentMode paymentMode = moveLine.getMovePaymentMode();
     Partner partner = moveLine.getPartner();
     Company company = moveLine.getMoveMassEntry().getCompany();
 
-    List<BankDetails> bankDetailsList =
-        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
-            paymentMode, partner, company);
-
-    BankDetails selectedBankDetails =
-        (bankDetailsList != null && !bankDetailsList.isEmpty())
-            ? bankDetailsList.get(0)
-            : partner.getBankDetailsList().stream()
-                .filter(
-                    bankDetails ->
-                        Boolean.TRUE.equals(bankDetails.getIsDefault())
-                            && Boolean.TRUE.equals(bankDetails.getActive()))
-                .findFirst()
-                .orElse(null);
-
-    moveLine.setMovePartnerBankDetails(selectedBankDetails);
+    if(paymentMode != null && partner != null && company != null){
+      bankDetailsBankPaymentService
+              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+              .stream()
+              .findAny()
+              .ifPresent(moveLine::setMovePartnerBankDetails);
+    }
   }
 }

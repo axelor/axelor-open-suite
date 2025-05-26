@@ -1514,10 +1514,6 @@ public class InvoiceController {
 
     String domain = Beans.get(InvoiceDomainService.class).createDomainForBankDetails(invoice);
 
-    if (domain.isEmpty()) {
-      response.setAttr("bankDetails", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("bankDetails", "domain", domain);
-    }
+    response.setAttr("bankDetails", "domain", domain);
   }
 }
