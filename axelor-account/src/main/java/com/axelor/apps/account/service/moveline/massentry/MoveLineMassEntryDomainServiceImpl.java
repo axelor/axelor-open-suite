@@ -3,11 +3,9 @@ package com.axelor.apps.account.service.moveline.massentry;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.axelor.utils.helpers.StringHelper;
-import org.apache.commons.lang3.StringUtils;
 
 public class MoveLineMassEntryDomainServiceImpl implements MoveLineMassEntryDomainService {
 
@@ -18,9 +16,9 @@ public class MoveLineMassEntryDomainServiceImpl implements MoveLineMassEntryDoma
 
     if (partner != null && !partner.getBankDetailsList().isEmpty()) {
       List<BankDetails> bankDetailsList =
-              partner.getBankDetailsList().stream()
-                      .filter(BankDetails::getActive)
-                      .collect(Collectors.toList());
+          partner.getBankDetailsList().stream()
+              .filter(BankDetails::getActive)
+              .collect(Collectors.toList());
 
       domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
     }

@@ -10,7 +10,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -18,7 +17,6 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class MoveRecordSetBankPaymentServiceImpl extends MoveRecordSetServiceImpl {
   protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
@@ -59,10 +57,10 @@ public class MoveRecordSetBankPaymentServiceImpl extends MoveRecordSetServiceImp
 
     if (paymentMode != null && partner != null && company != null) {
       bankDetailsBankPaymentService
-              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
-              .stream()
-              .findAny()
-              .ifPresent(move::setPartnerBankDetails);
+          .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+          .stream()
+          .findAny()
+          .ifPresent(move::setPartnerBankDetails);
     }
   }
 }

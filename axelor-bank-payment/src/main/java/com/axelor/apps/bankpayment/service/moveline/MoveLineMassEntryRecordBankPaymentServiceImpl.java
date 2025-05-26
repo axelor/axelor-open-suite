@@ -12,11 +12,9 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecor
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class MoveLineMassEntryRecordBankPaymentServiceImpl
     extends MoveLineMassEntryRecordServiceImpl {
@@ -52,12 +50,12 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
     Partner partner = moveLine.getPartner();
     Company company = moveLine.getMoveMassEntry().getCompany();
 
-    if(paymentMode != null && partner != null && company != null){
+    if (paymentMode != null && partner != null && company != null) {
       bankDetailsBankPaymentService
-              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
-              .stream()
-              .findAny()
-              .ifPresent(moveLine::setMovePartnerBankDetails);
+          .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+          .stream()
+          .findAny()
+          .ifPresent(moveLine::setMovePartnerBankDetails);
     }
   }
 }

@@ -444,6 +444,5 @@ public class InvoiceTermController {
         Beans.get(InvoiceTermDomainService.class).createDomainForBankDetails(invoiceTerm);
 
     response.setAttr("bankDetails", "domain", domain);
-
   }
 }

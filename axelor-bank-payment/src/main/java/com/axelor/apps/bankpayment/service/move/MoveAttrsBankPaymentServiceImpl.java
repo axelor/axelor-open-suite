@@ -20,7 +20,6 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
