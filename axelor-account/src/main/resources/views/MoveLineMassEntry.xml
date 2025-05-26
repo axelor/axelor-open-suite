@@ -5,7 +5,7 @@
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
-    edit-icon="false" onNew="action-move-line-mass-entry-method-onnew">
+    edit-icon="false" onNew="action-move-line-mass-entry-method-onnew" canEdit="!isGenerated">
     <field name="temporaryMoveNumber" width="50"
       onChange="action-move-line-mass-entry-method-temporary-move-number-onchange"/>
     <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
@@ -154,6 +154,7 @@
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
+    <field name="isGenerated" readonly="true" hidden="true"/>
   </grid>
 
   <!-- Action group -->

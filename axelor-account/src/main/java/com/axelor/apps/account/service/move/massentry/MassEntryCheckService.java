@@ -20,13 +20,15 @@ package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
-import java.util.List;
+import java.time.LocalDate;
 
-public interface MassEntryMoveCreateService {
+public interface MassEntryCheckService {
 
-  Move generateMassEntryMove(Move move) throws AxelorException;
+  void verifyFieldsAndGenerateTaxLineAndCounterpart(Move parentMove, LocalDate dueDate)
+      throws AxelorException;
 
-  List<Move> createMoveListFromMassEntryList(Move parentMove);
+  void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
+      throws AxelorException;
 
-  Move createMoveFromMassEntryList(Long parentMoveId, int temporaryMoveNumber);
+  void checkMassEntryMoveGeneration(Move move) throws AxelorException;
 }
