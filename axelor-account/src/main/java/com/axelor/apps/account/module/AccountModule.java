@@ -367,6 +367,8 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryAttrsService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryAttrsServiceImpl;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryDomainService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryDomainServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
@@ -1002,5 +1004,6 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryMoveValidateService.class).to(MassEntryMoveValidateServiceImpl.class);
     bind(InvoiceTermDomainService.class).to(InvoiceTermDomainServiceImpl.class);
     bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
+    bind(MoveLineMassEntryDomainService.class).to(MoveLineMassEntryDomainServiceImpl.class);
   }
 }
