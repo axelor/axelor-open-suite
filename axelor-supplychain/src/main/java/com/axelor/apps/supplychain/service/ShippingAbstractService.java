@@ -62,36 +62,7 @@ public abstract class ShippingAbstractService {
     }
 
     if (alreadyHasShippingCostLine(shippableOrder, shippingCostProduct)) {
-      return null;
-    }
-
-    addLineAndComputeOrder(shippableOrder, shippingCostProduct);
-    return null;
-  }
-
-  public String updateShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
-      throws AxelorException {
-    if (shipmentMode == null) {
-      return null;
-    }
-
-    CustomerShippingCarriagePaid supplierShippingCarriagePaid =
-        getCustomerShippingCarriagePaid(shippableOrder, shipmentMode);
-
-    Product shippingCostProduct =
-        shippingService.getShippingCostProduct(shipmentMode, supplierShippingCarriagePaid);
-
-    if (shippingCostProduct == null) {
-      return null;
-    }
-
-    if (isThresholdUsedAndExceeded(shippableOrder, shipmentMode, supplierShippingCarriagePaid)) {
-      return removeLineAndComputeOrder(shippableOrder);
-    }
-
-    if (alreadyHasShippingCostLine(shippableOrder, shippingCostProduct)) {
-      removeLineAndComputeOrder(shippableOrder);
-      addLineAndComputeOrder(shippableOrder, shippingCostProduct);
+      updateLineAndComputeOrder(shippableOrder, shippingCostProduct);
       return null;
     }
 
@@ -202,5 +173,8 @@ public abstract class ShippingAbstractService {
       throws AxelorException;
 
   protected abstract void addLineAndComputeOrder(
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
+
+  protected abstract void updateLineAndComputeOrder(
       ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
 }

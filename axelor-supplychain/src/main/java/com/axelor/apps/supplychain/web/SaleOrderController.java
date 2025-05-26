@@ -708,7 +708,7 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       ShipmentMode shipmentMode = saleOrder.getShipmentMode();
       String message =
-          Beans.get(SaleOrderShipmentService.class).updateShipmentCostLine(saleOrder, shipmentMode);
+          Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder, shipmentMode);
       if (message != null) {
         response.setInfo(message);
       }

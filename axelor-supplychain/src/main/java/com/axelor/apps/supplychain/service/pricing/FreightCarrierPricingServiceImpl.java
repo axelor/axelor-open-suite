@@ -51,7 +51,7 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
           partnerRepository.find(freightCarrierPricing.getCarrierPartner().getId()));
 
       String message =
-          saleOrderShipmentService.updateShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
+          saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
       saleOrderRepository.save(saleOrder);
       return message;
     }

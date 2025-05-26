@@ -25,7 +25,4 @@ import com.axelor.apps.stock.db.ShipmentMode;
 public interface SaleOrderShipmentService {
   String createShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
       throws AxelorException;
-
-  String updateShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
-      throws AxelorException;
 }

@@ -64,6 +64,17 @@ public class PurchaseOrderShipmentServiceImpl extends ShippingAbstractService
   }
 
   @Override
+  protected void updateLineAndComputeOrder(
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException {
+    PurchaseOrder purchaseOrder = getPurchaseOrder(shippableOrder);
+    if (purchaseOrder == null) {
+      return;
+    }
+
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
+  }
+
+  @Override
   protected String removeLineAndComputeOrder(ShippableOrder shippableOrder) throws AxelorException {
     PurchaseOrder purchaseOrder = getPurchaseOrder(shippableOrder);
     if (purchaseOrder == null) {
