@@ -52,30 +52,17 @@ public class MoveRecordSetBankPaymentServiceImpl extends MoveRecordSetServiceImp
 
   @Override
   public void setPartnerBankDetails(Move move) {
-    Partner partner = move.getPartner();
+    super.setPartnerBankDetails(move);
     PaymentMode paymentMode = move.getPaymentMode();
+    Partner partner = move.getPartner();
     Company company = move.getCompany();
 
-    if (partner == null) {
-      move.setPartnerBankDetails(null);
-      return;
+    if (paymentMode != null && partner != null && company != null) {
+      bankDetailsBankPaymentService
+              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+              .stream()
+              .findAny()
+              .ifPresent(move::setPartnerBankDetails);
     }
-
-    List<BankDetails> bankDetailsList =
-        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
-            paymentMode, partner, company);
-
-    BankDetails selectedBankDetails =
-        (bankDetailsList != null && !bankDetailsList.isEmpty())
-            ? bankDetailsList.get(0)
-            : partner.getBankDetailsList().stream()
-                .filter(
-                    bankDetails ->
-                        Boolean.TRUE.equals(bankDetails.getIsDefault())
-                            && Boolean.TRUE.equals(bankDetails.getActive()))
-                .findFirst()
-                .orElse(null);
-
-    move.setPartnerBankDetails(selectedBankDetails);
   }
 }

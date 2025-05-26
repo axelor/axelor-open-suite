@@ -297,10 +297,6 @@ public class MoveLineMassEntryController {
         Beans.get(MoveLineMassEntryDomainService.class)
             .createDomainForMovePartnerBankDetails(moveLineMassEntry);
 
-    if (domain.isEmpty()) {
-      response.setAttr("movePartnerBankDetails", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("movePartnerBankDetails", "domain", domain);
-    }
+    response.setAttr("movePartnerBankDetails", "domain", domain);
   }
 }
