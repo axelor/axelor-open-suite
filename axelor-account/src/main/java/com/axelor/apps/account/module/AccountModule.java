@@ -261,6 +261,8 @@ import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentil
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermAttrsService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermAttrsServiceImpl;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainServiceImpl;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupServiceImpl;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermRecordService;
@@ -998,6 +1000,7 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryCheckService.class).to(MassEntryCheckServiceImpl.class);
     bind(MassEntryMoveUpdateService.class).to(MassEntryMoveUpdateServiceImpl.class);
     bind(MassEntryMoveValidateService.class).to(MassEntryMoveValidateServiceImpl.class);
+    bind(InvoiceTermDomainService.class).to(InvoiceTermDomainServiceImpl.class);
     bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
   }
 }

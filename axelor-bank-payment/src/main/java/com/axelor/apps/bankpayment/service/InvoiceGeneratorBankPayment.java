@@ -8,27 +8,28 @@ import com.google.inject.Inject;
 
 public class InvoiceGeneratorBankPayment extends InvoiceGenerator {
 
-    protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
-    @Inject
-    public InvoiceGeneratorBankPayment(BankDetailsBankPaymentService bankDetailsBankPaymentService) {
-        this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
-    }
+  @Inject
+  public InvoiceGeneratorBankPayment(BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+  }
 
-    @Override
-    protected Invoice createInvoiceHeader() throws AxelorException {
-        Invoice invoice = super.createInvoiceHeader();
+  @Override
+  protected Invoice createInvoiceHeader() throws AxelorException {
+    Invoice invoice = super.createInvoiceHeader();
 
-        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
-                .stream()
-                .findAny()
-                .ifPresent(invoice::setBankDetails);
+    bankDetailsBankPaymentService
+        .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+        .stream()
+        .findAny()
+        .ifPresent(invoice::setBankDetails);
 
-        return invoice;
-    }
+    return invoice;
+  }
 
-    @Override
-    public Invoice generate() throws AxelorException {
-        return createInvoiceHeader();
-    }
+  @Override
+  public Invoice generate() throws AxelorException {
+    return createInvoiceHeader();
+  }
 }

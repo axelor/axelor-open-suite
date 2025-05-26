@@ -1507,4 +1507,17 @@ public class InvoiceController {
     Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
     response.setValues(invoice);
   }
+
+  @ErrorException
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    String domain = Beans.get(InvoiceDomainService.class).createDomainForBankDetails(invoice);
+
+    if (domain.isEmpty()) {
+      response.setAttr("bankDetails", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("bankDetails", "domain", domain);
+    }
+  }
 }

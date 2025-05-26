@@ -18,39 +18,64 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
-
 import java.util.List;
 
 public class MoveRecordSetBankPaymentServiceImpl extends MoveRecordSetServiceImpl {
-    protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
-    @Inject
-    public MoveRecordSetBankPaymentServiceImpl(PartnerRepository partnerRepository, BankDetailsService bankDetailsService, PeriodService periodService, PaymentConditionService paymentConditionService, AppBaseService appBaseService, PartnerAccountService partnerAccountService, JournalService journalService, PfpService pfpService, MoveToolService moveToolService, InvoiceTermPfpToolService invoiceTermPfpToolService, BankDetailsBankPaymentService bankDetailsBankPaymentService) {
-        super(partnerRepository, bankDetailsService, periodService, paymentConditionService, appBaseService, partnerAccountService, journalService, pfpService, moveToolService, invoiceTermPfpToolService);
-        this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+  @Inject
+  public MoveRecordSetBankPaymentServiceImpl(
+      PartnerRepository partnerRepository,
+      BankDetailsService bankDetailsService,
+      PeriodService periodService,
+      PaymentConditionService paymentConditionService,
+      AppBaseService appBaseService,
+      PartnerAccountService partnerAccountService,
+      JournalService journalService,
+      PfpService pfpService,
+      MoveToolService moveToolService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+    super(
+        partnerRepository,
+        bankDetailsService,
+        periodService,
+        paymentConditionService,
+        appBaseService,
+        partnerAccountService,
+        journalService,
+        pfpService,
+        moveToolService,
+        invoiceTermPfpToolService);
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+  }
+
+  @Override
+  public void setPartnerBankDetails(Move move) {
+    Partner partner = move.getPartner();
+    PaymentMode paymentMode = move.getPaymentMode();
+    Company company = move.getCompany();
+
+    if (partner == null) {
+      move.setPartnerBankDetails(null);
+      return;
     }
 
-    @Override
-    public void setPartnerBankDetails(Move move) {
-        Partner partner = move.getPartner();
-        PaymentMode paymentMode = move.getPaymentMode();
-        Company company = move.getCompany();
+    List<BankDetails> bankDetailsList =
+        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
+            paymentMode, partner, company);
 
-        if (partner == null) {
-            move.setPartnerBankDetails(null);
-            return;
-        }
-
-        List<BankDetails> bankDetailsList = bankDetailsBankPaymentService
-                .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company);
-
-        BankDetails selectedBankDetails = (bankDetailsList != null && !bankDetailsList.isEmpty())
-                ? bankDetailsList.get(0)
-                : partner.getBankDetailsList().stream()
-                .filter(bankDetails -> Boolean.TRUE.equals(bankDetails.getIsDefault()) && Boolean.TRUE.equals(bankDetails.getActive()))
+    BankDetails selectedBankDetails =
+        (bankDetailsList != null && !bankDetailsList.isEmpty())
+            ? bankDetailsList.get(0)
+            : partner.getBankDetailsList().stream()
+                .filter(
+                    bankDetails ->
+                        Boolean.TRUE.equals(bankDetails.getIsDefault())
+                            && Boolean.TRUE.equals(bankDetails.getActive()))
                 .findFirst()
                 .orElse(null);
 
-        move.setPartnerBankDetails(selectedBankDetails);
-    }
+    move.setPartnerBankDetails(selectedBankDetails);
+  }
 }

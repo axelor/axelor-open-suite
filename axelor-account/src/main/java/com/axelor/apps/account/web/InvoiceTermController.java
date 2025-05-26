@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -450,5 +451,20 @@ public class InvoiceTermController {
       throws AxelorException {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     Beans.get(InvoiceTermPfpService.class).refreshInvoicePfpStatus(invoiceTerm.getInvoice());
+  }
+
+  @ErrorException
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+    String domain =
+        Beans.get(InvoiceTermDomainService.class).createDomainForBankDetails(invoiceTerm);
+
+    if (domain.isEmpty()) {
+      response.setAttr("bankDetails", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("bankDetails", "domain", domain);
+    }
   }
 }

@@ -4,7 +4,7 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
-import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
+import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -16,34 +16,57 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
-
 import java.util.List;
 
-public class MoveLineMassEntryRecordBankPaymentServiceImpl extends MoveLineMassEntryRecordServiceImpl {
-    protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
-    @Inject
-    public MoveLineMassEntryRecordBankPaymentServiceImpl(MoveLineMassEntryService moveLineMassEntryService, MoveLineRecordService moveLineRecordService, TaxAccountToolService taxAccountToolService, MoveLoadDefaultConfigService moveLoadDefaultConfigService, MassEntryMoveCreateService massEntryMoveCreateService, MoveLineTaxService moveLineTaxService, AnalyticMoveLineRepository analyticMoveLineRepository, MoveLineToolService moveLineToolService, BankDetailsBankPaymentService bankDetailsBankPaymentService) {
-        super(moveLineMassEntryService, moveLineRecordService, taxAccountToolService, moveLoadDefaultConfigService, massEntryMoveCreateService, moveLineTaxService, analyticMoveLineRepository, moveLineToolService);
-        this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
-    }
+public class MoveLineMassEntryRecordBankPaymentServiceImpl
+    extends MoveLineMassEntryRecordServiceImpl {
+  protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
-    @Override
-    public void setMovePartnerBankDetails(MoveLineMassEntry moveLine) {
+  @Inject
+  public MoveLineMassEntryRecordBankPaymentServiceImpl(
+      MoveLineMassEntryService moveLineMassEntryService,
+      MoveLineRecordService moveLineRecordService,
+      TaxAccountToolService taxAccountToolService,
+      MoveLoadDefaultConfigService moveLoadDefaultConfigService,
+      MassEntryToolService massEntryToolService,
+      MoveLineTaxService moveLineTaxService,
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      MoveLineToolService moveLineToolService,
+      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+    super(
+        moveLineMassEntryService,
+        moveLineRecordService,
+        taxAccountToolService,
+        moveLoadDefaultConfigService,
+        massEntryToolService,
+        moveLineTaxService,
+        analyticMoveLineRepository,
+        moveLineToolService);
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+  }
 
-        PaymentMode paymentMode = moveLine.getMovePaymentMode();
-        Partner partner = moveLine.getPartner();
-        Company company = moveLine.getMoveMassEntry().getCompany();
+  @Override
+  public void setMovePartnerBankDetails(MoveLineMassEntry moveLine) {
 
-        List<BankDetails> bankDetailsList = bankDetailsBankPaymentService
-                .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company);
+    PaymentMode paymentMode = moveLine.getMovePaymentMode();
+    Partner partner = moveLine.getPartner();
+    Company company = moveLine.getMoveMassEntry().getCompany();
 
-        BankDetails selectedBankDetails = (bankDetailsList != null && !bankDetailsList.isEmpty())
-                ? bankDetailsList.get(0)
-                : partner.getBankDetailsList().stream()
-                .filter(bankDetails -> Boolean.TRUE.equals(bankDetails.getIsDefault()) && Boolean.TRUE.equals(bankDetails.getActive()))
+    List<BankDetails> bankDetailsList =
+        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
+            paymentMode, partner, company);
+
+    BankDetails selectedBankDetails =
+        (bankDetailsList != null && !bankDetailsList.isEmpty())
+            ? bankDetailsList.get(0)
+            : partner.getBankDetailsList().stream()
+                .filter(
+                    bankDetails ->
+                        Boolean.TRUE.equals(bankDetails.getIsDefault())
+                            && Boolean.TRUE.equals(bankDetails.getActive()))
                 .findFirst()
                 .orElse(null);
 
-        moveLine.setMovePartnerBankDetails(selectedBankDetails);
-    }
+    moveLine.setMovePartnerBankDetails(selectedBankDetails);
+  }
 }
