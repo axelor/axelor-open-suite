@@ -921,7 +921,6 @@
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
     <action name="action-invoice-term-method-validate-pfp"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-partial-pfp">
