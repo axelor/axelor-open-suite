@@ -6,7 +6,7 @@
   <grid name="reimbursement-grid" title="Reimbursements"
     model="com.axelor.apps.account.db.Reimbursement">
     <field name="ref" width="120"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="amountToReimburse" aggregate="sum"/>
   </grid>
 
@@ -44,7 +44,7 @@
       grid-view="move-line-grid" form-view="move-line-form"/>
 
     <panel sidebar="true" name="infoPanel" title="Info">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <button name="validateReimbursementBtn" title="Validate"
         onClick="save,com.axelor.apps.account.web.ReimbursementController:validateReimbursement,save"
         showIf="statusSelect == 2"/>
