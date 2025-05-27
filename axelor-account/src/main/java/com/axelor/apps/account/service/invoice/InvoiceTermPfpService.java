@@ -26,7 +26,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
