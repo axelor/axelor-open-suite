@@ -297,11 +297,11 @@
   </selection>
 
   <selection name="iaccount.reimbursement.status.select">
-    <option value="1">Draft</option>
-    <option value="2">To validate</option>
-    <option value="3">Validated</option>
-    <option value="4">Reimbursed</option>
-    <option value="5">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">To validate</option>
+    <option value="3" color="lime">Validated</option>
+    <option value="4" color="green">Reimbursed</option>
+    <option value="5" color="red">Canceled</option>
   </selection>
 
   <selection name="iaccount.account.clearance.status.select">
