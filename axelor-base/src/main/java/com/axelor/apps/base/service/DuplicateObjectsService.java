@@ -30,7 +30,9 @@ import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.filter.Filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -39,7 +41,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,10 +51,29 @@ import org.slf4j.LoggerFactory;
 public class DuplicateObjectsService {
 
   private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
-  @Inject private MetaFieldRepository metaFieldRepo;
+
+  protected MetaFieldRepository metaFieldRepo;
+  protected MetaModelRepository metaModelRepository;
+
+  @Inject
+  public DuplicateObjectsService(
+      MetaFieldRepository metaFieldRepo, MetaModelRepository metaModelRepository) {
+    this.metaFieldRepo = metaFieldRepo;
+    this.metaModelRepository = metaModelRepository;
+  }
 
   @Transactional
   public void removeDuplicate(List<Long> selectedIds, String modelName) {
+
+    Set<String> modelSet = JPA.models().stream().map(Class::getName).collect(Collectors.toSet());
+    List<Long> modelIds =
+        metaModelRepository
+            .all()
+            .filter("self.fullName NOT IN :modelSet")
+            .bind("modelSet", modelSet)
+            .fetchStream()
+            .map(MetaModel::getId)
+            .collect(Collectors.toList());
 
     List<Object> duplicateObjects = getDuplicateObject(selectedIds, modelName);
     Object originalObjct = getOriginalObject(selectedIds, modelName);
@@ -58,8 +81,9 @@ public class DuplicateObjectsService {
         metaFieldRepo
             .all()
             .filter(
-                "(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",
-                modelName)
+                "((relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))) AND metaModel.id NOT IN (?2)",
+                modelName,
+                CollectionUtils.isNotEmpty(modelIds) ? modelIds : "0")
             .fetch();
     for (MetaField metaField : allField) {
       if ("ManyToOne".equals(metaField.getRelationship())) {
