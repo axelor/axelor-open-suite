@@ -392,11 +392,11 @@
   </selection>
 
   <selection name="account.subrogation.release.status.select">
-    <option value="1">New release</option>
-    <option value="2">Release transmitted</option>
-    <option value="3">Release accounted</option>
-    <option value="4">Release cleared</option>
-    <option value="5">Release canceled</option>
+    <option value="1" color="blue">New release</option>
+    <option value="2" color="orange">Release transmitted</option>
+    <option value="3" color="green">Release accounted</option>
+    <option value="4" color="teal">Release cleared</option>
+    <option value="5" color="red">Release canceled</option>
   </selection>
 
   <selection name="account.notification.status.select">
