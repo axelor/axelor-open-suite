@@ -38,6 +38,7 @@ public class InvoiceTermPfpValidateServiceImpl implements InvoiceTermPfpValidate
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected AppBaseService appBaseService;
   protected InvoiceTermRepository invoiceTermRepository;
+  protected InvoiceTermPfpService invoiceTermPfpService;
 
   @Inject
   public InvoiceTermPfpValidateServiceImpl(
@@ -45,12 +46,14 @@ public class InvoiceTermPfpValidateServiceImpl implements InvoiceTermPfpValidate
       InvoiceTermToolService invoiceTermToolService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       AppBaseService appBaseService,
-      InvoiceTermRepository invoiceTermRepository) {
+      InvoiceTermRepository invoiceTermRepository,
+      InvoiceTermPfpService invoiceTermPfpService) {
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.appBaseService = appBaseService;
     this.invoiceTermRepository = invoiceTermRepository;
+    this.invoiceTermPfpService = invoiceTermPfpService;
   }
 
   @Override
@@ -93,6 +96,8 @@ public class InvoiceTermPfpValidateServiceImpl implements InvoiceTermPfpValidate
       invoiceTerm.setReasonOfRefusalToPay(null);
       invoiceTerm.setReasonOfRefusalToPayStr(null);
     }
+
+    invoiceTermPfpService.refreshInvoicePfpStatus(invoiceTerm.getInvoice());
   }
 
   @Override
