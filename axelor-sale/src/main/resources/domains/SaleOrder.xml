@@ -183,6 +183,18 @@
       readonly="true"/>
     <integer name="orderingStatus" selection="sale.sale.order.ordering.status.select"
       title="Ordering status" readonly="true" default="0"/>
+    <decimal name="exTaxTotalOrdered" title="Total ordered W.T." formula="true"
+      precision="20" scale="10">
+      <![CDATA[
+          SELECT SUM(self.ex_tax_total) FROM sale_sale_order AS self WHERE self.origin_sale_quotation = id
+      ]]>
+    </decimal>
+    <decimal name="inTaxTotalOrdered" title="Total ordered A.T.I." formula="true"
+      precision="20" scale="10">
+      <![CDATA[
+          SELECT SUM(self.in_tax_total) FROM sale_sale_order AS self WHERE self.origin_sale_quotation = id
+      ]]>
+    </decimal>
 
     <unique-constraint columns="saleOrderSeq,company"/>
 
