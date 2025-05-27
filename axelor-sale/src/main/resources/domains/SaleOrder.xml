@@ -195,6 +195,12 @@
           SELECT SUM(self.in_tax_total) FROM sale_sale_order AS self WHERE self.origin_sale_quotation = id
       ]]>
     </decimal>
+    <decimal name="inTaxTotalRemainingToOrder" title="Amount remaining to order"
+      formula="true" precision="20" scale="10">
+      <![CDATA[
+          SELECT in_tax_total - (SELECT SUM(self.in_tax_total) FROM sale_sale_order AS self WHERE self.origin_sale_quotation = id) FROM sale_sale_order WHERE id = id LIMIT 1
+      ]]>
+    </decimal>
 
     <unique-constraint columns="saleOrderSeq,company"/>
 

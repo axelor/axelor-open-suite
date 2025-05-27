@@ -117,6 +117,28 @@
       onClick="action-send-by-email-with-template"/>
   </grid>
 
+  <grid name="sale-order-partner-quotation-grid" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+    <field name="saleOrderSeq" width="120"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="externalReference"/>
+    <field name="creationDate"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotalRemainingToOrder" aggregate="sum"
+      x-scale="currency.numberOfDecimals"/>
+    <field name="statusSelect"/>
+    <button name="printBtn" title="Print" icon="fa-print"
+      onClick="action-sale-order-method-show-sale-order"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+      onClick="action-send-by-email-with-template"/>
+  </grid>
+
   <grid name="sale-order-opportunity-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     <hilite background="warning"

@@ -44,6 +44,7 @@
 "Amount Tax","Montant Taxe",,
 "Amount Tax (via percentages)","Montant Taxe (via pourcentages)",,
 "Amount invoiced W.T.","Montant facturé HT",,
+"Amount remaining to order","Montant restant à commander",,
 "Amount to be spread over the timetable","Montant restant à étaler sur l'échéancier",,
 "An attribute with the same name already exists.","Un attribut avec le même nom existe déjà.",,
 "An error occurred during the duplication of sale order line. Therefore, only a simple copy has been made, please see tracebacks for more details.","Une erreur s'est produite lors de la duplication de la ligne de commande. Par conséquent, une simple copie à été faite sans rejouer les configurateurs, veuillez consulter les tracebacks pour plus de détails.",,
