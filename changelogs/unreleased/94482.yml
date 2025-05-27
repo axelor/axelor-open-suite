@@ -1,4 +1,4 @@
 ---
-title: "Invoice/Pfp : fixed the pfp status when all invoice terms are pfp validated"
+title: "Invoice/PFP: fixed PFP status when all invoice terms are PFP validated."
 module: axelor-account
 developer: Added InvoiceTermPfpService in the InvoiceTermPfpValidateServiceImpl constructor

@@ -50,7 +50,6 @@ public interface InvoiceTermPfpService {
 
   Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
-  @Transactional(rollbackOn = {Exception.class})
   void refreshInvoicePfpStatus(Invoice invoice);
 
   boolean getUserCondition(User pfpValidatorUser, User user);
