@@ -50,10 +50,10 @@
   </selection>
 
   <selection name='account.reconcile.group.status.select'>
-    <option order="1" value="4">Proposal</option>
-    <option order="2" value='1'>Partial</option>
-    <option order="3" value='2'>Balanced</option>
-    <option order="4" value="3">Unlettered</option>
+    <option order="1" value="4" color="blue">Proposal</option>
+    <option order="2" value="1" color="orange">Partial</option>
+    <option order="3" value="2" color="green">Balanced</option>
+    <option order="4" value="3" color="red">Unlettered</option>
   </selection>
 
   <selection name='account.journal.status.select'>
