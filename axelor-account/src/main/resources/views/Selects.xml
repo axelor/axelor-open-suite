@@ -44,9 +44,9 @@
   </selection>
 
   <selection name='account.reconcile.status.select'>
-    <option value='1'>Draft</option>
-    <option value='2'>Confirmed</option>
-    <option value='3'>Canceled</option>
+    <option value='1' color="blue">Draft</option>
+    <option value='2' color="green">Confirmed</option>
+    <option value='3' color="red">Canceled</option>
   </selection>
 
   <selection name='account.reconcile.group.status.select'>
