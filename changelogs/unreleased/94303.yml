@@ -1,0 +1,5 @@
+---
+title: "Lunch voucher: fixed outdated expenses wrongly deducted in lunch vouchers calculation."
+module: axelor-human-resource
+developer: |
+  LunchVoucherMgtLineService#computeRestaurant and LunchVoucherMgtLineService#computeInvitation have a new Period parameter.

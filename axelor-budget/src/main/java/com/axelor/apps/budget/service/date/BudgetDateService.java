@@ -23,4 +23,6 @@ public interface BudgetDateService {
       LocalDate toDate,
       Budget budget,
       List<BudgetDistribution> budgetDistributionList);
+
+  String checkDateCoherence(LocalDate fromDate, LocalDate toDate);
 }

@@ -417,4 +417,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String FREIGHT_CARRIER_MODE_PRICING_ERROR = /*$$(*/
       "An error have been detected on following pricings : %s." /*)*/;
+
+  public static final String SALE_ORDER_SPLIT_ADVANCE_PAYMENT_AMOUNT_ERROR = /*$$(*/
+      "The total of the order must be equal or superior than the advance payment total." /*)*/;
 }

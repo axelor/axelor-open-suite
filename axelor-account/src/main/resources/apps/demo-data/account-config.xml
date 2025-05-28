@@ -60,8 +60,6 @@
   <input file="account_paymentMode.csv" separator=";"
     type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId">
     <bind column="generateBankOrder" to="generateBankOrder" adapter="Boolean"/>
-    <bind column="generateMoveAutoFromBankOrder" to="generateMoveAutoFromBankOrder"
-      adapter="Boolean"/>
     <bind column="consoBankOrderLinePerPartner" to="consoBankOrderLinePerPartner"
       adapter="Boolean"/>
   </input>

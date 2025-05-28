@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed global discount to be readonly when finalized."
+module: axelor-sale

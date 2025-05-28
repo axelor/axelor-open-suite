@@ -57,12 +57,14 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   public SaleOrder generateConfirmedSaleOrder(
       SaleOrder saleOrder, Map<Long, BigDecimal> qtyToOrderMap) throws AxelorException {
 
+    checkBeforeConfirm(saleOrder, qtyToOrderMap);
     SaleOrder confirmedSaleOrder = getConfirmedSaleOrder(saleOrder);
     addLines(qtyToOrderMap, confirmedSaleOrder);
     saleOrderComputeService.computeSaleOrder(confirmedSaleOrder);
     saleOrderFinalizeService.finalizeQuotation(confirmedSaleOrder);
     saleOrderConfirmService.confirmSaleOrder(confirmedSaleOrder);
     saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
     return confirmedSaleOrder;
   }
 
@@ -72,6 +74,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     confirmedSaleOrder.clearSaleOrderLineTaxList();
     confirmedSaleOrder.clearBatchSet();
     confirmedSaleOrder.setOriginSaleQuotation(saleOrder);
+    confirmedSaleOrder.setManualUnblock(saleOrder.getManualUnblock());
     return confirmedSaleOrder;
   }
 
@@ -140,4 +143,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   public BigDecimal getQtyToOrderLeft(SaleOrderLine saleOrderLine) {
     return saleOrderLine.getQty().subtract(saleOrderLine.getOrderedQty());
   }
+
+  protected void checkBeforeConfirm(SaleOrder saleOrder, Map<Long, BigDecimal> qtyToOrderMap)
+      throws AxelorException {}
 }

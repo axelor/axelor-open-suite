@@ -77,7 +77,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       return;
     }
 
-    accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
+    accountingSituationSupplychainService.checkExceededUsedCredit(saleOrder);
     super.finalizeQuotation(saleOrder);
     int intercoSaleCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoSaleCreatingStatusSelect();

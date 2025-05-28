@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -74,5 +75,14 @@ public class SaleOrderConfirmController {
         qtyToOrderMap.put(soLineId, qtyToOrderItem);
       }
     }
+  }
+
+  public void onLoad(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrder saleOrder = context.asType(SaleOrder.class);
+    SaleOrderDummyService saleOrderDummyService = Beans.get(SaleOrderDummyService.class);
+
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    response.setValues(saleOrderDummyService.getOnLoadSplitDummies(saleOrder));
   }
 }
