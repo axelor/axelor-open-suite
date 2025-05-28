@@ -99,11 +99,16 @@ import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionI
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionService;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderCheckBlockingServiceProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderCopyProductionService;
 import com.axelor.apps.production.service.SaleOrderCopyProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionService;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
@@ -282,6 +287,7 @@ import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImp
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.TrackingNumberCompanySupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDummySupplychainServiceImpl;
@@ -466,5 +472,10 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineMOGenerationMultiLineServiceImpl.class);
     bind(SaleOrderCopyProductionService.class).to(SaleOrderCopyProductionServiceImpl.class);
     bind(ManufOrderSaleOrderService.class).to(ManufOrderSaleOrderServiceImpl.class);
+    bind(SaleOrderLineBlockingProductionService.class)
+        .to(SaleOrderLineBlockingProductionServiceImpl.class);
+    bind(SaleOrderCheckBlockingSupplychainServiceImpl.class)
+        .to(SaleOrderCheckBlockingServiceProductionServiceImpl.class);
+    bind(SaleOrderBlockingProductionService.class).to(SaleOrderBlockingProductionServiceImpl.class);
   }
 }

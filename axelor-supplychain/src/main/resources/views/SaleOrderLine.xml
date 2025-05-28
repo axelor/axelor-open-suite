@@ -57,6 +57,18 @@
             onChange="action-sale-order-line-group-analytic-move-line-list-onchange"/>
           <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
         </panel>
+        <panel name="blockingsPanel" title="Blockings">
+          <field name="isDeliveryBlocking" colSpan="3"/>
+          <panel name="deliveryBlockingGroupPanel" title="Delivery blocking"
+            showIf="isDeliveryBlocking" colSpan="12">
+            <field name="deliveryBlockingByUser" canNew="false" canEdit="false"
+              canView="false" form-view="user-form" grid-view="user-grid"/>
+            <field name="deliveryBlockingToDate"/>
+            <field name="deliveryBlockingReason" form-view="stop-reason-form"
+              grid-view="stop-reason-grid"/>
+            <field name="commentDeliveryBlocking" widget="html" colSpan="12"/>
+          </panel>
+        </panel>
       </insert>
 
       <insert position="after">
