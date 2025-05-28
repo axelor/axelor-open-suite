@@ -108,6 +108,7 @@
     <field name="endDateTime"
       expr="eval: __config__.app.getTodayDateTime().truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(2)"
       if="!endDateTime"/>
+    <field name="user" expr="eval: __user__"/>
   </action-record>
 
 </object-views>
