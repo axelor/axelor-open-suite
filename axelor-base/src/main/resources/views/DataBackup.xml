@@ -5,7 +5,7 @@
 
   <grid model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
     name="data-create-backup-grid">
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="backupMetaFile" widget="binary-link"/>
     <field name="backupDate"/>
   </grid>
@@ -52,7 +52,7 @@
 
   <grid model="com.axelor.apps.base.db.DataBackup" title="Restore Backup"
     name="data-restore-backup-grid">
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="backupMetaFile" widget="binary-link"/>
     <field name="restoreDate"/>
   </grid>

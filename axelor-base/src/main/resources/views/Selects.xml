@@ -729,12 +729,12 @@
   </selection>
 
   <selection name="data.backup.status.select">
-    <option value="0">Draft</option>
-    <option value="1">In Progress</option>
-    <option value="2">Backup Created</option>
-    <option value="3">Backup Restored</option>
-    <option value="4">Backup Restore Error</option>
-    <option value="5">Error</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="orange">In Progress</option>
+    <option value="2" color="green">Backup Created</option>
+    <option value="3" color="teal">Backup Restored</option>
+    <option value="4" color="red">Backup Restore Error</option>
+    <option value="5" color="black">Error</option>
   </selection>
 
   <selection name="global.tracking.log.type.select">
