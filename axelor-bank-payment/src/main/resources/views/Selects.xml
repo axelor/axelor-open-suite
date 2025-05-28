@@ -47,10 +47,10 @@
   </selection>
 
   <selection name="bankpayment.bank.order.status.select">
-    <option value="1">Draft</option>
-    <option value="3">Confirmed</option>
-    <option value="4">Carried out</option>
-    <option value="6">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="3" color="orange">Confirmed</option>
+    <option value="4" color="green">Carried out</option>
+    <option value="6" color="red">Canceled</option>
   </selection>
 
   <selection name="bankpayment.bank.order.reject.status.select">
