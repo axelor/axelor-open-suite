@@ -23,7 +23,7 @@
     <panel name="reimbursementDetailsPanel" title="Reimbursement details">
       <field name="amountToReimburse"/>
       <field name="amountReimbursed"/>
-      <field name="bankDetails" onSelect="action-reimbursement-method-bank-details-domain"
+      <field name="bankDetails" domain="self.active = true and self.partner = :partner"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
     </panel>
 
@@ -58,11 +58,6 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
-
-  <action-method name="action-reimbursement-method-bank-details-domain">
-    <call class="com.axelor.apps.account.web.ReimbursementController"
-          method="setBankDetailsDomain"/>
-  </action-method>
 
   <search-filters name="reimbursement-filters"
     model="com.axelor.apps.account.db.Reimbursement" title="Reimbursement filters">

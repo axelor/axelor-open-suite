@@ -982,6 +982,5 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermDateComputeService.class).to(InvoiceTermDateComputeServiceImpl.class);
     bind(InvoiceLineCheckService.class).to(InvoiceLineCheckServiceImpl.class);
     bind(InvoiceGlobalDiscountService.class).to(InvoiceGlobalDiscountServiceImpl.class);
-    bind(ReimbursementDomainService.class).to(ReimbursementDomainServiceImpl.class);
   }
 }

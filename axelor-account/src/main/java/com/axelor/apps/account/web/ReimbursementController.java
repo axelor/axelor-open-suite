@@ -21,9 +21,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ReimbursementDomainService;
 import com.axelor.apps.account.service.ReimbursementService;
-import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -43,15 +41,5 @@ public class ReimbursementController {
     } else {
       response.setInfo(I18n.get(AccountExceptionMessage.REIMBURSEMENT_4));
     }
-  }
-
-  @ErrorException
-  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
-    Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
-
-    String domain =
-            Beans.get(ReimbursementDomainService.class).createDomainForBankDetails(reimbursement);
-
-    response.setAttr("bankDetails", "domain", domain);
   }
 }
