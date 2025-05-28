@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
@@ -88,7 +89,7 @@ public class PurchaseOrderController {
           purchaseOrderLine.setBudgetRemainingAmountToAllocate(
               budgetToolsService.getBudgetRemainingAmountToAllocate(
                   purchaseOrderLine.getBudgetDistributionList(),
-                  purchaseOrderLine.getCompanyExTaxTotal()));
+                  Beans.get(BudgetAmountToolService.class).getBudgetMaxAmount(purchaseOrderLine)));
         }
         response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
       }

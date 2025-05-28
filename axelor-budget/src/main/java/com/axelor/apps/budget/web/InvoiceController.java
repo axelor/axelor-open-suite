@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
@@ -81,7 +82,8 @@ public class InvoiceController {
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
           invoiceLine.setBudgetRemainingAmountToAllocate(
               budgetToolsService.getBudgetRemainingAmountToAllocate(
-                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+                  invoiceLine.getBudgetDistributionList(),
+                  Beans.get(BudgetAmountToolService.class).getBudgetMaxAmount(invoiceLine)));
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }
@@ -131,7 +133,8 @@ public class InvoiceController {
     }
   }
 
-  public void validateVentilation(ActionRequest request, ActionResponse response) {
+  public void validateVentilation(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
     BudgetInvoiceService budgetInvoiceService = Beans.get(BudgetInvoiceService.class);
     if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {

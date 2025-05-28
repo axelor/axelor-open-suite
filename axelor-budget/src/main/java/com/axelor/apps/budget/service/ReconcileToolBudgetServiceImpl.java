@@ -20,14 +20,20 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ReconcileToolBudgetServiceImpl implements ReconcileToolBudgetService {
 
+  protected BudgetAmountToolService budgetAmountToolService;
   private final int CALCULATION_SCALE = 10;
+
+  @Inject
+  public ReconcileToolBudgetServiceImpl(BudgetAmountToolService budgetAmountToolService) {
+    this.budgetAmountToolService = budgetAmountToolService;
+  }
 
   @Override
   public BigDecimal computeReconcileRatio(Invoice invoice, Move move, BigDecimal amount) {
@@ -38,7 +44,7 @@ public class ReconcileToolBudgetServiceImpl implements ReconcileToolBudgetServic
     } else if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       totalAmount =
           move.getMoveLineList().stream()
-              .map(MoveLine::getDebit)
+              .map(ml -> budgetAmountToolService.getBudgetMaxAmount(ml))
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
     }

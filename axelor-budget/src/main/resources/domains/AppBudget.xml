@@ -19,6 +19,10 @@
       help="Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or an error ('Required') if one of the budget exceed the budget value."/>
     <boolean name="enableProject" title="Enable the link to projects"
       help="By activating this option, you will be able to select projects inside a global budget and inversely, select global budgets inside a project."/>
+    <boolean name="includeTaxesOnPurchaseBudget"
+      help="By activating this option, the amounts taken into account in the budget processes will be including taxes on purchase orders, supplier invoices and purchase entries."/>
+    <boolean name="includeTaxesOnSaleBudget"
+      help="By activating this option, the amounts taken into account in the budget processes will be including taxes on sale orders, customer invoices and sale entries."/>
 
     <extra-code>
       <![CDATA[

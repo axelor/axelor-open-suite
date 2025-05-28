@@ -46,7 +46,7 @@ public interface BudgetInvoiceService {
    * @param invoice
    * @return String
    */
-  public String getBudgetExceedAlert(Invoice invoice);
+  public String getBudgetExceedAlert(Invoice invoice) throws AxelorException;
 
   /**
    * Return if there is budget distribution on any invoice line
@@ -73,7 +73,7 @@ public interface BudgetInvoiceService {
       LocalDate toDate)
       throws AxelorException;
 
-  public void generateBudgetDistribution(Invoice invoice);
+  public void generateBudgetDistribution(Invoice invoice) throws AxelorException;
 
   public void setComputedBudgetLinesAmount(List<InvoiceLine> invoiceLineList);
 

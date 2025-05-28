@@ -28,6 +28,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetAccountService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -53,6 +54,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
   protected BudgetService budgetService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public MoveBudgetServiceImpl(
@@ -63,7 +65,8 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       MoveLineRepository moveLineRepo,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      BudgetService budgetService) {
+      BudgetService budgetService,
+      BudgetAmountToolService budgetAmountToolService) {
     this.moveLineBudgetService = moveLineBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.moveRepo = moveRepo;
@@ -72,6 +75,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
     this.budgetService = budgetService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -120,7 +124,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
           } else if (!appBudgetService.getAppBudget().getManageMultiBudget()) {
             budgetToolsService.fillAmountPerBudgetMap(
                 moveLine.getBudget(),
-                moveLine.getCredit().max(moveLine.getDebit()),
+                budgetAmountToolService.getBudgetMaxAmount(moveLine),
                 amountPerBudgetMap);
           }
         }
@@ -171,16 +175,17 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       return;
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
+      BigDecimal moveLineAmount = budgetAmountToolService.getBudgetMaxAmount(moveLine);
       budgetDistributionService.autoComputeBudgetDistribution(
           moveLine.getAnalyticMoveLineList(),
           moveLine.getAccount(),
           move.getCompany(),
           move.getDate(),
-          moveLine.getCredit().add(moveLine.getDebit()),
+          moveLineAmount,
           moveLine);
       moveLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
-              moveLine.getBudgetDistributionList(), moveLine.getDebit().max(moveLine.getCredit())));
+              moveLine.getBudgetDistributionList(), moveLineAmount));
     }
   }
 }

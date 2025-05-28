@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -75,6 +76,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
   protected InvoiceToolBudgetService invoiceToolBudgetService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public SaleOrderBudgetServiceImpl(
@@ -100,7 +102,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       SaleOrderLineBudgetService saleOrderLineBudgetService,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
-      InvoiceToolBudgetService invoiceToolBudgetService) {
+      InvoiceToolBudgetService invoiceToolBudgetService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         appBaseService,
         appStockService,
@@ -125,6 +128,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -154,7 +158,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(saleOrderLine.getBudget());
         }
-        budgetDistribution.setAmount(saleOrderLine.getCompanyExTaxTotal());
+        budgetDistribution.setAmount(budgetAmountToolService.getBudgetMaxAmount(saleOrderLine));
         budgetDistributionService.linkBudgetDistributionWithParent(
             budgetDistribution, saleOrderLine);
       }
@@ -190,7 +194,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
                 .orElse(soLine.getProductName());
         if (StringUtils.notEmpty(productCode)) {
           budgetService.validateBudgetDistributionAmounts(
-              soLine.getBudgetDistributionList(), soLine.getCompanyExTaxTotal(), productCode);
+              soLine.getBudgetDistributionList(),
+              budgetAmountToolService.getBudgetMaxAmount(soLine),
+              productCode);
         }
       }
     }
@@ -231,7 +237,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
             qtyToInvoice.divide(saleOrderLine.getQty(), RoundingMode.HALF_UP));
         invoiceLine.setBudgetRemainingAmountToAllocate(
             budgetToolsService.getBudgetRemainingAmountToAllocate(
-                invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+                invoiceLine.getBudgetDistributionList(),
+                budgetAmountToolService.getBudgetMaxAmount(invoiceLine)));
       }
     }
     return invoiceLines;
@@ -294,7 +301,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         } else {
           Budget budget = saleOrderLine.getBudget();
           budgetToolsService.fillAmountPerBudgetMap(
-              budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
+              budget,
+              budgetAmountToolService.getBudgetMaxAmount(saleOrderLine),
+              amountPerBudgetMap);
         }
       }
 
@@ -317,16 +326,18 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      BigDecimal orderAmount = budgetAmountToolService.getBudgetMaxAmount(saleOrderLine);
+
       budgetDistributionService.autoComputeBudgetDistribution(
           saleOrderLine.getAnalyticMoveLineList(),
           saleOrderLine.getAccount(),
           saleOrder.getCompany(),
           date,
-          saleOrderLine.getCompanyExTaxTotal(),
+          orderAmount,
           saleOrderLine);
       saleOrderLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
-              saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
+              saleOrderLine.getBudgetDistributionList(), orderAmount));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
   }

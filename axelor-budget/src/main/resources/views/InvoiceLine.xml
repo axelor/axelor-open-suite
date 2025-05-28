@@ -27,13 +27,16 @@
     <extend target="//panel[@name='accountingPanel']">
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
-          <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true" hidden="false" x-currency="$currencySymbol">
-            <viewer depends="companyExTaxTotal">
-              <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
-            </viewer>
-          </field>
+          <panel name="budgetAmountPanel" stacked="true"
+            if="__config__.app.getApp('budget')?.getManageMultiBudget()">
+            <field if="!__config__.app.getApp('budget').getIncludeTaxesOnPurchaseBudget()"
+              name="companyExTaxTotal" title="Total W.T." hideIf="$includeTaxAmount" readonly="true"
+              x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
+            </field>
+            <field if="__config__.app.getApp('budget').getIncludeTaxesOnPurchaseBudget()"
+              name="companyInTaxTotal" title="Total A.T.I." hideIf="!$includeTaxAmount"
+              readonly="true" x-currency="$currencySymbol" x-scale="$companyCurrencyScale"/>
+          </panel>
           <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true" x-scale="$companyCurrencyScale" x-currency="$currencySymbol">
@@ -78,6 +81,8 @@
   <action-group name="action-budget-group-account-invoice-line-product-onchange">
     <action name="action-group-account-invoice-line-product-onchange"/>
     <action name="action-reset-budget-method"/>
+    <action name="action-method-invoice-line-compute-budget-max-amounts"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-invoice-line-group-account-onchange">
@@ -103,12 +108,19 @@
     <call class="com.axelor.apps.budget.web.InvoiceLineController" method="setBudgetDomain"/>
   </action-method>
 
+  <action-method name="action-method-invoice-line-manage-budget-amounts-showif">
+    <call class="com.axelor.apps.budget.web.InvoiceLineController"
+      method="manageBudgetAmountFields"/>
+  </action-method>
+
   <action-group name="action-group-budget-invoice-line-onload">
     <action name="action-group-account-invoice-line-onload"/>
     <action
       name="action-budget-distribution-group-budget-amount-available-and-currency-symbol"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-invoice-line-manage-budget-amounts-showif"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
@@ -120,6 +132,8 @@
     <action name="action-method-invoice-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-dates-attrs-initialize-budget-dates"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-invoice-line-manage-budget-amounts-showif"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 </object-views>

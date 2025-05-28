@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -55,6 +56,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
   protected InvoiceToolBudgetService invoiceToolBudgetService;
   protected BudgetInvoiceLineService budgetInvoiceLineService;
   protected BudgetToolsService budgetToolsService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public StockMoveInvoiceBudgetServiceImpl(
@@ -76,7 +78,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       AppBudgetService appBudgetService,
       InvoiceToolBudgetService invoiceToolBudgetService,
       BudgetInvoiceLineService budgetInvoiceLineService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -97,6 +100,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
     this.invoiceToolBudgetService = invoiceToolBudgetService;
     this.budgetInvoiceLineService = budgetInvoiceLineService;
     this.budgetToolsService = budgetToolsService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -120,42 +124,39 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
   public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
       throws AxelorException {
     InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty);
+    BigDecimal invoiceLineAmount = budgetAmountToolService.getBudgetMaxAmount(invoiceLine);
     if (appBudgetService.isApp("budget")
         && invoiceLine != null
-        && invoiceLine.getCompanyExTaxTotal().signum() != 0) {
+        && invoiceLineAmount.signum() != 0) {
       if (invoiceLine.getPurchaseOrderLine() != null) {
         PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
-        if (purchaseOrderLine.getCompanyExTaxTotal().signum() != 0) {
+
+        BigDecimal orderAmount = budgetAmountToolService.getBudgetMaxAmount(purchaseOrderLine);
+        if (orderAmount.signum() != 0) {
           invoiceToolBudgetService.copyBudgetDistributionList(
               purchaseOrderLine.getBudgetDistributionList(),
               invoiceLine,
-              invoiceLine
-                  .getCompanyExTaxTotal()
-                  .divide(
-                      purchaseOrderLine.getCompanyExTaxTotal(),
-                      AppBaseService.COMPUTATION_SCALING,
-                      RoundingMode.HALF_UP));
+              invoiceLineAmount.divide(
+                  orderAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP));
         }
       } else if (invoiceLine.getSaleOrderLine() != null) {
         SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
         invoiceLine.setBudget(saleOrderLine.getBudget());
-        if (saleOrderLine.getCompanyExTaxTotal().signum() != 0) {
+
+        BigDecimal orderAmount = budgetAmountToolService.getBudgetMaxAmount(saleOrderLine);
+        if (orderAmount.signum() != 0) {
           invoiceToolBudgetService.copyBudgetDistributionList(
               saleOrderLine.getBudgetDistributionList(),
               invoiceLine,
-              invoiceLine
-                  .getCompanyExTaxTotal()
-                  .divide(
-                      saleOrderLine.getCompanyExTaxTotal(),
-                      AppBaseService.COMPUTATION_SCALING,
-                      RoundingMode.HALF_UP));
+              invoiceLineAmount.divide(
+                  orderAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP));
         }
       }
 
       invoiceLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
-              invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+              invoiceLine.getBudgetDistributionList(), invoiceLineAmount));
     }
     return invoiceLine;
   }

@@ -20,13 +20,20 @@
       <insert position="after">
         <panel if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           name="budgetDistributionPanel" title="Budget" showIf="product" colSpan="12">
-          <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-            name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true" colSpan="6"
-            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="companyExTaxTotal">
-              <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
-            </viewer>
-          </field>
+          <panel name="budgetAmountPanel" stacked="true"
+            if="__config__.app.getApp('budget')?.getManageMultiBudget()">
+            <field if="!__config__.app.getApp('budget').getIncludeTaxesOnSaleBudget()"
+              name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true"
+              x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
+              <viewer depends="companyExTaxTotal">
+                <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
+              </viewer>
+            </field>
+            <field if="__config__.app.getApp('budget').getIncludeTaxesOnSaleBudget()"
+              name="companyInTaxTotal" title="Total A.T.I." hidden="false" readonly="true"
+              x-currency="$currencySymbol" x-scale="$companyCurrencyScale"/>
+          </panel>
+
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetRemainingAmountToAllocate" readonly="true" colSpan="6"
             x-currency="$currencySymbol" x-scale="$companyCurrencyScale">

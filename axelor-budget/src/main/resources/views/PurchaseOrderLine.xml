@@ -52,13 +52,19 @@
         <panel name="budgetDistributionPanel" title="Budget"
           readonlyIf="purchaseOrder &amp;&amp; purchaseOrder.statusSelect &gt;= 3"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain" colSpan="12">
-          <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            hidden="false" x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="companyExTaxTotal">
-              <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
-            </viewer>
-          </field>
+          <panel name="budgetAmountPanel" stacked="true"
+            if="__config__.app.getApp('budget')?.getManageMultiBudget()">
+            <field if="!__config__.app.getApp('budget').getIncludeTaxesOnPurchaseBudget()"
+              name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true"
+              x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
+              <viewer depends="companyExTaxTotal">
+                <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
+              </viewer>
+            </field>
+            <field if="__config__.app.getApp('budget').getIncludeTaxesOnPurchaseBudget()"
+              name="companyInTaxTotal" title="Total A.T.I." hidden="false" readonly="true"
+              x-currency="$currencySymbol" x-scale="$companyCurrencyScale"/>
+          </panel>
           <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
             x-currency="$currencySymbol" x-scale="$companyCurrencyScale">

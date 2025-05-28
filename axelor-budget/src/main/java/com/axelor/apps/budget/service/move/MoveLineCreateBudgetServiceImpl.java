@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,6 +49,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
 
   protected BudgetToolsService budgetToolsService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public MoveLineCreateBudgetServiceImpl(
@@ -68,7 +70,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       AppBaseService appBaseService,
       AnalyticLineService analyticLineService,
       CurrencyScaleService currencyScaleService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         companyConfigService,
         currencyService,
@@ -88,6 +91,7 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
         analyticLineService,
         currencyScaleService);
     this.budgetToolsService = budgetToolsService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -106,7 +110,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
 
     moveLine.setBudgetRemainingAmountToAllocate(
         budgetToolsService.getBudgetRemainingAmountToAllocate(
-            moveLine.getBudgetDistributionList(), moveLine.getCredit().max(moveLine.getDebit())));
+            moveLine.getBudgetDistributionList(),
+            budgetAmountToolService.getBudgetMaxAmount(moveLine)));
 
     return moveLine;
   }

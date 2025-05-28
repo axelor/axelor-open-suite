@@ -24,6 +24,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetDistributionService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
@@ -63,7 +64,7 @@ public class MoveLineController {
         Beans.get(BudgetToolsService.class)
             .getBudgetRemainingAmountToAllocate(
                 moveLine.getBudgetDistributionList(),
-                moveLine.getDebit().max(moveLine.getCredit())));
+                Beans.get(BudgetAmountToolService.class).getBudgetMaxAmount(moveLine)));
   }
 
   public void updateBudgetAmounts(ActionRequest request, ActionResponse response) {

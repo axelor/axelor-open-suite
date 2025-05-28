@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -38,6 +39,7 @@ public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineSe
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public PurchaseOrderLineGroupBudgetServiceImpl(
@@ -48,7 +50,8 @@ public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineSe
       AnalyticLineModelService analyticLineModelService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         analyticMoveLineService,
         unitConversionService,
@@ -58,6 +61,7 @@ public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineSe
         purchaseOrderLineRepo);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -71,7 +75,7 @@ public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineSe
           "budgetRemainingAmountToAllocate",
           budgetToolsService.getBudgetRemainingAmountToAllocate(
               purchaseOrderLine.getBudgetDistributionList(),
-              purchaseOrderLine.getCompanyExTaxTotal()));
+              budgetAmountToolService.getBudgetMaxAmount(purchaseOrderLine)));
     }
     return map;
   }

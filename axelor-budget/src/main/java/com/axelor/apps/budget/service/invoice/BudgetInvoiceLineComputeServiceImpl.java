@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -49,6 +50,7 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public BudgetInvoiceLineComputeServiceImpl(
@@ -71,7 +73,8 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
       InvoiceLineCheckService invoiceLineCheckService,
       InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         currencyService,
         priceListService,
@@ -93,6 +96,7 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
         invoiceLineSupplierCatalogService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -103,7 +107,8 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServi
     if (appBudgetService.isApp("budget")) {
       invoiceLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
-              invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+              invoiceLine.getBudgetDistributionList(),
+              budgetAmountToolService.getBudgetMaxAmount(invoiceLine)));
       invoiceLineMap.put(
           "budgetRemainingAmountToAllocate", invoiceLine.getBudgetRemainingAmountToAllocate());
     }

@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -54,6 +55,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public PurchaseOrderInvoiceBudgetServiceImpl(
@@ -76,7 +78,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       ProductCompanyService productCompanyService,
       BudgetDistributionRepository budgetDistributionRepository,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         invoiceServiceSupplychain,
         invoiceService,
@@ -98,6 +101,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -112,7 +116,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
   }
 
   protected List<InvoiceLine> copyBudgetDistribution(
-      List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine) {
+      List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException {
     if (ObjectUtils.isEmpty(invoiceLineList)) {
       return invoiceLineList;
     }
@@ -138,7 +143,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
           }
           invoiceLine.setBudgetRemainingAmountToAllocate(
               budgetToolsService.getBudgetRemainingAmountToAllocate(
-                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+                  invoiceLine.getBudgetDistributionList(),
+                  budgetAmountToolService.getBudgetMaxAmount(invoiceLine)));
         }
       }
     }
