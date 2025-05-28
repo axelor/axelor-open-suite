@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
+import com.axelor.apps.account.service.PaymentScheduleDomainService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -188,15 +189,9 @@ public class PaymentScheduleController {
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
 
-    String domain = Beans.get(InvoiceDomainService.class).createDomainForBankDetails(invoice);
+    String domain =
+        Beans.get(PaymentScheduleDomainService.class).createDomainForBankDetails(paymentSchedule);
 
     response.setAttr("bankDetails", "domain", domain);
   }
-
-
-  <action-attrs name="action-payment-schedule-record-bank-details-domain">
-    <attribute name="domain" for="bankDetails"
-  expr="eval: &quot;self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = TRUE&quot;"
-          if="partner &amp;&amp; partner.bankDetailsList"/>
-  </action-attrs>
 }
