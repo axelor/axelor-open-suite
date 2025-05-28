@@ -23,8 +23,8 @@
   </selection>
 
   <selection name="bankpayment.bank.statement.status.select">
-    <option value="1">Received</option>
-    <option value="2">Imported</option>
+    <option value="1" color="blue">Received</option>
+    <option value="2" color="green">Imported</option>
   </selection>
 
   <selection name="bankpayment.bank.order.type.select">
