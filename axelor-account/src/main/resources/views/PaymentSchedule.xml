@@ -160,7 +160,8 @@
   <!-- ACTION METHOD -->
 
   <action-method name="action-payment-schedule-record-bank-details-domain">
-    <call class="com.axelor.apps.account.web.PaymentScheduleController" method="setBankDetailsDomain"/>
+    <call class="com.axelor.apps.account.web.PaymentScheduleController"
+      method="setBankDetailsDomain"/>
   </action-method>
 
   <action-method name="action-payment-schedule-method-validate">

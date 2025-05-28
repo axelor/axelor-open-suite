@@ -991,5 +991,6 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryCheckService.class).to(MassEntryCheckServiceImpl.class);
     bind(MassEntryMoveUpdateService.class).to(MassEntryMoveUpdateServiceImpl.class);
     bind(MassEntryMoveValidateService.class).to(MassEntryMoveValidateServiceImpl.class);
+    bind(PaymentScheduleDomainService.class).to(PaymentScheduleDomainServiceImpl.class);
   }
 }
