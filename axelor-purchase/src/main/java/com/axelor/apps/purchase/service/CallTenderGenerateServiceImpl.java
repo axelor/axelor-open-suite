@@ -6,12 +6,12 @@ import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Objects;
 
-public class CallTenderServiceImpl implements CallTenderService {
+public class CallTenderGenerateServiceImpl implements CallTenderGenerateService {
 
   protected final CallTenderOfferService callTenderOfferService;
 
   @Inject
-  public CallTenderServiceImpl(CallTenderOfferService callTenderOfferService) {
+  public CallTenderGenerateServiceImpl(CallTenderOfferService callTenderOfferService) {
     this.callTenderOfferService = callTenderOfferService;
   }
 

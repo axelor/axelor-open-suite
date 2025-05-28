@@ -23,18 +23,23 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
     return needs.stream()
         .map(
             need -> {
-              CallTenderOffer callTenderOffer = new CallTenderOffer();
-              callTenderOffer.setCallTenderSupplier(supplier);
-              callTenderOffer.setProduct(need.getProduct());
-              callTenderOffer.setCallTenderNeed(need);
-              callTenderOffer.setRequestedQty(need.getRequestedQty());
-              callTenderOffer.setRequestedDate(need.getRequestedDate());
-              callTenderOffer.setRequestedUnit(need.getUnit());
-              callTenderOffer.setStatusSelect(CallTenderOfferRepository.STATUS_DRAFT);
-              callTenderOffer.setSupplierPartner(supplier.getSupplierPartner());
-              return callTenderOffer;
+              return createCallTenderOffer(supplier, need);
             })
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public CallTenderOffer createCallTenderOffer(CallTenderSupplier supplier, CallTenderNeed need) {
+    CallTenderOffer callTenderOffer = new CallTenderOffer();
+    callTenderOffer.setCallTenderSupplier(supplier);
+    callTenderOffer.setProduct(need.getProduct());
+    callTenderOffer.setCallTenderNeed(need);
+    callTenderOffer.setRequestedQty(need.getRequestedQty());
+    callTenderOffer.setRequestedDate(need.getRequestedDate());
+    callTenderOffer.setRequestedUnit(need.getUnit());
+    callTenderOffer.setStatusSelect(CallTenderOfferRepository.STATUS_DRAFT);
+    callTenderOffer.setSupplierPartner(supplier.getSupplierPartner());
+    return callTenderOffer;
   }
 
   @Override

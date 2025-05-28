@@ -10,5 +10,7 @@ public interface CallTenderOfferService {
   List<CallTenderOffer> generateCallTenderOfferList(
       CallTenderSupplier supplier, List<CallTenderNeed> needs);
 
+  CallTenderOffer createCallTenderOffer(CallTenderSupplier supplier, CallTenderNeed need);
+
   boolean alreadyGenerated(CallTenderOffer offer, List<CallTenderOffer> offerList);
 }
