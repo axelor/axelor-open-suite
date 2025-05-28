@@ -10,7 +10,7 @@
     <field name="company"/>
     <field name="createdOn"/>
     <field name="createdBy"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis"
