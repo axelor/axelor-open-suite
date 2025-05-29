@@ -65,7 +65,7 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void createBackUp(DataBackup dataBackup) {
     DataBackup obj = setStatus(dataBackup);
     if (dataBackup.getUpdateImportId()) {
-      updateImportId();
+      updateImportId(dataBackup.getIsExportApp());
     }
     executor.submit(
         new TenantAware(
@@ -172,12 +172,18 @@ public class DataBackupServiceImpl implements DataBackupService {
   }
 
   @Transactional
-  public void updateImportId() {
+  public void updateImportId(boolean isExportApp) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
-    String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+    StringBuilder filter =
+        new StringBuilder(
+            "self.packageName NOT LIKE '%meta%' AND self.name != 'DataBackup' AND self.tableName IS NOT NULL");
+    filter.append(" AND (self.packageName != 'com.axelor.studio.db'");
+    if (isExportApp) {
+      filter.append(" OR self.name LIKE 'App%'");
+    }
+    filter.append(")");
 
-    List<MetaModel> metaModelList = metaModelRepo.all().filter(filterStr).fetch();
+    List<MetaModel> metaModelList = metaModelRepo.all().filter(filter.toString()).fetch();
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModelList.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
 
