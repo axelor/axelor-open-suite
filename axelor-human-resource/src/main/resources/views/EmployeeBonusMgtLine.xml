@@ -11,7 +11,7 @@
     <field name="coef" width="100px"/>
     <field name="weeklyPlanning" canEdit="false" width="120px"/>
     <field name="seniorityDate"/>
-    <field name="statusSelect" width="100px"/>
+    <field name="statusSelect" width="100px" widget="single-select"/>
   </grid>
 
   <grid name="employee-bonus-mgt-line-employee-grid" title="Employee bonus"
