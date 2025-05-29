@@ -15,7 +15,7 @@
     <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
     <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
     <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
