@@ -10,10 +10,10 @@
   </selection>
 
   <selection name="contract.version.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Waiting</option>
-    <option value="3">Ongoing</option>
-    <option value="4">Terminated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="yellow">Waiting</option>
+    <option value="3" color="green">Ongoing</option>
+    <option value="4" color="red">Terminated</option>
   </selection>
 
   <selection name="contract.version.invoicing.moment.select">

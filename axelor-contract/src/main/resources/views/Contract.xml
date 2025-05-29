@@ -507,7 +507,7 @@
         <field name="createdOn"/>
         <field name="activationDateTime"/>
         <field name="endDateTime"/>
-        <field name="statusSelect"/>
+        <field name="statusSelect" widget="single-select"/>
       </panel-related>
 
       <panel-dashlet name="generatedSaleOrdersPanel" title="Sale orders"
