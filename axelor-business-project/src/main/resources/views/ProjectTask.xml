@@ -73,7 +73,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progress" widget="SelectProgress" if="isShowProgress"/>
+    <field name="progress" widget="Progress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="invoicingType"/>
     <field name="taskDuration" if="manageTimeSpent"/>
@@ -103,7 +103,7 @@
     <field name="taskDate"/>
     <field name="status"/>
     <field name="invoicingProgress"/>
-    <field name="progress"/>
+    <field name="progress" widget="Progress"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
     <field name="toInvoice" readonly="true"
