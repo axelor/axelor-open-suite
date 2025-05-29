@@ -4,9 +4,9 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <selection name="contract.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Active</option>
-    <option value="3">Closed</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Active</option>
+    <option value="3" color="red">Closed</option>
   </selection>
 
   <selection name="contract.version.status.select">

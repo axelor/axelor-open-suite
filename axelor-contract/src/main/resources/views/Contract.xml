@@ -15,7 +15,7 @@
     <field name="currentContractVersion.supposedEndDate"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="currentContractVersion.initialExTaxTotalPerYear"
