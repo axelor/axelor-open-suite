@@ -128,8 +128,8 @@
   </selection>
 
   <selection name="hr.employee.advance.status.select">
-    <option value="1">Requested</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Requested</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
   <selection name="hr.employee.bonus.mgt.status.select">

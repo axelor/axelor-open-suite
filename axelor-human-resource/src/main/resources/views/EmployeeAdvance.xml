@@ -22,7 +22,7 @@
     <field name="remainingAmount"/>
     <field name="requestedAmount"/>
     <field name="typeSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
 
   </grid>
 
@@ -63,7 +63,7 @@
       form-view="employee-advance-usage-advance-form"
       grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2"/>
     <panel name="statusPanel" sidebar="true">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <button name="validateBtn" title="Validate"
         onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1"/>
     </panel>
