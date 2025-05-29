@@ -257,9 +257,9 @@
   </selection>
 
   <selection name="base.year.status.select">
-    <option value="1">Opened</option>
-    <option value="2">Closed</option>
-    <option value="3">Adjusting</option>
+    <option value="1" color="green">Opened</option>
+    <option value="2" color="red">Closed</option>
+    <option value="3" color="yellow">Adjusting</option>
   </selection>
 
   <selection name="base.period.status.select">
