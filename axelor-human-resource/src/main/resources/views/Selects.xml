@@ -4,12 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <selection name="hrs.expenses.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Waiting validation</option>
-    <option value="3">Validated</option>
-    <option value="4">Reimbursed</option>
-    <option value="5">Refused</option>
-    <option value="6">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="amber">Waiting validation</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="teal">Reimbursed</option>
+    <option value="5" color="red">Refused</option>
+    <option value="6" color="grey">Canceled</option>
   </selection>
 
   <selection name="hrs.leave.request.status.select">
