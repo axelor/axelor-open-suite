@@ -20,6 +20,7 @@
     <boolean name="isProcessEmptyTable" title="Generate csv file for empty tables"/>
     <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
       title="Pseudonymizer"/>
+    <boolean name="isExportApp" title="Export App configurations"/>
     <extra-code>
       <![CDATA[
 				// DATABACKUP STATUS

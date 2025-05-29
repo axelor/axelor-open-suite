@@ -153,16 +153,18 @@ public class DataBackupCreateService {
     File tempDir = Files.createTempDirectory(null).toFile();
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
+    boolean anonymizeData = dataBackup.getAnonymizer() != null;
+    boolean isExportApp = dataBackup.getIsExportApp();
     int errorsCount = 0;
     byte[] salt = null;
 
     fileNameList = new ArrayList<>();
-    List<MetaModel> metaModelList = getMetaModels(dataBackup.getAnonymizer() != null);
+    List<MetaModel> metaModelList = getMetaModels(anonymizeData, isExportApp);
 
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
     LinkedList<CSVInput> refernceCsvs = new LinkedList<>();
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
-    Map<String, List<String>> subClassesMap = getSubClassesMap(dataBackup.getAnonymizer() != null);
+    Map<String, List<String>> subClassesMap = getSubClassesMap(anonymizeData, isExportApp);
 
     if (dataBackup.getCheckAllErrorFirst()) {
       dataBackup.setFetchLimit(1);
@@ -173,7 +175,7 @@ public class DataBackupCreateService {
       fileNameList.clear();
     }
 
-    if (dataBackup.getAnonymizer() != null) {
+    if (anonymizeData) {
       salt = anonymizeService.getSalt();
     }
 
@@ -297,24 +299,28 @@ public class DataBackupCreateService {
   }
 
   /* Get All MetaModels */
-  protected List<MetaModel> getMetaModels(boolean anonymizeData) {
-    String filterStr = "";
+  protected List<MetaModel> getMetaModels(boolean anonymizeData, boolean isExportApp) {
+    StringBuilder filter =
+        new StringBuilder(
+            "self.packageName NOT LIKE '%meta%' AND self.name != 'DataBackup' AND self.tableName IS NOT NULL");
+    filter.append(" AND (self.packageName != 'com.axelor.studio.db'");
+    if (isExportApp) {
+      filter.append(" OR self.name LIKE 'App%'");
+    }
+    filter.append(")");
     if (anonymizeData) {
-      filterStr =
-          "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name NOT IN ('DataBackup','MailMessage') AND self.tableName IS NOT NULL";
-    } else {
-      filterStr =
-          "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+      filter.append(" AND self.name != 'MailMessage'");
     }
 
-    List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
+    List<MetaModel> metaModels =
+        metaModelRepo.all().filter(filter.toString()).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;
   }
 
-  protected Map<String, List<String>> getSubClassesMap(boolean anonymizeData) {
-    List<MetaModel> metaModels = getMetaModels(anonymizeData);
+  protected Map<String, List<String>> getSubClassesMap(boolean anonymizeData, boolean isExportApp) {
+    List<MetaModel> metaModels = getMetaModels(anonymizeData, isExportApp);
     List<String> subClasses;
     Map<String, List<String>> subClassMap = new HashMap<>();
     for (MetaModel metaModel : metaModels) {
