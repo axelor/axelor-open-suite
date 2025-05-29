@@ -15,9 +15,9 @@
   </selection>
 
   <selection name="budget.level.status.select">
-    <option value="draft">Draft</option>
-    <option value="valid">Validated</option>
-    <option value="archived">Archived</option>
+    <option value="draft" color="blue">Draft</option>
+    <option value="valid" color="green">Validated</option>
+    <option value="archived" color="grey">Archived</option>
   </selection>
 
   <selection name="budget.budget.source.select">
