@@ -133,9 +133,9 @@
   </selection>
 
   <selection name="hr.employee.bonus.mgt.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Anomaly</option>
-    <option value="3">Calculated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="red">Anomaly</option>
+    <option value="3" color="green">Calculated</option>
   </selection>
 
   <selection name="hr.employee.bonus.mgt.line.status.select">
