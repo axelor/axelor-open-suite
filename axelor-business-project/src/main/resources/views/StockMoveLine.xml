@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form name="stock-move-line-form" title="Stock move line" id="stock-move-line-project-form"
+    model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
+
+    <extend target="//panel[@name='descriptionPanel']">
+      <insert position="before">
+        <panel title="Project" colSpan="12" if="__config__.app.getApp('business-project')">
+          <field name="project"/>
+          <field name="projectTask"/>
+        </panel>
+      </insert>
+    </extend>
+
+  </form>
+
+</object-views>
