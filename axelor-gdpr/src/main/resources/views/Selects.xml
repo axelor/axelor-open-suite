@@ -27,9 +27,9 @@
   </selection>
 
   <selection name="gdpr.processing.register.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Active</option>
-    <option value="2">Canceled</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="green">Active</option>
+    <option value="2" color="red">Canceled</option>
   </selection>
 
   <selection name="gdpr.search.config.line.key.select">
