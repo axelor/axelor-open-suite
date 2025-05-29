@@ -436,8 +436,8 @@
   </selection>
 
   <selection name="base.printing.template.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Active</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Active</option>
   </selection>
 
   <selection name="base.blocking.select">
