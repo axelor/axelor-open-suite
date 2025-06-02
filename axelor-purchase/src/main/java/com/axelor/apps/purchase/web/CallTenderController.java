@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.service.CallTenderGenerateService;
+import com.axelor.apps.purchase.service.CallTenderMailService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -48,7 +49,7 @@ public class CallTenderController {
 
     callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
     if (callTender != null) {
-      Beans.get(CallTenderGenerateService.class).sendCallTenderOffers(callTender);
+      Beans.get(CallTenderMailService.class).sendCallTenderOffers(callTender);
       response.setInfo(I18n.get("Mails successfully planned for sending."));
     }
     response.setReload(true);

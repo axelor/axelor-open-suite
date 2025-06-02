@@ -111,4 +111,41 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
       offer.setOfferMail(callTenderMail);
     }
   }
+
+  @Override
+  public void sendCallTenderOffers(CallTender callTender)
+      throws AxelorException, IOException, MessagingException, ClassNotFoundException {
+    Objects.requireNonNull(callTender);
+
+    if (callTender.getCallTenderOfferList() == null) {
+      return;
+    }
+
+    // Get template
+    var template = callTender.getCallForTenderMailTemplate();
+
+    // Generate callTenderMail
+    var offerToGenerateMailGroupBySupplier =
+        callTender.getCallTenderOfferList().stream()
+            .filter(offer -> offer.getOfferMail() == null)
+            .collect(Collectors.groupingBy(CallTenderOffer::getSupplierPartner));
+
+    if (offerToGenerateMailGroupBySupplier.isEmpty()) {
+      return;
+    }
+
+    for (List<CallTenderOffer> offerList : offerToGenerateMailGroupBySupplier.values()) {
+      generateOfferMail(offerList, template);
+    }
+
+    sendMails(callTender);
+    updateOffersStatus(callTender);
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void updateOffersStatus(CallTender callTender) {
+    callTender.getCallTenderOfferList().stream()
+        .filter(offer -> offer.getOfferMail().getSentMessage() != null)
+        .forEach(offer -> offer.setStatusSelect(CallTenderOfferRepository.STATUS_SENT));
+  }
 }

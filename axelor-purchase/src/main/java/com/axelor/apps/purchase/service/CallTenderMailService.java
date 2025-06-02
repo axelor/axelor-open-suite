@@ -14,4 +14,7 @@ public interface CallTenderMailService {
 
   void generateOfferMail(List<CallTenderOffer> offer, Template template)
       throws AxelorException, IOException;
+
+  void sendCallTenderOffers(CallTender callTender)
+      throws AxelorException, IOException, MessagingException, ClassNotFoundException;
 }
