@@ -1,3 +1,48 @@
+## [8.2.16] (2025-06-02)
+
+### Fixes
+#### Base
+
+* Group: removed collaboration configuration since it is only available in AOP enterprise.
+* Purchase order: fixed main panel visibility to follow the 'Enable trading names management' configuration.
+
+#### Account
+
+* Invoice/PFP: fixed PFP status when all invoice terms are PFP validated.
+* Invoice: prevent automatic mail and hide mail panel for supplier invoices.
+* Invoice: fixed the display issue with the logo and address when 'Terms and Conditions' are included on the invoice BIRT report.
+* Account: fixed unnecessary display of mass entry move lines.
+* Account: fixed domain for result profit account and result loss account on account config by company.
+
+#### Budget
+
+* BudgetStructure/Budget: fixed the budget line import.
+
+#### Human Resource
+
+* Lunch voucher: fixed outdated expenses wrongly deducted in lunch vouchers calculation.
+* Lunch voucher: excluded former employees from lunch voucher calculation.
+
+#### Stock
+
+* Stock location: fixed last inventory date in stock location line when validating an inventory.
+
+#### Supply Chain
+
+* Sale order: fixed partial invoicing based on discounted price.
+* Sale/purchase order: allow trading name to be editable when a sale/purchase order is generated from interco.
+
+
+### Developer
+
+#### Account
+
+Added `InvoiceTermPfpService` in the `InvoiceTermPfpValidateServiceImpl` constructor
+
+#### Human Resource
+
+`LunchVoucherMgtLineService#computeRestaurant` and `LunchVoucherMgtLineService#computeInvitation` have a new `Period` parameter.
+
 ## [8.2.15] (2025-05-15)
 
 ### Fixes
@@ -1066,6 +1111,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.16]: https://github.com/axelor/axelor-open-suite/compare/v8.2.15...v8.2.16
 [8.2.15]: https://github.com/axelor/axelor-open-suite/compare/v8.2.14...v8.2.15
 [8.2.14]: https://github.com/axelor/axelor-open-suite/compare/v8.2.13...v8.2.14
 [8.2.13]: https://github.com/axelor/axelor-open-suite/compare/v8.2.12...v8.2.13
