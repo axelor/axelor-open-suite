@@ -2,6 +2,7 @@ package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.PaymentScheduleDomainServiceImpl;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
@@ -32,7 +33,7 @@ public class PaymentScheduleDomainBankPaymentServiceImpl extends PaymentSchedule
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               paymentMode, partner, company);
-      if (!bankDetailsList.isEmpty()) {
+      if (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
         domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
       }
     }
