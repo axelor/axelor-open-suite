@@ -6,6 +6,7 @@
   <grid name="call-tender-supplier-grid" title="Supplier partners"
     model="com.axelor.apps.purchase.db.CallTenderNeed">
     <field name="supplierPartner"/>
+    <field name="contactPartnerSet" widget="TagSelect"/>
   </grid>
 
   <form name="call-tender-supplier-form" model="com.axelor.apps.purchase.db.CallTenderSupplier"
@@ -14,6 +15,9 @@
       <field name="supplierPartner" domain="self.isSupplier IS true" form-view="partner-form"
         grid-view="partner-grid"/>
     </panel>
+    <panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
+      domain="self.isContact = 'true'" form-view="partner-contact-form"
+      grid-view="partner-contact-grid" canNew="false" canSelect="true"/>
   </form>
 
 </object-views>

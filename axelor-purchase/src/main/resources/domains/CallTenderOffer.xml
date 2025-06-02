@@ -27,6 +27,8 @@
     <string name="offerComment" title="Comment"/>
     <integer name="statusSelect" selection="purchase.call.tender.offer.status.select"/>
     <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
+    <many-to-one name="offerMail" ref="com.axelor.apps.purchase.db.CallTenderMail"/>
+
 
     <extra-code>
       <![CDATA[
