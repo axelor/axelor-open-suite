@@ -1,3 +1,29 @@
+## [7.2.40] (2025-06-02)
+
+### Fixes
+#### Base
+
+* Group: removed collaboration configuration since it is only available in AOP enterprise.
+
+#### Account
+
+* Invoice: prevent automatic mail and hide mail panel for supplier invoices.
+* Invoice: fixed the display issue with the logo and address when 'Terms and Conditions' are included on the invoice BIRT report.
+* Account: fixed unnecessary display of mass entry move lines.
+* Account: fixed domain for result profit account and result loss account on account config by company.
+
+#### Human Resource
+
+* Lunch voucher: excluded former employees from lunch voucher calculation.
+
+#### Stock
+
+* Stock location: fixed last inventory date in stock location line when validating an inventory.
+
+#### Supply Chain
+
+* Sale order: fixed partial invoicing based on discounted price.
+
 ## [7.2.39] (2025-05-15)
 
 ### Fixes
@@ -1740,6 +1766,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.40]: https://github.com/axelor/axelor-open-suite/compare/v7.2.39...v7.2.40
 [7.2.39]: https://github.com/axelor/axelor-open-suite/compare/v7.2.38...v7.2.39
 [7.2.38]: https://github.com/axelor/axelor-open-suite/compare/v7.2.37...v7.2.38
 [7.2.37]: https://github.com/axelor/axelor-open-suite/compare/v7.2.36...v7.2.37
