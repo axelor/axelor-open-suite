@@ -86,14 +86,16 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
   @Override
   public List<BankDetails> getBankDetailsLinkedToActiveUmr(
       PaymentMode paymentMode, Partner partner, Company company) {
-    boolean isManageDirectDebitPayment =
-        appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment();
-    if (isManageDirectDebitPayment
-        && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
-        && !partner.getBankDetailsList().isEmpty()) {
-      return partner.getBankDetailsList().stream()
-          .filter(bankDetails -> umrService.getActiveUmr(company, bankDetails) != null)
-          .collect(Collectors.toList());
+    if (paymentMode != null && partner != null && company != null) {
+      boolean isManageDirectDebitPayment =
+          appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment();
+      if (isManageDirectDebitPayment
+          && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
+          && !partner.getBankDetailsList().isEmpty()) {
+        return partner.getBankDetailsList().stream()
+            .filter(bankDetails -> umrService.getActiveUmr(company, bankDetails) != null)
+            .collect(Collectors.toList());
+      }
     }
     return Collections.emptyList();
   }
