@@ -3,7 +3,6 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderMail;
 import com.axelor.apps.purchase.db.CallTenderOffer;
@@ -27,18 +26,15 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
 
   protected final MessageService messageService;
   protected final TemplateMessageService templateMessageService;
-  protected final AppBaseService appBaseService;
   protected final CallTenderCsvService callTenderCsvService;
 
   @Inject
   public CallTenderMailServiceImpl(
       MessageService messageService,
       TemplateMessageService templateMessageService,
-      AppBaseService appBaseService,
       CallTenderCsvService callTenderCsvService) {
     this.messageService = messageService;
     this.templateMessageService = templateMessageService;
-    this.appBaseService = appBaseService;
     this.callTenderCsvService = callTenderCsvService;
   }
 
