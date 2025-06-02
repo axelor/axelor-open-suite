@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
