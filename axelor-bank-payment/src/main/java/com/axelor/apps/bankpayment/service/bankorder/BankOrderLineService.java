@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -268,7 +269,8 @@ public class BankOrderLineService {
             bankOrder.getPaymentMode(),
             bankOrderLine.getPartner(),
             bankOrderLine.getReceiverCompany());
-    if (!bankDetailsList.isEmpty()) {
+    if (bankOrder.getPaymentMode() != null
+        && bankOrder.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_DD) {
       bankDetailsIds = StringHelper.getIdListString(bankDetailsList);
     }
 
