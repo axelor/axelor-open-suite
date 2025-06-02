@@ -3,6 +3,7 @@ package com.axelor.apps.bankpayment.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.FiscalPositionRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
@@ -37,7 +38,7 @@ public class InvoiceDomainBankPaymentServiceImpl extends InvoiceDomainServiceImp
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               paymentMode, partner, company);
-      if (!bankDetailsList.isEmpty()) {
+      if (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
         domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
       }
     }
