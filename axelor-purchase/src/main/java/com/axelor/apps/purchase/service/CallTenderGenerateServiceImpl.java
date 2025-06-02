@@ -1,8 +1,6 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.purchase.db.CallTender;
-import com.axelor.message.service.MessageService;
-import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -11,16 +9,10 @@ import java.util.Objects;
 public class CallTenderGenerateServiceImpl implements CallTenderGenerateService {
 
   protected final CallTenderOfferService callTenderOfferService;
-  protected final CallTenderMailService callTenderMailService;
 
   @Inject
-  public CallTenderGenerateServiceImpl(
-      CallTenderOfferService callTenderOfferService,
-      TemplateMessageService templateMessageService,
-      MessageService messageService,
-      CallTenderMailService callTenderMailService) {
+  public CallTenderGenerateServiceImpl(CallTenderOfferService callTenderOfferService) {
     this.callTenderOfferService = callTenderOfferService;
-    this.callTenderMailService = callTenderMailService;
   }
 
   @Override
