@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Bank;
@@ -60,6 +62,8 @@ public class BankOrderLineService {
   protected AppBaseService appBaseService;
   protected PartnerService partnerService;
 
+  protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
+
   @Inject
   public BankOrderLineService(
       BankDetailsRepository bankDetailsRepository,
@@ -67,7 +71,8 @@ public class BankOrderLineService {
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderCheckService bankOrderCheckService,
       AppBaseService appBaseService,
-      PartnerService partnerService) {
+      PartnerService partnerService,
+      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
 
     this.bankDetailsRepository = bankDetailsRepository;
     this.currencyService = currencyService;
@@ -75,6 +80,7 @@ public class BankOrderLineService {
     this.bankOrderCheckService = bankOrderCheckService;
     this.appBaseService = appBaseService;
     this.partnerService = partnerService;
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
   }
 
   /**
@@ -256,6 +262,15 @@ public class BankOrderLineService {
     else if (bankOrderLine.getPartner() != null) {
       bankDetailsIds =
           StringHelper.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
+    }
+
+    List<BankDetails> bankDetailsList =
+        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
+            bankOrder.getPaymentMode(),
+            bankOrderLine.getPartner(),
+            bankOrderLine.getReceiverCompany());
+    if (!bankDetailsList.isEmpty()) {
+      bankDetailsIds = StringHelper.getIdListString(bankDetailsList);
     }
 
     if (bankDetailsIds.equals("")) {
