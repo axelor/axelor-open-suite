@@ -7,4 +7,6 @@ import java.util.Set;
 public interface FreightCarrierApplyPricingService {
 
   void applyPricing(Set<FreightCarrierPricing> freightCarrierPricingSet) throws AxelorException;
+
+  String applyPricing(FreightCarrierPricing freightCarrierPricing);
 }
