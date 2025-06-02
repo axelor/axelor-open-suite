@@ -1,3 +1,41 @@
+## [8.1.25] (2025-06-02)
+
+### Fixes
+#### Base
+
+* Group: removed collaboration configuration since it is only available in AOP enterprise.
+
+#### Account
+
+* Invoice: prevent automatic mail and hide mail panel for supplier invoices.
+* Invoice: fixed the display issue with the logo and address when 'Terms and Conditions' are included on the invoice BIRT report.
+* Account: fixed unnecessary display of mass entry move lines.
+* Account: fixed domain for result profit account and result loss account on account config by company.
+
+#### Budget
+
+* BudgetStructure/Budget: fixed the budget line import.
+
+#### Human Resource
+
+* Lunch voucher: fixed outdated expenses wrongly deducted in lunch vouchers calculation.
+* Lunch voucher: excluded former employees from lunch voucher calculation.
+
+#### Stock
+
+* Stock location: fixed last inventory date in stock location line when validating an inventory.
+
+#### Supply Chain
+
+* Sale order: fixed partial invoicing based on discounted price.
+
+
+### Developer
+
+#### Human Resource
+
+`LunchVoucherMgtLineService#computeRestaurant` and `LunchVoucherMgtLineService#computeInvitation` have a new `Period` parameter.
+
 ## [8.1.24] (2025-05-15)
 
 ### Fixes
@@ -1487,6 +1525,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.25]: https://github.com/axelor/axelor-open-suite/compare/v8.1.24...v8.1.25
 [8.1.24]: https://github.com/axelor/axelor-open-suite/compare/v8.1.23...v8.1.24
 [8.1.23]: https://github.com/axelor/axelor-open-suite/compare/v8.1.22...v8.1.23
 [8.1.22]: https://github.com/axelor/axelor-open-suite/compare/v8.1.21...v8.1.22
