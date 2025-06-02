@@ -11,25 +11,14 @@ import com.axelor.apps.purchase.db.CallTenderSupplier;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.helpers.StringHelper;
-import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
@@ -39,15 +28,18 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
   protected final MessageService messageService;
   protected final TemplateMessageService templateMessageService;
   protected final AppBaseService appBaseService;
+  protected final CallTenderCsvService callTenderCsvService;
 
   @Inject
   public CallTenderMailServiceImpl(
       MessageService messageService,
       TemplateMessageService templateMessageService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      CallTenderCsvService callTenderCsvService) {
     this.messageService = messageService;
     this.templateMessageService = templateMessageService;
     this.appBaseService = appBaseService;
+    this.callTenderCsvService = callTenderCsvService;
   }
 
   @Override
@@ -112,72 +104,11 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
     callTenderMail.setMailTemplate(template);
 
     // Generate csv here
-    var csv = generateCsvFile(offerList);
+    var csv = callTenderCsvService.generateCsvFile(offerList);
     callTenderMail.setMetaFile(csv);
 
     for (CallTenderOffer offer : offerList) {
       offer.setOfferMail(callTenderMail);
     }
-  }
-
-  protected MetaFile generateCsvFile(List<CallTenderOffer> offerList) throws IOException {
-
-    Partner supplier = null;
-    String callTenderName = null;
-    if (!offerList.isEmpty()) {
-      supplier = offerList.get(0).getSupplierPartner();
-      callTenderName = offerList.get(0).getCallTender().getName();
-    }
-    List<String[]> list = getValues(offerList);
-
-    var fileName =
-        StringHelper.cutTooLongString(
-            String.format(
-                "CFT%s-%s-%s",
-                callTenderName,
-                Optional.ofNullable(supplier).map(Partner::getSimpleFullName).orElse(""),
-                DateTimeFormatter.ofPattern("ddMMyyyyhhmm")
-                    .format(appBaseService.getTodayDateTime())));
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
-    fileName += ".csv";
-
-    CsvHelper.csvWriter(file.getParent(), file.getName(), ';', getOfferCsvHeaders(), list);
-
-    var inStream = new FileInputStream(file);
-    return Beans.get(MetaFiles.class).upload(inStream, fileName);
-  }
-
-  protected List<String[]> getValues(List<CallTenderOffer> offerList) {
-    List<String[]> list = new ArrayList<>();
-
-    for (CallTenderOffer offer : offerList) {
-      String[] lineValue =
-          new String[] {
-            offer.getProduct().getCode(),
-            offer.getProduct().getName(),
-            offer.getRequestedQty().toString(),
-            Optional.ofNullable(offer.getRequestedDate()).map(LocalDate::toString).orElse(""),
-            "",
-            "",
-            ""
-          };
-
-      list.add(lineValue);
-    }
-
-    return list;
-  }
-
-  protected String[] getOfferCsvHeaders() {
-
-    String[] headers = new String[7];
-    headers[0] = I18n.get("Product code");
-    headers[1] = I18n.get("Product name");
-    headers[2] = I18n.get("Requested quantity");
-    headers[3] = I18n.get("Requested date");
-    headers[4] = I18n.get("Offered quantity");
-    headers[5] = I18n.get("Offered date");
-    headers[6] = I18n.get("Offered price");
-    return headers;
   }
 }
