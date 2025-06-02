@@ -121,7 +121,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
 
       saleOrderLineMap.putAll(
           saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
-      saleOrderLineMap.putAll(setShippingCostPriceMap(saleOrderLine, saleOrder));
+      saleOrderLineMap.putAll(setShippingCostPrice(saleOrderLine, saleOrder));
     } else {
       return saleOrderLineMap;
     }
@@ -214,7 +214,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     return saleOrderLineMap;
   }
 
-  protected Map<String, Object> setShippingCostPriceMap(
+  protected Map<String, Object> setShippingCostPrice(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
