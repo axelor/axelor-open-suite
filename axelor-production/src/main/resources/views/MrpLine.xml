@@ -45,6 +45,9 @@
         <field name="warnDelayFromManufacturing" hidden="true"/>
       </insert>
     </extend>
+    <extend target="//button[@name='errorIconButton']">
+      <attribute name="showIf" value="warnDelayFromSupplier || warnDelayFromManufacturing"/>
+    </extend>
   </grid>
 
   <form name="mrp-line-form" id="mrp-line-production-form"
