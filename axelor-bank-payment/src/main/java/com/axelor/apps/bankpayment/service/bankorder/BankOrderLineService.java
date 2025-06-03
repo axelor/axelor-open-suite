@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
@@ -314,8 +315,16 @@ public class BankOrderLineService {
    */
   public BankDetails getDefaultBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
     BankDetails candidateBankDetails = null;
-    if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY
-        && bankOrderLine.getReceiverCompany() != null) {
+
+    PaymentMode paymentMode = bankOrder.getPaymentMode();
+
+    if(paymentMode != null && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD){
+      candidateBankDetails = bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
+              bankOrder.getPaymentMode(),
+              bankOrderLine.getPartner(),
+              bankOrderLine.getReceiverCompany()).stream().findFirst().orElse(null);
+    } else if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY
+            && bankOrderLine.getReceiverCompany() != null) {
       candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
       if (candidateBankDetails == null) {
         for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsList()) {
@@ -328,11 +337,11 @@ public class BankOrderLineService {
         }
       }
     } else if (bankOrder.getPartnerTypeSelect() != BankOrderRepository.PARTNER_TYPE_COMPANY
-        && bankOrderLine.getPartner() != null) {
+            && bankOrderLine.getPartner() != null) {
       candidateBankDetails = bankDetailsRepository.findDefaultByPartner(bankOrderLine.getPartner());
       if (candidateBankDetails == null) {
         List<BankDetails> bankDetailsList =
-            bankDetailsRepository.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
+                bankDetailsRepository.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
         if (bankDetailsList.size() == 1) {
           candidateBankDetails = bankDetailsList.get(0);
         }
