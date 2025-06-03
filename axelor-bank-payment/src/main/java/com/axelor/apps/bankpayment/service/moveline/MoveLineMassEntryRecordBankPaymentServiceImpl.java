@@ -5,7 +5,7 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
-import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
+import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -27,7 +27,7 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
       MoveLineRecordService moveLineRecordService,
       TaxAccountToolService taxAccountToolService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      MassEntryMoveCreateService massEntryMoveCreateService,
+      MassEntryToolService massEntryToolService,
       MoveLineTaxService moveLineTaxService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       MoveLineToolService moveLineToolService,
@@ -37,7 +37,7 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
         moveLineRecordService,
         taxAccountToolService,
         moveLoadDefaultConfigService,
-        massEntryMoveCreateService,
+        massEntryToolService,
         moveLineTaxService,
         analyticMoveLineRepository,
         moveLineToolService);
