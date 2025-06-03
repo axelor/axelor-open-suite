@@ -103,8 +103,11 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
   @Override
   public boolean isBankDetailsNotLinkedToActiveUmr(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) {
-    return ((paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
-        && appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment()
-        && (umrService.getActiveUmr(company, bankDetails) == null));
+    if (paymentMode != null && company != null && bankDetails != null) {
+      return ((paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
+          && appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment()
+          && (umrService.getActiveUmr(company, bankDetails) == null));
+    }
+    return false;
   }
 }
