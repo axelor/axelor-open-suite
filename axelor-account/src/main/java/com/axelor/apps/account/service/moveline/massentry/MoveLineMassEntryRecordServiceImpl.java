@@ -140,7 +140,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   }
 
   @Override
-  public void setMovePartnerBankDetails(MoveLineMassEntry moveLine) {
+  public void setMovePartnerBankDetails(MoveLineMassEntry moveLine, Move move) {
     moveLine.setMovePartnerBankDetails(
         moveLine.getPartner().getBankDetailsList().stream()
             .filter(it -> it.getIsDefault() && it.getActive())
@@ -273,7 +273,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
         move.setPartner(null);
         this.setVatSystemSelect(moveLine, move);
       }
-      this.setMovePartnerBankDetails(moveLine);
+      this.setMovePartnerBankDetails(moveLine, move);
       this.setCurrencyCode(moveLine);
     }
   }

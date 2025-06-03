@@ -1,5 +1,6 @@
 package com.axelor.apps.bankpayment.service.moveline;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -44,11 +45,11 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
   }
 
   @Override
-  public void setMovePartnerBankDetails(MoveLineMassEntry moveLine) {
-    super.setMovePartnerBankDetails(moveLine);
+  public void setMovePartnerBankDetails(MoveLineMassEntry moveLine, Move move) {
+    super.setMovePartnerBankDetails(moveLine, move);
     PaymentMode paymentMode = moveLine.getMovePaymentMode();
     Partner partner = moveLine.getPartner();
-    Company company = moveLine.getMoveMassEntry().getCompany();
+    Company company = move.getCompany();
 
     if (paymentMode != null && partner != null && company != null) {
       bankDetailsBankPaymentService
