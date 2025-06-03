@@ -29,7 +29,4 @@ public interface BankDetailsBankPaymentService {
 
   List<BankDetails> getBankDetailsLinkedToActiveUmr(
       PaymentMode paymentMode, Partner partner, Company company);
-
-  boolean isBankDetailsNotLinkedToActiveUmr(
-      PaymentMode paymentMode, Partner partner, Company company, BankDetails bankDetails);
 }
