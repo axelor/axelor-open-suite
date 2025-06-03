@@ -99,4 +99,11 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
     }
     return Collections.emptyList();
   }
+
+  @Override
+  public boolean isBankDetailsNotLinkedToActiveUmr(
+      PaymentMode paymentMode, Partner partner, Company company, BankDetails bankDetails) {
+    return ((paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
+        && (!getBankDetailsLinkedToActiveUmr(paymentMode, partner, company).contains(bankDetails)));
+  }
 }
