@@ -420,7 +420,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 BigDecimal.valueOf(100),
                 currencyScaleService.getScale(invoice),
                 RoundingMode.HALF_UP);
-
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
     this.computeCompanyAmounts(invoiceTerm, false, false);
