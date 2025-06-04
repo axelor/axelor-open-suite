@@ -134,7 +134,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             && !Lists.newArrayList(
                     JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
                     JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
-                    JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)
+                    JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE,
+                    JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER)
                 .contains(move.getJournal().getJournalType().getTechnicalTypeSelect()),
         attrsMap);
   }
