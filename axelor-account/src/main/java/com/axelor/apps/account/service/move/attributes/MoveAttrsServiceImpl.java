@@ -45,6 +45,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.utils.helpers.StringHelper;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -130,10 +131,11 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         "moveLineList.vatSystemSelect",
         "hidden",
         move.getJournal() != null
-            && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-            && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+            && !Lists.newArrayList(
+                    JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+                    JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+                    JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)
+                .contains(move.getJournal().getJournalType().getTechnicalTypeSelect()),
         attrsMap);
   }
 

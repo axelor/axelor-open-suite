@@ -228,7 +228,8 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="currencyDecimals" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
-    <field name="move.functionalOriginSelect" hidden="true"/>
+    <field name="move.statusSelect" hidden="true"/>
+    <field name="move" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
