@@ -527,23 +527,36 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (!invoiceTerm.getIsCustomized()) {
-        LocalDate dueDate =
-            PaymentConditionToolService.getDueDate(
-                invoiceTerm.getPaymentConditionLine(), invoiceDate);
-        invoiceTerm.setDueDate(dueDate);
-
-        if (appAccountService.getAppAccount().getManageFinancialDiscount()
-            && invoiceTerm.getApplyFinancialDiscount()
-            && invoiceTerm.getFinancialDiscount() != null) {
-          invoiceTerm.setFinancialDiscountDeadlineDate(
-              invoiceTermFinancialDiscountService.computeFinancialDiscountDeadlineDate(
-                  invoiceTerm));
-        }
+        this.computeDueDateValues(invoiceTerm, invoiceDate);
       }
     }
 
     initInvoiceTermsSequence(invoice);
     return invoice;
+  }
+
+  protected void computeDueDateValues(InvoiceTerm invoiceTerm, LocalDate invoiceDate) {
+    LocalDate dueDate;
+
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice != null
+        && invoice.getPaymentCondition() != null
+        && invoice.getPaymentCondition().getIsFree()) {
+      dueDate = invoiceDate;
+    } else {
+      dueDate =
+          PaymentConditionToolService.getDueDate(
+              invoiceTerm.getPaymentConditionLine(), invoiceDate);
+    }
+
+    invoiceTerm.setDueDate(dueDate);
+
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()
+        && invoiceTerm.getApplyFinancialDiscount()
+        && invoiceTerm.getFinancialDiscount() != null) {
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          invoiceTermFinancialDiscountService.computeFinancialDiscountDeadlineDate(invoiceTerm));
+    }
   }
 
   @Override
