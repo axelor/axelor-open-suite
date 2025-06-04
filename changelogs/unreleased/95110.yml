@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed currency conversion to use the exchange rate based on the orderDate when generating invoice from purchase order."
+module: axelor-supplychain
