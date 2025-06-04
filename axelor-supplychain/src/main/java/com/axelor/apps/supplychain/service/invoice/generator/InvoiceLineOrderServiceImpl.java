@@ -28,6 +28,8 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -46,11 +48,13 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
     this.appBaseService = appBaseService;
   }
 
-  public InvoiceLineGenerator getInvoiceLineGeneratorWithComputedTaxPrice(
+  public InvoiceLineGeneratorSupplyChain getInvoiceLineGeneratorWithComputedTaxPrice(
       Invoice invoice,
       Product invoicingProduct,
       BigDecimal percentToInvoice,
-      OrderLineTax orderLineTax) {
+      OrderLineTax orderLineTax,
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine) {
 
     TaxLine taxLine = orderLineTax.getTaxLine();
     int scale = appBaseService.getNbDecimalDigitForUnitPrice();
@@ -67,7 +71,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
         taxService.convertUnitPrice(
             invoicingProduct.getInAti(), Sets.newHashSet(orderLineTax.getTaxLine()), price, scale);
 
-    return new InvoiceLineGenerator(
+    return new InvoiceLineGeneratorSupplyChain(
         invoice,
         invoicingProduct,
         invoicingProduct.getName(),
@@ -83,7 +87,10 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
         PriceListLineRepository.AMOUNT_TYPE_NONE,
         lineAmountToInvoice,
         null,
-        false) {
+        false,
+        saleOrderLine,
+        purchaseOrderLine,
+        null) {
       @Override
       public List<InvoiceLine> creates() throws AxelorException {
 

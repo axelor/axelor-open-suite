@@ -140,13 +140,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(purchaseOrder);
 
     Invoice invoice = invoiceGenerator.generate();
+    invoice.setPurchaseOrder(purchaseOrder);
 
     List<InvoiceLine> invoiceLineList =
         this.createInvoiceLines(invoice, purchaseOrder.getPurchaseOrderLineList());
 
     invoiceGenerator.populate(invoice, invoiceLineList);
 
-    invoice.setPurchaseOrder(purchaseOrder);
     invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     return invoice;
   }
@@ -620,7 +620,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
               });
     }
 
-    invoice.setPurchaseOrder(purchaseOrder);
     invoice.setAddressStr(addressService.computeAddressStr(invoice.getAddress()));
     invoiceService.setDraftSequence(invoice);
     invoice.setPartnerTaxNbr(purchaseOrder.getSupplierPartner().getTaxNbr());
@@ -639,6 +638,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(purchaseOrder);
 
     Invoice invoice = invoiceGenerator.generate();
+    invoice.setPurchaseOrder(purchaseOrder);
 
     List<InvoiceLine> invoiceLinesList =
         (taxLineList != null && !taxLineList.isEmpty())
@@ -679,18 +679,17 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
     if (taxLineList != null) {
       for (PurchaseOrderLineTax purchaseOrderLineTax : taxLineList) {
-        InvoiceLineGenerator invoiceLineGenerator =
+        PurchaseOrderLine purchaseOrderLine =
+            purchaseOrderLineTax.getPurchaseOrder().getPurchaseOrderLineList().get(0);
+        InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
             invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice, invoicingProduct, percentToInvoice, purchaseOrderLineTax);
-
-        List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
-        // link to the created invoice line the first line of the sale order.
-        for (InvoiceLine invoiceLine : invoiceOneLineList) {
-          PurchaseOrderLine purchaseOrderLine =
-              purchaseOrderLineTax.getPurchaseOrder().getPurchaseOrderLineList().get(0);
-          invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
-        }
-        createdInvoiceLineList.addAll(invoiceOneLineList);
+                invoice,
+                invoicingProduct,
+                percentToInvoice,
+                purchaseOrderLineTax,
+                null,
+                purchaseOrderLine);
+        createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
       }
     }
     return createdInvoiceLineList;
