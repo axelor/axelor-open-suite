@@ -268,8 +268,8 @@
 
   <action-view name="stock.root.carrier.freight.pricing.pricing" title="Pricing"
     model="com.axelor.apps.base.db.Pricing">
-    <view type="grid" name="pricing-grid"/>
-    <view type="form" name="pricing-form"/>
+    <view type="grid" name="supplychain-pricing-grid"/>
+    <view type="form" name="supplychain-pricing-form"/>
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect"
       expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING"/>
