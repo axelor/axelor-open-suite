@@ -1,5 +1,0 @@
----
-title: "Sale order: fixed the incoterm popup display when it was required."
-module: axelor-supplychain
-developer: |
-  Removed the SaleOrderCheckSupplychainServiceImpl class.

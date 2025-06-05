@@ -53,6 +53,24 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//field[@name='isDeliveryBlocking']">
+      <insert position="after">
+        <field name="isProductionBlocking" colSpan="3"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='deliveryBlockingGroupPanel']">
+      <insert position="after">
+        <panel name="productionBlockingGroupPanel" title="Production blocking"
+          showIf="isProductionBlocking" colSpan="12">
+          <field name="productionBlockingByUser" canNew="false" canEdit="false"
+            canView="false" form-view="user-form" grid-view="user-grid"/>
+          <field name="productionBlockingToDate"/>
+          <field name="productionBlockingReason" form-view="stop-reason-form"
+            grid-view="stop-reason-grid"/>
+          <field name="commentProductionBlocking" widget="html" colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-line-template-form" id="production-sale-order-line-template-form"
