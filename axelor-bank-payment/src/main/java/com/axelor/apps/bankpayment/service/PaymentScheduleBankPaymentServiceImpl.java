@@ -3,6 +3,7 @@ package com.axelor.apps.bankpayment.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
@@ -13,6 +14,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.inject.Inject;
@@ -28,6 +30,7 @@ public class PaymentScheduleBankPaymentServiceImpl extends PaymentScheduleServic
       PaymentScheduleLineRepository paymentScheduleLineRepo,
       SequenceService sequenceService,
       PaymentScheduleRepository paymentScheduleRepo,
+      PartnerRepository partnerRepository,
       PartnerService partnerService,
       BankDetailsBankPaymentService bankDetailsBankPaymentService) {
     super(
@@ -36,6 +39,7 @@ public class PaymentScheduleBankPaymentServiceImpl extends PaymentScheduleServic
         paymentScheduleLineRepo,
         sequenceService,
         paymentScheduleRepo,
+        partnerRepository,
         partnerService);
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
   }
@@ -63,5 +67,36 @@ public class PaymentScheduleBankPaymentServiceImpl extends PaymentScheduleServic
         .ifPresent(paymentSchedule::setBankDetails);
 
     return paymentSchedule;
+  }
+
+  @Override
+  public BankDetails getDefaultBankDetails(PaymentSchedule paymentSchedule) {
+    BankDetails defaultBankDetails = super.getDefaultBankDetails(paymentSchedule);
+    Partner partner = paymentSchedule.getPartner();
+    Company company = paymentSchedule.getCompany();
+    PaymentMode paymentMode = paymentSchedule.getPaymentMode();
+
+    if (paymentMode != null && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
+      defaultBankDetails =
+          bankDetailsBankPaymentService
+              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+              .stream()
+              .findFirst()
+              .orElse(null);
+    }
+
+    return defaultBankDetails;
+  }
+
+  public BankDetails checkPaymentScheduleBankDetails(PaymentSchedule paymentSchedule) {
+    BankDetails bankDetails = paymentSchedule.getBankDetails();
+    Company company = paymentSchedule.getCompany();
+    PaymentMode paymentMode = paymentSchedule.getPaymentMode();
+
+    if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
+        paymentMode, company, bankDetails)) {
+      bankDetails = null;
+    }
+    return bankDetails;
   }
 }
