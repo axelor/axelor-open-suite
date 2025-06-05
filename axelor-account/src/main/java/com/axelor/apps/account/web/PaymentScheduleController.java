@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -140,12 +139,8 @@ public class PaymentScheduleController {
    */
   public void fillPartnerBankDetails(ActionRequest request, ActionResponse response) {
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-    Partner partner = paymentSchedule.getPartner();
-
-    if (partner != null) {
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
-    }
-    BankDetails defaultBankDetails = Beans.get(PartnerService.class).getDefaultBankDetails(partner);
+    BankDetails defaultBankDetails =
+        Beans.get(PaymentScheduleService.class).getDefaultBankDetails(paymentSchedule);
     response.setValue("bankDetails", defaultBankDetails);
   }
 

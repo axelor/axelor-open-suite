@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.BankDetailsDomainServiceAccountImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
 import com.axelor.apps.account.service.PaymentScheduleDomainServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
+import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
@@ -69,6 +70,7 @@ import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymen
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.PaymentScheduleBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
@@ -337,5 +339,6 @@ public class BankPaymentModule extends AxelorModule {
         .to(BankDetailsDomainServiceBankPaymentImpl.class);
     bind(PaymentScheduleDomainServiceImpl.class)
         .to(PaymentScheduleDomainBankPaymentServiceImpl.class);
+    bind(PaymentScheduleServiceImpl.class).to(PaymentScheduleBankPaymentServiceImpl.class);
   }
 }
