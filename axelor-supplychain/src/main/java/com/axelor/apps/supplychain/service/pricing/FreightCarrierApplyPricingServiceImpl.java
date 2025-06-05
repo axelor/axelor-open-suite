@@ -7,7 +7,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import java.util.Optional;
 import java.util.Set;
@@ -33,19 +32,28 @@ public class FreightCarrierApplyPricingServiceImpl implements FreightCarrierAppl
 
   @Override
   public String applyPricing(FreightCarrierPricing freightCarrierPricing) {
-    String errors = "";
     Pricing pricing =
         Optional.ofNullable(freightCarrierPricing)
             .map(FreightCarrierPricing::getPricing)
             .orElse(null);
+    Pricing delay =
+        Optional.ofNullable(freightCarrierPricing)
+            .map(FreightCarrierPricing::getDelayPricing)
+            .orElse(null);
+
+    String errors = this.computeFreightCarrierPricing(pricing, freightCarrierPricing);
+    errors = errors.concat(this.computeFreightCarrierPricing(delay, freightCarrierPricing));
+
+    return errors;
+  }
+
+  protected String computeFreightCarrierPricing(
+      Pricing pricing, FreightCarrierPricing freightCarrierPricing) {
+    String errors = "";
+
     if (pricing != null) {
       try {
-        PricingComputer pricingComputer =
-            PricingComputer.of(pricing, freightCarrierPricing)
-                .putInContext(
-                    "priceAmount",
-                    EntityHelper.getEntity(freightCarrierPricing.getFreightCarrierMode()));
-        pricingComputer.apply();
+        PricingComputer.of(pricing, freightCarrierPricing).apply();
       } catch (AxelorException e) {
         TraceBackService.trace(e);
         if (!errors.isEmpty()) {
@@ -54,7 +62,6 @@ public class FreightCarrierApplyPricingServiceImpl implements FreightCarrierAppl
         errors = errors.concat(pricing.getName());
       }
     }
-
     return errors;
   }
 }
