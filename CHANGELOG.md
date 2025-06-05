@@ -1,3 +1,67 @@
+## [8.3.7] (2025-06-02)
+
+### Fixes
+#### Base
+
+* Base: removed useless column in base product demo data.
+* Group: removed collaboration configuration since it is only available in AOP enterprise.
+* Purchase order: fixed main panel visibility to follow the 'Enable trading names management' configuration.
+
+#### Account
+
+* Invoice/PFP: fixed PFP status when all invoice terms are PFP validated.
+* Invoice: prevent automatic mail and hide mail panel for supplier invoices.
+* Invoice: fixed the display issue with the logo and address when 'Terms and Conditions' are included on the invoice BIRT report.
+* Account: fixed unnecessary display of mass entry move lines.
+* Payment mode: updated demo data for wire transfer.
+* Account: fixed domain for result profit account and result loss account on account config by company.
+
+#### Budget
+
+* BudgetStructure/Budget: fixed the budget line import.
+
+#### Human Resource
+
+* Lunch voucher: fixed outdated expenses wrongly deducted in lunch vouchers calculation.
+* Lunch voucher: excluded former employees from lunch voucher calculation.
+
+#### Production
+
+* Sale order: fixed an error that could occur when the bill of material linked to a line was personalized.
+
+#### Sale
+
+* Sale order: fixed global discount to be readonly when finalized.
+
+#### Stock
+
+* Stock location: fixed last inventory date in stock location line when validating an inventory.
+
+#### Supply Chain
+
+* Sale order: fixed the incoterm popup display when it was required.
+* Sale order: fixed partial invoicing based on discounted price.
+* Sale/purchase order: allow trading name to be editable when a sale/purchase order is generated from interco.
+
+
+### Developer
+
+#### Account
+
+Added `InvoiceTermPfpService` in the `InvoiceTermPfpValidateServiceImpl` constructor
+
+#### Human Resource
+
+`LunchVoucherMgtLineService#computeRestaurant` and `LunchVoucherMgtLineService#computeInvitation` have a new Period parameter.
+
+#### Production
+
+The constructor of SaleOrderLineBomSyncServiceImpl now requires `AppSaleRepository`.
+
+#### Supply Chain
+
+Removed the `SaleOrderCheckSupplychainServiceImpl` class.
+
 ## [8.3.6] (2025-05-15)
 
 ### Fixes
@@ -590,6 +654,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.7]: https://github.com/axelor/axelor-open-suite/compare/v8.3.6...v8.3.7
 [8.3.6]: https://github.com/axelor/axelor-open-suite/compare/v8.3.5...v8.3.6
 [8.3.5]: https://github.com/axelor/axelor-open-suite/compare/v8.3.4...v8.3.5
 [8.3.4]: https://github.com/axelor/axelor-open-suite/compare/v8.3.3...v8.3.4

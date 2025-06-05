@@ -45,13 +45,13 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
-import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
@@ -68,7 +68,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoiceServiceImpl {
+public class PurchaseOrderInvoiceProjectServiceImpl
+    extends PurchaseOrderInvoiceContractServiceImpl {
 
   private PriceListService priceListService;
 

@@ -817,6 +817,21 @@ public class StockMoveServiceImpl implements StockMoveService {
                 + stockMove.getStockMoveSeq()
                 + " )"));
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
+    newStockMove.setShipmentMode(null);
+    newStockMove.setFreightCarrierMode(null);
+    newStockMove.setCarrierPartner(null);
+    newStockMove.setForwarderPartner(null);
+    newStockMove.setIncoterm(null);
+    newStockMove.setTrackingNumber(null);
+    newStockMove.setModeOfTransport(null);
+    newStockMove.setNumOfPackages(0);
+    newStockMove.setNumOfPalettes(0);
+    newStockMove.setGrossMass(BigDecimal.ZERO);
+    newStockMove.setIsIspmRequired(false);
+    newStockMove.setIsNeedingConformityCertificate(false);
+    newStockMove.setSignatoryUser(null);
+    newStockMove.setIsConformityCertifSigned(false);
+    newStockMove.setElectronicSignature(null);
 
     plan(newStockMove);
     newStockMove.setStockMoveOrigin(stockMove);
