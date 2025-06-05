@@ -50,6 +50,13 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
       saleOrder.setCarrierPartner(
           partnerRepository.find(freightCarrierPricing.getCarrierPartner().getId()));
 
+      if (saleOrder.getEstimatedShippingDate() != null) {
+        saleOrder.setEstimatedDeliveryDate(
+            saleOrder
+                .getEstimatedShippingDate()
+                .plusDays(freightCarrierPricing.getDelay().longValue()));
+      }
+
       String message =
           saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
       saleOrderRepository.save(saleOrder);
