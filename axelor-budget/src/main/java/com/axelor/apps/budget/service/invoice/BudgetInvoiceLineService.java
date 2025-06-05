@@ -48,5 +48,5 @@ public interface BudgetInvoiceLineService {
 
   String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
-  void negateAmount(InvoiceLine invoiceLine, Invoice invoice);
+  void negateAmount(InvoiceLine invoiceLine, Invoice invoice) throws AxelorException;
 }

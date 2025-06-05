@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
@@ -48,9 +49,14 @@ public class BudgetInvoiceRepository extends InvoiceProjectRepository {
         for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
           invoiceLine.setBudget(null);
           invoiceLine.clearBudgetDistributionList();
-          invoiceLine.setBudgetRemainingAmountToAllocate(
-              budgetToolsService.getBudgetRemainingAmountToAllocate(
-                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+          try {
+            invoiceLine.setBudgetRemainingAmountToAllocate(
+                budgetToolsService.getBudgetRemainingAmountToAllocate(
+                    invoiceLine.getBudgetDistributionList(),
+                    Beans.get(BudgetAmountToolService.class).getBudgetMaxAmount(invoiceLine)));
+          } catch (AxelorException e) {
+            throw new RuntimeException(e);
+          }
         }
       }
       copy.setBudgetDistributionGenerated(false);

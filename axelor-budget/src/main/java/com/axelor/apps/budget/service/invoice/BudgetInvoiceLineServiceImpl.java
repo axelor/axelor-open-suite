@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -53,6 +54,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
   protected BudgetRepository budgetRepository;
   protected BudgetDistributionService budgetDistributionService;
   protected BudgetToolsService budgetToolsService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public BudgetInvoiceLineServiceImpl(
@@ -61,13 +63,15 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
       BudgetService budgetService,
       BudgetRepository budgetRepository,
       BudgetDistributionService budgetDistributionService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      BudgetAmountToolService budgetAmountToolService) {
     this.appBaseService = appBaseService;
     this.invoiceLineRepo = invoiceLineRepo;
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
     this.budgetToolsService = budgetToolsService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -88,7 +92,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
             invoiceLine.getAccount(),
             invoice.getCompany(),
             date,
-            invoiceLine.getCompanyExTaxTotal(),
+            budgetAmountToolService.getBudgetMaxAmount(invoiceLine),
             invoiceLine.getName(),
             invoiceLine);
 
@@ -105,9 +109,9 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
           Optional.ofNullable(invoiceLine.getProduct())
               .map(Product::getCode)
               .orElse(invoiceLine.getProductName());
+      BigDecimal invoiceLineAmount = budgetAmountToolService.getBudgetMaxAmount(invoiceLine);
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
-            > 0) {
+        if (budgetDistribution.getAmount().abs().compareTo(invoiceLineAmount) > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
@@ -117,7 +121,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
           amountSum = amountSum.add(budgetDistribution.getAmount());
         }
       }
-      if (amountSum.compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
+      if (amountSum.compareTo(invoiceLineAmount) > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE),
@@ -151,7 +155,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
   }
 
   @Override
-  public void negateAmount(InvoiceLine invoiceLine, Invoice invoice) {
+  public void negateAmount(InvoiceLine invoiceLine, Invoice invoice) throws AxelorException {
     if (invoiceLine == null || ObjectUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
       return;
     }
@@ -163,6 +167,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
     }
     invoiceLine.setBudgetRemainingAmountToAllocate(
         budgetToolsService.getBudgetRemainingAmountToAllocate(
-            invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+            invoiceLine.getBudgetDistributionList(),
+            budgetAmountToolService.getBudgetMaxAmount(invoiceLine)));
   }
 }

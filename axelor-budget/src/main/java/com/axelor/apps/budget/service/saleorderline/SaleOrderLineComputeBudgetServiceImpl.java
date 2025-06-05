@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -45,6 +46,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public SaleOrderLineComputeBudgetServiceImpl(
@@ -62,7 +64,8 @@ public class SaleOrderLineComputeBudgetServiceImpl
       AnalyticLineModelService analyticLineModelService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         taxService,
         currencyScaleService,
@@ -79,6 +82,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
         saleOrderLineServiceSupplyChain);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -89,7 +93,8 @@ public class SaleOrderLineComputeBudgetServiceImpl
     if (appBudgetService.isApp("budget")) {
       saleOrderLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
-              saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
+              saleOrderLine.getBudgetDistributionList(),
+              budgetAmountToolService.getBudgetMaxAmount(saleOrderLine)));
       saleOrderLineMap.put(
           "budgetRemainingAmountToAllocate", saleOrderLine.getBudgetRemainingAmountToAllocate());
     }

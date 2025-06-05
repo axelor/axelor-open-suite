@@ -24,6 +24,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -105,6 +106,7 @@ public class SaleOrderLineController {
         "budgetRemainingAmountToAllocate",
         Beans.get(BudgetToolsService.class)
             .getBudgetRemainingAmountToAllocate(
-                saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
+                saleOrderLine.getBudgetDistributionList(),
+                Beans.get(BudgetAmountToolService.class).getBudgetMaxAmount(saleOrderLine)));
   }
 }

@@ -42,6 +42,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -53,6 +54,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public MoveLineGroupBudgetServiceImpl(
@@ -76,7 +78,8 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       AppBudgetService appBudgetService,
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
-      AnalyticAxisService analyticAxisService) {
+      AnalyticAxisService analyticAxisService,
+      BudgetAmountToolService budgetAmountToolService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -99,6 +102,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         analyticAxisService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -217,7 +221,8 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     valuesMap.put(
         "budgetRemainingAmountToAllocate",
         budgetToolsService.getBudgetRemainingAmountToAllocate(
-            moveLine.getBudgetDistributionList(), moveLine.getDebit().max(moveLine.getCredit())));
+            moveLine.getBudgetDistributionList(),
+            budgetAmountToolService.getBudgetMaxAmount(moveLine)));
   }
 
   protected void addAttr(

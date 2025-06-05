@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
@@ -228,16 +229,22 @@ public class BudgetDistributionController {
     }
   }
 
-  protected BigDecimal getDefaultBudgetRemainingAmountToAllocate(ActionRequest request) {
+  protected BigDecimal getDefaultBudgetRemainingAmountToAllocate(ActionRequest request)
+      throws AxelorException {
+    BudgetAmountToolService budgetAmountToolService = Beans.get(BudgetAmountToolService.class);
+
     if (InvoiceLine.class.equals(request.getContext().getContextClass())) {
-      return request.getContext().asType(InvoiceLine.class).getCompanyExTaxTotal();
+      return budgetAmountToolService.getBudgetMaxAmount(
+          request.getContext().asType(InvoiceLine.class));
     } else if (MoveLine.class.equals(request.getContext().getContextClass())) {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      return moveLine.getCredit().max(moveLine.getDebit());
+      return budgetAmountToolService.getBudgetMaxAmount(
+          request.getContext().asType(MoveLine.class));
     } else if (PurchaseOrderLine.class.equals(request.getContext().getContextClass())) {
-      return request.getContext().asType(PurchaseOrderLine.class).getCompanyExTaxTotal();
+      return budgetAmountToolService.getBudgetMaxAmount(
+          request.getContext().asType(PurchaseOrderLine.class));
     } else if (SaleOrderLine.class.equals(request.getContext().getContextClass())) {
-      return request.getContext().asType(SaleOrderLine.class).getCompanyExTaxTotal();
+      return budgetAmountToolService.getBudgetMaxAmount(
+          request.getContext().asType(SaleOrderLine.class));
     }
     return BigDecimal.ZERO;
   }

@@ -25,6 +25,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.auth.AuthUtils;
@@ -67,15 +68,16 @@ public class InvoiceLineController {
     }
   }
 
-  public void computeBudgetRemainingAmountToAllocate(
-      ActionRequest request, ActionResponse response) {
+  public void computeBudgetRemainingAmountToAllocate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
     response.setValue(
         "budgetRemainingAmountToAllocate",
         Beans.get(BudgetToolsService.class)
             .getBudgetRemainingAmountToAllocate(
-                invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+                invoiceLine.getBudgetDistributionList(),
+                Beans.get(BudgetAmountToolService.class).getBudgetMaxAmount(invoiceLine)));
   }
 
   @ErrorException
@@ -90,5 +92,19 @@ public class InvoiceLineController {
         "budget",
         "domain",
         Beans.get(BudgetInvoiceLineService.class).getBudgetDomain(invoice, invoiceLine));
+  }
+
+  @ErrorException
+  public void manageBudgetAmountFields(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+    if (invoice == null && request.getContext().getParent() != null) {
+      invoice = request.getContext().getParent().asType(Invoice.class);
+    }
+
+    response.setValue(
+        "$includeTaxAmount", Beans.get(BudgetAmountToolService.class).manageTaxAmounts(invoice));
   }
 }

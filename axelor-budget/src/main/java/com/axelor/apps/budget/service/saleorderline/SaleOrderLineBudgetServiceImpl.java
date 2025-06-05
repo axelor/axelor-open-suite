@@ -30,6 +30,7 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -59,6 +60,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
   protected AccountManagementAccountService accountManagementAccountService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
@@ -67,13 +69,15 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       SaleOrderLineRepository saleOrderLineRepo,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      BudgetAmountToolService budgetAmountToolService) {
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
     this.accountManagementAccountService = accountManagementAccountService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -93,7 +97,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
             saleOrder.getOrderDate() != null
                 ? saleOrder.getOrderDate()
                 : saleOrder.getCreationDate(),
-            saleOrderLine.getCompanyExTaxTotal(),
+            budgetAmountToolService.getBudgetMaxAmount(saleOrderLine),
             saleOrderLine.getFullName(),
             saleOrderLine);
 
@@ -156,8 +160,10 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     if (saleOrderLine.getBudgetDistributionList() != null
         && !saleOrderLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
+      BigDecimal orderAmount = budgetAmountToolService.getBudgetMaxAmount(saleOrderLine);
+
       for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
+        if (budgetDistribution.getAmount().compareTo(orderAmount) > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
@@ -167,7 +173,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
           totalAmount = totalAmount.add(budgetDistribution.getAmount());
         }
       }
-      if (totalAmount.compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
+      if (totalAmount.compareTo(orderAmount) > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO),
@@ -206,7 +212,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   @Override
   public Map<String, Object> resetBudget(SaleOrderLine saleOrderLine) {
     Map<String, Object> values = new HashMap<>();
-    BigDecimal budgetRemainingAmountToAllocate = saleOrderLine.getCompanyExTaxTotal();
+    BigDecimal budgetRemainingAmountToAllocate =
+        budgetAmountToolService.getBudgetMaxAmount(saleOrderLine);
     saleOrderLine.setBudgetRemainingAmountToAllocate(budgetRemainingAmountToAllocate);
     saleOrderLine.setBudget(null);
     values.put("budgetRemainingAmountToAllocate", budgetRemainingAmountToAllocate);

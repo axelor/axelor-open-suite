@@ -29,6 +29,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -64,6 +65,7 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
   protected BudgetLineComputeService budgetLineComputeService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public BudgetInvoiceServiceImpl(
@@ -75,7 +77,9 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
       BudgetService budgetService,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      BudgetLineComputeService budgetLineComputeService) {
+      BudgetLineComputeService budgetLineComputeService,
+      BudgetAmountToolService budgetAmountToolService) {
+
     this.invoiceRepo = invoiceRepo;
     this.appBaseService = appBaseService;
     this.budgetRepository = budgetRepository;
@@ -85,6 +89,7 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
     this.budgetLineComputeService = budgetLineComputeService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -108,7 +113,7 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
 
   @Override
   @CallMethod
-  public String getBudgetExceedAlert(Invoice invoice) {
+  public String getBudgetExceedAlert(Invoice invoice) throws AxelorException {
     String budgetExceedAlert = "";
 
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
@@ -138,7 +143,7 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
         } else {
           Budget budget = invoiceLine.getBudget();
           budgetToolsService.fillAmountPerBudgetMap(
-              budget, invoiceLine.getCompanyExTaxTotal(), amountPerBudgetMap);
+              budget, budgetAmountToolService.getBudgetMaxAmount(invoiceLine), amountPerBudgetMap);
         }
       }
 
@@ -269,14 +274,14 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
   }
 
   @Override
-  public void generateBudgetDistribution(Invoice invoice) {
+  public void generateBudgetDistribution(Invoice invoice) throws AxelorException {
     if (invoice.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
         if (invoiceLine.getBudget() != null
             && (ObjectUtils.isEmpty(invoiceLine.getBudgetDistributionList()))) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(invoiceLine.getBudget());
-          budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
+          budgetDistribution.setAmount(budgetAmountToolService.getBudgetMaxAmount(invoiceLine));
           budgetDistributionService.linkBudgetDistributionWithParent(
               budgetDistribution, invoiceLine);
         }
@@ -348,16 +353,17 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
     }
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      BigDecimal invoiceAmount = budgetAmountToolService.getBudgetMaxAmount(invoiceLine);
       budgetDistributionService.autoComputeBudgetDistribution(
           invoiceLine.getAnalyticMoveLineList(),
           invoiceLine.getAccount(),
           invoice.getCompany(),
           date,
-          invoiceLine.getCompanyExTaxTotal(),
+          invoiceAmount,
           invoiceLine);
       invoiceLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
-              invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+              invoiceLine.getBudgetDistributionList(), invoiceAmount));
     }
   }
 }

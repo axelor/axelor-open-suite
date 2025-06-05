@@ -31,6 +31,7 @@ import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetAmountToolService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
@@ -61,6 +62,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
   protected CurrencyScaleService currencyScaleService;
+  protected BudgetAmountToolService budgetAmountToolService;
 
   @Inject
   public PurchaseOrderLineBudgetServiceImpl(
@@ -70,7 +72,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       PurchaseOrderLineRepository purchaseOrderLineRepo,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      BudgetAmountToolService budgetAmountToolService) {
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
@@ -78,6 +81,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
     this.currencyScaleService = currencyScaleService;
+    this.budgetAmountToolService = budgetAmountToolService;
   }
 
   @Override
@@ -95,7 +99,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
             purchaseOrderLine.getAccount(),
             purchaseOrder.getCompany(),
             purchaseOrder.getOrderDate(),
-            purchaseOrderLine.getCompanyExTaxTotal(),
+            budgetAmountToolService.getBudgetMaxAmount(purchaseOrderLine),
             purchaseOrderLine.getFullName(),
             purchaseOrderLine);
     fillBudgetStrOnLine(purchaseOrderLine, true);
@@ -163,12 +167,13 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
     if (purchaseOrderLine.getBudgetDistributionList() != null
         && !purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
+      BigDecimal orderAmount = budgetAmountToolService.getBudgetMaxAmount(purchaseOrderLine);
+
       for (BudgetDistribution budgetDistribution : purchaseOrderLine.getBudgetDistributionList()) {
         if (currencyScaleService
                 .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount())
                 .compareTo(
-                    currencyScaleService.getCompanyScaledValue(
-                        budgetDistribution, purchaseOrderLine.getCompanyExTaxTotal()))
+                    currencyScaleService.getCompanyScaledValue(budgetDistribution, orderAmount))
             > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -179,7 +184,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
           totalAmount = totalAmount.add(budgetDistribution.getAmount());
         }
       }
-      if (totalAmount.compareTo(purchaseOrderLine.getCompanyExTaxTotal()) > 0) {
+      if (totalAmount.compareTo(orderAmount) > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_PO),

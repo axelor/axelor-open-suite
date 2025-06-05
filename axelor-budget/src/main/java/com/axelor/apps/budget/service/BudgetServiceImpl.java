@@ -140,6 +140,8 @@ public class BudgetServiceImpl implements BudgetService {
         SaleOrderLine saleOrderLine = budgetDistribution.getSaleOrderLine();
 
         if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder() != null) {
+
+          orderDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
           amountInvoiced =
               currencyScaleService.getCompanyScaledValue(
                   budget, purchaseOrderLine.getPurchaseOrder().getAmountInvoiced());

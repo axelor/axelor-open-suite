@@ -6,7 +6,16 @@
   <form name="app-budget-config-form" title="App budget" model="com.axelor.studio.db.AppBudget"
     canDelete="false" canNew="false" width="large"
     onLoad="action-app-budget-method-manage-budget-key">
-    <panel name="appBudgetPanel" if-module="axelor-supplychain" colSpan="12">
+    <panel name="taxAmountPanel" colSpan="12">
+      <field name="includeTaxesOnPurchaseBudget"
+        onChange="action-app-budget-attrs-show-change-label"/>
+      <field name="includeTaxesOnSaleBudget"
+        onChange="action-app-budget-attrs-show-change-label"/>
+      <label name="changeLabel" hidden="true"
+        title="Please note: this change will also affect previously configured budgets."
+        colSpan="12" css="label-danger"/>
+    </panel>
+    <panel name="appBudgetPanel" colSpan="12">
       <field name="manageMultiBudget" widget="boolean-switch"/>
       <field name="missingBudgetCheckSelect"/>
       <field name="checkAvailableBudget" widget="boolean-switch"/>
@@ -27,4 +36,8 @@
   <action-method name="action-app-budget-method-manage-budget-key">
     <call class="com.axelor.apps.budget.web.AppBudgetController" method="manageBudgetKey"/>
   </action-method>
+
+  <action-attrs name="action-app-budget-attrs-show-change-label">
+    <attribute for="changeLabel" name="hidden" expr="eval: false"/>
+  </action-attrs>
 </object-views>
