@@ -20,11 +20,12 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 
-public class PaymentScheduleBankPaymentServiceImpl extends PaymentScheduleServiceImpl {
+public class PaymentScheduleServiceBankPaymentImpl extends PaymentScheduleServiceImpl
+    implements PaymentScheduleServiceBankPayment {
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
   @Inject
-  public PaymentScheduleBankPaymentServiceImpl(
+  public PaymentScheduleServiceBankPaymentImpl(
       AppAccountService appAccountService,
       PaymentScheduleLineService paymentScheduleLineService,
       PaymentScheduleLineRepository paymentScheduleLineRepo,
@@ -88,6 +89,7 @@ public class PaymentScheduleBankPaymentServiceImpl extends PaymentScheduleServic
     return defaultBankDetails;
   }
 
+  @Override
   public BankDetails checkPaymentScheduleBankDetails(PaymentSchedule paymentSchedule) {
     BankDetails bankDetails = paymentSchedule.getBankDetails();
     Company company = paymentSchedule.getCompany();
