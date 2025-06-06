@@ -13,11 +13,27 @@
           showIf="lcrAccounted &amp;&amp; oldMove &amp;&amp; amountRemaining &gt; 0 &amp;&amp; !hasPendingPayments"/>
       </insert>
     </extend>
+    <extend target="//field[name='paymentMode']">
+      <attribute name="onchange"
+        value="action-invoice-bank-payment-group-payment-mode-on-change"/>
+    </extend>
   </form>
 
   <action-method name="action-method-invoice-cancel-bill-of-exchange">
     <call class="com.axelor.apps.bankpayment.web.InvoiceController"
       method="cancelBillOfExchange"/>
   </action-method>
+
+  <action-method name="action-invoice-method-check-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.InvoiceController" method="checkBankDetails"/>
+  </action-method>
+
+  <action-group name="action-invoice-bank-payment-group-payment-mode-on-change">
+    <action name="action-invoice-group-payment-mode-onchange"/>
+    <action name="action-invoice-method-check-bank-details"/>
+  </action-group>
+
+
+
 
 </object-views>
