@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceBankDetailsServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
@@ -62,8 +63,10 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
-import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.InvoiceBankDetailsServiceBankPayment;
+import com.axelor.apps.bankpayment.service.InvoiceBankDetailsServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentService;
+import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermDomainBankPaymentServiceImpl;
@@ -277,7 +280,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementValidateService.class).to(BankStatementValidateServiceImpl.class);
     bind(BankStatementLineDeleteService.class).to(BankStatementLineDeleteServiceImpl.class);
     bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
-    bind(InvoiceBankPaymentService.class).to(InvoiceBankPaymentServiceImpl.class);
+    bind(InvoiceCancelBillOfExchangeBankPaymentService.class)
+        .to(InvoiceCancelBillOfExchangeBankPaymentServiceImpl.class);
     bind(BankStatementLineMapperAFB120Service.class)
         .to(BankStatementLineMapperAFB120ServiceImpl.class);
     bind(BankStatementLineCreationService.class).to(BankStatementLineCreationServiceImpl.class);
@@ -328,5 +332,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoiceTermDomainServiceImpl.class).to(InvoiceTermDomainBankPaymentServiceImpl.class);
     bind(InvoiceDomainServiceImpl.class).to(InvoiceDomainBankPaymentServiceImpl.class);
     bind(MoveAttrsServiceImpl.class).to(MoveAttrsBankPaymentServiceImpl.class);
+    bind(InvoiceBankDetailsServiceImpl.class).to(InvoiceBankDetailsServiceBankPaymentImpl.class);
+    bind(InvoiceBankDetailsServiceBankPayment.class)
+        .to(InvoiceBankDetailsServiceBankPaymentImpl.class);
   }
 }

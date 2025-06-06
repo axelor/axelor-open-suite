@@ -1685,6 +1685,7 @@
     <action name="action-invoice-record-operationsubtype-reset"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-company-onchange">
@@ -1731,6 +1732,7 @@
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-fiscal-position-on-change"/>
     <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
@@ -1904,6 +1906,7 @@
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-method-update-invoice-term-payment-mode"
       if="invoiceTermList &amp;&amp; !invoiceTermList.isEmpty()"/>
+    <action name="action-invoice-method-check-bank-details"/>
   </action-group>
 
   <action-group name="action-invoice-group-draft-button">
@@ -2024,8 +2027,6 @@
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"
       if="eval: (!invoiceLineList || invoiceLineList?.empty) &amp;&amp; partner"/>
-    <field name="bankDetails"
-      expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
       expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null"/>
     <field name="invoicesCopySelect"
@@ -2590,6 +2591,10 @@
 
   <action-method name="action-invoice-method-check-analytic-axis">
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkAnalyticAxis"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-get-default-bank-details">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="getDefaultBankDetails"/>
   </action-method>
 
   <action-method name="action-invoice-method-domain-company-tax-number">

@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
+import com.axelor.apps.account.service.invoice.InvoiceBankDetailsService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -1511,9 +1512,23 @@ public class InvoiceController {
   @ErrorException
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-
     String domain = Beans.get(InvoiceDomainService.class).createDomainForBankDetails(invoice);
-
     response.setAttr("bankDetails", "domain", domain);
+  }
+
+  @ErrorException
+  public void getDefaultBankDetails(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    BankDetails bankDetails =
+        Beans.get(InvoiceBankDetailsService.class).getDefaultBankDetails(invoice);
+    response.setValue("bankDetails", bankDetails);
+  }
+
+  @ErrorException
+  public void checkBankDetails(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    BankDetails bankDetails =
+        Beans.get(InvoiceBankDetailsService.class).getDefaultBankDetails(invoice);
+    response.setValue("bankDetails", bankDetails);
   }
 }
