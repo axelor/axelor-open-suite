@@ -175,6 +175,8 @@ import com.axelor.apps.bankpayment.service.move.MoveCreateBankPaymentServiceImpl
 import com.axelor.apps.bankpayment.service.move.MoveRecordSetBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.move.MoveServiceBankPayment;
+import com.axelor.apps.bankpayment.service.move.MoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentService;
@@ -337,5 +339,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoiceBankDetailsServiceImpl.class).to(InvoiceBankDetailsServiceBankPaymentImpl.class);
     bind(InvoiceBankDetailsServiceBankPayment.class)
         .to(InvoiceBankDetailsServiceBankPaymentImpl.class);
+    bind(MoveServiceBankPayment.class).to(MoveServiceBankPaymentImpl.class);
   }
 }

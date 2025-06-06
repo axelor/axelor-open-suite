@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <form name="move-form" title="Account move" canArchive="false"
+    model="com.axelor.apps.account.db.Move" id="move-bank-payment-form" extension="true">
+    <extend target="//field[name='paymentMode']">
+      <attribute name="onchange" value="action-move-group-payment-mode-on-change"/>
+    </extend>
+  </form>
+
+  <action-group name="action-move-group-payment-mode-on-change">
+    <action name="action-move-method-payment-mode-onchange"/>
+    <action name="action-move-method-check-partner-bank-details"/>
+  </action-group>
+
+  <action-method name="action-move-method-check-partner-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.MoveController"
+      method="checkMovePartnerBankDetails"/>
+  </action-method>
+</object-views>
