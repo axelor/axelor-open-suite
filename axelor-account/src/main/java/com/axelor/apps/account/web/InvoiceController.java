@@ -1501,6 +1501,7 @@ public class InvoiceController {
     response.setAttr("fiscalPosition", "domain", domain);
   }
 
+  @ErrorException
   public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
