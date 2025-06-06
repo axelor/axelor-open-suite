@@ -33,6 +33,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -208,10 +209,12 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     }
   }
 
-  protected boolean isGenerationNeeded(SaleOrderLine line) {
+  @Override
+  public boolean isGenerationNeeded(SaleOrderLine line) {
     return isLineHasCorrectSaleSupply(line)
         && manufOrderSaleOrderService.computeQuantityToProduceLeft(line).compareTo(BigDecimal.ZERO)
-            > 0;
+            > 0
+        && !isLineProductionBlocked(line);
   }
 
   protected boolean isLineHasCorrectSaleSupply(SaleOrderLine saleOrderLine) {
@@ -219,5 +222,13 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     authorizedStatus.add(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
     authorizedStatus.add(SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE);
     return authorizedStatus.contains(saleOrderLine.getSaleSupplySelect());
+  }
+
+  protected boolean isLineProductionBlocked(SaleOrderLine saleOrderLine) {
+    boolean isProductionBlocked = saleOrderLine.getIsProductionBlocking();
+    LocalDate todayDate = appProductionService.getTodayDate(null);
+    LocalDate productionBlockingToDate = saleOrderLine.getProductionBlockingToDate();
+    return isProductionBlocked
+        && (productionBlockingToDate == null || todayDate.isBefore(productionBlockingToDate));
   }
 }
