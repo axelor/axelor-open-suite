@@ -23,14 +23,14 @@ import java.util.stream.Collectors;
 public class QualityImprovementUpdateServiceImpl implements QualityImprovementUpdateService {
 
   protected QualityImprovementRepository qualityImprovementRepository;
-  protected QualityImprovementCreateService qualityImprovementCreateService;
+  protected QualityImprovementCheckValuesService qualityImprovementCheckValuesService;
 
   @Inject
   public QualityImprovementUpdateServiceImpl(
       QualityImprovementRepository qualityImprovementRepository,
-      QualityImprovementCreateService qualityImprovementCreateService) {
+      QualityImprovementCheckValuesService qualityImprovementCheckValuesService) {
     this.qualityImprovementRepository = qualityImprovementRepository;
-    this.qualityImprovementCreateService = qualityImprovementCreateService;
+    this.qualityImprovementCheckValuesService = qualityImprovementCheckValuesService;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -49,7 +49,7 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
     updateQIIdentification(baseQualityImprovement.getQiIdentification(), newQiIdentification);
     updateQIResolution(baseQualityImprovement.getQiResolution(), newQiResolution);
 
-    qualityImprovementCreateService.checkQualityImprovementValues(baseQualityImprovement);
+    qualityImprovementCheckValuesService.checkQualityImprovementValues(baseQualityImprovement);
 
     return qualityImprovementRepository.save(baseQualityImprovement);
   }

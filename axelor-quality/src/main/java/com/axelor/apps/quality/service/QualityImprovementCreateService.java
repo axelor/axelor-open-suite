@@ -12,6 +12,4 @@ public interface QualityImprovementCreateService {
       QIIdentification qiIdentification,
       QIResolution qiResolution)
       throws AxelorException;
-
-  void checkQualityImprovementValues(QualityImprovement qualityImprovement) throws AxelorException;
 }
