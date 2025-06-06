@@ -25,6 +25,4 @@ public interface DataBackupService {
   public void createBackUp(DataBackup dataBackup);
 
   public void restoreBackUp(DataBackup dataBackup);
-
-  public boolean sequencesOrMrpLineTypesExist();
 }
