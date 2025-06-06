@@ -27,7 +27,10 @@ import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
+import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainServiceImpl;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,7 +38,7 @@ import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckServiceImpl
+public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckSupplychainServiceImpl
     implements SaleOrderCheckBudgetService {
 
   protected SaleOrderBudgetService saleOrderBudgetService;
@@ -45,9 +48,17 @@ public class SaleOrderCheckBudgetServiceImpl extends SaleOrderCheckServiceImpl
   public SaleOrderCheckBudgetServiceImpl(
       AppBaseService appBaseService,
       SaleOrderBudgetService saleOrderBudgetService,
+      AppSupplychainService appSupplychainService,
+      AppStockService appStockService,
       AppSaleService appSaleService,
-      AppBudgetService appBudgetService) {
-    super(appBaseService, appSaleService);
+      AppBudgetService appBudgetService,
+      SaleOrderBlockingSupplychainService saleOrderBlockingSupplychainService) {
+    super(
+        appBaseService,
+        appSupplychainService,
+        appStockService,
+        saleOrderBlockingSupplychainService,
+        appSaleService);
     this.saleOrderBudgetService = saleOrderBudgetService;
     this.appBudgetService = appBudgetService;
   }
