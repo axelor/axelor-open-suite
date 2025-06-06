@@ -46,12 +46,14 @@ public class BatchGeneratePoFromSo extends BatchStrategy {
             .filter(
                 "self.saleOrder.statusSelect = :confirmedStatus AND "
                     + "self.qtyProduced < self.qtyToProduce AND "
-                    + "(self.saleSupplySelect = :produceSupplySelect OR self.saleSupplySelect = :productOrStockSupplySelect)")
+                    + "(self.saleSupplySelect = :produceSupplySelect OR self.saleSupplySelect = :productOrStockSupplySelect) AND "
+                    + "(self.isProductionBlocking IS FALSE OR (self.isProductionBlocking IS TRUE AND self.productionBlockingToDate < :todayDate))")
             .bind("confirmedStatus", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
             .bind("produceSupplySelect", SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
             .bind(
                 "productOrStockSupplySelect",
-                SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE);
+                SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE)
+            .bind("todayDate", appBaseService.getTodayDate(null));
 
     List<SaleOrderLine> saleOrderLineList;
     int offset = 0;

@@ -1,6 +1,7 @@
 "key","message","comment","context"
 "% Gap","Écart %",,
 "%d MO created.","%d OF créés",,
+"%d line(s) treated and %d anomaly(ies) reported !","%d lignes(s) traitée(s) and %d anomalie(s) remontée(s) !",,
 "%s building","%s en production",,
 "%s consume","%s en consommation",,
 "%s missing","%s manquant",,
@@ -336,6 +337,8 @@
 "Generate new version","Créer une nouvelle version",,
 "Generate periods",,,
 "Generate production configurations","Générer les configurations de production",,
+"Generate production order for sale orders","Générer les ordres de production pour les commandes",,
+"Generate production orders","Générer les ordres de production",,
 "Generate production orders automatically","Générer les ordres de production automatiquement",,
 "Generate proposals",,,
 "Generate waste stock move","Générer Mvt de sortie rebuts",,

@@ -1,6 +1,7 @@
 "key","message","comment","context"
 "% Gap",,,
 "%d MO created.",,,
+"%d line(s) treated and %d anomaly(ies) reported !",,,
 "%s building",,,
 "%s consume",,,
 "%s missing",,,
@@ -336,6 +337,8 @@
 "Generate new version",,,
 "Generate periods",,,
 "Generate production configurations",,,
+"Generate production order for sale orders",,,
+"Generate production orders",,,
 "Generate production orders automatically",,,
 "Generate proposals",,,
 "Generate waste stock move",,,
