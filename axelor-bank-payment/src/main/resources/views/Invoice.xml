@@ -13,7 +13,7 @@
           showIf="lcrAccounted &amp;&amp; oldMove &amp;&amp; amountRemaining &gt; 0 &amp;&amp; !hasPendingPayments"/>
       </insert>
     </extend>
-    <extend target="//field[name='paymentMode']">
+    <extend target="//field[@name='paymentMode']">
       <attribute name="onchange"
         value="action-invoice-bank-payment-group-payment-mode-on-change"/>
     </extend>

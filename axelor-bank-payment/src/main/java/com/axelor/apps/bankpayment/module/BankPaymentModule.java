@@ -68,10 +68,11 @@ import com.axelor.apps.bankpayment.service.InvoiceBankDetailsServiceBankPaymentI
 import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceDomainBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPayment;
+import com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderService;
@@ -324,7 +325,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankOrderSequenceService.class).to(BankOrderSequenceServiceImpl.class);
     bind(MoveLinePostedNbrService.class).to(MoveLinePostedNbrServiceImpl.class);
     bind(BankOrderEncryptionService.class).to(BankOrderEncryptionServiceImpl.class);
-    bind(InvoiceTermServiceImpl.class).to(InvoiceTermBankPaymentServiceImpl.class);
+    bind(InvoiceTermServiceImpl.class).to(InvoiceTermServiceBankPaymentImpl.class);
+    bind(InvoiceTermServiceBankPayment.class).to(InvoiceTermServiceBankPaymentImpl.class);
     bind(MoveCreateServiceImpl.class).to(MoveCreateBankPaymentServiceImpl.class);
     bind(MoveRecordSetServiceImpl.class).to(MoveRecordSetBankPaymentServiceImpl.class);
     bind(MoveLineMassEntryRecordServiceImpl.class)
