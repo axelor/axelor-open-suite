@@ -89,6 +89,7 @@ public class DepositSlipController {
   }
 
   public void loadPaymentVoucher(ActionRequest request, ActionResponse response) {
+    DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
     DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
 
     List paymentVoucherDueList = (List) request.getContext().get("__paymentVoucherDueList");
@@ -97,13 +98,14 @@ public class DepositSlipController {
       return;
     }
 
-    List<Integer> selectedPaymentVoucherDueIdList =
-        depositSlipService.getSelectedPaymentVoucherDueIdList(paymentVoucherDueList);
-    if (CollectionUtils.isEmpty(selectedPaymentVoucherDueIdList)) {
+    List<PaymentVoucher> selectedPaymentVoucherDueList =
+        depositSlipService.getSelectedPaymentVoucherDueList(paymentVoucherDueList);
+    if (CollectionUtils.isEmpty(selectedPaymentVoucherDueList)) {
       return;
     }
-
-    response.setAttr("paymentVoucherList", "value:add", selectedPaymentVoucherDueIdList);
+    List<PaymentVoucher> paymentVoucherList = depositSlip.getPaymentVoucherList();
+    paymentVoucherList.addAll(selectedPaymentVoucherDueList);
+    response.setValue("paymentVoucherList", paymentVoucherList);
   }
 
   public void updateInvoicePayments(ActionRequest request, ActionResponse response) {
