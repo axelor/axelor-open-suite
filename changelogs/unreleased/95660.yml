@@ -1,0 +1,3 @@
+---
+title: "BankReconciliation : fixed the balance computation when multiple reconcile where on the same move line"
+module: axelor-bank-payment
