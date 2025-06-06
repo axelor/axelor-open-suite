@@ -37,7 +37,7 @@ public interface MoveLineMassEntryRecordService {
 
   void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException;
 
-  void setMovePartnerBankDetails(MoveLineMassEntry moveLine);
+  void setMovePartnerBankDetails(MoveLineMassEntry moveLine, Move move);
 
   void setCurrencyCode(MoveLineMassEntry moveLine);
 

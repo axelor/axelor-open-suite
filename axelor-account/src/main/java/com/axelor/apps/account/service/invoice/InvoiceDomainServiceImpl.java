@@ -19,9 +19,14 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class InvoiceDomainServiceImpl implements InvoiceDomainService {
 
@@ -46,6 +51,21 @@ public class InvoiceDomainServiceImpl implements InvoiceDomainService {
       domain += " AND self.isCustomer = true ";
     } else {
       domain += " AND self.isSupplier = true ";
+    }
+    return domain;
+  }
+
+  @Override
+  public String createDomainForBankDetails(Invoice invoice) {
+    Partner partner = invoice.getPartner();
+    String domain = "self.id IN (0)";
+    if (partner != null && !partner.getBankDetailsList().isEmpty()) {
+      List<BankDetails> bankDetailsList =
+          partner.getBankDetailsList().stream()
+              .filter(BankDetails::getActive)
+              .collect(Collectors.toList());
+
+      domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
     }
     return domain;
   }

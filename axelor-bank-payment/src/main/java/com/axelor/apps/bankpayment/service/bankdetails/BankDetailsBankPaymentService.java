@@ -18,9 +18,18 @@
  */
 package com.axelor.apps.bankpayment.service.bankdetails;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import java.util.List;
 
 public interface BankDetailsBankPaymentService {
   void updateBankDetailsBalanceAndDate(List<BankDetails> bankDetails);
+
+  List<BankDetails> getBankDetailsLinkedToActiveUmr(
+      PaymentMode paymentMode, Partner partner, Company company);
+
+  boolean isBankDetailsNotLinkedToActiveUmr(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails);
 }

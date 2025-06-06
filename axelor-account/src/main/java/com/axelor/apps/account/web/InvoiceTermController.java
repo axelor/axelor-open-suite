@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -433,5 +434,15 @@ public class InvoiceTermController {
 
     invoiceTermDateComputeService.resetDueDate(invoiceTerm);
     response.setValues(invoiceTerm);
+  }
+
+  @ErrorException
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+    String domain =
+        Beans.get(InvoiceTermDomainService.class).createDomainForBankDetails(invoiceTerm);
+
+    response.setAttr("bankDetails", "domain", domain);
   }
 }
