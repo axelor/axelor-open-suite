@@ -234,6 +234,17 @@ public class InvoiceTermController {
     }
   }
 
+  public void validatePfpProcess(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
+      invoiceterm = Beans.get(InvoiceTermRepository.class).find(invoiceterm.getId());
+      Beans.get(InvoiceTermPfpValidateService.class).validatePfp(invoiceterm, AuthUtils.getUser());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public void massValidatePfp(ActionRequest request, ActionResponse response) {
     try {
@@ -433,5 +444,11 @@ public class InvoiceTermController {
 
     invoiceTermDateComputeService.resetDueDate(invoiceTerm);
     response.setValues(invoiceTerm);
+  }
+
+  public void refreshInvoicePfpStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+    Beans.get(InvoiceTermPfpService.class).refreshInvoicePfpStatus(invoiceTerm.getInvoice());
   }
 }
