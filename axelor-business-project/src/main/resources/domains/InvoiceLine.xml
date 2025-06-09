@@ -17,6 +17,9 @@
     <many-to-one name="expenseLine" title="Expense line"
       ref="com.axelor.apps.hr.db.ExpenseLine"/>
 
+    <boolean name="toInvoice" title="To invoice"/>
+    <boolean name="invoiced" title="Invoiced"/>
+
   </entity>
 
 </domain-models>

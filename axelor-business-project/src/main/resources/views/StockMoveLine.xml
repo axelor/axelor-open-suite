@@ -11,6 +11,7 @@
         <panel title="Project" colSpan="12" if="__config__.app.getApp('business-project')">
           <field name="project"/>
           <field name="projectTask"/>
+          <field name="toInvoice"/>
         </panel>
       </insert>
     </extend>

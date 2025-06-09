@@ -9,6 +9,7 @@
       <attribute name="onChange" value="action-method-change-project-for-analytic-lines"/>
       <insert position="after">
         <field name="projectTask"/>
+        <field name="toInvoice"/>
       </insert>
     </extend>
     <extend target="//field[@name='purchaseOrderLine']">

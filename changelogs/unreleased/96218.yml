@@ -1,0 +1,4 @@
+---
+title: "Add 'To Invoice' and 'Invoiced' on supplier invoice line and stock move line"
+module: axelor-business-project
+
