@@ -2248,6 +2248,7 @@ this.height=row["logo_height"];]]></method>
                                 <text-property name="displayName">original_value</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["original_value"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">acquisition</property>
@@ -2282,7 +2283,7 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="name">Aggregation</property>
                                 <text-property name="displayName">original_value_sum</text-property>
-                                <property name="dataType">float</property>
+                                <property name="dataType">decimal</property>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2373,7 +2374,7 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="name">original_value_sum1</property>
                                 <text-property name="displayName">original_value_sum1</text-property>
-                                <property name="dataType">float</property>
+                                <property name="dataType">decimal</property>
                                 <simple-property-list name="aggregateOn">
                                     <value>NewTableGroup1</value>
                                 </simple-property-list>
@@ -2485,7 +2486,7 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="name">original_value_sum2</property>
                                 <text-property name="displayName">original_value_sum2</text-property>
-                                <property name="dataType">float</property>
+                                <property name="dataType">decimal</property>
                                 <simple-property-list name="aggregateOn">
                                     <value>TableGroup</value>
                                 </simple-property-list>
@@ -2631,9 +2632,11 @@ this.height=row["logo_height"];]]></method>
                                 <text-property name="displayName">accounting_value</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["accounting_value"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">accounting_value_sum2</property>
+                                <text-property name="displayName">accounting_value_sum2</text-property>
                                 <property name="dataType">decimal</property>
                                 <simple-property-list name="aggregateOn">
                                     <value>TableGroup</value>
@@ -2642,13 +2645,14 @@ this.height=row["logo_height"];]]></method>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["accounting_value"]</expression>
+                                        <expression name="value" type="javascript">dataSetRow["accounting_value"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">accounting_value_sum1</property>
+                                <text-property name="displayName">accounting_value_sum1</text-property>
                                 <property name="dataType">decimal</property>
                                 <simple-property-list name="aggregateOn">
                                     <value>NewTableGroup1</value>
@@ -2657,19 +2661,20 @@ this.height=row["logo_height"];]]></method>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["accounting_value"]</expression>
+                                        <expression name="value" type="javascript">dataSetRow["accounting_value"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">accounting_value_sum</property>
+                                <text-property name="displayName">accounting_value_sum</text-property>
                                 <property name="dataType">decimal</property>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["accounting_value"]</expression>
+                                        <expression name="value" type="javascript">dataSetRow["accounting_value"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2685,6 +2690,19 @@ this.height=row["logo_height"];]]></method>
                                 <text-property name="displayName">transferred_reason_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["transferred_reason_select"]</expression>
                                 <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">original_value_sum</property>
+                                <text-property name="displayName">original_value_sum</text-property>
+                                <property name="dataType">decimal</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["original_value"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
@@ -3428,7 +3446,7 @@ else {
                                             <property name="fontSize">9pt</property>
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["accounting_value_sum2"] != null? row["accounting_value_sum2"]:0)</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["accounting_value_sum1"] != null? row["accounting_value_sum1"]:0)</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                 </row>
@@ -3874,7 +3892,7 @@ else if (row["transferred_reason_select"] != 0){
                                         <property name="fontSize">9pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["accpunting_value_sum"]!= null? row["accpunting_value_sum"]:0)</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["accounting_value_sum"]!= null? row["accounting_value_sum"]:0)</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
