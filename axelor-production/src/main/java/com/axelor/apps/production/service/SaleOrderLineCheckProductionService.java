@@ -16,25 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
-import com.axelor.apps.production.service.SaleOrderLineCheckProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.inject.Beans;
-import javax.persistence.PostUpdate;
-import javax.persistence.PreRemove;
 
-public class SaleOrderLineProductionListener {
-
-  @PostUpdate
-  void postUpdate(SaleOrderLine saleOrderLine) {
-    Beans.get(SaleOrderLineBomSyncService.class).removeBomLines(saleOrderLine);
-  }
-
-  @PreRemove
-  void preRemove(SaleOrderLine saleOrderLine) throws AxelorException {
-    Beans.get(SaleOrderLineCheckProductionService.class).checkLinkedMo(saleOrderLine);
-  }
+public interface SaleOrderLineCheckProductionService {
+  void checkLinkedMo(SaleOrderLine saleOrderLine) throws AxelorException;
 }

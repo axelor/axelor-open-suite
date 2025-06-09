@@ -28,38 +28,38 @@
   </grid>
 
   <form name="product-variant-form" title="Product variant"
-    model="com.axelor.apps.base.db.ProductVariant" onLoad="action-product-variant-attrs-domain"
-    onNew="action-product-variant-record-on-new" width="large">
+    model="com.axelor.apps.base.db.ProductVariant" onNew="action-product-variant-record-on-new"
+    width="large">
     <panel name="mainPanel">
       <field name="productVariantAttr1" showTitle="false" readonly="true"
         grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
       <field name="productVariantValue1" showTitle="false" widget="SuggestBox"
         showIf="productVariantAttr1" form-view="product-variant-value-form"
-        grid-view="product-variant-value-grid"/>
+        grid-view="product-variant-value-grid" onSelect="action-product-variant-attrs-domain"/>
       <field name="productVariantAttr2" showTitle="false" readonly="true"
         showIf="productVariantAttr1" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
       <field name="productVariantValue2" showTitle="false" widget="SuggestBox"
         showIf="productVariantAttr2" form-view="product-variant-value-form"
-        grid-view="product-variant-value-grid"/>
+        grid-view="product-variant-value-grid" onSelect="action-product-variant-attrs-domain"/>
       <field name="productVariantAttr3" showTitle="false" readonly="true"
         showIf="productVariantAttr2" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
       <field name="productVariantValue3" showTitle="false" widget="SuggestBox"
         showIf="productVariantAttr3" form-view="product-variant-value-form"
-        grid-view="product-variant-value-grid"/>
+        grid-view="product-variant-value-grid" onSelect="action-product-variant-attrs-domain"/>
       <field name="productVariantAttr4" showTitle="false" readonly="true"
         showIf="productVariantAttr3" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
       <field name="productVariantValue4" showTitle="false" widget="SuggestBox"
         showIf="productVariantAttr4" form-view="product-variant-value-form"
-        grid-view="product-variant-value-grid"/>
+        grid-view="product-variant-value-grid" onSelect="action-product-variant-attrs-domain"/>
       <field name="productVariantAttr5" showTitle="false" readonly="true"
         showIf="productVariantAttr4" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
       <field name="productVariantValue5" showTitle="false" widget="SuggestBox"
         showIf="productVariantAttr5" form-view="product-variant-value-form"
-        grid-view="product-variant-value-grid"/>
+        grid-view="product-variant-value-grid" onSelect="action-product-variant-attrs-domain"/>
     </panel>
   </form>
 

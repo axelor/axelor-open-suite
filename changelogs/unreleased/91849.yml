@@ -1,3 +1,0 @@
----
-title: "Contract invoicing batch: fixed an issue where it was not possible to generate more than one invoice for a same contract."
-module: axelor-contract

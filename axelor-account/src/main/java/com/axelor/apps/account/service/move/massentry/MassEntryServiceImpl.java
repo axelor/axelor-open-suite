@@ -28,7 +28,6 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecor
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -41,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class MassEntryServiceImpl implements MassEntryService {
@@ -226,9 +226,13 @@ public class MassEntryServiceImpl implements MassEntryService {
     if (massEntryToolService.verifyJournalAuthorizeNewMove(
             move.getMoveLineMassEntryList(), move.getJournal())
         && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-      moveList = massEntryMoveCreateService.createMoveListFromMassEntryList(move);
-
-      for (Move element : moveList) {
+      List<Integer> uniqueIdList =
+          move.getMoveLineMassEntryList().stream()
+              .map(MoveLineMassEntry::getTemporaryMoveNumber)
+              .distinct()
+              .collect(Collectors.toList());
+      for (Integer x : uniqueIdList) {
+        Move element = massEntryMoveCreateService.createMoveFromMassEntryList(move, x);
         String moveTemporaryMoveNumber = element.getReference();
         try {
           element.setReference(null);
@@ -252,9 +256,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           errors = errors.concat(moveTemporaryMoveNumber);
           temporaryErrorIdList.add(Integer.parseInt(moveTemporaryMoveNumber));
         } finally {
-          if (++i % AbstractBatch.FETCH_LIMIT == 0) {
-            JPA.clear();
-          }
+          JPA.clear();
+          move = moveRepository.find(move.getId());
         }
       }
 

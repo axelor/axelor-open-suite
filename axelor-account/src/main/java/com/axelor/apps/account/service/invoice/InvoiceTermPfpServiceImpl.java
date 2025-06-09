@@ -118,6 +118,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
+
+    refreshInvoicePfpStatus(invoiceTerm.getInvoice());
   }
 
   @Override
@@ -248,6 +250,21 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     }
 
     return pfpStatus;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void refreshInvoicePfpStatus(Invoice invoice) {
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return;
+    }
+
+    Integer pfpStatus = checkOtherInvoiceTerms(invoice.getInvoiceTermList());
+
+    if (pfpStatus != null && pfpStatus != invoice.getPfpValidateStatusSelect()) {
+      invoice.setPfpValidateStatusSelect(pfpStatus);
+      invoiceRepo.save(invoice);
+    }
   }
 
   @Override

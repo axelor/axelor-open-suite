@@ -94,34 +94,6 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     this.billOfMaterialRemoveService = billOfMaterialRemoveService;
   }
 
-  /**
-   * In this implementation, we also create a bill of materials.
-   *
-   * @param configurator
-   * @param jsonAttributes
-   * @param jsonIndicators
-   * @param saleOrderId
-   * @throws AxelorException
-   */
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void generateProduct(
-      Configurator configurator,
-      JsonContext jsonAttributes,
-      JsonContext jsonIndicators,
-      Long saleOrderId)
-      throws AxelorException {
-    super.generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrderId);
-    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
-    if (configuratorBOM != null) {
-      Product generatedProduct = configurator.getProduct();
-      configuratorBomService
-          .generateBillOfMaterial(
-              configuratorBOM, jsonAttributes, 0, generatedProduct, configurator)
-          .ifPresent(generatedProduct::setDefaultBillOfMaterial);
-    }
-  }
-
   @Override
   public void regenerateProduct(
       Configurator configurator,

@@ -44,7 +44,7 @@ public class ConfiguratorFormulaController {
         request.getContext().getParent().asType(ConfiguratorCreator.class);
     try {
       Beans.get(ConfiguratorFormulaService.class).checkFormula(configuratorFormula, creator);
-      response.setAlert(I18n.get(SaleExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
+      response.setInfo(I18n.get(SaleExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
     } catch (Exception e) {
       response.setError(e.getMessage());
     }

@@ -49,6 +49,8 @@ public interface InvoiceTermPfpService {
 
   Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
+  void refreshInvoicePfpStatus(Invoice invoice);
+
   boolean getUserCondition(User pfpValidatorUser, User user);
 
   boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);

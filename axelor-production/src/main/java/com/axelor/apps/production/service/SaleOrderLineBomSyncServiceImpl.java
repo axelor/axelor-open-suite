@@ -23,6 +23,8 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.studio.db.repo.AppSaleRepository;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,8 +35,19 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncService {
 
+  protected final AppSaleRepository appSaleRepository;
+
+  @Inject
+  public SaleOrderLineBomSyncServiceImpl(AppSaleRepository appSaleRepository) {
+    this.appSaleRepository = appSaleRepository;
+  }
+
   @Override
   public void removeBomLines(SaleOrderLine saleOrderLine) {
+    if (appSaleRepository.all().autoFlush(false).fetchOne().getListDisplayTypeSelect()
+        != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+      return;
+    }
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
     if (subSaleOrderLineList != null) {
       for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
@@ -99,6 +112,9 @@ public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncServ
 
   protected List<BillOfMaterialLine> getBomLinesToRemove(
       BillOfMaterial billOfMaterial, List<SaleOrderLine> subSaleOrderLineList) {
+    if (CollectionUtils.isEmpty(subSaleOrderLineList)) {
+      return Collections.emptyList();
+    }
     Set<BillOfMaterialLine> billOfMaterialLineList =
         billOfMaterial.getBillOfMaterialLineList().stream()
             .filter(

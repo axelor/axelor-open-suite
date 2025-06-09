@@ -1803,7 +1803,7 @@
   <action-view name="action-partner-view-related-projects" title="Projects"
     model="com.axelor.apps.project.db.Project">
     <view type="grid" name="project-grid"/>
-    <view type="form" name="project-form"/>
+    <view type="form" name="business-project-form"/>
     <domain>self.clientPartner = :id</domain>
   </action-view>
 

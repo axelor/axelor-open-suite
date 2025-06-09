@@ -78,7 +78,7 @@ public interface AccountingCloseAnnualService {
   public List<Pair<Long, Long>> assignPartner(
       List<Long> accountIdList, Year year, boolean allocatePerPartner);
 
-  void generateResultMove(
+  Move generateResultMove(
       Company company,
       LocalDate date,
       String description,

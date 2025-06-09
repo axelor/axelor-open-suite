@@ -45,6 +45,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -610,8 +611,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(SupplychainExceptionMessage.LOCATION_LINE_NOT_ENOUGH_AVAILABLE_QTY),
           stockLocationLine.getProduct().getFullName(),
-          availableQty,
-          neededQty);
+          availableQty.setScale(
+              appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
+          neededQty.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
     }
   }
 

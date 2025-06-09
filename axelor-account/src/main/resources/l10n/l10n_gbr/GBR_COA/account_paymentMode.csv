@@ -1,14 +1,14 @@
-"importId";"name";"code";"invoiceLabel";"inOutSelect";"typeSelect";"canSelectInPaymentSession";"daysMarginOnPaySession";"accountingMethodSelect";"accountingTriggerSelect";"generateBankOrder";"generateMoveAutoFromBankOrder";"consoBankOrderLinePerPartner";"orderTypeSelect";"bankOrderExportFolderPath";"bankOrderFileFormat.name"
-"GBR_COA100";"Inc. Wire transfer";"INC_WT";"Wire transfer";1;9;;7;1;1;;;;;;
-"GBR_COA110";"Inc. Cheque";"INC_CHQ";"Cheque";1;7;;;;1;;;;;;
-"GBR_COA120";"Inc. Credit card";"INC_CC";"Credit card";1;6;;;;1;;;;;;
-"GBR_COA130";"Inc. Online";"INC_WEB";"Online";1;8;;;;1;;;;;;
-"GBR_COA140";"Inc. Direct debit";"INC_DBT";"Direct debit";1;2;"true";7;1;1;;;;;;
-"GBR_COA160";"Inc. Cash";"INC_CSH";"Cash";1;5;;;;1;;;;;;
-"GBR_COA170";"Inc. Other";"INC_OTH";"Other payment means";1;1;;;;1;;;;;;
-"GBR_COA200";"Out. Wire transfer";"OUT_WT";"Wire transfer";2;9;"true";7;1;1;;;;;;
-"GBR_COA210";"Out. Cheque";"OUT_CHQ";"Cheque";2;7;;;;1;;;;;;
-"GBR_COA220";"Out. Credit card";"OUT_CC";"Credit card";2;6;;;;1;;;;;;
-"GBR_COA230";"Out. Direct debit";"OUT_DBT";"Direct debit";2;2;"true";7;1;1;;;;;;
-"GBR_COA240";"Out. Cash";"OUT_CSH";"Cash";2;5;;;;1;;;;;;
-"GBR_COA260";"Out. Other";"OUT_OTH";"Other payment means";2;1;;;;1;;;;;;
+"importId";"name";"code";"invoiceLabel";"inOutSelect";"typeSelect";"canSelectInPaymentSession";"daysMarginOnPaySession";"accountingMethodSelect";"accountingTriggerSelect";"generateBankOrder";"consoBankOrderLinePerPartner";"orderTypeSelect";"bankOrderExportFolderPath";"bankOrderFileFormat.name"
+"GBR_COA100";"Inc. Wire transfer";"INC_WT";"Wire transfer";1;9;;7;1;1;;;;;
+"GBR_COA110";"Inc. Cheque";"INC_CHQ";"Cheque";1;7;;;;1;;;;;
+"GBR_COA120";"Inc. Credit card";"INC_CC";"Credit card";1;6;;;;1;;;;;
+"GBR_COA130";"Inc. Online";"INC_WEB";"Online";1;8;;;;1;;;;;
+"GBR_COA140";"Inc. Direct debit";"INC_DBT";"Direct debit";1;2;"true";7;1;1;;;;;
+"GBR_COA160";"Inc. Cash";"INC_CSH";"Cash";1;5;;;;1;;;;;
+"GBR_COA170";"Inc. Other";"INC_OTH";"Other payment means";1;1;;;;1;;;;;
+"GBR_COA200";"Out. Wire transfer";"OUT_WT";"Wire transfer";2;9;"true";7;1;1;true;;1;"/bankOrder/";
+"GBR_COA210";"Out. Cheque";"OUT_CHQ";"Cheque";2;7;;;;1;;;;;
+"GBR_COA220";"Out. Credit card";"OUT_CC";"Credit card";2;6;;;;1;;;;;
+"GBR_COA230";"Out. Direct debit";"OUT_DBT";"Direct debit";2;2;"true";7;1;1;;;;;
+"GBR_COA240";"Out. Cash";"OUT_CSH";"Cash";2;5;;;;1;;;;;
+"GBR_COA260";"Out. Other";"OUT_OTH";"Other payment means";2;1;;;;1;;;;;

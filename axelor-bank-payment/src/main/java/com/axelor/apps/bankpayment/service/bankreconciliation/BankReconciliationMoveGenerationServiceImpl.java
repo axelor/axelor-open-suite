@@ -628,6 +628,12 @@ public class BankReconciliationMoveGenerationServiceImpl
       fiscalPosition = partner.getFiscalPosition();
     }
 
+    if (journal == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL));
+    }
+
     Move move =
         moveCreateService.createMove(
             journal,

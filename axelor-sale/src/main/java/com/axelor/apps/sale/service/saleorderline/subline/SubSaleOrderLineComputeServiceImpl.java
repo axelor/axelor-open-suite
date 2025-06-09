@@ -24,6 +24,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,7 +51,10 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
   public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+    AppSale appSale = appSaleService.getAppSale();
+    if (appSale.getIsSOLPriceTotalOfSubLines()
+        && appSale.getListDisplayTypeSelect()
+            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
         for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
           computeSumSubLineList(subSaleOrderLine, saleOrder);
@@ -62,6 +67,9 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
 
   protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (CollectionUtils.isEmpty(subSaleOrderLineList)) {
+      return;
+    }
     saleOrderLine.setPrice(
         subSaleOrderLineList.stream()
             .map(SaleOrderLine::getExTaxTotal)

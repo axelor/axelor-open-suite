@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1925,17 +1925,8 @@ if(params["PrintType"].value.equals('2'))
                                 </text>
                                 <data id="5403">
                                     <structure name="dateTimeFormat">
-                                        <property name="category">Short Date</property>
-                                        <property name="pattern">Short Date</property>
-                                    </structure>
-                                    <property name="display">inline</property>
-                                    <property name="resultSetColumn">FinancialDataDateTime</property>
-                                </data>
-                                <data id="5404">
-                                    <property name="marginLeft">0.5cm</property>
-                                    <structure name="dateTimeFormat">
-                                        <property name="category">Short Time</property>
-                                        <property name="pattern">Short Time</property>
+                                        <property name="category">Custom</property>
+                                        <property name="pattern">dd/MM/yyyy HH:mm</property>
                                     </structure>
                                     <property name="display">inline</property>
                                     <property name="resultSetColumn">FinancialDataDateTime</property>

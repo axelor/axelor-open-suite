@@ -96,15 +96,15 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
     if (bankOrder
         .getFunctionalOriginSelect()
         .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE)) {
-      this.validateExpensePayment(bankOrder);
+      return this.validateExpensePayment(bankOrder);
     }
     return super.generateMoves(bankOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void validateExpensePayment(BankOrder bankOrder) throws AxelorException {
+  protected BankOrder validateExpensePayment(BankOrder bankOrder) throws AxelorException {
     if (!appBaseService.isApp("employee")) {
-      return;
+      return bankOrder;
     }
     List<Expense> expenseList =
         expenseRepository.all().filter("self.bankOrder.id = ?", bankOrder.getId()).fetch();
@@ -115,5 +115,7 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
         expensePaymentService.createMoveForExpensePayment(expense);
       }
     }
+
+    return bankOrder;
   }
 }

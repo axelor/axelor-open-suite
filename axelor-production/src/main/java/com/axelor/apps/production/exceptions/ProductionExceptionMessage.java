@@ -411,4 +411,7 @@ public final class ProductionExceptionMessage {
 
   public static final String MRP_PROD_PROCESS_REQUIRED = /*$$(*/
       "The manufacturing order for %s could not be generated because the bill of material has no production process." /*)*/;
+
+  public static final String SOL_LINKED_TO_MO_DELETE_ERROR = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in manufacturing order(s): <br> %s" /*)*/;
 }

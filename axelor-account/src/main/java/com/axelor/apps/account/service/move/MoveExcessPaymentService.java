@@ -80,8 +80,7 @@ public class MoveExcessPaymentService {
 
     if (accountConfig.getAutoReconcileOnInvoice()) {
       List<MoveLine> creditMoveLines =
-          moveLineToolService.getMoveExcessDueList(
-              true, company, invoice.getPartner(), invoice.getId());
+          moveLineToolService.getMoveExcessDueList(true, company, invoice.getPartner(), invoice);
 
       log.debug("Number of overpayment to attribute to the invoice : {}", creditMoveLines.size());
       advancePaymentMoveLines.addAll(creditMoveLines);
