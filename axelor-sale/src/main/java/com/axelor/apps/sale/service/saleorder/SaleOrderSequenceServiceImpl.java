@@ -35,19 +35,7 @@ public class SaleOrderSequenceServiceImpl implements SaleOrderSequenceService {
     if (!appSaleService.getAppSale().getIsQuotationAndOrderSplitEnabled()) {
       seq = getSequence(saleOrder);
     } else {
-      SaleOrder originSaleQuotation = saleOrder.getOriginSaleQuotation();
-      if (originSaleQuotation != null) {
-        long childrenCounter =
-            saleOrderRepository
-                .all()
-                .filter("self.originSaleQuotation = :originSaleQuotation AND self.id != :id")
-                .bind("originSaleQuotation", originSaleQuotation)
-                .bind("id", saleOrder.getId())
-                .count();
-        seq = computeChildrenOrderSequence(saleOrder, childrenCounter);
-      } else {
-        seq = getSequence(saleOrder);
-      }
+      seq = getSplitQuotationSequence(saleOrder);
     }
 
     if (seq == null) {
@@ -60,10 +48,22 @@ public class SaleOrderSequenceServiceImpl implements SaleOrderSequenceService {
     return seq;
   }
 
-  protected String computeChildrenOrderSequence(SaleOrder saleOrder, long counter) {
+  protected String getSplitQuotationSequence(SaleOrder saleOrder) throws AxelorException {
+    String seq;
     SaleOrder originSaleQuotation = saleOrder.getOriginSaleQuotation();
-    counter++;
-    return originSaleQuotation.getSaleOrderSeq() + "_" + counter;
+    if (originSaleQuotation != null) {
+      long childrenCounter =
+          saleOrderRepository
+              .all()
+              .filter("self.originSaleQuotation = :originSaleQuotation AND self.id != :id")
+              .bind("originSaleQuotation", originSaleQuotation)
+              .bind("id", saleOrder.getId())
+              .count();
+      seq = originSaleQuotation.getSaleOrderSeq() + "_" + (childrenCounter + 1);
+    } else {
+      seq = getSequence(saleOrder);
+    }
+    return seq;
   }
 
   protected String getSequence(SaleOrder saleOrder) throws AxelorException {
