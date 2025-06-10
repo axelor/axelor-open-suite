@@ -393,5 +393,5 @@
   </input>
 
   <input file="account_taxNumber.csv" separator=";"
-         type="com.axelor.apps.account.db.TaxNumber" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.TaxNumber" search="self.importId = :importId"/>
 </csv-inputs>

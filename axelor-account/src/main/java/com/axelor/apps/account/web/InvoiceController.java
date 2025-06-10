@@ -72,7 +72,6 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -1481,23 +1480,7 @@ public class InvoiceController {
   @ErrorException
   public void setDefaultCompanyTaxNumber(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    TaxNumber taxNumber = null;
-
-    Company company = invoice.getCompany();
-    if (company != null) {
-      Partner partner = company.getPartner();
-      if (partner != null) {
-        String partnerTaxNumber = partner.getTaxNbr();
-        if (StringUtils.notEmpty(partnerTaxNumber)) {
-          taxNumber =
-              company.getTaxNumberList().stream()
-                  .filter(taxNb -> partnerTaxNumber.equals(taxNb.getTaxNbr()))
-                  .findFirst()
-                  .orElse(null);
-        }
-      }
-    }
-
+    TaxNumber taxNumber = Beans.get(InvoiceService.class).getDefaultCompanyTaxNumber(invoice);
     response.setValue("companyTaxNumber", taxNumber);
   }
 
@@ -1505,15 +1488,8 @@ public class InvoiceController {
   public void manageFiscalPositionFromCompanyTaxNumber(
       ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    TaxNumber companyTaxNumber = invoice.getCompanyTaxNumber();
-
-    if (companyTaxNumber == null) {
-      return;
-    }
-
-    Set<FiscalPosition> fiscalPositionSet = companyTaxNumber.getFiscalPositionSet();
     FiscalPosition fiscalPosition =
-        (fiscalPositionSet.size() == 1) ? fiscalPositionSet.iterator().next() : null;
+        Beans.get(InvoiceService.class).manageFiscalPositionFromCompanyTaxNumber(invoice);
     response.setValue("fiscalPosition", fiscalPosition);
   }
 

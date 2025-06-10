@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -66,6 +67,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -1273,5 +1275,39 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
           .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
     }
+  }
+
+  @Override
+  public FiscalPosition manageFiscalPositionFromCompanyTaxNumber(Invoice invoice) {
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    TaxNumber companyTaxNumber = invoice.getCompanyTaxNumber();
+
+    if (companyTaxNumber != null) {
+      Set<FiscalPosition> fiscalPositionSet = companyTaxNumber.getFiscalPositionSet();
+      fiscalPosition = (fiscalPositionSet.size() == 1) ? fiscalPositionSet.iterator().next() : null;
+    }
+
+    return fiscalPosition;
+  }
+
+  @Override
+  public TaxNumber getDefaultCompanyTaxNumber(Invoice invoice) {
+    TaxNumber taxNumber = null;
+    Company company = invoice.getCompany();
+
+    if (company != null) {
+      Partner partner = company.getPartner();
+      if (partner != null) {
+        String partnerTaxNumber = partner.getTaxNbr();
+        if (StringUtils.notEmpty(partnerTaxNumber)) {
+          taxNumber =
+              company.getTaxNumberList().stream()
+                  .filter(taxNb -> partnerTaxNumber.equals(taxNb.getTaxNbr()))
+                  .findFirst()
+                  .orElse(null);
+        }
+      }
+    }
+    return taxNumber;
   }
 }

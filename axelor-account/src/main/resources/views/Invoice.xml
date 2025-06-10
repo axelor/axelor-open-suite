@@ -2597,8 +2597,7 @@
       method="setCompanyTaxNumberDomain"/>
   </action-method>
 
-  <action-method if-module="axelor-supplychain"
-    name="action-invoice-method-set-default-company-tax-number">
+  <action-method name="action-invoice-method-set-default-company-tax-number">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="setDefaultCompanyTaxNumber"/>
   </action-method>
