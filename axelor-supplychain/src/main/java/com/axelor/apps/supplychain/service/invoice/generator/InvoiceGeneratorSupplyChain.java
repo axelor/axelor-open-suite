@@ -64,7 +64,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         saleOrder.getCompanyBankDetails(),
         saleOrder.getTradingName(),
         saleOrder.getGroupProductsOnPrintings(),
-        null);
+        saleOrder.getTaxNumber());
     this.saleOrder = saleOrder;
   }
 
