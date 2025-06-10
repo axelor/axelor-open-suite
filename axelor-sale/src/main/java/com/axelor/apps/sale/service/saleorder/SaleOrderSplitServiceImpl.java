@@ -146,4 +146,26 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
 
   protected void checkBeforeConfirm(SaleOrder saleOrder, Map<Long, BigDecimal> qtyToOrderMap)
       throws AxelorException {}
+
+  @Override
+  public BigDecimal computeCurrentlyTotalOrdered(
+      SaleOrder saleOrder, List<Map<String, Object>> saleOrderLineListContext) {
+    BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
+    if (CollectionUtils.isEmpty(saleOrderLineListContext)) {
+      return currentlyTotalOrdered;
+    }
+    for (Map<String, Object> lineContext : saleOrderLineListContext) {
+      if (lineContext.get("qtyToOrder") == null) {
+        continue;
+      }
+      SaleOrderLine saleOrderLine =
+          saleOrderLineRepository.find(Long.parseLong(lineContext.get("id").toString()));
+      BigDecimal price =
+          saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+      BigDecimal qtyToOrder =
+          BigDecimal.valueOf(Double.parseDouble(lineContext.get("qtyToOrder").toString()));
+      currentlyTotalOrdered = currentlyTotalOrdered.add(qtyToOrder.multiply(price));
+    }
+    return currentlyTotalOrdered;
+  }
 }
