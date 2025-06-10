@@ -836,7 +836,7 @@
     <attribute name="hidden" for="addSelectedSOLinesBtn" expr="eval:false"/>
     <attribute name="hidden" for="cancelManageSOLinesBtn" expr="eval:false"/>
     <attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
-    <attribute name="value" for="$salesOrderLineSet" expr="eval:false"/>
+    <attribute name="value" for="$salesOrderLineSet" expr="eval:null"/>
     <attribute name="title" for="$salesOrderLineSet"
       expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
     <attribute name="domain" for="$salesOrderLineSet"
