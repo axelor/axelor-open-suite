@@ -219,7 +219,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());
       }
 
-      if (saleOrder != null) {
+      if (saleOrder != null && !saleOrderSet.isEmpty()) {
         invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());
       }
 
@@ -313,7 +313,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setInternalReference(
           fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
 
-      if (purchaseOrder != null) {
+      if (purchaseOrder != null && !purchaseOrderSet.isEmpty()) {
         invoice.setCompanyTaxNumber(purchaseOrder.getTaxNumber());
       }
 
