@@ -35,7 +35,7 @@
           <field name="code" x-bind="{{code|unaccent|uppercase}}"
             onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
           <field name="address" onChange="action-method-bank-address-fill-full-name"
-            colSpan="5"/>
+            required="true" colSpan="5"/>
           <field name="label" onChange="action-method-bank-address-fill-full-name" colSpan="4"/>
           <field name="fullAddress" hidden="true"/>
         </editor>
