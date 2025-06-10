@@ -650,10 +650,10 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
         .ifPresent(commonFields::setCommonFiscalPosition);
     commonFields.setAllFiscalPositionsAreNull(commonFields.getCommonFiscalPosition() == null);
     purchaseOrdersToMerge.stream()
-            .map(PurchaseOrder::getTaxNumber)
-            .filter(Objects::nonNull)
-            .findFirst()
-            .ifPresent(commonFields::setCommonCompanyTaxNumber);
+        .map(PurchaseOrder::getTaxNumber)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonCompanyTaxNumber);
   }
 
   @Override
