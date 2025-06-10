@@ -8,7 +8,7 @@
     onLoad="action-attrs-bank-address-form-bank">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-      <field name="address"/>
+      <field name="address" required="true"/>
       <field name="label"/>
       <field name="bank"/>
     </panel>
