@@ -382,7 +382,8 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             null,
             invoice.getTradingName(),
-            invoice.getGroupProductsOnPrintings()) {
+            invoice.getGroupProductsOnPrintings(),
+            null) {
 
           @Override
           public Invoice generate() throws AxelorException {
