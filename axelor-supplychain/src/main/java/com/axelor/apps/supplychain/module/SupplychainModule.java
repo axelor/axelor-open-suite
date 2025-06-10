@@ -143,6 +143,8 @@ import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpForecastService;
 import com.axelor.apps.supplychain.service.MrpForecastServiceImpl;
+import com.axelor.apps.supplychain.service.MrpLineSaleOrderService;
+import com.axelor.apps.supplychain.service.MrpLineSaleOrderServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineTypeService;
@@ -534,5 +536,6 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineBlockingSupplychainServiceImpl.class);
     bind(SaleOrderBlockingSupplychainService.class)
         .to(SaleOrderBlockingSupplychainServiceImpl.class);
+    bind(MrpLineSaleOrderService.class).to(MrpLineSaleOrderServiceImpl.class);
   }
 }
