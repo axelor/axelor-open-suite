@@ -1,3 +1,3 @@
 ---
-title: "Bank: fixed sql error when SWIFT address is null."
+title: "Bank: fixed error when SWIFT address was empty."
 module: axelor-base
