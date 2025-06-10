@@ -1826,4 +1826,7 @@ public final class AccountExceptionMessage {
 
   public static final String ANALYTIC_MOVE_LINE_QUERY_WRONG_SUM_FOR_AXIS = /*$$(*/
       "The total percentage is not 100%% for the axis %s" /*)*/;
+
+  public static final String ACCOUNT_ALREADY_EXISTS = /*$$(*/
+      "The account with code %s and company %s already exists." /*)*/;
 }

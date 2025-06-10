@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
@@ -40,9 +42,13 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -245,5 +251,74 @@ public class AccountService {
   protected Account desactivate(Account account) {
     account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
     return account;
+  }
+
+  public void copyAccounts(List<Account> accountList, List<Company> companyList)
+      throws AxelorException {
+    for (Account account : accountList) {
+      account = JPA.find(Account.class, account.getId());
+      copyAccount(account, companyList);
+      JPA.clear();
+    }
+  }
+
+  public void copyAccount(Account account, List<Company> companyList) throws AxelorException {
+    for (Company company : companyList) {
+      company = JPA.find(Company.class, company.getId());
+      copy(account, company);
+    }
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void copy(Account account, Company company) throws AxelorException {
+    String code = account.getCode();
+    String name = account.getName();
+    if (accountRepository.findByCodeAndCompany(code, company) != null) {
+      code += " (copy)";
+      name += " (copy)";
+    }
+    checkIfAccountAlreadyExists(code, company);
+    Account parentAccount = null;
+    if (account.getParentAccount() != null) {
+      parentAccount =
+          accountRepository.findByCodeAndCompany(account.getParentAccount().getCode(), company);
+    }
+    Set<Account> compatibleAccountSet = new HashSet<>();
+    if (CollectionUtils.isNotEmpty(account.getCompatibleAccountSet())) {
+      compatibleAccountSet =
+          account.getCompatibleAccountSet().stream()
+              .map(acc -> accountRepository.findByCodeAndCompany(acc.getCode(), company))
+              .filter(Objects::nonNull)
+              .collect(Collectors.toSet());
+    }
+    Set<Tag> tagSet = new HashSet<>();
+    if (CollectionUtils.isNotEmpty(account.getTagSet())) {
+      tagSet =
+          account.getTagSet().stream()
+              .filter(
+                  tag ->
+                      CollectionUtils.isNotEmpty(tag.getCompanySet())
+                          && tag.getCompanySet().contains(company))
+              .collect(Collectors.toSet());
+    }
+    Account copy = accountRepository.copy(account, false);
+    copy.setCompany(company);
+    copy.setCode(code);
+    copy.setName(name);
+    copy.setParentAccount(parentAccount);
+    copy.setCompatibleAccountSet(compatibleAccountSet);
+    copy.setTagSet(tagSet);
+    copy.setAnalyticDistributionTemplate(null);
+    accountRepository.save(copy);
+  }
+
+  protected void checkIfAccountAlreadyExists(String code, Company company) throws AxelorException {
+    if (accountRepository.findByCodeAndCompany(code, company) != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.ACCOUNT_ALREADY_EXISTS),
+          code,
+          company.getName());
+    }
   }
 }
