@@ -12,4 +12,8 @@ public interface SaleOrderLineDetailsProdProcessService {
   List<SaleOrderLineDetails> createSaleOrderLineDetailsFromProdProcess(
       ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  void addSaleOrderLineDetailsFromProdProcess(
+      ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }
