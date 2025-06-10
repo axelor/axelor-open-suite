@@ -223,6 +223,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
         null,
         null,
         invoice.getTradingName(),
+        null,
         null) {
       @Override
       public Invoice generate() throws AxelorException {
