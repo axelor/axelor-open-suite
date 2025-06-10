@@ -239,4 +239,28 @@ public class ProjectPlanningTimeCreateServiceImpl implements ProjectPlanningTime
       planningTime.setPlannedTime(totalHours);
     }
   }
+
+  @Override
+  public BigDecimal getOldBudgetedTime(ProjectTask projectTask) {
+    BigDecimal oldBudgetedTime = projectTask.getOldBudgetedTime();
+    if ((oldBudgetedTime == null || oldBudgetedTime.signum() == 0) && projectTask.getId() != null) {
+      oldBudgetedTime = projectTaskRepo.find(projectTask.getId()).getBudgetedTime();
+    }
+
+    return oldBudgetedTime;
+  }
+
+  @Override
+  public Unit getTimeUnit(ProjectTask projectTask) {
+    Unit unit = projectTask.getTimeUnit();
+    if (unit == null) {
+      unit =
+          Optional.of(projectTask)
+              .map(ProjectTask::getProject)
+              .map(Project::getProjectTimeUnit)
+              .orElse(null);
+    }
+
+    return unit;
+  }
 }
