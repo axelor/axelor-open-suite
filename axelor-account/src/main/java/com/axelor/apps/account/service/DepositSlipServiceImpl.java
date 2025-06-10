@@ -292,11 +292,11 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   }
 
   @Override
-  public List<Integer> getSelectedPaymentVoucherDueIdList(
+  public List<PaymentVoucher> getSelectedPaymentVoucherDueList(
       List<Map<String, Object>> paymentVoucherDueList) {
     return paymentVoucherDueList.stream()
         .filter(o -> ObjectUtils.notEmpty(o.get("selected")) && (Boolean) o.get("selected"))
-        .map(o -> (Integer) o.get("id"))
+        .map(it -> paymentVoucherRepository.find(((Integer) it.get("id")).longValue()))
         .collect(Collectors.toList());
   }
 

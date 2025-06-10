@@ -1,0 +1,3 @@
+---
+title: "DepositSlip/PaymentVoucher: fixed deposit slip management when using payment mode with accounting mode value for collection."
+module: axelor-account
