@@ -122,6 +122,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockHistoryLineRepository stockHistoryLineRepository;
   protected MrpLineTypeService mrpLineTypeService;
   protected MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService;
+  protected MrpLineSaleOrderService mrpLineSaleOrderService;
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
@@ -156,7 +157,8 @@ public class MrpServiceImpl implements MrpService {
       AppPurchaseService appPurchaseService,
       StockHistoryLineRepository stockHistoryLineRepository,
       MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService,
-      MrpLineTypeService mrpLineTypeService) {
+      MrpLineTypeService mrpLineTypeService,
+      MrpLineSaleOrderService mrpLineSaleOrderService) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -179,6 +181,7 @@ public class MrpServiceImpl implements MrpService {
     this.stockHistoryLineRepository = stockHistoryLineRepository;
     this.mrpLineTypeService = mrpLineTypeService;
     this.mrpSaleOrderCheckLateSaleService = mrpSaleOrderCheckLateSaleService;
+    this.mrpLineSaleOrderService = mrpLineSaleOrderService;
   }
 
   @Override
@@ -995,16 +998,8 @@ public class MrpServiceImpl implements MrpService {
 
     if (this.isBeforeEndDate(maturityDate)) {
       Unit unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal qty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
-      if (!unit.equals(saleOrderLine.getUnit())) {
-        qty =
-            unitConversionService.convert(
-                saleOrderLine.getUnit(),
-                unit,
-                qty,
-                saleOrderLine.getQty().scale(),
-                saleOrderLine.getProduct());
-      }
+      BigDecimal qty =
+          mrpLineSaleOrderService.getSoMrpLineQty(saleOrderLine, unit, saleOrderMrpLineType);
 
       MrpLine mrpLine =
           this.createMrpLine(
