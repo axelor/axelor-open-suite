@@ -57,7 +57,8 @@ public interface DepositSlipService {
    */
   void validate(DepositSlip depositSlip) throws AxelorException;
 
-  List<Integer> getSelectedPaymentVoucherDueIdList(List<Map<String, Object>> paymentVoucherDueList);
+  List<PaymentVoucher> getSelectedPaymentVoucherDueList(
+      List<Map<String, Object>> paymentVoucherDueList);
 
   BigDecimal getTotalAmount(DepositSlip depositSlip, List<Integer> selectedPaymentVoucherDueIdList);
 
