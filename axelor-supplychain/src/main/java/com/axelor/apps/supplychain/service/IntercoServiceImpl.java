@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxNumberRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -72,6 +74,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
@@ -365,6 +368,12 @@ public class IntercoServiceImpl implements IntercoService {
     PriceList intercoPriceList =
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
+    String invoicePartnerTaxNbr = invoice.getPartnerTaxNbr();
+
+    TaxNumber intercoCompanyTaxNumber =
+        Beans.get(TaxNumberRepository.class)
+            .findByCompanyPartnerAndTaxNbr(invoice.getPartner(), invoicePartnerTaxNbr)
+            .fetchOne();
 
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
@@ -382,7 +391,8 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             null,
             invoice.getTradingName(),
-            invoice.getGroupProductsOnPrintings()) {
+            invoice.getGroupProductsOnPrintings(),
+            intercoCompanyTaxNumber) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -400,6 +410,11 @@ public class IntercoServiceImpl implements IntercoService {
           }
         };
     Invoice intercoInvoice = invoiceGenerator.generate();
+    intercoInvoice.setPartnerTaxNbr(
+        Optional.of(invoice)
+            .map(Invoice::getCompanyTaxNumber)
+            .map(TaxNumber::getTaxNbr)
+            .orElse(""));
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     if (invoice.getInvoiceLineList() != null) {

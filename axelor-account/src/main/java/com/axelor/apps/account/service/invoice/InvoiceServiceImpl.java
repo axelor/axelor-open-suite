@@ -611,6 +611,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             null,
             null,
             tradingName,
+            null,
             null) {
 
           @Override
@@ -710,6 +711,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             null,
             null,
             tradingName,
+            null,
             null) {
 
           @Override
