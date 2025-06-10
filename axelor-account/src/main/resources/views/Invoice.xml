@@ -494,9 +494,15 @@
           onChange="action-invoice-record-hide-discount"
           onSelect="action-invoice-method-domain-priceList" form-view="price-list-form"
           grid-view="price-list-grid" colSpan="4"/>
+        <spacer colSpan="4"/>
+        <field name="companyTaxNumber" if-module="axelor-supplychain"
+          if="__config__.app.getApp('base')?.getEnableTaxNumbers()" colSpan="4"
+          onSelect="action-invoice-method-domain-company-tax-number"
+          onChange="action-invoice-method-on-change-company-tax-number-set-fiscal-position"/>
         <field name="fiscalPosition" readonlyIf="statusSelect > 1" colSpan="4"
           onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"
-          form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
+          onSelect="action-invoice-method-domain-fiscal-position" form-view="fiscal-position-form"
+          grid-view="fiscal-position-grid"/>
       </panel>
       <panel name="invoiceMainThirdPanel" colSpan="12">
         <field name="companyBankDetails" colSpan="4"
@@ -1687,6 +1693,7 @@
     <action name="action-invoice-attrs-in-ati"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
+    <action name="action-invoice-method-set-default-company-tax-number"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -2435,6 +2442,11 @@
     <call class="com.axelor.apps.account.web.InvoiceController" method="changePriceListDomain"/>
   </action-method>
 
+  <action-method name="action-invoice-method-domain-companyTaxNumber">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setCompanyTaxNumberDomain"/>
+  </action-method>
+
   <action-method
     name="action-invoice-method-register-mass-payment-on-supplier-invoices">
     <call class="com.axelor.apps.account.web.InvoiceController"
@@ -2578,6 +2590,27 @@
 
   <action-method name="action-invoice-method-check-analytic-axis">
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkAnalyticAxis"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-domain-company-tax-number">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setCompanyTaxNumberDomain"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-set-default-company-tax-number">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setDefaultCompanyTaxNumber"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-on-change-company-tax-number-set-fiscal-position">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="manageFiscalPositionFromCompanyTaxNumber"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-domain-fiscal-position">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setFiscalPositionDomain"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
