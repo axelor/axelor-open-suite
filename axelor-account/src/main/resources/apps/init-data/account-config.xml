@@ -5,6 +5,23 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check-message="Invalid codeSelect :codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
+      if="yearlyResetOk"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" adapter="Boolean"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -15,34 +32,83 @@
 
   <input file="studio_appAccount.csv" separator=";" type="com.axelor.studio.db.AppAccount"
     search="self.app.code = :code">
+    <bind column="partnerBalConfigSelect" to="partnerBalConfigSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('account.partner.bal.config.select', partnerBalConfigSelect, false)"
+      check-message="Invalid partnerBalConfigSelect :partnerBalConfigSelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType">
-    <bind to="name" column="name"/>
-    <bind to="reportExportTypeSelect" column="docType"/>
-    <bind to="typeSelect" column="type"/>
+    <bind to="name" column="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind to="reportExportTypeSelect" column="docType"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('accounting.report.type.report.export.type.select', docType, true)"
+      check-message="Invalid reportExportTypeSelect :reportExportTypeSelect"/>
+    <bind to="typeSelect" column="type"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('accounting.report.type.select', type, true)"
+      check-message="Invalid typeSelect :typeSelect"/>
     <bind to="company" column="company" search="self.importId = :company" update="true"/>
+    <bind to="comparison" column="comparison"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('accounting.report.type.comparison.select', comparison, false)"
+      check-message="Invalid comparison :comparison"/>
   </input>
 
   <input file="account_analyticLevel.csv" separator=";" search="self.nbr = :nbr"
     call="com.axelor.csv.script.ImportAnalyticLevel:importAnalyticLevel"
-    type="com.axelor.apps.account.db.AnalyticLevel"/>
+    type="com.axelor.apps.account.db.AnalyticLevel">
+    <bind column="nbr" to="nbr"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(nbr)"
+      check-message="Number must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.AnalyticLevel', 'nbr', nbr, 'name', name)"
+      check-message="Name must be unique"/>
+  </input>
 
   <input file="account_fixedAssetType.csv" separator=";" search="self.importId = :importId"
-    type="com.axelor.apps.account.db.FixedAssetType"/>
-
+    type="com.axelor.apps.account.db.FixedAssetType">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="technicalTypeSelect" to="technicalTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('account.fixed.asset.technical.type.select', technicalTypeSelect, false)"
+      check-message="Invalid technicalTypeSelect :technicalTypeSelect"/>
+  </input>
 
   <input file="account_importFecType.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.account.db.ImportFECType"
-    call="com.axelor.csv.script.ImportImportFECType:importFECType"/>
+    call="com.axelor.csv.script.ImportImportFECType:importFECType">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="functionalOriginSelect" to="functionalOriginSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iaccount.move.functional.origin.select', functionalOriginSelect, false)"
+      check-message="Invalid functionalOriginSelect :functionalOriginSelect"/>
+  </input>
 
   <input file="account_assetDisposalReason.csv" separator=";"
-    search="self.importId = :importId" type="com.axelor.apps.account.db.AssetDisposalReason"/>
+    search="self.importId = :importId" type="com.axelor.apps.account.db.AssetDisposalReason">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.AssetDisposalReason', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="disposalTypeSelect" to="disposalTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('account.fixed.asset.disposal.type.select', disposalTypeSelect, false)"
+      check-message="Invalid disposalTypeSelect :disposalTypeSelect"/>
+  </input>
 
   <input file="base_partner_link_type.csv" separator=";"
     type="com.axelor.apps.base.db.PartnerLinkType"
-    search="self.importId = :importId OR self.typeSelect = :typeSelect"/>
+    search="self.importId = :importId OR self.typeSelect = :typeSelect">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.partner.link.type.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+  </input>
 
 </csv-inputs>
