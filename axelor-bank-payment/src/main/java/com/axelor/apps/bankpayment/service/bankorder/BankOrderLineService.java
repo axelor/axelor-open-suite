@@ -267,9 +267,7 @@ public class BankOrderLineService {
 
     List<BankDetails> bankDetailsList =
         bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
-            bankOrder.getPaymentMode(),
-            bankOrderLine.getPartner(),
-            bankOrderLine.getReceiverCompany());
+            bankOrder.getPaymentMode(), bankOrderLine.getPartner(), bankOrder.getSenderCompany());
     if (bankOrder.getPaymentMode() != null
         && bankOrder.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_DD) {
       bankDetailsIds = StringHelper.getIdListString(bankDetailsList);
@@ -324,7 +322,7 @@ public class BankOrderLineService {
               .getBankDetailsLinkedToActiveUmr(
                   bankOrder.getPaymentMode(),
                   bankOrderLine.getPartner(),
-                  bankOrderLine.getReceiverCompany())
+                  bankOrder.getSenderCompany())
               .stream()
               .findFirst()
               .orElse(null);
