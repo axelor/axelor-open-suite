@@ -32,6 +32,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -292,14 +293,17 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
 
   @Override
   public List<BankOrderLine> checkBankOrderLineBankDetails(BankOrder bankOrder) {
-    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-      if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
-          bankOrder.getPaymentMode(),
-          bankOrderLine.getReceiverCompany(),
-          bankOrderLine.getReceiverBankDetails())) {
-        bankOrderLine.setReceiverBankDetails(null);
+    if (bankOrder.getBankOrderLineList() != null) {
+      for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+        if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
+            bankOrder.getPaymentMode(),
+            bankOrderLine.getReceiverCompany(),
+            bankOrderLine.getReceiverBankDetails())) {
+          bankOrderLine.setReceiverBankDetails(null);
+        }
       }
+      return bankOrder.getBankOrderLineList();
     }
-    return bankOrder.getBankOrderLineList();
+    return Collections.emptyList();
   }
 }
