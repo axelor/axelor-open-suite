@@ -12,6 +12,8 @@
     <many-to-many name="fiscalPositionSet" title="Fiscal positions"
       ref="com.axelor.apps.account.db.FiscalPosition"/>
 
+    <finder-method name="findByCompanyAndTaxNbr" using="company,taxNbr"
+      filter="self.company = :company AND self.taxNbr = :taxNbr" all="true"/>
   </entity>
 
 </domain-models>
