@@ -43,7 +43,7 @@
           readonlyIf="statusSelect != 1" onChange="action-payment-schedule-group-onchange-partner"
           domain="self.isContact = false AND :company member of self.companySet"/>
         <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
-          onSelect="action-payment-schedule-record-bank-details-domain"
+          onSelect="action-payment-schedule-method-bank-details-domain"
           onChange="action-payment-schedule-method-fill-company-bank-details"/>
       </panel>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
@@ -159,7 +159,7 @@
 
   <!-- ACTION METHOD -->
 
-  <action-method name="action-payment-schedule-record-bank-details-domain">
+  <action-method name="action-payment-schedule-method-bank-details-domain">
     <call class="com.axelor.apps.account.web.PaymentScheduleController"
       method="setBankDetailsDomain"/>
   </action-method>
