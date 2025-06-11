@@ -5,6 +5,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
@@ -18,11 +19,14 @@ public class SaleOrderLineDetailsProdProcessServiceImpl
     implements SaleOrderLineDetailsProdProcessService {
 
   protected final SolDetailsProdProcessLineMappingService solDetailsProdProcessLineMappingService;
+  protected final AppProductionService appProductionService;
 
   @Inject
   public SaleOrderLineDetailsProdProcessServiceImpl(
-      SolDetailsProdProcessLineMappingService solDetailsProdProcessLineMappingService) {
+      SolDetailsProdProcessLineMappingService solDetailsProdProcessLineMappingService,
+      AppProductionService appProductionService) {
     this.solDetailsProdProcessLineMappingService = solDetailsProdProcessLineMappingService;
+    this.appProductionService = appProductionService;
   }
 
   @Override
@@ -38,6 +42,9 @@ public class SaleOrderLineDetailsProdProcessServiceImpl
   public List<SaleOrderLineDetails> createSaleOrderLineDetailsFromProdProcess(
       ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
+    if (appProductionService.getAppProduction().getIsProdProcessLineGenerationInSODisabled()) {
+      return List.of();
+    }
     Objects.requireNonNull(prodProcess);
     List<SaleOrderLineDetails> originSaleOrderLineDetailsList =
         saleOrderLine.getSaleOrderLineDetailsList();
