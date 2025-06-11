@@ -9,6 +9,7 @@
     <extra-code><![CDATA[
 		// TYPE SELECT
 		public static final String PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING = "FreightCarrierPricing";
+		public static final String PRICING_TYPE_SELECT_FREIGHT_CARRIER_DELAY = "FreightCarrierDelay";
 	]]></extra-code>
   </entity>
 
