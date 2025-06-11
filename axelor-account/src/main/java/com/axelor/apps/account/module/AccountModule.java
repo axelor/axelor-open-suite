@@ -331,6 +331,8 @@ import com.axelor.apps.account.service.move.massentry.MassEntryVerificationServi
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveDefaultServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveGroupOnChangeService;
+import com.axelor.apps.account.service.move.record.MoveGroupOnChangeServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
@@ -1008,5 +1010,6 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
     bind(MoveLineMassEntryDomainService.class).to(MoveLineMassEntryDomainServiceImpl.class);
     bind(InvoiceBankDetailsService.class).to(InvoiceBankDetailsServiceImpl.class);
+    bind(MoveGroupOnChangeService.class).to(MoveGroupOnChangeServiceImpl.class);
   }
 }

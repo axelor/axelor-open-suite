@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveGroupOnChangeServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordServiceImpl;
@@ -172,11 +173,10 @@ import com.axelor.apps.bankpayment.service.move.MoveAttrsBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.move.MoveCreateBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.move.MoveGroupOnChangeServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.move.MoveRecordSetBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.move.MoveServiceBankPayment;
-import com.axelor.apps.bankpayment.service.move.MoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentService;
@@ -339,6 +339,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoiceBankDetailsServiceImpl.class).to(InvoiceBankDetailsServiceBankPaymentImpl.class);
     bind(InvoiceBankDetailsServiceBankPayment.class)
         .to(InvoiceBankDetailsServiceBankPaymentImpl.class);
-    bind(MoveServiceBankPayment.class).to(MoveServiceBankPaymentImpl.class);
+    bind(MoveGroupOnChangeServiceImpl.class).to(MoveGroupOnChangeServiceBankPaymentImpl.class);
   }
 }
