@@ -254,7 +254,7 @@
 "Dependent children","Enfants à charge",,
 "Description","Description",,
 "Details","Détails",,
-"Disable project planning time generation if there is no active sprint.","Disable project planning time generation if there is no active sprint.",,
+"Disable project planning time generation if there is no active sprint.","Bloquer la génération du temps de planification de projet.",,
 "Display activity column in printing","Afficher la colonne activité sur impression",,
 "Display planned time","Temps planifié affiché",,
 "Display task column in printing","Afficher la colonne tâche sur impression",,

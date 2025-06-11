@@ -16,7 +16,7 @@
       help="If enabled, planification will be available on project and project task views and some planning lines auto generation will be added to generation via project template, and change of sprint on project tasks."/>
 
     <boolean name="blockPPTGeneration" title="Block project planning time generation"
-      help="Disable project planning time generation if there is no active sprint."/>
+      help="Disable project planning time generation if there is no active sprint." default="true"/>
 
     <track>
       <field name="enablePlanification" on="UPDATE"/>
