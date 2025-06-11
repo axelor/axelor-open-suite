@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
@@ -10,7 +11,8 @@ import java.util.stream.Collectors;
 public class MoveLineMassEntryDomainServiceImpl implements MoveLineMassEntryDomainService {
 
   @Override
-  public String createDomainForMovePartnerBankDetails(MoveLineMassEntry moveLineMassEntry) {
+  public String createDomainForMovePartnerBankDetails(
+      Move move, MoveLineMassEntry moveLineMassEntry) {
     Partner partner = moveLineMassEntry.getPartner();
     String domain = "self.id IN (0)";
 
