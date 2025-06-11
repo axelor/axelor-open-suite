@@ -71,6 +71,8 @@
       title="Allow to personalize production process" default="true"/>
     <boolean name="isBomLineGenerationInSODisabled"
       title="Disable BOM lines generation in sale order."/>
+    <boolean name="isProdProcessLineGenerationInSODisabled"
+      title="Disable prod process lines generation in sale order."/>
 
     <extra-code><![CDATA[
 		// OPERATION_CONTINUITY_SELECT
