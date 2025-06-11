@@ -39,11 +39,14 @@ public class ProjectPlanningTimeWarningServiceImpl implements ProjectPlanningTim
 
   @Override
   public String getSprintWarning(ProjectTask projectTask) {
-    if (projectTask.getActiveSprint() == null) {
-      return getWarningWithoutSprint(projectTask);
-    } else {
+    if (projectTask.getActiveSprint() != null) {
       return getSprintOnChangeWarning(projectTask);
+    } else {
+      if (!appProjectService.getAppProject().getBlockPPTGeneration()) {
+        return getWarningWithoutSprint(projectTask);
+      }
     }
+    return "";
   }
 
   protected String getSprintOnChangeWarning(ProjectTask projectTask) {

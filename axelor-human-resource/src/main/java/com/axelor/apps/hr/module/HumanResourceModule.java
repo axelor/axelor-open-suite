@@ -500,6 +500,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(PartnerConvertServiceImpl.class).to(PartnerConvertHRServiceImpl.class);
     bind(ProjectPlanningTimeWarningService.class).to(ProjectPlanningTimeWarningServiceImpl.class);
     bind(ProjectTaskPPTGenerateService.class).to(ProjectTaskPPTGenerateServiceImpl.class);
-    bind(ProjectPlanningTimeCreateUpdateService.class).to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
+    bind(ProjectPlanningTimeCreateUpdateService.class)
+        .to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
   }
 }

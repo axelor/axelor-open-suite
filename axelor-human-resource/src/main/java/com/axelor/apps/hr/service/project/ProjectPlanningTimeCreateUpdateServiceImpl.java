@@ -8,6 +8,7 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -29,6 +30,7 @@ public class ProjectPlanningTimeCreateUpdateServiceImpl
   protected ProjectTaskPPTGenerateService projectTaskPPTGenerateService;
   protected ProjectPlanningTimeCreateService projectPlanningTimeCreateService;
   protected ProjectPlanningTimeComputeService projectPlanningTimeComputeService;
+  protected AppProjectService appProjectService;
 
   @Inject
   public ProjectPlanningTimeCreateUpdateServiceImpl(
@@ -37,22 +39,26 @@ public class ProjectPlanningTimeCreateUpdateServiceImpl
       ProjectTaskSprintService projectTaskSprintService,
       ProjectTaskPPTGenerateService projectTaskPPTGenerateService,
       ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
-      ProjectPlanningTimeCreateService projectPlanningTimeCreateService) {
+      ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
+      AppProjectService appProjectService) {
     this.projectTaskRepository = projectTaskRepository;
     this.projectPlanningTimeService = projectPlanningTimeService;
     this.projectTaskSprintService = projectTaskSprintService;
     this.projectTaskPPTGenerateService = projectTaskPPTGenerateService;
     this.projectPlanningTimeComputeService = projectPlanningTimeComputeService;
     this.projectPlanningTimeCreateService = projectPlanningTimeCreateService;
+    this.appProjectService = appProjectService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void createOrMovePlannification(ProjectTask projectTask) throws AxelorException {
-    if (projectTask.getActiveSprint() == null) {
-      createUpdatePlanningTimeWithoutSprint(projectTask);
-    } else {
+    if (projectTask.getActiveSprint() != null) {
       createOrMovePlanificationWithSprint(projectTask);
+    } else {
+      if (!appProjectService.getAppProject().getBlockPPTGeneration()) {
+        createUpdatePlanningTimeWithoutSprint(projectTask);
+      }
     }
   }
 
