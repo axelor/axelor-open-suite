@@ -292,10 +292,11 @@ public class MoveLineMassEntryController {
   @ErrorException
   public void addMovePartnerBankDetailsDomain(ActionRequest request, ActionResponse response) {
     MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+    Move move = request.getContext().getParent().asType(Move.class);
 
     String domain =
         Beans.get(MoveLineMassEntryDomainService.class)
-            .createDomainForMovePartnerBankDetails(moveLineMassEntry);
+            .createDomainForMovePartnerBankDetails(move, moveLineMassEntry);
 
     response.setAttr("movePartnerBankDetails", "domain", domain);
   }

@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
@@ -51,7 +52,10 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
     Partner partner = moveLine.getPartner();
     Company company = move.getCompany();
 
-    if (paymentMode != null && partner != null && company != null) {
+    if (paymentMode != null
+        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD
+        && partner != null
+        && company != null) {
       bankDetailsBankPaymentService
           .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
           .stream()

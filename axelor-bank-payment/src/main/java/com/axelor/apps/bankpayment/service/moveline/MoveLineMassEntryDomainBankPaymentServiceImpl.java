@@ -1,5 +1,6 @@
 package com.axelor.apps.bankpayment.service.moveline;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -23,14 +24,15 @@ public class MoveLineMassEntryDomainBankPaymentServiceImpl
   }
 
   @Override
-  public String createDomainForMovePartnerBankDetails(MoveLineMassEntry moveLineMassEntry) {
+  public String createDomainForMovePartnerBankDetails(
+      Move move, MoveLineMassEntry moveLineMassEntry) {
     Partner partner = moveLineMassEntry.getPartner();
-    String domain = super.createDomainForMovePartnerBankDetails(moveLineMassEntry);
+    String domain = super.createDomainForMovePartnerBankDetails(move, moveLineMassEntry);
 
-    if (partner != null && !partner.getBankDetailsList().isEmpty()) {
+    if (move != null && partner != null && !partner.getBankDetailsList().isEmpty()) {
 
       PaymentMode paymentMode = moveLineMassEntry.getMovePaymentMode();
-      Company company = moveLineMassEntry.getMoveMassEntry().getCompany();
+      Company company = move.getCompany();
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               paymentMode, partner, company);
