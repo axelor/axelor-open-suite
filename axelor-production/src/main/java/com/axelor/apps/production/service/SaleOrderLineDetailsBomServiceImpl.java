@@ -52,11 +52,10 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
     List<SaleOrderLineDetails> saleOrderLineDetailsList =
         saleOrderLine.getSaleOrderLineDetailsList();
 
-    List<SaleOrderLineDetails> filteredSaleOrderLineDetails = new ArrayList<>();
     if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
-      filteredSaleOrderLineDetails.addAll(
+      saleOrderLineDetailsList.removeAll(
           saleOrderLineDetailsList.stream()
-              .filter(line -> line.getTypeSelect() != SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
               .collect(Collectors.toList()));
     }
 
@@ -71,7 +70,6 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
       }
     }
 
-    filteredSaleOrderLineDetails.addAll(saleOrderLinesDetailsList);
-    return filteredSaleOrderLineDetails;
+    return saleOrderLinesDetailsList;
   }
 }

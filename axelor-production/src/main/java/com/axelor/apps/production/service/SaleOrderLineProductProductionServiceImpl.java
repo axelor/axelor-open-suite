@@ -198,12 +198,8 @@ public class SaleOrderLineProductProductionServiceImpl
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
       }
-      saleOrderLineDetailsProdProcessService
-          .createSaleOrderLineDetailsFromProdProcess(
-              billOfMaterial.getProdProcess(), saleOrder, saleOrderLine)
-          .stream()
-          .filter(Objects::nonNull)
-          .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+      saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
+          billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);
     }
   }
 

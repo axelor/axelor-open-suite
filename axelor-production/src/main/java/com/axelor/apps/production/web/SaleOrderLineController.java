@@ -148,10 +148,9 @@ public class SaleOrderLineController {
     }
 
     if (prodProcess != null) {
-      response.setValue(
-          "saleOrderLineDetailsList",
-          Beans.get(SaleOrderLineDetailsProdProcessService.class)
-              .createSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrder, saleOrderLine));
+      Beans.get(SaleOrderLineDetailsProdProcessService.class)
+          .addSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrder, saleOrderLine);
+      response.setValue("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());
     }
   }
 }
