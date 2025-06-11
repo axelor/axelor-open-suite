@@ -64,6 +64,7 @@ import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceIm
 import com.axelor.apps.bankpayment.service.PaymentScheduleDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderService;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderServiceImpl;
@@ -312,6 +313,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankOrderEncryptionService.class).to(BankOrderEncryptionServiceImpl.class);
     bind(PaymentScheduleDomainServiceImpl.class)
         .to(PaymentScheduleDomainBankPaymentServiceImpl.class);
+    bind(PaymentScheduleServiceBankPayment.class).to(PaymentScheduleServiceBankPaymentImpl.class);
     bind(PaymentScheduleServiceImpl.class).to(PaymentScheduleServiceBankPaymentImpl.class);
   }
 }
