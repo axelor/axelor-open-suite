@@ -23,7 +23,8 @@
       <insert position="after">
         <button name="selectPricingLineBtn"
           onClick="save,action-suppplychain-view-pricing-list" title="Select carrier" colSpan="6"
-          showIf="!$readonly() &amp;&amp; shipmentMode"/>
+          showIf="!$readonly() &amp;&amp; shipmentMode"
+          if="__config__.app.getApp('base')?.enablePricingScale"/>
       </insert>
     </extend>
   </form>
