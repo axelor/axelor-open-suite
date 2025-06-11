@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -73,6 +75,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -399,10 +402,21 @@ public class PaymentVoucherConfirmService {
 
   protected Optional<MoveLine> extractMoveLineFromValueForCollectionMove(
       Move move, Account account) {
-
-    return move.getMoveLineList().stream()
-        .filter(moveLine -> Objects.equals(account, moveLine.getAccount()))
-        .findFirst();
+    Predicate<? super MoveLine> filter;
+    if (account == null) {
+      filter =
+          moveLine ->
+              Objects.equals(
+                  AccountTypeRepository.TYPE_CASH,
+                  Optional.ofNullable(moveLine)
+                      .map(MoveLine::getAccount)
+                      .map(Account::getAccountType)
+                      .map(AccountType::getTechnicalTypeSelect)
+                      .orElse(""));
+    } else {
+      filter = moveLine -> Objects.equals(account, moveLine.getAccount());
+    }
+    return move.getMoveLineList().stream().filter(filter).findFirst();
   }
 
   /**

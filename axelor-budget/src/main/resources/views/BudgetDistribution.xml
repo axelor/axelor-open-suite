@@ -451,4 +451,9 @@
     <call class="com.axelor.apps.budget.web.BudgetDateController" method="checkBudgetDates"/>
   </action-method>
 
+  <action-attrs name="action-budget-dates-attrs-initialize-budget-dates">
+    <attribute for="budgetFromDate" name="value" expr="eval: __parent__?.budgetFromDate"/>
+    <attribute for="budgetToDate" name="value" expr="eval: __parent__?.budgetToDate"/>
+  </action-attrs>
+
 </object-views>

@@ -44,6 +44,7 @@ import com.axelor.utils.helpers.MapHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -533,7 +534,22 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    updateChildrenOrder(saleOrdersToMerge, saleOrderMerged);
+
     return saleOrderMerged;
+  }
+
+  protected void updateChildrenOrder(List<SaleOrder> saleOrdersToMerge, SaleOrder saleOrderMerged) {
+    for (SaleOrder saleOrder : saleOrdersToMerge) {
+      for (SaleOrder childOrder :
+          saleOrderRepository
+              .all()
+              .filter("self.originSaleQuotation = :saleOrder")
+              .bind("saleOrder", saleOrder)
+              .fetch()) {
+        childOrder.setOriginSaleQuotation(saleOrderMerged);
+      }
+    }
   }
 
   protected String computeConcatenatedString(
@@ -561,6 +577,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       int countLine = 1;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         SaleOrderLine copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+        saleOrderLine.setOrderedQty(BigDecimal.ZERO);
         copiedSaleOrderLine.setSequence(countLine * 10);
         saleOrderMerged.addSaleOrderLineListItem(copiedSaleOrderLine);
         countLine++;

@@ -39,6 +39,10 @@ public interface ITranslation {
   public static final String CLIENT_SITUATION_PHONE = /*$$(*/ "ClientSituation.phone"; /*)*/
   public static final String CLIENT_SITUATION_FUNCTION = /*$$(*/ "ClientSituation.function"; /*)*/
   public static final String CLIENT_SITUATION_CONTACTS = /*$$(*/ "ClientSituation.contacts"; /*)*/
+  public static final String CLIENT_SITUATION_QUOTATIONS_ORDERS = /*$$(*/
+      "ClientSituation.quotations/orders"; /*)*/
+  public static final String CLIENT_SITUATION_QUOTATIONS = /*$$(*/
+      "ClientSituation.quotations"; /*)*/
   public static final String CLIENT_SITUATION_ORDERS = /*$$(*/ "ClientSituation.orders"; /*)*/
   public static final String CLIENT_SITUATION_DATE = /*$$(*/ "ClientSituation.date"; /*)*/
   public static final String CLIENT_SITUATION_REFERENCE = /*$$(*/ "ClientSituation.reference"; /*)*/
@@ -46,6 +50,8 @@ public interface ITranslation {
   public static final String CLIENT_SITUATION_TOTAL_HT = /*$$(*/ "ClientSituation.totalHT"; /*)*/
   public static final String CLIENT_SITUATION_TOTAL_TAX = /*$$(*/ "ClientSituation.totalTax"; /*)*/
   public static final String CLIENT_SITUATION_TOTAL_ATI = /*$$(*/ "ClientSituation.totalATI"; /*)*/
+  public static final String CLIENT_SITUATION_AMOUNT_REMAINING_TO_ORDER = /*$$(*/
+      "ClientSituation.amountRemainingToOrder"; /*)*/
   public static final String CLIENT_SITUATION_TO_INVOICE = /*$$(*/
       "ClientSituation.toInvoice"; /*)*/
   public static final String CLIENT_SITUATION_STATUS = /*$$(*/ "ClientSituation.status"; /*)*/

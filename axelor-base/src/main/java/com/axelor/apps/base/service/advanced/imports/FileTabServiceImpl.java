@@ -57,13 +57,13 @@ public class FileTabServiceImpl implements FileTabService {
 
     for (FileField fileField : fileTab.getFileFieldList()) {
 
+      String columnTitle = fileField.getColumnTitle();
+      String[] subFields = columnTitle.split("\\.");
+
       MetaField importField =
           metaFieldRepo
               .all()
-              .filter(
-                  "self.label = ?1 AND self.metaModel.id = ?2",
-                  fileField.getColumnTitle(),
-                  model.getId())
+              .filter("self.name = ?1 AND self.metaModel.id = ?2", subFields[0], model.getId())
               .fetchOne();
 
       if (importField != null) {
@@ -73,8 +73,8 @@ public class FileTabServiceImpl implements FileTabService {
         }
 
         fileField.setImportField(importField);
-        if (!Strings.isNullOrEmpty(relationship)) {
-          String subImportField = this.getSubImportField(importField);
+        if (!Strings.isNullOrEmpty(relationship) && subFields.length > 1) {
+          String subImportField = this.getSubImportField(importField, subFields[1]);
           fileField.setSubImportField(subImportField);
         }
         fileField = fileFieldService.fillType(fileField);
@@ -96,16 +96,16 @@ public class FileTabServiceImpl implements FileTabService {
     return fileTab;
   }
 
-  protected String getSubImportField(MetaField importField) throws ClassNotFoundException {
+  protected String getSubImportField(MetaField importField, String subField)
+      throws ClassNotFoundException {
     String modelName = importField.getTypeName();
     MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);
 
-    AdvancedImportService advancedImportService = Beans.get(AdvancedImportService.class);
-    Mapper mapper = advancedImportService.getMapper(metaModel.getFullName());
-
-    return (mapper != null && mapper.getNameField() != null)
-        ? mapper.getNameField().getName()
-        : null;
+    return metaModel.getMetaFields().stream()
+        .filter(metaField -> subField.equals(metaField.getName()))
+        .findFirst()
+        .map(MetaField::getName)
+        .orElse(null);
   }
 
   @Override

@@ -231,6 +231,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setHideDiscount(saleOrder.getHideDiscount());
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
+    invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());
 
     invoiceTermService.computeInvoiceTerms(invoice);
 

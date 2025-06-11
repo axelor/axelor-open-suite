@@ -11,9 +11,17 @@
     <string name="description" title="Description"/>
     <one-to-many name="callTenderNeedList"
       ref="com.axelor.apps.purchase.db.CallTenderNeed" title="Product needs" mappedBy="callTender"/>
+    <one-to-many name="callTenderSupplierList"
+      ref="com.axelor.apps.purchase.db.CallTenderSupplier" title="Suppliers" mappedBy="callTender"/>
+    <one-to-many name="callTenderOfferList"
+      ref="com.axelor.apps.purchase.db.CallTenderOffer" title="Offers" mappedBy="callTender"/>
+    <many-to-one name="callForTenderMailTemplate" title="Call for tender mail template"
+      ref="com.axelor.message.db.Template"/>
+
 
     <track on="UPDATE">
       <field name="callTenderNeedList"/>
+      <field name="callTenderSupplierList"/>
     </track>
   </entity>
 

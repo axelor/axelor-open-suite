@@ -298,6 +298,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    updateChildrenOrder(saleOrdersToMerge, saleOrderMerged);
     return saleOrderMerged;
   }
 

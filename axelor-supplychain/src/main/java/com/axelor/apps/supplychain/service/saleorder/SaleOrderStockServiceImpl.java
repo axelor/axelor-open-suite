@@ -52,6 +52,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
@@ -87,6 +88,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected TaxService taxService;
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
+  protected final SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -104,7 +106,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService,
       TaxService taxService,
-      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -120,6 +123,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.taxService = taxService;
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
+    this.saleOrderLineBlockingSupplychainService = saleOrderLineBlockingSupplychainService;
   }
 
   @Override
@@ -186,6 +190,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
+        if (saleOrderLineBlockingSupplychainService.isDeliveryBlocked(saleOrderLine)) {
+          continue;
+        }
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
         if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
           createStockMoveLine(

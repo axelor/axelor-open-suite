@@ -9,7 +9,7 @@
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="company.accountConfig.factorPartner"/>
     <field name="transmissionDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="subrogation-release-form" title="Subrogation release"

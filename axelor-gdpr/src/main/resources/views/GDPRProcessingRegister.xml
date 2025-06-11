@@ -13,7 +13,7 @@
     <field name="name"/>
     <field name="code"/>
     <field name="retentionPeriod"/>
-    <field name="status"/>
+    <field name="status" widget="single-select"/>
     <field name="anonymizer"/>
     <field name="isArchiveData"/>
     <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
