@@ -3,6 +3,7 @@ package com.axelor.apps.bankpayment.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -54,9 +55,12 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
   public void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
     super.addPartnerBankDetailsDomain(move, attrsMap);
     Partner partner = move.getPartner();
+    PaymentMode paymentMode = move.getPaymentMode();
 
-    if (partner != null && !CollectionUtils.isEmpty(partner.getBankDetailsList())) {
-      PaymentMode paymentMode = move.getPaymentMode();
+    if (partner != null
+        && !CollectionUtils.isEmpty(partner.getBankDetailsList())
+        && paymentMode != null
+        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
       Company company = move.getCompany();
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(

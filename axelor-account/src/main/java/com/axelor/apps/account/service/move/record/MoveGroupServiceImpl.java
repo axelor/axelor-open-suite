@@ -599,26 +599,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getPaymentModeOnChangeValuesMap(Move move) throws AxelorException {
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    moveRecordSetService.setCompanyBankDetails(move);
-
-    valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
-
-    return valuesMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getHeaderChangeAttrsMap() {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addHeaderChangeValue(true, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
   public Map<String, Object> getCurrencyOnChangeValuesMap(Move move) {
     Map<String, Object> valuesMap = new HashMap<>();
 
