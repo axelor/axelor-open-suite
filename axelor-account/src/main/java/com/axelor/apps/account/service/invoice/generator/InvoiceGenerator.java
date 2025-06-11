@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -88,6 +89,7 @@ public abstract class InvoiceGenerator {
   protected BankDetails companyBankDetails;
   protected TradingName tradingName;
   protected Boolean groupProductsOnPrintings;
+  protected TaxNumber taxNumber;
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   protected InvoiceGenerator(
@@ -105,7 +107,8 @@ public abstract class InvoiceGenerator {
       Boolean inAti,
       BankDetails companyBankDetails,
       TradingName tradingName,
-      Boolean groupProductsOnPrintings)
+      Boolean groupProductsOnPrintings,
+      TaxNumber taxNumber)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -124,6 +127,7 @@ public abstract class InvoiceGenerator {
     this.tradingName = tradingName;
     this.groupProductsOnPrintings = groupProductsOnPrintings;
     this.today = Beans.get(AppAccountService.class).getTodayDate(company);
+    this.taxNumber = taxNumber;
   }
 
   /**
@@ -291,6 +295,10 @@ public abstract class InvoiceGenerator {
     }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
+
+    if (taxNumber != null) {
+      invoice.setCompanyTaxNumber(taxNumber);
+    }
 
     InvoiceToolService.setPfpStatus(invoice);
 
