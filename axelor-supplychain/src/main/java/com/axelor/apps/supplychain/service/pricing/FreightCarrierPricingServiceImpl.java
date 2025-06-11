@@ -87,6 +87,7 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
     freightCarrierPricing.setFreightCarrierMode(freightCarrierMode);
     freightCarrierPricing.setCarrierPartner(freightCarrierMode.getCarrierPartner());
     freightCarrierPricing.setPricing(freightCarrierMode.getFreightCarrierPricing());
+    freightCarrierPricing.setDelayPricing(freightCarrierMode.getFreightCarrierDelay());
     freightCarrierPricing.setSaleOrder(saleOrder);
     return freightCarrierPricing;
   }

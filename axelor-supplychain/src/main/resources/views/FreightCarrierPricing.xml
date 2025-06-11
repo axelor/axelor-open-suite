@@ -9,6 +9,7 @@
     <field name="carrierPartner"/>
     <field name="pricing"/>
     <field name="pricingAmount"/>
+    <field name="delay"/>
   </grid>
 
   <form name="freight-carrier-pricing-form"
@@ -20,6 +21,7 @@
       <field name="pricing" form-view="supplychain-pricing-form"
         grid-view="supplychain-pricing-grid"/>
       <field name="pricingAmount"/>
+      <field name="delay"/>
     </panel>
   </form>
 

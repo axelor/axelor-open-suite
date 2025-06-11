@@ -276,6 +276,19 @@
       expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING"/>
   </action-view>
 
+  <menuitem title="Delay pricing" name="stock-pricing-freight-carrier-pricing-delay"
+    parent="stock-root-freight-carrier-pricing" order="20"
+    action="stock.root.carrier.freight.pricing.delay"/>
+
+  <action-view name="stock.root.carrier.freight.pricing.delay" title="Delay pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_DELAY"/>
+  </action-view>
+
   <menuitem title="Pricing rules" name="stock-pricing-carrier-freight-conf-pricing-rule"
     parent="stock-root-freight-carrier-pricing" order="20"
     action="stock.root.carrier.freight.conf.pricing.rule"
