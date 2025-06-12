@@ -19,10 +19,8 @@
           colSpan="12" showTitle="false"/>
         <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
         <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="2"/>
-        <field name="isRelativeDate" widget="boolean-switch"
-          onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
-        <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"
-          colSpan="2"/>
+        <field name="isRelativeDate" widget="boolean-switch" colSpan="2"/>
+        <field name="updateImportId" widget="boolean-switch" colSpan="2"/>
         <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
         <field name="anonymizer" colSpan="4" canRemove="true"/>
         <field name="anonymizer.anonymizerLineList" showIf="anonymizer != null"/>
@@ -105,9 +103,5 @@
   <action-method name="action.data.backup.call.restorebackup">
     <call class="com.axelor.apps.base.web.DataBackupController" method="restoreBackup"/>
   </action-method>
-
-  <action-attrs name="action-data-backup-attrs-onchange-relativedate">
-    <attribute name="value" for="updateImportId" expr="false" if="!isRelativeDate"/>
-  </action-attrs>
 
 </object-views>
