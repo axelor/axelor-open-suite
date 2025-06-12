@@ -14,12 +14,14 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecor
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
 
 public class MoveLineMassEntryRecordBankPaymentServiceImpl
-    extends MoveLineMassEntryRecordServiceImpl {
+    extends MoveLineMassEntryRecordServiceImpl
+    implements MoveLineMassEntryRecordServiceBankPayment {
   protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
   @Inject
@@ -62,5 +64,18 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
           .findAny()
           .ifPresent(moveLine::setMovePartnerBankDetails);
     }
+  }
+
+  @Override
+  public BankDetails checkMovePartnerBankDetails(MoveLineMassEntry moveLine, Move move) {
+    PaymentMode paymentMode = moveLine.getMovePaymentMode();
+    Company company = move.getCompany();
+    BankDetails movePartnerBankDetails = moveLine.getMovePartnerBankDetails();
+
+    if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
+        paymentMode, company, movePartnerBankDetails)) {
+      return null;
+    }
+    return movePartnerBankDetails;
   }
 }
