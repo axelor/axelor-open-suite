@@ -673,7 +673,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           saleOrder.getSaleOrderSeq());
     }
     saleOrder.setAmountInvoiced(amountInvoiced);
-    updateInvoicingState(saleOrder);
+    saleInvoicingStateService.updateInvoicingState(saleOrder);
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
         && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
@@ -937,14 +937,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
-  }
-
-  @Transactional
-  @Override
-  public void updateInvoicingState(SaleOrder saleOrder) {
-    saleInvoicingStateService.updateSaleOrderLinesInvoicingState(saleOrder.getSaleOrderLineList());
-    saleOrder.setInvoicingState(
-        saleInvoicingStateService.computeSaleOrderInvoicingState(saleOrder));
   }
 
   @Transactional(rollbackOn = {Exception.class})

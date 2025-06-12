@@ -28,6 +28,7 @@ import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,6 +44,7 @@ public class WorkflowCancelBudgetServiceImpl extends WorkflowCancelServiceProjec
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
+      SaleInvoicingStateService saleInvoicingStateService,
       ConsumptionLineRepository consumptionLineRepo,
       InvoicingProjectRepository invoicingProjectRepo,
       BudgetInvoiceService budgetInvoiceService,
@@ -52,6 +54,7 @@ public class WorkflowCancelBudgetServiceImpl extends WorkflowCancelServiceProjec
         purchaseOrderInvoiceService,
         saleOrderRepository,
         purchaseOrderRepository,
+        saleInvoicingStateService,
         consumptionLineRepo,
         invoicingProjectRepo);
     this.budgetInvoiceService = budgetInvoiceService;
