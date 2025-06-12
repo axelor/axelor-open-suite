@@ -89,7 +89,7 @@ public abstract class InvoiceGenerator {
   protected BankDetails companyBankDetails;
   protected TradingName tradingName;
   protected Boolean groupProductsOnPrintings;
-  protected TaxNumber taxNumber;
+  protected TaxNumber companyTaxNumber;
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   protected InvoiceGenerator(
@@ -108,7 +108,7 @@ public abstract class InvoiceGenerator {
       BankDetails companyBankDetails,
       TradingName tradingName,
       Boolean groupProductsOnPrintings,
-      TaxNumber taxNumber)
+      TaxNumber companyTaxNumber)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -127,7 +127,7 @@ public abstract class InvoiceGenerator {
     this.tradingName = tradingName;
     this.groupProductsOnPrintings = groupProductsOnPrintings;
     this.today = Beans.get(AppAccountService.class).getTodayDate(company);
-    this.taxNumber = taxNumber;
+    this.companyTaxNumber = companyTaxNumber;
   }
 
   /**
@@ -296,9 +296,7 @@ public abstract class InvoiceGenerator {
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 
-    if (taxNumber != null) {
-      invoice.setCompanyTaxNumber(taxNumber);
-    }
+    invoice.setCompanyTaxNumber(companyTaxNumber);
 
     InvoiceToolService.setPfpStatus(invoice);
 
