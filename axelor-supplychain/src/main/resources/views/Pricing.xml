@@ -4,11 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
   <grid model="com.axelor.apps.base.db.Pricing" title="Pricing"
-    name="freight-carrier-mode-pricing-grid"
-    orderBy="company,product,productCategory,startDate,name">
+    name="freight-carrier-mode-pricing-grid" orderBy="company,startDate,name">
     <field name="company"/>
-    <field name="product"/>
-    <field name="productCategory"/>
     <field name="startDate"/>
     <field name="endDate"/>
     <field name="name"/>
