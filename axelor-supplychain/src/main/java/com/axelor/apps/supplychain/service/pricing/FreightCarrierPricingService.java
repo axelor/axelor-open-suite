@@ -17,4 +17,6 @@ public interface FreightCarrierPricingService {
 
   FreightCarrierPricing createFreightCarrierPricing(
       FreightCarrierMode freightCarrierMode, SaleOrder saleOrder);
+
+  void updateEstimatedDeliveryDateWithPricingDelay(SaleOrder saleOrder) throws AxelorException;
 }

@@ -44,6 +44,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderReservedQtyService;
@@ -841,6 +842,21 @@ public class SaleOrderController {
             isPercent
                 ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
                 : Beans.get(CurrencyScaleService.class).getScale(saleOrder));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateEstimatedDeliveryDateWithPricingDelay(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+
+      if (saleOrder != null) {
+        Beans.get(FreightCarrierPricingService.class)
+            .updateEstimatedDeliveryDateWithPricingDelay(saleOrder);
+        response.setValue("estimatedDeliveryDate", saleOrder.getEstimatedDeliveryDate());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
