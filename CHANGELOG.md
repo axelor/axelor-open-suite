@@ -1,3 +1,30 @@
+## [8.1.26] (2025-06-12)
+
+### Fixes
+#### Base
+
+* Bank: fixed error when SWIFT address was empty.
+
+#### Account
+
+* DepositSlip/PaymentVoucher: fixed deposit slip management when using payment mode with accounting mode value for collection.
+* Invoice/InvoiceTerm: fixed the amount init when manually splitting amounts.
+
+#### Bank Payment
+
+* Bank Reconciliation: fixed the balance computation when multiple reconcile where on the same move line.
+
+#### Business Project
+
+* Project: fixed error when trying to select new sale order line.
+
+
+### Developer
+
+#### Account
+
+The InvoiceTermServiceImpl.computePercentageSum method now return the amount without scale to be used in computation. If you want to scale it, use the currencyScaleService.getScaledValue(invoice, amount)
+
 ## [8.1.25] (2025-06-02)
 
 ### Fixes
@@ -1525,6 +1552,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.26]: https://github.com/axelor/axelor-open-suite/compare/v8.1.25...v8.1.26
 [8.1.25]: https://github.com/axelor/axelor-open-suite/compare/v8.1.24...v8.1.25
 [8.1.24]: https://github.com/axelor/axelor-open-suite/compare/v8.1.23...v8.1.24
 [8.1.23]: https://github.com/axelor/axelor-open-suite/compare/v8.1.22...v8.1.23
