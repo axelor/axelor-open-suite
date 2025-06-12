@@ -184,6 +184,7 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordServiceBankPayment;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
@@ -344,5 +345,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveGroupOnChangeServiceImpl.class).to(MoveGroupOnChangeServiceBankPaymentImpl.class);
     bind(MoveLineMassEntryDomainServiceImpl.class)
         .to(MoveLineMassEntryDomainBankPaymentServiceImpl.class);
+    bind(MoveLineMassEntryRecordServiceBankPayment.class)
+        .to(MoveLineMassEntryRecordBankPaymentServiceImpl.class);
   }
 }
