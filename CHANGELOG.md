@@ -1,3 +1,14 @@
+## [7.2.41] (2025-06-12)
+
+### Fixes
+#### Base
+
+* Bank: fixed error when SWIFT address was empty.
+
+#### Business Project
+
+* Project: fixed error when trying to select new sale order line.
+
 ## [7.2.40] (2025-06-02)
 
 ### Fixes
@@ -1766,6 +1777,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.41]: https://github.com/axelor/axelor-open-suite/compare/v7.2.40...v7.2.41
 [7.2.40]: https://github.com/axelor/axelor-open-suite/compare/v7.2.39...v7.2.40
 [7.2.39]: https://github.com/axelor/axelor-open-suite/compare/v7.2.38...v7.2.39
 [7.2.38]: https://github.com/axelor/axelor-open-suite/compare/v7.2.37...v7.2.38
