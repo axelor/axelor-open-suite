@@ -89,6 +89,18 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     updateBudgetLineAmounts(budget, amount, fromDate, toDate, defaultDate, computeMethod);
   }
 
+  @Override
+  public void updateBudgetLineAmountsPaid(
+      Budget budget,
+      BigDecimal amount,
+      LocalDate fromDate,
+      LocalDate toDate,
+      LocalDate defaultDate) {
+    ComputeMethod computeMethod = this::updateBudgetLineAmountPaid;
+
+    updateBudgetLineAmounts(budget, amount, fromDate, toDate, defaultDate, computeMethod);
+  }
+
   protected void updateBudgetLineAmounts(
       Budget budget,
       BigDecimal amount,
@@ -173,6 +185,12 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     budgetLine.setToBeCommittedAmount(
         currencyScaleService.getCompanyScaledValue(
             budget, budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted())));
+  }
+
+  protected void updateBudgetLineAmountPaid(BudgetLine budgetLine, BigDecimal amount) {
+    Budget budget = budgetLine.getBudget();
+    budgetLine.setAmountPaid(
+        currencyScaleService.getCompanyScaledValue(budget, budgetLine.getAmountPaid().add(amount)));
   }
 
   protected void updateBudgetLineAmountsWithNoPo(BudgetLine budgetLine, BigDecimal amount) {

@@ -30,4 +30,11 @@ public interface BudgetLineComputeService {
       LocalDate fromDate,
       LocalDate toDate,
       LocalDate defaultDate);
+
+  void updateBudgetLineAmountsPaid(
+      Budget budget,
+      BigDecimal amount,
+      LocalDate fromDate,
+      LocalDate toDate,
+      LocalDate defaultDate);
 }
