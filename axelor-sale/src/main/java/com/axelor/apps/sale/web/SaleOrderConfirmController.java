@@ -85,4 +85,19 @@ public class SaleOrderConfirmController {
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     response.setValues(saleOrderDummyService.getOnLoadSplitDummies(saleOrder));
   }
+
+  public void computeCurrentlyTotalOrdered(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrder saleOrder = context.asType(SaleOrder.class);
+    List<Map<String, Object>> saleOrderLineListContext;
+    saleOrderLineListContext =
+        (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineList");
+
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    response.setValue(
+        "$currentlyTotalOrdered",
+        Beans.get(SaleOrderSplitService.class)
+            .computeCurrentlyTotalOrdered(saleOrder, saleOrderLineListContext));
+  }
 }
