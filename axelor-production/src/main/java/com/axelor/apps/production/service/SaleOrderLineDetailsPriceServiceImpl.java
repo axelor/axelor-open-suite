@@ -119,7 +119,8 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
         costPrice
             .multiply(qty)
             .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-    saleOrderLineDetails.setCostPrice(costPrice);
+    saleOrderLineDetails.setCostPrice(
+        costPrice.setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
     saleOrderLineDetails.setSubTotalCostPrice(totalCostPrice);
     lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
     lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
