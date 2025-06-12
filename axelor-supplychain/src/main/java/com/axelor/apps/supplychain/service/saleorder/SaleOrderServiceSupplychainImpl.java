@@ -51,6 +51,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
@@ -76,6 +77,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected TrackingNumberSupplychainService trackingNumberSupplychainService;
 
   protected PartnerLinkSupplychainService partnerLinkSupplychainService;
+  protected SaleInvoicingStateService saleInvoicingStateService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -93,7 +95,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderStockService saleOrderStockService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       TrackingNumberSupplychainService trackingNumberSupplychainService,
-      PartnerLinkSupplychainService partnerLinkSupplychainService) {
+      PartnerLinkSupplychainService partnerLinkSupplychainService,
+      SaleInvoicingStateService saleInvoicingStateService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -110,6 +113,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.trackingNumberSupplychainService = trackingNumberSupplychainService;
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
+    this.saleInvoicingStateService = saleInvoicingStateService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -260,6 +264,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
 
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
+    saleInvoicingStateService.updateInvoicingState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
 
     if (appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()) {
