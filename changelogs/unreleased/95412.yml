@@ -1,5 +1,5 @@
 ---
-title: "Invoice/InvoiceTerm : fixed the amount init when manually splitting amounts"
+title: "Invoice/InvoiceTerm : fixed the amount init when manually splitting amounts."
 module: axelor-account
 developer :
   The InvoiceTermServiceImpl.computePercentageSum method now return the amount without scale to be used in computation.
