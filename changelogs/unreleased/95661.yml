@@ -1,3 +1,0 @@
----
-title: "InvoiceTerm/Invoice/Pfp: fixed automatic pfp validate status on invoice when using the invoice term to validate menu entry."
-module: axelor-account
