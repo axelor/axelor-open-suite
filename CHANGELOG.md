@@ -1,3 +1,30 @@
+## [8.2.17] (2025-06-12)
+
+### Fixes
+#### Base
+
+* Bank: fixed error when SWIFT address was empty.
+
+#### Account
+
+* DepositSlip/PaymentVoucher: fixed deposit slip management when using payment mode with accounting mode value for collection.
+* Invoice/InvoiceTerm: fixed the amount init when manually splitting amounts.
+
+#### Bank Payment
+
+* Bank Reconciliation: fixed the balance computation when multiple reconcile where on the same move line.
+
+#### Business Project
+
+* Project: fixed error when trying to select new sale order line.
+
+
+### Developer
+
+#### Account
+
+The `InvoiceTermServiceImpl.computePercentageSum` method now return the amount without scale to be used in computation. If you want to scale it, use the `currencyScaleService.getScaledValue(invoice, amount)`
+
 ## [8.2.16] (2025-06-02)
 
 ### Fixes
@@ -1111,6 +1138,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.17]: https://github.com/axelor/axelor-open-suite/compare/v8.2.16...v8.2.17
 [8.2.16]: https://github.com/axelor/axelor-open-suite/compare/v8.2.15...v8.2.16
 [8.2.15]: https://github.com/axelor/axelor-open-suite/compare/v8.2.14...v8.2.15
 [8.2.14]: https://github.com/axelor/axelor-open-suite/compare/v8.2.13...v8.2.14
