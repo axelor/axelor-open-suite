@@ -8,10 +8,10 @@
     extension="true">
     <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
       <insert position="after">
-        <field name="freightCarrierPricing" form-view="supplychain-pricing-form"
-          grid-view="supplychain-pricing-grid" colSpan="6"/>
-        <field name="freightCarrierDelay" form-view="supplychain-pricing-form"
-          grid-view="supplychain-pricing-grid" colSpan="6"/>
+        <field name="freightCarrierPricing" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
+        <field name="freightCarrierDelay" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
       </insert>
     </extend>
   </form>
@@ -21,10 +21,10 @@
     model="com.axelor.apps.stock.db.FreightCarrierMode" extension="true">
     <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
       <insert position="after">
-        <field name="freightCarrierPricing" form-view="supplychain-pricing-form"
-          grid-view="supplychain-pricing-grid" colSpan="6"/>
-        <field name="freightCarrierDelay" form-view="supplychain-pricing-form"
-          grid-view="supplychain-pricing-grid" colSpan="6"/>
+        <field name="freightCarrierPricing" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
+        <field name="freightCarrierDelay" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
       </insert>
     </extend>
   </form>

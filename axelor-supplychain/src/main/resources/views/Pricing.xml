@@ -3,7 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
-  <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="supplychain-pricing-grid"
+  <grid model="com.axelor.apps.base.db.Pricing" title="Pricing"
+    name="freight-carrier-mode-pricing-grid"
     orderBy="company,product,productCategory,startDate,name">
     <field name="company"/>
     <field name="product"/>
@@ -13,98 +14,37 @@
     <field name="name"/>
   </grid>
 
-  <form model="com.axelor.apps.base.db.Pricing" title="Pricing" name="supplychain-pricing-form"
-    onNew="supplychain-action-group-pricing-onnew" onLoad="supplychain-action-group-pricing-onload"
-    width="large">
-    <toolbar>
-      <button name="historizePricingBtn" title="Historize"
-        onClick="save,action-pricing-method-historize-pricing"/>
-    </toolbar>
-
-    <panel name="mainPanel" colSpan="12">
-      <panel name="overviewPanel" colSpan="12">
-        <field name="name"/>
-        <field name="startDate" required="true" onChange="action-pricing-method-check-dates"/>
-        <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
-        <field name="endDate" onChange="action-pricing-method-check-dates"/>
-      </panel>
-      <panel name="classificationPanel" colSpan="12">
-        <field name="class1PricingRule"
-          domain="self.typeSelect = 1 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-classification-fields,action-pricing-group-attrs-pricing-line-list"/>
-        <field name="class2PricingRule" showIf="class1PricingRule"
-          domain="self.typeSelect = 1 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-classification-fields,action-pricing-group-attrs-pricing-line-list"/>
-        <field name="class3PricingRule" showIf="class2PricingRule"
-          domain="self.typeSelect = 1 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-classification-fields,action-pricing-group-attrs-pricing-line-list"/>
-        <field name="class4PricingRule" showIf="class3PricingRule"
-          domain="self.typeSelect = 1 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-classification-fields,action-pricing-group-attrs-pricing-line-list"/>
-      </panel>
-      <panel name="resultPanel" colSpan="12">
-        <field name="result1PricingRule"
-          domain="self.typeSelect = 2 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-result-fields,action-pricing-group-attrs-pricing-line-list"/>
-        <field name="result2PricingRule" showIf="result1PricingRule"
-          domain="self.typeSelect = 2 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-result-fields,action-pricing-group-attrs-pricing-line-list"/>
-        <field name="result3PricingRule" showIf="result2PricingRule"
-          domain="self.typeSelect = 2 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-result-fields,action-pricing-group-attrs-pricing-line-list"/>
-        <field name="result4PricingRule" showIf="result3PricingRule"
-          domain="self.typeSelect = 2 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
-          onChange="action-pricing-attrs-clear-result-fields,action-pricing-group-attrs-pricing-line-list"/>
-      </panel>
-      <panel name="otherPanel" colSpan="12">
-        <field name="product" onSelect="action-pricing-attrs-set-product-domain"
-          onChange="action-pricing-method-set-formula-field" readonlyIf="productCategory"
-          requiredIf="!productCategory &amp;&amp; !formula"/>
-        <field name="productCategory" readonlyIf="product"
-          requiredIf="!product &amp;&amp; !formula"
-          onChange="action-pricing-method-set-formula-field"/>
-        <panel name="formulaPanel" title="Formula" colSpan="12" canCollapse="true"
-          collapseIf="id">
-          <field name="formula" showTitle="false" readonlyIf="product || productCategory"
-            height="150" colSpan="12" widget="CodeEditor"
-            onChange="action-pricing-method-clear-fields-related-to-formula"
-            requiredIf="!product &amp;&amp; !productCategory" x-code-syntax="groovy"/>
-        </panel>
-        <field name="linkedPricing"
-          domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
-        <panel-related field="pricingLineList" name="pricingLineListPanel"
-          colSpan="12" grid-view="pricing-line-grid" form-view="pricing-line-form"
-          showIf="class1PricingRule || result1PricingRule"
-          orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
-        <panel name="historizedPanel" title="History" colSpan="12" canCollapse="true"
-          collapseIf="true" hideIf="$popup()">
-          <panel-dashlet name="historizedPricingPanel" title="Historized pricings"
-            colSpan="12" action="action-pricing-view-historized-pricing"/>
-        </panel>
-      </panel>
-    </panel>
+  <form model="com.axelor.apps.base.db.Pricing" title="Pricing"
+    name="freight-carrier-mode-pricing-form"
+    onNew="freight-carrier-mode-pricing-action-group-pricing-onnew"
+    onLoad="freight-carrier-mode-pricing-action-group-pricing-onload" width="large">
+    <panel-include view="pricing-form"/>
   </form>
 
-  <action-group name="supplychain-action-group-pricing-onnew">
+  <action-group name="freight-carrier-mode-pricing-action-group-pricing-onnew">
     <action name="action-group-pricing-onnew"/>
-    <action name="supplychain-action-pricing-attrs-fill-concerned-model"/>
-    <action name="supplychain-action-pricing-attrs-set-hidden-attrs"/>
+    <action name="freight-carrier-mode-pricing-action-pricing-attrs-fill-concerned-model"/>
+    <action name="freight-carrier-mode-pricing-action-pricing-attrs-set-hidden-attrs"/>
   </action-group>
 
-  <action-group name="supplychain-action-group-pricing-onload">
+  <action-group name="freight-carrier-mode-pricing-action-group-pricing-onload">
     <action name="action-pricing-group-attrs-pricing-line-list"/>
-    <action name="supplychain-action-pricing-attrs-set-hidden-attrs"/>
+    <action name="freight-carrier-mode-pricing-action-pricing-attrs-set-hidden-attrs"/>
   </action-group>
 
-  <action-attrs name="supplychain-action-pricing-attrs-fill-concerned-model">
+  <action-attrs
+    name="freight-carrier-mode-pricing-action-pricing-attrs-fill-concerned-model">
     <attribute for="concernedModel" name="value"
       expr="eval: __repo__(MetaModel).all().filter('self.name = \'FreightCarrierPricing\'').fetchOne()"/>
   </action-attrs>
 
-  <action-attrs name="supplychain-action-pricing-attrs-set-hidden-attrs">
+  <action-attrs
+    name="freight-carrier-mode-pricing-action-pricing-attrs-set-hidden-attrs">
     <attribute name="hidden" for="product"
       expr="eval: (typeSelect == com.axelor.apps.base.db.repo.PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING)"/>
     <attribute name="hidden" for="productCategory"
+      expr="eval: (typeSelect == com.axelor.apps.base.db.repo.PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING)"/>
+    <attribute name="hidden" for="concernedModel"
       expr="eval: (typeSelect == com.axelor.apps.base.db.repo.PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING)"/>
   </action-attrs>
 </object-views>

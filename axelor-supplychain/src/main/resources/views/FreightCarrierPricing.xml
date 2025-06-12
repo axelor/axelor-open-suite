@@ -18,8 +18,8 @@
     <panel name="mainPanel">
       <field name="freightCarrierMode.name"/>
       <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"/>
-      <field name="pricing" form-view="supplychain-pricing-form"
-        grid-view="supplychain-pricing-grid"/>
+      <field name="pricing" form-view="freight-carrier-mode-pricing-form"
+        grid-view="freight-carrier-mode-pricing-grid"/>
       <field name="pricingAmount"/>
       <field name="delay"/>
     </panel>
