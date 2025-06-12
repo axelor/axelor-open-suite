@@ -20,8 +20,8 @@
         <field name="activeUmr"
           onSelect="action-method-invoicing-payment-situation-umr-onselect"
           onChange="action-method-invoicing-payment-situation-umr-onchange" canNew="true"/>
-        <panel-related name="umrListPanel" readonly="true" field="umrList"
-          title="History" colSpan="12"/>
+        <panel-related name="umrListPanel" canNew="false" canRemove="false"
+          field="umrList" title="History" colSpan="12" editable="true"/>
       </panel>
     </panel>
   </form>
