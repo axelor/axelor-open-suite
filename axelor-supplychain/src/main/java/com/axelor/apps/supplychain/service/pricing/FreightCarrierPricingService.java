@@ -17,4 +17,6 @@ public interface FreightCarrierPricingService {
 
   FreightCarrierPricing createFreightCarrierPricing(
       FreightCarrierMode freightCarrierMode, SaleOrder saleOrder);
+
+  String notifyEstimatedShippingDateUpdate(SaleOrder saleOrder);
 }

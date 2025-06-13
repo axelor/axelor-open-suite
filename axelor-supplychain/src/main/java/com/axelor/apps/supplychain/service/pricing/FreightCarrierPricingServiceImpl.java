@@ -1,6 +1,7 @@
 package com.axelor.apps.supplychain.service.pricing;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -23,17 +24,20 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
   protected final FreightCarrierModeRepository freightCarrierModeRepository;
   protected final PartnerRepository partnerRepository;
   protected final SaleOrderShipmentService saleOrderShipmentService;
+  protected final FreightCarrierApplyPricingService freightCarrierApplyPricingService;
 
   @Inject
   public FreightCarrierPricingServiceImpl(
       SaleOrderRepository saleOrderRepository,
       FreightCarrierModeRepository freightCarrierModeRepository,
       PartnerRepository partnerRepository,
-      SaleOrderShipmentService saleOrderShipmentService) {
+      SaleOrderShipmentService saleOrderShipmentService,
+      FreightCarrierApplyPricingService freightCarrierApplyPricingService) {
     this.saleOrderRepository = saleOrderRepository;
     this.freightCarrierModeRepository = freightCarrierModeRepository;
     this.partnerRepository = partnerRepository;
     this.saleOrderShipmentService = saleOrderShipmentService;
+    this.freightCarrierApplyPricingService = freightCarrierApplyPricingService;
   }
 
   @Override
@@ -49,6 +53,13 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
           freightCarrierModeRepository.find(freightCarrierPricing.getFreightCarrierMode().getId()));
       saleOrder.setCarrierPartner(
           partnerRepository.find(freightCarrierPricing.getCarrierPartner().getId()));
+
+      if (saleOrder.getEstimatedShippingDate() != null) {
+        saleOrder.setEstimatedDeliveryDate(
+            saleOrder
+                .getEstimatedShippingDate()
+                .plusDays(freightCarrierPricing.getDelay().longValue()));
+      }
 
       String message =
           saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
@@ -110,5 +121,20 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
                   SupplychainExceptionMessage
                       .SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED)));
     }
+  }
+
+  @Override
+  public String notifyEstimatedShippingDateUpdate(SaleOrder saleOrder) {
+    FreightCarrierMode freightCarrierMode = saleOrder.getFreightCarrierMode();
+    if (freightCarrierMode == null) {
+      return null;
+    }
+
+    Pricing delayPricing = freightCarrierMode.getFreightCarrierDelay();
+    if (delayPricing != null) {
+      return I18n.get(SupplychainExceptionMessage.SALE_ORDER_ESTIMATED_DELIVERY_DATE_NOT_UPDATED);
+    }
+
+    return null;
   }
 }
