@@ -134,7 +134,8 @@ public class DataBackupServiceImpl implements DataBackupService {
           public Boolean call() throws Exception {
             Logger LOG = LoggerFactory.getLogger(getClass());
             DataBackup obj = dataBackupRepository.find(dataBackup.getId());
-            File logFile = restoreService.restore(obj.getBackupMetaFile());
+            File logFile =
+                restoreService.restore(obj.getBackupMetaFile(), obj.getIsTemplateWithDescription());
             save(logFile, obj);
             LOG.info("Data Restore Saved");
             return true;
