@@ -18,4 +18,6 @@ public interface QualityImprovementParseService {
 
   QIResolution getQiResolutionFromRequestBody(QIResolutionRequest qiResolutionPostRequest)
       throws AxelorException;
+
+  int filterQIResolutionDefaultValues(QIResolution qiResolution, int qiType);
 }

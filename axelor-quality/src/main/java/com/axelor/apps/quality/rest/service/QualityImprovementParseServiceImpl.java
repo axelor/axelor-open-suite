@@ -15,6 +15,8 @@ import com.axelor.apps.quality.rest.dto.QIResolutionRequest;
 import com.axelor.apps.quality.rest.dto.QualityImprovementRequest;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class QualityImprovementParseServiceImpl implements QualityImprovementParseService {
 
@@ -109,5 +111,25 @@ public class QualityImprovementParseServiceImpl implements QualityImprovementPar
     qiResolutionDefault.setName(qiDefault.getName());
 
     return qiResolutionDefault;
+  }
+
+  @Override
+  public int filterQIResolutionDefaultValues(QIResolution qiResolution, int qiType) {
+    if (qiResolution == null || qiResolution.getQiResolutionDefaultsList() == null) {
+      return 0;
+    }
+    List<QIResolutionDefault> qiResolutionDefaultsList = qiResolution.getQiResolutionDefaultsList();
+
+    List<QIResolutionDefault> toRemove =
+        qiResolutionDefaultsList.stream()
+            .filter(
+                defaultValue ->
+                    (qiType == 2 && defaultValue.getQiDefault().getIsProductDefault())
+                        || (qiType == 1 && defaultValue.getQiDefault().getIsSystemDefault()))
+            .collect(Collectors.toList());
+
+    qiResolutionDefaultsList.removeAll(toRemove);
+
+    return toRemove.size();
   }
 }

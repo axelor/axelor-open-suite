@@ -23,7 +23,9 @@ import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
-import com.axelor.apps.quality.rest.dto.QualityImprovementRequest;
+import com.axelor.apps.quality.rest.dto.QualityImprovementCreateUpdateResult;
+import com.axelor.apps.quality.rest.dto.QualityImprovementPostRequest;
+import com.axelor.apps.quality.rest.dto.QualityImprovementPutRequest;
 import com.axelor.apps.quality.rest.dto.QualityImprovementResponse;
 import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIService;
 import com.axelor.apps.quality.rest.service.QualityImprovementUpdateAPIService;
@@ -35,6 +37,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.Optional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -55,7 +58,7 @@ public class QualityImprovementRestController {
   @Path("/")
   @POST
   @HttpExceptionHandler
-  public Response createQualityImprovement(QualityImprovementRequest requestBody)
+  public Response createQualityImprovement(QualityImprovementPostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck()
@@ -64,11 +67,21 @@ public class QualityImprovementRestController {
         .createAccess(QIResolution.class)
         .check();
 
-    QualityImprovement qualityImprovement =
+    QualityImprovementCreateUpdateResult qualityImprovementCreateUpdateResult =
         Beans.get(QualityImprovementCreateAPIService.class).createQualityImprovement(requestBody);
+    QualityImprovement qualityImprovement =
+        qualityImprovementCreateUpdateResult.getQualityImprovement();
 
-    return ResponseConstructor.buildCreateResponse(
-        qualityImprovement, new QualityImprovementResponse(qualityImprovement));
+    String responseMessage =
+        String.format(
+                I18n.get(QualityExceptionMessage.API_QI_CREATION_MESSAGE),
+                qualityImprovement.getId())
+            + Optional.ofNullable(qualityImprovementCreateUpdateResult.getErrorMessage())
+                .orElse("");
+    return ResponseConstructor.build(
+        Response.Status.CREATED,
+        responseMessage,
+        new QualityImprovementResponse(qualityImprovement));
   }
 
   @Operation(
@@ -79,7 +92,7 @@ public class QualityImprovementRestController {
   @HttpExceptionHandler
   public Response updateQualityImprovement(
       @PathParam("qualityImprovementId") Long qualityImprovementId,
-      QualityImprovementRequest requestBody)
+      QualityImprovementPutRequest requestBody)
       throws AxelorException {
     new SecurityCheck().writeAccess(QualityImprovement.class, qualityImprovementId).check();
     RequestValidator.validateBody(requestBody);

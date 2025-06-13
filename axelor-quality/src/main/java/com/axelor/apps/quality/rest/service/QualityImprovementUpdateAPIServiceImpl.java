@@ -4,8 +4,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
-import com.axelor.apps.quality.rest.dto.QualityImprovementRequest;
+import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.apps.quality.rest.dto.QualityImprovementCreateUpdateResult;
+import com.axelor.apps.quality.rest.dto.QualityImprovementPutRequest;
 import com.axelor.apps.quality.service.QualityImprovementUpdateService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class QualityImprovementUpdateAPIServiceImpl implements QualityImprovementUpdateAPIService {
@@ -22,9 +25,11 @@ public class QualityImprovementUpdateAPIServiceImpl implements QualityImprovemen
   }
 
   @Override
-  public QualityImprovement updateQualityImprovement(
-      QualityImprovement qualityImprovement, QualityImprovementRequest qualityImprovementRequest)
+  public QualityImprovementCreateUpdateResult updateQualityImprovement(
+      QualityImprovement qualityImprovement, QualityImprovementPutRequest qualityImprovementRequest)
       throws AxelorException {
+    QualityImprovementCreateUpdateResult qualityImprovementCreateUpdateResult =
+        new QualityImprovementCreateUpdateResult();
 
     QualityImprovement newQualityImprovement =
         qualityImprovementParseService.getQualityImprovementFromRequestBody(
@@ -38,7 +43,21 @@ public class QualityImprovementUpdateAPIServiceImpl implements QualityImprovemen
         qualityImprovementParseService.getQiResolutionFromRequestBody(
             qualityImprovementRequest.getQiResolution());
 
-    return qualityImprovementUpdateService.updateQualityImprovement(
+    int errors =
+        qualityImprovementParseService.filterQIResolutionDefaultValues(
+            newQiResolution, qualityImprovement.getType());
+
+    if (errors > 0) {
+      String errorMessage =
+          String.format(I18n.get(QualityExceptionMessage.API_QI_RESOLUTION_DEFAULT_ERROR), errors);
+      qualityImprovementCreateUpdateResult.setErrorMessage(errorMessage);
+    }
+
+    qualityImprovementUpdateService.updateQualityImprovement(
         qualityImprovement, newQualityImprovement, newQiIdentification, newQiResolution);
+
+    qualityImprovementCreateUpdateResult.setQualityImprovement(qualityImprovement);
+
+    return qualityImprovementCreateUpdateResult;
   }
 }
