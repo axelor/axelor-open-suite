@@ -231,7 +231,7 @@ public final class BankPaymentExceptionMessage {
   public static final String BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE = /*$$(*/
       "Unknown direct debit data type" /*)*/;
   public static final String DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR = /*$$(*/
-      "Please add an Active UMR to the partner." /*)*/;
+      "Please add an Active UMR to the partner %s for the bank details %s." /*)*/;
 
   /** Generate bank order from invoices */
   public static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
