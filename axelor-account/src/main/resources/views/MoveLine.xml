@@ -168,7 +168,6 @@
       onChange="account-move-line-update-tax-equiv" width="80" widget="TagSelect"/>
     <field name="vatSystemSelect"
       validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
-      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
       width="80"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
@@ -228,7 +227,8 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="currencyDecimals" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
-    <field name="move.functionalOriginSelect" hidden="true"/>
+    <field name="move.statusSelect" hidden="true"/>
+    <field name="move" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"

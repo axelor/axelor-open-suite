@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -34,6 +35,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -319,5 +321,29 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
     this.addAttr("cutOffStartDate", "required", cutOffDatesRequired, attrsMap);
     this.addAttr("cutOffEndDate", "required", cutOffDatesRequired, attrsMap);
+  }
+
+  @Override
+  public void addVatSystemSelectReadonly(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null
+        || moveLine == null
+        || moveLine.getAccount() == null
+        || move.getJournal() == null) {
+      return;
+    }
+
+    boolean vatSystemSelectReadonly =
+        moveLine.getAccount().getUseForPartnerBalance()
+            || !moveLine.getAccount().getIsTaxAuthorizedOnMoveLine()
+            || !Lists.newArrayList(MoveRepository.STATUS_NEW, MoveRepository.STATUS_SIMULATED)
+                .contains(move.getStatusSelect());
+    if (!vatSystemSelectReadonly) {
+      vatSystemSelectReadonly =
+          move.getJournal().getJournalType().getTechnicalTypeSelect()
+              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE;
+    }
+
+    this.addAttr("vatSystemSelect", "readonly", vatSystemSelectReadonly, attrsMap);
   }
 }
