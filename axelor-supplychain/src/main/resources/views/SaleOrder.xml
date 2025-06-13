@@ -17,7 +17,7 @@
     </extend>
     <extend target="//field[@name='estimatedShippingDate']">
       <attribute name="onChange"
-        value="action-sale-order-group-on-estimated-shipping-date-change"/>
+        value="action-supplychain-sale-order-group-on-estimated-shipping-date-change"/>
     </extend>
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
@@ -433,14 +433,13 @@
   <action-group
     name="action-supplychain-sale-order-group-on-estimated-shipping-date-change">
     <action name="action-sale-order-group-on-estimated-shipping-date-change"/>
-    <action
-      name="action-supplychain-sale-order-method-update-estimated-delivery-date-with-pricing-delay"/>
+    <action name="action-supplychain-sale-order-method-notify-estimated-shipping-date-update"/>
   </action-group>
 
   <action-method
-    name="action-supplychain-sale-order-method-update-estimated-delivery-date-with-pricing-delay">
+    name="action-supplychain-sale-order-method-notify-estimated-shipping-date-update">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
-      method="updateEstimatedDeliveryDateWithPricingDelay"/>
+      method="notifyEstimatedShippingDateUpdate"/>
   </action-method>
 
 </object-views>
