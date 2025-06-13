@@ -178,7 +178,7 @@ public class PurchaseOrderController {
           Beans.get(PurchaseOrderShipmentService.class)
               .createShipmentCostLine(purchaseOrder, shipmentMode);
       if (message != null) {
-        response.setInfo(message);
+        response.setNotify(message);
       }
       response.setValues(purchaseOrder);
     } catch (Exception e) {

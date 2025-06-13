@@ -48,7 +48,7 @@ public class FreightCarrierPricingController {
                 .computeFreightCarrierPricing(
                     freightCarrierPricingList, Long.valueOf(context.get("_id").toString()));
         if (message != null) {
-          response.setInfo(message);
+          response.setNotify(message);
         }
         response.setCanClose(true);
       }
