@@ -141,7 +141,11 @@
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"
           showIf="usableOnProduction"/>
         <field name="isOutsourcingLocation" onChange="action-stock-set-partner-domain-attrs"
-          showIf="typeSelect==2 || typeSelect==3" colSpan="3" if-module="axelor-production"
+          showIf="typeSelect == 1 || typeSelect==2 || typeSelect==3" colSpan="3"
+          if-module="axelor-production"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
+        <field name="isConsignmentStock" showIf="isOutsourcingLocation" colSpan="3"
+          if-module="axelor-production"
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
         <field name="includeVirtualSubLocation" onChange="save" hideIf="typeSelect == 3"
           colSpan="3"/>
