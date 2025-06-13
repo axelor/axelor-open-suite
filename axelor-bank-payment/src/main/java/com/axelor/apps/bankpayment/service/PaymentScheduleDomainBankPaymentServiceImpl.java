@@ -8,6 +8,7 @@ import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentSer
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
@@ -29,7 +30,7 @@ public class PaymentScheduleDomainBankPaymentServiceImpl extends PaymentSchedule
     PaymentMode paymentMode = paymentSchedule.getPaymentMode();
     Company company = paymentSchedule.getCompany();
 
-    if (partner != null && !partner.getBankDetailsList().isEmpty()) {
+    if (partner != null && ObjectUtils.notEmpty(partner.getBankDetailsList())) {
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
               paymentMode, partner, company);

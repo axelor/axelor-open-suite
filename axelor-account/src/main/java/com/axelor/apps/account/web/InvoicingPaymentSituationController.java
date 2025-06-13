@@ -126,7 +126,7 @@ public class InvoicingPaymentSituationController {
   @ErrorException
   public void selectBankDetails(ActionRequest request, ActionResponse response) {
     Context parentContext = request.getContext().getParent();
-    if (Objects.equals(parentContext.getContextClass(), Partner.class)) {
+    if (parentContext != null && Objects.equals(parentContext.getContextClass(), Partner.class)) {
       Partner partner = parentContext.asType(Partner.class);
       List<Long> bankDetailsIdList =
           partner.getBankDetailsList().stream()
