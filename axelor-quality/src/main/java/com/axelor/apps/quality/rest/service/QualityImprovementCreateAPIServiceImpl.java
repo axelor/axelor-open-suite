@@ -96,10 +96,10 @@ public class QualityImprovementCreateAPIServiceImpl implements QualityImprovemen
     SaleOrderLine customerSaleOrderLine = qiIdentification.getCustomerSaleOrderLine();
     PurchaseOrderLine supplierPurchaseOrderLine = qiIdentification.getSupplierPurchaseOrderLine();
 
-    if (qiDetectionOrigin == QIDetectionRepository.ORIGIN_SUPPLIER
+    if (qiDetectionOrigin == QIDetectionRepository.ORIGIN_CUSTOMER
         && customerSaleOrderLine != null) {
       qiIdentification.setQuantity(customerSaleOrderLine.getQty());
-    } else if (qiDetectionOrigin == QIDetectionRepository.ORIGIN_CUSTOMER
+    } else if (qiDetectionOrigin == QIDetectionRepository.ORIGIN_SUPPLIER
         && supplierPurchaseOrderLine != null) {
       qiIdentification.setQuantity(supplierPurchaseOrderLine.getQty());
     }
