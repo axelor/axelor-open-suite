@@ -465,6 +465,7 @@ public class DataBackupCreateService {
       boolean isTemplateWithDescription = dataBackup.getIsTemplateWithDescription();
       int count = 0;
       Integer maxLinesPerFile = dataBackup.getMaxLinesPerFile();
+      LocalDateTime relativeDateTime = dataBackup.getRelativeDateTime();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
@@ -498,7 +499,8 @@ public class DataBackupCreateService {
                           dirPath,
                           isRelativeDate,
                           updateImportId,
-                          dataBackup));
+                          dataBackup,
+                          relativeDateTime));
                   if (templateFlag && isTemplateWithDescription) {
                     titleArr.add(getFieldTitle(property));
                     helpArr.add(getFieldHelp(property));
@@ -689,7 +691,8 @@ public class DataBackupCreateService {
       String dirPath,
       boolean isRelativeDate,
       boolean updateImportId,
-      DataBackup dataBackup)
+      DataBackup dataBackup,
+      LocalDateTime relativeDateTime)
       throws AxelorException {
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
@@ -717,16 +720,17 @@ public class DataBackupCreateService {
         return value.toString();
       case "DATE":
         if (isRelativeDate) {
-          return createRelativeDate((LocalDate) value);
+          return createRelativeDate((LocalDate) value, relativeDateTime);
         }
         return value.toString();
 
       case "DATETIME":
         if (isRelativeDate) {
           if (property.getJavaType() == ZonedDateTime.class) {
-            return createRelativeDateTime(((ZonedDateTime) value).toLocalDateTime());
+            return createRelativeDateTime(
+                ((ZonedDateTime) value).toLocalDateTime(), relativeDateTime);
           }
-          return createRelativeDateTime((LocalDateTime) value);
+          return createRelativeDateTime((LocalDateTime) value, relativeDateTime);
         }
         return property.getJavaType() == ZonedDateTime.class
             ? ((ZonedDateTime) value).toLocalDateTime().toString()
@@ -754,8 +758,9 @@ public class DataBackupCreateService {
     }
   }
 
-  public String createRelativeDateTime(LocalDateTime dateT) {
-    LocalDateTime currentDateTime = LocalDateTime.now();
+  public String createRelativeDateTime(LocalDateTime dateT, LocalDateTime relativeDateTime) {
+    LocalDateTime currentDateTime =
+        relativeDateTime != null ? relativeDateTime : LocalDateTime.now();
 
     long years = currentDateTime.until(dateT, ChronoUnit.YEARS);
     currentDateTime = currentDateTime.plusYears(years);
@@ -793,8 +798,12 @@ public class DataBackupCreateService {
         + "]";
   }
 
-  public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = LocalDateHelper.getTodayDate(null);
+  public String createRelativeDate(LocalDate date, LocalDateTime relativeDateTime) {
+    LocalDate currentDate =
+        relativeDateTime != null
+            ? relativeDateTime.toLocalDate()
+            : LocalDateHelper.getTodayDate(null);
+
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 
