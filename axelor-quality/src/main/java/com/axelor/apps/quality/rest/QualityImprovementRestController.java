@@ -76,6 +76,7 @@ public class QualityImprovementRestController {
         String.format(
                 I18n.get(QualityExceptionMessage.API_QI_CREATION_MESSAGE),
                 qualityImprovement.getId())
+                + " "
             + Optional.ofNullable(qualityImprovementCreateUpdateResult.getErrorMessage())
                 .orElse("");
     return ResponseConstructor.build(

@@ -18,9 +18,11 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
   @Inject
   public QualityImprovementCreateServiceImpl(
       QualityImprovementRepository qualityImprovementRepository,
-      QualityImprovementService qualityImprovementService) {
+      QualityImprovementService qualityImprovementService,
+      QualityImprovementCheckValuesService qualityImprovementCheckValuesService) {
     this.qualityImprovementRepository = qualityImprovementRepository;
     this.qualityImprovementService = qualityImprovementService;
+    this.qualityImprovementCheckValuesService = qualityImprovementCheckValuesService;
   }
 
   @Transactional(rollbackOn = Exception.class)

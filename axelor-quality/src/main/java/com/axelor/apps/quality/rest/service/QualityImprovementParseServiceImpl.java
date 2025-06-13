@@ -124,8 +124,8 @@ public class QualityImprovementParseServiceImpl implements QualityImprovementPar
         qiResolutionDefaultsList.stream()
             .filter(
                 defaultValue ->
-                    (qiType == 2 && defaultValue.getQiDefault().getIsProductDefault())
-                        || (qiType == 1 && defaultValue.getQiDefault().getIsSystemDefault()))
+                    (qiType == 2 && !defaultValue.getQiDefault().getIsSystemDefault())
+                        || (qiType == 1 && !defaultValue.getQiDefault().getIsProductDefault()))
             .collect(Collectors.toList());
 
     qiResolutionDefaultsList.removeAll(toRemove);
