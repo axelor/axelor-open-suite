@@ -1,5 +1,7 @@
 package com.axelor.apps.quality.rest.service;
 
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.quality.db.QIDefault;
 import com.axelor.apps.quality.db.QIDetection;
@@ -11,6 +13,7 @@ import com.axelor.apps.quality.rest.dto.QIIdentificationRequest;
 import com.axelor.apps.quality.rest.dto.QIResolutionDefaultRequest;
 import com.axelor.apps.quality.rest.dto.QIResolutionRequest;
 import com.axelor.apps.quality.rest.dto.QualityImprovementRequest;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 
 public class QualityImprovementParseServiceImpl implements QualityImprovementParseService {
@@ -33,19 +36,42 @@ public class QualityImprovementParseServiceImpl implements QualityImprovementPar
       QIIdentificationRequest qiIdentificationRequest, QIDetection qiDetection) {
 
     QIIdentification qiIdentification = new QIIdentification();
-    qiIdentification.setCustomerPartner(qiIdentificationRequest.fetchCustomerPartner());
 
+    // get customer information
+    Partner customerPartner = qiIdentificationRequest.fetchCustomerPartner();
+    SaleOrder customerSaleOrder = qiIdentificationRequest.fetchCustomerSaleOrder();
     SaleOrderLine customerSaleOrderLine = qiIdentificationRequest.fetchCustomerSaleOrderLine();
+
+    // fill from bottom element
     if (customerSaleOrderLine != null) {
-      qiIdentification.setCustomerSaleOrder(customerSaleOrderLine.getSaleOrder());
       qiIdentification.setCustomerSaleOrderLine(customerSaleOrderLine);
+      SaleOrder saleOrder = customerSaleOrderLine.getSaleOrder();
+      qiIdentification.setCustomerSaleOrder(saleOrder);
+      qiIdentification.setCustomerPartner(saleOrder.getClientPartner());
+    } else if (customerSaleOrder != null) {
+      qiIdentification.setCustomerSaleOrder(customerSaleOrder);
+      qiIdentification.setCustomerPartner(customerSaleOrder.getClientPartner());
+    } else if (customerPartner != null) {
+      qiIdentification.setCustomerPartner(customerPartner);
     }
+
+    // get supplier information
+    Partner supplierPartner = qiIdentificationRequest.fetchSupplierPartner();
+    PurchaseOrder supplierPurchaseOrder = qiIdentificationRequest.fetchSupplierPurchaseOrder();
     PurchaseOrderLine supplierPurchaseOrderLine =
         qiIdentificationRequest.fetchSupplierPurchaseOrderLine();
-    qiIdentification.setSupplierPartner(qiIdentificationRequest.fetchSupplierPartner());
+
+    // fill from bottom element
     if (supplierPurchaseOrderLine != null) {
-      qiIdentification.setSupplierPurchaseOrder(supplierPurchaseOrderLine.getPurchaseOrder());
       qiIdentification.setSupplierPurchaseOrderLine(supplierPurchaseOrderLine);
+      PurchaseOrder purchaseOrder = supplierPurchaseOrderLine.getPurchaseOrder();
+      qiIdentification.setSupplierPurchaseOrder(purchaseOrder);
+      qiIdentification.setSupplierPartner(purchaseOrder.getSupplierPartner());
+    } else if (supplierPurchaseOrder != null) {
+      qiIdentification.setSupplierPurchaseOrder(supplierPurchaseOrder);
+      qiIdentification.setSupplierPartner(supplierPurchaseOrder.getSupplierPartner());
+    } else if (supplierPartner != null) {
+      qiIdentification.setSupplierPartner(supplierPartner);
     }
 
     qiIdentification.setManufOrder(qiIdentificationRequest.fetchManufOrder());

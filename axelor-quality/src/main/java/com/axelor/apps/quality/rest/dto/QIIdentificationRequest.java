@@ -4,7 +4,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
@@ -13,8 +15,10 @@ import java.math.BigDecimal;
 public class QIIdentificationRequest extends RequestStructure {
 
   protected Long supplierPartnerId;
+  protected Long supplierPurchaseOrderId;
   protected Long supplierPurchaseOrderLineId;
   protected Long customerPartnerId;
+  protected Long customerSaleOrderId;
   protected Long customerSaleOrderLineId;
   protected Long manufOrderId;
   protected Long operationOrderId;
@@ -27,6 +31,14 @@ public class QIIdentificationRequest extends RequestStructure {
 
   public void setSupplierPartnerId(Long supplierPartnerId) {
     this.supplierPartnerId = supplierPartnerId;
+  }
+
+  public Long getSupplierPurchaseOrderId() {
+    return supplierPurchaseOrderId;
+  }
+
+  public void setSupplierPurchaseOrderId(Long supplierPurchaseOrderId) {
+    this.supplierPurchaseOrderId = supplierPurchaseOrderId;
   }
 
   public Long getSupplierPurchaseOrderLineId() {
@@ -43,6 +55,14 @@ public class QIIdentificationRequest extends RequestStructure {
 
   public void setCustomerPartnerId(Long customerPartnerId) {
     this.customerPartnerId = customerPartnerId;
+  }
+
+  public Long getCustomerSaleOrderId() {
+    return customerSaleOrderId;
+  }
+
+  public void setCustomerSaleOrderId(Long customerSaleOrderId) {
+    this.customerSaleOrderId = customerSaleOrderId;
   }
 
   public Long getCustomerSaleOrderLineId() {
@@ -92,6 +112,13 @@ public class QIIdentificationRequest extends RequestStructure {
     return ObjectFinder.find(Partner.class, supplierPartnerId, ObjectFinder.NO_VERSION);
   }
 
+  public PurchaseOrder fetchSupplierPurchaseOrder() {
+    if (supplierPurchaseOrderId == null || supplierPurchaseOrderId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(PurchaseOrder.class, supplierPurchaseOrderId, ObjectFinder.NO_VERSION);
+  }
+
   public PurchaseOrderLine fetchSupplierPurchaseOrderLine() {
     if (supplierPurchaseOrderLineId == null || supplierPurchaseOrderLineId == 0L) {
       return null;
@@ -105,6 +132,13 @@ public class QIIdentificationRequest extends RequestStructure {
       return null;
     }
     return ObjectFinder.find(Partner.class, customerPartnerId, ObjectFinder.NO_VERSION);
+  }
+
+  public SaleOrder fetchCustomerSaleOrder() {
+    if (customerSaleOrderId == null || customerSaleOrderId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(SaleOrder.class, customerSaleOrderId, ObjectFinder.NO_VERSION);
   }
 
   public SaleOrderLine fetchCustomerSaleOrderLine() {
