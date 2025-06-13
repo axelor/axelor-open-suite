@@ -58,19 +58,12 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
       QIIdentification baseQiIdentification, QIIdentification newQiIdentification) {
 
     baseQiIdentification.setCustomerPartner(newQiIdentification.getCustomerPartner());
+    baseQiIdentification.setCustomerSaleOrder(newQiIdentification.getCustomerSaleOrder());
+    baseQiIdentification.setCustomerSaleOrderLine(newQiIdentification.getCustomerSaleOrderLine());
 
-    SaleOrderLine customerSaleOrderLine = newQiIdentification.getCustomerSaleOrderLine();
-    if (customerSaleOrderLine != null) {
-      baseQiIdentification.setCustomerSaleOrder(customerSaleOrderLine.getSaleOrder());
-      baseQiIdentification.setCustomerSaleOrderLine(customerSaleOrderLine);
-    }
-    PurchaseOrderLine supplierPurchaseOrderLine =
-        newQiIdentification.getSupplierPurchaseOrderLine();
     baseQiIdentification.setSupplierPartner(newQiIdentification.getSupplierPartner());
-    if (supplierPurchaseOrderLine != null) {
-      baseQiIdentification.setSupplierPurchaseOrder(supplierPurchaseOrderLine.getPurchaseOrder());
-      baseQiIdentification.setSupplierPurchaseOrderLine(supplierPurchaseOrderLine);
-    }
+    baseQiIdentification.setSupplierPurchaseOrder(newQiIdentification.getSupplierPurchaseOrder());
+    baseQiIdentification.setSupplierPurchaseOrderLine(newQiIdentification.getSupplierPurchaseOrderLine());
 
     baseQiIdentification.setManufOrder(newQiIdentification.getManufOrder());
     baseQiIdentification.setOperationOrder(newQiIdentification.getOperationOrder());
@@ -85,6 +78,12 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
         baseQiResolution.getQiResolutionDefaultsList();
     List<QIResolutionDefault> newQiResolutionDefaults =
         newQiResolution.getQiResolutionDefaultsList();
+
+    // if new List is null, then empty the list
+    if(newQiResolutionDefaults == null || newQiResolutionDefaults.isEmpty()) {
+      existingQiResolutionList.clear();
+      return;
+    }
 
     // extract to a map for exploration
     Map<Long, QIResolutionDefault> existingQIResolutionDefaultMap =
