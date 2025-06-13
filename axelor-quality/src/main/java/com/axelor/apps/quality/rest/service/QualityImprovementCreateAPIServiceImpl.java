@@ -84,9 +84,9 @@ public class QualityImprovementCreateAPIServiceImpl implements QualityImprovemen
     } else if (qiDetectionOrigin == QIDetectionRepository.ORIGIN_CUSTOMER
         && supplierPurchaseOrderLine != null) {
       qiIdentification.setQuantity(supplierPurchaseOrderLine.getQty());
-    } else if (qiDetectionOrigin == QIDetectionRepository.ORIGIN_INTERNAL) {
-      qiIdentification.setDetectedByInternal(AuthUtils.getUser().getPartner());
     }
+
+    qiIdentification.setDetectedByInternal(AuthUtils.getUser().getPartner());
   }
 
   /**
