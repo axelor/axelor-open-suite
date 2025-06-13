@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceNote;
+import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 
 public class InvoiceNoteServiceImpl implements InvoiceNoteService {
@@ -16,7 +17,7 @@ public class InvoiceNoteServiceImpl implements InvoiceNoteService {
     BigDecimal discountRate = invoice.getFinancialDiscountRate();
 
     if (discount != null && discountRate != null && discount.getLegalNotice() != null) {
-      String noteTitle = String.format("Financial Discount %.2f%%", discountRate);
+      String noteTitle = String.format(I18n.get("Financial Discount %.2f%%"), discountRate);
 
       InvoiceNote invoiceNote = new InvoiceNote(noteTitle);
       invoiceNote.setType("Financial Discount");
