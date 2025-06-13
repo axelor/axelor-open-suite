@@ -2,14 +2,12 @@ package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QIResolutionDefault;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,7 +61,8 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
 
     baseQiIdentification.setSupplierPartner(newQiIdentification.getSupplierPartner());
     baseQiIdentification.setSupplierPurchaseOrder(newQiIdentification.getSupplierPurchaseOrder());
-    baseQiIdentification.setSupplierPurchaseOrderLine(newQiIdentification.getSupplierPurchaseOrderLine());
+    baseQiIdentification.setSupplierPurchaseOrderLine(
+        newQiIdentification.getSupplierPurchaseOrderLine());
 
     baseQiIdentification.setManufOrder(newQiIdentification.getManufOrder());
     baseQiIdentification.setOperationOrder(newQiIdentification.getOperationOrder());
@@ -80,7 +79,7 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
         newQiResolution.getQiResolutionDefaultsList();
 
     // if new List is null, then empty the list
-    if(newQiResolutionDefaults == null || newQiResolutionDefaults.isEmpty()) {
+    if (newQiResolutionDefaults == null || newQiResolutionDefaults.isEmpty()) {
       existingQiResolutionList.clear();
       return;
     }

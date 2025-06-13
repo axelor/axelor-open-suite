@@ -40,40 +40,52 @@ public class QualityImprovementParseServiceImpl implements QualityImprovementPar
     QIIdentification qiIdentification = new QIIdentification();
 
     // get customer information
-    Partner customerPartner = qiIdentificationRequest.fetchCustomerPartner();
-    SaleOrder customerSaleOrder = qiIdentificationRequest.fetchCustomerSaleOrder();
     SaleOrderLine customerSaleOrderLine = qiIdentificationRequest.fetchCustomerSaleOrderLine();
 
-    // fill from bottom element
+    // fill from bottom element, check sol first
     if (customerSaleOrderLine != null) {
       qiIdentification.setCustomerSaleOrderLine(customerSaleOrderLine);
       SaleOrder saleOrder = customerSaleOrderLine.getSaleOrder();
       qiIdentification.setCustomerSaleOrder(saleOrder);
       qiIdentification.setCustomerPartner(saleOrder.getClientPartner());
-    } else if (customerSaleOrder != null) {
-      qiIdentification.setCustomerSaleOrder(customerSaleOrder);
-      qiIdentification.setCustomerPartner(customerSaleOrder.getClientPartner());
-    } else if (customerPartner != null) {
-      qiIdentification.setCustomerPartner(customerPartner);
+    } else {
+      // check SaleOrder
+      SaleOrder customerSaleOrder = qiIdentificationRequest.fetchCustomerSaleOrder();
+      if (customerSaleOrder != null) {
+        qiIdentification.setCustomerSaleOrder(customerSaleOrder);
+        qiIdentification.setCustomerPartner(customerSaleOrder.getClientPartner());
+      } else {
+        // check Partner
+        Partner customerPartner = qiIdentificationRequest.fetchCustomerPartner();
+        if (customerPartner != null) {
+          qiIdentification.setCustomerPartner(customerPartner);
+        }
+      }
     }
 
     // get supplier information
-    Partner supplierPartner = qiIdentificationRequest.fetchSupplierPartner();
-    PurchaseOrder supplierPurchaseOrder = qiIdentificationRequest.fetchSupplierPurchaseOrder();
     PurchaseOrderLine supplierPurchaseOrderLine =
         qiIdentificationRequest.fetchSupplierPurchaseOrderLine();
 
-    // fill from bottom element
+    // fill from bottom element, check pol first
     if (supplierPurchaseOrderLine != null) {
       qiIdentification.setSupplierPurchaseOrderLine(supplierPurchaseOrderLine);
       PurchaseOrder purchaseOrder = supplierPurchaseOrderLine.getPurchaseOrder();
       qiIdentification.setSupplierPurchaseOrder(purchaseOrder);
       qiIdentification.setSupplierPartner(purchaseOrder.getSupplierPartner());
-    } else if (supplierPurchaseOrder != null) {
-      qiIdentification.setSupplierPurchaseOrder(supplierPurchaseOrder);
-      qiIdentification.setSupplierPartner(supplierPurchaseOrder.getSupplierPartner());
-    } else if (supplierPartner != null) {
-      qiIdentification.setSupplierPartner(supplierPartner);
+    } else {
+      // check order
+      PurchaseOrder supplierPurchaseOrder = qiIdentificationRequest.fetchSupplierPurchaseOrder();
+      if (supplierPurchaseOrder != null) {
+        qiIdentification.setSupplierPurchaseOrder(supplierPurchaseOrder);
+        qiIdentification.setSupplierPartner(supplierPurchaseOrder.getSupplierPartner());
+      } else {
+        // check partner
+        Partner supplierPartner = qiIdentificationRequest.fetchSupplierPartner();
+        if (supplierPartner != null) {
+          qiIdentification.setSupplierPartner(supplierPartner);
+        }
+      }
     }
 
     qiIdentification.setManufOrder(qiIdentificationRequest.fetchManufOrder());
@@ -89,8 +101,13 @@ public class QualityImprovementParseServiceImpl implements QualityImprovementPar
 
     QIResolution qiResolution = new QIResolution();
 
-    for (QIResolutionDefaultRequest qiResolutionDefaultRequest :
-        qiResolutionPostRequest.getDefects()) {
+    List<QIResolutionDefaultRequest> defects = qiResolutionPostRequest.getDefects();
+
+    if (defects == null) {
+      return qiResolution;
+    }
+
+    for (QIResolutionDefaultRequest qiResolutionDefaultRequest : defects) {
       QIResolutionDefault qiResolutionDefault =
           getQiResolutionDefaultFromRequestBody(qiResolutionDefaultRequest);
       qiResolution.addQiResolutionDefaultsListItem(qiResolutionDefault);
