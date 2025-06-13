@@ -111,6 +111,8 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -764,6 +766,9 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
 
     bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);
+
+    bind(AnalyticMoveLineQueryPercentageService.class)
+        .to(AnalyticMoveLineQueryPercentageServiceImpl.class);
 
     bind(InvoiceTermPfpService.class).to(InvoiceTermPfpServiceImpl.class);
 

@@ -78,13 +78,12 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
       throws AxelorException;
 
-  AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+  AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine);
 
-  AnalyticMoveLine reverseAndPersist(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+  AnalyticMoveLine reverseAndPersist(AnalyticMoveLine analyticMoveLine);
 
   AnalyticMoveLine generateAnalyticMoveLine(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount, BigDecimal percentage);
 
   String getAnalyticAxisDomain(Company company) throws AxelorException;
 
