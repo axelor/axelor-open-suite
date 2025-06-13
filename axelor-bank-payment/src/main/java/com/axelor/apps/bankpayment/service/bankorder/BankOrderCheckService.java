@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import java.util.List;
 
 public interface BankOrderCheckService {
 
@@ -39,4 +40,6 @@ public interface BankOrderCheckService {
 
   void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException;
+
+  List<BankOrderLine> checkBankOrderLineBankDetails(BankOrder bankOrder);
 }

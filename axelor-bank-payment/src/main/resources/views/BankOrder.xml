@@ -459,6 +459,7 @@
     <action name="action-bank-order-attrs-bank-order-file-format-change"/>
     <action name="action-bank-order-record-update-bankorder-currency"/>
     <action name="action-bank-order-record-update-bank-order-parameter"/>
+    <action name="action-bank-order-method-check-bank-order-line-bank-details"/>
   </action-group>
 
   <action-group name="action-bank-order-group-bank-order-file-format-onchange">
@@ -617,8 +618,6 @@
     <field name="partnerTypeSelect" expr="3" if="orderTypeSelect == 2 || orderTypeSelect == 4"/>
   </action-record>
 
-
-
   <action-record name="action-bank-order-record-currency-onchange"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <field name="senderBankDetails"
@@ -631,6 +630,11 @@
   </action-record>
 
   <!-- Actions Methods -->
+
+  <action-method name="action-bank-order-method-check-bank-order-line-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderController"
+      method="checkBankOrderLineBankDetails"/>
+  </action-method>
 
   <action-method name="action-bank-order-method-set-status-correct">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="setStatusCorrect"/>
@@ -647,8 +651,6 @@
   <action-method name="action-bank-order-method-merge">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="merge"/>
   </action-method>
-
-
 
   <action-method name="action-bank-order-method-bank-details-domain">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController"
