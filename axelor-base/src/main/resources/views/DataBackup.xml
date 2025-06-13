@@ -21,6 +21,7 @@
         <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="2"/>
         <field name="isRelativeDate" widget="boolean-switch"
           onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
+        <field name="relativeDateTime" widget="datetime" colSpan="4"/>
         <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"
           colSpan="2"/>
         <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
@@ -109,6 +110,8 @@
 
   <action-attrs name="action-data-backup-attrs-onchange-relativedate">
     <attribute name="value" for="updateImportId" expr="false" if="!isRelativeDate"/>
+    <attribute name="value" for="relativeDateTime"
+      expr="eval: isRelativeDate ? __datetime__ : null"/>
   </action-attrs>
 
 </object-views>

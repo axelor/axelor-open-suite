@@ -21,6 +21,7 @@
     <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
       title="Pseudonymizer"/>
     <boolean name="isExportApp" title="Export App configurations"/>
+    <datetime name="relativeDateTime" title="Relative date to take into account"/>
     <extra-code>
       <![CDATA[
 				// DATABACKUP STATUS
