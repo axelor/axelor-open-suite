@@ -2,79 +2,34 @@ package com.axelor.apps.quality.rest.dto;
 
 import com.axelor.apps.quality.db.QIAnalysisMethod;
 import com.axelor.apps.quality.db.QIDetection;
-import com.axelor.utils.api.ObjectFinder;
-import com.axelor.utils.api.RequestStructure;
-import javax.validation.constraints.NotNull;
 
-public class QualityImprovementRequest extends RequestStructure {
+public interface QualityImprovementRequest {
 
-  @NotNull protected Integer type;
-  protected Integer gravityType;
-  @NotNull protected Long qiDetectionId;
-  protected Long analysisMethodId;
+  public Integer getType();
 
-  protected QIIdentificationRequest qiIdentification;
-  protected QIResolutionRequest qiResolution;
+  public void setType(Integer type);
 
-  public Integer getType() {
-    return type;
-  }
+  public Integer getGravityType();
 
-  public void setType(Integer type) {
-    this.type = type;
-  }
+  public void setGravityType(Integer gravityType);
 
-  public Integer getGravityType() {
-    return gravityType;
-  }
+  public Long getQiDetectionId();
 
-  public void setGravityType(Integer gravityType) {
-    this.gravityType = gravityType;
-  }
+  public void setQiDetectionId(Long qiDetectionId);
 
-  public Long getQiDetectionId() {
-    return qiDetectionId;
-  }
+  public Long getAnalysisMethodId();
 
-  public void setQiDetectionId(Long qiDetectionId) {
-    this.qiDetectionId = qiDetectionId;
-  }
+  public void setAnalysisMethodId(Long analysisMethodId);
 
-  public Long getAnalysisMethodId() {
-    return analysisMethodId;
-  }
+  public QIIdentificationRequest getQiIdentification();
 
-  public void setAnalysisMethodId(Long analysisMethodId) {
-    this.analysisMethodId = analysisMethodId;
-  }
+  public void setQiIdentification(QIIdentificationRequest qiIdentification);
 
-  public QIIdentificationRequest getQiIdentification() {
-    return qiIdentification;
-  }
+  public QIResolutionRequest getQiResolution();
 
-  public void setQiIdentification(QIIdentificationRequest qiIdentification) {
-    this.qiIdentification = qiIdentification;
-  }
+  public void setQiResolution(QIResolutionRequest qiResolution);
 
-  public QIResolutionRequest getQiResolution() {
-    return qiResolution;
-  }
+  public QIDetection fetchQIDetection();
 
-  public void setQiResolution(QIResolutionRequest qiResolution) {
-    this.qiResolution = qiResolution;
-  }
-
-  public QIDetection fetchQIDetection() {
-    if (qiDetectionId == null || qiDetectionId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(QIDetection.class, qiDetectionId, ObjectFinder.NO_VERSION);
-  }
-
-  public QIAnalysisMethod fetchAnalysisMethod() {
-    if (analysisMethodId == null || analysisMethodId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(QIAnalysisMethod.class, analysisMethodId, ObjectFinder.NO_VERSION);
-  }
+  public QIAnalysisMethod fetchAnalysisMethod();
 }
