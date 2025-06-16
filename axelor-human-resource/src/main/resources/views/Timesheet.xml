@@ -19,7 +19,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
@@ -40,7 +41,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
@@ -61,7 +63,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
@@ -85,7 +88,8 @@
     <field name="toDate"/>
     <field name="sentDateTime"/>
     <field name="periodTotal"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
