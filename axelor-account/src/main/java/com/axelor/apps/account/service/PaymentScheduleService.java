@@ -116,4 +116,6 @@ public interface PaymentScheduleService {
    * @return
    */
   int getNextScheduleLineSeq(PaymentSchedule paymentSchedule);
+
+  BankDetails getDefaultBankDetails(PaymentSchedule paymentSchedule);
 }

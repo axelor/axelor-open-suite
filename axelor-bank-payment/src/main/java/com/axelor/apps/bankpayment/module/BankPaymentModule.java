@@ -22,7 +22,9 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
+import com.axelor.apps.account.service.PaymentScheduleDomainServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
+import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
@@ -59,8 +61,11 @@ import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.PaymentScheduleDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPayment;
+import com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderService;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl;
@@ -306,5 +311,9 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankOrderSequenceService.class).to(BankOrderSequenceServiceImpl.class);
     bind(MoveLinePostedNbrService.class).to(MoveLinePostedNbrServiceImpl.class);
     bind(BankOrderEncryptionService.class).to(BankOrderEncryptionServiceImpl.class);
+    bind(PaymentScheduleDomainServiceImpl.class)
+        .to(PaymentScheduleDomainBankPaymentServiceImpl.class);
+    bind(PaymentScheduleServiceBankPayment.class).to(PaymentScheduleServiceBankPaymentImpl.class);
+    bind(PaymentScheduleServiceImpl.class).to(PaymentScheduleServiceBankPaymentImpl.class);
   }
 }
