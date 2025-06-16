@@ -25,7 +25,7 @@
     <field name="cardFormatNumber"/>
     <field name="givenToEmployee" title="Given"/>
     <field name="lunchVoucherFormatSelect" width="200"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="statusToCalculateBtn"
       onClick="action-lunch-voucher-mgt-line-method-set-status-to-calculate" icon="fa-check-circle"
       help="To calculate"/>
