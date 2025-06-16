@@ -16,11 +16,12 @@
     <field name="durationForCustomer" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')" aggregate="sum"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor" hidden="true"/>
-    <field name="invoiced"/>
+    <field name="invoiced"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
     <field name="project" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
@@ -46,7 +47,8 @@
 
       <insert position="after">
         <field name="toInvoice" if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project')" showIf="project.isBusinessProject"/>
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getIsReinvoiceablTimesheetLine()"
+          showIf="project.isBusinessProject"/>
         <field name="project.isBusinessProject" hidden="true"/>
       </insert>
     </extend>

@@ -11,7 +11,8 @@
         <panel title="Project" colSpan="12" if="__config__.app.getApp('business-project')">
           <field name="project"/>
           <field name="projectTask"/>
-          <field name="toInvoice"/>
+          <field name="toInvoice"
+            if="__config__.app.getApp('business-project')?.getIsReinvoiceablStockMoveLine()"/>
         </panel>
       </insert>
     </extend>

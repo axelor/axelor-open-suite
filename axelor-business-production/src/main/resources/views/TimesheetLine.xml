@@ -17,7 +17,7 @@
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
     <field name="toInvoice" width="100" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
     <field name="enableEditor" hidden="true"/>
     <field name="comments" width="400"/>
     <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"
@@ -34,7 +34,7 @@
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
     <field name="toInvoice" width="100" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
     <field name="enableEditor" hidden="true"/>
     <field name="comments" width="400"/>
     <field name="timesheet.statusSelect"
@@ -55,7 +55,7 @@
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
     <field name="toInvoice" width="100" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
     <field name="enableEditor" hidden="true"/>
     <field name="comments" width="400"/>
     <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"
@@ -81,7 +81,8 @@
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
       <label name="durationLabel" colSpan="1"/>
       <field name="hoursDuration" hidden="true"/>
-      <field name="toInvoice"/>
+      <field name="toInvoice"
+        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="comments"/>
       <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"

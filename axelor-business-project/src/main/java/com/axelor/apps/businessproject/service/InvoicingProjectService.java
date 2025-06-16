@@ -135,7 +135,9 @@ public class InvoicingProjectService {
     polQueryMap.put("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED);
     polQueryMap.put("statusFinished", PurchaseOrderRepository.STATUS_FINISHED);
 
-    if (project.getManageTimeSpent()) {
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+
+    if (appBusinessProject.getIsReinvoiceablTimesheetLine() && project.getManageTimeSpent()) {
       StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
       Map<String, Object> logTimesQueryMap = new HashMap<>();
       logTimesQueryMap.put("project", project);
@@ -199,23 +201,27 @@ public class InvoicingProjectService {
                             == SaleOrderLineRepository.INVOICING_MODE_DIRECTLY)
                 .collect(Collectors.toList()));
 
-    invoicingProject
-        .getPurchaseOrderLineSet()
-        .addAll(
-            Beans.get(PurchaseOrderLineRepository.class)
-                .all()
-                .filter(polQueryBuilder.toString())
-                .bind(polQueryMap)
-                .fetch());
+    if (appBusinessProject.getIsReinvoiceablPoLine()) {
+      invoicingProject
+          .getPurchaseOrderLineSet()
+          .addAll(
+              Beans.get(PurchaseOrderLineRepository.class)
+                  .all()
+                  .filter(polQueryBuilder.toString())
+                  .bind(polQueryMap)
+                  .fetch());
+    }
 
-    invoicingProject
-        .getExpenseLineSet()
-        .addAll(
-            Beans.get(ExpenseLineRepository.class)
-                .all()
-                .filter(expenseLineQueryBuilder.toString())
-                .bind(expenseLineQueryMap)
-                .fetch());
+    if (appBusinessProject.getIsReinvoiceablExpenseLine()) {
+      invoicingProject
+          .getExpenseLineSet()
+          .addAll(
+              Beans.get(ExpenseLineRepository.class)
+                  .all()
+                  .filter(expenseLineQueryBuilder.toString())
+                  .bind(expenseLineQueryMap)
+                  .fetch());
+    }
 
     invoicingProject
         .getProjectTaskSet()
@@ -226,9 +232,11 @@ public class InvoicingProjectService {
                 .bind(taskQueryMap)
                 .fetch());
 
-    Set<StockMoveLine> stockMoveLineSet =
-        invoicingProjectStockMovesService.processDeliveredSaleOrderLines(saleOrderLineList);
-    invoicingProject.getStockMoveLineSet().addAll(stockMoveLineSet);
+    if (appBusinessProject.getIsReinvoiceablStockMoveLine()) {
+      Set<StockMoveLine> stockMoveLineSet =
+          invoicingProjectStockMovesService.processDeliveredSaleOrderLines(saleOrderLineList);
+      invoicingProject.getStockMoveLineSet().addAll(stockMoveLineSet);
+    }
   }
 
   public void clearLines(InvoicingProject invoicingProject) {

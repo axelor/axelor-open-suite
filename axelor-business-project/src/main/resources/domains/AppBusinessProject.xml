@@ -64,6 +64,12 @@
     <string name="groupingPeriodSelect" title="Grouping period"
       selection="business.project.invoice.grouping.period.select" default="month"/>
 
+    <boolean name="isReinvoiceablTimesheetLine" title="Timesheet line reinvoiceable"/>
+    <boolean name="isReinvoiceablExpenseLine" title="Expense line reinvoiceable"/>
+    <boolean name="isReinvoiceablPoLine" title="Purchase order line reinvoiceable"/>
+    <boolean name="isReinvoiceablSupInvLine" title="Supplier invoice line reinvoiceable"/>
+    <boolean name="isReinvoiceablStockMoveLine" title="Stock move line reinvoiceable"/>
+
     <extra-code><![CDATA[
 		public static final int CLOSING_PROJECT_RULE_NONE = 0;
 		public static final int CLOSING_PROJECT_RULE_NON_BLOCKING = 1;

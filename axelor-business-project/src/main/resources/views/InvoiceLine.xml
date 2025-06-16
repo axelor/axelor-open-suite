@@ -9,7 +9,8 @@
       <attribute name="onChange" value="action-method-change-project-for-analytic-lines"/>
       <insert position="after">
         <field name="projectTask"/>
-        <field name="toInvoice"/>
+        <field name="toInvoice"
+          if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
       </insert>
     </extend>
     <extend target="//field[@name='purchaseOrderLine']">

@@ -36,6 +36,13 @@
       <field name="postTaskStatusSet" widget="TagSelect"/>
       <field name="excludeTaskInvoicing"/>
     </panel>
+    <panel name="projectReporting" title="Reinvoicing" colSpan="12">
+      <field name="isReinvoiceablTimesheetLine" widget="boolean-switch"/>
+      <field name="isReinvoiceablExpenseLine" widget="boolean-switch"/>
+      <field name="isReinvoiceablPoLine" widget="boolean-switch"/>
+      <field name="isReinvoiceablSupInvLine" widget="boolean-switch"/>
+      <field name="isReinvoiceablStockMoveLine" widget="boolean-switch"/>
+    </panel>
     <panel name="productPanel" title="Product" colSpan="12">
       <field name="enableTaskTemplatesByProduct" widget="boolean-switch"/>
     </panel>
