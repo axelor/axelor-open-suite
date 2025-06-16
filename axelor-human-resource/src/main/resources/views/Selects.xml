@@ -232,10 +232,10 @@
   </selection>
 
   <selection name="hr.medical.leave.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">Realized</option>
-    <option value="4">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="indigo">Planned</option>
+    <option value="3" color="green">Realized</option>
+    <option value="4" color="red">Canceled</option>
   </selection>
 
   <selection name="hr.leave.reason.type.select">
