@@ -13,7 +13,7 @@
       if="_xGitStatusIndicator == 'fail' || _xGrtStatusIndicator == 'fail' || _xGitStatusIndicator == 'nonRespected' || _xGrtStatusIndicator == 'nonRespected'"/>
     <field name="sequence"/>
     <field name="name"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="company"/>
     <field name="tradingName"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
