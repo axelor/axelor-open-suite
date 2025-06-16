@@ -605,7 +605,7 @@
 "Piece dates","Dates des pièces",,
 "Piece due dates","Dates d'échéance des pièces",,
 "Piece references","Références des pièces",,
-"Please add an Active UMR to the partner.","Merci de configurer la RUM Active du tiers",,
+"Please add an Active UMR to the partner %s for the bank details %s.","Merci d'ajouter un UMR actif sur le tiers %s pour le RIB %s.",,
 "Please fill bank order date","Merci de renseigner la date de l'ordre bancaire",,
 "Please fill bank order type","Merci de renseigner le type de l'ordre bancaire",,
 "Please fill currency for the bank order","Merci de renseigner la devise de l'ordre bancaire",,

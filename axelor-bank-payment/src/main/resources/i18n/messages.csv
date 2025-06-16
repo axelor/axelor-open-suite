@@ -605,7 +605,7 @@
 "Piece dates",,,
 "Piece due dates",,,
 "Piece references",,,
-"Please add an Active UMR to the partner.",,,
+"Please add an Active UMR to the partner %s for the bank details %s.",,,
 "Please fill bank order date",,,
 "Please fill bank order type",,,
 "Please fill currency for the bank order",,,
