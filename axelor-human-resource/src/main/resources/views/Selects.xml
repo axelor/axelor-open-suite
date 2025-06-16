@@ -67,9 +67,9 @@
   </selection>
 
   <selection name="hr.employment.contract.status">
-    <option value="1">In Trial</option>
-    <option value="2">Active</option>
-    <option value="3">Closed</option>
+    <option value="1" color="blue">In Trial</option>
+    <option value="2" color="green">Active</option>
+    <option value="3" color="red">Closed</option>
   </selection>
 
   <selection name="hr.employment.contract.executiveStatus.select">
