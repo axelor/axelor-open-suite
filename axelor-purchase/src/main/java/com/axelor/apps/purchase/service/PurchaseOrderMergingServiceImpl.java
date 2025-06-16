@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -68,6 +69,7 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     private PriceList commonPriceList = null;
     private TradingName commonTradingName = null;
     private FiscalPosition commonFiscalPosition = null;
+    private TaxNumber commonCompanyTaxNumber = null;
     private boolean allTradingNamesAreNull = true;
     private boolean allFiscalPositionsAreNull = true;
 
@@ -159,6 +161,16 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     @Override
     public void setAllFiscalPositionsAreNull(boolean allFiscalPositionsAreNull) {
       this.allFiscalPositionsAreNull = allFiscalPositionsAreNull;
+    }
+
+    @Override
+    public TaxNumber getCommonCompanyTaxNumber() {
+      return commonCompanyTaxNumber;
+    }
+
+    @Override
+    public void setCommonCompanyTaxNumber(TaxNumber commonCompanyTaxNumber) {
+      this.commonCompanyTaxNumber = commonCompanyTaxNumber;
     }
   }
 
@@ -637,6 +649,11 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
         .findFirst()
         .ifPresent(commonFields::setCommonFiscalPosition);
     commonFields.setAllFiscalPositionsAreNull(commonFields.getCommonFiscalPosition() == null);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getTaxNumber)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonCompanyTaxNumber);
   }
 
   @Override

@@ -25,11 +25,10 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppExpense;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.AppTimesheet;
@@ -62,7 +61,6 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
@@ -71,14 +69,7 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       AppExpenseRepository appExpenseRepo,
       CompanyRepository companyRepo,
       HRConfigRepository hrConfigRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appTimesheetRepo = appTimesheetRepo;
     this.appLeaveRepo = appLeaveRepo;
     this.appExpenseRepo = appExpenseRepo;

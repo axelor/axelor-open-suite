@@ -64,7 +64,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         saleOrder.getCompanyBankDetails(),
         saleOrder.getTradingName(),
         saleOrder.getGroupProductsOnPrintings(),
-        null);
+        saleOrder.getTaxNumber());
     this.saleOrder = saleOrder;
   }
 
@@ -94,7 +94,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         purchaseOrder.getCompanyBankDetails(),
         purchaseOrder.getTradingName(),
         purchaseOrder.getGroupProductsOnPrintings(),
-        null);
+        purchaseOrder.getTaxNumber());
     this.purchaseOrder = purchaseOrder;
   }
 

@@ -704,7 +704,7 @@ public class SaleOrderController {
       String message =
           Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder, shipmentMode);
       if (message != null) {
-        response.setInfo(message);
+        response.setNotify(message);
       }
       response.setValues(saleOrder);
     } catch (Exception e) {

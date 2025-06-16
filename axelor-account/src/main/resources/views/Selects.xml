@@ -50,10 +50,10 @@
   </selection>
 
   <selection name='account.reconcile.group.status.select'>
-    <option order="1" value="4">Proposal</option>
-    <option order="2" value='1'>Partial</option>
-    <option order="3" value='2'>Balanced</option>
-    <option order="4" value="3">Unlettered</option>
+    <option order="1" value="4" color="blue">Proposal</option>
+    <option order="2" value="1" color="orange">Partial</option>
+    <option order="3" value="2" color="green">Balanced</option>
+    <option order="4" value="3" color="red">Unlettered</option>
   </selection>
 
   <selection name='account.journal.status.select'>
@@ -400,8 +400,8 @@
   </selection>
 
   <selection name="account.notification.status.select">
-    <option value="1">New notification</option>
-    <option value="2">Notification validated</option>
+    <option value="1" color="cyan">New notification</option>
+    <option value="2" color="green">Notification validated</option>
   </selection>
 
   <selection name="iaccount.payment.schedule.type.select">
@@ -565,9 +565,9 @@
   </selection>
 
   <selection name='iaccount.move.mass.entry.status.select'>
-    <option value='0'/>
-    <option value='1'>Ongoing</option>
-    <option value='2'>Closed</option>
+    <option value='0' color="grey"/>
+    <option value='1' color="green">Ongoing</option>
+    <option value='2' color="amber">Closed</option>
   </selection>
 
   <selection name="account.year.period.duration.select">

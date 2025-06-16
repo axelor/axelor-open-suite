@@ -298,6 +298,8 @@ public abstract class InvoiceGenerator {
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 
+    invoice.setCompanyTaxNumber(companyTaxNumber);
+
     InvoiceToolService.setPfpStatus(invoice);
 
     initCollections(invoice);

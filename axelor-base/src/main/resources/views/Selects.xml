@@ -257,17 +257,17 @@
   </selection>
 
   <selection name="base.year.status.select">
-    <option value="1">Opened</option>
-    <option value="2">Closed</option>
-    <option value="3">Adjusting</option>
+    <option value="1" color="green">Opened</option>
+    <option value="2" color="red">Closed</option>
+    <option value="3" color="yellow">Adjusting</option>
   </selection>
 
   <selection name="base.period.status.select">
-    <option value="1">Opened</option>
-    <option value="2">Permanently Closed</option>
-    <option value="3">Adjusting</option>
-    <option value="4">Temporarily Closed</option>
-    <option value="5">Closure in progress</option>
+    <option value="1" color="green">Opened</option>
+    <option value="2" color="red">Permanently Closed</option>
+    <option value="3" color="orange">Adjusting</option>
+    <option value="4" color="yellow">Temporarily Closed</option>
+    <option value="5" color="blue">Closure in progress</option>
   </selection>
 
   <selection name="company.partner.category.select">
