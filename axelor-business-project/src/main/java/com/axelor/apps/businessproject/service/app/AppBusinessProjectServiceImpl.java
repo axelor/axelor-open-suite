@@ -31,9 +31,8 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.axelor.studio.db.repo.AppRepository;
@@ -57,7 +56,6 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
@@ -65,14 +63,7 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
       BusinessProjectConfigRepository businessProjectConfigRepository,
       CompanyRepository companyRepository,
       AppProjectService appProjectService) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appBusinessProjectRepo = appBusinessProjectRepo;
     this.businessProjectConfigRepository = businessProjectConfigRepository;
     this.companyRepository = companyRepository;
