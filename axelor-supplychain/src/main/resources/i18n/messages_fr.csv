@@ -738,7 +738,7 @@
 "Validation step for invoicing outgoing stock move","Etape de validation pour facturation des BL",,
 "Verify product stock before availabity request","Vérifier le stock du produit avant la demande de mise à disposition",,
 "Warn delay from supplier",,,
-"Warning : Estimated delivery date isn't updated due to pricing set on sale order.","Avertissement: La date de livraison estimée n'est pas mise à jour en raison de la présence d'un barème.",,
+"Warning : Estimated shipping date isn't updated due to pricing set on sale order.","Avertissement: La date d'expédition estimée n'est pas mise à jour en raison de la présence d'un barème.",,
 "Warning : One or more lines are blocked for delivery","Avertissement: Une ou plusieurs lignes sont bloquées pour la livraison",,
 "When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'","Quand cette option est activée, la commande sera automatiquement passée au statut 'Commande terminée' une fois que le 'Montant facturé HT' sera égal au 'Total HT' de la commande. Cela se produira quand toutes les factures liées à la commande passeront au statut 'Ventilée'",,
 "Would you like to update all lines with this stock location?","Souhaitez-vous mettre à jour toutes les lignes avec cet emplacement de stock ?",,

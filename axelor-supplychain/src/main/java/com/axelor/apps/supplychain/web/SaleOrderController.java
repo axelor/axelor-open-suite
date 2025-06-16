@@ -848,14 +848,29 @@ public class SaleOrderController {
     }
   }
 
-  public void notifyEstimatedShippingDateUpdate(ActionRequest request, ActionResponse response) {
+  public void updateEstimatedDeliveryDateWithPricingDelay(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+
+      if (saleOrder != null) {
+        Beans.get(FreightCarrierPricingService.class)
+            .updateEstimatedDeliveryDateWithPricingDelay(saleOrder);
+        response.setValue("estimatedDeliveryDate", saleOrder.getEstimatedDeliveryDate());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void notifyEstimatedDeliveryDateUpdate(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     try {
 
       if (saleOrder != null) {
         String message =
             Beans.get(FreightCarrierPricingService.class)
-                .notifyEstimatedShippingDateUpdate(saleOrder);
+                .notifyEstimatedDeliveryDateUpdate(saleOrder);
         if (message != null) {
           response.setNotify(message);
         }

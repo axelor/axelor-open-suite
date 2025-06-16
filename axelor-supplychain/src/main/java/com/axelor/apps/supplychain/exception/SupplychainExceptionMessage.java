@@ -424,6 +424,6 @@ public final class SupplychainExceptionMessage {
   public static final String SALE_ORDER_LINES_CANNOT_DELIVER = /*$$(*/
       "Warning : One or more lines are blocked for delivery" /*)*/;
 
-  public static final String SALE_ORDER_ESTIMATED_DELIVERY_DATE_NOT_UPDATED = /*$$(*/
-      "Warning : Estimated delivery date isn't updated due to pricing set on sale order." /*)*/;
+  public static final String SALE_ORDER_ESTIMATED_SHIPPING_DATE_NOT_UPDATED = /*$$(*/
+      "Warning : Estimated shipping date isn't updated due to pricing set on sale order." /*)*/;
 }

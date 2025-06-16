@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingService {
@@ -124,7 +125,37 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
   }
 
   @Override
-  public String notifyEstimatedShippingDateUpdate(SaleOrder saleOrder) {
+  public void updateEstimatedDeliveryDateWithPricingDelay(SaleOrder saleOrder)
+      throws AxelorException {
+    FreightCarrierPricing freightCarrierPricing =
+        this.createFreightCarrierPricing(saleOrder.getFreightCarrierMode(), saleOrder);
+
+    if (freightCarrierPricing == null) {
+      return;
+    }
+
+    Pricing delay =
+        Optional.of(freightCarrierPricing).map(FreightCarrierPricing::getDelayPricing).orElse(null);
+
+    String errors =
+        freightCarrierApplyPricingService.computeFreightCarrierPricing(
+            delay, freightCarrierPricing);
+
+    if (errors.length() > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.FREIGHT_CARRIER_MODE_PRICING_ERROR),
+          errors);
+    }
+
+    saleOrder.setEstimatedDeliveryDate(
+        saleOrder
+            .getEstimatedShippingDate()
+            .plusDays(freightCarrierPricing.getDelay().longValue()));
+  }
+
+  @Override
+  public String notifyEstimatedDeliveryDateUpdate(SaleOrder saleOrder) {
     FreightCarrierMode freightCarrierMode = saleOrder.getFreightCarrierMode();
     if (freightCarrierMode == null) {
       return null;
@@ -132,7 +163,7 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
 
     Pricing delayPricing = freightCarrierMode.getFreightCarrierDelay();
     if (delayPricing != null) {
-      return I18n.get(SupplychainExceptionMessage.SALE_ORDER_ESTIMATED_DELIVERY_DATE_NOT_UPDATED);
+      return I18n.get(SupplychainExceptionMessage.SALE_ORDER_ESTIMATED_SHIPPING_DATE_NOT_UPDATED);
     }
 
     return null;
