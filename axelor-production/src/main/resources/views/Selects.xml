@@ -22,10 +22,10 @@
     <option value="2">Continuity by default</option>
   </selection>
   <selection name="production.bill.of.material.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Applicable</option>
-    <option value="4">Obsolete</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="purple">Validated</option>
+    <option value="3" color="green">Applicable</option>
+    <option value="4" color="red">Obsolete</option>
   </selection>
 
   <selection name="production.prod.process.status.select">
