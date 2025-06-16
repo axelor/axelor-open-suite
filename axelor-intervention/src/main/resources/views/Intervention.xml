@@ -6,7 +6,7 @@
   <grid model="com.axelor.apps.intervention.db.Intervention" title="Intervention"
     name="intervention-grid">
     <field name="sequence"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="planningPreferenceSelect"/>
     <field name="assignedTo"/>
     <field name="planifStartDateTime"/>
@@ -31,7 +31,7 @@
   <grid model="com.axelor.apps.intervention.db.Intervention" title="Intervention"
     name="intervention-partner-grid">
     <field name="sequence"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="assignedTo"/>
     <field name="planifStartDateTime"/>
     <field name="planifEndDateTime"/>
