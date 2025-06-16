@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -100,27 +101,48 @@ public class BatchContractInvoicing extends AbstractBatch {
   }
 
   @Transactional
-  public void invoiceContracts(List<Contract> contractList) throws AxelorException {
+  public Invoice invoiceContracts(List<Contract> contractList) throws AxelorException {
     if (contractList.size() == 1) {
-      contractInvoicingService.invoicingContract(contractList.get(0));
+      return contractInvoicingService.invoicingContract(contractList.get(0));
     }
 
     if (contractList.size() > 1) {
-      contractInvoicingService.invoicingContracts(contractList);
+      return contractInvoicingService.invoicingContracts(contractList);
     }
+    return null;
   }
 
   @Override
   protected void process() {
     for (List<Long> idList : getIdsGroupedBy()) {
+      List<Contract> contractsList = findContractsInList(idList);
       try {
-        invoiceContracts(findContractsInList(idList));
-        incrementDone();
+        Invoice invoice = invoiceContracts(contractsList);
+        if (invoice != null) {
+          invoice.addBatchSetItem(batchRepo.find(batch.getId()));
+          incrementDone(contractsList);
+        }
         JPA.clear();
       } catch (Exception e) {
-        incrementAnomaly();
+        incrementAnomaly(contractsList);
         TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
       }
+    }
+  }
+
+  protected void incrementDone(List<Contract> contractsList) {
+    for (Contract contract : contractsList) {
+      contract.addBatchSetItem(batch);
+      super.incrementDone();
+    }
+  }
+
+  protected void incrementAnomaly(List<Contract> contractsList) {
+    findBatch();
+    for (Contract contract : contractsList) {
+      contract = contractRepository.find(contract.getId());
+      contract.addBatchSetItem(batch);
+      super.incrementAnomaly();
     }
   }
 
