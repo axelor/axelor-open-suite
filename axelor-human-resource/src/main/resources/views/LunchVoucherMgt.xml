@@ -8,7 +8,7 @@
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="payPeriod" canEdit="false" canView="false"/>
     <field name="leavePeriod" canEdit="false" canView="false"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="requestedLunchVouchers"/>
     <field name="lunchVoucherWageShare"/>
     <field name="lunchVoucherEmployersShare"/>
