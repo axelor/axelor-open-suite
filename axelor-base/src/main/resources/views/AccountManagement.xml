@@ -179,7 +179,7 @@
       </panel>
 
       <panel name="analyticsPanel" title="Analytics" colSpan="12"
-        showIf="typeSelect != 2 &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 3">
+        showIf="typeSelect != 2 &amp;&amp; $contains([1, 3], company.accountConfig.analyticDistributionTypeSelect)">
         <field name="analyticDistributionTemplate" if-module="axelor-account"
           if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" domain="self.company = :company"/>

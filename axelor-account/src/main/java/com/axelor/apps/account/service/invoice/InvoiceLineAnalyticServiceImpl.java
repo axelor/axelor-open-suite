@@ -36,7 +36,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -76,13 +75,6 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   @Override
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
       InvoiceLine invoiceLine, Invoice invoice) throws AxelorException {
-    if (accountConfigService
-            .getAccountConfig(invoice.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-      return MoreObjects.firstNonNull(invoiceLine.getAnalyticMoveLineList(), new ArrayList<>());
-    }
-
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
             invoice.getPartner(),
@@ -153,10 +145,13 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       if (invoiceLine.getAccount() != null
           && invoiceLine.getAccount().getAnalyticDistributionAuthorized()
           && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(invoiceLine.getAccount().getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+          && List.of(
+                  AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT,
+                  AccountConfigRepository.DISTRIBUTION_TYPE_FREE)
+              .contains(
+                  accountConfigService
+                      .getAccountConfig(invoiceLine.getAccount().getCompany())
+                      .getAnalyticDistributionTypeSelect())) {
 
         invoiceLine.setAnalyticDistributionTemplate(
             invoiceLine.getAccount().getAnalyticDistributionTemplate());
