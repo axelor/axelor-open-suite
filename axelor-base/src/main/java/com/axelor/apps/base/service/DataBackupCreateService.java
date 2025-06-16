@@ -75,6 +75,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -453,6 +454,7 @@ public class DataBackupCreateService {
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
       boolean updateImportId = dataBackup.getUpdateImportId();
+      LocalDateTime relativeDateTime = dataBackup.getRelativeDateTime();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
@@ -483,7 +485,8 @@ public class DataBackupCreateService {
                           dirPath,
                           isRelativeDate,
                           updateImportId,
-                          dataBackup));
+                          dataBackup,
+                          relativeDateTime));
                 }
               }
               if (headerFlag) {
@@ -647,7 +650,8 @@ public class DataBackupCreateService {
       String dirPath,
       boolean isRelativeDate,
       boolean updateImportId,
-      DataBackup dataBackup)
+      DataBackup dataBackup,
+      LocalDateTime relativeDateTime)
       throws AxelorException {
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
@@ -682,9 +686,10 @@ public class DataBackupCreateService {
       case "DATETIME":
         if (isRelativeDate) {
           if (property.getJavaType() == ZonedDateTime.class) {
-            return createRelativeDateTime(((ZonedDateTime) value).toLocalDateTime());
+            return createRelativeDateTime(
+                ((ZonedDateTime) value).toLocalDateTime(), relativeDateTime);
           }
-          return createRelativeDateTime((LocalDateTime) value);
+          return createRelativeDateTime((LocalDateTime) value, relativeDateTime);
         }
         return property.getJavaType() == ZonedDateTime.class
             ? ((ZonedDateTime) value).toLocalDateTime().toString()
@@ -712,8 +717,9 @@ public class DataBackupCreateService {
     }
   }
 
-  public String createRelativeDateTime(LocalDateTime dateT) {
-    LocalDateTime currentDateTime = LocalDateTime.now();
+  public String createRelativeDateTime(LocalDateTime dateT, LocalDateTime relativeDateTime) {
+    LocalDateTime currentDateTime =
+        Optional.ofNullable(relativeDateTime).orElse(LocalDateTime.now());
 
     long years = currentDateTime.until(dateT, ChronoUnit.YEARS);
     currentDateTime = currentDateTime.plusYears(years);
