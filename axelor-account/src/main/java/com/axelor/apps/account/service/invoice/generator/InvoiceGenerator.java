@@ -268,6 +268,8 @@ public abstract class InvoiceGenerator {
     }
     invoice.setGroupProductsOnPrintings(groupProductsOnPrintings);
 
+    invoice.setCompanyTaxNumber(companyTaxNumber);
+
     // Set ATI mode on invoice
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
