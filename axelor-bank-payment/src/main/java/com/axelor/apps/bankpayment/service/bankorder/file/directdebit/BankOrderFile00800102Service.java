@@ -476,7 +476,9 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       if (receiverUmr == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR),
+            bankOrderLine.getPartner().getFullName(),
+            receiverBankDetails.getFullName());
       }
 
       /*
