@@ -26,7 +26,7 @@
       form-view="partner-contact-form"/>
     <field name="managerUser" form-view="user-form" grid-view="user-grid"/>
     <field name="$employeeStatus" title="Employee status"
-      selection="hr.employee.employee.status.select" type="string"/>
+      selection="hr.employee.employee.status.select" type="string" widget="single-select"/>
     <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form"
       grid-view="company-department-grid"/>
   </grid>

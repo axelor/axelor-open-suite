@@ -222,9 +222,9 @@
   </selection>
 
   <selection name="hr.employee.employee.status.select">
-    <option value="new">New employee</option>
-    <option value="former">Former employee</option>
-    <option value="active">Active employee</option>
+    <option value="new" color="blue">New employee</option>
+    <option value="former" color="grey">Former employee</option>
+    <option value="active" color="green">Active employee</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="hr.batch.batch.type.select">
