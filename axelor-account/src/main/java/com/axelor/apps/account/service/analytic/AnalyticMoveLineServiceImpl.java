@@ -166,8 +166,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
               ? accountingSituation.getAnalyticDistributionTemplate()
               : null;
 
-    } else if (accountConfig.getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+    } else if (List.of(
+            AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT,
+            AccountConfigRepository.DISTRIBUTION_TYPE_FREE)
+        .contains(accountConfig.getAnalyticDistributionTypeSelect())) {
       if (product != null) {
         analyticDistributionTemplate =
             accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
