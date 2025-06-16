@@ -130,7 +130,6 @@ public class BankReconciliationLineController {
     if (request.getContext().getParent() != null) {
       BankReconciliation bankReconciliation =
           request.getContext().getParent().asType(BankReconciliation.class);
-
       AnalyticDistributionTemplate analyticDistributionTemplate =
           Beans.get(AnalyticMoveLineService.class)
               .getAnalyticDistributionTemplate(
