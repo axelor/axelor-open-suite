@@ -28,11 +28,11 @@
   </selection>
 
   <selection name="customer.request.status.select">
-    <option value="10">Draft</option>
-    <option value="20">Taken into account</option>
-    <option value="30">In progress</option>
-    <option value="40">Finished</option>
-    <option value="50">Cancelled</option>
+    <option value="10" color="blue">Draft</option>
+    <option value="20" color="yellow">Taken into account</option>
+    <option value="30" color="orange">In progress</option>
+    <option value="40" color="green">Finished</option>
+    <option value="50" color="red">Cancelled</option>
   </selection>
 
   <selection name="customer.request.priority.select">
