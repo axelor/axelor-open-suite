@@ -6,6 +6,18 @@
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType">
     <bind to="company" column="company" search="self.importId = :company" update="true"/>
+    <bind to="name" column="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind to="reportExportTypeSelect" column="reportExportTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('accounting.report.type.report.export.type.select', reportExportTypeSelect, true)"
+      check-message="Invalid reportExportTypeSelect :reportExportTypeSelect"/>
+    <bind to="typeSelect" column="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('accounting.report.type.select', typeSelect, true)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind to="comparison" column="comparison"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('accounting.report.type.comparison.select', comparison, false)"
+      check-message="Invalid comparison :comparison"/>
   </input>
 
 </csv-inputs>
