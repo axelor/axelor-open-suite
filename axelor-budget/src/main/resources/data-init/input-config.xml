@@ -4,31 +4,73 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
-    search="self.name = :name" update="true"/>
+    search="self.name = :name" update="true">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="title" to="title"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(title)"
+      check-message="Title must not be null"/>
+    <bind column="xmlId" to="xmlId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
+      check-message="Xml id must be unique"/>
+    <bind column="tagStyle" to="tagStyle"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('label.style.selection', tagStyle, false)"
+      check-message="Invalid tagStyle :tagStyle"/>
+  </input>
 
   <input file="budget_advanced_export.csv" search="self.importId = :importId"
     type="com.axelor.apps.base.db.AdvancedExport" separator=";">
+    <bind column="metaModel_name" to="metaModel" search="self.name = :metaModel_name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel_name)"
+      check-message="Meta model with name :metaModel_name doesn't exist"/>
   </input>
 
   <input file="budget_advanced_export_line.csv" search="self.importId = :importId"
     type="com.axelor.apps.base.db.AdvancedExportLine" separator=";">
+    <bind column="orderByType" to="orderByType"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('order.by.type', orderByType, false)"
+      check-message="Invalid orderByType :orderByType"/>
   </input>
 
   <input file="base_birtTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="format" to="format"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iadministration.export.type.select', format, false)"
+      check-message="Invalid format :format"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_birtTemplateParameter.csv" separator=";"
-    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="type" to="type"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.birt.template.parameter.type.select', type, false)"
+      check-message="Invalid type :type"/>
+  </input>
 
   <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
     separator=";" search="self.importId = :importId">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.printing.template.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_printingTemplateLine.csv"
     type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.printing.template.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+  </input>
 
 </csv-inputs>

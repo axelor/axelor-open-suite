@@ -4,13 +4,33 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="studio_appBudget.csv" separator=";" search="self.app.code = :code"
-    update="true" type="com.axelor.studio.db.AppBudget"/>
+    update="true" type="com.axelor.studio.db.AppBudget">
+    <bind column="missingBudgetCheckSelect" to="missingBudgetCheckSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('app.budget.check.missing.select', missingBudgetCheckSelect, false)"
+      check-message="Invalid missingBudgetCheckSelect :missingBudgetCheckSelect"/>
+    <bind column="orderBudgetExceedSelect" to="orderBudgetExceedSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('app.budget.check.exceed.order.select', orderBudgetExceedSelect, false)"
+      check-message="Invalid orderBudgetExceedSelect :orderBudgetExceedSelect"/>
+  </input>
 
   <input file="budget_budget_scenario_variable.csv" separator=";"
-    search="self.importId = :importId" type="com.axelor.apps.budget.db.BudgetScenarioVariable"/>
+    search="self.importId = :importId" type="com.axelor.apps.budget.db.BudgetScenarioVariable">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.budget.db.BudgetScenarioVariable', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="entryMethod" to="entryMethod"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.scenario.entry.method.select', entryMethod, false)"
+      check-message="Invalid entryMethod :entryMethod"/>
+    <bind column="category" to="category"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.scenario.category.select', category, false)"
+      check-message="Invalid category :category"/>
+  </input>
 
   <input file="budget_budget_scenario.csv" separator=";"
     type="com.axelor.apps.budget.db.BudgetScenario" search="self.importId = :importId">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.scenario.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
     <bind column="years" to="yearSet" search="self.importId in :years"
       eval="years.split('\\|') as List"/>
   </input>
@@ -21,10 +41,22 @@
 
   <input file="budget_budget_structure.csv" separator=";"
     type="com.axelor.apps.budget.db.BudgetStructure" search="self.importId = :importId">
+    <bind column="budgetTypeSelect" to="budgetTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('global.budget.budget.type.select', budgetTypeSelect, false)"
+      check-message="Invalid budgetTypeSelect :budgetTypeSelect"/>
   </input>
 
   <input file="budget_global_budget.csv" separator=";"
     type="com.axelor.apps.budget.db.GlobalBudget" search="self.importId = :importId">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('global.budget.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="budgetTypeSelect" to="budgetTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('global.budget.budget.type.select', budgetTypeSelect, false)"
+      check-message="Invalid budgetTypeSelect :budgetTypeSelect"/>
+    <bind column="checkAvailableSelect" to="checkAvailableSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.global.budget.check.available', checkAvailableSelect, false)"
+      check-message="Invalid checkAvailableSelect :checkAvailableSelect"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
@@ -34,6 +66,29 @@
 
   <input file="budget_budgetLevel.csv" separator=";"
     type="com.axelor.apps.budget.db.BudgetLevel" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.level.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.budget.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="sourceSelect" to="sourceSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.budget.source.select', sourceSelect, false)"
+      check-message="Invalid sourceSelect :sourceSelect"/>
+    <bind column="globalBudget_importId" to="globalBudget"
+      search="self.importId = :globalBudget_importId" update="true"/>
+    <bind column="parentBudgetLevel_importId" to="parentBudgetLevel"
+      search="self.importId = :parentBudgetLevel_importId" update="true"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      update="true"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.budget.db.BudgetLevel', 'importId', importId, 'code, parentBudgetLevel.importId, globalBudget.importId, typeSelect, company.importId, fromDate, toDate', code, parentBudgetLevel_importId, globalBudget_importId, typeSelect, company_importId, fromDate, toDate)"
+      check-message="Code, parent level, global budget, type, company, from date and to date must be unique"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
@@ -46,6 +101,29 @@
 
   <input file="budget_budget_level_template.csv" separator=";"
     type="com.axelor.apps.budget.db.BudgetLevel" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.level.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.budget.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="sourceSelect" to="sourceSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.budget.source.select', sourceSelect, false)"
+      check-message="Invalid sourceSelect :sourceSelect"/>
+    <bind column="globalBudget_importId" to="globalBudget"
+      search="self.importId = :globalBudget_importId" update="true"/>
+    <bind column="parentBudgetLevel_importId" to="parentBudgetLevel"
+      search="self.importId = :parentBudgetLevel_importId" update="true"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      update="true"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.budget.db.BudgetLevel', 'importId', importId, 'code, parentBudgetLevel.importId, globalBudget.importId, typeSelect, company.importId, fromDate, toDate', code, parentBudgetLevel_importId, globalBudget_importId, typeSelect, company_importId, fromDate, toDate)"
+      check-message="Code, parent level, global budget, type, company, from date and to date must be unique"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
@@ -56,6 +134,25 @@
 
   <input file="budget_budget.csv" separator=";" type="com.axelor.apps.budget.db.Budget"
     search="self.importId = :importId">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.budget.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="periodDurationSelect" to="periodDurationSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('account.year.period.duration.select', periodDurationSelect, false)"
+      check-message="Invalid periodDurationSelect :periodDurationSelect"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.budget.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="sourceSelect" to="sourceSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.budget.source.select', sourceSelect, false)"
+      check-message="Invalid sourceSelect :sourceSelect"/>
+    <bind column="category" to="category"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('budget.scenario.category.select', category, false)"
+      check-message="Invalid category :category"/>
+    <bind column="budgetLevel_importId" to="budgetLevel"
+      search="self.importId = :budgetLevel_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.budget.db.Budget', 'importId', importId, 'code, fromDate, toDate, budgetLevel.importId', code, fromDate, toDate, budgetLevel_importId)"
+      check-message="Code, from date, to date and budget level must be unique"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
