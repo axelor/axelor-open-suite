@@ -550,7 +550,7 @@
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
         <field name="purchasePartnerPriceList" canEdit="false"
-          domain="action-partner-method-purchase-partner-price-list-domain"
+          onSelect="action-partner-method-purchase-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
