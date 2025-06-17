@@ -4,10 +4,20 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="budget_role.csv" separator=";" type="com.axelor.auth.db.Role"
-    search="self.name = :name"/>
+    search="self.name = :name">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="budget_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="object" to="object"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(object)"
+      check-message="Object must not be null"/>
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
     <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
@@ -17,6 +27,18 @@
 
   <input file="budget_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="title" to="title"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(title)"
+      check-message="Title must not be null"/>
+    <bind column="xmlId" to="xmlId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
+      check-message="Xml id must be unique"/>
+    <bind column="tagStyle" to="tagStyle"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('label.style.selection', tagStyle, false)"
+      check-message="Invalid tagStyle :tagStyle"/>
     <bind column="roles" to="roles" search="self.name in :roles"
       eval="roles.split('\\|') as List"/>
   </input>
