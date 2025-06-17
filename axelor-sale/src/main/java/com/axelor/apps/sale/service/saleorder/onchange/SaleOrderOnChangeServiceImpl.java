@@ -107,7 +107,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(getCompanyConfig(saleOrder));
     values.putAll(saleOrderBankDetailsService.getBankDetails(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
-    resetTradingName(saleOrder);
+    values.putAll(resetTradingName(saleOrder));
     return values;
   }
 
@@ -261,7 +261,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
   protected Map<String, Object> resetTradingName(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
     AppBase appBase = appBaseService.getAppBase();
-    if (!appBase.getEnableTradingNamesManagement()) {
+    if (appBase.getEnableTradingNamesManagement()) {
       saleOrder.setTradingName(null);
       values.put("tradingName", saleOrder.getTradingName());
     }
