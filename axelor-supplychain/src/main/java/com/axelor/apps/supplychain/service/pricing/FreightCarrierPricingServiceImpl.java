@@ -95,6 +95,11 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
   @Override
   public FreightCarrierPricing createFreightCarrierPricing(
       FreightCarrierMode freightCarrierMode, SaleOrder saleOrder) {
+
+    if (freightCarrierMode == null) {
+      return null;
+    }
+
     FreightCarrierPricing freightCarrierPricing = new FreightCarrierPricing();
     freightCarrierPricing.setFreightCarrierMode(freightCarrierMode);
     freightCarrierPricing.setCarrierPartner(freightCarrierMode.getCarrierPartner());
