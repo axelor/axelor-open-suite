@@ -141,6 +141,12 @@
 
     <boolean name="expense" title="Expense"/>
 
+
+    <many-to-one name="safeTyLabel" ref="com.axelor.meta.db.MetaFile" title="Label"/>
+    <boolean name="isClp" title="CLP"/>
+    <one-to-many name="icpeClassList" ref="com.axelor.apps.base.db.Icpe"
+      mappedBy="product"/>
+
     <unique-constraint columns="product,company"/>
 
     <extra-code>

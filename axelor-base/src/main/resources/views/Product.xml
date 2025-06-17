@@ -541,8 +541,13 @@
         </panel>
       </panel>
       <panel-related field="alternativeBarcodeList" name="alternativeBarcodeListPanel"
-        grid-view="alternative-barcode-grid" form-view="alternative-barcode-form"
+        grid-view="alternative-barcode-grid" form-view="alternative-barcode-form" title="Safety"
         if="__config__.app.getApp('base')?.getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base')?.getEnableMultiBarcodeOnProducts()"/>
+      <panel name="safetyPanel" title="Safety">
+        <field name="safetyLabel" widget="image"/>
+        <field name="isClp"/>
+        <panel-related field="icpeClassList" colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
