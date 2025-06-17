@@ -7,13 +7,13 @@
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name="production.manuf.order.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Canceled</option>
-    <option value="3">Planned</option>
-    <option value="4">In progress</option>
-    <option value="5">Standby</option>
-    <option value="6">Finished</option>
-    <option value="7">Merged</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="red">Canceled</option>
+    <option value="3" color="purple">Planned</option>
+    <option value="4" color="orange">In progress</option>
+    <option value="5" color="grey">Standby</option>
+    <option value="6" color="green">Finished</option>
+    <option value="7" color="teal">Merged</option>
   </selection>
 
   <selection name="production.manuf.operation.continuity.select">
