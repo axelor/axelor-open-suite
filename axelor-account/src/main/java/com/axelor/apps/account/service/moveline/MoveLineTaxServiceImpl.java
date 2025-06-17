@@ -335,13 +335,11 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(taxLineSet);
       if (CollectionUtils.isNotEmpty(taxLineSet)) {
         List<TaxLine> deductibleTaxList =
-            moveLine.getTaxLineSet().stream()
+            taxLineSet.stream()
                 .filter(it -> !this.isNonDeductibleTax(it))
                 .collect(Collectors.toList());
         List<TaxLine> nonDeductibleTaxList =
-            moveLine.getTaxLineSet().stream()
-                .filter(this::isNonDeductibleTax)
-                .collect(Collectors.toList());
+            taxLineSet.stream().filter(this::isNonDeductibleTax).collect(Collectors.toList());
 
         this.computeMoveLineTax(
             move,
