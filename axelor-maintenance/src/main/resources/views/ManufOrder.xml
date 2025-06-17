@@ -28,7 +28,7 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-quick-plan"
       readonlyIf="statusSelect >= 3"/>
     <button name="startBtn" icon="fa-play"
