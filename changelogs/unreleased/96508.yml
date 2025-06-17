@@ -1,5 +1,5 @@
 ---
-title: "Invoice/Pfp : update pfp validate status at invoice reconcile with advance payment or credit note"
+title: "Invoice/PFP: updated PFP validate status at invoice reconcile with advance payment or credit note."
 module: axelor-account
 developer: |
-  "Added the InvoiceTermPfpService in the ReconcileInvoiceTermComputationServiceImpl and ReconcileInvoiceTermComputationBudgetServiceImpl constructor"
+  "Added the `InvoiceTermPfpService` in the `ReconcileInvoiceTermComputationServiceImpl` and `ReconcileInvoiceTermComputationBudgetServiceImpl` constructor."
