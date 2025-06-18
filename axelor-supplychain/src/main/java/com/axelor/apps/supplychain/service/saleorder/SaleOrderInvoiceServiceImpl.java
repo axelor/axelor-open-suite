@@ -387,18 +387,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
     if (taxLineList != null) {
       for (SaleOrderLineTax saleOrderLineTax : taxLineList) {
-        InvoiceLineGenerator invoiceLineGenerator =
+        SaleOrderLine saleOrderLine = saleOrderLineTax.getSaleOrder().getSaleOrderLineList().get(0);
+        InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
             invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice, invoicingProduct, percentToInvoice, saleOrderLineTax);
-
-        List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
-        // link to the created invoice line the first line of the sale order.
-        for (InvoiceLine invoiceLine : invoiceOneLineList) {
-          SaleOrderLine saleOrderLine =
-              saleOrderLineTax.getSaleOrder().getSaleOrderLineList().get(0);
-          invoiceLine.setSaleOrderLine(saleOrderLine);
-        }
-        createdInvoiceLineList.addAll(invoiceOneLineList);
+                invoice, invoicingProduct, percentToInvoice, saleOrderLineTax, saleOrderLine, null);
+        createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
       }
     }
     return createdInvoiceLineList;

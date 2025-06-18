@@ -293,7 +293,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setExTaxTotal(exTaxTotal);
     invoiceLine.setInTaxTotal(inTaxTotal);
 
-    this.computeCompanyTotal(invoiceLine);
+    this.computeCompanyTotal(invoiceLine, today);
 
     invoiceLine.setSequence(sequence);
 
@@ -343,7 +343,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
   }
 
-  public void computeCompanyTotal(InvoiceLine invoiceLine) throws AxelorException {
+  public void computeCompanyTotal(InvoiceLine invoiceLine, LocalDate date) throws AxelorException {
 
     if (typeSelect == InvoiceLineRepository.TYPE_TITLE) {
       return;
@@ -363,13 +363,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setCompanyExTaxTotal(
         currencyService
             .getAmountCurrencyConvertedAtDate(
-                invoice.getCurrency(), companyCurrency, exTaxTotal, today)
+                invoice.getCurrency(), companyCurrency, exTaxTotal, date)
             .setScale(this.companyCurrencyScale, RoundingMode.HALF_UP));
 
     invoiceLine.setCompanyInTaxTotal(
         currencyService
             .getAmountCurrencyConvertedAtDate(
-                invoice.getCurrency(), companyCurrency, inTaxTotal, today)
+                invoice.getCurrency(), companyCurrency, inTaxTotal, date)
             .setScale(this.companyCurrencyScale, RoundingMode.HALF_UP));
   }
 
