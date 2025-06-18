@@ -433,6 +433,7 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
       if (company == null && bankOrderLine.getBankOrder() != null) {
         company = bankOrderLine.getBankOrder().getSenderCompany();
       }
+
       Umr receiverUmr =
           Beans.get(UmrService.class)
               .getActiveUmr(bankOrderLine.getReceiverCompany(), receiverBankDetails);
@@ -440,7 +441,9 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
       if (receiverUmr == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR),
+            bankOrderLine.getPartner().getFullName(),
+            receiverBankDetails.getFullName());
       }
 
       /*
