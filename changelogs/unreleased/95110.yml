@@ -1,3 +1,23 @@
 ---
 title: "Invoice: fixed currency conversion to use the exchange rate based on the orderDate when generating invoice from purchase order."
 module: axelor-supplychain
+developer: |
+  The method `getInvoiceLineGeneratorWithComputedTaxPrice` in `InvoiceLineOrderService` has changed its signature from 
+ 
+  ```java
+  InvoiceLineGenerator getInvoiceLineGeneratorWithComputedTaxPrice(
+      Invoice invoice,
+      Product invoicingProduct,
+      BigDecimal percentToInvoice,
+      OrderLineTax orderLineTax);
+  ```
+  to
+  ```java
+      InvoiceLineGeneratorSupplyChain getInvoiceLineGeneratorWithComputedTaxPrice(
+      Invoice invoice,
+      Product invoicingProduct,
+      BigDecimal percentToInvoice,
+      OrderLineTax orderLineTax,
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine);
+  ```
