@@ -17,7 +17,7 @@
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="currency" colSpan="2" required="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="ventilated"/>
   </grid>
 
@@ -45,7 +45,7 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
@@ -205,7 +205,7 @@
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
-          <field name="paymentStatusSelect" colSpan="4"/>
+          <field name="paymentStatusSelect" colSpan="4" widget="single-select"/>
           <field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
           <field name="paymentDate" showIf="paymentDate" colSpan="4" readonly="true"/>
           <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>

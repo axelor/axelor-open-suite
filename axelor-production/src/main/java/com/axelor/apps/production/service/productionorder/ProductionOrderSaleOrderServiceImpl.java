@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -43,18 +44,21 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected ProductionOrderRepository productionOrderRepo;
   protected AppProductionService appProductionService;
   protected ManufOrderSaleOrderService manufOrderSaleOrderService;
+  protected final SaleOrderLineBlockingProductionService saleOrderLineBlockingProductionService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      ManufOrderSaleOrderService manufOrderSaleOrderService) {
+      ManufOrderSaleOrderService manufOrderSaleOrderService,
+      SaleOrderLineBlockingProductionService saleOrderLineBlockingProductionService) {
 
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
     this.manufOrderSaleOrderService = manufOrderSaleOrderService;
+    this.saleOrderLineBlockingProductionService = saleOrderLineBlockingProductionService;
   }
 
   @Override
@@ -69,12 +73,14 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     List<SaleOrderLine> saleOrderLineList =
         saleOrder.getSaleOrderLineList().stream()
             .filter(this::isGenerationNeeded)
+            .filter(line -> !saleOrderLineBlockingProductionService.isProductionBlocked(line))
             .collect(Collectors.toList());
 
     if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)) {
       saleOrderLineList =
           selectedSaleOrderLine.stream()
               .filter(this::isGenerationNeeded)
+              .filter(line -> !saleOrderLineBlockingProductionService.isProductionBlocked(line))
               .collect(Collectors.toList());
     }
 

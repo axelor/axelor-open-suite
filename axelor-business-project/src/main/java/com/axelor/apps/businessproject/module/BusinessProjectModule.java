@@ -121,6 +121,8 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingV
 import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessProjectServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
+import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
+import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
@@ -143,13 +145,11 @@ import com.axelor.apps.project.service.ProjectToolServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
@@ -158,8 +158,9 @@ public class BusinessProjectModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
-    bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
+    bind(SaleOrderInvoiceContractServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
+    bind(PurchaseOrderInvoiceContractServiceImpl.class)
+        .to(PurchaseOrderInvoiceProjectServiceImpl.class);
     bind(TimesheetProjectService.class).to(TimesheetProjectServiceImpl.class);
     bind(TimesheetLineServiceImpl.class).to(TimesheetLineProjectServiceImpl.class);
     bind(ExpenseInvoiceLineServiceImpl.class).to(ExpenseInvoiceLineServiceProjectImpl.class);

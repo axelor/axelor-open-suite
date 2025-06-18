@@ -12,7 +12,7 @@
     <field name="dateThreshold"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="account-clearance-form" title="Account clearance"
@@ -26,7 +26,7 @@
         canEdit="false" canView="false"/>
       <field name="company" widget="SuggestBox" form-view="company-form" canEdit="false"
         grid-view="company-grid"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
     </panel>
 
     <panel name="clearanceSettingsPanel" title="Clearance settings">

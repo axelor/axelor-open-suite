@@ -15,7 +15,7 @@
     <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
     <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
     <field name="totalFirmGap" x-scale="$currencyNumberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 

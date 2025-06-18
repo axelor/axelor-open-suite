@@ -18,6 +18,8 @@
         <panel name="planificationPanel" title="Planification"
           if-module="axelor-human-resource">
           <field name="enablePlanification"/>
+          <field name="blockPPTGeneration"/>
+
         </panel>
       </insert>
     </extend>

@@ -97,7 +97,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
@@ -136,7 +136,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="applyFinancialDiscount" hidden="true"/>
     <field name="amountRemaining" hidden="true"/>
@@ -171,7 +171,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="company.currency.numberOfDecimals" hidden="true"/>
@@ -330,7 +330,7 @@
         <panel name="pfpButtonPanel" itemSpan="4"
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
-            css="btn-success" onClick="action-invoice-term-group-validate-pfp"
+            css="btn-success" onClick="action-invoice-term-group-validate-pfp-process"
             showIf="[1,3].includes(pfpValidateStatusSelect)"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             css="btn-warning" onClick="action-invoice-term-group-partial-pfp"
@@ -922,7 +922,13 @@
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
     <action name="action-invoice-term-method-validate-pfp"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-validate-pfp-process">
+    <action name="action-invoice-term-validate-pfp-stock-move"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
     <action name="save"/>
+    <action name="action-invoice-term-method-validate-process"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-partial-pfp">
@@ -1033,6 +1039,10 @@
 
   <action-method name="action-invoice-term-method-set-due-date">
     <call class="com.axelor.apps.account.web.InvoiceTermController" method="setDueDate"/>
+  </action-method>
+
+  <action-method name="action-invoice-term-method-validate-process">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="validatePfpProcess"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"

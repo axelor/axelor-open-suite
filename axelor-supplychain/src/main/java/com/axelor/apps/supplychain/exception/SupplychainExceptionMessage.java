@@ -420,4 +420,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_SPLIT_ADVANCE_PAYMENT_AMOUNT_ERROR = /*$$(*/
       "The total of the order must be equal or superior than the advance payment total." /*)*/;
+
+  public static final String SALE_ORDER_LINES_CANNOT_DELIVER = /*$$(*/
+      "Warning : One or more lines are blocked for delivery" /*)*/;
 }

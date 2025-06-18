@@ -19,10 +19,24 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
+import java.util.Set;
 
 public interface ProjectTaskSprintService {
-  String getSprintOnChangeWarning(ProjectTask projectTask);
 
   void createOrMovePlanification(ProjectTask projectTask) throws AxelorException;
+
+  Sprint validateConfigAndSprint(ProjectTask projectTask);
+
+  Set<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
+      ProjectTask projectTask, Sprint savedSprint);
+
+  void moveProjectPlanningTime(ProjectPlanningTime projectPlanningTime, ProjectTask projectTask)
+      throws AxelorException;
+
+  void createProjectPlanningTime(ProjectTask projectTask) throws AxelorException;
+
+  Sprint getOldActiveSprint(ProjectTask projectTask);
 }

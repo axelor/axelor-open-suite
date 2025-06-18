@@ -21,7 +21,9 @@ public class PricingGroupSupplyChainServiceImpl extends PricingGroupSaleServiceI
     String domain = super.getConcernedModelDomain(pricing);
 
     if (PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING.equals(
-        pricing.getTypeSelect())) {
+            pricing.getTypeSelect())
+        || PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_DELAY.equals(
+            pricing.getTypeSelect())) {
       domain =
           String.format(
               "self.name IN (%s)",

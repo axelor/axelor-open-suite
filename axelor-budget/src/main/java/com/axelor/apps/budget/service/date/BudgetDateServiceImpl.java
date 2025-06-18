@@ -138,11 +138,9 @@ public class BudgetDateServiceImpl implements BudgetDateService {
       return "";
     }
 
-    if (fromDate == null || toDate == null) {
-      return I18n.get(BudgetExceptionMessage.BUDGET_MISSING_DATES);
-    }
-    if (fromDate.isAfter(toDate)) {
-      return I18n.get(BudgetExceptionMessage.BUDGET_WRONG_DATES);
+    String coherenceError = checkDateCoherence(fromDate, toDate);
+    if (StringUtils.notEmpty(coherenceError)) {
+      return coherenceError;
     }
 
     if (budget == null && ObjectUtils.isEmpty(budgetDistributionList)) {
@@ -160,6 +158,18 @@ public class BudgetDateServiceImpl implements BudgetDateService {
 
     if (sj.length() > 0) {
       return I18n.get(sj.toString());
+    }
+
+    return "";
+  }
+
+  @Override
+  public String checkDateCoherence(LocalDate fromDate, LocalDate toDate) {
+    if (fromDate == null || toDate == null) {
+      return I18n.get(BudgetExceptionMessage.BUDGET_MISSING_DATES);
+    }
+    if (fromDate.isAfter(toDate)) {
+      return I18n.get(BudgetExceptionMessage.BUDGET_WRONG_DATES);
     }
 
     return "";

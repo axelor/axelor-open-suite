@@ -20,6 +20,11 @@
     <boolean name="isProcessEmptyTable" title="Generate csv file for empty tables"/>
     <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
       title="Pseudonymizer"/>
+    <boolean name="isExportApp" title="Export App configurations"/>
+    <boolean name="isTemplateWithDescription" title="Templates with description"/>
+    <string name="description" title="Description" large="true"/>
+    <integer name="maxLinesPerFile" title="Max number of lines per file" nullable="true"/>
+
     <extra-code>
       <![CDATA[
 				// DATABACKUP STATUS

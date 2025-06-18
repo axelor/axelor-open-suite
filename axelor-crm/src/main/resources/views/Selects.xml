@@ -30,9 +30,9 @@
   </selection>
 
   <selection name="crm.event.status.select">
-    <option value="1">Planned</option>
-    <option value="2">Realized</option>
-    <option value="3">Canceled</option>
+    <option value="1" color="blue">Planned</option>
+    <option value="2" color="green">Realized</option>
+    <option value="3" color="red">Canceled</option>
   </selection>
 
   <selection name="crm.event.attendee.status.select">

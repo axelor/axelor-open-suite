@@ -27,6 +27,7 @@ import com.axelor.apps.production.db.repo.MachineManagementRepository;
 import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.MrpLineProductionRepository;
 import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessManagementRepository;
@@ -104,6 +105,8 @@ import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderCopyProductionService;
 import com.axelor.apps.production.service.SaleOrderCopyProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionService;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
@@ -270,6 +273,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeS
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
@@ -466,5 +470,8 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineMOGenerationMultiLineServiceImpl.class);
     bind(SaleOrderCopyProductionService.class).to(SaleOrderCopyProductionServiceImpl.class);
     bind(ManufOrderSaleOrderService.class).to(ManufOrderSaleOrderServiceImpl.class);
+    bind(MrpLineManagementRepository.class).to(MrpLineProductionRepository.class);
+    bind(SaleOrderLineBlockingProductionService.class)
+        .to(SaleOrderLineBlockingProductionServiceImpl.class);
   }
 }

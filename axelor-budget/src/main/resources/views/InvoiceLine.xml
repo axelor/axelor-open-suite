@@ -119,5 +119,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-dates-attrs-initialize-budget-dates"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 </object-views>

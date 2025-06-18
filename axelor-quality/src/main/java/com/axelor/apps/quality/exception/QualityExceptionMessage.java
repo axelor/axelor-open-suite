@@ -54,4 +54,28 @@ public final class QualityExceptionMessage {
 
   public static final String API_CHARACTERISTIC_NOT_IN_CONTROL_ENTRY = /*$$(*/
       "Characteristic or sample does not belong to this control entry." /*)*/;
+
+  public static final String API_SUPPLIER_NOT_PROVIDED = /*$$(*/
+      "Detection origin is supplier but no supplier is provided." /*)*/;
+
+  public static final String API_CUSTOMER_NOT_PROVIDED = /*$$(*/
+      "Detection origin is customer but no customer is provided." /*)*/;
+
+  public static final String API_DATA_DOES_NOT_MATCH_DETECTION_ORIGIN = /*$$(*/
+      "Provided data does not match with detection origin %s." /*)*/;
+
+  public static final String API_DETECTION_DEFAULT_LINE_NOT_IN_QI = /*$$(*/
+      "The resolution default line with id %s doesn't belong to this quality improvement." /*)*/;
+
+  public static final String QUALITY_IMPROVEMENT_UPDATED = /*$$(*/
+      "Quality improvement successfully updated." /*)*/;
+
+  public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
+      "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
+
+  public static final String API_QI_CREATION_MESSAGE = /*$$(*/
+      "The QualityImprovement has been correctly created with the id : %s." /*)*/;
+
+  public static final String API_QI_RESOLUTION_DEFAULT_ERROR = /*$$(*/
+      "Some defaults have been skipped as they were incompatibles. (%s line(s))" /*)*/;
 }

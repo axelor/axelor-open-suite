@@ -48,7 +48,7 @@
       x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="paymentDelay"/>
@@ -96,7 +96,7 @@
     <field name="inTaxTotal" aggregate="sum" width="120"/>
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="billOfExchangeBlockingOk"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -146,7 +146,7 @@
     <field name="inTaxTotal" aggregate="sum" width="120"/>
     <field name="amountRemaining" aggregate="sum" width="120"/>
     <field name="currency" width="60"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentDelay"/>
     <field name="paymentDelayReason"/>
@@ -205,7 +205,7 @@
       x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect" width="100"/>
+    <field name="statusSelect" width="100" widget="single-select"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -258,9 +258,9 @@
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="paymentProgress" widget="Progress"/>
-    <field name="pfpValidateStatusSelect" title="PFP"
+    <field name="pfpValidateStatusSelect" title="PFP" widget="single-select"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" title="PFP val."
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -320,9 +320,9 @@
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
-      name="pfpValidateStatusSelect" title="PFP"/>
+      name="pfpValidateStatusSelect" title="PFP" widget="single-select"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidatorUser" title="PFP val."/>
     <field name="paymentDelay"/>
@@ -368,7 +368,7 @@
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -388,7 +388,7 @@
     <field name="operationTypeSelect"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -494,9 +494,15 @@
           onChange="action-invoice-record-hide-discount"
           onSelect="action-invoice-method-domain-priceList" form-view="price-list-form"
           grid-view="price-list-grid" colSpan="4"/>
+        <spacer colSpan="4"/>
+        <field name="companyTaxNumber" if-module="axelor-supplychain"
+          if="__config__.app.getApp('base')?.getEnableTaxNumbers()" colSpan="4"
+          onSelect="action-invoice-method-domain-company-tax-number"
+          onChange="action-invoice-method-on-change-company-tax-number-set-fiscal-position"/>
         <field name="fiscalPosition" readonlyIf="statusSelect > 1" colSpan="4"
           onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"
-          form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
+          onSelect="action-invoice-method-domain-fiscal-position" form-view="fiscal-position-form"
+          grid-view="fiscal-position-grid"/>
       </panel>
       <panel name="invoiceMainThirdPanel" colSpan="12">
         <field name="companyBankDetails" colSpan="4"
@@ -780,6 +786,8 @@
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
           target="com.axelor.apps.base.db.Localization" hidden="true"/>
+        <panel-related name="invoiceNoteListPanel" field="invoiceNoteList"
+          colSpan="12" form-view="invoice-note-form" grid-view="invoice-note-grid"/>
         <panel name="descriptionToDisplayOnInvoicePanel" title="Comment to display on invoice"
           colSpan="12">
           <field name="note" widget="html" colSpan="12" showTitle="false"/>
@@ -1423,7 +1431,7 @@
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
     <field name="currency"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <!-- invoice-direct-debit -->
@@ -1440,7 +1448,7 @@
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="directDebitAmount" aggregate="sum"/>
     <field name="currency"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <!-- VIEW LITE -->
@@ -1450,7 +1458,7 @@
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid model="com.axelor.apps.account.db.Invoice" title="Release details"
@@ -1687,6 +1695,7 @@
     <action name="action-invoice-attrs-in-ati"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
+    <action name="action-invoice-method-set-default-company-tax-number"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -1766,6 +1775,7 @@
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-check-analytic-axis"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="action-invoice-method-set-invoice-notes"/>
   </action-group>
 
   <action-group name="action-invoice-group-pfp-validate">
@@ -2435,6 +2445,11 @@
     <call class="com.axelor.apps.account.web.InvoiceController" method="changePriceListDomain"/>
   </action-method>
 
+  <action-method name="action-invoice-method-domain-companyTaxNumber">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setCompanyTaxNumberDomain"/>
+  </action-method>
+
   <action-method
     name="action-invoice-method-register-mass-payment-on-supplier-invoices">
     <call class="com.axelor.apps.account.web.InvoiceController"
@@ -2578,6 +2593,27 @@
 
   <action-method name="action-invoice-method-check-analytic-axis">
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkAnalyticAxis"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-domain-company-tax-number">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setCompanyTaxNumberDomain"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-set-default-company-tax-number">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setDefaultCompanyTaxNumber"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-on-change-company-tax-number-set-fiscal-position">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="manageFiscalPositionFromCompanyTaxNumber"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-domain-fiscal-position">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setFiscalPositionDomain"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
@@ -2999,5 +3035,9 @@
     <view type="form" name="invoice-form"/>
     <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
   </action-view>
+
+  <action-method name="action-invoice-method-set-invoice-notes">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="generateInvoiceNote"/>
+  </action-method>
 
 </object-views>

@@ -12,7 +12,7 @@
     <field name="accountingValue" x-scale="$currencyNumberOfDecimals"/>
     <field name="correctedAccountingValue" x-scale="$currencyNumberOfDecimals"/>
     <field name="impairmentValue" x-scale="$currencyNumberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
@@ -29,7 +29,7 @@
     <field name="depreciation" x-scale="$currencyNumberOfDecimals"/>
     <field name="cumulativeDepreciation" x-scale="$currencyNumberOfDecimals"/>
     <field name="accountingValue" x-scale="$currencyNumberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     <field name="ifrsFixedAsset.statusSelect" hidden="true"/>

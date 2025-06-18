@@ -110,6 +110,8 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-distribution-attrs-currency-symbol"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-dates-attrs-initialize-budget-dates"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-record name="action-budget-purchase-orderline-record-set-global-budget"

@@ -258,6 +258,8 @@ import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingServiceI
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainServiceImpl;
@@ -298,6 +300,8 @@ import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderWorkflowSer
 import com.axelor.apps.supplychain.service.saleorder.views.SaleOrderViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineComputeSupplychainServiceImpl;
@@ -526,5 +530,9 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderAdvancePaymentFetchService.class)
         .to(SaleOrderAdvancePaymentFetchServiceImpl.class);
     bind(SaleOrderDummyServiceImpl.class).to(SaleOrderDummySupplychainServiceImpl.class);
+    bind(SaleOrderLineBlockingSupplychainService.class)
+        .to(SaleOrderLineBlockingSupplychainServiceImpl.class);
+    bind(SaleOrderBlockingSupplychainService.class)
+        .to(SaleOrderBlockingSupplychainServiceImpl.class);
   }
 }

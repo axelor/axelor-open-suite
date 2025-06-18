@@ -15,7 +15,7 @@
     <field name="nbrTerm"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="payment-schedule-form" title="Payment schedule"

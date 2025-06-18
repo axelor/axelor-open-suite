@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
@@ -50,6 +51,7 @@ public class SaleOrderFinalizeBudgetServiceImpl extends SaleOrderFinalizeSupplyc
       SaleConfigService saleConfigService,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
+      SaleOrderSequenceService saleOrderSequenceService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       SaleOrderBudgetService saleOrderBudgetService) {
@@ -61,6 +63,7 @@ public class SaleOrderFinalizeBudgetServiceImpl extends SaleOrderFinalizeSupplyc
         saleConfigService,
         appSaleService,
         appCrmService,
+        saleOrderSequenceService,
         appSupplychainService,
         accountingSituationSupplychainService);
     this.saleOrderBudgetService = saleOrderBudgetService;
