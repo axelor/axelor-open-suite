@@ -738,6 +738,7 @@
 "Validation step for invoicing outgoing stock move",,,
 "Verify product stock before availabity request",,,
 "Warn delay from supplier",,,
+"Warning : Estimated shipping date isn't updated due to pricing set on sale order.",,,
 "Warning : One or more lines are blocked for delivery",,,
 "When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'",,,
 "Would you like to update all lines with this stock location?",,,

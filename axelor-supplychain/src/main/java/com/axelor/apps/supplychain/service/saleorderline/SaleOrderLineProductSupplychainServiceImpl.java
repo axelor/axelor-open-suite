@@ -227,6 +227,11 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     FreightCarrierPricing freightCarrierPricing =
         freightCarrierPricingService.createFreightCarrierPricing(
             saleOrder.getFreightCarrierMode(), saleOrder);
+
+    if (freightCarrierPricing == null) {
+      return saleOrderLineMap;
+    }
+
     freightCarrierApplyPricingService.applyPricing(freightCarrierPricing);
     saleOrderLine.setPrice(freightCarrierPricing.getPricingAmount());
 
