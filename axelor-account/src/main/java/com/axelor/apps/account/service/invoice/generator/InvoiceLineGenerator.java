@@ -53,6 +53,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -284,6 +285,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
       invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
       invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+    } else {
+      invoiceLine.setTaxLineSet(new HashSet<>());
     }
 
     if ((exTaxTotal == null || inTaxTotal == null)) {
