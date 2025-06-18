@@ -1,4 +1,4 @@
-"importId";"project.importId";"projectTask.importId";"startDateTime";"endDateTime";"plannedTime";"timeUnit.importId";"product.importId";"employee_importId"
+"importId";"project_importId";"projectTask.importId";"startDateTime";"endDateTime";"plannedTime";"timeUnit_importId";"product.importId";"employee_importId"
 1;demo_project_13;demo_project_task_13_0;"NOW";"NOW[+1d]";"1";103;410;19
 2;demo_project_13;demo_project_task_13_0;"NOW[+1d]";"NOW[+2d]";"1";103;410;19
 3;demo_project_13;demo_project_task_13_0;"NOW[+2d]";"NOW[+3d]";"1";103;410;19
