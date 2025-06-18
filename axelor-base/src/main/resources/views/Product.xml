@@ -546,7 +546,8 @@
       <panel name="safetyPanel" title="Safety">
         <field name="safetyLabel" widget="image"/>
         <field name="isClp"/>
-        <panel-related field="icpeClassList" colSpan="12"/>
+        <panel-related field="icpeSet" colSpan="12" form-view="base-icpe-form"
+          grid-view="base-icpe-grid" canSelect="true"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
