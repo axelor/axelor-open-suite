@@ -134,6 +134,8 @@ import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerMailQueryService;
 import com.axelor.apps.base.service.PartnerMailQueryServiceImpl;
+import com.axelor.apps.base.service.PartnerPriceListDomainService;
+import com.axelor.apps.base.service.PartnerPriceListDomainServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -549,6 +551,7 @@ public class BaseModule extends AxelorModule {
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
     bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
+    bind(PartnerPriceListDomainService.class).to(PartnerPriceListDomainServiceImpl.class);
     bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
     bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
   }

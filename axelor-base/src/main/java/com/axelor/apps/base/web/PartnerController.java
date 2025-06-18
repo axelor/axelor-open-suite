@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerConvertService;
+import com.axelor.apps.base.service.PartnerPriceListDomainService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -531,5 +532,23 @@ public class PartnerController {
       response.setView(actionViewBuilder.map());
       response.setCanClose(true);
     }
+  }
+
+  public void getSalePartnerPriceListDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    response.setAttr(
+        "salePartnerPriceList",
+        "domain",
+        Beans.get(PartnerPriceListDomainService.class).getSalePartnerPriceListDomain(partner));
+  }
+
+  public void getPurchasePartnerPriceListDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    response.setAttr(
+        "purchasePartnerPriceList",
+        "domain",
+        Beans.get(PartnerPriceListDomainService.class).getPurchasePartnerPriceListDomain(partner));
   }
 }
