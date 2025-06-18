@@ -145,6 +145,8 @@
     <many-to-one name="safeTyLabel" ref="com.axelor.meta.db.MetaFile" title="Label"/>
     <boolean name="isClp" title="CLP"/>
     <many-to-many name="icpeSet" ref="com.axelor.apps.base.db.Icpe"/>
+    <integer name="retentionTypeSelect" selection="base.product.retention.type.select"
+      title="Retention type"/>
 
     <unique-constraint columns="product,company"/>
 
