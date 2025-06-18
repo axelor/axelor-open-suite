@@ -75,6 +75,10 @@ import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.hr.service.EmployeeFileDMSServiceImpl;
 import com.axelor.apps.hr.service.HRDashboardService;
 import com.axelor.apps.hr.service.HRDashboardServiceImpl;
+import com.axelor.apps.hr.service.KilometricExpenseService;
+import com.axelor.apps.hr.service.KilometricExpenseServiceImpl;
+import com.axelor.apps.hr.service.KilometricLogService;
+import com.axelor.apps.hr.service.KilometricLogServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
@@ -502,5 +506,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectTaskPPTGenerateService.class).to(ProjectTaskPPTGenerateServiceImpl.class);
     bind(ProjectPlanningTimeCreateUpdateService.class)
         .to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
+    bind(KilometricLogService.class).to(KilometricLogServiceImpl.class);
+    bind(KilometricExpenseService.class).to(KilometricExpenseServiceImpl.class);
   }
 }
