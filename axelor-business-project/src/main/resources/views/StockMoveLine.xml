@@ -10,7 +10,7 @@
       <insert position="before">
         <panel title="Project" colSpan="12" if="__config__.app.getApp('business-project')">
           <field name="project"/>
-          <field name="projectTask"/>
+          <field name="projectTask" domain="self.project = :project"/>
           <field name="toInvoice"
             if="__config__.app.getApp('business-project')?.getIsReinvoiceablStockMoveLine()"/>
         </panel>
