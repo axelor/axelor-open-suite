@@ -32,7 +32,9 @@ public class MoveLineMassEntryController {
   public void checkPartnerBankDetails(ActionRequest request, ActionResponse response) {
     MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
     Move move = request.getContext().getParent().asType(Move.class);
-    BankDetails movePartnerBankDetails = Beans.get(MoveLineMassEntryRecordBankPaymentServiceImpl.class).checkMovePartnerBankDetails(moveLineMassEntry, move);
+    BankDetails movePartnerBankDetails =
+        Beans.get(MoveLineMassEntryRecordBankPaymentServiceImpl.class)
+            .checkMovePartnerBankDetails(moveLineMassEntry, move);
     response.setValue("movePartnerBankDetails", movePartnerBankDetails);
   }
 }
