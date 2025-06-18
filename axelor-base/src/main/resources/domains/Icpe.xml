@@ -8,8 +8,9 @@
   <entity name="Icpe">
 
     <string name="icpeCode" title="ICPE code" required="true"/>
-    <string name="icpeDesignation" title="ICPE designation" required="true"/>
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <string name="icpeDesignation" title="ICPE designation" required="true" large="true"/>
+    <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
+      title="Products"/>
   </entity>
 
 </domain-models>
