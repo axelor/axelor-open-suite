@@ -18,6 +18,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class KilometricLogServiceImpl implements KilometricLogService {
 
@@ -100,5 +101,13 @@ public class KilometricLogServiceImpl implements KilometricLogService {
                     log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
         .findFirst()
         .orElse(null);
+  }
+
+  @Override
+  public List<Long> getExpenseLineIdList(KilometricLog kilometricLog) {
+    return kilometricLog.getExpenseLineList().stream()
+        .filter(line -> line.getExpense().getStatusSelect() != ExpenseRepository.STATUS_CANCELED)
+        .map(ExpenseLine::getId)
+        .collect(Collectors.toList());
   }
 }
