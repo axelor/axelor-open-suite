@@ -336,12 +336,14 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       if (CollectionUtils.isNotEmpty(taxLineSet)) {
         List<TaxLine> deductibleTaxList =
             moveLineList.stream()
+                .filter(ml -> ObjectUtils.notEmpty(ml.getTaxLineSet()))
                 .map(MoveLine::getTaxLineSet)
                 .flatMap(Set::stream)
                 .filter(it -> !this.isNonDeductibleTax(it))
                 .collect(Collectors.toList());
         List<TaxLine> nonDeductibleTaxList =
             moveLineList.stream()
+                .filter(ml -> ObjectUtils.notEmpty(ml.getTaxLineSet()))
                 .map(MoveLine::getTaxLineSet)
                 .flatMap(Set::stream)
                 .filter(this::isNonDeductibleTax)
