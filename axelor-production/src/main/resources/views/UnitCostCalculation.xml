@@ -10,7 +10,7 @@
     <field name="calculationDateTime"/>
     <field name="updateCostDateTime"/>
     <field name="allBomLevels"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="cost-calculations-form" title="Cost price calculation"
