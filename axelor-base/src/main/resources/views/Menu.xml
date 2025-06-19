@@ -1218,4 +1218,13 @@
     <view type="form" name="base-icpe-form"/>
   </action-view>
 
+  <menuitem name="base-hazard-pictogram-all" parent="referential-root"
+    title="Hazard Pictograms" action="base.hazard.pictogram.all" order="100"/>
+
+  <action-view name="base.hazard.pictogram.all" title="Hazard Pictograms"
+    model="com.axelor.apps.base.db.HazardPictogram">
+    <view type="grid" name="base-hazard-pictogram-grid"/>
+    <view type="form" name="base-hazard-pictogram-form"/>
+  </action-view>
+
 </object-views>
