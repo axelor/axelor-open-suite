@@ -3,14 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
 
-  <grid name="base-icpe-grid" id="base-icpe-grid" title="ICPE"
-    model="com.axelor.apps.base.db.Icpe">
+  <grid name="base-icpe-grid" title="ICPE" model="com.axelor.apps.base.db.Icpe">
     <field name="icpeCode"/>
     <field name="icpeDesignation"/>
   </grid>
 
-  <form name="base-icpe-form" id="base-icpe-form" title="ICPE"
-    model="com.axelor.apps.base.db.Icpe">
+  <form name="base-icpe-form" title="ICPE" model="com.axelor.apps.base.db.Icpe">
     <panel name="mainPanel">
       <field name="icpeCode"/>
       <field name="icpeDesignation"/>
