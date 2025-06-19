@@ -552,6 +552,9 @@
         <panel-related field="hazardPictogramSet" colSpan="12"
           form-view="base-hazard-pictogram-form" grid-view="base-hazard-pictogram-form"
           canSelect="true" title="Hazard pictograms"/>
+        <panel-related field="hazardPhraseSet" colSpan="12"
+          form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-form" canSelect="true"
+          title="Hazard phrases"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">

@@ -28,4 +28,7 @@
 
   <input file="base_hazard_pictogram.csv" type="com.axelor.apps.base.db.HazardPictogram"
     separator=";" call="com.axelor.csv.script.ImportHazardPictogram:importPictogram"/>
+
+  <input file="base_hazard_phrase.csv" type="com.axelor.apps.base.db.HazardPhrase"
+    separator=";"/>
 </csv-inputs>

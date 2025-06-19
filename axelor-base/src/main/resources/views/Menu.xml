@@ -1227,4 +1227,13 @@
     <view type="form" name="base-hazard-pictogram-form"/>
   </action-view>
 
+  <menuitem name="base-hazard-phrase-all" parent="referential-root" title="Hazard phrases"
+    action="base.hazard.phrase.all" order="100"/>
+
+  <action-view name="base.hazard.phrase.all" title="Hazard Phrases"
+    model="com.axelor.apps.base.db.HazardPhrase">
+    <view type="grid" name="base-hazard-phrase-grid"/>
+    <view type="form" name="base-hazard-phrase-form"/>
+  </action-view>
+
 </object-views>
