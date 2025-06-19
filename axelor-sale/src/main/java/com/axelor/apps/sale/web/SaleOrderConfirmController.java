@@ -2,9 +2,11 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -12,6 +14,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +74,7 @@ public class SaleOrderConfirmController {
     for (Map<String, Object> map : saleOrderLineListContext) {
       if (map.get("qtyToOrder") != null) {
         BigDecimal qtyToOrderItem = new BigDecimal(map.get("qtyToOrder").toString());
-        Long soLineId = Long.valueOf((Integer) map.get("id"));
+        Long soLineId = Long.valueOf((Integer) map.get("solId"));
         qtyToOrderMap.put(soLineId, qtyToOrderItem);
       }
     }
@@ -81,8 +84,24 @@ public class SaleOrderConfirmController {
     Context context = request.getContext();
     SaleOrder saleOrder = context.asType(SaleOrder.class);
     SaleOrderDummyService saleOrderDummyService = Beans.get(SaleOrderDummyService.class);
-
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     response.setValues(saleOrderDummyService.getOnLoadSplitDummies(saleOrder));
+    response.setValue(
+        "$saleOrderLineList",
+        Beans.get(SaleOrderSplitService.class).getSaleOrderLineMapList(saleOrder));
+  }
+
+  public void orderAll(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    List<Map<String, Object>> saleOrderLineListContext = new ArrayList<>();
+    SaleOrder saleOrder = context.asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    SaleOrderSplitService saleOrderSplitService = Beans.get(SaleOrderSplitService.class);
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      Map<String, Object> map = Mapper.toMap(saleOrderLine);
+      map.put("$qtyToOrder", saleOrderSplitService.getQtyToOrderLeft(saleOrderLine));
+      saleOrderLineListContext.add(map);
+    }
+    response.setValue("$saleOrderLineList", saleOrderLineListContext);
   }
 }

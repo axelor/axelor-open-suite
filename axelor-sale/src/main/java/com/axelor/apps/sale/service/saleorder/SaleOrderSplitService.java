@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface SaleOrderSplitService {
@@ -13,4 +14,6 @@ public interface SaleOrderSplitService {
   void checkSolOrderedQty(SaleOrder saleOrder) throws AxelorException;
 
   BigDecimal getQtyToOrderLeft(SaleOrderLine saleOrderLine);
+
+  List<Map<String, Object>> getSaleOrderLineMapList(SaleOrder saleOrder);
 }
