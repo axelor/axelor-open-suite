@@ -5,7 +5,7 @@
 
   <grid name="call-tender-offer-grid" title="Supplier offers"
     model="com.axelor.apps.purchase.db.CallTenderOffer">
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="product"/>
     <field name="supplierPartner"/>
     <field name="requestedQty"/>
