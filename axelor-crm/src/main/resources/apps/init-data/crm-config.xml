@@ -5,6 +5,20 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check-message="Invalid codeSelect :codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence','importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
+      if="yearlyResetOk"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -14,16 +28,21 @@
   <input file="crm_leadStatus.csv" separator=";" type="com.axelor.apps.crm.db.LeadStatus"
     search="self.importId = :importId"/>
 
-
   <input file="crm_opportunityStatus.csv" separator=";"
-    type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
-
+    type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="crm_partnerStatus.csv" separator=";"
     type="com.axelor.apps.crm.db.PartnerStatus" search="self.importId = :importId"/>
 
   <input file="studio_appCrm.csv" separator=";" type="com.axelor.studio.db.AppCrm"
     search="self.app.code = :code">
+    <bind column="assignableUsers" to="assignableUsers"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.app.crm.assignable.user.select', assignableUsers, false)"
+      check-message="Invalid assignableUsers :assignableUsers"/>
     <bind to="app" column="code" search="self.code = :code"/>
     <bind to="closedWinOpportunityStatus" column="closedWinOpportunityStatus_importId"
       search="self.importId = :closedWinOpportunityStatus_importId"/>
