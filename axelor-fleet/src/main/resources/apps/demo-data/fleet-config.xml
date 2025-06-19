@@ -5,6 +5,15 @@
 
   <input file="fleet_vehicleContract.csv" separator=";"
     type="com.axelor.apps.fleet.db.VehicleContract" search="self.importId = :importId">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.cost.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.contract.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="costFrequencySelect" to="costFrequencySelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.contract.cost.frequency.select', costFrequencySelect, false)"
+      check-message="Invalid costFrequencySelect :costFrequencySelect"/>
     <bind column="invoiceDate" to="invoiceDate"
       eval="call: com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)"/>
     <bind column="startDate" to="startDate"
@@ -14,13 +23,30 @@
   </input>
 
   <input file="fleet_vehicleMake.csv" separator=";"
-    type="com.axelor.apps.fleet.db.VehicleMake" search="self.importId = :importId"/>
+    type="com.axelor.apps.fleet.db.VehicleMake" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="fleet_vehicleModel.csv" separator=";"
-    type="com.axelor.apps.fleet.db.VehicleModel" search="self.importId = :importId"/>
+    type="com.axelor.apps.fleet.db.VehicleModel" search="self.importId = :importId">
+    <bind column="model" to="model"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(model)"
+      check-message="Model must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="fleet_vehicle.csv" separator=";" type="com.axelor.apps.fleet.db.Vehicle"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportVehicle:importVehicle">
+    <bind column="transmissionSelect" to="transmissionSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.transimission.select', transmissionSelect, false)"
+      check-message="Invalid transmissionSelect :transmissionSelect"/>
+    <bind column="fuelTypeSelect" to="fuelTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.fuel.type.select', fuelTypeSelect, false)"
+      check-message="Invalid fuelTypeSelect :fuelTypeSelect"/>
     <bind column="acquisitionDate" to="acquisitionate"
       eval="call: com.axelor.csv.script.ImportDateTime:importDate(acquisitionDate)"/>
     <bind column="vehicleTagSetImportId" to="vehicleTagSet"
