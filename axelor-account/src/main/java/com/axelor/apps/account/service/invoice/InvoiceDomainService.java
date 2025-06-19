@@ -27,6 +27,4 @@ public interface InvoiceDomainService {
   String getCompanyTaxNumberDomain(Company company);
 
   String getFiscalPositionDomain(Invoice invoice);
-
-  String createDomainForBankDetails(Invoice invoice);
 }

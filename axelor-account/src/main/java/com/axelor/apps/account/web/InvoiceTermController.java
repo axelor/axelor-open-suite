@@ -26,11 +26,11 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -458,7 +458,9 @@ public class InvoiceTermController {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
     String domain =
-        Beans.get(InvoiceTermDomainService.class).createDomainForBankDetails(invoiceTerm);
+        Beans.get(BankDetailsDomainServiceAccount.class)
+            .createDomainForBankDetails(
+                invoiceTerm.getPartner(), invoiceTerm.getPaymentMode(), invoiceTerm.getCompany());
 
     response.setAttr("bankDetails", "domain", domain);
   }

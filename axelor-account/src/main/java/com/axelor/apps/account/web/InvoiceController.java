@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
@@ -1512,7 +1513,10 @@ public class InvoiceController {
   @ErrorException
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    String domain = Beans.get(InvoiceDomainService.class).createDomainForBankDetails(invoice);
+    String domain =
+        Beans.get(BankDetailsDomainServiceAccount.class)
+            .createDomainForBankDetails(
+                invoice.getPartner(), invoice.getPaymentMode(), invoice.getCompany());
     response.setAttr("bankDetails", "domain", domain);
   }
 

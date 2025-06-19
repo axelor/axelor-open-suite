@@ -1,19 +1,19 @@
-package com.axelor.apps.account.service.invoiceterm;
+package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.helpers.StringHelper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class InvoiceTermDomainServiceImpl implements InvoiceTermDomainService {
+public class BankDetailsDomainServiceAccountImpl implements BankDetailsDomainServiceAccount {
 
   @Override
-  public String createDomainForBankDetails(InvoiceTerm invoiceTerm) {
-    Partner partner = invoiceTerm.getPartner();
+  public String createDomainForBankDetails(
+      Partner partner, PaymentMode paymentMode, Company company) {
     String domain = "self.id IN (0)";
-
     if (partner != null && !partner.getBankDetailsList().isEmpty()) {
       List<BankDetails> bankDetailsList =
           partner.getBankDetailsList().stream()

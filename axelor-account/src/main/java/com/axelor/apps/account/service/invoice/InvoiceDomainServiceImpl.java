@@ -22,11 +22,8 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.FiscalPositionRepository;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Objects;
@@ -96,20 +93,5 @@ public class InvoiceDomainServiceImpl implements InvoiceDomainService {
       return String.format("self.id IN (%s)", companyTaxNumbersIds);
     }
     return null;
-  }
-
-  @Override
-  public String createDomainForBankDetails(Invoice invoice) {
-    Partner partner = invoice.getPartner();
-    String domain = "self.id IN (0)";
-    if (partner != null && !partner.getBankDetailsList().isEmpty()) {
-      List<BankDetails> bankDetailsList =
-          partner.getBankDetailsList().stream()
-              .filter(BankDetails::getActive)
-              .collect(Collectors.toList());
-
-      domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
-    }
-    return domain;
   }
 }

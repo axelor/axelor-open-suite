@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
+import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryDomainService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -295,8 +295,9 @@ public class MoveLineMassEntryController {
     Move move = request.getContext().getParent().asType(Move.class);
 
     String domain =
-        Beans.get(MoveLineMassEntryDomainService.class)
-            .createDomainForMovePartnerBankDetails(move, moveLineMassEntry);
+        Beans.get(BankDetailsDomainServiceAccount.class)
+            .createDomainForBankDetails(
+                moveLineMassEntry.getPartner(), move.getPaymentMode(), move.getCompany());
 
     response.setAttr("movePartnerBankDetails", "domain", domain);
   }

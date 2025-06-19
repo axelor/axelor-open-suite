@@ -22,16 +22,15 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
+import com.axelor.apps.account.service.BankDetailsDomainServiceAccountImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceBankDetailsServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
-import com.axelor.apps.account.service.invoiceterm.InvoiceTermDomainServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
@@ -39,7 +38,6 @@ import com.axelor.apps.account.service.move.attributes.MoveAttrsServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveGroupOnChangeServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryDomainServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
@@ -69,8 +67,6 @@ import com.axelor.apps.bankpayment.service.InvoiceBankDetailsServiceBankPayment;
 import com.axelor.apps.bankpayment.service.InvoiceBankDetailsServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.InvoiceDomainBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.InvoiceTermDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPayment;
@@ -85,6 +81,7 @@ import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsDomainServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
@@ -182,7 +179,6 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordServiceBankPayment;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
@@ -336,16 +332,14 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveRecordSetServiceImpl.class).to(MoveRecordSetBankPaymentServiceImpl.class);
     bind(MoveLineMassEntryRecordServiceImpl.class)
         .to(MoveLineMassEntryRecordBankPaymentServiceImpl.class);
-    bind(InvoiceTermDomainServiceImpl.class).to(InvoiceTermDomainBankPaymentServiceImpl.class);
-    bind(InvoiceDomainServiceImpl.class).to(InvoiceDomainBankPaymentServiceImpl.class);
     bind(MoveAttrsServiceImpl.class).to(MoveAttrsBankPaymentServiceImpl.class);
     bind(InvoiceBankDetailsServiceImpl.class).to(InvoiceBankDetailsServiceBankPaymentImpl.class);
     bind(InvoiceBankDetailsServiceBankPayment.class)
         .to(InvoiceBankDetailsServiceBankPaymentImpl.class);
     bind(MoveGroupOnChangeServiceImpl.class).to(MoveGroupOnChangeServiceBankPaymentImpl.class);
-    bind(MoveLineMassEntryDomainServiceImpl.class)
-        .to(MoveLineMassEntryDomainBankPaymentServiceImpl.class);
     bind(MoveLineMassEntryRecordServiceBankPayment.class)
         .to(MoveLineMassEntryRecordBankPaymentServiceImpl.class);
+    bind(BankDetailsDomainServiceAccountImpl.class)
+        .to(BankDetailsDomainServiceBankPaymentImpl.class);
   }
 }
