@@ -13,7 +13,7 @@
     <field name="workshopStockLocation"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="machineType"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="maintenance-prod-process-form" title="Production process"
