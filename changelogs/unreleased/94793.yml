@@ -1,0 +1,3 @@
+---
+title: "MoveLine/TaxSet: fixed technical error generating movelines without taxes in some process"
+module: axelor-account

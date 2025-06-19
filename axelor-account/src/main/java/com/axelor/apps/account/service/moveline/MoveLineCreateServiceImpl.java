@@ -315,6 +315,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             amountInSpecificMoveCurrency,
             originDate);
 
+    moveLine.setTaxLineSet(new HashSet<>());
+
     moveLine.setIsOtherCurrency(!move.getCurrency().equals(move.getCompanyCurrency()));
     moveLineToolService.setDecimals(moveLine, move);
 
