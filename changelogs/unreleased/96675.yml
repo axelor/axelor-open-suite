@@ -1,0 +1,3 @@
+---
+title: "SaleOrder/PurchaseOrder/Invoice : fix advance invoice's amount on partial invoicing"
+module: axelor-supplychain
