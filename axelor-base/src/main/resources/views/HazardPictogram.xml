@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+
+  <grid name="base-hazard-pictogram-grid" title="Hazard pictogram"
+    model="com.axelor.apps.base.db.HazardPictogram">
+    <field name="clpCode" widget="image"/>
+    <field name="clpDesignation"/>
+    <field name="clpPictogram"/>
+  </grid>
+
+  <form name="base-hazard-pictogram-form" title="Hazard pictogram"
+    model="com.axelor.apps.base.db.HazardPictogram">
+    <panel name="mainPanel">
+      <field name="clpPictogram" widget="image" x-accept=".svg"/>
+      <field name="clpCode"/>
+      <field name="clpDesignation"/>
+
+    </panel>
+  </form>
+
+</object-views>
