@@ -5,7 +5,7 @@
 
   <grid name="control-entry-grid" title="Control entries"
     model="com.axelor.apps.quality.db.ControlEntry">
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="name"/>
     <field name="entryDateTime"/>
     <field name="inspector"/>

@@ -34,10 +34,10 @@
   </selection>
 
   <selection name="quality.control.entry.status.select">
-    <option value="1">Draft</option>
-    <option value="2">In progress</option>
-    <option value="3">Finished</option>
-    <option value="4">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">In progress</option>
+    <option value="3" color="green">Finished</option>
+    <option value="4" color="red">Canceled</option>
   </selection>
 
   <selection name="quality.control.plan.frequency.type.select">
