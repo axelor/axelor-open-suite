@@ -24,4 +24,8 @@
   <input file="base_fakerApiFieldParameters.csv"
     type="com.axelor.apps.base.db.FakerApiFieldParameters"/>
 
+  <input file="base_icpe.csv" type="com.axelor.apps.base.db.Icpe" separator=";"/>
+
+  <input file="base_hazard_pictogram.csv" type="com.axelor.apps.base.db.HazardPictogram"
+    separator=";" call="com.axelor.csv.script.ImportHazardPictogram:importPictogram"/>
 </csv-inputs>
