@@ -1,0 +1,3 @@
+---
+title: "Accounting export: fixed the issue where only accounted moves were returned."
+module: axelor-account

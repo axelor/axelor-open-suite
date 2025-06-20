@@ -277,7 +277,8 @@
 
   <form name="accounting-report-export-form" title="Accounting export"
     model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default,action-attrs-accounting-report-attrs-move-status-domain">
+    onNew="action-accounting-report-record-default,action-attrs-accounting-report-attrs-move-status-domain"
+    onLoad="action-attrs-accounting-report-attrs-move-status-domain">
 
     <panel name="searchPanel">
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
@@ -299,9 +300,12 @@
           readonlyIf="$contains([1000], reportType.typeSelect) || year || period"/>
         <field name="dateTo"
           readonlyIf="$contains([1000], reportType.typeSelect)  || year || period"/>
+        <field name="moveStatusSelect" widget="MultiSelect"
+          onSelect="action-attrs-accounting-report-attrs-move-status-domain"/>
       </panel>
       <field name="journal" form-view="journal-form" grid-view="journal-grid"
-        showIf="$contains([1001], reportType.typeSelect)"/>
+        showIf="$contains([1001], reportType.typeSelect)"
+        onChange="action-accounting-report-record-move-status-select"/>
       <field name="minAmountExcl" showIf="reportType.typeSelect == 1011"/>
       <field name="reportType.typeSelect" hidden="true"/>
     </panel>
@@ -380,8 +384,6 @@
     <attribute name="selection-in" for="moveStatusSelect"
       if="!_isCustom &amp;&amp; company"
       expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, company)"/>
-    <attribute name="hidden" for="moveStatusSelect" expr="eval: true"
-      if="!company || !companySet"/>
   </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-period-domain">
