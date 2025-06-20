@@ -13,8 +13,8 @@
     onSave="action-company-check-multi-banks" canNew="_canNew">
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
-        <field name="logo" widget="Image" colSpan="12"/>
-        <field name="companyLogoList" colSpan="12"/>
+        <field name="logo" widget="Image"/>
+        <field name="darkLogo" widget="Image"/>
         <field name="width" requiredIf="height"
           onChange="action-company-condition-validate-logo-height-and-width">
           <viewer depends="width"><![CDATA[

@@ -22,7 +22,6 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.CompanyLogo;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -36,7 +35,6 @@ import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -75,6 +73,8 @@ public class UserServiceImpl implements UserService {
 
   @Deprecated(since = "8.4.0", forRemoval = true)
   public static final String DEFAULT_LOCALE = "en";
+
+  public static final String DARK_THEME_MODE = "dark";
 
   public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
@@ -166,27 +166,19 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public MetaFile getUserActiveCompanyLogo(String theme) {
+  public MetaFile getUserActiveCompanyLogo(String mode) {
     final Company company = getUserActiveCompany();
     if (company == null) {
       return null;
     }
 
-    List<CompanyLogo> companyLogos = company.getCompanyLogoList();
-    if (ObjectUtils.isEmpty(companyLogos)) {
-      return company.getLogo();
-    }
-
-    return companyLogos.stream()
-        .filter(cl -> cl.getTheme().equals(theme))
-        .findAny()
-        .map(CompanyLogo::getLogo)
-        .orElse(company.getLogo());
+    var darkLogo = company.getDarkLogo();
+    return mode.equals(DARK_THEME_MODE) && darkLogo != null ? darkLogo : company.getLogo();
   }
 
   @Override
-  public String getUserActiveCompanyLogoLink(String theme) {
-    MetaFile logo = getUserActiveCompanyLogo(theme);
+  public String getUserActiveCompanyLogoLink(String mode) {
+    MetaFile logo = getUserActiveCompanyLogo(mode);
     if (logo == null) {
       return null;
     }

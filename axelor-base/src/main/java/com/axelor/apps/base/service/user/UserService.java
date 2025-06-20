@@ -75,25 +75,25 @@ public interface UserService {
 
   /**
    * Returns the file representing the active company logo of the user, according to the provided
-   * theme.
+   * theme mode.
    *
-   * <p>If there is no company logo defined for the provided theme, the fallback is the default
+   * <p>If there is no company logo defined for the provided theme mode, the fallback is the default
    * company logo.
    *
    * @return the logo file
    */
-  MetaFile getUserActiveCompanyLogo(String theme);
+  MetaFile getUserActiveCompanyLogo(String mode);
 
   /**
-   * Returns the link targeting the active company logo of the user, according to the provided
-   * theme.
+   * Returns the link targeting the active company logo of the user, according to the provided theme
+   * mode.
    *
-   * <p>If there is no company logo defined for the provided theme, the fallback is the default
+   * <p>If there is no company logo defined for the provided theme mode, the fallback is the default
    * company logo.
    *
    * @return the logo link
    */
-  String getUserActiveCompanyLogoLink(String theme);
+  String getUserActiveCompanyLogoLink(String mode);
 
   /**
    * Method that return the active team of the current connected user
