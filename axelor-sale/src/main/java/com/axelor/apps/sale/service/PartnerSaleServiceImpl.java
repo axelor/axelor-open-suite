@@ -99,7 +99,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
       Partner customer, Product product) {
 
     String qtySelection = "SELECT SUM(line.qty)";
-    String priceSelection = "SELECT SUM(line.subTotalCostPrice)";
+    String priceSelection = "SELECT SUM(line.exTaxTotal)";
     String endQuery =
         " FROM SaleOrderLine line join SaleOrder sale on line.saleOrder = sale.id"
             + " WHERE sale.statusSelect IN ("
