@@ -1,0 +1,3 @@
+---
+title: "Fix issue where the parent task is not assigned on clicking createSubTaskBtn."
+module: axelor-project

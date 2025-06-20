@@ -539,6 +539,7 @@
 
   <action-group name="action-project-task-group-project-onchange">
     <action name="action-project-task-group-reset-datas"/>
+    <action name="action-project-task-attrs-reset-parent-task"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-record-project-configurations"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
@@ -551,7 +552,6 @@
 
   <action-group name="action-project-task-group-reset-datas">
     <action name="action-project-task-attrs-reset-version-and-sprint"/>
-    <action name="action-project-task-attrs-reset-parent-task"/>
   </action-group>
 
   <action-method name="action-project-task-method-set-link-type-domain">
