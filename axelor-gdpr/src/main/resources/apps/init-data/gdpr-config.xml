@@ -3,12 +3,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
-  <input file="gdpr-anonymizer.csv" separator=";" type="com.axelor.apps.base.db.Anonymizer"/>
+  <input file="gdpr-anonymizer.csv" separator=";" type="com.axelor.apps.base.db.Anonymizer">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
+
   <input file="gdpr-anonymizer-lines.csv" separator=";"
     type="com.axelor.apps.base.db.AnonymizerLine">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel)"
+      check-message="Meta model with name :metaModel doesn't exist"/>
     <bind to="metaField" column="metaField"
-      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
+      check-message="Meta field with name :metaField and model :metaModel doesn't exist"/>
     <bind to="anonymizer" column="anonymizer_importId"
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
@@ -16,28 +25,61 @@
 
   <input file="gdpr-anonymizer-lines.csv" separator=";"
     type="com.axelor.apps.base.db.AnonymizerLine">
-    <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
-    <bind column="metaField" to="metaField"
-      search="self.metaModel.name = :metaModel AND self.name = :metaField"/>
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel)"
+      check-message="Meta model with name :metaModel doesn't exist"/>
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
+      check-message="Meta field with name :metaField and model :metaModel doesn't exist"/>
   </input>
 
   <input file="gdpr-request-origin.csv" separator=";"
-    type="com.axelor.apps.gdpr.db.GDPRRequestOrigin">
+    type="com.axelor.apps.gdpr.db.GDPRRequestOrigin" search="self.code = :code">
     <bind to="appGdpr" column="appGdpr" search="self.app.code = :appGdpr" update="true"/>
   </input>
 
   <input file="gdpr_template.csv" separator=";" type="com.axelor.message.db.Template"
-    search="self.name = :name"/>
+    search="self.name = :name">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="mediaTypeSelect" to="mediaTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('message.media.type.select', mediaTypeSelect, true)"
+      check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
+    <bind column="language" to="language"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('select.language', language, false)"
+      check-message="Invalid language :language"/>
+  </input>
 
   <input file="gdpr-search-config.csv" separator=";"
-    type="com.axelor.apps.gdpr.db.GDPRSearchConfig">
+    type="com.axelor.apps.gdpr.db.GDPRSearchConfig" search="self.importId = :importId">
     <bind to="appGdpr" column="appGdpr" search="self.app.code = :appGdpr" update="true"/>
-    <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
+    <bind column="metaModel" to="metaModel" search="self.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.gdpr.db.GDPRSearchConfig', 'importId', importId, 'metaModel.name', metaModel)"
+      check-message="Meta model must be unique"/>
   </input>
 
   <input file="gdpr-search-config-line.csv" separator=";"
-    type="com.axelor.apps.gdpr.db.GDPRSearchConfigLine">
-    <bind column="searchConfig" to="searchConfig" search="self.metaModel.name = :searchConfig"/>
+    type="com.axelor.apps.gdpr.db.GDPRSearchConfigLine" search="self.importId = :importId">
+    <bind column="searchConfig" to="searchConfig" search="self.metaModel.name = :searchConfig"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.gdpr.db.GDPRSearchConfig', 'metaModel.name', searchConfig)"
+      check-message="GDPR search configuration with meta model :searchConfig doesn't exist"/>
+    <bind column="query" to="query"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(query)"
+      check-message="Query must not be null"/>
+    <bind column="mapping" to="mapping"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(mapping)"
+      check-message="Mapping must not be null"/>
+    <bind column="key" to="key"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('gdpr.search.config.line.key.select', key, true)"
+      check-message="Invalid key :key"/>
+    <bind column="key" to="key"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.gdpr.db.GDPRSearchConfigLine', 'importId', importId, 'searchConfig.metaModel.name, key', searchConfig, key)"
+      check-message="GDPR search configuration and key must be unique"/>
   </input>
 
   <input file="app_gdpr.csv" separator=";" type="com.axelor.studio.db.AppGdpr"
