@@ -5,7 +5,7 @@
 
   <grid name="control-plan-grid" title="Control plans"
     model="com.axelor.apps.quality.db.ControlPlan">
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="code"/>
     <field name="name"/>
     <field name="controlPlanFrequency"/>
