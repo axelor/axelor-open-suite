@@ -20,7 +20,7 @@
     <field name="stockLocation"/>
     <field name="createdOn"/>
     <field name="createdBy"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="purchase-request-form" title="Purchase request"
