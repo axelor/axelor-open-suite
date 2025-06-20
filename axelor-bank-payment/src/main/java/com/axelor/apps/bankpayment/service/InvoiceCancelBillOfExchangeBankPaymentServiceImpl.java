@@ -35,7 +35,8 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService {
+public class InvoiceCancelBillOfExchangeBankPaymentServiceImpl
+    implements InvoiceCancelBillOfExchangeBankPaymentService {
 
   protected ReconcileService reconcileService;
   protected MoveReverseService moveReverseService;
@@ -43,7 +44,7 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
   protected InvoiceTermReplaceService invoiceTermReplaceService;
 
   @Inject
-  public InvoiceBankPaymentServiceImpl(
+  public InvoiceCancelBillOfExchangeBankPaymentServiceImpl(
       ReconcileService reconcileService,
       MoveReverseService moveReverseService,
       InvoiceRepository invoiceRepository,

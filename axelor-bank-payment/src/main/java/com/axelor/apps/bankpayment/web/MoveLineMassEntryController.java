@@ -18,36 +18,23 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.bankpayment.service.InvoiceBankDetailsServiceBankPayment;
-import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentService;
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class InvoiceController {
-
+public class MoveLineMassEntryController {
   @ErrorException
-  public void cancelBillOfExchange(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-
-    Beans.get(InvoiceCancelBillOfExchangeBankPaymentService.class).cancelBillOfExchange(invoice);
-
-    response.setReload(true);
-  }
-
-  @ErrorException
-  public void checkBankDetails(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-
-    BankDetails bankDetails =
-        Beans.get(InvoiceBankDetailsServiceBankPayment.class).checkInvoiceBankDetails(invoice);
-
-    response.setValue("bankDetails", bankDetails);
+  public void checkPartnerBankDetails(ActionRequest request, ActionResponse response) {
+    MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    BankDetails movePartnerBankDetails =
+        Beans.get(MoveLineMassEntryRecordBankPaymentServiceImpl.class)
+            .checkMovePartnerBankDetails(moveLineMassEntry, move);
+    response.setValue("movePartnerBankDetails", movePartnerBankDetails);
   }
 }
