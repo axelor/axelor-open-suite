@@ -39,11 +39,13 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -61,10 +63,13 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
   @Inject
   public EmployeeServiceImpl(
+      UserRepository userRepo,
+      MetaFiles metaFiles,
       WeeklyPlanningService weeklyPlanningService,
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       EmployeeRepository employeeRepository) {
+    super(userRepo, metaFiles);
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;
