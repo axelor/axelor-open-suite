@@ -8,7 +8,7 @@
     onNew="action-control-point-attrs-hide-quality-control" edit-icon="true" canNew="false">
     <field name="name" width="700"/>
     <field name="controlPointType" width="150"/>
-    <field name="statusSelect" width="130"/>
+    <field name="statusSelect" width="130" widget="single-select"/>
   </grid>
 
   <form name="control-point-form" title="Control points"
