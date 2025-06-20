@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="company-logo-grid" title="Company logos"
+    model="com.axelor.apps.base.db.CompanyLogo">
+    <field name="theme"/>
+    <field name="logo"/>
+  </grid>
+
+  <form name="company-logo-form" title="Company logo"
+    model="com.axelor.apps.base.db.CompanyLogo">
+    <panel name="mainPanel">
+<!-- TODO: restrict input by calling MetaThemeService.getAvailableThemes-->
+      <field name="theme"/>
+      <field name="logo" widget="Image"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
+  </form>
+
+</object-views>

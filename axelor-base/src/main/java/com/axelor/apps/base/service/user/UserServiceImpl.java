@@ -22,6 +22,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.CompanyLogo;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -35,6 +36,7 @@ import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -164,33 +166,33 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public MetaFile getUserActiveCompanyLogo() {
-
-    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
-
+  public MetaFile getUserActiveCompanyLogo(String theme) {
+    final Company company = getUserActiveCompany();
     if (company == null) {
       return null;
     }
 
-    return company.getLogo();
+    List<CompanyLogo> companyLogos = company.getCompanyLogoList();
+    if (ObjectUtils.isEmpty(companyLogos)) {
+      return company.getLogo();
+    }
+
+    return companyLogos.stream()
+        .filter(cl -> cl.getTheme().equals(theme))
+        .findAny()
+        .map(CompanyLogo::getLogo)
+        .orElse(company.getLogo());
   }
 
   @Override
-  public String getUserActiveCompanyLogoLink() {
-
-    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
-
-    if (company == null) {
-      return null;
-    }
-
-    MetaFile logo = company.getLogo();
-
+  public String getUserActiveCompanyLogoLink(String theme) {
+    MetaFile logo = getUserActiveCompanyLogo(theme);
     if (logo == null) {
       return null;
     }
 
-    return metaFiles.getDownloadLink(logo, company);
+    String link = metaFiles.getDownloadLink(logo, getUserActiveCompany());
+    return link.substring(0, link.indexOf("?"));
   }
 
   @Override

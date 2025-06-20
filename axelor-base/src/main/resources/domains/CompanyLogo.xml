@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="CompanyLogo">
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <string name="theme" title="Theme" required="true"/>
+    <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
+
+    <unique-constraint columns="company,theme"/>
+
+    <track>
+      <field name="theme"/>
+      <field name="logo"/>
+    </track>
+  </entity>
+
+</domain-models>

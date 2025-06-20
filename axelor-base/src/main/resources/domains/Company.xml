@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -17,6 +17,9 @@
 
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
+    <one-to-many name="companyLogoList" ref="com.axelor.apps.base.db.CompanyLogo"
+      title="Company logos" mappedBy="company"
+      help="There, you can provide alternative logos per theme which will appear on the top left part of the UI. Please note that printings (i.e. BIRT) use the main logo of the company."/>
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       massUpdate="true"/>
