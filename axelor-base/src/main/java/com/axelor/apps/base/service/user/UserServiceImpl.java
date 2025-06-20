@@ -68,8 +68,8 @@ import org.apache.shiro.session.Session;
 
 public class UserServiceImpl implements UserService {
 
-  @Inject private UserRepository userRepo;
-  @Inject private MetaFiles metaFiles;
+  protected UserRepository userRepo;
+  protected MetaFiles metaFiles;
 
   @Deprecated(since = "8.4.0", forRemoval = true)
   public static final String DEFAULT_LOCALE = "en";
@@ -93,6 +93,12 @@ public class UserServiceImpl implements UserService {
   private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
   private static final int GEN_LOOP_LIMIT = 1000;
   private static final SecureRandom random = new SecureRandom();
+
+  @Inject
+  public UserServiceImpl(UserRepository userRepo, MetaFiles metaFiles) {
+    this.userRepo = userRepo;
+    this.metaFiles = metaFiles;
+  }
 
   /**
    * Method that return the current connected user
