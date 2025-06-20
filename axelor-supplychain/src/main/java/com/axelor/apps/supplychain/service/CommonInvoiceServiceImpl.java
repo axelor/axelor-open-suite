@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.Model;
@@ -51,7 +52,10 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
       }
     }
     if (!isPercent) {
-      amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_UP);
+      amount =
+          amount
+              .multiply(new BigDecimal("100"))
+              .divide(total, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     }
     if (amount.compareTo(new BigDecimal("100")) > 0) {
       throw new AxelorException(
