@@ -1,4 +1,4 @@
-"importId";"code";"name";"_activeTaxLine";"taxType.importId"
+"importId";"code";"name";"_activeTaxLine";"taxType_importId"
 "1";"N_C";"Output VAT (S) standard rate";"11";1
 "2";"R1_C";"Output VAT (S) reduced rate 10%";"12";1
 "3";"R2_C";"Output VAT (S) reduced rate 5.5%";"3";1
