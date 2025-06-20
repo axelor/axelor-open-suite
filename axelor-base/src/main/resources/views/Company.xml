@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
     <field name="name"/>
@@ -14,6 +14,7 @@
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
         <field name="logo" widget="Image" colSpan="12"/>
+        <field name="companyLogoList" colSpan="12"/>
         <field name="width" requiredIf="height"
           onChange="action-company-condition-validate-logo-height-and-width">
           <viewer depends="width"><![CDATA[

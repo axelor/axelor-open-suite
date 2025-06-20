@@ -74,18 +74,26 @@ public interface UserService {
   Long getUserActiveCompanyId();
 
   /**
-   * Method that return the active team of the current connected user
+   * Returns the file representing the active company logo of the user, according to the provided
+   * theme.
    *
-   * @return Team the active team
+   * <p>If there is no company logo defined for the provided theme, the fallback is the default
+   * company logo.
+   *
+   * @return the logo file
    */
-  public MetaFile getUserActiveCompanyLogo();
+  MetaFile getUserActiveCompanyLogo(String theme);
 
   /**
-   * Method that return company logo link
+   * Returns the link targeting the active company logo of the user, according to the provided
+   * theme.
    *
-   * @return the logo Link
+   * <p>If there is no company logo defined for the provided theme, the fallback is the default
+   * company logo.
+   *
+   * @return the logo link
    */
-  public String getUserActiveCompanyLogoLink();
+  String getUserActiveCompanyLogoLink(String theme);
 
   /**
    * Method that return the active team of the current connected user
@@ -140,7 +148,7 @@ public interface UserService {
    * @throws IOException
    */
   void processChangedPassword(User user)
-      throws AxelorException, ClassNotFoundException, IOException ;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   /**
    * Match password with configured pattern.
