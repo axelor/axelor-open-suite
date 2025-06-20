@@ -141,6 +141,16 @@
 
     <boolean name="expense" title="Expense"/>
 
+
+    <many-to-one name="safeTyLabel" ref="com.axelor.meta.db.MetaFile" title="Label"/>
+    <boolean name="isClp" title="CLP"/>
+    <many-to-many name="icpeSet" ref="com.axelor.apps.base.db.Icpe"/>
+    <many-to-many name="hazardPictogramSet"
+      ref="com.axelor.apps.base.db.HazardPictogram"/>
+    <integer name="retentionTypeSelect" selection="base.product.retention.type.select"
+      title="Retention type"/>
+    <many-to-many name="hazardPhraseSet" ref="com.axelor.apps.base.db.HazardPhrase"/>
+
     <unique-constraint columns="product,company"/>
 
     <extra-code>
