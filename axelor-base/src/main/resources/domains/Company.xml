@@ -17,9 +17,8 @@
 
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
-    <one-to-many name="companyLogoList" ref="com.axelor.apps.base.db.CompanyLogo"
-      title="Company logos" mappedBy="company"
-      help="There, you can provide alternative logos per theme which will appear on the top left part of the UI. Please note that printings (i.e. BIRT) use the main logo of the company."/>
+    <many-to-one name="darkLogo" ref="com.axelor.meta.db.MetaFile" title="Dark logo"
+      help="If non empty, this alternative logo will be displayed for users using a dark mode-based theme."/>
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       massUpdate="true"/>
@@ -78,6 +77,7 @@
       <field name="parent" on="UPDATE"/>
       <field name="notes" on="UPDATE"/>
       <field name="logo" on="UPDATE"/>
+      <field name="darkLogo" on="UPDATE"/>
       <field name="currency" on="UPDATE"/>
       <field name="customerPaymentDelay" on="UPDATE"/>
       <field name="supplierPaymentDelay" on="UPDATE"/>
