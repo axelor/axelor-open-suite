@@ -29,13 +29,10 @@ import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.team.db.Team;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.mail.MessagingException;
-import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
 public interface UserService {
@@ -45,14 +42,14 @@ public interface UserService {
    *
    * @return user the current connected user
    */
-  public User getUser();
+  User getUser();
 
   /**
    * Method that return the id of the current connected user
    *
    * @return user the id of current connected user
    */
-  public Long getUserId();
+  Long getUserId();
 
   /**
    * Method that return the active company of the current connected user
@@ -60,21 +57,21 @@ public interface UserService {
    * @return Company the active company
    */
   @CallMethod
-  public Company getUserActiveCompany();
+  Company getUserActiveCompany();
 
   /**
    * Method that return the Trading name of the current connected user
    *
    * @return Company the active company
    */
-  public TradingName getTradingName();
+  TradingName getTradingName();
 
   /**
    * Method that return the active company id of the current connected user
    *
    * @return Company the active company id
    */
-  public Long getUserActiveCompanyId();
+  Long getUserActiveCompanyId();
 
   /**
    * Method that return the active team of the current connected user
@@ -96,7 +93,7 @@ public interface UserService {
    * @return Team the active team
    */
   @CallMethod
-  public Team getUserActiveTeam();
+  Team getUserActiveTeam();
 
   /**
    * Method that return the active team of the current connected user
@@ -104,7 +101,7 @@ public interface UserService {
    * @return Team the active team id
    */
   @CallMethod
-  public Long getUserActiveTeamId();
+  Long getUserActiveTeamId();
 
   /**
    * Method that return the partner of the current connected user
@@ -112,12 +109,11 @@ public interface UserService {
    * @return Partner the user partner
    */
   @CallMethod
-  public Partner getUserPartner();
+  Partner getUserPartner();
 
-  @Transactional
-  public void createPartner(User user);
+  void createPartner(User user);
 
-  public String getLocalizationCode();
+  String getLocalizationCode();
 
   /**
    * Get user's active company address.
@@ -132,31 +128,19 @@ public interface UserService {
    * @param user
    * @param values
    * @return
-   * @throws ClassNotFoundException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws MessagingException
-   * @throws IOException
-   * @throws AxelorException
    */
-  User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          MessagingException,
-          IOException,
-          AxelorException;
+  User changeUserPassword(User user, Map<String, Object> values);
 
   /**
    * Processs changed user password.
    *
    * @param user
+   * @throws AxelorException
    * @throws ClassNotFoundException
    * @throws IOException
-   * @throws AxelorException
    */
   void processChangedPassword(User user)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException ;
 
   /**
    * Match password with configured pattern.
@@ -188,10 +172,9 @@ public interface UserService {
    * @param user
    * @return
    */
-  @Transactional
-  public Partner setUserPartner(Partner partner, User user);
+  Partner setUserPartner(Partner partner, User user);
 
-  public void generateRandomPasswordForUser(User user);
+  void generateRandomPasswordForUser(User user);
 
   List<Permission> getPermissions(User user);
 
