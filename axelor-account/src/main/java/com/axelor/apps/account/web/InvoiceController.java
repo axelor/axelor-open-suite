@@ -1524,15 +1524,9 @@ public class InvoiceController {
   public void getDefaultBankDetails(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     BankDetails bankDetails =
-        Beans.get(InvoiceBankDetailsService.class).getDefaultBankDetails(invoice);
-    response.setValue("bankDetails", bankDetails);
-  }
-
-  @ErrorException
-  public void checkBankDetails(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    BankDetails bankDetails =
-        Beans.get(InvoiceBankDetailsService.class).getDefaultBankDetails(invoice);
+        Beans.get(InvoiceBankDetailsService.class)
+            .getDefaultBankDetails(
+                invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
     response.setValue("bankDetails", bankDetails);
   }
 }

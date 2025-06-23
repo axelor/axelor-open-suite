@@ -12,7 +12,7 @@
   </form>
 
   <action-method name="action-invoice-term-method-check-bank-details">
-    <call class="com.axelor.apps.bankpayment.web.InvoiceTermController"
-      method="checkBankDetails"/>
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="getDefaultBankDetails"/>
   </action-method>
 </object-views>

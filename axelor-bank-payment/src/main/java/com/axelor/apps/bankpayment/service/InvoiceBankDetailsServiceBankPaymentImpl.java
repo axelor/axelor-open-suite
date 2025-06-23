@@ -1,6 +1,5 @@
 package com.axelor.apps.bankpayment.service;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceBankDetailsServiceImpl;
@@ -10,8 +9,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
 
-public class InvoiceBankDetailsServiceBankPaymentImpl extends InvoiceBankDetailsServiceImpl
-    implements InvoiceBankDetailsServiceBankPayment {
+public class InvoiceBankDetailsServiceBankPaymentImpl extends InvoiceBankDetailsServiceImpl {
 
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
@@ -22,11 +20,9 @@ public class InvoiceBankDetailsServiceBankPaymentImpl extends InvoiceBankDetails
   }
 
   @Override
-  public BankDetails getDefaultBankDetails(Invoice invoice) {
-    BankDetails defaultBankDetails = super.getDefaultBankDetails(invoice);
-    Partner partner = invoice.getPartner();
-    Company company = invoice.getCompany();
-    PaymentMode paymentMode = invoice.getPaymentMode();
+  public BankDetails getDefaultBankDetails(
+      Partner partner, Company company, PaymentMode paymentMode) {
+    BankDetails defaultBankDetails = super.getDefaultBankDetails(partner, company, paymentMode);
 
     if (paymentMode != null && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
       defaultBankDetails =
@@ -37,18 +33,5 @@ public class InvoiceBankDetailsServiceBankPaymentImpl extends InvoiceBankDetails
               .orElse(null);
     }
     return defaultBankDetails;
-  }
-
-  @Override
-  public BankDetails checkInvoiceBankDetails(Invoice invoice) {
-    BankDetails bankDetails = invoice.getBankDetails();
-    Company company = invoice.getCompany();
-    PaymentMode paymentMode = invoice.getPaymentMode();
-
-    if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
-        paymentMode, company, bankDetails)) {
-      bankDetails = null;
-    }
-    return bankDetails;
   }
 }
