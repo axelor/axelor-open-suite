@@ -8,7 +8,7 @@
     <field name="training"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="nbrRegistered"/>
     <field name="location"/>
     <field name="rating" widget="progress"/>
