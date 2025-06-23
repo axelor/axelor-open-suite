@@ -300,7 +300,7 @@
           readonlyIf="$contains([1000], reportType.typeSelect) || year || period"/>
         <field name="dateTo"
           readonlyIf="$contains([1000], reportType.typeSelect)  || year || period"/>
-        <field name="moveStatusSelect" widget="MultiSelect"
+        <field name="moveStatusSelect" widget="MultiSelect" selection-in="[2,5]"
           onSelect="action-attrs-accounting-report-attrs-move-status-domain"/>
       </panel>
       <field name="journal" form-view="journal-form" grid-view="journal-grid"
