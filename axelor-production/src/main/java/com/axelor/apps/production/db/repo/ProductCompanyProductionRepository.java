@@ -16,28 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.db.repo;
+package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.base.db.ProductCompany;
-import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
-import java.util.Map;
+import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
+import java.math.BigDecimal;
 
-public class ProductCompanyBaseRepository extends ProductCompanyRepository {
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put(
-        "$nbDecimalDigitForUnitPrice",
-        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
-
-    return super.populate(json, context);
-  }
+public class ProductCompanyProductionRepository extends ProductCompanyStockRepository {
 
   @Override
   public ProductCompany copy(ProductCompany productCompany, boolean deep) {
     ProductCompany copy = super.copy(productCompany, deep);
-    Beans.get(ProductService.class).copyProduct(productCompany, copy);
+    copy.setDefaultBillOfMaterial(null);
+    copy.setLastProductionPrice(BigDecimal.ZERO);
     return copy;
   }
 }
