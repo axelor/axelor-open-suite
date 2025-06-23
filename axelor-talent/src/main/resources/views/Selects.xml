@@ -51,10 +51,10 @@
   </selection>
 
   <selection name="appraisal.status.selected">
-    <option value="0">Draft</option>
-    <option value="1">Sent</option>
-    <option value="2">Completed</option>
-    <option value="3">Canceled</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="orange">Sent</option>
+    <option value="2" color="green">Completed</option>
+    <option value="3" color="red">Canceled</option>
   </selection>
 
   <selection name="job.position.position.status">
