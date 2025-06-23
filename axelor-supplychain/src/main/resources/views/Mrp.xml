@@ -18,7 +18,7 @@
       grid-view="stock-location-grid" colSpan="6"/>
     <field name="stockLocation.company"/>
     <field name="endDate" colSpan="6"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MRP" width="large"
