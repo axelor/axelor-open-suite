@@ -20,7 +20,6 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentService;
-import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsServiceBankPaymentImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -45,9 +44,9 @@ public class InvoiceController {
   public void getDefaultBankDetails(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     BankDetails bankDetails =
-            Beans.get(BankDetailsServiceBankPaymentImpl.class)
-                    .getDefaultBankDetails(
-                            invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
+        Beans.get(BankDetailsServiceBankPaymentImpl.class)
+            .getDefaultBankDetails(
+                invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
     response.setValue("bankDetails", bankDetails);
   }
 }
