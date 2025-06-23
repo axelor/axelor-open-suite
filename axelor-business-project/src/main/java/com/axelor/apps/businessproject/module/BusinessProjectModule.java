@@ -45,6 +45,8 @@ import com.axelor.apps.businessproject.service.InvoicePaymentValidateProjectServ
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.InvoiceTermDateComputeProjectServiceImpl;
+import com.axelor.apps.businessproject.service.InvoicingProjectInvoiceService;
+import com.axelor.apps.businessproject.service.InvoicingProjectInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectStockMovesService;
 import com.axelor.apps.businessproject.service.InvoicingProjectStockMovesServiceImpl;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
@@ -243,5 +245,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoiceTermDateComputeServiceImpl.class)
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
     bind(SaleOrderCopyProjectService.class).to(SaleOrderCopyProjectServiceImpl.class);
+    bind(InvoicingProjectInvoiceService.class).to(InvoicingProjectInvoiceServiceImpl.class);
   }
 }

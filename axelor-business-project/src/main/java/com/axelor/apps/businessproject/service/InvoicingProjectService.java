@@ -19,6 +19,9 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.base.AxelorException;
@@ -52,6 +55,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -63,12 +68,12 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InvoicingProjectService {
@@ -233,9 +238,50 @@ public class InvoicingProjectService {
                 .fetch());
 
     if (appBusinessProject.getIsReinvoiceablStockMoveLine()) {
-      Set<StockMoveLine> stockMoveLineSet =
-          invoicingProjectStockMovesService.processDeliveredSaleOrderLines(saleOrderLineList);
-      invoicingProject.getStockMoveLineSet().addAll(stockMoveLineSet);
+      StringBuilder stockMoveLineQuery = new StringBuilder(commonQuery);
+      stockMoveLineQuery.append(
+          " AND self.stockMove IS NOT NULL AND self.stockMove.statusSelect = :statusSelect");
+
+      Map<String, Object> stockMoveLineQueryMap = new HashMap<>();
+      stockMoveLineQueryMap.put("project", project);
+      stockMoveLineQueryMap.put("statusSelect", StockMoveRepository.STATUS_REALIZED);
+
+      List<StockMoveLine> stockMoveLineList =
+          Beans.get(StockMoveLineRepository.class)
+              .all()
+              .filter(stockMoveLineQuery.toString())
+              .bind(stockMoveLineQueryMap)
+              .fetch();
+      invoicingProject
+          .getStockMoveLineSet()
+          .addAll(
+              stockMoveLineList.stream()
+                  .filter(
+                      sml ->
+                          sml.getRealQty().subtract(sml.getQtyInvoiced()).compareTo(BigDecimal.ZERO)
+                              > 0)
+                  .collect(Collectors.toList()));
+    }
+
+    if (appBusinessProject.getIsReinvoiceablSupInvLine()) {
+      StringBuilder invoiceLineQuery = new StringBuilder(commonQuery);
+      invoiceLineQuery.append(
+          " AND self.invoice IS NOT NULL AND self.invoice.statusSelect = :statusSelect AND self.invoice.operationTypeSelect =:operationTypeSelect");
+
+      Map<String, Object> invoiceLineQueryMap = new HashMap<>();
+      invoiceLineQueryMap.put("project", project);
+      invoiceLineQueryMap.put("statusSelect", InvoiceRepository.STATUS_VALIDATED);
+      invoiceLineQueryMap.put(
+          "operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+
+      invoicingProject
+          .getInvoiceLineSet()
+          .addAll(
+              Beans.get(InvoiceLineRepository.class)
+                  .all()
+                  .filter(invoiceLineQuery.toString())
+                  .bind(invoiceLineQueryMap)
+                  .fetch());
     }
   }
 
@@ -247,6 +293,7 @@ public class InvoicingProjectService {
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
     invoicingProject.setStockMoveLineSet(new HashSet<StockMoveLine>());
+    invoicingProject.setInvoiceLineSet(new HashSet<InvoiceLine>());
   }
 
   public Company getRootCompany(Project project) {
@@ -340,7 +387,9 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
+        && invoicingProject.getProjectTaskSet().isEmpty()
+        && invoicingProject.getStockMoveLineSet().isEmpty()
+        && invoicingProject.getInvoiceLineSet().isEmpty()) {
 
       return invoicingProject;
     }

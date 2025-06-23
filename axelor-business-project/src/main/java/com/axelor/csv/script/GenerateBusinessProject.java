@@ -56,8 +56,7 @@ public class GenerateBusinessProject {
 
     ProjectGeneratorType type = selectFactoryType(saleOrder);
 
-    ProjectGeneratorFactory projectGeneratorFactory =
-        ProjectGeneratorFactory.getFactory(selectFactoryType(saleOrder));
+    ProjectGeneratorFactory projectGeneratorFactory = ProjectGeneratorFactory.getFactory(type);
 
     Project project = projectGeneratorFactory.generate(saleOrder, saleOrder.getUpdatedOn());
 
@@ -77,9 +76,13 @@ public class GenerateBusinessProject {
       return ProjectGeneratorType.TASK_BY_LINE;
     if (taskTemplateSaleOrderIds.contains(saleOrder.getImportId()))
       return ProjectGeneratorType.TASK_TEMPLATE;
+
+    // by default
+    return ProjectGeneratorType.TASK_BY_LINE;
+    /*
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(BusinessProjectExceptionMessage.FACTORY_NO_FOUND));
+        I18n.get(BusinessProjectExceptionMessage.FACTORY_NO_FOUND));*/
   }
 
   protected void fillProjectTasks(SaleOrder saleOrder, Project project, ProjectGeneratorType type)

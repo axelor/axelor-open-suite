@@ -324,7 +324,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.getDiscountAmount(),
             projectTask.getDiscountTypeSelect(),
             projectTask.getExTaxTotal(),
-            BigDecimal.ZERO,
+            null,
             false) {
 
           @Override

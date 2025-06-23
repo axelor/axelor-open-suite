@@ -86,10 +86,11 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
   }
 
   @Override
-  public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
+  public InvoiceLine createInvoiceLine(
+      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty, int sequence)
       throws AxelorException {
 
-    InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty);
+    InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty, sequence);
     if (invoiceLine == null
         || !Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
       return invoiceLine;

@@ -59,6 +59,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected SaleOrderLine saleOrderLine;
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
+  protected InvoiceLine invLine;
 
   protected UnitConversionService unitConversionService;
   protected AppSupplychainService appSupplychainService;
@@ -83,7 +84,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine) {
+      StockMoveLine stockMoveLine,
+      InvoiceLine invoiceLine) {
     super(
         invoice,
         product,
@@ -104,6 +106,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.invLine = invoiceLine;
     this.appBaseService = Beans.get(AppBaseService.class);
     this.unitConversionService = Beans.get(UnitConversionService.class);
   }
@@ -119,7 +122,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       boolean isTaxInvoice,
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine,
-      StockMoveLine stockMoveLine)
+      StockMoveLine stockMoveLine,
+      InvoiceLine invoiceLine)
       throws AxelorException {
 
     super(invoice, product, productName, description, qty, unit, sequence, isTaxInvoice);
@@ -127,6 +131,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.saleOrderLine = saleOrderLine;
     this.purchaseOrderLine = purchaseOrderLine;
     this.stockMoveLine = stockMoveLine;
+    this.invLine = invoiceLine;
     this.appBaseService = Beans.get(AppBaseService.class);
     this.unitConversionService = Beans.get(UnitConversionService.class);
 
@@ -170,6 +175,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         this.qty =
             unitConversionService.convert(
                 this.unit, saleOrPurchaseUnit, qty, qty.scale(), stockMoveLine.getProduct());
+        this.priceDiscounted =
+            unitConversionService.convert(
+                this.unit,
+                saleOrPurchaseUnit,
+                this.priceDiscounted,
+                appBaseService.getNbDecimalDigitForUnitPrice(),
+                product);
+        this.unit = saleOrPurchaseUnit;
+      }
+    } else if (invoiceLine != null) {
+      this.priceDiscounted = invoiceLine.getPrice();
+      Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
+
+      if (saleOrPurchaseUnit != null
+          && this.unit != null
+          && !this.unit.equals(saleOrPurchaseUnit)) {
+        this.qty =
+            unitConversionService.convert(
+                this.unit, saleOrPurchaseUnit, qty, qty.scale(), invoiceLine.getProduct());
         this.priceDiscounted =
             unitConversionService.convert(
                 this.unit,
@@ -259,6 +283,27 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setInTaxPrice(inTaxPrice);
 
       invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+    } else if (invLine != null) {
+      this.price = invLine.getPrice();
+      this.inTaxPrice = invLine.getInTaxPrice();
+
+      this.price =
+          unitConversionService.convert(
+              invLine.getUnit(),
+              this.unit,
+              this.price,
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              product);
+      this.inTaxPrice =
+          unitConversionService.convert(
+              invLine.getUnit(),
+              this.unit,
+              this.inTaxPrice,
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              product);
+
+      invoiceLine.setPrice(price);
+      invoiceLine.setInTaxPrice(inTaxPrice);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();

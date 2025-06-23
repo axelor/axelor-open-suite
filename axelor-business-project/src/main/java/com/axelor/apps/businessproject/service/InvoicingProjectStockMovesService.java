@@ -30,5 +30,5 @@ public interface InvoicingProjectStockMovesService {
   Set<StockMoveLine> processDeliveredSaleOrderLines(List<SaleOrderLine> saleOrderLineList);
 
   List<InvoiceLine> createStockMovesInvoiceLines(
-      Invoice invoice, Set<StockMoveLine> StockMoveLineSet) throws AxelorException;
+      Invoice invoice, Set<StockMoveLine> StockMoveLineSet, int priority) throws AxelorException;
 }

@@ -44,6 +44,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -145,6 +146,12 @@ public class WorkflowVentilationProjectServiceImpl extends WorkflowVentilationCo
       }
       for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
         updateInvoicingStatus(projectTask);
+      }
+      for (StockMoveLine stockMoveLine : invoicingProject.getStockMoveLineSet()) {
+        stockMoveLine.setInvoiced(true);
+      }
+      for (InvoiceLine invoiceLine : invoicingProject.getInvoiceLineSet()) {
+        invoiceLine.setInvoiced(true);
       }
 
       invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);
