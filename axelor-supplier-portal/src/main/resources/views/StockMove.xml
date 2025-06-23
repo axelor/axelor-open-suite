@@ -13,7 +13,7 @@
     <field name="toAddress"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="partner"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="stock-move-supplier-form" title="Stock move"
