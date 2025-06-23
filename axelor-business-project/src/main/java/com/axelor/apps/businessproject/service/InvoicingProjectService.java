@@ -142,7 +142,7 @@ public class InvoicingProjectService {
 
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
 
-    if (appBusinessProject.getIsReinvoiceablTimesheetLine() && project.getManageTimeSpent()) {
+    if (project.getIsReinvoiceablTimesheetLine() && project.getManageTimeSpent()) {
       StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
       Map<String, Object> logTimesQueryMap = new HashMap<>();
       logTimesQueryMap.put("project", project);
@@ -206,7 +206,7 @@ public class InvoicingProjectService {
                             == SaleOrderLineRepository.INVOICING_MODE_DIRECTLY)
                 .collect(Collectors.toList()));
 
-    if (appBusinessProject.getIsReinvoiceablPoLine()) {
+    if (project.getIsReinvoiceablPoLine()) {
       invoicingProject
           .getPurchaseOrderLineSet()
           .addAll(
@@ -217,7 +217,7 @@ public class InvoicingProjectService {
                   .fetch());
     }
 
-    if (appBusinessProject.getIsReinvoiceablExpenseLine()) {
+    if (project.getIsReinvoiceablExpenseLine()) {
       invoicingProject
           .getExpenseLineSet()
           .addAll(
@@ -237,7 +237,7 @@ public class InvoicingProjectService {
                 .bind(taskQueryMap)
                 .fetch());
 
-    if (appBusinessProject.getIsReinvoiceablStockMoveLine()) {
+    if (project.getIsReinvoiceablStockMoveLine()) {
       StringBuilder stockMoveLineQuery = new StringBuilder(commonQuery);
       stockMoveLineQuery.append(
           " AND self.stockMove IS NOT NULL AND self.stockMove.statusSelect = :statusSelect");
@@ -263,7 +263,7 @@ public class InvoicingProjectService {
                   .collect(Collectors.toList()));
     }
 
-    if (appBusinessProject.getIsReinvoiceablSupInvLine()) {
+    if (project.getIsReinvoiceablSupInvLine()) {
       StringBuilder invoiceLineQuery = new StringBuilder(commonQuery);
       invoiceLineQuery.append(
           " AND self.invoice IS NOT NULL AND self.invoice.statusSelect = :statusSelect AND self.invoice.operationTypeSelect =:operationTypeSelect");

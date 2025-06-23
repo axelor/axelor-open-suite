@@ -46,6 +46,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -59,6 +60,17 @@ import org.slf4j.LoggerFactory;
 public class ProjectController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  public void setDefault(ActionRequest request, ActionResponse response) {
+
+    AppBusinessProject app = Beans.get(AppBusinessProjectService.class).getAppBusinessProject();
+
+    response.setValue("isReinvoiceablTimesheetLine", app.getIsReinvoiceablTimesheetLine());
+    response.setValue("isReinvoiceablPoLine", app.getIsReinvoiceablPoLine());
+    response.setValue("isReinvoiceablSupInvLine", app.getIsReinvoiceablSupInvLine());
+    response.setValue("isReinvoiceablExpenseLine", app.getIsReinvoiceablExpenseLine());
+    response.setValue("isReinvoiceablStockMoveLine", app.getIsReinvoiceablStockMoveLine());
+  }
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
