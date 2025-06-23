@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -213,9 +214,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
-    if (accountingReport.getReportType() == null
-        || accountingReport.getReportType().getTypeSelect()
-            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+    AccountingReportType accountingReportType = accountingReport.getReportType();
+    Integer typeSelect =
+        Optional.ofNullable(accountingReportType)
+            .map(AccountingReportType::getTypeSelect)
+            .orElse(0);
+    if (accountingReportType == null
+        || typeSelect != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       if (accountingReport.getDateFrom() != null) {
         this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
       }
@@ -268,14 +273,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getYear() != null
-        && accountingReport.getReportType() != null
-        && accountingReport.getReportType().getTypeSelect()
-            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+        && accountingReportType != null
+        && typeSelect != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
 
-    } else if (accountingReport.getReportType() != null
-        && accountingReport.getReportType().getTypeSelect()
-            == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+    } else if (accountingReportType != null
+        && typeSelect == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
           "((self.account.serviceType IS NULL AND self.move.partner.das2Activity IS NOT NULL)"
               + "  OR "
@@ -312,30 +315,25 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.move.paymentMode = ?%d", accountingReport.getPaymentMode());
     }
 
-    if (accountingReport.getReportType() != null) {
-      if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_CHEQUE_DEPOSIT) {
+    if (accountingReportType != null) {
+      if (typeSelect == AccountingReportRepository.REPORT_CHEQUE_DEPOSIT) {
         this.addParams("self.amountPaid > 0 AND self.credit > 0");
       }
 
-      if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_AGED_BALANCE) {
+      if (typeSelect == AccountingReportRepository.REPORT_AGED_BALANCE) {
         this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
         this.addParams("self.amountRemaining != 0 AND self.debit > 0");
       }
 
-      if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
+      if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
         this.addParams("self.account.useForPartnerBalance = 'true'");
       }
 
-      if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_BALANCE) {
+      if (typeSelect == AccountingReportRepository.REPORT_BALANCE) {
         this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
       }
 
-      if (accountingReport.getReportType().getTypeSelect()
-          == AccountingReportRepository.REPORT_CASH_PAYMENTS) {
+      if (typeSelect == AccountingReportRepository.REPORT_CASH_PAYMENTS) {
         this.addParams("self.move.paymentMode.typeSelect = ?%d", PaymentModeRepository.TYPE_CASH);
         this.addParams("self.credit > 0");
         this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
@@ -379,12 +377,16 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
 
-    if (accountingReport.getReportType() != null
-        && accountingReport.getReportType().getTypeSelect()
-            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+    if (accountingReportType != null
+        && typeSelect != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      String moveStatus = accountingReport.getMoveStatusSelect();
+
+      if (typeSelect == AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
+        moveStatus = String.valueOf(MoveRepository.STATUS_DAYBOOK);
+      }
+
       statusSelects =
-          moveToolService.getMoveStatusSelect(
-              accountingReport.getMoveStatusSelect(), accountingReport.getCompany());
+          moveToolService.getMoveStatusSelect(moveStatus, accountingReport.getCompany());
     }
 
     this.addParams(
@@ -393,21 +395,18 @@ public class AccountingReportServiceImpl implements AccountingReportService {
             statusSelects.stream().map(String::valueOf).collect(Collectors.joining(","))));
 
     // FOR EXPORT ONLY :
-    if (accountingReport.getReportType() != null) {
-      if (accountingReport.getReportType().getTypeSelect()
-          > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
+    if (accountingReportType != null) {
+      if (typeSelect > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
         this.addParams(
             "(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.accountingReport = ?%d))",
             accountingReport);
       }
 
-      if (accountingReport.getReportType().getTypeSelect()
-          >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
+      if (typeSelect >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
         this.addParams("self.move.journal.notExportOk = false ");
       }
 
-      if (accountingReport.getReportType().getTypeSelect()
-              >= AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER
+      if (typeSelect >= AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER
           && accountingReport.getDisplayOnlyNotCompletelyLetteredMoveLines()) {
         this.addParams("self.amountRemaining != 0");
       }
