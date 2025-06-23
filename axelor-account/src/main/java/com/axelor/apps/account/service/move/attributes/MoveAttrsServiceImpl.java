@@ -125,16 +125,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         move.getStatusSelect() == MoveRepository.STATUS_NEW
             || move.getStatusSelect() == MoveRepository.STATUS_CANCELED,
         attrsMap);
-
-    this.addAttr(
-        "moveLineList.vatSystemSelect",
-        "hidden",
-        move.getJournal() != null
-            && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-            && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
-        attrsMap);
   }
 
   @Override
@@ -386,6 +376,15 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                       == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
                   || move.getJournal().getJournalType().getTechnicalTypeSelect()
                       == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER),
+          attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.vatSystemSelect",
+          "hidden",
+          technicalTypeSelectIsNotNull
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
           attrsMap);
     }
   }
