@@ -23,12 +23,12 @@ import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccountImpl;
+import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceBankDetailsServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveCreateServiceImpl;
@@ -63,12 +63,10 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.InvoiceBankDetailsServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPayment;
 import com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
@@ -81,6 +79,7 @@ import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsDomainServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
@@ -179,7 +178,6 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordServiceBankPayment;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
@@ -326,16 +324,13 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveLinePostedNbrService.class).to(MoveLinePostedNbrServiceImpl.class);
     bind(BankOrderEncryptionService.class).to(BankOrderEncryptionServiceImpl.class);
     bind(InvoiceTermServiceImpl.class).to(InvoiceTermServiceBankPaymentImpl.class);
-    bind(InvoiceTermServiceBankPayment.class).to(InvoiceTermServiceBankPaymentImpl.class);
     bind(MoveCreateServiceImpl.class).to(MoveCreateBankPaymentServiceImpl.class);
     bind(MoveRecordSetServiceImpl.class).to(MoveRecordSetBankPaymentServiceImpl.class);
     bind(MoveLineMassEntryRecordServiceImpl.class)
         .to(MoveLineMassEntryRecordBankPaymentServiceImpl.class);
     bind(MoveAttrsServiceImpl.class).to(MoveAttrsBankPaymentServiceImpl.class);
-    bind(InvoiceBankDetailsServiceImpl.class).to(InvoiceBankDetailsServiceBankPaymentImpl.class);
+    bind(BankDetailsServiceAccountImpl.class).to(BankDetailsServiceBankPaymentImpl.class);
     bind(MoveGroupOnChangeServiceImpl.class).to(MoveGroupOnChangeServiceBankPaymentImpl.class);
-    bind(MoveLineMassEntryRecordServiceBankPayment.class)
-        .to(MoveLineMassEntryRecordBankPaymentServiceImpl.class);
     bind(BankDetailsDomainServiceAccountImpl.class)
         .to(BankDetailsDomainServiceBankPaymentImpl.class);
   }

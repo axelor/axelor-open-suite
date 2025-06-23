@@ -27,7 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
-import com.axelor.apps.account.service.invoice.InvoiceBankDetailsService;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
@@ -471,7 +471,7 @@ public class InvoiceTermController {
   public void getDefaultBankDetails(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     BankDetails bankDetails =
-        Beans.get(InvoiceBankDetailsService.class)
+        Beans.get(BankDetailsServiceAccount.class)
             .getDefaultBankDetails(
                 invoiceTerm.getPartner(), invoiceTerm.getCompany(), invoiceTerm.getPaymentMode());
     response.setValue("bankDetails", bankDetails);

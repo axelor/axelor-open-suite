@@ -33,6 +33,8 @@ dependencies {
 	implementation libs.xalan
 	implementation libs.jdom
 
+	implementation libs.iban4j
+
 	implementation libs.jaxb_bind_api
 }
 

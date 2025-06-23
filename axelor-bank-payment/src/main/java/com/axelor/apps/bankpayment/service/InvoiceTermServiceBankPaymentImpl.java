@@ -20,7 +20,6 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymen
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -31,8 +30,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class InvoiceTermServiceBankPaymentImpl extends InvoiceTermServiceImpl
-    implements InvoiceTermServiceBankPayment {
+public class InvoiceTermServiceBankPaymentImpl extends InvoiceTermServiceImpl {
 
   protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
@@ -113,18 +111,5 @@ public class InvoiceTermServiceBankPaymentImpl extends InvoiceTermServiceImpl
         .ifPresent(newInvoiceTerm::setBankDetails);
 
     return newInvoiceTerm;
-  }
-
-  @Override
-  public BankDetails checkInvoiceTermBankDetails(InvoiceTerm invoiceTerm) {
-    BankDetails bankDetails = invoiceTerm.getBankDetails();
-    Company company = invoiceTerm.getCompany();
-    PaymentMode paymentMode = invoiceTerm.getPaymentMode();
-
-    if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
-        paymentMode, company, bankDetails)) {
-      bankDetails = null;
-    }
-    return bankDetails;
   }
 }

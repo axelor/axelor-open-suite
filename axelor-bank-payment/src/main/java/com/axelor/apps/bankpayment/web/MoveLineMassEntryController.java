@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.inject.Beans;
@@ -33,8 +33,9 @@ public class MoveLineMassEntryController {
     MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
     Move move = request.getContext().getParent().asType(Move.class);
     BankDetails movePartnerBankDetails =
-        Beans.get(MoveLineMassEntryRecordBankPaymentServiceImpl.class)
-            .checkMovePartnerBankDetails(moveLineMassEntry, move);
+        Beans.get(BankDetailsServiceAccount.class)
+            .getDefaultBankDetails(
+                moveLineMassEntry.getPartner(), move.getCompany(), move.getPaymentMode());
     response.setValue("movePartnerBankDetails", movePartnerBankDetails);
   }
 }

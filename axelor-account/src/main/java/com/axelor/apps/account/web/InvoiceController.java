@@ -35,7 +35,7 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
-import com.axelor.apps.account.service.invoice.InvoiceBankDetailsService;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -1524,7 +1524,7 @@ public class InvoiceController {
   public void getDefaultBankDetails(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     BankDetails bankDetails =
-        Beans.get(InvoiceBankDetailsService.class)
+        Beans.get(BankDetailsServiceAccount.class)
             .getDefaultBankDetails(
                 invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
     response.setValue("bankDetails", bankDetails);

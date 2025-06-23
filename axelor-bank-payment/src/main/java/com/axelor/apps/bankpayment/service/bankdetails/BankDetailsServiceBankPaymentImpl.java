@@ -1,20 +1,19 @@
-package com.axelor.apps.bankpayment.service;
+package com.axelor.apps.bankpayment.service.bankdetails;
 
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.invoice.InvoiceBankDetailsServiceImpl;
-import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
+import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
 
-public class InvoiceBankDetailsServiceBankPaymentImpl extends InvoiceBankDetailsServiceImpl {
+public class BankDetailsServiceBankPaymentImpl extends BankDetailsServiceAccountImpl {
 
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
   @Inject
-  public InvoiceBankDetailsServiceBankPaymentImpl(
+  public BankDetailsServiceBankPaymentImpl(
       BankDetailsBankPaymentService bankDetailsBankPaymentService) {
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
   }

@@ -183,8 +183,7 @@ import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateServi
 import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceBankDetailsService;
-import com.axelor.apps.account.service.invoice.InvoiceBankDetailsServiceImpl;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
@@ -1003,8 +1002,8 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryMoveUpdateService.class).to(MassEntryMoveUpdateServiceImpl.class);
     bind(MassEntryMoveValidateService.class).to(MassEntryMoveValidateServiceImpl.class);
     bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
-    bind(InvoiceBankDetailsService.class).to(InvoiceBankDetailsServiceImpl.class);
     bind(MoveGroupOnChangeService.class).to(MoveGroupOnChangeServiceImpl.class);
     bind(BankDetailsDomainServiceAccount.class).to(BankDetailsDomainServiceAccountImpl.class);
+    bind(BankDetailsServiceAccount.class).to(BankDetailsServiceAccountImpl.class);
   }
 }
