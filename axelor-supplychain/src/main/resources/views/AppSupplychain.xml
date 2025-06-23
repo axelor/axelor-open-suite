@@ -76,9 +76,9 @@
       <field name="intercoFromSale" widget="boolean-switch"/>
       <field name="intercoPurchaseCreatingStatusSelect" selection-in="[2,3]"/>
       <field name="intercoSaleCreatingStatusSelect" selection-in="[2,3]"
-        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" widget="single-select"/>
       <field name="intercoSaleCreatingStatusSelect" selection-in="[3]"
-        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" widget="single-select"/>
       <field name="intercoFromInvoice" widget="boolean-switch"/>
       <field name="intercoSaleOrderCreateFinalized" widget="boolean-switch"/>
       <field name="intercoPurchaseOrderCreateRequested" widget="boolean-switch"/>
