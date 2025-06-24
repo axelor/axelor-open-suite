@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -51,6 +52,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   protected SaleOrderRepository saleOrderRepository;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected CurrencyScaleService currencyScaleService;
+  protected AppSaleService appSaleService;
 
   @Inject
   public AccountingSituationSupplychainServiceImpl(
@@ -60,12 +62,14 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       AppAccountService appAccountService,
       SaleOrderRepository saleOrderRepository,
       InvoicePaymentRepository invoicePaymentRepository,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      AppSaleService appSaleService) {
     super(accountConfigService, paymentModeService, accountingSituationRepo);
     this.appAccountService = appAccountService;
     this.saleOrderRepository = saleOrderRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.currencyScaleService = currencyScaleService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
@@ -105,16 +109,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       throws AxelorException {
     BigDecimal sum = BigDecimal.ZERO;
     Company company = accountingSituation.getCompany();
-    List<SaleOrder> saleOrderList =
-        saleOrderRepository
-            .all()
-            .filter(
-                "self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4",
-                company,
-                accountingSituation.getPartner(),
-                SaleOrderRepository.STATUS_DRAFT_QUOTATION,
-                SaleOrderRepository.STATUS_ORDER_COMPLETED)
-            .fetch();
+    List<SaleOrder> saleOrderList = getSaleOrders(accountingSituation, company);
     for (SaleOrder saleOrder : saleOrderList) {
       sum = sum.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
     }
@@ -145,6 +140,37 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
     accountingSituation.setUsedCredit(currencyScaleService.getCompanyScaledValue(company, sum));
 
     return accountingSituation;
+  }
+
+  protected List<SaleOrder> getSaleOrders(
+      AccountingSituation accountingSituation, Company company) {
+    List<SaleOrder> saleOrderList;
+    if (appSaleService.getAppSale().getIsQuotationAndOrderSplitEnabled()) {
+      saleOrderList =
+          saleOrderRepository
+              .all()
+              .filter(
+                  "self.company = :company AND "
+                      + "self.clientPartner = :clientPartner AND "
+                      + "self.statusSelect = :confirmedStatus")
+              .bind("company", company)
+              .bind("clientPartner", accountingSituation.getPartner())
+              .bind("confirmedStatus", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
+              .fetch();
+    } else {
+      saleOrderList =
+          saleOrderRepository
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4",
+                  company,
+                  accountingSituation.getPartner(),
+                  SaleOrderRepository.STATUS_DRAFT_QUOTATION,
+                  SaleOrderRepository.STATUS_ORDER_COMPLETED)
+              .fetch();
+    }
+
+    return saleOrderList;
   }
 
   @Override
