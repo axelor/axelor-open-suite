@@ -274,6 +274,9 @@
 	    ]]>
     </many-to-one>
 
+    <date name="cutOffStartDate" title="From"/>
+    <date name="cutOffEndDate" title="To"/>
+
     <unique-constraint columns="invoiceId,company"/>
 
     <finder-method name="findByMove" using="move"/>
