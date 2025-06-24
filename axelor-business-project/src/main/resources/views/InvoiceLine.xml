@@ -8,7 +8,7 @@
     <extend target="//field[@name='project']">
       <attribute name="onChange" value="action-method-change-project-for-analytic-lines"/>
       <insert position="after">
-        <field name="projectTask" domain="self.project = :project"/>
+        <field name="projectTask" domain="self.project = :project AND self.imputable IS TRUE"/>
         <field name="toInvoice"
           showIf="invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2"
           hidden="true"
