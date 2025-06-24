@@ -270,7 +270,7 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
@@ -442,7 +442,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -615,7 +615,7 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
 
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -793,7 +793,7 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
@@ -1098,12 +1098,10 @@
       if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
   </action-condition>
 
-  <action-attrs name="action-invoice-term-attrs-bank-details-from-partner-domain">
-    <attribute name="domain" for="bankDetails" expr="eval: &quot; self.id = 0&quot;"/>
-    <attribute name="domain" for="bankDetails"
-      expr="eval: &quot; self.id IN (${partner?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true &quot;"
-      if="!partner?.bankDetailsList?.isEmpty() || !partner?.bankDetailsList?.isEmpty()"/>
-  </action-attrs>
+  <action-method name="action-invoice-term-method-bank-details-from-partner-domain">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="setBankDetailsDomain"/>
+  </action-method>
 
   <action-attrs name="action-invoice-term-attrs-set-initial-pfp-amount"
     model="com.axelor.apps.account.db.InvoiceTerm">

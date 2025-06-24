@@ -18,35 +18,24 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymentService;
-import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsServiceBankPaymentImpl;
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class InvoiceController {
-
+public class MoveLineMassEntryController {
   @ErrorException
-  public void cancelBillOfExchange(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-
-    Beans.get(InvoiceCancelBillOfExchangeBankPaymentService.class).cancelBillOfExchange(invoice);
-
-    response.setReload(true);
-  }
-
-  @ErrorException
-  public void getDefaultBankDetails(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    BankDetails bankDetails =
-        Beans.get(BankDetailsServiceBankPaymentImpl.class)
+  public void checkPartnerBankDetails(ActionRequest request, ActionResponse response) {
+    MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    BankDetails movePartnerBankDetails =
+        Beans.get(BankDetailsServiceAccount.class)
             .getDefaultBankDetails(
-                invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
-    response.setValue("bankDetails", bankDetails);
+                moveLineMassEntry.getPartner(), move.getCompany(), move.getPaymentMode());
+    response.setValue("movePartnerBankDetails", movePartnerBankDetails);
   }
 }
