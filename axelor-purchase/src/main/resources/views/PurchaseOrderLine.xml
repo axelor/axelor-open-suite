@@ -293,7 +293,8 @@
         <field name="project" domain="self.isBusinessProject = true" title="Business Project"
           requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="business-project-form"
           grid-view="project-grid" canEdit="false"/>
-        <field name="projectTask" title="Project Task" domain="self.project = :project"
+        <field name="projectTask" title="Project Task"
+          domain="self.project = :project AND self.imputable IS TRUE"
           form-view="business-project-task-form" grid-view="business-project-task-grid"
           canEdit="false"/>
         <field name="toInvoice"
