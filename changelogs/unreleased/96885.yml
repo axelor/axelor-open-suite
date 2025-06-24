@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed opportunity not being copied to order when isQuotationAndOrderSplitEnabled is enabled in the Sales app."
+module: axelor-sale
