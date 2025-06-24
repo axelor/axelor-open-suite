@@ -29,6 +29,8 @@
     <field name="enableEditor" hidden="true"/>
     <field name="invoiced"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+    <field name="finalInvoice"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
     <field name="project" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
@@ -61,6 +63,8 @@
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor" hidden="true"/>
     <field name="invoiced"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+    <field name="finalInvoice"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
     <field name="project" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
