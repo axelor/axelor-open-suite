@@ -84,6 +84,7 @@
     <field name="toInvoice" readonly="true"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="invoiced"/>
+    <field name="finalInvoice"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
       readonlyIf="invoiced" icon="fa-check-circle"
@@ -222,24 +223,28 @@
             form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"/>
           <field name="totalCosts" colSpan="3"/>
-          <field name="toInvoice" colSpan="2" readonly="true"
-            if="__config__.app.getApp('business-project').automaticInvoicing"/>
-          <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
-            if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+          <panel name="toInvoicePanel" colSpan="2" stacked="true">
+            <field name="toInvoice" readonly="true"
+              if="__config__.app.getApp('business-project').automaticInvoicing"/>
+            <field name="toInvoice" readonlyIf="invoiced"
+              if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+          </panel>
           <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/>
           <field name="isTaskRefused" colSpan="2"/>
-          <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())"
-            colSpan="1"/>
-          <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
-            showTitle="false" colSpan="1">
-            <viewer><![CDATA[
-                     <>
-                     	<Box d="flex" justifyContent="flex-end">
-                     		<Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge>
-                     	</Box>
-                     </>
-					]]></viewer>
-          </field>
+          <panel name="invoicedPanel" colSpan="1" stacked="true">
+            <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())"/>
+            <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
+              showTitle="false">
+              <viewer><![CDATA[
+	                     <>
+	                     	<Box d="flex" justifyContent="flex-start">
+	                     		<Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge>
+	                     	</Box>
+	                     </>
+						]]></viewer>
+            </field>
+          </panel>
+          <field name="finalInvoice" colSpan="5"/>
           <panel name="discountPanel" readonly="true" colSpan="12"
             hideIf="discountTypeSelect == 3 || discountTypeSelect == 0"
             if="__config__.app.isApp('business-project')" if-module="axelor-business-project">

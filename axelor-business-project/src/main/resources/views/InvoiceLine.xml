@@ -14,6 +14,14 @@
           hidden="true"
           if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
         <field name="invoice.operationTypeSelect" hidden="true"/>
+        <field name="invoiced"
+          showIf="invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2"
+          hidden="true"
+          if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
+        <field name="finalInvoice"
+          showIf="invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2"
+          hidden="true"
+          if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
       </insert>
     </extend>
     <extend target="//field[@name='purchaseOrderLine']">

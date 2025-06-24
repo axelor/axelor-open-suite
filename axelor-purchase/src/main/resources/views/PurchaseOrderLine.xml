@@ -57,6 +57,8 @@
       if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
     <field name="invoiced"
       if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
+    <field name="finalInvoice"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
@@ -291,6 +293,9 @@
         <field name="project" domain="self.isBusinessProject = true" title="Business Project"
           requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="business-project-form"
           grid-view="project-grid" canEdit="false"/>
+        <field name="projectTask" title="Project Task" domain="self.project = :project"
+          form-view="business-project-task-form" grid-view="business-project-task-grid"
+          canEdit="false"/>
         <field name="toInvoice"
           if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()" colSpan="3"
           if-module="axelor-business-project"/>
@@ -301,9 +306,8 @@
             <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
           </viewer>
         </field>
-        <field name="projectTask" title="Project Task" domain="self.project = :project"
-          form-view="business-project-task-form" grid-view="business-project-task-grid"
-          canEdit="false"/>
+        <field name="finalInvoice"
+          if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">

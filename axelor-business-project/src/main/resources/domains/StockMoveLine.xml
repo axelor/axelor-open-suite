@@ -12,6 +12,8 @@
       title="Task"/>
     <boolean name="toInvoice" title="To invoice"/>
     <boolean name="invoiced" title="Invoiced"/>
+    <many-to-one name="finalInvoice" title="Final invoice"
+      ref="com.axelor.apps.account.db.Invoice" readonly="true"/>
 
   </entity>
 
