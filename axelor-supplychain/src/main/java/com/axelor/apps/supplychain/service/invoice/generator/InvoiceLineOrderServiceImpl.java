@@ -90,6 +90,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
         false,
         saleOrderLine,
         purchaseOrderLine,
+        null,
         null) {
       @Override
       public List<InvoiceLine> creates() throws AxelorException {
