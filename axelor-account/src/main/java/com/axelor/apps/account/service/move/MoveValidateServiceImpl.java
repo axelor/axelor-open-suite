@@ -69,6 +69,7 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
+import com.axelor.studio.db.AppAccount;
 import com.google.common.base.Splitter;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -1000,6 +1001,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
+
+    AppAccount account = appAccountService.getAppAccount();
+    if (account == null || !account.getManageFinancialDiscount()) {
+      return false;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
         return true;
