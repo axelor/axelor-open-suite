@@ -55,7 +55,6 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -623,14 +622,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public void applyCutOffDates(
-      InvoiceLine invoiceLine,
-      Invoice invoice,
-      LocalDate cutOffStartDate,
-      LocalDate cutOffEndDate) {
-    if (cutOffStartDate != null && cutOffEndDate != null) {
-      invoiceLine.setCutOffStartDate(cutOffStartDate);
-      invoiceLine.setCutOffEndDate(cutOffEndDate);
+  public void applyCutOffDates(InvoiceLine invoiceLine, Invoice invoice) {
+    if (invoice.getCutOffStartDate() != null && invoice.getCutOffEndDate() != null) {
+      invoiceLine.setCutOffStartDate(invoice.getCutOffStartDate());
+      invoiceLine.setCutOffEndDate(invoice.getCutOffEndDate());
     }
   }
 
