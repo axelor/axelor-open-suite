@@ -70,6 +70,17 @@
     <boolean name="isReinvoiceablSupInvLine" title="Supplier invoice line reinvoiceable"/>
     <boolean name="isReinvoiceablStockMoveLine" title="Stock move line reinvoiceable"/>
 
+    <boolean name="defaultReinvoiceablTimesheetLine"
+      title="Default timesheet line reinvoiceable"/>
+    <boolean name="defaultReinvoiceablExpenseLine"
+      title="Default expense line reinvoiceable"/>
+    <boolean name="defaultReinvoiceablPoLine"
+      title="Default purchase order line reinvoiceable"/>
+    <boolean name="defaultReinvoiceablSupInvLine"
+      title="Default supplier invoice line reinvoiceable"/>
+    <boolean name="defaultReinvoiceablStockMoveLine"
+      title="Default stock move line reinvoiceable"/>
+
     <extra-code><![CDATA[
 		public static final int CLOSING_PROJECT_RULE_NONE = 0;
 		public static final int CLOSING_PROJECT_RULE_NON_BLOCKING = 1;

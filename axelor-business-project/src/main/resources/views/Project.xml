@@ -313,11 +313,16 @@
         <panel-include view="incl-project-config-panel-form"/>
         <panel name="projectReportingPanel" title="Reinvoicing" colSpan="12"
           canCollapse="true">
-          <field name="isReinvoiceablTimesheetLine" widget="boolean-switch"/>
-          <field name="isReinvoiceablExpenseLine" widget="boolean-switch"/>
-          <field name="isReinvoiceablPoLine" widget="boolean-switch"/>
-          <field name="isReinvoiceablSupInvLine" widget="boolean-switch"/>
-          <field name="isReinvoiceablStockMoveLine" widget="boolean-switch"/>
+          <field name="isReinvoiceablTimesheetLine" widget="boolean-switch"
+            if="__config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+          <field name="isReinvoiceablExpenseLine" widget="boolean-switch"
+            if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
+          <field name="isReinvoiceablPoLine" widget="boolean-switch"
+            if="__config__.app.getApp('business-project')?.getIsReinvoiceablPoLine()"/>
+          <field name="isReinvoiceablSupInvLine" widget="boolean-switch"
+            if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
+          <field name="isReinvoiceablStockMoveLine" widget="boolean-switch"
+            if="__config__.app.getApp('business-project')?.getIsReinvoiceablStockMoveLine()"/>
         </panel>
       </panel>
     </panel-tabs>

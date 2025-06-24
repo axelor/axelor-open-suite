@@ -65,11 +65,25 @@ public class ProjectController {
 
     AppBusinessProject app = Beans.get(AppBusinessProjectService.class).getAppBusinessProject();
 
-    response.setValue("isReinvoiceablTimesheetLine", app.getIsReinvoiceablTimesheetLine());
-    response.setValue("isReinvoiceablPoLine", app.getIsReinvoiceablPoLine());
-    response.setValue("isReinvoiceablSupInvLine", app.getIsReinvoiceablSupInvLine());
-    response.setValue("isReinvoiceablExpenseLine", app.getIsReinvoiceablExpenseLine());
-    response.setValue("isReinvoiceablStockMoveLine", app.getIsReinvoiceablStockMoveLine());
+    if (app.getIsReinvoiceablTimesheetLine()) {
+      response.setValue("isReinvoiceablTimesheetLine", app.getDefaultReinvoiceablTimesheetLine());
+    }
+
+    if (app.getIsReinvoiceablPoLine()) {
+      response.setValue("isReinvoiceablPoLine", app.getDefaultReinvoiceablPoLine());
+    }
+
+    if (app.getIsReinvoiceablSupInvLine()) {
+      response.setValue("isReinvoiceablSupInvLine", app.getDefaultReinvoiceablSupInvLine());
+    }
+
+    if (app.getIsReinvoiceablExpenseLine()) {
+      response.setValue("isReinvoiceablExpenseLine", app.getDefaultReinvoiceablExpenseLine());
+    }
+
+    if (app.getIsReinvoiceablStockMoveLine()) {
+      response.setValue("isReinvoiceablStockMoveLine", app.getDefaultReinvoiceablStockMoveLine());
+    }
   }
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
