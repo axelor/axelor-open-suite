@@ -52,6 +52,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -495,9 +496,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   protected void setMoveLineAccountingDate(Move move, boolean daybook) {
+    LocalDate todayDate = appBaseService.getTodayDate(move.getCompany());
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
-        moveLine.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
+        moveLine.setAccountingDate(todayDate);
       }
     }
   }
@@ -637,6 +639,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
    */
   @Override
   public void freezeFieldsOnMoveLines(Move move) throws AxelorException {
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     for (MoveLine moveLine : move.getMoveLineList()) {
 
       Account account = moveLine.getAccount();
@@ -658,11 +661,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
       }
 
-      setMoveLineFixedInformation(move, moveLine);
+      setMoveLineFixedInformation(move, moveLine, companyCurrency);
     }
   }
 
-  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) throws AxelorException {
+  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine, Currency companyCurrency)
+      throws AxelorException {
     Company company = move.getCompany();
     Journal journal = move.getJournal();
     moveLine.setCompanyCode(company.getCode());
@@ -672,9 +676,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
     moveLine.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
-    moveLine.setCompanyCurrencyCode(companyConfigService.getCompanyCurrency(company).getCode());
-    moveLine.setCompanyCurrencyDecimals(
-        companyConfigService.getCompanyCurrency(company).getNumberOfDecimals());
+    moveLine.setCompanyCurrencyCode(companyCurrency.getCode());
+    moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
     moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
