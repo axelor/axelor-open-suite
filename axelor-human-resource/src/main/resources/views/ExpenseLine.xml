@@ -111,7 +111,7 @@
       if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"
       background="danger"/>
     <field name="project"/>
-    <field name="projectTask"/>
+    <field name="projectTask" domain="self.imputable IS TRUE"/>
     <field name="expenseProduct"/>
     <field name="expenseDate"/>
     <field name="employee" hidden="true"/>
