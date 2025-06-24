@@ -298,7 +298,8 @@
             <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
           </viewer>
         </field>
-        <field name="projectTask" title="Project Task" domain="self.project = :project"
+        <field name="projectTask" title="Project Task"
+          domain="self.project = :project AND self.imputable IS TRUE"
           form-view="business-project-task-form" grid-view="business-project-task-grid"
           canEdit="false"/>
       </panel>
