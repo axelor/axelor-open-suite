@@ -7,11 +7,11 @@
     model="com.axelor.apps.account.db.InvoiceTerm" id="invoice-term-bank-payment-form"
     extension="true">
     <extend target="//field[name='paymentMode']">
-      <attribute name="onchange" value="action-invoice-term-method-check-bank-details"/>
+      <attribute name="onChange" value="action-invoice-term-method-set-default-bank-details"/>
     </extend>
   </form>
 
-  <action-method name="action-invoice-term-method-check-bank-details">
+  <action-method name="action-invoice-term-method-set-default-bank-details">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="getDefaultBankDetails"/>
   </action-method>

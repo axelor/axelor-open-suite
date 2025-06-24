@@ -1906,7 +1906,7 @@
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-method-update-invoice-term-payment-mode"
       if="invoiceTermList &amp;&amp; !invoiceTermList.isEmpty()"/>
-    <action name="action-invoice-method-check-bank-details"/>
+    <action name="action-invoice-method-set-default-bank-details"/>
   </action-group>
 
   <action-group name="action-invoice-group-draft-button">
