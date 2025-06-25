@@ -116,7 +116,9 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
       computeBudgetLinesUsingDates(budget, amount, fromDate, toDate, computeMethod);
     } else {
       BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, defaultDate);
-      computeMethod.computeBudgetLineAmounts(budgetLine, amount);
+      if (budgetLine != null) {
+        computeMethod.computeBudgetLineAmounts(budgetLine, amount);
+      }
     }
   }
 
