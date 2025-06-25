@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
 import com.axelor.db.mapper.Mapper;
@@ -88,7 +89,7 @@ public class SaleOrderConfirmController {
     response.setValues(saleOrderDummyService.getOnLoadSplitDummies(saleOrder));
     response.setValue(
         "$saleOrderLineList",
-        Beans.get(SaleOrderSplitService.class).getSaleOrderLineMapList(saleOrder));
+        Beans.get(SaleOrderSplitDummyService.class).getSaleOrderLineMapList(saleOrder));
   }
 
   public void orderAll(ActionRequest request, ActionResponse response) throws AxelorException {

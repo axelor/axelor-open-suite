@@ -11,14 +11,12 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -144,23 +142,6 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   @Override
   public BigDecimal getQtyToOrderLeft(SaleOrderLine saleOrderLine) {
     return saleOrderLine.getQty().subtract(saleOrderLine.getOrderedQty());
-  }
-
-  @Override
-  public List<Map<String, Object>> getSaleOrderLineMapList(SaleOrder saleOrder) {
-    List<Map<String, Object>> saleOrderLineMapList = new ArrayList<>();
-    int nbOfDecimalForQty = appBaseService.getNbDecimalDigitForQty();
-    int nbOfDecimalForPrice = appBaseService.getNbDecimalDigitForUnitPrice();
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      Map<String, Object> saleOrderLineMap =
-          Mapper.toMap(saleOrderLineRepository.copy(saleOrderLine, true));
-      saleOrderLineMap.put("$solId", saleOrderLine.getId());
-      saleOrderLineMap.put("$qtyToOrderLeft", getQtyToOrderLeft(saleOrderLine));
-      saleOrderLineMap.put("$nbDecimalDigitForUnitPrice", nbOfDecimalForPrice);
-      saleOrderLineMap.put("$nbDecimalDigitForQty", nbOfDecimalForQty);
-      saleOrderLineMapList.add(saleOrderLineMap);
-    }
-    return saleOrderLineMapList;
   }
 
   protected void checkBeforeConfirm(SaleOrder saleOrder, Map<Long, BigDecimal> qtyToOrderMap)
