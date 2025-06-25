@@ -403,6 +403,9 @@ public final class ProductionExceptionMessage {
   public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY = /*$$(*/
       "Calculation quantity should not be zero." /*)*/;
 
+  public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY_WITH_NAME = /*$$(*/
+      "The Calculation quantity of the bill of material %s is equal to zero." /*)*/;
+
   public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR = /*$$(*/
       "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s" /*)*/;
 

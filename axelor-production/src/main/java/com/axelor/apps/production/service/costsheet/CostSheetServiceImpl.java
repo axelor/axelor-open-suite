@@ -1008,13 +1008,20 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   @Override
-  public BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) {
+  public BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) throws AxelorException {
     BigDecimal bomQty = billOfMaterial.getQty();
     if (bomQty.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
 
     BigDecimal calculationQty = billOfMaterial.getCalculationQty();
+    if (calculationQty.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_WRONG_CALCULATION_QTY_WITH_NAME),
+          billOfMaterial.getFullName());
+    }
+
     return calculationQty.divide(bomQty, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 }
