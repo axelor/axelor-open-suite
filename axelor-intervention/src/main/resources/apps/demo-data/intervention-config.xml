@@ -5,6 +5,20 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check-message="Invalid codeSelect :codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence','importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
+      if="yearlyResetOk"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -16,6 +30,21 @@
   <input file="contract_contract.csv" separator=";"
     type="com.axelor.apps.contract.db.Contract"
     call="com.axelor.csv.script.ImportContract:importContract">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="targetTypeSelect" to="targetTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.target.type.select', targetTypeSelect, true)"
+      check-message="Invalid targetTypeSelect :targetTypeSelect"/>
+    <bind column="contractTypeSelect" to="contractTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.contract.type.select', contractTypeSelect, true)"
+      check-message="Invalid contractTypeSelect :contractTypeSelect"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.status.select', statusSelect, true)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="planningPreferenceSelect" to="planningPreferenceSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('intervention.contract.intervention.planning.preference', planningPreferenceSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
     <bind to="startDate" column="startDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"/>
     <bind to="nextAnnualVisitDate" column="nextAnnualVisitDate"
@@ -32,10 +61,29 @@
   </input>
 
   <input file="intervention_equipmentFamily.csv" separator=";"
-    type="com.axelor.apps.intervention.db.EquipmentFamily"/>
+    type="com.axelor.apps.intervention.db.EquipmentFamily" search="self.code = :code">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="intervention_equipment.csv" separator=";"
     type="com.axelor.apps.intervention.db.Equipment">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="partner_importId" to="partner" search="self.importId = :partner_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', partner_importId)"
+      check-message="Partner with importId :partner_importId doesn't exist"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('equipment.type.select', typeSelect, true)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="indicatorSelect" to="indicatorSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('equipment.indicator.select', indicatorSelect, false)"
+      check-message="Invalid indicatorSelect :indicatorSelect"/>
     <bind to="commissioningDate" column="commissioningDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(commissioningDate)"/>
     <bind to="customerWarrantyOnPartEndDate" column="customerWarrantyOnPartEndDate"
@@ -44,58 +92,176 @@
 
   <input file="intervention_equipmentLine.csv" separator=";"
     type="com.axelor.apps.intervention.db.EquipmentLine"/>
+
   <input file="intervention_parkModel.csv" separator=";"
     type="com.axelor.apps.intervention.db.ParkModel"/>
-  <input file="intervention_equipmentModel.csv" separator=";"
-    type="com.axelor.apps.intervention.db.EquipmentModel"/>
 
-  <input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration"/>
+  <input file="intervention_equipmentModel.csv" separator=";"
+    type="com.axelor.apps.intervention.db.EquipmentModel">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('equipment.type.select', typeSelect, true)"
+      check-message="Invalid typeSelect :typeSelect"/>
+  </input>
+
+  <input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.duration.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="applicationTypeSelect" to="applicationTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.duration.application.type.select', applicationTypeSelect, false)"
+      check-message="Invalid applicationTypeSelect :applicationTypeSelect"/>
+  </input>
 
   <input file="intervention_requestSubject.csv" separator=";"
     type="com.axelor.apps.intervention.db.RequestSubject"/>
+
   <input file="intervention_requestSource.csv" separator=";"
     type="com.axelor.apps.intervention.db.RequestSource"/>
+
   <input file="intervention_interventionCategory.csv" separator=";"
-    type="com.axelor.apps.intervention.db.InterventionCategory"/>
+    type="com.axelor.apps.intervention.db.InterventionCategory">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
+
   <input file="intervention_answerType.csv" separator=";"
-    type="com.axelor.apps.intervention.db.AnswerType"/>
+    type="com.axelor.apps.intervention.db.AnswerType">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="answerTypeSelect" to="answerTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('answer.type.select', answerTypeSelect, true)"
+      check-message="Invalid answerTypeSelect :answerTypeSelect"/>
+  </input>
+
   <input file="intervention_answerValue.csv" separator=";"
-    type="com.axelor.apps.intervention.db.AnswerValue"/>
+    type="com.axelor.apps.intervention.db.AnswerValue">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="intervention_interventionType.csv" separator=";"
-    type="com.axelor.apps.intervention.db.InterventionType">
+    type="com.axelor.apps.intervention.db.InterventionType" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.intervention.db.InterventionType', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="interventionCategory_importId" to="interventionCategory"
+      search="self.importId = :interventionCategory_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.intervention.db.InterventionCategory', 'importId', interventionCategory_importId)"
+      check-message="Intervention category with importId :interventionCategory_importId doesn't exist"/>
     <bind to="companySet" column="companySet" search="self.importId in :companySet"
       eval="companySet.split('\\|') as List"/>
   </input>
 
   <input file="intervention_question.csv" separator=";"
-    type="com.axelor.apps.intervention.db.Question"/>
+    type="com.axelor.apps.intervention.db.Question" search="self.importId = :importId">
+    <bind column="answerType_importId" to="answerType"
+      search="self.importId = :answerType_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.intervention.db.AnswerType', 'importId', answerType_importId)"
+      check-message="Answer type with importId :answerType_importId doesn't exist"/>
+  </input>
 
   <input file="intervention_rangeType.csv" separator=";"
     type="com.axelor.apps.intervention.db.RangeType">
+    <bind column="rangeTypeSelect" to="rangeTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('range.type.type.select', rangeTypeSelect, false)"
+      check-message="Invalid rangeTypeSelect :rangeTypeSelect"/>
     <bind to="equipmentFamilySet" column="equipmentFamilySet"
       search="self.importId in :equipmentFamilySet" eval="equipmentFamilySet.split('\\|') as List"/>
   </input>
 
   <input file="intervention_range.csv" separator=";"
-    type="com.axelor.apps.intervention.db.Range"/>
+    type="com.axelor.apps.intervention.db.Range">
+    <bind column="title" to="title"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(title)"
+      check-message="Title must not be null"/>
+    <bind column="rangeType_importId" to="rangeType"
+      search="self.importId = :rangeType_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.intervention.db.RangeType', 'importId', rangeType_importId)"
+      check-message="Range type with importId :rangeType_importId doesn't exist"/>
+  </input>
+
   <input file="intervention_rangeQuestion.csv" separator=";"
-    type="com.axelor.apps.intervention.db.RangeQuestion"/>
+    type="com.axelor.apps.intervention.db.RangeQuestion" search="self.importId = :importId">
+    <bind column="sequence" to="sequence"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.intervention.db.RangeQuestion', 'importId', importId, 'sequence', sequence)"
+      check-message="Sequence must be unique"/>
+    <bind column="question_importId" to="question" search="self.importId = :question_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.intervention.db.Question', 'importId', question_importId)"
+      check-message="Question with importId :question_importId doesn't exist"/>
+  </input>
+
   <input file="intervention_orderedRange.csv" separator=";"
     type="com.axelor.apps.intervention.db.OrderedRange"/>
 
   <input file="intervention_customerRequest.csv" separator=";"
-    type="com.axelor.apps.intervention.db.CustomerRequest"
+    type="com.axelor.apps.intervention.db.CustomerRequest" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportCustomerRequest:importCustomerRequest">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="deliveredPartner_importId" to="deliveredPartner"
+      search="self.importId = :deliveredPartner_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', deliveredPartner_importId)"
+      check-message="Partner with importId :deliveredPartner_importId doesn't exist"/>
+    <bind column="sequence" to="sequence"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.intervention.db.CustomerRequest', 'importId', importId, 'sequence', sequence)"
+      check-message="Sequence must be unique"/>
+    <bind column="priority" to="priority"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.priority.select', priority, false)"
+      check-message="Invalid priority :priority"/>
+    <bind column="gitStatusIndicator" to="gitStatusIndicator"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.real.gt.indicator.select', gitStatusIndicator, false)"
+      check-message="Invalid gitStatusIndicator :gitStatusIndicator"/>
+    <bind column="grtStatusIndicator" to="grtStatusIndicator"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.real.gt.indicator.select', grtStatusIndicator, false)"
+      check-message="Invalid grtStatusIndicator :grtStatusIndicator"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
     <bind to="requestDateTime" column="requestDateTime"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(requestDateTime)"/>
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(requestDateTime)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(requestDateTime)"
+      check-message="Request date time must not be null"/>
     <bind to="equipmentSet" column="equipmentSet" search="self.importId in :equipmentSet"
       eval="equipmentSet.split('\\|') as List"/>
   </input>
 
   <input file="intervention_intervention.csv" separator=";"
-    type="com.axelor.apps.intervention.db.Intervention"
+    type="com.axelor.apps.intervention.db.Intervention" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportIntervention:importIntervention">
+    <bind column="sequence" to="sequence"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.intervention.db.Intervention', 'importId', importId, 'sequence', sequence)"
+      check-message="Sequence must be unique"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('intervention.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="planningPreferenceSelect" to="planningPreferenceSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('intervention.contract.intervention.planning.preference', planningPreferenceSelect, false)"
+      check-message="Invalid planningPreferenceSelect :planningPreferenceSelect"/>
+    <bind column="priority" to="priority"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.priority.select', priority, false)"
+      check-message="Invalid priority :priority"/>
+    <bind column="estimatedDateMonth" to="estimatedDateMonth"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iadministration.month.select', estimatedDateMonth, false)"
+      check-message="Invalid estimatedDateMonth :estimatedDateMonth"/>
     <bind to="equipmentSet" column="equipmentSet" search="self.importId in :equipmentSet"
       eval="equipmentSet.split('\\|') as List"/>
   </input>
