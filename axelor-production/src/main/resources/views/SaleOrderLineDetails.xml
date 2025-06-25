@@ -80,7 +80,7 @@
           <field name="maxCapacityPerCycle" colSpan="4"/>
         </panel>
         <panel name="machineTimesPanel" title="Machine times" colSpan="12"
-          showIf="prodProcessLine.workCenter.workCenterTypeSelect != 3 &amp;&amp; prodProcessLine.workCenter.workCenterTypeSelect != 2">
+          showIf="prodProcessLine.workCenter.workCenterTypeSelect == 2 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
           <field name="durationPerCycle" colSpan="4" widget="duration" x-big="true"
             x-seconds="true"/>
           <field name="setupDuration" widget="duration"
@@ -93,7 +93,7 @@
             help="Ending duration of the machine." colSpan="4" x-big="true" x-seconds="true"/>
         </panel>
         <panel name="humanTimesPanel" title="Human times"
-          showIf="prodProcessLine.workCenter.workCenterTypeSelect != 3 &amp;&amp; prodProcessLine.workCenter.workCenterTypeSelect != 1">
+          showIf="prodProcessLine.workCenter.workCenterTypeSelect == 1 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
           <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
             x-seconds="true"/>
         </panel>
