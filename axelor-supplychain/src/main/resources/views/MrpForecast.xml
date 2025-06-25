@@ -13,7 +13,7 @@
     <field name="unit"/>
     <field name="stockLocation"/>
     <field name="partner"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast"
