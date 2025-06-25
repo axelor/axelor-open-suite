@@ -1,0 +1,3 @@
+---
+title: "InvoicingProject: fixed technical error when invoicing project with some lines to invoice at 0."
+module: axelor-business-project

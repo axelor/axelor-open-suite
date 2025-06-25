@@ -1,3 +1,31 @@
+## [8.3.8] (2025-06-12)
+
+### Fixes
+#### Base
+
+* Bank: fixed error when SWIFT address was empty.
+
+#### Account
+
+* InvoiceTerm/Invoice/Pfp: fixed automatic pfp validate status on invoice when using the invoice term to validate menu entry.
+* DepositSlip/PaymentVoucher: fixed deposit slip management when using payment mode with accounting mode value for collection.
+* Invoice/InvoiceTerm: fixed the amount init when manually splitting amounts.
+
+#### Bank Payment
+
+* Bank Reconciliation: fixed the balance computation when multiple reconcile where on the same move line.
+
+#### Business Project
+
+* Project: fixed error when trying to select new sale order line.
+
+
+### Developer
+
+#### Account
+
+The InvoiceTermServiceImpl.computePercentageSum method now return the amount without scale to be used in computation. If you want to scale it, use the currencyScaleService.getScaledValue(invoice, amount)
+
 ## [8.3.7] (2025-06-02)
 
 ### Fixes
@@ -654,6 +682,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.8]: https://github.com/axelor/axelor-open-suite/compare/v8.3.7...v8.3.8
 [8.3.7]: https://github.com/axelor/axelor-open-suite/compare/v8.3.6...v8.3.7
 [8.3.6]: https://github.com/axelor/axelor-open-suite/compare/v8.3.5...v8.3.6
 [8.3.5]: https://github.com/axelor/axelor-open-suite/compare/v8.3.4...v8.3.5

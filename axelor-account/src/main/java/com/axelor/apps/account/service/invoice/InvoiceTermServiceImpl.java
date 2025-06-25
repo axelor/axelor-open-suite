@@ -146,7 +146,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException {
 
-    return new BigDecimal(100).compareTo(computePercentageSum(invoice)) == 0;
+    return new BigDecimal(100)
+            .compareTo(currencyScaleService.getScaledValue(invoice, computePercentageSum(invoice)))
+        == 0;
   }
 
   @Override
@@ -166,7 +168,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
 
-    return currencyScaleService.getScaledValue(invoice, sum.multiply(BigDecimal.valueOf(100)));
+    return sum.multiply(BigDecimal.valueOf(100));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -409,7 +411,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (percentageSum.compareTo(BigDecimal.ZERO) > 0) {
       invoiceTermPercentage = new BigDecimal(100).subtract(percentageSum);
     }
-    invoiceTerm.setPercentage(invoiceTermPercentage);
+    invoiceTerm.setPercentage(currencyScaleService.getScaledValue(invoice, invoiceTermPercentage));
     BigDecimal amount =
         invoice
             .getInTaxTotal()

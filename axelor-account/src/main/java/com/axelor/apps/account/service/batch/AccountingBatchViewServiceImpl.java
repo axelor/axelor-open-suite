@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,18 +39,28 @@ public class AccountingBatchViewServiceImpl implements AccountingBatchViewServic
   @Override
   public List<Account> getClosureAccountSet(
       AccountingBatch accountingBatch, boolean closeAllAccounts) {
-    return getAccountSet(accountingBatch, closeAllAccounts, true);
+
+    List<String> accountTypeList = getAccountTypeList(closeAllAccounts, true);
+    return getAccountSet(accountingBatch, accountTypeList);
   }
 
   @Override
   public List<Account> getOpeningAccountSet(
       AccountingBatch accountingBatch, boolean openAllAccounts) {
-    return getAccountSet(accountingBatch, openAllAccounts, false);
+
+    List<String> accountTypeList = getAccountTypeList(openAllAccounts, false);
+    return getAccountSet(accountingBatch, accountTypeList);
   }
 
-  protected List<Account> getAccountSet(
-      AccountingBatch accountingBatch, boolean includeAllAccounts, boolean isClosure) {
-    if (!includeAllAccounts) {
+  @Override
+  public Long countAllAvailableAccounts(AccountingBatch accountingBatch, boolean isClosure) {
+
+    List<String> accountTypeList = getAccountTypeList(true, isClosure);
+    return countAllAvailableAccounts(accountingBatch, accountTypeList);
+  }
+
+  protected List<String> getAccountTypeList(boolean getAllAccounts, boolean isClosure) {
+    if (!getAllAccounts) {
       return new ArrayList<>();
     }
     List<String> accountTypeList =
@@ -71,6 +82,15 @@ public class AccountingBatchViewServiceImpl implements AccountingBatchViewServic
       accountTypeList.add(AccountTypeRepository.TYPE_INCOME);
     }
 
+    return accountTypeList;
+  }
+
+  protected List<Account> getAccountSet(
+      AccountingBatch accountingBatch, List<String> accountTypeList) {
+    if (ObjectUtils.isEmpty(accountTypeList)) {
+      return new ArrayList<>();
+    }
+
     return accountRepository
         .all()
         .filter(
@@ -78,5 +98,20 @@ public class AccountingBatchViewServiceImpl implements AccountingBatchViewServic
         .bind("company", accountingBatch.getCompany())
         .bind("accountTypes", accountTypeList)
         .fetch();
+  }
+
+  protected Long countAllAvailableAccounts(
+      AccountingBatch accountingBatch, List<String> accountTypeList) {
+    if (ObjectUtils.isEmpty(accountTypeList)) {
+      return 0L;
+    }
+
+    return accountRepository
+        .all()
+        .filter(
+            "self.company = :company AND self.accountType.technicalTypeSelect IN (:accountTypes)")
+        .bind("company", accountingBatch.getCompany())
+        .bind("accountTypes", accountTypeList)
+        .count();
   }
 }

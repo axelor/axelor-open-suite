@@ -301,8 +301,6 @@ public interface SaleOrderInvoiceService {
    */
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 
-  void updateInvoicingState(SaleOrder saleOrder);
-
   List<Invoice> generateInvoicesFromSaleOrderLines(
       Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
       Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,

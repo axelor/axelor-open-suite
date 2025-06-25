@@ -744,6 +744,7 @@
 "The company %s does not have bank order sequence","La société %s n'a pas de séquence d'ordre bancaire configurée",,
 "The field encryption.bankorder.password in config file must be filled.","Le champ encryption.bankorder.password dans la configuration doit être rempli.",,
 "The move %s can't be reversed because it is linked to a bank reconciliation with status validated","L'écriture %s ne peut être extournée car elle est liée à un rapprochement bancaire au statut validé",,
+"The movelines %s are already reconciled with another bank statement line. Multiple bank statement lines can't be reconciled with the same move line.","Les lignes d'écriture %s pointent déjà vers une autre ligne de rapprochement bancaire. Il n'est pas possible de faire pointer plusieurs lignes de rapprochement bancaire vers une même ligne d'écriture.",,
 "The moves %s couldn't be reversed because these are linked to a bank reconciliation with status validated","Les écritures %s ne peuvent être extournées car elle sont liées à un rapprochement bancaire au statut validé",,
 "The password is incorrect.","Le mot de passe est incorrect.",,
 "The payment status will not update.","Le statut du paiement ne sera pas mis à jour.",,

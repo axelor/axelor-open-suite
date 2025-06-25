@@ -30,7 +30,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -89,6 +91,7 @@ public class DepositSlipController {
   }
 
   public void loadPaymentVoucher(ActionRequest request, ActionResponse response) {
+    DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
     DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
 
     List paymentVoucherDueList = (List) request.getContext().get("__paymentVoucherDueList");
@@ -97,13 +100,17 @@ public class DepositSlipController {
       return;
     }
 
-    List<Integer> selectedPaymentVoucherDueIdList =
-        depositSlipService.getSelectedPaymentVoucherDueIdList(paymentVoucherDueList);
-    if (CollectionUtils.isEmpty(selectedPaymentVoucherDueIdList)) {
+    List<PaymentVoucher> selectedPaymentVoucherDueList =
+        depositSlipService.getSelectedPaymentVoucherDueList(paymentVoucherDueList);
+    if (CollectionUtils.isEmpty(selectedPaymentVoucherDueList)) {
       return;
     }
-
-    response.setAttr("paymentVoucherList", "value:add", selectedPaymentVoucherDueIdList);
+    List<PaymentVoucher> paymentVoucherList =
+        Optional.ofNullable(depositSlip)
+            .map(DepositSlip::getPaymentVoucherList)
+            .orElse(new ArrayList<>());
+    paymentVoucherList.addAll(selectedPaymentVoucherDueList);
+    response.setValue("paymentVoucherList", paymentVoucherList);
   }
 
   public void updateInvoicePayments(ActionRequest request, ActionResponse response) {

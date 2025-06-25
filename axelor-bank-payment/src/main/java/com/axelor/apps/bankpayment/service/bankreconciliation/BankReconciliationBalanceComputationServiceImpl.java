@@ -36,7 +36,9 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BankReconciliationBalanceComputationServiceImpl
     implements BankReconciliationBalanceComputationService {
@@ -103,6 +105,7 @@ public class BankReconciliationBalanceComputationServiceImpl
     }
     do {
       for (BankReconciliation br : bankReconciliations) {
+        Set<MoveLine> moveLineSet = new HashSet<>();
         for (BankReconciliationLine brl : br.getBankReconciliationLineList()) {
           statementReconciledLineBalance =
               computeStatementReconciledLineBalance(statementReconciledLineBalance, brl);
@@ -111,7 +114,8 @@ public class BankReconciliationBalanceComputationServiceImpl
           statementOngoingReconciledBalance =
               computeStatementOngoingReconciledLineBalance(statementOngoingReconciledBalance, brl);
           movesOngoingReconciledBalance =
-              computeMovesOngoingReconciledLineBalance(movesOngoingReconciledBalance, brl);
+              computeMovesOngoingReconciledLineBalance(
+                  movesOngoingReconciledBalance, brl, moveLineSet);
         }
       }
       offset += limit;
@@ -239,28 +243,30 @@ public class BankReconciliationBalanceComputationServiceImpl
   protected BigDecimal computeStatementOngoingReconciledLineBalance(
       BigDecimal statementOngoingReconciledBalance, BankReconciliationLine brl) {
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
-      List<BankReconciliationLine> bankReconciliationLines =
-          bankReconciliationLineRepository
-              .all()
-              .filter("self.moveLine.id = ?1", brl.getMoveLine().getId())
-              .fetch();
-      for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-        statementOngoingReconciledBalance =
-            statementOngoingReconciledBalance.subtract(bankReconciliationLine.getDebit());
-        statementOngoingReconciledBalance =
-            statementOngoingReconciledBalance.add(bankReconciliationLine.getCredit());
-      }
+      statementOngoingReconciledBalance =
+          statementOngoingReconciledBalance.subtract(brl.getDebit());
+      statementOngoingReconciledBalance = statementOngoingReconciledBalance.add(brl.getCredit());
     }
     return currencyScaleService.getScaledValue(brl, statementOngoingReconciledBalance);
   }
 
   protected BigDecimal computeMovesOngoingReconciledLineBalance(
-      BigDecimal movesOngoingReconciledBalance, BankReconciliationLine brl) {
+      BigDecimal movesOngoingReconciledBalance,
+      BankReconciliationLine brl,
+      Set<MoveLine> moveLineSet) {
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
       String query = "self.postedNbr LIKE '%%s%'";
       query = query.replace("%s", brl.getPostedNbr());
       List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
       for (MoveLine moveLine : moveLines) {
+        // To avoid the fact that a moveline can be related to multiple brl and so, the update of
+        // the amount can be duplicated
+        if (moveLineSet.contains(moveLine)) {
+          continue;
+        } else {
+          moveLineSet.add(moveLine);
+        }
+
         if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
           movesOngoingReconciledBalance =
               movesOngoingReconciledBalance.add(moveLine.getCredit().add(moveLine.getDebit()));

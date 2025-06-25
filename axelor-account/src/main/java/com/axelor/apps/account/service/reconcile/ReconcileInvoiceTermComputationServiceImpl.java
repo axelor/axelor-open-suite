@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -65,6 +66,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepository;
   protected InvoiceRepository invoiceRepository;
+  protected InvoiceTermPfpService invoiceTermPfpService;
 
   @Inject
   public ReconcileInvoiceTermComputationServiceImpl(
@@ -77,7 +79,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
       CurrencyService currencyService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
-      InvoiceRepository invoiceRepository) {
+      InvoiceRepository invoiceRepository,
+      InvoiceTermPfpService invoiceTermPfpService) {
     this.reconcileCheckService = reconcileCheckService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
@@ -88,6 +91,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceTermPaymentRepository = invoiceTermPaymentRepository;
     this.invoiceRepository = invoiceRepository;
+    this.invoiceTermPfpService = invoiceTermPfpService;
   }
 
   @Override
@@ -250,6 +254,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
           .keySet()
           .forEach(
               it -> it.setPfpValidateStatusSelect(invoiceTermPfpValidateStatusSelectMap.get(it)));
+      invoiceTermPfpService.refreshInvoicePfpStatus(invoice);
     }
 
     if (invoicePayment != null) {

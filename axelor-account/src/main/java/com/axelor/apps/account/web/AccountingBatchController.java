@@ -53,6 +53,7 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Resource;
 import com.axelor.studio.db.App;
 import com.google.inject.Singleton;
 import java.util.Arrays;
@@ -61,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -459,7 +461,9 @@ public class AccountingBatchController {
         Beans.get(AccountingBatchViewService.class)
             .getClosureAccountSet(
                 accountingBatch, (boolean) request.getContext().get("closeAllAccounts"));
-    response.setValue("closureAccountSet", closureAccountSet);
+    response.setValue(
+        "closureAccountSet",
+        closureAccountSet.stream().map(Resource::toMapCompact).collect(Collectors.toList()));
   }
 
   public void setOpeningAccountSet(ActionRequest request, ActionResponse response) {
@@ -468,7 +472,9 @@ public class AccountingBatchController {
         Beans.get(AccountingBatchViewService.class)
             .getOpeningAccountSet(
                 accountingBatch, (boolean) request.getContext().get("openAllAccounts"));
-    response.setValue("openingAccountSet", openingAccountSet);
+    response.setValue(
+        "openingAccountSet",
+        openingAccountSet.stream().map(Resource::toMapCompact).collect(Collectors.toList()));
   }
 
   public void setCloseAllAccounts(ActionRequest request, ActionResponse response) {
@@ -478,9 +484,12 @@ public class AccountingBatchController {
       response.setValue("$closeAllAccounts", false);
       return;
     }
-    List<Account> newClosureAccountSet =
-        Beans.get(AccountingBatchViewService.class).getClosureAccountSet(accountingBatch, true);
-    response.setValue("$closeAllAccounts", closureAccountSet.size() == newClosureAccountSet.size());
+    response.setValue(
+        "$closeAllAccounts",
+        closureAccountSet.size()
+            == Beans.get(AccountingBatchViewService.class)
+                .countAllAvailableAccounts(accountingBatch, true)
+                .intValue());
   }
 
   public void setOpenAllAccounts(ActionRequest request, ActionResponse response) {
@@ -490,8 +499,11 @@ public class AccountingBatchController {
       response.setValue("$openAllAccounts", false);
       return;
     }
-    List<Account> newOpeningAccountSet =
-        Beans.get(AccountingBatchViewService.class).getOpeningAccountSet(accountingBatch, true);
-    response.setValue("$openAllAccounts", openingAccountSet.size() == newOpeningAccountSet.size());
+    response.setValue(
+        "$openAllAccounts",
+        openingAccountSet.size()
+            == Beans.get(AccountingBatchViewService.class)
+                .countAllAvailableAccounts(accountingBatch, false)
+                .intValue());
   }
 }

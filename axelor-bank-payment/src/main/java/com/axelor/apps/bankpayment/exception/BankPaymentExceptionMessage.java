@@ -332,4 +332,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL = /*$$(*/
       "Missing journal while creating a move from a bank reconciliation." /*)*/;
+
+  public static final String BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR = /*$$(*/
+      "The movelines %s are already reconciled with another bank statement line. Multiple bank statement lines can't be reconciled with the same move line." /*)*/;
 }

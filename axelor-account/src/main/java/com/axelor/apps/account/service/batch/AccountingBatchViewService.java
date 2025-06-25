@@ -27,4 +27,6 @@ public interface AccountingBatchViewService {
   List<Account> getClosureAccountSet(AccountingBatch accountingBatch, boolean closeAllAccounts);
 
   List<Account> getOpeningAccountSet(AccountingBatch accountingBatch, boolean openAllAccounts);
+
+  Long countAllAvailableAccounts(AccountingBatch accountingBatch, boolean isClosure);
 }

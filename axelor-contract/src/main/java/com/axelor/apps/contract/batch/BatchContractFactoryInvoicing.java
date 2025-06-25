@@ -82,8 +82,9 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
             + "AND self.statusSelect != :statusSelect "
             + "AND self.targetTypeSelect = :targetTypeSelect ");
 
-    filter.append(
-        considerBatch ? "AND :batch NOT MEMBER of self.batchSet" : "AND self.batchSet IS EMPTY");
+    if (considerBatch) {
+      filter.append("AND :batch NOT MEMBER of self.batchSet");
+    }
 
     return filter.toString();
   }
