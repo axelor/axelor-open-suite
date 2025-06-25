@@ -1,8 +1,8 @@
 ---
-title: "Company: Add a field to store a dark logo to use on dark mode-based themes."
+title: "Company: Add fields to store light and dark logos which will be used according to user theme mode."
 module: axelor-base
 developer: |
-  Dont' forget to run the SQL migration script to create the new column and constraint.
+  Dont' forget to run the SQL migration script to create the new columns and constraints.
   
   The methods `getUserActiveCompanyLogo` and `getUserActiveCompanyLogoLink` expect now a string argument with the theme mode (light or dark).
   When this method is called in the axelor-config property `context.appLogo`, AOP automatically provides the expected query-parameter so there is nothing to change.

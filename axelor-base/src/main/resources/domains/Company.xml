@@ -16,7 +16,10 @@
       ref="com.axelor.apps.base.db.CompanyDepartment" mappedBy="company"/>
 
     <string name="notes" large="true" title="Notes"/>
-    <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
+    <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"
+      help="The default logo, used in BIRT printings."/>
+    <many-to-one name="lightLogo" ref="com.axelor.meta.db.MetaFile" title="Light logo"
+      help="If non empty, this alternative logo will be displayed for users using a light mode-based theme."/>
     <many-to-one name="darkLogo" ref="com.axelor.meta.db.MetaFile" title="Dark logo"
       help="If non empty, this alternative logo will be displayed for users using a dark mode-based theme."/>
 
@@ -77,6 +80,7 @@
       <field name="parent" on="UPDATE"/>
       <field name="notes" on="UPDATE"/>
       <field name="logo" on="UPDATE"/>
+      <field name="lightLogo" on="UPDATE"/>
       <field name="darkLogo" on="UPDATE"/>
       <field name="currency" on="UPDATE"/>
       <field name="customerPaymentDelay" on="UPDATE"/>

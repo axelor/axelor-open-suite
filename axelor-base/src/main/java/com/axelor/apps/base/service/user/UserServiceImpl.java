@@ -172,8 +172,9 @@ public class UserServiceImpl implements UserService {
       return null;
     }
 
-    var darkLogo = company.getDarkLogo();
-    return mode.equals(DARK_THEME_MODE) && darkLogo != null ? darkLogo : company.getLogo();
+    // if the mode is light, AOP doesn't set the mode, so we consider it as the default mode
+    var logo = DARK_THEME_MODE.equals(mode) ? company.getDarkLogo() : company.getLightLogo();
+    return Optional.ofNullable(logo).orElse(company.getLogo());
   }
 
   @Override
