@@ -70,6 +70,7 @@ public class LeaveRequestSendServiceImpl implements LeaveRequestSendService {
     }
 
     LeaveLine leaveLine = leaveLineService.getLeaveLine(leaveRequest);
+    String message = "";
     if (leaveLine != null
         && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
       if (!leaveRequest.getLeaveReason().getAllowNegativeValue()
@@ -86,15 +87,16 @@ public class LeaveRequestSendServiceImpl implements LeaveRequestSendService {
                 + " "
                 + instruction);
       } else {
-        return String.format(
-            I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
-            leaveRequest.getLeaveReason().getName());
+        message =
+            String.format(
+                I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
+                leaveRequest.getLeaveReason().getName());
       }
     }
 
     confirm(leaveRequest);
 
-    return "";
+    return message;
   }
 
   @Transactional(rollbackOn = {Exception.class})
