@@ -1,0 +1,2 @@
+title: "Move line tax: fixed tax line generation when two lines have the same taxes but different VAT system."
+module: axelor-account

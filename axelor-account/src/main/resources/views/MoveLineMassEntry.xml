@@ -144,7 +144,10 @@
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="vatSystemSelect"
-      onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"/>
+      onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"
+      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+      requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
     <field name="moveStatusSelect" widget="single-select"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="fieldsErrorList" hidden="true"/>
