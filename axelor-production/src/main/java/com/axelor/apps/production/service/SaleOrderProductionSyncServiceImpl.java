@@ -28,14 +28,16 @@ public class SaleOrderProductionSyncServiceImpl extends SaleOrderSyncAbstractSer
     implements SaleOrderProductionSyncService {
 
   @Inject
-  protected SaleOrderProductionSyncServiceImpl(
+  public SaleOrderProductionSyncServiceImpl(
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
       SolBomCustomizationService solBomCustomizationService,
       SolDetailsBomUpdateService solDetailsBomUpdateService,
       SolBomUpdateService solBomUpdateService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      SolDetailsProdProcessLineUpdateService solDetailsProdProcessLineUpdateService,
+      SolProdProcessCustomizationService solProdProcessCustomizationService) {
     super(
         saleOrderLineBomLineMappingService,
         saleOrderLineBomService,
@@ -43,7 +45,9 @@ public class SaleOrderProductionSyncServiceImpl extends SaleOrderSyncAbstractSer
         solBomCustomizationService,
         solDetailsBomUpdateService,
         solBomUpdateService,
-        appProductionService);
+        appProductionService,
+        solDetailsProdProcessLineUpdateService,
+        solProdProcessCustomizationService);
   }
 
   @Override

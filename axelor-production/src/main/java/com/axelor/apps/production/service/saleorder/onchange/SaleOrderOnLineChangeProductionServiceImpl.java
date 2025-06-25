@@ -86,7 +86,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         && appSaleService.getAppSale().getListDisplayTypeSelect()
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
         && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
-      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder.getSaleOrderLineList());
+      saleOrderProductionSyncService.syncSaleOrderLineList(
+          saleOrder, saleOrder.getSaleOrderLineList());
     }
     return message;
   }
