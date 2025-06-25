@@ -48,5 +48,5 @@ public interface CostSheetService {
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException;
 
-  BigDecimal getQtyRatio(BillOfMaterial billOfMaterial);
+  BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) throws AxelorException;
 }
