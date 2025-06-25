@@ -26,18 +26,26 @@ public class SaleOrderLineDetailsProdProcessServiceImpl
   }
 
   @Override
+  public void addSaleOrderLineDetailsFromProdProcess(
+      ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    createSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrder, saleOrderLine).stream()
+        .filter(Objects::nonNull)
+        .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+  }
+
+  @Override
   public List<SaleOrderLineDetails> createSaleOrderLineDetailsFromProdProcess(
       ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
     Objects.requireNonNull(prodProcess);
     List<SaleOrderLineDetails> originSaleOrderLineDetailsList =
         saleOrderLine.getSaleOrderLineDetailsList();
-    List<SaleOrderLineDetails> filteredSaleOrderLineDetails = new ArrayList<>();
 
     if (CollectionUtils.isNotEmpty(originSaleOrderLineDetailsList)) {
-      filteredSaleOrderLineDetails.addAll(
+      originSaleOrderLineDetailsList.removeAll(
           originSaleOrderLineDetailsList.stream()
-              .filter(line -> line.getTypeSelect() != SaleOrderLineDetailsRepository.TYPE_OPERATION)
+              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
               .collect(Collectors.toList()));
     }
 
@@ -51,7 +59,7 @@ public class SaleOrderLineDetailsProdProcessServiceImpl
         saleOrderLinesDetailsList.add(saleOrderLineDetails);
       }
     }
-    filteredSaleOrderLineDetails.addAll(saleOrderLinesDetailsList);
-    return filteredSaleOrderLineDetails;
+
+    return saleOrderLinesDetailsList;
   }
 }

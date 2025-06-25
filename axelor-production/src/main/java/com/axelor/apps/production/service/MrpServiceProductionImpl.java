@@ -60,6 +60,7 @@ import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.service.MrpLineSaleOrderService;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
@@ -124,6 +125,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockHistoryLineRepository stockHistoryLineRepository,
       MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService,
       MrpLineTypeService mrpLineTypeService,
+      MrpLineSaleOrderService mrpLineSaleOrderService,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
       BillOfMaterialService billOfMaterialService,
@@ -153,7 +155,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         appPurchaseService,
         stockHistoryLineRepository,
         mrpSaleOrderCheckLateSaleService,
-        mrpLineTypeService);
+        mrpLineTypeService,
+        mrpLineSaleOrderService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialService = billOfMaterialService;

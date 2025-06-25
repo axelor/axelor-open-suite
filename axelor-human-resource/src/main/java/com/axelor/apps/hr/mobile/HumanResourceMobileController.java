@@ -46,7 +46,7 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
@@ -144,7 +144,8 @@ public class HumanResourceMobileController {
                 Long.valueOf(request.getData().get("kilometricAllowParam").toString())));
 
         expenseLine.setTotalAmount(
-            Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+            Beans.get(KilometricExpenseService.class)
+                .computeKilometricExpense(expenseLine, employee));
 
         expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
       }

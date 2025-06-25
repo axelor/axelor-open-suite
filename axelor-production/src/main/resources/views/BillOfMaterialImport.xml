@@ -7,7 +7,7 @@
     model="com.axelor.apps.production.db.BillOfMaterialImport">
     <field name="name"/>
     <field name="mainBillOfMaterialGenerated"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="bill-of-material-import-form" title="Bill of materials import"

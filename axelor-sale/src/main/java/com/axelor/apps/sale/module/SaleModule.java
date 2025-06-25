@@ -137,8 +137,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderRestServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
@@ -336,5 +340,7 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderDateService.class).to(SaleOrderDateServiceImpl.class);
     bind(SaleOrderSplitService.class).to(SaleOrderSplitServiceImpl.class);
     bind(SaleOrderOrderingStatusService.class).to(SaleOrderOrderingStatusServiceImpl.class);
+    bind(SaleOrderSequenceService.class).to(SaleOrderSequenceServiceImpl.class);
+    bind(SaleOrderSplitDummyService.class).to(SaleOrderSplitDummyServiceImpl.class);
   }
 }

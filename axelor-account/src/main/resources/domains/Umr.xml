@@ -25,6 +25,7 @@
     <boolean name="isUpdating" hidden="true"/>
     <many-to-one name="activeBankDetails" ref="com.axelor.apps.base.db.BankDetails"/>
 
+    <unique-constraint columns="umrNumber,invoicingPaymentSituation"/>
   </entity>
 
 </domain-models>

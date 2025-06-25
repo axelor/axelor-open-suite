@@ -22,7 +22,6 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.C
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
@@ -634,7 +633,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
     LocalDate date;
     if (getFirstDateDepreciationInitSelect(fixedAsset)
-            == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+            == FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
         && fixedAsset.getFirstServiceDate() != null) {
       date = fixedAsset.getFirstServiceDate();
     } else {

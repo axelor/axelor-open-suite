@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -555,5 +556,24 @@ public class BankReconciliationController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void checkMultipleMoveLine(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    List<MoveLine> moveLineList =
+        BankReconciliationToolService.getMoveLineOnMultipleReconciliationLine(bankReconciliation);
+    if (ObjectUtils.isEmpty(moveLineList)) {
+      return;
+    }
+
+    response.setError(
+        String.format(
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR),
+            moveLineList.stream()
+                .map(MoveLine::getName)
+                .distinct()
+                .collect(Collectors.joining(","))));
   }
 }

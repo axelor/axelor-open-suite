@@ -16,11 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service;
+package com.axelor.apps.quality.rest.dto;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.quality.db.QualityImprovement;
+import com.axelor.utils.api.ResponseStructure;
 
-public interface InvoiceBankPaymentService {
-  void cancelBillOfExchange(Invoice invoice) throws AxelorException;
+public class QualityImprovementResponse extends ResponseStructure {
+  private Long qualityImprovementId;
+
+  public QualityImprovementResponse(QualityImprovement qualityImprovement) {
+    super(qualityImprovement.getVersion());
+    this.qualityImprovementId = qualityImprovement.getId();
+  }
+
+  public Long getQualityImprovementId() {
+    return qualityImprovementId;
+  }
+
+  public void setQualityImprovementId(Long qualityImprovementId) {
+    this.qualityImprovementId = qualityImprovementId;
+  }
 }

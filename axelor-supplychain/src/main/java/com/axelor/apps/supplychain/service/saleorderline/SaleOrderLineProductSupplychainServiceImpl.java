@@ -219,13 +219,19 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     if (saleOrder.getFreightCarrierMode() == null
-        || !saleOrderLine.getProduct().getIsShippingCostsProduct()) {
+        || !saleOrderLine.getProduct().getIsShippingCostsProduct()
+        || !appBaseService.getAppBase().getEnablePricingScale()) {
       return saleOrderLineMap;
     }
 
     FreightCarrierPricing freightCarrierPricing =
         freightCarrierPricingService.createFreightCarrierPricing(
             saleOrder.getFreightCarrierMode(), saleOrder);
+
+    if (freightCarrierPricing == null) {
+      return saleOrderLineMap;
+    }
+
     freightCarrierApplyPricingService.applyPricing(freightCarrierPricing);
     saleOrderLine.setPrice(freightCarrierPricing.getPricingAmount());
 

@@ -56,6 +56,8 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -134,6 +136,8 @@ import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.PartnerMailQueryService;
 import com.axelor.apps.base.service.PartnerMailQueryServiceImpl;
+import com.axelor.apps.base.service.PartnerPriceListDomainService;
+import com.axelor.apps.base.service.PartnerPriceListDomainServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -549,7 +553,9 @@ public class BaseModule extends AxelorModule {
     bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
     bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
+    bind(PartnerPriceListDomainService.class).to(PartnerPriceListDomainServiceImpl.class);
     bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
     bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
+    bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
   }
 }

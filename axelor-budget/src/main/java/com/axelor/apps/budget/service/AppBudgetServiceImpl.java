@@ -21,9 +21,8 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.axelor.studio.db.repo.AppRepository;
@@ -42,19 +41,11 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
       AppBudgetRepository appBudgetRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appBudgetRepo = appBudgetRepo;
   }
 

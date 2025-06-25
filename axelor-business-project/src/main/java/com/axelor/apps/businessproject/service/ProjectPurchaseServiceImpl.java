@@ -30,9 +30,11 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseServiceImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -51,7 +53,9 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
       PurchaseConfigService purchaseConfigService,
       AppBaseService appBaseService,
       PartnerPriceListService partnerPriceListService,
-      SupplierCatalogService supplierCatalogService) {
+      SupplierCatalogService supplierCatalogService,
+      AppSupplychainService appSupplychainService,
+      IntercoService intercoService) {
     super(
         purchaseOrderSupplychainService,
         purchaseOrderCreateSupplychainService,
@@ -61,7 +65,9 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
         purchaseConfigService,
         appBaseService,
         partnerPriceListService,
-        supplierCatalogService);
+        supplierCatalogService,
+        appSupplychainService,
+        intercoService);
   }
 
   @Override

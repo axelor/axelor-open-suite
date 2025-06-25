@@ -14,6 +14,10 @@
 
     <finder-method name="findByCompanyAndTaxNbr" using="company,taxNbr"
       filter="self.company = :company AND self.taxNbr = :taxNbr" all="true"/>
+
+    <finder-method name="findByCompanyPartnerAndTaxNbr"
+      using="com.axelor.apps.base.db.Partner:partner,taxNbr"
+      filter="self.company.partner = :partner AND self.taxNbr = :taxNbr" all="true"/>
   </entity>
 
 </domain-models>

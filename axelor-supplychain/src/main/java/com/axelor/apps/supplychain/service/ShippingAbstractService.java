@@ -153,10 +153,9 @@ public abstract class ShippingAbstractService {
         linesToRemove.add(shippableOrderLine);
       }
     }
-    if (linesToRemove.isEmpty()) {
-      return null;
+    if (!linesToRemove.isEmpty()) {
+      removeShippableOrderLineList(shippableOrder, linesToRemove);
     }
-    removeShippableOrderLineList(shippableOrder, linesToRemove);
     return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
   }
 

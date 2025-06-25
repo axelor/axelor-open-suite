@@ -12,7 +12,7 @@
     <field name="startDate"/>
     <field name="endDate"/>
     <field name="amendmentTypeSelect"/>
-    <field name="status"/>
+    <field name="status" widget="single-select"/>
   </grid>
 
   <grid name="employment-contract-employee-grid" title="Employment contracts"
@@ -24,7 +24,7 @@
     <field name="startDate"/>
     <field name="endDate"/>
     <field name="amendmentTypeSelect"/>
-    <field name="status"/>
+    <field name="status" widget="single-select"/>
   </grid>
 
   <form name="employment-contract-form" title="Employment contract"

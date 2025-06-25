@@ -1,6 +1,7 @@
 package com.axelor.apps.supplychain.service.pricing;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -15,6 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingService {
@@ -23,17 +25,20 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
   protected final FreightCarrierModeRepository freightCarrierModeRepository;
   protected final PartnerRepository partnerRepository;
   protected final SaleOrderShipmentService saleOrderShipmentService;
+  protected final FreightCarrierApplyPricingService freightCarrierApplyPricingService;
 
   @Inject
   public FreightCarrierPricingServiceImpl(
       SaleOrderRepository saleOrderRepository,
       FreightCarrierModeRepository freightCarrierModeRepository,
       PartnerRepository partnerRepository,
-      SaleOrderShipmentService saleOrderShipmentService) {
+      SaleOrderShipmentService saleOrderShipmentService,
+      FreightCarrierApplyPricingService freightCarrierApplyPricingService) {
     this.saleOrderRepository = saleOrderRepository;
     this.freightCarrierModeRepository = freightCarrierModeRepository;
     this.partnerRepository = partnerRepository;
     this.saleOrderShipmentService = saleOrderShipmentService;
+    this.freightCarrierApplyPricingService = freightCarrierApplyPricingService;
   }
 
   @Override
@@ -49,6 +54,13 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
           freightCarrierModeRepository.find(freightCarrierPricing.getFreightCarrierMode().getId()));
       saleOrder.setCarrierPartner(
           partnerRepository.find(freightCarrierPricing.getCarrierPartner().getId()));
+
+      if (saleOrder.getEstimatedShippingDate() != null) {
+        saleOrder.setEstimatedDeliveryDate(
+            saleOrder
+                .getEstimatedShippingDate()
+                .plusDays(freightCarrierPricing.getDelay().longValue()));
+      }
 
       String message =
           saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
@@ -83,10 +95,16 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
   @Override
   public FreightCarrierPricing createFreightCarrierPricing(
       FreightCarrierMode freightCarrierMode, SaleOrder saleOrder) {
+
+    if (freightCarrierMode == null) {
+      return null;
+    }
+
     FreightCarrierPricing freightCarrierPricing = new FreightCarrierPricing();
     freightCarrierPricing.setFreightCarrierMode(freightCarrierMode);
     freightCarrierPricing.setCarrierPartner(freightCarrierMode.getCarrierPartner());
     freightCarrierPricing.setPricing(freightCarrierMode.getFreightCarrierPricing());
+    freightCarrierPricing.setDelayPricing(freightCarrierMode.getFreightCarrierDelay());
     freightCarrierPricing.setSaleOrder(saleOrder);
     return freightCarrierPricing;
   }
@@ -109,5 +127,50 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
                   SupplychainExceptionMessage
                       .SALE_ORDER_MORE_THAN_ONE_FREIGHT_CARRIER_PRICING_SELECTED)));
     }
+  }
+
+  @Override
+  public void updateEstimatedDeliveryDateWithPricingDelay(SaleOrder saleOrder)
+      throws AxelorException {
+    FreightCarrierPricing freightCarrierPricing =
+        this.createFreightCarrierPricing(saleOrder.getFreightCarrierMode(), saleOrder);
+
+    if (freightCarrierPricing == null) {
+      return;
+    }
+
+    Pricing delay =
+        Optional.of(freightCarrierPricing).map(FreightCarrierPricing::getDelayPricing).orElse(null);
+
+    String errors =
+        freightCarrierApplyPricingService.computeFreightCarrierPricing(
+            delay, freightCarrierPricing);
+
+    if (errors.length() > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.FREIGHT_CARRIER_MODE_PRICING_ERROR),
+          errors);
+    }
+
+    saleOrder.setEstimatedDeliveryDate(
+        saleOrder
+            .getEstimatedShippingDate()
+            .plusDays(freightCarrierPricing.getDelay().longValue()));
+  }
+
+  @Override
+  public String notifyEstimatedDeliveryDateUpdate(SaleOrder saleOrder) {
+    FreightCarrierMode freightCarrierMode = saleOrder.getFreightCarrierMode();
+    if (freightCarrierMode == null) {
+      return null;
+    }
+
+    Pricing delayPricing = freightCarrierMode.getFreightCarrierDelay();
+    if (delayPricing != null) {
+      return I18n.get(SupplychainExceptionMessage.SALE_ORDER_ESTIMATED_SHIPPING_DATE_NOT_UPDATED);
+    }
+
+    return null;
   }
 }

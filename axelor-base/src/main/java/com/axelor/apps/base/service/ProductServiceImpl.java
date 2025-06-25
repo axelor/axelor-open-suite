@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
@@ -62,6 +63,7 @@ public class ProductServiceImpl implements ProductService {
   protected ProductRepository productRepo;
   protected ProductCompanyService productCompanyService;
   protected CompanyRepository companyRepo;
+  protected ProductCompanyRepository productCompanyRepository;
 
   @Inject
   public ProductServiceImpl(
@@ -70,13 +72,15 @@ public class ProductServiceImpl implements ProductService {
       SequenceService sequenceService,
       AppBaseService appBaseService,
       ProductRepository productRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      ProductCompanyRepository productCompanyRepository) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
+    this.productCompanyRepository = productCompanyRepository;
   }
 
   @Inject private MetaFiles metaFiles;
@@ -577,11 +581,20 @@ public class ProductServiceImpl implements ProductService {
     }
     copy.setStartDate(null);
     copy.setEndDate(null);
-    copy.setCostPrice(BigDecimal.ZERO);
-    copy.setPurchasePrice(BigDecimal.ZERO);
-    copy.setProductCompanyList(null);
+    if (product.getCostTypeSelect() != ProductRepository.COST_TYPE_STANDARD) {
+      copy.setCostPrice(BigDecimal.ZERO);
+    }
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
     copy.setSerialNumber(null);
+  }
+
+  @Override
+  public void copyProductCompanies(List<ProductCompany> productCompanyList, Product copy) {
+    copy.setProductCompanyList(null);
+    for (ProductCompany productCompany : productCompanyList) {
+      ProductCompany copyProductCompany = productCompanyRepository.copy(productCompany, false);
+      copy.addProductCompanyListItem(copyProductCompany);
+    }
   }
 }

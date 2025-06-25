@@ -1823,4 +1823,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
       "Non-deductible tax not authorized for customer invoice. Please remove the non-deductible tax on product." /*)*/;
+
+  public static final String ANALYTIC_MOVE_LINE_QUERY_WRONG_SUM_FOR_AXIS = /*$$(*/
+      "The total percentage is not 100%% for the axis %s" /*)*/;
 }

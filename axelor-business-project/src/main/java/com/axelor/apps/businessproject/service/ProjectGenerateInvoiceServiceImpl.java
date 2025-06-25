@@ -211,6 +211,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         null,
         null,
         null,
+        null,
         null) {
 
       @Override

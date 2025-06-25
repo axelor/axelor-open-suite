@@ -16,8 +16,16 @@
       <field name="year"/>
       <field name="distanceTravelled"/>
     </panel>
-    <panel-related name="expenseLineListPanel" field="expenseLineList" readonly="true"
-      form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"/>
+    <panel-dashlet action="action-view-kilometric-log-expense-line"/>
   </form>
+
+  <action-view name="action-view-kilometric-log-expense-line"
+    title="Kilometric allowance list" model="com.axelor.apps.hr.db.ExpenseLine">
+    <view type="grid" name="expense-line-kilometric-grid"/>
+    <view type="form" name="expense-line-kilometric-form"/>
+    <domain>self.id IN (:expenseLineListIdList)</domain>
+    <context name="expenseLineListIdList"
+      expr="call:com.axelor.apps.hr.service.KilometricLogService:getExpenseLineIdList(__this__)"/>
+  </action-view>
 
 </object-views>
