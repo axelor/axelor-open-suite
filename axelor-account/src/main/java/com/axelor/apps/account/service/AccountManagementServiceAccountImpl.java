@@ -202,10 +202,13 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
       if (account != null
           && account.getAnalyticDistributionAuthorized()
-          && accountConfigService
-                  .getAccountConfig(account.getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+          && List.of(
+                  AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT,
+                  AccountConfigRepository.DISTRIBUTION_TYPE_FREE)
+              .contains(
+                  accountConfigService
+                      .getAccountConfig(account.getCompany())
+                      .getAnalyticDistributionTypeSelect())) {
         analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
       }
     }

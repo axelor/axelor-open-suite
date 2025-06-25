@@ -391,4 +391,7 @@
     <bind to="bankAccount" column="bankAccount_code" search="self.code = :bankAccount_code"/>
     <bind to="journal" column="journal_code" search="self.code=:journal_code" if="journal_code"/>
   </input>
+
+  <input file="account_taxNumber.csv" separator=";"
+    type="com.axelor.apps.account.db.TaxNumber" search="self.importId = :importId"/>
 </csv-inputs>

@@ -44,11 +44,17 @@ public class SaleOrderDummyServiceImpl implements SaleOrderDummyService {
   }
 
   @Override
-  public Map<String, Object> getOnNewDummies(SaleOrder saleOrder) throws AxelorException {
+  public Map<String, Object> getOnNewDummies(SaleOrder saleOrder) {
     Map<String, Object> dummies = new HashMap<>();
     dummies.putAll(getTradingManagementConfig());
     dummies.putAll(getSaveActualVersion());
     dummies.putAll(getLastVersion(saleOrder));
+    return dummies;
+  }
+
+  @Override
+  public Map<String, Object> getOnLoadSplitDummies(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> dummies = new HashMap<>();
     return dummies;
   }
 

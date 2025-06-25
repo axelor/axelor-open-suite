@@ -28,6 +28,7 @@
       <field name="manageBankToBankTransferPayment" on="UPDATE"/>
       <field name="manageBillOfExchange" on="UPDATE"/>
       <field name="useEditorInBankOrderForm" on="UPDATE"/>
+      <field name="enableBankOrderFileEncryption" on="UPDATE"/>
     </track>
   </entity>
 

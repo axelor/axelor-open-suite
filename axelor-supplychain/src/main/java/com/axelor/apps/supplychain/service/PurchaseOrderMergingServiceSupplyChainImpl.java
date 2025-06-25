@@ -174,6 +174,9 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
             getCommonFields(result).getCommonTradingName(),
             getCommonFields(result).getCommonFiscalPosition());
 
+    purchaseOrderMerged.setInAti(purchaseOrdersToMerge.stream().anyMatch(PurchaseOrder::getInAti));
+    purchaseOrderMerged.setTaxNumber(getCommonFields(result).getCommonCompanyTaxNumber());
+
     this.attachToNewPurchaseOrder(purchaseOrdersToMerge, purchaseOrderMerged);
     purchaseOrderService.computePurchaseOrder(purchaseOrderMerged);
     return purchaseOrderMerged;

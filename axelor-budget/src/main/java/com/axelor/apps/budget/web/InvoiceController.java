@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
@@ -141,5 +142,13 @@ public class InvoiceController {
         BudgetControllerTool.verifyMissingBudget(response);
       }
     }
+  }
+
+  public void initializeBudgetDates(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(BudgetInitDateService.class).initializeBudgetDates(invoice);
+
+    response.setValue("invoiceLineList", invoice.getInvoiceLineList());
   }
 }

@@ -1,2 +1,2 @@
-"code";"defaultPartnerLocalization.importId";"unitMinutes.importId";"unitHours.importId";"unitDays.importId";"dailyWorkHours";"companySpecificFieldName";"defaultAddressTemplate.importId"
-"base";2;100;101;103;7;"procurementMethodSelect|salePrice|saleCurrency|purchasePrice|lastPurchasePrice|purchaseCurrency|costPrice|costTypeSelect|managPriceCoef|avgPrice|autoUpdateSalePrice|trackingNumberConfiguration";"1"
+"code";"defaultPartnerLocalization.importId";"unitMinutes.importId";"unitHours.importId";"unitDays.importId";"dailyWorkHours";"companySpecificFieldName";"defaultAddressTemplate.importId";"enableTaxNumbers"
+"base";2;100;101;103;7;"procurementMethodSelect|salePrice|saleCurrency|purchasePrice|lastPurchasePrice|purchaseCurrency|costPrice|costTypeSelect|managPriceCoef|avgPrice|autoUpdateSalePrice|trackingNumberConfiguration";"1";"true"

@@ -20,7 +20,7 @@
     </extend>
     <extend target="//panel-related[@name='purchaseOrderLineListPanel']">
       <attribute name="onChange"
-        value="action-purchase-order-method-compute,supplychain-action-create-shipment-cost-line-purchase"/>
+        value="action-purchase-order-method-compute,supplychain-action-create-shipment-cost-line-purchase,action-supplychain-method-purchase-order-check-analytic-axis"/>
     </extend>
   </form>
 
@@ -100,6 +100,11 @@
     name="action-purchase-order-method-update-purchase-order-lines-stock-location">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="updatePurchaseOrderLinesStockLocation"/>
+  </action-method>
+
+  <action-method name="action-supplychain-method-purchase-order-check-analytic-axis">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="checkAnalyticAxis"/>
   </action-method>
 
 </object-views>

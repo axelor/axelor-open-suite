@@ -23,7 +23,7 @@
     <field name="startOnSelect"/>
     <field name="toDateT"/>
     <field name="endOnSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="leave-request-validate-grid" title="Leave Requests"
@@ -45,7 +45,7 @@
     <field name="startOnSelect"/>
     <field name="toDateT" onChange="action-leave-request-validate-dates"/>
     <field name="endOnSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="leave-request-form" title="Leave Request"

@@ -10,7 +10,7 @@
     <field name="requestDateT"/>
     <field name="typeSelect"/>
     <field name="gdprRequestOrigin"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="modelSelect"/>
     <field name="dueSendingDateT"/>
   </grid>

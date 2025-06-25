@@ -55,6 +55,7 @@ import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
@@ -79,6 +80,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected PartnerLinkSupplychainService partnerLinkSupplychainService;
   protected SaleInvoicingStateService saleInvoicingStateService;
+  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -98,7 +100,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      SaleInvoicingStateService saleInvoicingStateService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -117,6 +120,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.trackingNumberSupplychainService = trackingNumberSupplychainService;
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
     this.saleInvoicingStateService = saleInvoicingStateService;
+    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -216,6 +220,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
 
     checkTimetable(saleOrderView);
+    saleOrderLineAnalyticService.checkAnalyticAxisByCompany(saleOrder);
 
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());

@@ -39,6 +39,7 @@
       <field name="manageMultiBudget" on="UPDATE"/>
       <field name="missingBudgetCheckSelect" on="UPDATE"/>
       <field name="orderBudgetExceedSelect" on="UPDATE"/>
+      <field name="enableProject" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

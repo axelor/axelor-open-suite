@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
@@ -53,7 +52,7 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
   public void computeFiscalFirstDepreciationDate(FixedAsset fixedAsset) {
     LocalDate fiscalDate =
         fixedAsset.getFiscalFirstDepreciationDateInitSelect()
-                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                    == FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
                 && fixedAsset.getFirstServiceDate() != null
             ? fixedAsset.getFirstServiceDate()
             : fixedAsset.getAcquisitionDate();
@@ -66,7 +65,7 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
   public void computeEconomicFirstDepreciationDate(FixedAsset fixedAsset) {
     LocalDate economicDate =
         fixedAsset.getFirstDepreciationDateInitSelect()
-                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                    == FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
                 && fixedAsset.getFirstServiceDate() != null
             ? fixedAsset.getFirstServiceDate()
             : fixedAsset.getAcquisitionDate();
@@ -80,7 +79,7 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
   public void computeIfrsFirstDepreciationDate(FixedAsset fixedAsset) {
     LocalDate ifrsDate =
         fixedAsset.getIfrsFirstDepreciationDateInitSelect()
-                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                    == FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
                 && fixedAsset.getFirstServiceDate() != null
             ? fixedAsset.getFirstServiceDate()
             : fixedAsset.getAcquisitionDate();

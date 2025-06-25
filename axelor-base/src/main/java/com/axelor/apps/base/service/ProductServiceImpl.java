@@ -581,8 +581,9 @@ public class ProductServiceImpl implements ProductService {
     }
     copy.setStartDate(null);
     copy.setEndDate(null);
-    copy.setCostPrice(BigDecimal.ZERO);
-    copy.setPurchasePrice(BigDecimal.ZERO);
+    if (product.getCostTypeSelect() != ProductRepository.COST_TYPE_STANDARD) {
+      copy.setCostPrice(BigDecimal.ZERO);
+    }
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
     copy.setSerialNumber(null);

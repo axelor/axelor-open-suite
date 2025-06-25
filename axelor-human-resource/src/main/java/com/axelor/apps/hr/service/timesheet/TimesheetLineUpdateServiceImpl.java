@@ -50,6 +50,7 @@ public class TimesheetLineUpdateServiceImpl implements TimesheetLineUpdateServic
       ProjectTask projectTask,
       Product product,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       LocalDate date,
       String comments,
       Boolean toInvoice)
@@ -67,10 +68,16 @@ public class TimesheetLineUpdateServiceImpl implements TimesheetLineUpdateServic
     if (product != null) {
       timesheetLine.setProduct(product);
     }
-    if (duration != null) {
-      timesheetLine.setHoursDuration(duration);
+    if (hoursDuration != null) {
+      timesheetLine.setHoursDuration(hoursDuration);
       timesheetLine.setDuration(
-          timesheetLineService.computeHoursDuration(timesheetLine.getTimesheet(), duration, false));
+          timesheetLineService.computeHoursDuration(
+              timesheetLine.getTimesheet(), hoursDuration, false));
+    }
+    if (duration != null) {
+      timesheetLine.setDuration(duration);
+      timesheetLine.setHoursDuration(
+          timesheetLineService.computeHoursDuration(timesheetLine.getTimesheet(), duration, true));
     }
     if (date != null) {
       timesheetLine.setDate(date);

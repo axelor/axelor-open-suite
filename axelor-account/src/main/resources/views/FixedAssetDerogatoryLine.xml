@@ -11,7 +11,7 @@
     <field name="derogatoryAmount" x-scale="$currencyNumberOfDecimals"/>
     <field name="incomeDepreciationAmount" x-scale="$currencyNumberOfDecimals"/>
     <field name="derogatoryBalanceAmount" x-scale="$currencyNumberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <button name="realizeBtn" title="Realize"
       readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2"

@@ -15,7 +15,7 @@
     <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
     <field name="startingBalance" x-scale="currency.numberOfDecimals"/>
     <field name="endingBalance" x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
 

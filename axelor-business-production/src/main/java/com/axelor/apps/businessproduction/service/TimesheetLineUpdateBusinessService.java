@@ -35,6 +35,7 @@ public interface TimesheetLineUpdateBusinessService {
       ProjectTask projectTask,
       Product product,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       LocalDate date,
       String comments,
       Boolean toInvoice,

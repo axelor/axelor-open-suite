@@ -7,7 +7,7 @@
     model="com.axelor.apps.base.db.PrintingTemplate">
     <field name="name"/>
     <field name="metaModel"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="toAttach"/>
   </grid>
 
@@ -17,7 +17,7 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="metaModel"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="toAttach" colSpan="3"/>
       <field name="$toUseScriptFieldName" type="boolean" widget="boolean-switch"
         title="Use script field name"

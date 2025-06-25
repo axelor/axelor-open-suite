@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -356,7 +355,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
 
   protected int getFirstDepreciationDateInitSelect(String computationMethodSelect) {
     return computationMethodSelect.equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)
-        ? FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
-        : FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION;
+        ? FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+        : FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION;
   }
 }

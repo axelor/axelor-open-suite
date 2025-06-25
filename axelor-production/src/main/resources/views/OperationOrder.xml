@@ -37,7 +37,7 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
     <field name="manufOrder.prodProcess" hidden="true"/>
@@ -70,7 +70,7 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
     <field name="manufOrder.prodProcess" hidden="true"/>

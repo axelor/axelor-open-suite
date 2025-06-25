@@ -313,9 +313,6 @@
         <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

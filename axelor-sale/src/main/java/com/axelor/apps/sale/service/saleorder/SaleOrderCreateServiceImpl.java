@@ -62,6 +62,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected SaleOrderLineComputeService saleOrderLineComputeService;
   protected SaleOrderLineProductService saleOrderLineProductService;
   protected SaleOrderLinePriceService saleOrderLinePriceService;
+  protected SaleOrderDateService saleOrderDateService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -72,7 +73,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLineProductService saleOrderLineProductService,
-      SaleOrderLinePriceService saleOrderLinePriceService) {
+      SaleOrderLinePriceService saleOrderLinePriceService,
+      SaleOrderDateService saleOrderDateService) {
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
@@ -81,6 +83,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     this.saleOrderLineComputeService = saleOrderLineComputeService;
     this.saleOrderLineProductService = saleOrderLineProductService;
     this.saleOrderLinePriceService = saleOrderLinePriceService;
+    this.saleOrderDateService = saleOrderDateService;
   }
 
   @Override
@@ -188,7 +191,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
 
-    saleOrderService.computeEndOfValidityDate(saleOrder);
+    saleOrderDateService.computeEndOfValidityDate(saleOrder);
 
     return saleOrder;
   }
@@ -203,7 +206,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     copy.setCurrency(wizardCurrency);
     copy.setPriceList(wizardPriceList);
 
-    saleOrderService.computeEndOfValidityDate(copy);
+    saleOrderDateService.computeEndOfValidityDate(copy);
 
     this.updateSaleOrderLineList(copy);
 

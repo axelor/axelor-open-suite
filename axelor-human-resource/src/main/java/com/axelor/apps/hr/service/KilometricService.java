@@ -19,47 +19,25 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.KilometricAllowanceRate;
-import com.axelor.apps.hr.db.KilometricAllowanceRule;
-import com.axelor.apps.hr.db.KilometricLog;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
-import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
-import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
@@ -69,161 +47,12 @@ import wslite.json.JSONObject;
 public class KilometricService {
 
   private AppBaseService appBaseService;
-  private KilometricLogRepository kilometricLogRepo;
   private MapService mapService;
 
   @Inject
-  public KilometricService(
-      AppBaseService appBaseService,
-      KilometricLogRepository kilometricLogRepo,
-      MapService mapService) {
+  public KilometricService(AppBaseService appBaseService, MapService mapService) {
     this.appBaseService = appBaseService;
-    this.kilometricLogRepo = kilometricLogRepo;
     this.mapService = mapService;
-  }
-
-  public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
-    return employee.getKilometricLogList().stream()
-        .filter(
-            log ->
-                LocalDateHelper.isBetween(
-                    log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
-        .findFirst()
-        .orElse(null);
-  }
-
-  public KilometricLog getCurrentKilometricLog(Employee employee) {
-    return getKilometricLog(
-        employee,
-        appBaseService.getTodayDate(
-            employee.getUser() != null ? employee.getUser().getActiveCompany() : null));
-  }
-
-  public KilometricLog createKilometricLog(Employee employee, BigDecimal distance, Year year) {
-
-    KilometricLog log = new KilometricLog();
-    log.setDistanceTravelled(distance);
-    log.setYear(year);
-    employee.addKilometricLogListItem(log);
-    return log;
-  }
-
-  public KilometricLog getOrCreateKilometricLog(Employee employee, LocalDate date)
-      throws AxelorException {
-
-    KilometricLog log = getKilometricLog(employee, date);
-
-    if (log != null) {
-      return log;
-    }
-    if (employee.getMainEmploymentContract() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
-          employee.getName());
-    }
-
-    Year year =
-        Beans.get(YearServiceImpl.class)
-            .getYear(
-                date,
-                employee.getMainEmploymentContract().getPayCompany(),
-                YearRepository.TYPE_CIVIL);
-
-    if (year == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.KILOMETRIC_LOG_NO_CIVIL_YEAR),
-          employee.getMainEmploymentContract().getPayCompany(),
-          date);
-    }
-
-    return createKilometricLog(employee, new BigDecimal("0.00"), year);
-  }
-
-  public BigDecimal computeKilometricExpense(ExpenseLine expenseLine, Employee employee)
-      throws AxelorException {
-
-    BigDecimal distance = expenseLine.getDistance();
-    EmploymentContract mainEmploymentContract = employee.getMainEmploymentContract();
-    if (mainEmploymentContract == null || mainEmploymentContract.getPayCompany() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
-          employee.getName());
-    }
-    Company company = mainEmploymentContract.getPayCompany();
-
-    KilometricLog log = getKilometricLog(employee, expenseLine.getExpenseDate());
-    BigDecimal previousDistance = log == null ? BigDecimal.ZERO : log.getDistanceTravelled();
-
-    KilometricAllowanceRate allowance =
-        expenseLine.getKilometricAllowParam() != null
-            ? Beans.get(KilometricAllowanceRateRepository.class)
-                .all()
-                .filter(
-                    "self.kilometricAllowParam.id = :_kilometricAllowParamId "
-                        + "and self.hrConfig.id = :_hrConfigId")
-                .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
-                .bind("_hrConfigId", Beans.get(HRConfigService.class).getHRConfig(company).getId())
-                .fetchOne()
-            : null;
-    if (allowance == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
-          expenseLine.getKilometricAllowParam() != null
-              ? expenseLine.getKilometricAllowParam().getName()
-              : "",
-          company.getName());
-    }
-
-    List<KilometricAllowanceRule> ruleList = new ArrayList<>();
-    List<KilometricAllowanceRule> allowanceRuleList = allowance.getKilometricAllowanceRuleList();
-    if (ObjectUtils.notEmpty(allowanceRuleList)) {
-      for (KilometricAllowanceRule rule : allowanceRuleList) {
-
-        if (rule.getMinimumCondition().compareTo(previousDistance.add(distance)) <= 0
-            && rule.getMaximumCondition().compareTo(previousDistance) >= 0) {
-          ruleList.add(rule);
-        }
-      }
-    }
-
-    if (ruleList.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE),
-          allowance.getKilometricAllowParam().getName());
-    }
-
-    BigDecimal price = BigDecimal.ZERO;
-
-    if (ruleList.size() == 1) {
-      price = distance.multiply(ruleList.get(0).getRate());
-    } else {
-      Collections.sort(
-          ruleList,
-          (object1, object2) ->
-              object1.getMinimumCondition().compareTo(object2.getMinimumCondition()));
-      for (KilometricAllowanceRule rule : ruleList) {
-        BigDecimal min = rule.getMinimumCondition().max(previousDistance);
-        BigDecimal max = rule.getMaximumCondition().min(previousDistance.add(distance));
-        price = price.add(max.subtract(min).multiply(rule.getRate()));
-      }
-    }
-    return price.setScale(2, RoundingMode.HALF_UP);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateKilometricLog(ExpenseLine expenseLine, Employee employee)
-      throws AxelorException {
-    KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
-    if (log.getExpenseLineList() == null || !log.getExpenseLineList().contains(expenseLine)) {
-      log.addExpenseLineListItem(expenseLine);
-      log.setDistanceTravelled(log.getDistanceTravelled().add(expenseLine.getDistance()));
-    }
-    kilometricLogRepo.save(log);
   }
 
   public BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException {

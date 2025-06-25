@@ -257,5 +257,47 @@
       self.saleOrder.statusSelect = 3
     </domain>
   </action-view>
+
+  <!-- Pricing menus -->
+  <menuitem title="Transport rates" name="stock-root-freight-carrier-pricing"
+    parent="stock-root-conf" order="510" if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <menuitem title="Pricing" name="stock-pricing-freight-carrier-pricing-pricing"
+    parent="stock-root-freight-carrier-pricing" order="10"
+    action="stock.root.carrier.freight.pricing.pricing"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <action-view name="stock.root.carrier.freight.pricing.pricing" title="Pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="freight-carrier-mode-pricing-grid"/>
+    <view type="form" name="freight-carrier-mode-pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING"/>
+  </action-view>
+
+  <menuitem title="Delay pricing" name="stock-pricing-freight-carrier-pricing-delay"
+    parent="stock-root-freight-carrier-pricing" order="20"
+    action="stock.root.carrier.freight.pricing.delay"/>
+
+  <action-view name="stock.root.carrier.freight.pricing.delay" title="Delay pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_DELAY"/>
+  </action-view>
+
+  <menuitem title="Pricing rules" name="stock-pricing-carrier-freight-conf-pricing-rule"
+    parent="stock-root-freight-carrier-pricing" order="20"
+    action="stock.root.carrier.freight.conf.pricing.rule"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <action-view name="stock.root.carrier.freight.conf.pricing.rule" title="Pricing rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+  </action-view>
 </object-views>
 

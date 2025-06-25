@@ -153,6 +153,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     checkInvoicedConsumptionLines(contract);
     checkInvoicedAdditionalContractLine(contract);
+    contractLineService.checkAnalyticAxisByCompany(contract);
   }
 
   protected void checkInvoicedConsumptionLines(Contract contract) throws AxelorException {

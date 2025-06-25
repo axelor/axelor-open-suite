@@ -63,6 +63,8 @@ import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLinePricingService;
 import com.axelor.apps.contract.service.InvoiceLinePricingServiceImpl;
 import com.axelor.apps.contract.service.InvoicePaymentToolServiceContractImpl;
+import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
+import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
@@ -72,10 +74,12 @@ import com.axelor.apps.contract.service.pricing.ContractPricingServiceImpl;
 import com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
-import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
@@ -103,7 +107,7 @@ public class ContractModule extends AxelorModule {
     bind(ContractLineRecordSetService.class).to(ContractLineRecordSetServiceImpl.class);
     bind(InvoiceLinePricingService.class).to(InvoiceLinePricingServiceImpl.class);
     bind(ContractPricingService.class).to(ContractPricingServiceImpl.class);
-    bind(PricingGroupSaleServiceImpl.class).to(PricingGroupContractServiceImpl.class);
+    bind(PricingGroupSupplyChainServiceImpl.class).to(PricingGroupContractServiceImpl.class);
     bind(ContractYearEndBonusService.class).to(ContractYearEndBonusServiceImpl.class);
     bind(ContractSaleOrderGeneration.class).to(ContractSaleOrderGenerationImpl.class);
     bind(ContractPurchaseOrderGeneration.class).to(ContractPurchaseOrderGenerationImpl.class);
@@ -118,5 +122,7 @@ public class ContractModule extends AxelorModule {
         .to(WorkflowVentilationContractServiceImpl.class);
     bind(InvoicePaymentToolServiceSupplychainImpl.class)
         .to(InvoicePaymentToolServiceContractImpl.class);
+    bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceContractServiceImpl.class);
+    bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceContractServiceImpl.class);
   }
 }

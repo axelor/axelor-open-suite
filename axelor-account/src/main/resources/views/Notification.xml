@@ -8,7 +8,7 @@
     <field name="factorPartner"/>
     <field name="paymentDate"/>
     <field name="subrogationRelease" width="120"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form model="com.axelor.apps.account.db.Notification" title="Notification"

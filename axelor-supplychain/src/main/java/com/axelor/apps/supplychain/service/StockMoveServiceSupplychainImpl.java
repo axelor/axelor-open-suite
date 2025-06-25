@@ -626,7 +626,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       if (partner != null) {
         if (!CollectionUtils.isEmpty(partner.getManagedByPartnerLinkList())) {
           List<PartnerLink> partnerLinkList = partner.getManagedByPartnerLinkList();
-          // Retrieve all Invoiced by Type
+          // Retrieve all Invoiced to Type
           List<PartnerLink> partnerLinkInvoicedByList =
               partnerLinkList.stream()
                   .filter(
@@ -634,7 +634,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                           partnerLink
                               .getPartnerLinkType()
                               .getTypeSelect()
-                              .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY))
+                              .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO))
                   .collect(Collectors.toList());
 
           // If there is only one, then it is the default one

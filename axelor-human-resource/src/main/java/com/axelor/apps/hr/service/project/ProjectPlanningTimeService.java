@@ -74,4 +74,8 @@ public interface ProjectPlanningTimeService {
 
   List<ProjectPlanningTime> getProjectPlanningTimeIdList(
       Employee employee, LocalDate fromDate, LocalDate toDate);
+
+  BigDecimal getOldBudgetedTime(ProjectTask projectTask);
+
+  Unit getTimeUnit(ProjectTask projectTask);
 }

@@ -113,7 +113,7 @@ public class MetaJsonAttrsAdapter {
         value);
   }
 
-  static List<Map<String, Object>> toMapList(Object value) {
+  protected static List<Map<String, Object>> toMapList(Object value) {
     List<?> values = (List<?>) value;
     List<Map<String, Object>> result;
     if (!values.isEmpty()) {
@@ -135,7 +135,7 @@ public class MetaJsonAttrsAdapter {
    * @param model
    * @return
    */
-  static Map<String, Object> modelToJson(Model model) {
+  protected static Map<String, Object> modelToJson(Model model) {
     final Map<String, Object> manyToOneObject = new HashMap<>();
     manyToOneObject.put("id", model.getId());
     return manyToOneObject;

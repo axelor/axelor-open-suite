@@ -19,6 +19,7 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.service.MetaFileService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -26,7 +27,9 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
+import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PartnerBaseRepository extends PartnerRepository {
 
@@ -34,6 +37,13 @@ public class PartnerBaseRepository extends PartnerRepository {
   public Partner save(Partner partner) {
     try {
       Beans.get(PartnerService.class).onSave(partner);
+      List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+      if (CollectionUtils.isNotEmpty(partnerAddressList) && partnerAddressList.size() == 1) {
+        PartnerAddress partnerAddress = partnerAddressList.get(0);
+        partnerAddress.setIsDefaultAddr(true);
+        partnerAddress.setIsDeliveryAddr(true);
+        partnerAddress.setIsInvoicingAddr(true);
+      }
       return super.save(partner);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

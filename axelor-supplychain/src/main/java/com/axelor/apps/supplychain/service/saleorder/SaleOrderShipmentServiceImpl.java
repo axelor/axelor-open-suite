@@ -77,6 +77,26 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   }
 
   @Override
+  protected void updateLineAndComputeOrder(
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException {
+    SaleOrder saleOrder = getSaleOrder(shippableOrder);
+    if (saleOrder == null) {
+      return;
+    }
+    SaleOrderLine saleOrderLine = createShippingCostLine(saleOrder, shippingCostProduct);
+    saleOrder
+        .getSaleOrderLineList()
+        .forEach(
+            line -> {
+              if (line.getProduct() != null && line.getProduct().getIsShippingCostsProduct()) {
+                line.setPrice(saleOrderLine.getPrice());
+                line.setProduct(saleOrderLine.getProduct());
+              }
+            });
+    computeSaleOrder(saleOrder);
+  }
+
+  @Override
   protected String removeLineAndComputeOrder(ShippableOrder shippableOrder) throws AxelorException {
     SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {

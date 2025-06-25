@@ -414,4 +414,28 @@ public final class ProductionExceptionMessage {
 
   public static final String SOL_LINKED_TO_MO_DELETE_ERROR = /*$$(*/
       "The line with the product %s can not be deleted as it is referenced in manufacturing order(s): <br> %s" /*)*/;
+
+  public static final String SALE_ORDER_EVERY_PO_ALREADY_GENERATED = /*$$(*/
+      "Every sale order lines have already generated a production order." /*)*/;
+
+  public static final String SALE_ORDER_EVERY_PO_ALREADY_GENERATED_FOR_SELECTED = /*$$(*/
+      "Every selected sale order lines have already generated a production order." /*)*/;
+
+  public static final String SALE_ORDER_MO_ADDED_TO_EXISTENT_PO = /*$$(*/
+      "Manufacturing orders have been added to the existent production order." /*)*/;
+
+  public static final String SALE_ORDER_MO_ALREADY_GENERATED = /*$$(*/
+      "Every manufacturing orders have already been generated." /*)*/;
+
+  public static final String SALE_ORDER_MO_ALREADY_GENERATED_SELECTED = /*$$(*/
+      "Every manufacturing orders have already been generated for selected lines." /*)*/;
+
+  public static final String SALE_ORDER_NEW_PO_GENERATED = /*$$(*/
+      "New production order(s) have been created." /*)*/;
+
+  public static final String SALE_ORDER_NEW_PO_GENERATED_SELECTED = /*$$(*/
+      "New production order(s) have been created for selected lines." /*)*/;
+
+  public static final String SALE_ORDER_SELECT_WRONG_LINE = /*$$(*/
+      "There is no production or manufacturing order to generate for one of the selected lines." /*)*/;
 }

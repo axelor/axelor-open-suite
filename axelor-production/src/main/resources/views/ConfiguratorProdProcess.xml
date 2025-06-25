@@ -19,7 +19,7 @@
           x-code-syntax="groovy" showTitle="false" showIf="defCodeAsFormula"/>
       </panel>
       <field name="company"/>
-      <field name="statusSelect" selection-in="[2,3]"/>
+      <field name="statusSelect" selection-in="[2,3]" widget="single-select"/>
       <panel name="stockLocationPanel" title="Stock Location">
         <field name="defStockLocationAsFormula" colSpan="6"/>
         <field name="stockLocation" form-view="stock-location-form"

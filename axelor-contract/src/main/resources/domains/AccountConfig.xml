@@ -10,6 +10,11 @@
       ref="com.axelor.apps.base.db.Product"/>
     <boolean name="isYebAccountConfigByProductFamilyEnabled"
       title="Enable configuration by product family for YEB"/>
+
+    <track>
+      <field name="yearEndBonusProduct" on="UPDATE"/>
+      <field name="isYebAccountConfigByProductFamilyEnabled" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

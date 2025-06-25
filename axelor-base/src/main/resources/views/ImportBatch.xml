@@ -43,7 +43,8 @@
         <field name="createdOn"/>
         <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
         <field name="description"/>
-        <field name="batchList" form-view="batch-form" grid-view="batch-grid" colSpan="12"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-batch-method-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true">

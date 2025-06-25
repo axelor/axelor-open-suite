@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
@@ -695,11 +694,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected void getAndComputeAnalyticDistribution(
       Product product, Move move, MoveLine moveLine, boolean isPurchase) throws AxelorException {
-
-    if (accountConfigService.getAccountConfig(move.getCompany()).getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-      return;
-    }
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(

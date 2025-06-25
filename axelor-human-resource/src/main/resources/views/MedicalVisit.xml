@@ -5,7 +5,7 @@
 
   <grid name="medical-visit-grid" title="Medical visits"
     model="com.axelor.apps.hr.db.MedicalVisit">
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="employee"/>
     <field name="medicalVisitStartDateT"/>
     <field name="medicalVisitEndDateT"/>

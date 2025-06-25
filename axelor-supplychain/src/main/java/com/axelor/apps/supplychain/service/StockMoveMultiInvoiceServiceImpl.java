@@ -419,7 +419,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getInAti(),
             null,
             dummyInvoice.getTradingName(),
-            dummyInvoice.getGroupProductsOnPrintings()) {
+            dummyInvoice.getGroupProductsOnPrintings(),
+            dummyInvoice.getCompanyTaxNumber()) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -538,7 +539,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getInAti(),
             null,
             dummyInvoice.getTradingName(),
-            null) {
+            null,
+            dummyInvoice.getCompanyTaxNumber()) {
 
           @Override
           public Invoice generate() throws AxelorException {

@@ -43,7 +43,17 @@
               ]]>
             </viewer>
           </field>
-          <field name="budget" onChange="action-reset-budget-distribution-list-method"
+
+          <panel name="datesPanel" colSpan="12">
+            <field name="budgetFromDate" requiredIf="budgetToDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <label name="budgetDatesLabel" hidden="true" css="label-danger" colSpan="12"/>
+          </panel>
+
+          <field name="budget"
+            onChange="action-reset-budget-distribution-list-method,action-budget-method-manage-budget-date-label"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-invoice-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel"
@@ -62,6 +72,7 @@
   <action-group name="action-group-budget-invoice-line-budget-distribution-onchange">
     <action name="action-method-invoice-line-budget-distribution-validate-amount"/>
     <action name="action-invoice-line-method-compute-budget-remaining-amount"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
   </action-group>
 
   <action-group name="action-budget-group-account-invoice-line-product-onchange">
@@ -107,6 +118,8 @@
       name="action-budget-distribution-group-budget-amount-available-and-currency-symbol"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-dates-attrs-initialize-budget-dates"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 </object-views>

@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -74,7 +75,8 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService,
       FiscalPositionService fiscalPositionService,
-      TaxService taxService) {
+      TaxService taxService,
+      AnalyticAxisService analyticAxisService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -93,7 +95,8 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveLineCheckBankPaymentService,
         moveLineRecordBankPaymentService,
         fiscalPositionService,
-        taxService);
+        taxService,
+        analyticAxisService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }
@@ -134,6 +137,19 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     }
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getOnNewValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = super.getOnNewValuesMap(moveLine, move);
+
+    if (move != null) {
+      valuesMap.put("budgetFromDate", move.getBudgetFromDate());
+      valuesMap.put("budgetToDate", move.getBudgetToDate());
+    }
+
+    return valuesMap;
   }
 
   @Override

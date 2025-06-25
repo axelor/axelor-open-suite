@@ -411,4 +411,19 @@ public final class SupplychainExceptionMessage {
   public static final String
       SALE_ORDER_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
           "Non-deductible tax not authorized for sale orders. Please remove the non-deductible tax on product." /*)*/;
+
+  public static final String STOCK_LOCATION_TO_CART_LIMIT_EXCEEDED = /*$$(*/
+      "There are too many stock location lines to add to the cart. The limit configured is %s." /*)*/;
+
+  public static final String FREIGHT_CARRIER_MODE_PRICING_ERROR = /*$$(*/
+      "An error have been detected on following pricings : %s." /*)*/;
+
+  public static final String SALE_ORDER_SPLIT_ADVANCE_PAYMENT_AMOUNT_ERROR = /*$$(*/
+      "The total of the order must be equal or superior than the advance payment total." /*)*/;
+
+  public static final String SALE_ORDER_LINES_CANNOT_DELIVER = /*$$(*/
+      "Warning : One or more lines are blocked for delivery" /*)*/;
+
+  public static final String SALE_ORDER_ESTIMATED_SHIPPING_DATE_NOT_UPDATED = /*$$(*/
+      "Warning : Estimated shipping date isn't updated due to pricing set on sale order." /*)*/;
 }

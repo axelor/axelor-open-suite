@@ -9,7 +9,7 @@
     <field name="importFile"/>
     <field name="isConfigInFile"/>
     <field name="isHeader"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="advanced-import-form" title="Advanced import"
