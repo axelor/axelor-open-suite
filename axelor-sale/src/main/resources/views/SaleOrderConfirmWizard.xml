@@ -10,14 +10,17 @@
       Used credit has been exceeded. The quotation must be manually unblocked to generate the order.
     ]]></help>
     <panel name="mainPanel">
-      <panel-related name="saleOrderLineListPanel" field="saleOrderLineList"
-        canNew="false" grid-view="confirm-wizard-sale-order-line-grid" editable="true" colSpan="12"/>
+      <panel-related name="saleOrderLineListPanel" field="$saleOrderLineList"
+        title="Sale order lines" type="one-to-many" canNew="false" canRemove="false"
+        grid-view="confirm-wizard-sale-order-line-grid" editable="true" colSpan="12"/>
       <field name="advanceTotal" title="Advance payment A.T.I. total" colSpan="4"/>
       <spacer colSpan="8"/>
       <panel name="actionPanel" colSpan="12">
         <button name="confirmBtn" title="Generate the order"
           onClick="validate, save, action-sale-order-confirm-wizard-method-generate"
           readonlyIf="$isUsedCreditExceeded &amp;&amp; !manualUnblock" colSpan="6"/>
+        <button name="orderAllBtn" title="Order all"
+          onClick="action-sale-order-confirm-wizard-method-order-all" colSpan="6"/>
         <field name="manualUnblock" showIf="$isUsedCreditExceeded"/>
         <field name="$isUsedCreditExceeded" hidden="true"/>
       </panel>
@@ -28,21 +31,22 @@
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
     <field name="product.code" width="120"/>
     <field name="productName" readonly="true"/>
-    <field name="qty" readonly="true" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
-    <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="price" readonly="true" x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="exTaxTotal" readonly="true" aggregate="sum"
-      x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="orderedQty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+    <field name="qty" readonly="true" x-scale="$nbDecimalDigitForQty" type="decimal"/>
+    <field name="unit.name" title="Unit" readonly="true" form-view="unit-form"
+      grid-view="unit-grid"/>
+    <field name="price" readonly="true" x-scale="$nbDecimalDigitForUnitPrice" type="decimal"/>
+    <field name="exTaxTotal" title="Total W.T." readonly="true"
+      x-scale="$nbDecimalDigitForUnitPrice" type="decimal"/>
+    <field name="orderedQty" readonly="true" x-scale="$nbDecimalDigitForQty" type="decimal"/>
     <field name="$qtyToOrder" title="Qty to order" type="decimal"
       readonlyIf="$orderAll || (qty == orderedQty)" min="0" x-scale="$nbDecimalDigitForQty"
       validIf="$number($qtyToOrder) &lt;= $number($qtyToOrderLeft)"
       onChange="action-sale-order-line-confirm-validate-qty-to-order"/>
     <field name="$orderAll" title="Order all" type="boolean"
       onChange="action-attrs-sale-order-line-confirm-wizard-fill-qty" readonlyIf="qty == orderedQty"/>
-    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
-    <field name="$nbDecimalDigitForQty" hidden="true"/>
-    <field name="$qtyToOrderLeft" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" type="decimal" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" type="decimal" hidden="true"/>
+    <field name="$qtyToOrderLeft" type="decimal" hidden="true"/>
   </grid>
 
   <action-attrs name="action-attrs-sale-order-line-confirm-wizard-fill-qty">
@@ -67,4 +71,9 @@
   <action-method name="action-sale-order-confirm-wizard-method-onload">
     <call class="com.axelor.apps.sale.web.SaleOrderConfirmController" method="onLoad"/>
   </action-method>
+
+  <action-method name="action-sale-order-confirm-wizard-method-order-all">
+    <call class="com.axelor.apps.sale.web.SaleOrderConfirmController" method="orderAll"/>
+  </action-method>
+
 </object-views>
