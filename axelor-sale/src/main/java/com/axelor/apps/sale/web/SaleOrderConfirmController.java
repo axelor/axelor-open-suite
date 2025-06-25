@@ -2,6 +2,8 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
@@ -15,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderConfirmController {
 
@@ -97,7 +100,28 @@ public class SaleOrderConfirmController {
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     response.setValue(
         "$currentlyTotalOrdered",
-        Beans.get(SaleOrderSplitService.class)
-            .computeCurrentlyTotalOrdered(saleOrder, saleOrderLineListContext));
+        computeCurrentlyTotalOrdered(saleOrder, saleOrderLineListContext));
+  }
+
+  protected BigDecimal computeCurrentlyTotalOrdered(
+      SaleOrder saleOrder, List<Map<String, Object>> saleOrderLineListContext) {
+    BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
+    if (CollectionUtils.isEmpty(saleOrderLineListContext)) {
+      return currentlyTotalOrdered;
+    }
+    for (Map<String, Object> lineContext : saleOrderLineListContext) {
+      if (lineContext.get("qtyToOrder") == null) {
+        continue;
+      }
+      SaleOrderLine saleOrderLine =
+          Beans.get(SaleOrderLineRepository.class)
+              .find(Long.parseLong(lineContext.get("id").toString()));
+      BigDecimal price =
+          saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+      BigDecimal qtyToOrder =
+          BigDecimal.valueOf(Double.parseDouble(lineContext.get("qtyToOrder").toString()));
+      currentlyTotalOrdered = currentlyTotalOrdered.add(qtyToOrder.multiply(price));
+    }
+    return currentlyTotalOrdered;
   }
 }
