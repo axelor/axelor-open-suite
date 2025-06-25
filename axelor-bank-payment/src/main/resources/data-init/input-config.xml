@@ -5,6 +5,12 @@
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="object" to="object"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(object)"
+      check-message="Object must not be null"/>
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
     <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
@@ -13,30 +19,101 @@
   </input>
 
   <input file="bankpayment_bankOrderFileFormat.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankOrderFileFormat" search="self.importId = :importId"/>
+    type="com.axelor.apps.bankpayment.db.BankOrderFileFormat" search="self.importId = :importId">
+    <bind column="orderTypeSelect" to="orderTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.order.type.select', orderTypeSelect, false)"
+      check-message="Invalid orderTypeSelect :orderTypeSelect"/>
+    <bind column="orderFileFormatSelect" to="orderFileFormatSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.order.file.format.select', orderFileFormatSelect, false)"
+      check-message="Invalid orderFileFormatSelect :orderFileFormatSelect"/>
+    <bind column="bankDetailsTypeSelect" to="bankDetailsTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.bank.bank.details.type.select', bankDetailsTypeSelect, false)"
+      check-message="Invalid bankDetailsTypeSelect :bankDetailsTypeSelect"/>
+    <bind column="qualifyingOfAmountSelect" to="qualifyingOfAmountSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.order.ff.qualifying.amount.select', qualifyingOfAmountSelect, false)"
+      check-message="Invalid qualifyingOfAmountSelect :qualifyingOfAmountSelect"/>
+    <bind column="orderDebitTypeSelect" to="orderDebitTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.order.debit.type.select', orderDebitTypeSelect, false)"
+      check-message="Invalid orderDebitTypeSelect :orderDebitTypeSelect"/>
+    <bind column="paymentModeSelect" to="paymentModeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.order.line.payment.mode.select', paymentModeSelect, false)"
+      check-message="Invalid paymentModeSelect :paymentModeSelect"/>
+    <bind column="feesImputationModeSelect" to="feesImputationModeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.order.line.fees.imputation.mode.select', feesImputationModeSelect, false)"
+      check-message="Invalid feesImputationModeSelect :feesImputationModeSelect"/>
+    <bind column="entryCodeSelect" to="entryCodeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.order.entry.code.select', entryCodeSelect, false)"
+      check-message="Invalid entryCodeSelect :entryCodeSelect"/>
+    <bind column="dailyCodeSelect" to="dailyCodeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.order.daily.code.select', dailyCodeSelect, false)"
+      check-message="Invalid dailyCodeSelect :dailyCodeSelect"/>
+    <bind column="acceptPerLineCodeSelect" to="acceptPerLineCodeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.order.accept.per.line.code.select', acceptPerLineCodeSelect, false)"
+      check-message="Invalid acceptPerLineCodeSelect :acceptPerLineCodeSelect"/>
+  </input>
 
   <input file="bankpayment_bankStatementFileFormat.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankStatementFileFormat" search="self.importId = :importId"
-    call="com.axelor.csv.script.ImportBankStatementFileFormat:importBankStatementFileFormat"/>
+    call="com.axelor.csv.script.ImportBankStatementFileFormat:importBankStatementFileFormat">
+    <bind column="statementFileFormatSelect" to="statementFileFormatSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('bankpayment.bank.statement.file.format.statement.file.format.select', statementFileFormatSelect, false)"
+      check-message="Invalid statementFileFormatSelect :statementFileFormatSelect"/>
+  </input>
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
-    search="self.name = :name" update="true"/>
+    search="self.name = :name" update="true">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="title" to="title"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(title)"
+      check-message="Title must not be null"/>
+    <bind column="xmlId" to="xmlId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
+      check-message="Xml id must be unique"/>
+    <bind column="tagStyle" to="tagStyle"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('label.style.selection', tagStyle, false)"
+      check-message="Invalid tagStyle :tagStyle"/>
+  </input>
 
   <input file="base_birtTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="format" to="format"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iadministration.export.type.select', format, false)"
+      check-message="Invalid format :format"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_birtTemplateParameter.csv" separator=";"
-    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="type" to="type"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.birt.template.parameter.type.select', type, false)"
+      check-message="Invalid type :type"/>
+  </input>
 
   <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
     separator=";" search="self.importId = :importId">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.printing.template.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_printingTemplateLine.csv"
     type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.printing.template.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+  </input>
 
 </csv-inputs>
