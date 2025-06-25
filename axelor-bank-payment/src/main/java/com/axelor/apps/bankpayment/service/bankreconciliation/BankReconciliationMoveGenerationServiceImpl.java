@@ -534,7 +534,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     }
 
     if (moveLine.getAnalyticDistributionTemplate() != null) {
-      moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+      moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
     }
 
     move.addMoveLineListItem(moveLine);
