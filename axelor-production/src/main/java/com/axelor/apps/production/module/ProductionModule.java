@@ -34,6 +34,7 @@ import com.axelor.apps.production.db.repo.ProdProcessManagementRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.db.repo.ProductCompanyProductionRepository;
 import com.axelor.apps.production.db.repo.ProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchManagementRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchRepository;
@@ -271,6 +272,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
+import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
@@ -473,5 +475,6 @@ public class ProductionModule extends AxelorModule {
     bind(MrpLineManagementRepository.class).to(MrpLineProductionRepository.class);
     bind(SaleOrderLineBlockingProductionService.class)
         .to(SaleOrderLineBlockingProductionServiceImpl.class);
+    bind(ProductCompanyStockRepository.class).to(ProductCompanyProductionRepository.class);
   }
 }
