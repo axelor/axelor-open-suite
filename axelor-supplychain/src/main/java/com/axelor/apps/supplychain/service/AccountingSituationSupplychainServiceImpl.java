@@ -225,8 +225,9 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   @Transactional(
       rollbackOn = {Exception.class},
       ignore = {BlockedSaleOrderException.class})
-  protected void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
-
+  @Override
+  public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    boolean isSeparationEnabled = appSaleService.getAppSale().getIsQuotationAndOrderSplitEnabled();
     Partner partner = saleOrder.getClientPartner();
     List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
     for (AccountingSituation accountingSituation : accountingSituationList) {
@@ -234,14 +235,12 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       if (company.equals(saleOrder.getCompany())) {
         // Update UsedCredit
         accountingSituation = this.computeUsedCredit(accountingSituation);
-        if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
-          BigDecimal inTaxInvoicedAmount = getInTaxInvoicedAmount(saleOrder);
+        if ((!isSeparationEnabled
+                && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION)
+            || (isSeparationEnabled
+                && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED)) {
 
-          BigDecimal usedCredit =
-              accountingSituation
-                  .getUsedCredit()
-                  .add(saleOrder.getInTaxTotal())
-                  .subtract(inTaxInvoicedAmount);
+          BigDecimal usedCredit = accountingSituation.getUsedCredit();
 
           accountingSituation.setUsedCredit(
               currencyScaleService.getCompanyScaledValue(company, usedCredit));
