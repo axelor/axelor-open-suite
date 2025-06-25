@@ -23,7 +23,7 @@
     <decimal name="qtyProduced" title="Quantity produced" readonly="true"/>
     <boolean name="isToProduce" transient="true">
       <![CDATA[
-		return (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
+		return (getSaleSupplySelect() == 3 || getSaleSupplySelect() == 4) && this.billOfMaterial != null;
         ]]>
     </boolean>
 
