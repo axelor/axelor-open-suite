@@ -1005,6 +1005,5 @@ public class AccountModule extends AxelorModule {
     bind(MoveGroupOnChangeService.class).to(MoveGroupOnChangeServiceImpl.class);
     bind(BankDetailsDomainServiceAccount.class).to(BankDetailsDomainServiceAccountImpl.class);
     bind(BankDetailsServiceAccount.class).to(BankDetailsServiceAccountImpl.class);
-    bind(PaymentScheduleDomainService.class).to(PaymentScheduleDomainServiceImpl.class);
   }
 }

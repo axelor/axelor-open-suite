@@ -1,7 +1,7 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.PaymentSchedule;
-import com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPayment;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.inject.Beans;
@@ -14,8 +14,11 @@ public class PaymentScheduleController {
   public void checkPaymentScheduleBankDetails(ActionRequest request, ActionResponse response) {
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
     BankDetails bankDetails =
-        Beans.get(PaymentScheduleServiceBankPayment.class)
-            .checkPaymentScheduleBankDetails(paymentSchedule);
+        Beans.get(BankDetailsServiceAccount.class)
+            .getDefaultBankDetails(
+                paymentSchedule.getPartner(),
+                paymentSchedule.getCompany(),
+                paymentSchedule.getPaymentMode());
     response.setValue("bankDetails", bankDetails);
   }
 }

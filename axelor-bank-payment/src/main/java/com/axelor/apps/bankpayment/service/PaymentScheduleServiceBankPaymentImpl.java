@@ -3,7 +3,6 @@ package com.axelor.apps.bankpayment.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
@@ -20,8 +19,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 
-public class PaymentScheduleServiceBankPaymentImpl extends PaymentScheduleServiceImpl
-    implements PaymentScheduleServiceBankPayment {
+public class PaymentScheduleServiceBankPaymentImpl extends PaymentScheduleServiceImpl {
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
   @Inject
@@ -68,37 +66,5 @@ public class PaymentScheduleServiceBankPaymentImpl extends PaymentScheduleServic
         .ifPresent(paymentSchedule::setBankDetails);
 
     return paymentSchedule;
-  }
-
-  @Override
-  public BankDetails getDefaultBankDetails(PaymentSchedule paymentSchedule) {
-    BankDetails defaultBankDetails = super.getDefaultBankDetails(paymentSchedule);
-    Partner partner = paymentSchedule.getPartner();
-    Company company = paymentSchedule.getCompany();
-    PaymentMode paymentMode = paymentSchedule.getPaymentMode();
-
-    if (paymentMode != null && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
-      defaultBankDetails =
-          bankDetailsBankPaymentService
-              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
-              .stream()
-              .findFirst()
-              .orElse(null);
-    }
-
-    return defaultBankDetails;
-  }
-
-  @Override
-  public BankDetails checkPaymentScheduleBankDetails(PaymentSchedule paymentSchedule) {
-    BankDetails bankDetails = paymentSchedule.getBankDetails();
-    Company company = paymentSchedule.getCompany();
-    PaymentMode paymentMode = paymentSchedule.getPaymentMode();
-
-    if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
-        paymentMode, company, bankDetails)) {
-      bankDetails = null;
-    }
-    return bankDetails;
   }
 }

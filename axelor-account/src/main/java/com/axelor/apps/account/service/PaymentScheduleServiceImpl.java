@@ -622,17 +622,4 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
             .orElse(0);
     return currentMaxSequenceNumber + 1;
   }
-
-  @Override
-  public BankDetails getDefaultBankDetails(PaymentSchedule paymentSchedule) {
-    Partner partner = paymentSchedule.getPartner();
-    if (partner != null) {
-      partner = partnerRepository.find(partner.getId());
-
-      if (partner != null) {
-        return partnerService.getDefaultBankDetails(partner);
-      }
-    }
-    return null;
-  }
 }

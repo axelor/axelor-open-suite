@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccountImpl;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
-import com.axelor.apps.account.service.PaymentScheduleDomainServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
@@ -70,10 +69,8 @@ import com.axelor.apps.bankpayment.service.InvoiceCancelBillOfExchangeBankPaymen
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPaymentImpl;
-import com.axelor.apps.bankpayment.service.PaymentScheduleDomainBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
-import com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderService;
 import com.axelor.apps.bankpayment.service.PaymentSessionBankOrderServiceImpl;
@@ -338,9 +335,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveGroupOnChangeServiceImpl.class).to(MoveGroupOnChangeServiceBankPaymentImpl.class);
     bind(BankDetailsDomainServiceAccountImpl.class)
         .to(BankDetailsDomainServiceBankPaymentImpl.class);
-    bind(PaymentScheduleDomainServiceImpl.class)
-        .to(PaymentScheduleDomainBankPaymentServiceImpl.class);
-    bind(PaymentScheduleServiceBankPayment.class).to(PaymentScheduleServiceBankPaymentImpl.class);
     bind(PaymentScheduleServiceImpl.class).to(PaymentScheduleServiceBankPaymentImpl.class);
   }
 }
