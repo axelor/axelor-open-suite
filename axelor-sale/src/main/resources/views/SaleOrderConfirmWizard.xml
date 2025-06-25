@@ -5,16 +5,49 @@
 
   <form name="sale-order-confirm-wizard-form" title="Confirm"
     model="com.axelor.apps.sale.db.SaleOrder"
-    onLoad="action-sale-order-confirm-wizard-method-onload">
+    onLoad="action-sale-order-confirm-wizard-method-onload, action-sale-order-confirm-wizard-method-compute-current-total-ordered">
     <help showIf="$isUsedCreditExceeded"> <![CDATA[
       Used credit has been exceeded. The quotation must be manually unblocked to generate the order.
     ]]></help>
     <panel name="mainPanel">
       <panel-related name="saleOrderLineListPanel" field="$saleOrderLineList"
         title="Sale order lines" type="one-to-many" canNew="false" canRemove="false"
-        grid-view="confirm-wizard-sale-order-line-grid" editable="true" colSpan="12"/>
-      <field name="advanceTotal" title="Advance payment A.T.I. total" colSpan="4"/>
-      <spacer colSpan="8"/>
+        grid-view="confirm-wizard-sale-order-line-grid" editable="true" colSpan="12"
+        onChange="action-sale-order-confirm-wizard-method-compute-current-total-ordered"/>
+      <spacer colSpan="4"/>
+      <panel name="infoPanel" colSpan="8">
+        <field name="advanceTotal" title="Advance payment A.T.I. total" hidden="true"
+          x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+        <field name="inTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="inAti" hidden="true"/>
+        <field name="statusSelect" hidden="true"/>
+        <field name="$currentlyTotalOrdered" type="decimal" showTitle="false"
+          x-currency="currency.symbol" x-scale="currency.numberOfDecimals" hidden="true"/>
+
+        <field name="exTaxTotalOrdered" x-currency="currency.symbol"
+          x-scale="currency.numberOfDecimals" showTitle="false" readonly="true">
+          <viewer
+            depends="inAti,statusSelect,amountInvoiced,advanceTotal,exTaxTotalOrdered,inTaxTotalOrdered">
+            <![CDATA[
+	                  <>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         {(statusSelect >= 2 && inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Currently ordered A.T.I.')}</Box>}
+                             {(statusSelect >= 2 && inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('$currentlyTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Currently ordered W.T.')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('$currentlyTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered A.T.I.')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('inTaxTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered W.T.')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotalOrdered')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
+	                     </Box>
+	                  </>
+                    ]]>
+          </viewer>
+        </field>
+      </panel>
       <panel name="actionPanel" colSpan="12">
         <button name="confirmBtn" title="Generate the order"
           onClick="validate, save, action-sale-order-confirm-wizard-method-generate"
@@ -76,4 +109,10 @@
     <call class="com.axelor.apps.sale.web.SaleOrderConfirmController" method="orderAll"/>
   </action-method>
 
+
+  <action-method
+    name="action-sale-order-confirm-wizard-method-compute-current-total-ordered">
+    <call class="com.axelor.apps.sale.web.SaleOrderConfirmController"
+      method="computeCurrentlyTotalOrdered"/>
+  </action-method>
 </object-views>

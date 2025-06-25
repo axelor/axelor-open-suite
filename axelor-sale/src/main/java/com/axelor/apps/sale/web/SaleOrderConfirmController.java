@@ -3,6 +3,7 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderConfirmController {
 
@@ -104,5 +106,41 @@ public class SaleOrderConfirmController {
       saleOrderLineListContext.add(map);
     }
     response.setValue("$saleOrderLineList", saleOrderLineListContext);
+  }
+
+  public void computeCurrentlyTotalOrdered(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrder saleOrder = context.asType(SaleOrder.class);
+    List<Map<String, Object>> saleOrderLineListContext;
+    saleOrderLineListContext =
+        (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineList");
+
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    response.setValue(
+        "$currentlyTotalOrdered",
+        computeCurrentlyTotalOrdered(saleOrder, saleOrderLineListContext));
+  }
+
+  protected BigDecimal computeCurrentlyTotalOrdered(
+      SaleOrder saleOrder, List<Map<String, Object>> saleOrderLineListContext) {
+    BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
+    if (CollectionUtils.isEmpty(saleOrderLineListContext)) {
+      return currentlyTotalOrdered;
+    }
+    for (Map<String, Object> lineContext : saleOrderLineListContext) {
+      if (lineContext.get("qtyToOrder") == null) {
+        continue;
+      }
+      SaleOrderLine saleOrderLine =
+          Beans.get(SaleOrderLineRepository.class)
+              .find(Long.parseLong(lineContext.get("id").toString()));
+      BigDecimal price =
+          saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+      BigDecimal qtyToOrder =
+          BigDecimal.valueOf(Double.parseDouble(lineContext.get("qtyToOrder").toString()));
+      currentlyTotalOrdered = currentlyTotalOrdered.add(qtyToOrder.multiply(price));
+    }
+    return currentlyTotalOrdered;
   }
 }
