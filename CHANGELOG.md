@@ -1,3 +1,52 @@
+## [8.2.18] (2025-06-26)
+
+### Fixes
+#### Base
+
+* Product company: computed sale price on change of 'autoUpdateSalePrice' or 'managPriceCoef'.
+* Update Axelor Message to 3.2.3.
+* Product category: fixed sequence field display.
+* Update dependency to Axelor Studio to 3.3.15.
+
+#### Account
+
+* Invoice: supplier invoice exchange rate is now based on origin date.
+* Accounting report: fixed calculation of Original value and Net carrying amount in accounting report 'Summary of gross values and depreciation'.
+* Invoice: fixed invoice term due date when we update invoice due date with free payment condition.
+* Accounting export / FEC export payroll entry: fixed the issue where only accounted moves were returned.
+* Invoice/PFP: updated PFP validate status at invoice reconcile with advance payment or credit note.
+
+#### Contract
+
+* Contract batch: fixed issue where contracts and invoices were not displayed in batch due to missing batch association.
+
+#### Production
+
+* Sale order: fixed error in log when choosing a product.
+
+#### Sale
+
+* Partner: fixed error while opening form view of 'Sale details by product'.
+* Partner: fixed wrong computation of total price in 'Sale details by product'.
+* Sale order: trading name is correctly reset when changing company.
+
+#### Supply Chain
+
+* Sale order: invoicing state is correctly updated when editing lines quantity.
+* Sale Order/Purchase Order/Invoice: fixed advance invoice amount on partial invoicing.
+
+
+### Developer
+
+#### Account
+
+Added the `InvoiceTermPfpService` in the `ReconcileInvoiceTermComputationServiceImpl` and `ReconcileInvoiceTermComputationBudgetServiceImpl` constructor.
+
+#### Supply Chain
+
+SaleOrderInvoiceService#updateInvoicingState has been moved to SaleInvoicingStateService#updateInvoicingState.
+By consequences, SaleInvoicingStateService has been added to SaleOrderServiceSupplychainServiceImpl, WorkflowCancelServiceSupplychainImpl and their respective extensions.
+
 ## [8.2.17] (2025-06-12)
 
 ### Fixes
@@ -1138,6 +1187,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.18]: https://github.com/axelor/axelor-open-suite/compare/v8.2.17...v8.2.18
 [8.2.17]: https://github.com/axelor/axelor-open-suite/compare/v8.2.16...v8.2.17
 [8.2.16]: https://github.com/axelor/axelor-open-suite/compare/v8.2.15...v8.2.16
 [8.2.15]: https://github.com/axelor/axelor-open-suite/compare/v8.2.14...v8.2.15
