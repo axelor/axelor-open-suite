@@ -1,3 +1,0 @@
----
-title: "Accounting export / FEC export payroll entry: fixed the issue where only accounted moves were returned."
-module: axelor-account

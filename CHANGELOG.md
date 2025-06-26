@@ -1,3 +1,24 @@
+## [7.2.42] (2025-06-26)
+
+### Fixes
+#### Base
+
+* Product company: computed sale price on change of 'autoUpdateSalePrice' or 'managPriceCoef'.
+* Product category: fixed sequence field display.
+
+#### Account
+
+* Accounting export / FEC export payroll entry: fixed the issue where only accounted moves were returned.
+
+#### Sale
+
+* Partner: fixed wrong computation of total price in 'Sale details by product'.
+* Partner: fixed error while opening form view of 'Sale details by product'.
+
+#### Supply Chain
+
+* Sale Order/Purchase Order/Invoice: fixed advance invoice amount on partial invoicing.
+
 ## [7.2.41] (2025-06-12)
 
 ### Fixes
@@ -1777,6 +1798,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.42]: https://github.com/axelor/axelor-open-suite/compare/v7.2.41...v7.2.42
 [7.2.41]: https://github.com/axelor/axelor-open-suite/compare/v7.2.40...v7.2.41
 [7.2.40]: https://github.com/axelor/axelor-open-suite/compare/v7.2.39...v7.2.40
 [7.2.39]: https://github.com/axelor/axelor-open-suite/compare/v7.2.38...v7.2.39
