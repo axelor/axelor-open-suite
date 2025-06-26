@@ -27,8 +27,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -252,5 +254,12 @@ public class AnalyticMoveLineQueryController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void refreshAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+    Beans.get(AnalyticMoveLineParentService.class).refreshAxisOnParent(analyticMoveLine);
+    response.setReload(true);
   }
 }
