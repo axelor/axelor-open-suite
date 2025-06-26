@@ -16,11 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service;
+package com.axelor.apps.production.db.repo;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.ProductCompany;
+import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
+import java.math.BigDecimal;
 
-public interface InvoiceBankPaymentService {
-  void cancelBillOfExchange(Invoice invoice) throws AxelorException;
+public class ProductCompanyProductionRepository extends ProductCompanyStockRepository {
+
+  @Override
+  public ProductCompany copy(ProductCompany productCompany, boolean deep) {
+    ProductCompany copy = super.copy(productCompany, deep);
+    copy.setDefaultBillOfMaterial(null);
+    copy.setLastProductionPrice(BigDecimal.ZERO);
+    return copy;
+  }
 }

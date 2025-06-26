@@ -568,7 +568,7 @@
            		]]></viewer>
       </field>
       <field name="bankDetails" canEdit="false" widget="SuggestBox" colSpan="12"
-        onSelect="action-invoice-attrs-bank-details-from-partner-domain"
+        onSelect="action-invoice-method-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
         requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9)
              || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"
@@ -1280,7 +1280,7 @@
         onSelect="action-invoice-attrs-payment-condition-set-domain"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
-        onSelect="action-invoice-attrs-bank-details-from-partner-domain"
+        onSelect="action-invoice-method-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
         requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9)
              || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"/>
@@ -1685,6 +1685,7 @@
     <action name="action-invoice-record-operationsubtype-reset"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-company-onchange">
@@ -1731,6 +1732,7 @@
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-fiscal-position-on-change"/>
     <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
@@ -1904,6 +1906,7 @@
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-method-update-invoice-term-payment-mode"
       if="invoiceTermList &amp;&amp; !invoiceTermList.isEmpty()"/>
+    <action name="action-invoice-method-set-default-bank-details"/>
   </action-group>
 
   <action-group name="action-invoice-group-draft-button">
@@ -2024,8 +2027,6 @@
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"
       if="eval: (!invoiceLineList || invoiceLineList?.empty) &amp;&amp; partner"/>
-    <field name="bankDetails"
-      expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
       expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null"/>
     <field name="invoicesCopySelect"
@@ -2131,13 +2132,6 @@
   </action-record>
 
   <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
-    <attribute name="domain" for="bankDetails" expr="eval: &quot; self = null&quot;"/>
-    <attribute name="domain" for="bankDetails"
-      expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = true &quot;"
-      if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
-  </action-attrs>
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
@@ -2309,6 +2303,10 @@
   </action-validate>
 
   <!-- ACTION METHOD -->
+
+  <action-method name="action-invoice-method-bank-details-from-partner-domain">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="setBankDetailsDomain"/>
+  </action-method>
 
   <action-method name="action-method-invoice-address-str"
     model="com.axelor.apps.account.db.Invoice">
@@ -2593,6 +2591,10 @@
 
   <action-method name="action-invoice-method-check-analytic-axis">
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkAnalyticAxis"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-get-default-bank-details">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="getDefaultBankDetails"/>
   </action-method>
 
   <action-method name="action-invoice-method-domain-company-tax-number">

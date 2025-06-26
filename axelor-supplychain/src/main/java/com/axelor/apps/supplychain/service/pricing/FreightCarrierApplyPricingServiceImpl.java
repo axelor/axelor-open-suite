@@ -47,7 +47,7 @@ public class FreightCarrierApplyPricingServiceImpl implements FreightCarrierAppl
     return errors;
   }
 
-  protected String computeFreightCarrierPricing(
+  public String computeFreightCarrierPricing(
       Pricing pricing, FreightCarrierPricing freightCarrierPricing) {
     String errors = "";
 
