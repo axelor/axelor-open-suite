@@ -30,7 +30,6 @@
     <many-to-one name="prodProcessLine"
       ref="com.axelor.apps.production.db.ProdProcessLine" title="Prod process line"/>
 
-    //Prod process line fields
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
