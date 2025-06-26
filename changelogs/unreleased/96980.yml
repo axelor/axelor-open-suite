@@ -1,0 +1,3 @@
+---
+title: "Leave request: fixed leave request confirm when using the leave reason as negative values."
+module: axelor-human-resource
