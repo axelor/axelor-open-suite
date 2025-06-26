@@ -4,24 +4,72 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="marketing_targetList.csv" separator=";"
-    type="com.axelor.apps.marketing.db.TargetList" search="self.importId = :importId"/>
+    type="com.axelor.apps.marketing.db.TargetList" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="partnerTypeSelect" to="partnerTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('target.partner.type.select', partnerTypeSelect, false)"
+      check-message="Invalid partnerTypeSelect :partnerTypeSelect"/>
+    <bind column="partnerQueryTypeSelect" to="partnerQueryTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('marketing.target.list.query.type.select', partnerQueryTypeSelect, false)"
+      check-message="Invalid partnerQueryTypeSelect :partnerQueryTypeSelect"/>
+    <bind column="leadQueryTypeSelect" to="leadQueryTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('marketing.target.list.query.type.select', leadQueryTypeSelect, false)"
+      check-message="Invalid leadQueryTypeSelect :leadQueryTypeSelect"/>
+  </input>
 
-  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"/>
+  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="mediaTypeSelect" to="mediaTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('message.media.type.select', mediaTypeSelect, true)"
+      check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
+    <bind column="language" to="language"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('select.language', language, false)"
+      check-message="Invalid language :language"/>
+  </input>
 
   <input file="marketing_campaignType.csv" separator=";"
-    type="com.axelor.apps.marketing.db.CampaignType" search="self.importId = :importId"/>
+    type="com.axelor.apps.marketing.db.CampaignType" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="marketing_campaign.csv" separator=";"
-    type="com.axelor.apps.marketing.db.Campaign" search="self.importId = :importId"/>
+    type="com.axelor.apps.marketing.db.Campaign" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="stageSelect" to="stageSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('campaign.stage.select', stageSelect, false)"
+      check-message="Invalid stageSelect :stageSelect"/>
+    <bind column="eventTypeSelect" to="eventTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('icalendar.event.type.select', eventTypeSelect, false)"
+      check-message="Invalid eventTypeSelect :eventTypeSelect"/>
+  </input>
 
   <input file="marketing_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer"
-    separator=";"/>
+    separator=";">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="marketing_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"
     separator=";">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel)"
+      check-message="Meta model with name :metaModel doesn't exist"/>
     <bind to="metaField" column="metaField"
-      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
+      check-message="Meta field with name :metaField and model :metaModel doesn't exist"/>
     <bind to="anonymizer" column="anonymizer_importId"
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
