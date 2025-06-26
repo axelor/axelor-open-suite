@@ -52,6 +52,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,32 +62,36 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
+/** UserService is a class that implement all methods for user information */
 public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;
   @Inject private MetaFiles metaFiles;
 
-  @Deprecated(since = "8.4.0", forRemoval = true)
   public static final String DEFAULT_LOCALE = "en";
 
   public static final String DARK_THEME_MODE = "dark";
 
   public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
-  private static final String PATTERN_ACCESS_RESTRICTION =
+  private static final String PATTERN_ACCES_RESTRICTION =
       "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
   private static final Pattern PATTERN =
       Pattern.compile(
           MoreObjects.firstNonNull(
-              AppSettings.get().get("user.password.pattern"), PATTERN_ACCESS_RESTRICTION));
+              AppSettings.get().get("user.password.pattern"), PATTERN_ACCES_RESTRICTION));
 
   private static final String PATTERN_DESCRIPTION =
-      PATTERN.pattern().equals(PATTERN_ACCESS_RESTRICTION)
+      PATTERN.pattern().equals(PATTERN_ACCES_RESTRICTION)
           ? BaseExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
           : BaseExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
 
@@ -95,6 +100,9 @@ public class UserServiceImpl implements UserService {
   private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
   private static final int GEN_LOOP_LIMIT = 1000;
   private static final SecureRandom random = new SecureRandom();
+
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Method that return the current connected user
@@ -165,6 +173,11 @@ public class UserServiceImpl implements UserService {
     return company.getId();
   }
 
+  /**
+   * Method that return the active team of the current connected user
+   *
+   * @return Team the active team
+   */
   @Override
   public MetaFile getUserActiveCompanyLogo(String mode) {
     final Company company = getUserActiveCompany();
@@ -283,7 +296,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User changeUserPassword(User user, Map<String, Object> values) {
+  public User changeUserPassword(User user, Map<String, Object> values)
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          MessagingException,
+          IOException,
+          AxelorException {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
     Preconditions.checkNotNull(values, I18n.get("User context cannot be null."));
 
@@ -323,7 +342,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
-      throws AxelorException, ClassNotFoundException, IOException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
 
     try {
