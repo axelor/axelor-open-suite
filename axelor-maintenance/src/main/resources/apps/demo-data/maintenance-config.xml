@@ -5,6 +5,22 @@
 
   <input file="production_productionConfig.csv" separator=";"
     type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"
-    update="true"/>
+    update="true">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.production.db.ProductionConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+    <bind column="stockMoveRealizeOrderSelect" to="stockMoveRealizeOrderSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.manuf.order.stock.move.realize.order.select', stockMoveRealizeOrderSelect, false)"
+      check-message="Invalid stockMoveRealizeOrderSelect :stockMoveRealizeOrderSelect"/>
+    <bind column="capacity" to="capacity"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.config.capacity.select', capacity, false)"
+      check-message="Invalid capacity :capacity"/>
+    <bind column="scheduling" to="scheduling"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.config.scheduling.select', scheduling, false)"
+      check-message="Invalid scheduling :scheduling"/>
+  </input>
 
 </csv-inputs>
