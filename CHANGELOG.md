@@ -1,3 +1,32 @@
+## [8.1.27] (2025-06-26)
+
+### Fixes
+#### Base
+
+* Update Axelor Message to 3.1.4.
+* Product company: computed sale price on change of 'autoUpdateSalePrice' or 'managPriceCoef'.
+* Product category: fixed sequence field display.
+
+#### Account
+
+* Invoice: supplier invoice exchange rate is now based on origin date.
+* Accounting export / FEC export payroll entry: fixed the issue where only accounted moves were returned.
+* Invoice: fixed invoice term due date when we update invoice due date with free payment condition.
+* Accounting report: fixed calculation of Original value and Net carrying amount in accounting report 'Summary of gross values and depreciation'.
+
+#### Contract
+
+* Contract batch: fixed issue where contracts and invoices were not displayed in batch due to missing batch association.
+
+#### Sale
+
+* Partner: fixed error while opening form view of 'Sale details by product'.
+* Partner: fixed wrong computation of total price in 'Sale details by product'.
+
+#### Supply Chain
+
+* Sale Order/Purchase Order/Invoice: fixed advance invoice amount on partial invoicing.
+
 ## [8.1.26] (2025-06-12)
 
 ### Fixes
@@ -1552,6 +1581,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.27]: https://github.com/axelor/axelor-open-suite/compare/v8.1.26...v8.1.27
 [8.1.26]: https://github.com/axelor/axelor-open-suite/compare/v8.1.25...v8.1.26
 [8.1.25]: https://github.com/axelor/axelor-open-suite/compare/v8.1.24...v8.1.25
 [8.1.24]: https://github.com/axelor/axelor-open-suite/compare/v8.1.23...v8.1.24
