@@ -108,9 +108,4 @@ public class SaleOrderLineDetailsController {
     }
     return saleOrder;
   }
-
-  public void updateProdProcessLine(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
-  }
 }
