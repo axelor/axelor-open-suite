@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed NPE when generating invoice from purchase order without order date."
-module: axelor-purchase
