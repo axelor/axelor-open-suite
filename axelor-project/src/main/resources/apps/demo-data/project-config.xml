@@ -7,6 +7,9 @@
     type="com.axelor.apps.project.db.ProjectTaskCategory" separator=";"
     search="self.importId = :importId"
     call="com.axelor.apps.csv.script.ImportProjectTaskCategory:importProjectTaskCategory">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
     <bind to="projectTaskStatusSet" column="projectTaskStatusSet"
       search="self.importId in :projectTaskStatusSet"
       eval="projectTaskStatusSet.split('\\|') as List"/>
@@ -14,6 +17,18 @@
 
   <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
     search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.project.db.Project', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="taskStatusManagementSelect" to="taskStatusManagementSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('task.project.status.management.select', taskStatusManagementSelect, false)"
+      check-message="Invalid taskStatusManagementSelect :taskStatusManagementSelect"/>
+    <bind column="customFieldManagementSelect" to="customFieldManagementSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('project.custom.field.management.select', customFieldManagementSelect, false)"
+      check-message="Invalid customFieldManagementSelect :customFieldManagementSelect"/>
+    <bind column="sprintManagementSelect" to="sprintManagementSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('project.sprint.management.select', sprintManagementSelect, false)"
+      check-message="Invalid sprintManagementSelect :sprintManagementSelect"/>
     <bind to="fromDate" column="fromDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"/>
     <bind to="projectTaskStatusSet" column="projectTaskStatusSet"
@@ -32,6 +47,12 @@
   <input file="project_task.csv" type="com.axelor.apps.project.db.ProjectTask" separator=";"
     search="self.importId = :importId"
     call="com.axelor.apps.csv.script.ProjectTaskScript:computeFullname">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('project.task.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
     <bind to="taskDate" column="taskDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(taskDate)"/>
   </input>
@@ -52,24 +73,43 @@
       search="self.importId = :completedTaskStatus_importId"/>
   </input>
 
-  <input file="project_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>
+  <input file="project_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="project_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"
     separator=";">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel)"
+      check-message="Meta model with name :metaModel doesn't exist"/>
     <bind to="metaField" column="metaField"
-      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
+      check-message="Meta field with name :metaField and model :metaModel doesn't exist"/>
     <bind to="anonymizer" column="anonymizer_importId"
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
   </input>
 
   <input file="project_project_config.csv" type="com.axelor.apps.project.db.ProjectConfig"
-    separator=";"/>
+    separator=";">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.project.db.ProjectConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+  </input>
 
   <input file="project_check_list_template.csv"
     type="com.axelor.apps.project.db.ProjectCheckListTemplate" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('check.list.template.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+  </input>
 
   <input file="project_check_list_template_line.csv"
     type="com.axelor.apps.project.db.ProjectCheckListItem" separator=";"
@@ -80,6 +120,24 @@
     search="self.importId = :importId" update="true"/>
 
   <input file="base_unitConversion.csv" separator=";"
-    type="com.axelor.apps.base.db.UnitConversion" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.UnitConversion" search="self.importId = :importId">
+    <bind column="startUnit_importId" to="startUnit"
+      search="self.importId = :startUnit_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Unit', 'importId', startUnit_importId)"
+      check-message="Unit with importId :startUnit_importId doesn't exist"/>
+    <bind column="endUnit_importId" to="endUnit" search="self.importId = :endUnit_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Unit', 'importId', endUnit_importId)"
+      check-message="Unit with importId :endUnit_importId doesn't exist"/>
+    <bind column="coef" to="coef"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(coef)"
+      check-message="Coeff. must not be null"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('unit.conversion.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="entitySelect" to="entitySelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('unit.conversion.entity.select', entitySelect, false)"
+      check-message="Invalid entitySelect :entitySelect"/>
+  </input>
+
 </csv-inputs>
 
