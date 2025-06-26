@@ -79,6 +79,8 @@ public class UserServiceImpl implements UserService {
 
   public static final String DEFAULT_LOCALE = "en";
 
+  public static final String DARK_THEME_MODE = "dark";
+
   public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
   private static final String PATTERN_ACCES_RESTRICTION =
@@ -171,39 +173,27 @@ public class UserServiceImpl implements UserService {
     return company.getId();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team
-   */
   @Override
-  public MetaFile getUserActiveCompanyLogo() {
-
-    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
-
+  public MetaFile getUserActiveCompanyLogo(String mode) {
+    final Company company = getUserActiveCompany();
     if (company == null) {
       return null;
     }
 
-    return company.getLogo();
+    // if the mode is light, AOP doesn't set the mode, so we consider it as the default mode
+    var logo = DARK_THEME_MODE.equals(mode) ? company.getDarkLogo() : company.getLightLogo();
+    return Optional.ofNullable(logo).orElse(company.getLogo());
   }
 
   @Override
-  public String getUserActiveCompanyLogoLink() {
-
-    final Company company = AuthUtils.getUser() != null ? this.getUserActiveCompany() : null;
-
-    if (company == null) {
-      return null;
-    }
-
-    MetaFile logo = company.getLogo();
-
+  public String getUserActiveCompanyLogoLink(String mode) {
+    MetaFile logo = getUserActiveCompanyLogo(mode);
     if (logo == null) {
       return null;
     }
 
-    return metaFiles.getDownloadLink(logo, company);
+    String link = metaFiles.getDownloadLink(logo, getUserActiveCompany());
+    return link.substring(0, link.indexOf("?"));
   }
 
   @Override

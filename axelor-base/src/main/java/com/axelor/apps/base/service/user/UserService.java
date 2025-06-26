@@ -77,18 +77,26 @@ public interface UserService {
   public Long getUserActiveCompanyId();
 
   /**
-   * Method that return the active team of the current connected user
+   * Returns the file representing the active company logo of the user, according to the provided
+   * theme mode.
    *
-   * @return Team the active team
+   * <p>If there is no company logo defined for the provided theme mode, the fallback is the default
+   * company logo.
+   *
+   * @return the logo file
    */
-  public MetaFile getUserActiveCompanyLogo();
+  MetaFile getUserActiveCompanyLogo(String mode);
 
   /**
-   * Method that return company logo link
+   * Returns the link targeting the active company logo of the user, according to the provided theme
+   * mode.
    *
-   * @return the logo Link
+   * <p>If there is no company logo defined for the provided theme mode, the fallback is the default
+   * company logo.
+   *
+   * @return the logo link
    */
-  public String getUserActiveCompanyLogoLink();
+  String getUserActiveCompanyLogoLink(String mode);
 
   /**
    * Method that return the active team of the current connected user
