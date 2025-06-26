@@ -30,6 +30,20 @@
     <many-to-one name="prodProcessLine"
       ref="com.axelor.apps.production.db.ProdProcessLine" title="Prod process line"/>
 
+    <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
+    <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <long name="setupDuration" title="Duration between two cycles (hhh:mm:ss)"/>
+    <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
+    <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
+    <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
+    <integer name="costTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="costAmount" title="Cost (W.T.)"/>
+    <integer name="hrCostTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="hrCostAmount" title="Cost (W.T.)"/>
+
     <extra-code>
             <![CDATA[
 			// TYPE SELECT

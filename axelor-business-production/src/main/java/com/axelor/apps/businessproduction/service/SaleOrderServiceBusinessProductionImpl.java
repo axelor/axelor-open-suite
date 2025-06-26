@@ -120,7 +120,8 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       solDetailsBusinessProductionService.deleteSolDetailsList(saleOrder);
       solBomCustomizationService.customSaleOrderLineList(saleOrder.getSaleOrderLineList());
-      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder.getSaleOrderLineList());
+      saleOrderProductionSyncService.syncSaleOrderLineList(
+          saleOrder, saleOrder.getSaleOrderLineList());
       solDetailsBusinessProductionService.copySolDetailsList(saleOrder);
     }
     super.validateChanges(saleOrder);

@@ -4,15 +4,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
-import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
-import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class SolDetailsProdProcessLineMappingServiceImpl
@@ -21,18 +18,18 @@ public class SolDetailsProdProcessLineMappingServiceImpl
   protected final AppBaseService appBaseService;
   protected final AppProductionService appProductionService;
   protected final SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService;
-  protected final ProdProcessLineComputationService prodProcessLineComputationService;
+  protected final SolDetailsProdProcessComputeQtyService solDetailsProdProcessComputeQtyService;
 
   @Inject
   public SolDetailsProdProcessLineMappingServiceImpl(
       AppBaseService appBaseService,
       AppProductionService appProductionService,
       SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService,
-      ProdProcessLineComputationService prodProcessLineComputationService) {
+      SolDetailsProdProcessComputeQtyService solDetailsProdProcessComputeQtyService) {
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.saleOrderLineDetailsPriceService = saleOrderLineDetailsPriceService;
-    this.prodProcessLineComputationService = prodProcessLineComputationService;
+    this.solDetailsProdProcessComputeQtyService = solDetailsProdProcessComputeQtyService;
   }
 
   @Override
@@ -42,9 +39,11 @@ public class SolDetailsProdProcessLineMappingServiceImpl
     Objects.requireNonNull(prodProcessLine);
 
     SaleOrderLineDetails saleOrderLineDetails = getDefaultOperationSolDetails(prodProcessLine);
-    setQty(saleOrderLine, prodProcessLine, saleOrderLineDetails);
+    solDetailsProdProcessComputeQtyService.setQty(
+        saleOrderLine, prodProcessLine, saleOrderLineDetails);
     saleOrderLineDetailsPriceService.computePrices(saleOrderLineDetails, saleOrder, saleOrderLine);
     setUnit(saleOrderLineDetails);
+    setProdProcessLineInfo(saleOrderLineDetails, prodProcessLine);
 
     return saleOrderLineDetails;
   }
@@ -57,33 +56,23 @@ public class SolDetailsProdProcessLineMappingServiceImpl
     return saleOrderLineDetails;
   }
 
-  protected void setQty(
-      SaleOrderLine saleOrderLine,
-      ProdProcessLine prodProcessLine,
-      SaleOrderLineDetails saleOrderLineDetails)
-      throws AxelorException {
-    WorkCenter workCenter = prodProcessLine.getWorkCenter();
-    BigDecimal nbCycle =
-        prodProcessLineComputationService.getNbCycle(
-            prodProcessLine, saleOrderLine.getQtyToProduce());
-    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-    switch (workCenterTypeSelect) {
-      case WorkCenterRepository.WORK_CENTER_TYPE_HUMAN:
-        saleOrderLineDetails.setQty(
-            prodProcessLineComputationService.getHourHumanDuration(prodProcessLine, nbCycle));
-        break;
-      case WorkCenterRepository.WORK_CENTER_TYPE_MACHINE:
-        saleOrderLineDetails.setQty(
-            prodProcessLineComputationService.getHourMachineDuration(prodProcessLine, nbCycle));
-        break;
-      default:
-        saleOrderLineDetails.setQty(
-            prodProcessLineComputationService.getHourTotalDuration(prodProcessLine, nbCycle));
-    }
-  }
-
   protected void setUnit(SaleOrderLineDetails saleOrderLineDetails) {
     AppBase appBase = appBaseService.getAppBase();
     saleOrderLineDetails.setUnit(appBase.getUnitHours());
+  }
+
+  protected void setProdProcessLineInfo(
+      SaleOrderLineDetails saleOrderLineDetails, ProdProcessLine prodProcessLine) {
+    saleOrderLineDetails.setMinCapacityPerCycle(prodProcessLine.getMinCapacityPerCycle());
+    saleOrderLineDetails.setMaxCapacityPerCycle(prodProcessLine.getMaxCapacityPerCycle());
+    saleOrderLineDetails.setDurationPerCycle(prodProcessLine.getDurationPerCycle());
+    saleOrderLineDetails.setSetupDuration(prodProcessLine.getSetupDuration());
+    saleOrderLineDetails.setStartingDuration(prodProcessLine.getStartingDuration());
+    saleOrderLineDetails.setEndingDuration(prodProcessLine.getEndingDuration());
+    saleOrderLineDetails.setHumanDuration(prodProcessLine.getHumanDuration());
+    saleOrderLineDetails.setCostTypeSelect(prodProcessLine.getCostTypeSelect());
+    saleOrderLineDetails.setCostAmount(prodProcessLine.getCostAmount());
+    saleOrderLineDetails.setHrCostTypeSelect(prodProcessLine.getHrCostTypeSelect());
+    saleOrderLineDetails.setHrCostAmount(prodProcessLine.getHrCostAmount());
   }
 }
