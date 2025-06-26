@@ -1,3 +1,0 @@
----
-title: "Contract batch: fixed issue where contracts and invoices were not displayed in batch due to missing batch association."
-module: axelor-contract

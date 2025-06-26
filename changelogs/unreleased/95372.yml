@@ -1,5 +1,0 @@
----
-title: "Sale order: fixed empty sale order lines on sale order report when lines are generated from configurator."
-module: axelor-sale
-developer: |
-  Added `SaleOrderLineComputeService` as an argument for `ConfiguratorSaleOrderDuplicateServiceImpl` constructor.

@@ -1,3 +1,106 @@
+## [8.3.9] (2025-06-26)
+
+### Fixes
+#### Base
+
+* Product category: fixed sequence field display.
+* Partner price list: an exclusive sale/purchase partner price list can now be chosen by one partner.
+* Update dependency to Axelor Studio to 3.4.5.
+* Product: on product copy, purchase price and cost price are now correctly copied.
+* Update Axelor Message to 3.2.3.
+* Product company: computed sale price on change of 'autoUpdateSalePrice' or 'managPriceCoef'.
+
+#### Account
+
+* Account: ensured consistent VAT system display and editability.
+* Invoice/PFP: updated PFP validate status at invoice reconcile with advance payment or credit note.
+* Invoice: supplier invoice exchange rate is now based on origin date.
+* Accounting report: fixed calculation of Original value and Net carrying amount in accounting report 'Summary of gross values and depreciation'.
+* Accounting export / FEC export payroll entry: fixed the issue where only accounted moves were returned.
+* Move line tax: fixed tax line generation when two lines have the same taxes but different VAT system.
+* AccountingBatch: fixed performance issue when taking all accounts in closure/opening batch
+
+#### Bank Payment
+
+* Bank Reconciliation: blocked the reconciliation of multiple lines on a single move line.
+
+#### Business Project
+
+* InvoicingProject: fixed technical error when invoicing project with some lines to invoice at 0.
+
+#### Contract
+
+* Contract batch: fixed issue where contracts and invoices were not displayed in batch due to missing batch association.
+
+#### CRM
+
+* Agency: fixed agencies menu entry French translation.
+
+#### Human Resource
+
+* Leave request: fixed leave request confirm when using the leave reason as negative values.
+
+#### Production
+
+* Sale order: fixed error in log when choosing a product.
+* Sale order lines details: fixed scale error for cost price.
+
+#### Sale
+
+* Partner: fixed wrong computation of total price in 'Sale details by product'.
+* Sale order: trading name is correctly reset when changing company.
+* Sale order: fixed empty sale order lines on sale order report when lines are generated from configurator.
+* Partner: fixed error while opening form view of 'Sale details by product'.
+
+#### Supply Chain
+
+* Sale Order/Purchase Order/Invoice: fixed advance invoice amount on partial invoicing.
+* Interco: manually created purchase order from sale order are now tagged as interco when it should.
+* Sale order: invoicing state is correctly updated when editing lines quantity.
+* Invoice: fixed currency conversion to use the exchange rate based on the orderDate when generating invoice from purchase order.
+
+
+### Developer
+
+#### Account
+
+Added the `InvoiceTermPfpService` in the `ReconcileInvoiceTermComputationServiceImpl` and `ReconcileInvoiceTermComputationBudgetServiceImpl` constructor.
+
+#### Sale
+
+Added `SaleOrderLineComputeService` as an argument for `ConfiguratorSaleOrderDuplicateServiceImpl` constructor.
+
+#### Supply Chain
+
+Added 'AppSupplychainService' and 'IntercoService' to SaleOrderPurchaseServiceImpl and its extensions.
+
+---
+
+SaleOrderInvoiceService#updateInvoicingState has been moved to SaleInvoicingStateService#updateInvoicingState.
+By consequences, SaleInvoicingStateService has been added to SaleOrderServiceSupplychainServiceImpl, WorkflowCancelServiceSupplychainImpl and their respective extensions.
+
+---
+
+The method `getInvoiceLineGeneratorWithComputedTaxPrice` in `InvoiceLineOrderService` has changed its signature from 
+
+```java
+InvoiceLineGenerator getInvoiceLineGeneratorWithComputedTaxPrice(
+    Invoice invoice,
+    Product invoicingProduct,
+    BigDecimal percentToInvoice,
+    OrderLineTax orderLineTax);
+```
+to
+```java
+    InvoiceLineGeneratorSupplyChain getInvoiceLineGeneratorWithComputedTaxPrice(
+    Invoice invoice,
+    Product invoicingProduct,
+    BigDecimal percentToInvoice,
+    OrderLineTax orderLineTax,
+    SaleOrderLine saleOrderLine,
+    PurchaseOrderLine purchaseOrderLine);
+```
+
 ## [8.3.8] (2025-06-12)
 
 ### Fixes
@@ -682,6 +785,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.9]: https://github.com/axelor/axelor-open-suite/compare/v8.3.8...v8.3.9
 [8.3.8]: https://github.com/axelor/axelor-open-suite/compare/v8.3.7...v8.3.8
 [8.3.7]: https://github.com/axelor/axelor-open-suite/compare/v8.3.6...v8.3.7
 [8.3.6]: https://github.com/axelor/axelor-open-suite/compare/v8.3.5...v8.3.6
