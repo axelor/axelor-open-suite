@@ -6,8 +6,3 @@ developer: |
   
   The methods `getUserActiveCompanyLogo` and `getUserActiveCompanyLogoLink` expect now a string argument with the theme mode (light or dark).
   When this method is called in the axelor-config property `context.appLogo`, AOP automatically provides the expected query-parameter so there is nothing to change.
-  
-  The service `UserService` and its implementation `UserServiceImpl` have been refactored to follow good practices:
-    * Deprecate `UserServiceImpl.DEFAULT_LOCALE` constant which was unused.
-    * Introduce a constructor `UserServiceImpl` to inject services. Affects child classes `UserServiceAccountImpl` and `EmployeeServiceImpl` too.
-    * Remove unthrowable exceptions from method signatures.
