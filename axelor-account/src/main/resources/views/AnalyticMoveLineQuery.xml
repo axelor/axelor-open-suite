@@ -51,7 +51,7 @@
           readonlyIf="!searchAnalyticMoveLineQueryParameterList.length" colSpan="12"
           showTitle="false">
           <editor x-show-on-new="false" itemSpan="4"
-            onNew="action-analytic-move-line-query-parameter-group-onnew">
+            onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
               form-view="analytic-axis-form"
               onSelect="action-analytic-move-line-query-method-reverse-query-axis-domain"
