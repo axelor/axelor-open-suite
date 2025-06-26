@@ -161,10 +161,6 @@ public class DataBackupServiceImpl implements DataBackupService {
     runner.run(job);
   }
 
-  public boolean sequencesOrMrpLineTypesExist() {
-    return restoreService.sequencesOrMrpLineTypesExist();
-  }
-
   @Transactional
   protected DataBackup setStatus(DataBackup dataBackup) {
     DataBackup obj = dataBackupRepository.find(dataBackup.getId());
