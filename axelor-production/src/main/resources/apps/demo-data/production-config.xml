@@ -5,6 +5,18 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check-message="Invalid codeSelect :codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
       if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
@@ -13,46 +25,171 @@
   </input>
 
   <input file="production_machineType.csv" separator=";"
-    type="com.axelor.apps.production.db.MachineType"/>
+    type="com.axelor.apps.production.db.MachineType">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="production_machine.csv" separator=";"
-    type="com.axelor.apps.production.db.Machine"/>
+    type="com.axelor.apps.production.db.Machine">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="production_workCenter.csv" separator=";"
-    type="com.axelor.apps.production.db.WorkCenter"/>
+    type="com.axelor.apps.production.db.WorkCenter">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="workCenterTypeSelect" to="workCenterTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iproduction.work.center.type.select', workCenterTypeSelect, false)"
+      check-message="Invalid workCenterTypeSelect :workCenterTypeSelect"/>
+    <bind column="costTypeSelect" to="costTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iproduction.work.center.cost.type.select', costTypeSelect, false)"
+      check-message="Invalid costTypeSelect :costTypeSelect"/>
+    <bind column="hrCostTypeSelect" to="hrCostTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iproduction.work.center.cost.type.select', hrCostTypeSelect, false)"
+      check-message="Invalid hrCostTypeSelect :hrCostTypeSelect"/>
+  </input>
 
   <input file="production_prodProcess.csv" separator=";"
     type="com.axelor.apps.production.db.ProdProcess">
-    <bind to="name" column="name"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.prod.process.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="stockMoveRealizeOrderSelect" to="stockMoveRealizeOrderSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.manuf.order.stock.move.realize.order.select', stockMoveRealizeOrderSelect, false)"
+      check-message="Invalid stockMoveRealizeOrderSelect :stockMoveRealizeOrderSelect"/>
     <bind to="fullName" column="name"/>
   </input>
 
   <input file="production_prodProcessLine.csv" separator=";"
-    type="com.axelor.apps.production.db.ProdProcessLine"/>
+    type="com.axelor.apps.production.db.ProdProcessLine">
+    <bind column="workCenterTypeSelect" to="workCenterTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iproduction.work.center.type.select', workCenterTypeSelect, false)"
+      check-message="Invalid workCenterTypeSelect :workCenterTypeSelect"/>
+    <bind column="costTypeSelect" to="costTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iproduction.work.center.cost.type.select', costTypeSelect, false)"
+      check-message="Invalid costTypeSelect :costTypeSelect"/>
+    <bind column="hrCostTypeSelect" to="hrCostTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iproduction.work.center.cost.type.select', hrCostTypeSelect, false)"
+      check-message="Invalid hrCostTypeSelect :hrCostTypeSelect"/>
+  </input>
 
   <input file="production_billOfMaterial.csv" separator=";"
     type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportBillOfMaterial:importBillOfMaterial">
+    <bind column="product_importId" to="product" search="self.importId = :product_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Product', 'importId', product_importId)"
+      check-message="Product with importId :product_importId doesn't exist"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.bill.of.material.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
   </input>
 
   <input file="production_billOfMaterialLine.csv" separator=";"
     type="com.axelor.apps.production.db.BillOfMaterialLine" search="self.importId = :importId">
+    <bind column="product_importId" to="product" search="self.importId = :product_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Product', 'importId', product_importId)"
+      check-message="Product with importId :product_importId doesn't exist"/>
   </input>
 
-
-
   <input file="production_productionConfig.csv" separator=";"
-    type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.production.db.ProductionConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+    <bind column="stockMoveRealizeOrderSelect" to="stockMoveRealizeOrderSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.manuf.order.stock.move.realize.order.select', stockMoveRealizeOrderSelect, false)"
+      check-message="Invalid stockMoveRealizeOrderSelect :stockMoveRealizeOrderSelect"/>
+    <bind column="capacity" to="capacity"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.config.capacity.select', capacity, false)"
+      check-message="Invalid capacity :capacity"/>
+    <bind column="scheduling" to="scheduling"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.config.scheduling.select', scheduling, false)"
+      check-message="Invalid scheduling :scheduling"/>
+  </input>
+
   <input file="stock_stockConfig.csv" separator=";"
-    type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.stock.db.StockConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+    <bind column="stockValuationTypeSelect" to="stockValuationTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('stock.stock.location.value.type', stockValuationTypeSelect, false)"
+      check-message="Invalid stockValuationTypeSelect :stockValuationTypeSelect"/>
+    <bind column="inventoryValuationTypeSelect" to="inventoryValuationTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('stock.stock.location.value.type', inventoryValuationTypeSelect, false)"
+      check-message="Invalid inventoryValuationTypeSelect :inventoryValuationTypeSelect"/>
+  </input>
 
   <input file="production_costSheetGroup.csv" separator=";"
-    type="com.axelor.apps.production.db.CostSheetGroup" search="self.importId = :importId"/>
+    type="com.axelor.apps.production.db.CostSheetGroup" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="costTypeSelect" to="costTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.cost.sheet.group.cost.type.select', costTypeSelect, false)"
+      check-message="Invalid costTypeSelect :costTypeSelect"/>
+    <bind column="rateTypeSelect" to="rateTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.cost.sheet.group.rate.type.select', rateTypeSelect, false)"
+      check-message="Invalid rateTypeSelect :rateTypeSelect"/>
+  </input>
 
   <!-- Update default BOM -->
 
   <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product"
     search="self.importId = :importId" update="true">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Product', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="serialNumber" to="serialNumber"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Product', 'importId', importId, 'serialNumber', serialNumber)"
+      check-message="Serial number must be unique"/>
+    <bind column="saleSupplySelect" to="saleSupplySelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('product.sale.supply.select', saleSupplySelect, false)"
+      check-message="Invalid saleSupplySelect :saleSupplySelect"/>
+    <bind column="productTypeSelect" to="productTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('product.product.type.select', productTypeSelect, false)"
+      check-message="Invalid productTypeSelect :productTypeSelect"/>
+    <bind column="procurementMethodSelect" to="procurementMethodSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('product.procurement.method.select', procurementMethodSelect, false)"
+      check-message="Invalid procurementMethodSelect :procurementMethodSelect"/>
+    <bind column="productSubTypeSelect" to="productSubTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('product.sub.type.product.select', productSubTypeSelect, false)"
+      check-message="Invalid productSubTypeSelect :productSubTypeSelect"/>
+    <bind column="inventoryTypeSelect" to="inventoryTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('product.inventory.type.select', inventoryTypeSelect, false)"
+      check-message="Invalid inventoryTypeSelect :inventoryTypeSelect"/>
+    <bind column="versionSelect" to="versionSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.product.version.select', versionSelect, false)"
+      check-message="Invalid versionSelect :versionSelect"/>
+    <bind column="costTypeSelect" to="costTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.product.cost.type.select', costTypeSelect, false)"
+      check-message="Invalid costTypeSelect :costTypeSelect"/>
+    <bind column="realOrEstimatedPriceSelect" to="realOrEstimatedPriceSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.product.price.method.select', realOrEstimatedPriceSelect, false)"
+      check-message="Invalid realOrEstimatedPriceSelect :realOrEstimatedPriceSelect"/>
+    <bind column="manufOrderCompValuMethodSelect" to="manufOrderCompValuMethodSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.product.components.valuation.select', manufOrderCompValuMethodSelect, false)"
+      check-message="Invalid manufOrderCompValuMethodSelect :manufOrderCompValuMethodSelect"/>
+    <bind column="bomCompValuMethodSelect" to="bomCompValuMethodSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.product.components.valuation.select', bomCompValuMethodSelect, false)"
+      check-message="Invalid bomCompValuMethodSelect :bomCompValuMethodSelect"/>
     <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
       column="startDate"/>
     <bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
@@ -60,13 +197,27 @@
   </input>
 
   <input file="studio_appProduction.csv" separator=";"
-    type="com.axelor.studio.db.AppProduction" search="self.app.code = :code" update="true"/>
+    type="com.axelor.studio.db.AppProduction" search="self.app.code = :code" update="true">
+    <bind column="mOFilterOnStockDetailStatusSelect" to="mOFilterOnStockDetailStatusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.manuf.order.status.select', mOFilterOnStockDetailStatusSelect, false)"
+      check-message="Invalid mOFilterOnStockDetailStatusSelect :mOFilterOnStockDetailStatusSelect"/>
+    <bind column="operationContinuitySelect" to="operationContinuitySelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.manuf.operation.continuity.select', operationContinuitySelect, false)"
+      check-message="Invalid operationContinuitySelect :operationContinuitySelect"/>
+  </input>
 
   <input file="production_oneLine.csv" type="com.axelor.apps.sale.db.ConfiguratorCreator"
-    call="com.axelor.csv.script.ImportConfiguratorCreator:importConfiguratorCreator"/>
+    call="com.axelor.csv.script.ImportConfiguratorCreator:importConfiguratorCreator">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="production_mpsWeeklySchedule.csv" separator=";"
     type="com.axelor.apps.production.db.MpsWeeklySchedule" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.production.db.MpsWeeklySchedule', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
   </input>
 
 </csv-inputs>

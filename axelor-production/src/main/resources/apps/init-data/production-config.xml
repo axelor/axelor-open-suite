@@ -5,6 +5,18 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check-message="Invalid codeSelect :codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -15,8 +27,26 @@
 
   <input file="supplychain_mrpLineType.csv" separator=";"
     type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId">
+    <bind column="elementSelect" to="elementSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.element.select', elementSelect, false)"
+      check-message="Invalid elementSelect :elementSelect"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="includeOneOffSalesSelect" to="includeOneOffSalesSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.off.of.sales.select', includeOneOffSalesSelect, false)"
+      check-message="Invalid includeOneOffSalesSelect :includeOneOffSalesSelect"/>
+    <bind column="lateSalesSelect" to="lateSalesSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.type.late.sales.select', lateSalesSelect, false)"
+      check-message="Invalid lateSalesSelect :lateSalesSelect"/>
+    <bind column="supplyMethodForManufacturingOrdersSelect"
+      to="supplyMethodForManufacturingOrdersSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.supplychain.mrp.line.type.supply.method.for.manufacturing.orders.select', supplyMethodForManufacturingOrdersSelect, false)"
+      check-message="Invalid supplyMethodForManufacturingOrdersSelect :supplyMethodForManufacturingOrdersSelect"/>
     <bind to="applicationFieldSelect" column="applicationFieldSelect"
-      eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"/>
+      eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.type.application.field.select', applicationFieldSelect?.empty ? 1 : applicationFieldSelect, false)"
+      check-message="Invalid applicationFieldSelect :applicationFieldSelect"/>
   </input>
 
 </csv-inputs>
