@@ -287,7 +287,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
     if (purchaseOrder != null) {
-      computeCompanyTotal(invoiceLine, Optional.of(purchaseOrder.getOrderDate()).orElse(today));
+      computeCompanyTotal(
+          invoiceLine, Optional.ofNullable(purchaseOrder.getOrderDate()).orElse(today));
     }
 
     return invoiceLine;

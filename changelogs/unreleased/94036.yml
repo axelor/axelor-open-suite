@@ -1,3 +1,0 @@
----
-title: "AccountingBatch: fixed performance issue when taking all accounts in closure/opening batch"
-module: axelor-account
