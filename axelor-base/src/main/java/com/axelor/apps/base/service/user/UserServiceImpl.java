@@ -173,11 +173,6 @@ public class UserServiceImpl implements UserService {
     return company.getId();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team
-   */
   @Override
   public MetaFile getUserActiveCompanyLogo(String mode) {
     final Company company = getUserActiveCompany();
