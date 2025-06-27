@@ -5,6 +5,18 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check-message="Invalid codeSelect :codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence','importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -17,6 +29,22 @@
     type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId"/>
 
   <input file="quality_controlEntryPlanLineMetaJsonField.csv" separator=";"
-    type="com.axelor.meta.db.MetaJsonField" search="self.importId = :importId"/>
+    type="com.axelor.meta.db.MetaJsonField" search="self.importId = :importId">
+    <bind to="name" column="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind to="type" column="type"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('json.field.type', type, true)"
+      check-message="Invalid type :type"/>
+    <bind to="model" column="model"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(model)"
+      check-message="Model must not be null"/>
+    <bind to="modelField" column="modelField"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(modelField)"
+      check-message="Model field must not be null"/>
+    <bind to="trackEvent" column="trackEvent"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('json.field.track.event', trackEvent, false)"
+      check-message="Invalid trackEvent :trackEvent"/>
+  </input>
 
 </csv-inputs>
