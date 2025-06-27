@@ -64,6 +64,7 @@
     <unique-constraint columns="code,company"/>
 
     <finder-method name="findByAccountType" using="accountType" all="true"/>
+    <finder-method name="findByCodeAndCompany" using="code,company"/>
 
     <extra-code><![CDATA[
 

@@ -8,6 +8,10 @@
     <toolbar>
       <button name="massUpdateBtn" title="Mass update status"
         onClick="action-mass-update-status-wizard"/>
+      <button name="copyAccountsBtn"
+        title="Copy the selected accounts in the the other companies"
+        onClick="action-wizard-validate-accounts,action-account-view-popup-copy-accounts"
+        if="__repo__(Company).all().count() &gt; 1"/>
     </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
@@ -50,6 +54,11 @@
     model="com.axelor.apps.account.db.Account" width="large" onNew="action-group-account-onnew"
     onLoad="action-group-account-account-onload" onSave="action-account-group-onsave"
     canDelete="!isRegulatoryAccount">
+    <toolbar>
+      <button name="copyAccountBtn" title="Copy the account in the other companies"
+        onClick="save,action-account-view-popup-copy-account"
+        if="__repo__(Company).all().count() &gt; 1"/>
+    </toolbar>
     <panel name="statusPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="8"/>
@@ -251,6 +260,33 @@
         type="date"/>
       <button name="reconcileMovesBtn" title="Make entries letterable"
         onClick="action-account-method-wizard-reconcile-line"/>
+    </panel>
+  </form>
+
+  <form name="mass-account-copy-wizard-form"
+    title="Copy the selected accounts in the the other companies" model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <field name="$companySet" title="Select companies" type="many-to-many"
+        target="com.axelor.apps.base.db.Company" colSpan="12" grid-view="company-grid"
+        form-view="company-form" canNew="false" canEdit="false"
+        onSelect="action-account-attrs-wizard-comapny-set-domain"/>
+      <button name="copyAccountsBtn"
+        title="Copy the selected accounts in the the other companies"
+        onClick="action-account-method-copy-accounts"
+        readonlyIf="$companySet == null || $companySet.length == 0"/>
+    </panel>
+  </form>
+
+  <form name="account-copy-wizard-form" title="Copy the account in the other companies"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="mainPanel">
+      <field name="$companySet" title="Select companies" type="many-to-many"
+        target="com.axelor.apps.base.db.Company" colSpan="12" grid-view="company-grid"
+        form-view="company-form" canNew="false" canEdit="false"
+        onSelect="action-account-attrs-wizard-comapny-set-domain"/>
+      <button name="copyAccountBtn" title="Copy the account in the other companies"
+        onClick="action-account-method-copy-account"
+        readonlyIf="$companySet == null || $companySet.length == 0"/>
     </panel>
   </form>
 
@@ -565,6 +601,46 @@
   <action-method name="action-account-method-show-origin-analytic-template">
     <call class="com.axelor.apps.account.web.AccountController"
       method="originAnalyticDistTemplate"/>
+  </action-method>
+
+  <action-view name="action-account-view-popup-copy-accounts"
+    title="Copy the selected accounts in the the other companies" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="mass-account-copy-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_ids" expr="eval: _ids"/>
+    <context name="_company"
+      expr="eval: __repo__(Account).all().filter('self.id IN ?1', _ids).fetchOne().company"/>
+  </action-view>
+
+  <action-view name="action-account-view-popup-copy-account"
+    title="Copy the account in the other companies" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="account-copy-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_company" expr="eval: company"/>
+  </action-view>
+
+  <action-attrs name="action-account-attrs-wizard-comapny-set-domain">
+    <attribute name="domain" for="$companySet"
+      expr="eval: &quot; self.id != ${_company?.id} &quot;"/>
+  </action-attrs>
+
+  <action-validate name="action-wizard-validate-accounts">
+    <error message="Please select some accounts of the same company"
+      if="!_ids || __repo__(Account).all().filter('self.id IN ?1', _ids).fetch().collect{it.company?.id}.unique().size() &gt; 1"/>
+  </action-validate>
+
+  <action-method name="action-account-method-copy-accounts">
+    <call class="com.axelor.apps.account.web.AccountController" method="copyAccounts"/>
+  </action-method>
+
+  <action-method name="action-account-method-copy-account">
+    <call class="com.axelor.apps.account.web.AccountController" method="copyAccount"/>
   </action-method>
 
 </object-views>

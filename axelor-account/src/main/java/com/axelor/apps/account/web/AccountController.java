@@ -37,6 +37,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -51,9 +52,12 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MassUpdateHelper;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AccountController {
@@ -362,5 +366,48 @@ public class AccountController {
         }
       }
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void copyAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (CollectionUtils.isEmpty(idList)) {
+        return;
+      }
+      List<Account> accountList =
+          idList.stream()
+              .map(id -> Beans.get(AccountRepository.class).find(id.longValue()))
+              .collect(Collectors.toList());
+      Beans.get(AccountService.class)
+          .copyAccounts(accountList, getCompanyList(request.getContext()));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void copyAccount(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = Long.valueOf(request.getContext().get("_id").toString());
+      Account account = Beans.get(AccountRepository.class).find(id);
+      Beans.get(AccountService.class).copyAccount(account, getCompanyList(request.getContext()));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected List<Company> getCompanyList(Context context) {
+    List<Map<String, Object>> companySet = (List<Map<String, Object>>) context.get("companySet");
+    if (ObjectUtils.isEmpty(companySet)) {
+      return Collections.emptyList();
+    }
+    return companySet.stream()
+        .map(
+            map ->
+                Beans.get(CompanyRepository.class).find(Long.parseLong(map.get("id").toString())))
+        .collect(Collectors.toList());
   }
 }
