@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -5070,14 +5070,15 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">
-                                                if (row["status_select"] == "1") {
+                                            <value type="javascript">if (row["status_select"] == "1") {
                                                     'Invoice.draftInvoiceNo'
                                                 } else if(row["status_select"] == "2") {
                                                     if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.purchaseInvoiceAdvPaymentNo'
                                                     } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.invoiceAdvPaymentNo'
+                                                    }else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                        'Invoice.invoiceCreditAdvPaymentNo'
                                                     } else {
                                                         'Invoice.draftInvoiceNo'
                                                     }
@@ -5721,14 +5722,15 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">
-                                        if (row["status_select"] == "1") {
+                                    <value type="javascript">if (row["status_select"] == "1") {
                                             'Invoice.draftInvoiceNo'
                                         } else if(row["status_select"] == "2") {
                                             if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
                                             } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceAdvPaymentNo'
+                                            } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
                                                 'Invoice.draftInvoiceNo'
                                             }
@@ -6420,6 +6422,8 @@ row["message_key"]
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
                                             } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceAdvPaymentNo'
+                                            } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
                                                 'Invoice.draftInvoiceNo'
                                             }
