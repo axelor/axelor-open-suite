@@ -829,8 +829,8 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_project" expr="eval:__this__.project"/>
-    <context name="_parentTask" expr="eval:__this__"/>
+    <context name="_project" expr="eval:__self__?.project"/>
+    <context name="_parentTask" expr="eval:__self__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>
