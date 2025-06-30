@@ -55,7 +55,8 @@
         <spacer colSpan="6"/>
         <field name="qty" min="0"
           onChange="action-sale-order-line-details-method-qty-onchange" colSpan="4"
-          showIf="typeSelect &amp;&amp; typeSelect == 1"/>
+          showIf="typeSelect &amp;&amp; (typeSelect == 1 || typeSelect == 3)"
+          readonlyIf="typeSelect == 3"/>
         <spacer colSpan="8"/>
         <field name="costPrice" colSpan="6"
           onChange="action-sale-order-line-details-method-compute-price"
@@ -82,15 +83,19 @@
         <panel name="machineTimesPanel" title="Machine times" colSpan="12"
           showIf="prodProcessLine.workCenter.workCenterTypeSelect == 2 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
           <field name="durationPerCycle" colSpan="4" widget="duration" x-big="true"
-            x-seconds="true"/>
+            x-seconds="true" onChange="action-sale-order-line-details-method-compute-total-duration"/>
           <field name="setupDuration" widget="duration"
             help="Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle."
-            colSpan="6" x-big="true" x-seconds="true"/>
+            colSpan="6" x-big="true" x-seconds="true"
+            onChange="action-sale-order-line-details-method-compute-total-duration"/>
           <field name="startingDuration" widget="duration"
             help="The time the machine starts before it can be used." colSpan="4" x-big="true"
-            x-seconds="true"/>
+            x-seconds="true" onChange="action-sale-order-line-details-method-compute-total-duration"/>
           <field name="endingDuration" widget="duration"
-            help="Ending duration of the machine." colSpan="4" x-big="true" x-seconds="true"/>
+            help="Ending duration of the machine." colSpan="4" x-big="true" x-seconds="true"
+            onChange="action-sale-order-line-details-method-compute-total-duration"/>
+          <field name="$totalDuration" title="Total duration in hours" type="decimal"
+            readonly="true"/>
         </panel>
         <panel name="humanTimesPanel" title="Human times"
           showIf="prodProcessLine.workCenter.workCenterTypeSelect == 1 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
@@ -124,6 +129,7 @@
 
   <action-group name="action-sale-order-line-details-group-onload">
     <action name="action-sale-order-line-details-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-details-method-compute-total-duration"/>
   </action-group>
 
   <action-attrs name="action-sale-order-line-details-attrs-scale-and-precision">
@@ -188,6 +194,11 @@
   <action-method name="action-sale-order-line-details-method-qty-onchange">
     <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
       method="qtyOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-details-method-compute-total-duration">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="computeTotalDuration"/>
   </action-method>
 
 </object-views>

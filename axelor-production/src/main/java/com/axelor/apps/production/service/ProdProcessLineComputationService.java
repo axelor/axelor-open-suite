@@ -46,6 +46,9 @@ public interface ProdProcessLineComputationService {
   BigDecimal getMachineInstallingDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException;
 
+  BigDecimal computeMachineInstallingDuration(
+      BigDecimal nbCycles, long startingDuration, long endingDuration, long setupDuration);
+
   /**
    * Convert the result of {@link ProdProcessLineComputationService#getMachineDuration} in hour. The
    * result of this method should be scaled before being saved.
@@ -66,6 +69,9 @@ public interface ProdProcessLineComputationService {
    */
   BigDecimal getMachineDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException;
+
+  BigDecimal computeMachineDuration(
+      BigDecimal nbCycle, long durationPerCycle, BigDecimal machineInstallingDuration);
 
   /**
    * Compute the total human duration for a given nbCycles
