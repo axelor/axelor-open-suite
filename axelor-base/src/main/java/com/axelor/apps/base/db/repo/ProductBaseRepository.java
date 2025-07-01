@@ -96,6 +96,7 @@ public class ProductBaseRepository extends ProductRepository {
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
     Beans.get(ProductService.class).copyProduct(product, copy);
+    Beans.get(ProductService.class).copyProductCompanies(product.getProductCompanyList(), copy);
     return copy;
   }
 
