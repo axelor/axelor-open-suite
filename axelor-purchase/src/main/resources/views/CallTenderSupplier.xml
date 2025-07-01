@@ -10,14 +10,21 @@
   </grid>
 
   <form name="call-tender-supplier-form" model="com.axelor.apps.purchase.db.CallTenderSupplier"
-    title="Supplier" width="large">
+    title="Supplier" width="large" onLoad="action-call-tender-supplier-attrs-set-contact-domain">
     <panel name="mainPanel" showTitle="false">
       <field name="supplierPartner" domain="self.isSupplier IS true" form-view="partner-form"
-        grid-view="partner-grid"/>
+        grid-view="partner-grid" onChange="action-call-tender-supplier-attrs-set-contact-domain"/>
     </panel>
     <panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
-      domain="self.isContact = 'true'" form-view="partner-contact-form"
-      grid-view="partner-contact-grid" canNew="false" canSelect="true"/>
+      form-view="partner-contact-form" grid-view="partner-contact-grid" canNew="false"
+      canSelect="true"/>
   </form>
+
+  <action-attrs name="action-call-tender-supplier-attrs-set-contact-domain">
+    <attribute for="contactPartnerSet" name="domain" expr="eval: &quot;self = null&quot;"/>
+    <attribute for="contactPartnerSet" name="domain"
+      expr="eval: &quot;self.isContact = 'true' and self.id in (${supplierPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"
+      if="supplierPartner?.contactPartnerSet &amp;&amp; !supplierPartner?.contactPartnerSet.isEmpty()"/>
+  </action-attrs>
 
 </object-views>
