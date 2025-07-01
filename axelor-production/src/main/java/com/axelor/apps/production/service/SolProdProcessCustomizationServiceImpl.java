@@ -89,10 +89,10 @@ public class SolProdProcessCustomizationServiceImpl implements SolProdProcessCus
         if (saleOrderLineDetails.getProdProcessLine() != null) {
           updateProdProcessLineFromSolDetails(
               saleOrderLineDetails, saleOrderLineDetails.getProdProcessLine());
-          saleOrderLineDetailsPriceService.computePrices(
-              saleOrderLineDetails, saleOrder, saleOrderLine);
           solDetailsProdProcessComputeQtyService.setQty(
               saleOrderLine, saleOrderLineDetails.getProdProcessLine(), saleOrderLineDetails);
+          saleOrderLineDetailsPriceService.computePrices(
+              saleOrderLineDetails, saleOrder, saleOrderLine);
         }
       }
     }
@@ -112,10 +112,10 @@ public class SolProdProcessCustomizationServiceImpl implements SolProdProcessCus
         ProdProcessLine newProdProcessLine =
             createProdProcessLineFromSolDetails(saleOrderLineDetails, personalizedProdProcess);
         saleOrderLineDetails.setProdProcessLine(newProdProcessLine);
-        saleOrderLineDetailsPriceService.computePrices(
-            saleOrderLineDetails, saleOrder, saleOrderLine);
         solDetailsProdProcessComputeQtyService.setQty(
             saleOrderLine, saleOrderLineDetails.getProdProcessLine(), saleOrderLineDetails);
+        saleOrderLineDetailsPriceService.computePrices(
+            saleOrderLineDetails, saleOrder, saleOrderLine);
       }
     }
   }
