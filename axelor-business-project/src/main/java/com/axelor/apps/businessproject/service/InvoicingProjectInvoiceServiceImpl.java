@@ -48,12 +48,14 @@ public class InvoicingProjectInvoiceServiceImpl implements InvoicingProjectInvoi
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 
-            InvoiceLine invoiceLine = this.createInvoiceLine();
-            invoiceLine.setProject(invoiceLine.getProject());
-            List<InvoiceLine> invoiceLines = new ArrayList<>();
-            invoiceLines.add(invoiceLine);
+            InvoiceLine invLine = this.createInvoiceLine();
+            invLine.setProject(invoiceLine.getProject());
+            invLine.setProjectTask(invoiceLine.getProjectTask());
 
-            return invoiceLines;
+            List<InvoiceLine> invoiceLineList = new ArrayList<>();
+            invoiceLineList.add(invLine);
+
+            return invoiceLineList;
           }
         };
 

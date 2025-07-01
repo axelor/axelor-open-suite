@@ -194,7 +194,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-    purchaseOrderLine.setInvoiced(true);
   }
 
   @Override
@@ -442,7 +441,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             this.createInvoiceLine(
                 invoice, purchaseOrderLine, qtyToInvoiceMap.get(purchaseOrderLine.getId()));
         invoiceLineList.addAll(invoiceLines);
-        purchaseOrderLine.setInvoiced(true);
       }
     }
 

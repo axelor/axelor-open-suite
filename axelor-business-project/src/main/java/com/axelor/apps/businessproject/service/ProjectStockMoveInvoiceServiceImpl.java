@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -96,15 +97,23 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       return invoiceLine;
     }
 
+    Project project = stockMoveLine.getProject();
+    ProjectTask projectTask = stockMoveLine.getProjectTask();
     SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
-    if (saleOrderLine != null) {
-      invoiceLine.setProject(saleOrderLine.getProject());
+    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
+
+    if (project == null) {
+      if (saleOrderLine != null) {
+        project = saleOrderLine.getProject();
+      }
+
+      if (purchaseOrderLine != null) {
+        project = purchaseOrderLine.getProject();
+      }
     }
 
-    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
-    if (purchaseOrderLine != null) {
-      invoiceLine.setProject(purchaseOrderLine.getProject());
-    }
+    invoiceLine.setProject(project);
+    invoiceLine.setProjectTask(projectTask);
 
     return invoiceLine;
   }
