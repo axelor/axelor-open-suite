@@ -30,6 +30,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.ZoneId;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class BaseServerStartListener {
 
   private static final String TIMEZONE_SELECT = "company.timezone.select";
 
-  public void startUpEventListener(@Observes StartupEvent startupEvent) {
+  public void startUpEventListener(@Observes @Priority(value = 10) StartupEvent startupEvent) {
     // Add all timezones
     addTimezoneSelections();
   }
