@@ -9,7 +9,7 @@
 
     <string name="callTenderSeq" title="Sequence"/>
     <string name="name" title="Call tender name"/>
-    <string name="description" title="Description"/>
+    <string name="description" title="Description" large="true"/>
     <one-to-many name="callTenderNeedList"
       ref="com.axelor.apps.purchase.db.CallTenderNeed" title="Product needs" mappedBy="callTender"/>
     <one-to-many name="callTenderSupplierList"
