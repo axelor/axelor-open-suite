@@ -75,8 +75,7 @@ public class MassEntryCheckServiceImpl implements MassEntryCheckService {
             .getMoveLineMassEntryList()
             .remove(parentMove.getMoveLineMassEntryList().size() - 1);
         Move workingMove =
-            massEntryMoveCreateService.createMoveFromMassEntryList(
-                parentMove.getId(), temporaryMoveNumber);
+            massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
 
         generatedTaxAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
       }
