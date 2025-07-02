@@ -29,10 +29,12 @@ import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
 
 public class SaleOrderLineBudgetObserver {
 
-  void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) throws AxelorException {
+  void onSaleOrderLineOnNew(@Observes @Priority(value = 50) SaleOrderLineViewOnNew event)
+      throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewBudgetService.class).checkBudget(saleOrder));

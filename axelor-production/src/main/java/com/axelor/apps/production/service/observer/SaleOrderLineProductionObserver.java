@@ -30,9 +30,10 @@ import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
 
 public class SaleOrderLineProductionObserver {
-  void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) {
+  void onSaleOrderLineOnNew(@Observes @Priority(value = 40) SaleOrderLineViewOnNew event) {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
