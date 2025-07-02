@@ -40,7 +40,8 @@ public class SaleOrderLineProductionObserver {
         Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 40) SaleOrderLineViewOnLoad event)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(

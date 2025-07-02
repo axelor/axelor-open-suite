@@ -40,7 +40,8 @@ public class SaleOrderLineBudgetObserver {
     saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewBudgetService.class).checkBudget(saleOrder));
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 50) SaleOrderLineViewOnLoad event)
+      throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewBudgetService.class).checkBudget(saleOrder));

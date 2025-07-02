@@ -32,7 +32,7 @@ public class SaleOrderLineProjectObserver {
     saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewProjectService.class).getProjectTitle());
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) {
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 30) SaleOrderLineViewOnLoad event) {
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewProjectService.class).getProjectTitle());
   }

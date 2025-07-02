@@ -43,7 +43,8 @@ public class SaleOrderLineSupplychainObserver {
             .getSupplychainOnNewAttrs(saleOrderLine, saleOrder));
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 20) SaleOrderLineViewOnLoad event)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
