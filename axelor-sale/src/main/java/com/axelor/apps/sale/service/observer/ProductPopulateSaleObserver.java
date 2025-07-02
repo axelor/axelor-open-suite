@@ -23,10 +23,11 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
 
 public class ProductPopulateSaleObserver {
 
-  void populate(@Observes ProductPopulate event) {
+  void populate(@Observes @Priority(value = 10) ProductPopulate event) {
     Map<String, Object> json = event.getJson();
     json.put(
         "$isCartManagementEnabled",
