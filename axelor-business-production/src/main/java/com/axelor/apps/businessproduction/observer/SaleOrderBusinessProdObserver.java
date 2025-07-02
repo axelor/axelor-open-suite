@@ -23,10 +23,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
 
 public class SaleOrderBusinessProdObserver {
 
-  public void businessProdConfirmSaleOrder(@Observes SaleOrderConfirm event) {
+  public void businessProdConfirmSaleOrder(@Observes @Priority(value = 40) SaleOrderConfirm event) {
     SaleOrder saleOrder = event.getSaleOrder();
     Beans.get(SolDetailsBusinessProductionService.class).copySolDetailsList(saleOrder);
   }

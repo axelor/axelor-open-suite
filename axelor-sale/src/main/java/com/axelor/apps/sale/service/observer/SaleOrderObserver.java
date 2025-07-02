@@ -26,10 +26,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
 
 public class SaleOrderObserver {
 
-  public void saleConfirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
+  public void saleConfirmSaleOrder(@Observes @Priority(value = 10) SaleOrderConfirm event)
+      throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     Beans.get(SaleOrderConfirmService.class).confirmProcess(saleOrder);
   }
