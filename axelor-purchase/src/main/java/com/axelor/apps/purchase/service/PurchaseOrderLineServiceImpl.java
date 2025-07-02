@@ -577,13 +577,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       productMultipleQties = supplierCatalog.getProductMultipleQtyList();
     }
 
-    if (CollectionUtils.isNotEmpty(productMultipleQties)) {
-      productMultipleQtyService.checkMultipleQty(
-          purchaseOrderLine.getQty(),
-          productMultipleQties,
-          product.getAllowToForcePurchaseQty(),
-          response);
-    }
+    productMultipleQtyService.checkMultipleQty(
+        purchaseOrderLine.getQty(),
+        productMultipleQties,
+        product.getAllowToForcePurchaseQty(),
+        response);
   }
 
   @Override
