@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal"
     canArchive="false">
@@ -14,7 +14,7 @@
     <field name="journalType"/>
     <field name="exportCode"/>
     <field name="notExportOk"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="company" form-view="company-form" grid-view="company-grid"/>
     <button name="inputEntryBtn" title="Input entry"
       onClick="action-journal-view-input-entry" icon="file-plus" readonlyIf="statusSelect != 1"/>

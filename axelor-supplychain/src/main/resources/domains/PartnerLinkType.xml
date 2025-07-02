@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,9 +9,9 @@
     <extra-code><![CDATA[
 
 	    // TYPE SELECT
-	    public static final String TYPE_SELECT_INVOICED_BY = "Invoiced by";
+	    public static final String TYPE_SELECT_INVOICED_TO = "Invoiced to";
 	    public static final String TYPE_SELECT_SALE_ORDERED_BY = "Ordered by";
-	    public static final String TYPE_SELECT_DELIVERED_BY = "Delivered by";
+	    public static final String TYPE_SELECT_DELIVERED_TO = "Delivered to";
 
 	]]></extra-code>
   </entity>

@@ -208,13 +208,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
       throws AxelorException {
-
+    LocalDate date;
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      date = invoice.getOriginDate();
+    } else {
+      date = invoice.getInvoiceDate();
+    }
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-            invoice.getCurrency(),
-            invoice.getCompany().getCurrency(),
-            exTaxTotal,
-            invoice.getInvoiceDate())
+            invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, date)
         .setScale(currencyScaleService.getCompanyScale(invoice), RoundingMode.HALF_UP);
   }
 

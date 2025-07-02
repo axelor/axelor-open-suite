@@ -320,6 +320,7 @@
 "Tax type",,,
 "Taxes",,,
 "Team","Equipe",,
+"The ATI configuration must be the same for all purchase orders","La configuration des taxes doit être la même pour toutes les commandes d'achat",,
 "The company %s doesn't have any configured sequence for the purchase orders","La société %s n'a pas de séquence configurée pour les commandes fournisseur",,
 "The company is required and must be the same for all purchase orders","La société est requise et doit être la même pour toutes les commandes d'achat",,
 "The contact partner and price list must be the same for all purchase orders.",,,

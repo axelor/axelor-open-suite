@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="payment-schedule-line-grid" title="Schedule lines"
     model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
@@ -21,7 +21,7 @@
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
       if-module="axelor-bank-payment" form-view="interbank-code-line-form"
       grid-view="interbank-code-line-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="debitNumber"
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
       if-module="axelor-bank-payment"/>
@@ -54,7 +54,7 @@
         if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
         if-module="axelor-bank-payment" form-view="interbank-code-line-form"
         grid-view="interbank-code-line-grid"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="debitNumber"
         if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
         if-module="axelor-bank-payment"/>
@@ -88,7 +88,7 @@
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
       if-module="axelor-bank-payment" form-view="interbank-code-line-form"
       grid-view="interbank-code-line-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="paymentSchedule.statusSelect" hidden="true"/>
     <button name="rejectBtn" title="Reject" icon="fa-times"
       onClick="action-payment-schedule-line-show-reject-wizard"
@@ -131,7 +131,7 @@
           <![CDATA[<>{fromReject && <Badge bg="warning">{_t('From rejection')}</Badge>}</>]]>
         </viewer>
       </field>
-      <field name="statusSelect" readonly="true"/>
+      <field name="statusSelect" readonly="true" widget="single-select"/>
     </panel>
 
   </form>

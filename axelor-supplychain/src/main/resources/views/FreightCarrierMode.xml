@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <grid name="freight-carrier-pricings-grid" title="Freight carrier pricings"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" x-selector="none">
-    <field name="name"/>
-    <field name="carrierPartner"/>
-  </grid>
+  <form id="supplychain-freight-carrier-mode-form" name="freight-carrier-mode-form"
+    title="Freight carrier mode" model="com.axelor.apps.stock.db.FreightCarrierMode"
+    extension="true">
+    <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
+      <insert position="after">
+        <field name="freightCarrierPricing" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
+        <field name="freightCarrierDelay" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
+      </insert>
+    </extend>
+  </form>
 
-  <form name="freight-carrier-pricings-form"
-    model="com.axelor.apps.stock.db.FreightCarrierMode" title="Freight carrier pricing">
-    <panel name="mainPanel">
-      <field name="name"/>
-      <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"/>
-    </panel>
+  <form id="supplychain-freight-carrier-mode-freight-carrier-form"
+    name="freight-carrier-mode-freight-carrier-form" title="Freight carrier mode"
+    model="com.axelor.apps.stock.db.FreightCarrierMode" extension="true">
+    <extend target="//panel[@name='mainPanel']/field[@name='shipmentMode']">
+      <insert position="after">
+        <field name="freightCarrierPricing" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
+        <field name="freightCarrierDelay" form-view="freight-carrier-mode-pricing-form"
+          grid-view="freight-carrier-mode-pricing-grid" colSpan="6"/>
+      </insert>
+    </extend>
   </form>
 
 </object-views>

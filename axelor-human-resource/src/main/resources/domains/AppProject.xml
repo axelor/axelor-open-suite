@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -15,8 +15,13 @@
     <boolean name="enablePlanification" title="Enable planification" default="true"
       help="If enabled, planification will be available on project and project task views and some planning lines auto generation will be added to generation via project template, and change of sprint on project tasks."/>
 
+    <boolean name="blockPPTGeneration" title="Block project planning time generation"
+      help="Disable project planning time generation if there is no active sprint." default="true"/>
+
     <track>
       <field name="enablePlanification" on="UPDATE"/>
+      <field name="enableEventCreation" on="UPDATE"/>
+      <field name="eventSubjectGroovyFormula" on="UPDATE"/>
     </track>
   </entity>
 

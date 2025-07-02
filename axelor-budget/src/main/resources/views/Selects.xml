@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <selection name="budget.budget.status.select">
@@ -15,9 +15,9 @@
   </selection>
 
   <selection name="budget.level.status.select">
-    <option value="draft">Draft</option>
-    <option value="valid">Validated</option>
-    <option value="archived">Archived</option>
+    <option value="draft" color="blue">Draft</option>
+    <option value="valid" color="green">Validated</option>
+    <option value="archived" color="grey">Archived</option>
   </selection>
 
   <selection name="budget.budget.source.select">
@@ -39,10 +39,10 @@
   </selection>
 
   <selection name="global.budget.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Validated structure</option>
-    <option value="2">Validated</option>
-    <option value="3">Archived</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="lime">Validated structure</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="grey">Archived</option>
   </selection>
 
   <selection name="budget.scenario.entry.method.select">

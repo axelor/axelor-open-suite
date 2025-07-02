@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
     orderBy="-startDateTime" onNew="action-event-record-set-partner">
@@ -16,14 +16,14 @@
     <field name="eventLead"/>
     <field name="typeSelect"/>
     <field name="subject"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
   <grid name="list-event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
     orderBy="-startDateTime" x-row-height="80">
     <field name="typeSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="startDateTime"/>
     <field name="user"/>
     <field name="subject"/>
@@ -158,7 +158,7 @@
         </viewer>
       </field>
       <field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]"
-        showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 3">
+        widget="single-select" showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 3">
         <viewer depends="statusSelect"><![CDATA[
 	       		 	<>
 	          			{statusSelect == 1 && <Badge bg="primary">{_t('Planned')}</Badge>}

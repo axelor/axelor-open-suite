@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="account-clearance-grid" title="Account clearance operations"
     model="com.axelor.apps.account.db.AccountClearance">
@@ -12,7 +12,7 @@
     <field name="dateThreshold"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="account-clearance-form" title="Account clearance"
@@ -26,7 +26,7 @@
         canEdit="false" canView="false"/>
       <field name="company" widget="SuggestBox" form-view="company-form" canEdit="false"
         grid-view="company-grid"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
     </panel>
 
     <panel name="clearanceSettingsPanel" title="Clearance settings">

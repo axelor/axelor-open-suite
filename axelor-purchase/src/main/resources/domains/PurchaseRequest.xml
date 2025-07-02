@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -22,6 +22,8 @@
       readonly="true"/>
     <many-to-one name="validatorUser" title="Validator" ref="com.axelor.auth.db.User"
       readonly="true"/>
+    <many-to-one name="tradingName" title="Trading name"
+      ref="com.axelor.apps.base.db.TradingName"/>
 
     <unique-constraint columns="purchaseRequestSeq"/>
 

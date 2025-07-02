@@ -18,67 +18,17 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.base.AxelorException;
+import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.HIDDEN_ATTR;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.ProductMultipleQtyService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
-import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SaleOrderLineViewProductionServiceImpl extends SaleOrderLineViewSupplychainServiceImpl
-    implements SaleOrderLineViewProductionService {
-
-  @Inject
-  public SaleOrderLineViewProductionServiceImpl(
-      AppBaseService appBaseService,
-      AppSaleService appSaleService,
-      ProductMultipleQtyService productMultipleQtyService,
-      AnalyticAttrsService analyticAttrsService,
-      AnalyticAttrsSupplychainService analyticAttrsSupplychainService,
-      AppSupplychainService appSupplychainService,
-      AccountConfigRepository accountConfigRepository,
-      AppAccountService appAccountService) {
-    super(
-        appBaseService,
-        appSaleService,
-        productMultipleQtyService,
-        analyticAttrsService,
-        analyticAttrsSupplychainService,
-        appSupplychainService,
-        accountConfigRepository,
-        appAccountService);
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getProductOnChangeAttrs(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
-    Map<String, Map<String, Object>> attrs =
-        super.getProductOnChangeAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(hideBomAndProdProcess(saleOrderLine));
-    return attrs;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getSaleSupplySelectOnChangeAttrs(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    Map<String, Map<String, Object>> attrs =
-        super.getSaleSupplySelectOnChangeAttrs(saleOrderLine, saleOrder);
-    attrs.putAll(hideBomAndProdProcess(saleOrderLine));
-    return attrs;
-  }
+public class SaleOrderLineViewProductionServiceImpl implements SaleOrderLineViewProductionService {
 
   @Override
   public Map<String, Map<String, Object>> hideBomAndProdProcess(SaleOrderLine saleOrderLine) {

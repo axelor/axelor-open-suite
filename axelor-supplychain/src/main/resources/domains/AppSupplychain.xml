@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -90,6 +90,10 @@
     <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"
       default="true"/>
 
+    <integer name="stockLocationToCartLimit"
+      title="Limit of stock location line to add to the cart."
+      help="This option prevents adding by mistake too many products in carts from a stock location."/>
+
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>
@@ -129,6 +133,11 @@
       <field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
       <field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
+      <field name="completeSaleOrderOnInvoicing" on="UPDATE"/>
+      <field name="sOFilterOnStockDetailStatusSelect" on="UPDATE"/>
+      <field name="pOFilterOnStockDetailStatusSelect" on="UPDATE"/>
+      <field name="autoFillDeliveryRealQty" on="UPDATE"/>
+      <field name="autoFillReceiptRealQty" on="UPDATE"/>
     </track>
   </entity>
 

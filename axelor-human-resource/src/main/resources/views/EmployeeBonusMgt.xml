@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="employee-bonus-mgt-grid" title="Employee bonus management"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt">
@@ -10,7 +10,7 @@
     <field name="leavePeriod" canEdit="false" canView="false"/>
     <field name="employeeBonusType"/>
     <field name="baseAmount"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="employee-bonus-mgt-form" title="Employee bonus management"
@@ -32,7 +32,7 @@
       form-view="employee-bonus-mgt-line-form" grid-view="employee-bonus-mgt-line-grid"
       canNew="false" readonly="true"/>
     <panel name="statusPanel" sidebar="true">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <button name="computeBtn" title="Compute amounts"
         onClick="save,action-employee-bonus-mgt-method-compute"/>
     </panel>

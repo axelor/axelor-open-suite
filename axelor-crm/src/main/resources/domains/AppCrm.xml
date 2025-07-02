@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -61,6 +61,15 @@
       <field name="salesPropositionStatus" on="UPDATE"/>
       <field name="convertedLeadStatus" on="UPDATE"/>
       <field name="lostLeadStatus" on="UPDATE"/>
+      <field name="crmProcessOnPartner" on="UPDATE"/>
+      <field name="isSearchFunctionalityEnabled" on="UPDATE"/>
+      <field name="isCorporatePartnerEnabled" on="UPDATE"/>
+      <field name="closedWinPartnerStatus" on="UPDATE"/>
+      <field name="closedLostPartnerStatus" on="UPDATE"/>
+      <field name="leadDefaultStatus" on="UPDATE"/>
+      <field name="opportunityDefaultStatus" on="UPDATE"/>
+      <field name="partnerDefaultStatus" on="UPDATE"/>
+      <field name="emailDomainToIgnore" on="UPDATE"/>
     </track>
   </entity>
 

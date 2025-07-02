@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="period-grid" title="Period" model="com.axelor.apps.base.db.Period"
     orderBy="-fromDate">
@@ -11,7 +11,7 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="year.company" form-view="company-form" readonly="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period"
@@ -34,7 +34,7 @@
     <panel-dashlet action="action-view-period-linked-adjusting-moves-dashlet"
       name="linkedAdjustingMovesPanel"/>
     <panel name="actionsPanel" sidebar="true">
-      <field name="statusSelect" colSpan="6"/>
+      <field name="statusSelect" colSpan="6" widget="single-select"/>
       <field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
       <field name="temporarilyCloseDateTime" colSpan="6" showIf="statusSelect == 4"
         readonly="true"/>
@@ -76,7 +76,7 @@
     <panel-dashlet action="action-view-period-linked-adjusting-moves-dashlet"
       name="linkedAdjustingMovesPanel"/>
     <panel name="actionsPanel" sidebar="true">
-      <field name="statusSelect" colSpan="6"/>
+      <field name="statusSelect" colSpan="6" widget="single-select"/>
       <field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
       <button name="closeBtn" title="Close period" onClick="action-period-group-close"
         hideIf="statusSelect == 2 || statusSelect == 5 || $popup()"

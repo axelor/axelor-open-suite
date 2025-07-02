@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -54,6 +54,8 @@
       help="Allow to edit configurator values inside the generated sale order line. Product will then be modified and line regenerated."/>
     <boolean name="enableLineDuplication" title="Enable line duplication"
       help="Allow the duplication of sale quotation line. The line will be recomputed from its configurator if possible."/>
+    <boolean name="isQuotationAndOrderSplitEnabled" title="Split quotations and orders"
+      help="When enabled, confirming a sale quotation will generate a new sale order. This configuration allow the partial validation of a sale quotation."/>
 
     <extra-code>
       <![CDATA[
@@ -88,6 +90,12 @@
       <field name="isEnableCalculationEntireQuotation" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
       <field name="isCartManagementEnabled" on="UPDATE"/>
+      <field name="isPastVersionRecovery" on="UPDATE"/>
+      <field name="isDiscountEnabledOnEditableGrid" on="UPDATE"/>
+      <field name="listDisplayTypeSelect" on="UPDATE"/>
+      <field name="isSOLPriceTotalOfSubLines" on="UPDATE"/>
+      <field name="enableConfiguratorEdition" on="UPDATE"/>
+      <field name="enableLineDuplication" on="UPDATE"/>
     </track>
   </entity>
 

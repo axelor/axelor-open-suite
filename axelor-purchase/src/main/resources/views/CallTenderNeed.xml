@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="call-tender-need-grid" title="Call for tenders"
+    model="com.axelor.apps.purchase.db.CallTenderNeed">
+    <field name="product"/>
+    <field name="requestedQty"/>
+    <field name="unit"/>
+    <field name="requestedDate"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <form name="call-tender-need-form" model="com.axelor.apps.purchase.db.CallTenderNeed"
+    title="Call for tender" width="large">
+    <panel name="mainPanel" showTitle="false">
+      <field name="product" colSpan="12" domain="self.purchasable is true"/>
+      <field name="requestedQty" colSpan="6"/>
+      <field name="unit" colSpan="6"/>
+      <field name="requestedDate"/>
+      <field name="typeSelect"/>
+    </panel>
+  </form>
+
+</object-views>

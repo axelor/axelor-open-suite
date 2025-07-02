@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid title="Invoicing/payment situations" name="invoicing-payment-situation-grid"
     model="com.axelor.apps.account.db.InvoicingPaymentSituation">
     <field name="company"/>
+    <field name="bankDetails"/>
     <field name="activeUmr"/>
   </grid>
 
@@ -15,13 +16,15 @@
     <panel name="mainPanel" colSpan="12">
       <field name="company" readonlyIf="activeUmr || (umrList &amp;&amp; umrList.length != 0)"
         onSelect="action-method-invoicing-payment-situation-company-onselect"/>
+      <field name="bankDetails" requiredIf="activeUmr"
+        onSelect="action-invoicing-payment-situation-method-bank-details-on-select"/>
       <panel name="sepaDirectDebitPanel" title="SEPA Direct Debit" colSpan="12"
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment">
         <field name="activeUmr"
           onSelect="action-method-invoicing-payment-situation-umr-onselect"
           onChange="action-method-invoicing-payment-situation-umr-onchange" canNew="true"/>
-        <panel-related name="umrListPanel" readonly="true" field="umrList"
-          title="History" colSpan="12"/>
+        <panel-related name="umrListPanel" canNew="false" canRemove="false"
+          field="umrList" title="History" colSpan="12" editable="true"/>
       </panel>
     </panel>
   </form>
@@ -44,6 +47,12 @@
   <action-method name="action-invoicing-payment-situation-method-onnew">
     <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
       method="onNew"/>
+  </action-method>
+
+  <action-method
+    name="action-invoicing-payment-situation-method-bank-details-on-select">
+    <call class="com.axelor.apps.account.web.InvoicingPaymentSituationController"
+      method="selectBankDetails"/>
   </action-method>
 
 </object-views>

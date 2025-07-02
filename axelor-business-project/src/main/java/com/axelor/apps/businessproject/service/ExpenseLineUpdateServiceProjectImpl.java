@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateServiceImpl;
@@ -38,6 +39,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServiceImpl {
   protected AppBusinessProjectService appBusinessProjectService;
@@ -49,13 +51,15 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
       ExpenseLineToolService expenseLineToolService,
       ExpenseLineRepository expenseLineRepository,
       ExpenseRepository expenseRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      EmployeeFetchService employeeFetchService) {
     super(
         expenseToolService,
         expenseComputationService,
         expenseLineToolService,
         expenseLineRepository,
-        expenseRepository);
+        expenseRepository,
+        employeeFetchService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
@@ -69,7 +73,8 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
       Product expenseProduct,
       Boolean toInvoice,
       Expense newExpense,
-      ProjectTask projectTask)
+      ProjectTask projectTask,
+      List<Employee> employeeList)
       throws AxelorException {
     super.updateBasicExpenseLine(
         expenseLine,
@@ -81,7 +86,8 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
         expenseProduct,
         toInvoice,
         newExpense,
-        projectTask);
+        projectTask,
+        employeeList);
     if (appBusinessProjectService.isApp("business-project")) {
       expenseLine.setToInvoice(getToInvoice(expenseLine, project, toInvoice));
     }
@@ -112,7 +118,7 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
     return false;
   }
 
-  void checkProjectCoherence(Boolean toInvoice, Project project) throws AxelorException {
+  protected void checkProjectCoherence(Boolean toInvoice, Project project) throws AxelorException {
     if (Boolean.TRUE.equals(toInvoice) && !project.getIsInvoicingExpenses()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,

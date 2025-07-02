@@ -66,6 +66,7 @@ public class MobileSettingsResponseComputeServiceImpl
         getApps(appMobileSettings),
         appMobileSettings.getIsLoginUserQrcodeEnabled(),
         appMobileSettings.getIsTrackerMessageEnabled(),
+        appMobileSettings.getIsInboxAccessEnabled(),
         checkConfigWithRoles(
             appMobileSettings.getIsInventoryValidationEnabled(),
             appMobileSettings.getInventoryValidationRoleSet()),

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
@@ -56,6 +56,18 @@
             form-view="analytic-move-line-distribution-form" colSpan="12"
             onChange="action-sale-order-line-group-analytic-move-line-list-onchange"/>
           <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+        </panel>
+        <panel name="blockingsPanel" title="Blockings">
+          <field name="isDeliveryBlocking" colSpan="3"/>
+          <panel name="deliveryBlockingGroupPanel" title="Delivery blocking"
+            showIf="isDeliveryBlocking" colSpan="12">
+            <field name="deliveryBlockingByUser" canNew="false" canEdit="false"
+              canView="false" form-view="user-form" grid-view="user-grid"/>
+            <field name="deliveryBlockingToDate"/>
+            <field name="deliveryBlockingReason" form-view="stop-reason-form"
+              grid-view="stop-reason-grid"/>
+            <field name="commentDeliveryBlocking" widget="html" colSpan="12"/>
+          </panel>
         </panel>
       </insert>
 

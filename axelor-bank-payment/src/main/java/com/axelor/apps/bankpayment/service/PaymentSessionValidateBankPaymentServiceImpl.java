@@ -51,6 +51,7 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -286,6 +287,38 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, pair.getRight());
+  }
+
+  @Override
+  public Move createMove(
+      PaymentSession paymentSession,
+      Partner partner,
+      Partner thirdPartyPayerPartner,
+      LocalDate accountingDate,
+      BankDetails partnerBankDetails)
+      throws AxelorException {
+    Move move =
+        moveCreateService.createMove(
+            paymentSession.getJournal(),
+            paymentSession.getCompany(),
+            paymentSession.getCurrency(),
+            partner,
+            accountingDate,
+            paymentSession.getPaymentDate(),
+            paymentSession.getPaymentMode(),
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            getMoveOrigin(paymentSession),
+            "",
+            paymentSession.getBankDetails());
+
+    move.setPartnerBankDetails(partnerBankDetails);
+    move.setPaymentSession(paymentSession);
+    move.setPaymentCondition(null);
+    move.setThirdPartyPayerPartner(thirdPartyPayerPartner);
+
+    return move;
   }
 
   @Override

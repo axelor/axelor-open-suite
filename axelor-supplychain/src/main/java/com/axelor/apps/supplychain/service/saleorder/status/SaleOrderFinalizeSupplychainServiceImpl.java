@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeServiceImpl;
@@ -52,6 +53,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       SaleConfigService saleConfigService,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
+      SaleOrderSequenceService saleOrderSequenceService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService) {
     super(
@@ -61,7 +63,8 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
         saleOrderPrintService,
         saleConfigService,
         appSaleService,
-        appCrmService);
+        appCrmService,
+        saleOrderSequenceService);
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
   }
@@ -77,7 +80,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       return;
     }
 
-    accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
+    accountingSituationSupplychainService.checkExceededUsedCredit(saleOrder);
     super.finalizeQuotation(saleOrder);
     int intercoSaleCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoSaleCreatingStatusSelect();

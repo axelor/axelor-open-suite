@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="maintenance-manuf-order-grid" title="Maintenance orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
@@ -28,7 +28,7 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-quick-plan"
       readonlyIf="statusSelect >= 3"/>
     <button name="startBtn" icon="fa-play"

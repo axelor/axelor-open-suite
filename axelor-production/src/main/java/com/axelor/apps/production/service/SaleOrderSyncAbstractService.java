@@ -21,6 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
@@ -37,6 +38,8 @@ public abstract class SaleOrderSyncAbstractService {
   protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
   protected final SolBomUpdateService solBomUpdateService;
   protected final AppProductionService appProductionService;
+  protected final SolDetailsProdProcessLineUpdateService solDetailsProdProcessLineUpdateService;
+  protected final SolProdProcessCustomizationService solProdProcessCustomizationService;
 
   @Inject
   protected SaleOrderSyncAbstractService(
@@ -46,7 +49,9 @@ public abstract class SaleOrderSyncAbstractService {
       SolBomCustomizationService solBomCustomizationService,
       SolDetailsBomUpdateService solDetailsBomUpdateService,
       SolBomUpdateService solBomUpdateService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      SolDetailsProdProcessLineUpdateService solDetailsProdProcessLineUpdateService,
+      SolProdProcessCustomizationService solProdProcessCustomizationService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
@@ -54,6 +59,8 @@ public abstract class SaleOrderSyncAbstractService {
     this.solDetailsBomUpdateService = solDetailsBomUpdateService;
     this.solBomUpdateService = solBomUpdateService;
     this.appProductionService = appProductionService;
+    this.solDetailsProdProcessLineUpdateService = solDetailsProdProcessLineUpdateService;
+    this.solProdProcessCustomizationService = solProdProcessCustomizationService;
   }
 
   /**
@@ -62,7 +69,8 @@ public abstract class SaleOrderSyncAbstractService {
    * @param saleOrderLineList
    * @throws AxelorException
    */
-  public void syncSaleOrderLineList(List<SaleOrderLine> saleOrderLineList) throws AxelorException {
+  public void syncSaleOrderLineList(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList)
+      throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
 
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
@@ -75,11 +83,12 @@ public abstract class SaleOrderSyncAbstractService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      syncSaleOrderLine(saleOrderLine);
+      syncSaleOrderLine(saleOrder, saleOrderLine);
     }
   }
 
-  public void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
+  public void syncSaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
     Objects.requireNonNull(saleOrderLine);
     // No personalized BOM = no synchronization
     if (!appProductionService.getAppProduction().getAllowPersonalizedBOM()
@@ -91,13 +100,14 @@ public abstract class SaleOrderSyncAbstractService {
     // We take it into account when sync the current sale order line
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
       for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
-        syncSaleOrderLine(subSaleOrderLine);
+        syncSaleOrderLine(saleOrder, subSaleOrderLine);
       }
     }
 
     // if bom lines list is same size as sub line list (checking if more line or less)
     // and if each lines are sync
     updateLines(saleOrderLine);
+    updateProdProcess(saleOrder, saleOrderLine);
   }
 
   protected void updateLines(SaleOrderLine saleOrderLine) throws AxelorException {
@@ -123,6 +133,26 @@ public abstract class SaleOrderSyncAbstractService {
               saleOrderLine, saleOrderLineDetailsList);
         }
       }
+    }
+  }
+
+  protected void updateProdProcess(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        getSaleOrderListDetailsList(saleOrderLine);
+    var isProdProcessLinesUpdated =
+        solDetailsProdProcessLineUpdateService.isSolDetailsUpdated(
+            saleOrderLine, saleOrderLineDetailsList);
+    if (isProdProcessLinesUpdated) {
+      return;
+    }
+
+    if (saleOrderLine.getProdProcess().getIsPersonalized()) {
+      solProdProcessCustomizationService.updateProdProcessLines(
+          saleOrder, saleOrderLine, saleOrderLineDetailsList);
+    } else {
+      solProdProcessCustomizationService.createCustomizedProdProcess(
+          saleOrder, saleOrderLine, saleOrderLineDetailsList);
     }
   }
 

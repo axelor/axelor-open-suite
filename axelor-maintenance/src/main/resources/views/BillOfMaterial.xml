@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="maintenance-bill-of-material-grid" title="Bills of material"
     model="com.axelor.apps.production.db.BillOfMaterial">
@@ -16,7 +16,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="prodProcess" grid-view="prod-process-grid"
       form-view="maintenance-prod-process-form"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="maintenance-bill-of-material-form" title="Bill of materials"

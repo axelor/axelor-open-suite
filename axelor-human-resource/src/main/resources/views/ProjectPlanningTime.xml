@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="project-planning-time-grid" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
@@ -63,7 +63,8 @@
         onChange="action-project-planning-time-method-compute-planned-time"
         onSelect="action-project-planning-time-method-compute-display-time-unit-domain"/>
       <field name="employee" onSelect="action-project-planning-time-attrs-project-domain"
-        canEdit="false" onChange="action-project-planning-time-attrs-employee-change"
+        canEdit="false"
+        onChange="action-project-planning-time-attrs-employee-change,action-project-planning-time-method-compute-planned-time"
         form-view="employee-form"/>
       <field name="product" canEdit="false"
         onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox"

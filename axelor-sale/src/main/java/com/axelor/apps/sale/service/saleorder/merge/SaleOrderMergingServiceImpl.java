@@ -44,6 +44,7 @@ import com.axelor.utils.helpers.MapHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -177,6 +178,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     private boolean existContactPartnerDiff = false;
     private boolean existPriceListDiff = false;
     private boolean existTradingNameDiff = false;
+    private boolean existAtiDiff = false;
 
     @Override
     public boolean isExistCurrencyDiff() {
@@ -266,6 +268,16 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     @Override
     public void setExistTradingNameDiff(boolean existTradingNameDiff) {
       this.existTradingNameDiff = existTradingNameDiff;
+    }
+
+    @Override
+    public boolean isExistAtiDiff() {
+      return existAtiDiff;
+    }
+
+    @Override
+    public void setExistAtiDiff(boolean existAtiDiff) {
+      this.existAtiDiff = existAtiDiff;
     }
   }
 
@@ -467,9 +479,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
     SaleOrder firstSaleOrder = saleOrdersToMerge.get(0);
     fillCommonFields(firstSaleOrder, result);
-    saleOrdersToMerge.stream()
-        .skip(1)
-        .forEach(saleOrder -> updateDiffsCommonFields(saleOrder, result));
+    checkDiffs(saleOrdersToMerge, result, firstSaleOrder);
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
@@ -520,9 +530,26 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
             getCommonFields(result).getCommonFiscalPosition(),
             getCommonFields(result).getCommonTradingName());
 
+    saleOrderMerged.setInAti(saleOrdersToMerge.stream().anyMatch(SaleOrder::getInAti));
+
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    updateChildrenOrder(saleOrdersToMerge, saleOrderMerged);
+
     return saleOrderMerged;
+  }
+
+  protected void updateChildrenOrder(List<SaleOrder> saleOrdersToMerge, SaleOrder saleOrderMerged) {
+    for (SaleOrder saleOrder : saleOrdersToMerge) {
+      for (SaleOrder childOrder :
+          saleOrderRepository
+              .all()
+              .filter("self.originSaleQuotation = :saleOrder")
+              .bind("saleOrder", saleOrder)
+              .fetch()) {
+        childOrder.setOriginSaleQuotation(saleOrderMerged);
+      }
+    }
   }
 
   protected String computeConcatenatedString(
@@ -550,6 +577,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       int countLine = 1;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         SaleOrderLine copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+        saleOrderLine.setOrderedQty(BigDecimal.ZERO);
         copiedSaleOrderLine.setSequence(countLine * 10);
         saleOrderMerged.addSaleOrderLineListItem(copiedSaleOrderLine);
         countLine++;
@@ -584,6 +612,10 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     // FiscalPosition can be null
     if (getChecks(result).isExistFiscalPositionDiff()) {
       fieldErrors.add(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
+    }
+
+    if (getChecks(result).isExistAtiDiff()) {
+      fieldErrors.add(I18n.get(SaleExceptionMessage.SALE_ORDER_MERGE_ERROR_ATI_CONFIG));
     }
   }
 
@@ -669,5 +701,18 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
                     .map(id -> saleOrderRepository.find(Long.valueOf(id)))
                     .collect(Collectors.toList()))
         .orElse(List.of());
+  }
+
+  protected void checkDiffs(
+      List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result, SaleOrder firstSaleOrder) {
+    saleOrdersToMerge.stream()
+        .skip(1)
+        .forEach(saleOrder -> updateDiffsCommonFields(saleOrder, result));
+
+    if (saleOrdersToMerge.stream()
+        .anyMatch(order -> order.getInAti() != firstSaleOrder.getInAti())) {
+      Checks checks = getChecks(result);
+      checks.setExistAtiDiff(true);
+    }
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
     name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
@@ -71,10 +71,17 @@
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
             onChange="action-reset-budget-method"/>
+          <panel name="datesPanel" colSpan="12">
+            <field name="budgetFromDate" requiredIf="budgetToDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <label name="budgetDatesLabel" hidden="true" css="label-danger" colSpan="12"/>
+          </panel>
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
             onSelect="action-budget-purchase-order-line-method-budget-domain"
-            onChange="action-budget-purchase-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"/>
+            onChange="action-purchase-order-line-group-budget-onchange"/>
           <panel-related name="budgetDistributionListPanel"
             field="budgetDistributionList" form-view="purchase-order-budget-distribution-form"
             grid-view="reduce-budget-distribution-grid" editable="true" colSpan="12"
@@ -102,6 +109,8 @@
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-distribution-attrs-currency-symbol"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-dates-attrs-initialize-budget-dates"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
@@ -144,6 +153,13 @@
     <action name="action-method-purchase-order-line-budget-distribution-validate-amount"/>
     <action name="action-purchase-order-method-compute-budget-remaining-amount-to-allocate"/>
     <action name="action-budget-purchase-order-line-method-fill-budget-str"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
+  </action-group>
+
+  <action-group name="action-purchase-order-line-group-budget-onchange">
+    <action name="action-budget-purchase-order-line-method-fill-budget-str"/>
+    <action name="action-reset-budget-distribution-list-method"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
   </action-group>
 
   <action-method

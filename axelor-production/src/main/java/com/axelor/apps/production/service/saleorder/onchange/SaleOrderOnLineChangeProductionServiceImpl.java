@@ -35,6 +35,7 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 
@@ -57,6 +58,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
       SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -70,7 +72,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderComplementaryProductService,
         saleOrderGlobalDiscountService,
         saleOrderSupplychainService,
-        saleOrderShipmentService);
+        saleOrderShipmentService,
+        saleOrderLineAnalyticService);
     this.appProductionService = appProductionService;
     this.saleOrderProductionSyncService = saleOrderProductionSyncService;
   }
@@ -83,7 +86,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         && appSaleService.getAppSale().getListDisplayTypeSelect()
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
         && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
-      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder.getSaleOrderLineList());
+      saleOrderProductionSyncService.syncSaleOrderLineList(
+          saleOrder, saleOrder.getSaleOrderLineList());
     }
     return message;
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="pfx-certificate-grid" title="PFX Certificate"
     model="com.axelor.apps.base.db.PfxCertificate">
@@ -17,7 +17,7 @@
       <field name="certificate" widget="binary-link" colSpan="6"
         onChange="action-pfx-certificate-group-certificate-onchange"/>
       <field name="password" colSpan="6" readonlyIf="!certificate"
-        onChange="action-pfx-certificate-method-get-validity-dates" hideIf="fromValidityDate"/>
+        onChange="action-pfx-certificate-group-password-onchange" hideIf="fromValidityDate"/>
       <spacer colSpan="6"/>
       <field name="fromValidityDate" colSpan="6"/>
       <field name="toValidityDate" colSpan="6"/>
@@ -42,5 +42,21 @@
     <attribute for="fromValidityDate" name="value" expr="eval: null"/>
     <attribute for="toValidityDate" name="value" expr="eval: null"/>
   </action-attrs>
+
+  <action-attrs name="action-pfx-certificate-attrs-reset-certificate">
+    <attribute for="certificate" name="value" expr="eval: null"/>
+    <attribute for="name" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <action-group name="action-pfx-certificate-group-password-onchange">
+    <action name="action-pfx-certificate-method-get-validity-dates"/>
+    <action name="action-pfx-certificate-validate-check-date"/>
+  </action-group>
+
+  <action-validate name="action-pfx-certificate-validate-check-date">
+    <error message="Signature certificate is expired. Please change to a new certificate."
+      if="__date__ &lt; fromValidityDate || __date__ &gt; toValidityDate"
+      action="action-pfx-certificate-attrs-reset-values, action-pfx-certificate-attrs-reset-certificate"/>
+  </action-validate>
 
 </object-views>

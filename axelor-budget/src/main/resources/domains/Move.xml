@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Move">
 
     <boolean name="budgetDistributionGenerated" title="Budget distribution generated"/>
+
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
 
   </entity>
 </domain-models>

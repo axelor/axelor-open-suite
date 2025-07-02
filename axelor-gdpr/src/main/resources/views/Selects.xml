@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <selection name="gdpr.request.type.select">
     <option value="0">Access</option>
@@ -14,10 +14,10 @@
   </selection>
 
   <selection name="gdpr.request.status.select">
-    <option value="0">Received</option>
-    <option value="1">Confirmed</option>
-    <option value="2">Sent</option>
-    <option value="3">Canceled</option>
+    <option value="0" color="blue">Received</option>
+    <option value="1" color="lime">Confirmed</option>
+    <option value="2" color="green">Sent</option>
+    <option value="3" color="red">Canceled</option>
   </selection>
 
   <selection name="gdpr.request.model.select">
@@ -27,9 +27,9 @@
   </selection>
 
   <selection name="gdpr.processing.register.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Active</option>
-    <option value="2">Canceled</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="green">Active</option>
+    <option value="2" color="red">Canceled</option>
   </selection>
 
   <selection name="gdpr.search.config.line.key.select">

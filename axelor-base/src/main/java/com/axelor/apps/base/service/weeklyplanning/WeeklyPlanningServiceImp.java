@@ -32,6 +32,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -268,5 +269,60 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
         I18n.get(Character.toUpperCase(dayPlanningName.charAt(0)) + dayPlanningName.substring(1))
             .toLowerCase()); // Because day of week are traduced with a upperCase at the first
     // letter
+  }
+
+  @Override
+  public LocalDateTime computeEndDateTime(
+      LocalDateTime startDateTime, WeeklyPlanning weeklyPlanning, BigDecimal timeInHours) {
+    if (startDateTime == null || weeklyPlanning == null || timeInHours.signum() == 0) {
+      return startDateTime;
+    }
+
+    LocalDateTime endDateTime = startDateTime;
+    BigDecimal workingHours;
+    while (timeInHours.signum() > 0) {
+      workingHours =
+          getWorkingDayValueInHours(
+              weeklyPlanning, startDateTime.toLocalDate(), startDateTime.toLocalTime(), null);
+
+      if (timeInHours.compareTo(workingHours) > 0) {
+        startDateTime =
+            LocalDateTime.of(startDateTime.plusDays(1).toLocalDate(), LocalTime.of(0, 0, 0));
+      } else {
+        endDateTime =
+            LocalDateTime.of(
+                startDateTime.toLocalDate(),
+                getComputedLocalTime(startDateTime, timeInHours, weeklyPlanning));
+      }
+
+      timeInHours = timeInHours.subtract(workingHours);
+    }
+
+    return endDateTime;
+  }
+
+  protected LocalTime getComputedLocalTime(
+      LocalDateTime dateTime, BigDecimal timeInHours, WeeklyPlanning weeklyPlanning) {
+    DayPlanning dayPlanning = this.findDayPlanning(weeklyPlanning, dateTime.toLocalDate());
+
+    if (dayPlanning == null || !dateTime.toLocalTime().isBefore(dayPlanning.getMorningTo())) {
+      return dateTime.toLocalTime();
+    }
+
+    BigDecimal morningHoursCount =
+        getWorkingDayValueInHours(
+            weeklyPlanning,
+            dateTime.toLocalDate(),
+            dateTime.toLocalTime(),
+            dayPlanning.getMorningTo());
+
+    if (timeInHours.compareTo(morningHoursCount) > 0) {
+      timeInHours = timeInHours.subtract(morningHoursCount);
+      return dayPlanning.getAfternoonFrom().plusHours(timeInHours.longValue());
+    } else {
+      return dateTime.toLocalTime().isBefore(dayPlanning.getMorningFrom())
+          ? dayPlanning.getMorningFrom().plusHours(timeInHours.longValue())
+          : dateTime.toLocalTime().plusHours(timeInHours.longValue());
+    }
   }
 }

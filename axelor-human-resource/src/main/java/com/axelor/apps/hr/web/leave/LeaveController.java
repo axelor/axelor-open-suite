@@ -180,7 +180,9 @@ public class LeaveController {
           .context(
               "statusSelectList",
               List.of(
-                  LeaveRequestRepository.STATUS_VALIDATED, LeaveRequestRepository.STATUS_REFUSED));
+                  LeaveRequestRepository.STATUS_VALIDATED,
+                  LeaveRequestRepository.STATUS_REFUSED,
+                  LeaveRequestRepository.STATUS_CANCELED));
 
       if (employee == null || !employee.getHrManager()) {
         actionView

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="payment-schedule-grid" title="Payment schedule"
     model="com.axelor.apps.account.db.PaymentSchedule" orderBy="-paymentScheduleSeq">
@@ -15,7 +15,7 @@
     <field name="nbrTerm"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="payment-schedule-form" title="Payment schedule"
@@ -43,7 +43,7 @@
           readonlyIf="statusSelect != 1" onChange="action-payment-schedule-group-onchange-partner"
           domain="self.isContact = false AND :company member of self.companySet"/>
         <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
-          onSelect="action-payment-schedule-attrs-bank-details-domain"
+          onSelect="action-payment-schedule-method-bank-details-domain"
           onChange="action-payment-schedule-method-fill-company-bank-details"/>
       </panel>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
@@ -151,12 +151,6 @@
       expr="eval: irrecoverableStatusSelect == null || irrecoverableStatusSelect == 0"/>
   </action-attrs>
 
-  <action-attrs name="action-payment-schedule-attrs-bank-details-domain">
-    <attribute name="domain" for="bankDetails"
-      expr="eval: &quot;self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active = TRUE&quot;"
-      if="partner &amp;&amp; partner.bankDetailsList"/>
-  </action-attrs>
-
   <action-attrs name="action-payment-schedule-attrs-company-bank-details-domain">
     <attribute name="domain" for="companyBankDetails"
       expr="eval: &quot;self.id IN (${company.bankDetailsList.collect{it.id}.join(',')})&quot;"
@@ -164,6 +158,12 @@
   </action-attrs>
 
   <!-- ACTION METHOD -->
+
+  <action-method name="action-payment-schedule-method-bank-details-domain">
+    <call class="com.axelor.apps.account.web.PaymentScheduleController"
+      method="setBankDetailsDomain"/>
+  </action-method>
+
   <action-method name="action-payment-schedule-method-validate">
     <call class="com.axelor.apps.account.web.PaymentScheduleController" method="validate"/>
   </action-method>

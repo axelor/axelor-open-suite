@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
@@ -46,6 +47,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
   protected SaleOrderStockService saleOrderStockService;
   protected IntercoService intercoService;
   protected StockMoveRepository stockMoveRepository;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
   @Inject
   public SaleOrderConfirmSupplychainServiceImpl(
@@ -55,7 +57,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
       SaleOrderPurchaseService saleOrderPurchaseService,
       SaleOrderStockService saleOrderStockService,
       IntercoService intercoService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      AccountingSituationSupplychainService accountingSituationSupplychainService) {
     this.appSupplychainService = appSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
@@ -63,6 +66,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     this.saleOrderStockService = saleOrderStockService;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
   }
 
   @Override
@@ -99,6 +103,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     if (StringUtils.notEmpty(notifyMessage)) {
       return notifyMessage;
     }
+
+    accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 
     return "";
   }

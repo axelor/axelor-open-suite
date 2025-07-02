@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="employee-advance-grid" title="Employee advance"
     model="com.axelor.apps.hr.db.EmployeeAdvance">
@@ -22,7 +22,7 @@
     <field name="remainingAmount"/>
     <field name="requestedAmount"/>
     <field name="typeSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
 
   </grid>
 
@@ -63,7 +63,7 @@
       form-view="employee-advance-usage-advance-form"
       grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2"/>
     <panel name="statusPanel" sidebar="true">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <button name="validateBtn" title="Validate"
         onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1"/>
     </panel>

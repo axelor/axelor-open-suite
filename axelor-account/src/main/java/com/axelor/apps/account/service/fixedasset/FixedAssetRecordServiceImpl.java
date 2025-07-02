@@ -34,20 +34,11 @@ public class FixedAssetRecordServiceImpl implements FixedAssetRecordService {
   }
 
   @Override
-  public void resetAssetDisposalReason(FixedAsset fixedAsset) {
-    fixedAsset.setAssetDisposalReason(null);
-  }
-
-  @Override
-  public void setDisposalQtySelect(FixedAsset fixedAsset, int disposalTypeSelect) {
-    if (disposalTypeSelect != FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
-      fixedAsset.setDisposalQtySelect(FixedAssetRepository.DISPOSABLE_QTY_SELECT_TOTAL);
-    }
-  }
-
-  @Override
-  public BigDecimal setDisposalAmount(FixedAsset fixedAsset, int disposalTypeSelect) {
+  public BigDecimal setDisposalAmount(FixedAsset fixedAsset, Integer disposalTypeSelect) {
     BigDecimal disposalAmount;
+    if (fixedAsset == null || disposalTypeSelect == null) {
+      return BigDecimal.ZERO;
+    }
 
     switch (disposalTypeSelect) {
       case FixedAssetRepository.DISPOSABLE_TYPE_SELECT_SCRAPPING:
