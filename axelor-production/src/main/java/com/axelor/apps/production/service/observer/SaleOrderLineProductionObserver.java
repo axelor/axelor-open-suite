@@ -49,8 +49,8 @@ public class SaleOrderLineProductionObserver {
             .getProductionOnLoadAttrs(saleOrderLine, event.getSaleOrder()));
   }
 
-  void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)
-      throws AxelorException {
+  void onSaleOrderLineProductOnChange(
+      @Observes @Priority(value = 30) SaleOrderLineProductOnChange event) throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Object> saleOrderLineMap = event.getSaleOrderLineMap();
