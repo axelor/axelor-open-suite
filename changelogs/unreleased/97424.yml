@@ -1,0 +1,3 @@
+---
+title: "Inventory: fixed missing parameter for inventory birt template."
+module: axelor-stock
