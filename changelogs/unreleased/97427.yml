@@ -1,4 +1,0 @@
----
-title: "MassEntryMove: fixed the counterpart process without saving the move."
-module: axelor-account
-developer: MassEntryMoveCreateService.createMoveFromMassEntryList now take a move instead of the move id
