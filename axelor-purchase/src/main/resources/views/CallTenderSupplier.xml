@@ -13,7 +13,8 @@
     title="Supplier" width="large" onLoad="action-call-tender-supplier-attrs-set-contact-domain">
     <panel name="mainPanel" showTitle="false">
       <field name="supplierPartner" domain="self.isSupplier IS true" form-view="partner-form"
-        grid-view="partner-grid" onChange="action-call-tender-supplier-attrs-set-contact-domain"/>
+        grid-view="partner-grid"
+        onChange="action-call-tender-supplier-attrs-set-contact-domain,action-call-tender-supplier-method-clear-contact-set"/>
     </panel>
     <panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
       form-view="partner-contact-form" grid-view="partner-contact-grid" canNew="false"
@@ -26,5 +27,10 @@
       expr="eval: &quot;self.isContact = 'true' and self.id in (${supplierPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"
       if="supplierPartner?.contactPartnerSet &amp;&amp; !supplierPartner?.contactPartnerSet.isEmpty()"/>
   </action-attrs>
+
+  <action-method name="action-call-tender-supplier-method-clear-contact-set">
+    <call class="com.axelor.apps.purchase.web.CallTenderSupplierController"
+      method="clearContactSet"/>
+  </action-method>
 
 </object-views>
