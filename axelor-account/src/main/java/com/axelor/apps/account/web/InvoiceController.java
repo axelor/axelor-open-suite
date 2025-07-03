@@ -28,12 +28,14 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -41,6 +43,7 @@ import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -1498,5 +1501,32 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     String domain = Beans.get(InvoiceDomainService.class).getFiscalPositionDomain(invoice);
     response.setAttr("fiscalPosition", "domain", domain);
+  }
+
+  @ErrorException
+  public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+    response.setValues(invoice);
+  }
+
+  @ErrorException
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    String domain =
+        Beans.get(BankDetailsDomainServiceAccount.class)
+            .createDomainForBankDetails(
+                invoice.getPartner(), invoice.getPaymentMode(), invoice.getCompany());
+    response.setAttr("bankDetails", "domain", domain);
+  }
+
+  @ErrorException
+  public void getDefaultBankDetails(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    BankDetails bankDetails =
+        Beans.get(BankDetailsServiceAccount.class)
+            .getDefaultBankDetails(
+                invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
+    response.setValue("bankDetails", bankDetails);
   }
 }

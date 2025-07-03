@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form name="invoice-term-form" title="Invoice term"
+    model="com.axelor.apps.account.db.InvoiceTerm" id="invoice-term-bank-payment-form"
+    extension="true">
+    <extend target="//field[name='paymentMode']">
+      <attribute name="onChange"
+        value="action-invoice-term-method-set-default-bank-details"/>
+    </extend>
+  </form>
+
+  <action-method name="action-invoice-term-method-set-default-bank-details">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="getDefaultBankDetails"/>
+  </action-method>
+</object-views>

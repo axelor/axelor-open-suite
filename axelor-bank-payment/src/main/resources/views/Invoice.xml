@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
@@ -13,11 +13,28 @@
           showIf="lcrAccounted &amp;&amp; oldMove &amp;&amp; amountRemaining &gt; 0 &amp;&amp; !hasPendingPayments"/>
       </insert>
     </extend>
+    <extend target="//field[@name='paymentMode']">
+      <attribute name="onChange"
+        value="action-invoice-bank-payment-group-payment-mode-on-change"/>
+    </extend>
   </form>
 
   <action-method name="action-method-invoice-cancel-bill-of-exchange">
     <call class="com.axelor.apps.bankpayment.web.InvoiceController"
       method="cancelBillOfExchange"/>
   </action-method>
+
+  <action-method name="action-invoice-method-set-default-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.InvoiceController"
+      method="getDefaultBankDetails"/>
+  </action-method>
+
+  <action-group name="action-invoice-bank-payment-group-payment-mode-on-change">
+    <action name="action-invoice-group-payment-mode-onchange"/>
+    <action name="action-invoice-method-set-default-bank-details"/>
+  </action-group>
+
+
+
 
 </object-views>

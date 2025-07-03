@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.apps.base.db.ProductCompany;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import java.util.Map;
@@ -30,5 +32,12 @@ public class ProductCompanyBaseRepository extends ProductCompanyRepository {
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
 
     return super.populate(json, context);
+  }
+
+  @Override
+  public ProductCompany copy(ProductCompany productCompany, boolean deep) {
+    ProductCompany copy = super.copy(productCompany, deep);
+    Beans.get(ProductService.class).copyProduct(productCompany, copy);
+    return copy;
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="maintenance-request-grid" title="Maintenance Request"
     model="com.axelor.apps.maintenance.db.MaintenanceRequest">
@@ -13,7 +13,7 @@
     <field name="assignedTo"/>
     <field name="actionSelect"/>
     <field name="doneOn"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="maintenance-request-form" title="Maintenance Request"

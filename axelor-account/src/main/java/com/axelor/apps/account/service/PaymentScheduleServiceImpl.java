@@ -31,6 +31,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -61,6 +62,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
   protected SequenceService sequenceService;
   protected PaymentScheduleRepository paymentScheduleRepo;
+  protected PartnerRepository partnerRepository;
   protected PartnerService partnerService;
 
   protected AppAccountService appAccountService;
@@ -72,11 +74,13 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       PaymentScheduleLineRepository paymentScheduleLineRepo,
       SequenceService sequenceService,
       PaymentScheduleRepository paymentScheduleRepo,
+      PartnerRepository partnerRepository,
       PartnerService partnerService) {
     this.paymentScheduleLineService = paymentScheduleLineService;
     this.paymentScheduleLineRepo = paymentScheduleLineRepo;
     this.sequenceService = sequenceService;
     this.paymentScheduleRepo = paymentScheduleRepo;
+    this.partnerRepository = partnerRepository;
     this.partnerService = partnerService;
 
     this.appAccountService = appAccountService;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -514,7 +514,7 @@
         <field name="payerQuality" if-module="axelor-account"
           if="__config__.app.isApp('account')" hideIf="isEmployee"/>
         <field name="salePartnerPriceList" canEdit="false"
-          domain="self.typeSelect = 1 AND self.currency = :currency"
+          onSelect="action-partner-method-sale-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')"/>
@@ -553,7 +553,7 @@
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
         <field name="purchasePartnerPriceList" canEdit="false"
-          domain="self.typeSelect = 2 AND self.currency = :currency"
+          onSelect="action-partner-method-purchase-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
@@ -1827,5 +1827,15 @@
     <view-param name="popup-save" value="false"/>
     <context name="_parentSiret" expr="eval: __this__.registrationCode"/>
   </action-view>
+
+  <action-method name="action-partner-method-sale-partner-price-list-domain">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getSalePartnerPriceListDomain"/>
+  </action-method>
+
+  <action-method name="action-partner-method-purchase-partner-price-list-domain">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getPurchasePartnerPriceListDomain"/>
+  </action-method>
 
 </object-views>

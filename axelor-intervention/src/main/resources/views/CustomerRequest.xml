@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid model="com.axelor.apps.intervention.db.CustomerRequest" title="Customer requests"
     name="customer-request-grid">
@@ -13,7 +13,7 @@
       if="_xGitStatusIndicator == 'fail' || _xGrtStatusIndicator == 'fail' || _xGitStatusIndicator == 'nonRespected' || _xGrtStatusIndicator == 'nonRespected'"/>
     <field name="sequence"/>
     <field name="name"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="company"/>
     <field name="tradingName"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>

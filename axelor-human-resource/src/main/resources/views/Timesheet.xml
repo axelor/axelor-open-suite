@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
     groupBy="employee" orderBy="employee,-fromDate">
@@ -19,7 +19,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
@@ -40,7 +41,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
@@ -61,7 +63,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
@@ -85,7 +88,8 @@
     <field name="toDate"/>
     <field name="sentDateTime"/>
     <field name="periodTotal"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>

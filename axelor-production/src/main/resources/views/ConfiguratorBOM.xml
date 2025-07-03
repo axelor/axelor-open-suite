@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="configurator-bom-form" title="Configurator BOM"
     onNew="action-configurator-bom-record-set-parent"
@@ -9,7 +9,7 @@
     <panel name="mainPanel">
       <panel>
         <field name="company"/>
-        <field name="statusSelect" selection-in="[2,3]"/>
+        <field name="statusSelect" selection-in="[2,3]" widget="single-select"/>
       </panel>
       <panel name="labelPanel" title="Label">
         <field name="defNameAsFormula" colSpan="6"/>

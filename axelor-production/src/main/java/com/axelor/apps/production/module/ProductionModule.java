@@ -34,6 +34,7 @@ import com.axelor.apps.production.db.repo.ProdProcessManagementRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.db.repo.ProductCompanyProductionRepository;
 import com.axelor.apps.production.db.repo.ProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchManagementRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchRepository;
@@ -150,8 +151,16 @@ import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolBomUpdateServiceImpl;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateServiceImpl;
+import com.axelor.apps.production.service.SolDetailsDurationService;
+import com.axelor.apps.production.service.SolDetailsDurationServiceImpl;
+import com.axelor.apps.production.service.SolDetailsProdProcessComputeQtyService;
+import com.axelor.apps.production.service.SolDetailsProdProcessComputeQtyServiceImpl;
 import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingService;
 import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingServiceImpl;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineUpdateService;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineUpdateServiceImpl;
+import com.axelor.apps.production.service.SolProdProcessCustomizationService;
+import com.axelor.apps.production.service.SolProdProcessCustomizationServiceImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
@@ -271,6 +280,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
+import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
@@ -473,5 +483,12 @@ public class ProductionModule extends AxelorModule {
     bind(MrpLineManagementRepository.class).to(MrpLineProductionRepository.class);
     bind(SaleOrderLineBlockingProductionService.class)
         .to(SaleOrderLineBlockingProductionServiceImpl.class);
+    bind(ProductCompanyStockRepository.class).to(ProductCompanyProductionRepository.class);
+    bind(SolDetailsProdProcessLineUpdateService.class)
+        .to(SolDetailsProdProcessLineUpdateServiceImpl.class);
+    bind(SolProdProcessCustomizationService.class).to(SolProdProcessCustomizationServiceImpl.class);
+    bind(SolDetailsProdProcessComputeQtyService.class)
+        .to(SolDetailsProdProcessComputeQtyServiceImpl.class);
+    bind(SolDetailsDurationService.class).to(SolDetailsDurationServiceImpl.class);
   }
 }

@@ -1,0 +1,3 @@
+---
+title: "Purchase order line: fixed an issue where quantity was not reset to valid when managing multiple quantity."
+module: axelor-purchase

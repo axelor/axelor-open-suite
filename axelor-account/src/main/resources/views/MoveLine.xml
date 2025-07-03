@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -168,9 +168,10 @@
       onChange="account-move-line-update-tax-equiv" width="80" widget="TagSelect"/>
     <field name="vatSystemSelect"
       validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
-      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
+      readonlyIf="move.journal.journalType.technicalTypeSelect == 3 || account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
       width="80"/>
+    <field name="move.journal.journalType.technicalTypeSelect"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="analyticDistributionTemplate"
@@ -212,7 +213,7 @@
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
-      onChange="action-move-line-method-analytic-distribution-template-onchange-light"/>
+      onChange="action-move-line-method-analytic-move-line-onchange"/>
     <field name="reconcileGroup" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
@@ -228,7 +229,8 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="currencyDecimals" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
-    <field name="move.functionalOriginSelect" hidden="true"/>
+    <field name="move.statusSelect" hidden="true"/>
+    <field name="move" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
@@ -864,12 +866,6 @@
 
   <action-method name="account-move-line-update-tax-equiv">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxEquiv"/>
-  </action-method>
-
-  <action-method
-    name="action-move-line-method-analytic-distribution-template-onchange-light">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="analyticDistributionTemplateOnChangeLight"/>
   </action-method>
 
   <action-method name="action-move-line-method-analytic-move-line-onchange">

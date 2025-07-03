@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="app-production-config-form" title="App manufacturing"
     model="com.axelor.studio.db.AppProduction" canDelete="false" canNew="false" width="large"
@@ -46,6 +46,7 @@
           <field name="updateProjectSolDetailsLineTypeSelect"
             if="__config__.app.getApp('sale')?.allowPendingOrderModification &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
             if-module="axelor-business-production"/>
+          <field name="isProdProcessLineGenerationInSODisabled" widget="boolean-switch"/>
         </panel>
 
       </panel>
@@ -132,7 +133,8 @@
   </action-validate>
 
   <action-attrs name="action-app-production-attrs-so-bom-line-generation-readonly">
-    <attribute for="isBomLineGenerationInSODisabled" name="readonly"
+    <attribute
+      for="isBomLineGenerationInSODisabled, isProdProcessLineGenerationInSODisabled" name="readonly"
       expr="eval: __config__.app.getApp('sale')?.getListDisplayTypeSelect() != __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
   </action-attrs>
 

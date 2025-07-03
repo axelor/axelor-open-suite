@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
   <form name="configurator-prod-process-form" title="Configurator Prod Process"
     model="com.axelor.apps.production.db.ConfiguratorProdProcess">
     <panel name="mainPanel">
@@ -19,7 +19,7 @@
           x-code-syntax="groovy" showTitle="false" showIf="defCodeAsFormula"/>
       </panel>
       <field name="company"/>
-      <field name="statusSelect" selection-in="[2,3]"/>
+      <field name="statusSelect" selection-in="[2,3]" widget="single-select"/>
       <panel name="stockLocationPanel" title="Stock Location">
         <field name="defStockLocationAsFormula" colSpan="6"/>
         <field name="stockLocation" form-view="stock-location-form"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <calendar name="operation-order-planned-calendar"
     model="com.axelor.apps.production.db.OperationOrder" eventStart="plannedStartDateT"
@@ -37,7 +37,7 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
     <field name="manufOrder.prodProcess" hidden="true"/>
@@ -70,7 +70,7 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
     <field name="manufOrder.prodProcess" hidden="true"/>

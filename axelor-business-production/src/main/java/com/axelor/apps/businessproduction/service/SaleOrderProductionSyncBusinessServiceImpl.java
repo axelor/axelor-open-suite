@@ -27,7 +27,10 @@ import com.axelor.apps.production.service.SaleOrderSyncAbstractService;
 import com.axelor.apps.production.service.SolBomCustomizationService;
 import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineUpdateService;
+import com.axelor.apps.production.service.SolProdProcessCustomizationService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import java.util.List;
@@ -36,14 +39,16 @@ public class SaleOrderProductionSyncBusinessServiceImpl extends SaleOrderSyncAbs
     implements SaleOrderProductionSyncBusinessService {
 
   @Inject
-  protected SaleOrderProductionSyncBusinessServiceImpl(
+  public SaleOrderProductionSyncBusinessServiceImpl(
       SaleOrderLineBomLineMappingService saleOrderLineBomLineMappingService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
       SolBomCustomizationService solBomCustomizationService,
       SolDetailsBomUpdateService solDetailsBomUpdateService,
       SolBomUpdateService solBomUpdateService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      SolDetailsProdProcessLineUpdateService solDetailsProdProcessLineUpdateService,
+      SolProdProcessCustomizationService solProdProcessCustomizationService) {
     super(
         saleOrderLineBomLineMappingService,
         saleOrderLineBomService,
@@ -51,12 +56,15 @@ public class SaleOrderProductionSyncBusinessServiceImpl extends SaleOrderSyncAbs
         solBomCustomizationService,
         solDetailsBomUpdateService,
         solBomUpdateService,
-        appProductionService);
+        appProductionService,
+        solDetailsProdProcessLineUpdateService,
+        solProdProcessCustomizationService);
   }
 
   @Override
-  public void syncSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException {
-    super.syncSaleOrderLine(saleOrderLine);
+  public void syncSaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    super.syncSaleOrderLine(saleOrder, saleOrderLine);
   }
 
   @Override

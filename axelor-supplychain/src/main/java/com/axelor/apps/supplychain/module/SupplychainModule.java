@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.AccountingCutOffServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
@@ -143,6 +144,8 @@ import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpForecastService;
 import com.axelor.apps.supplychain.service.MrpForecastServiceImpl;
+import com.axelor.apps.supplychain.service.MrpLineSaleOrderService;
+import com.axelor.apps.supplychain.service.MrpLineSaleOrderServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineTypeService;
@@ -216,6 +219,7 @@ import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -320,8 +324,6 @@ import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSal
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadService;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadServiceImpl;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewService;
-import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
@@ -490,8 +492,6 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineDomainSupplychainServiceImpl.class);
     bind(SaleOrderLineSupplychainOnLoadService.class)
         .to(SaleOrderLineSupplychainOnLoadServiceImpl.class);
-    bind(SaleOrderLineSupplychainOnNewService.class)
-        .to(SaleOrderLineSupplychainOnNewServiceImpl.class);
     bind(SaleOrderLineOnSaleSupplyChangeService.class)
         .to(SaleOrderLineOnSaleSupplyChangeServiceImpl.class);
     bind(SaleOrderTaxNumberService.class).to(SaleOrderTaxNumberServiceImpl.class);
@@ -534,5 +534,9 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineBlockingSupplychainServiceImpl.class);
     bind(SaleOrderBlockingSupplychainService.class)
         .to(SaleOrderBlockingSupplychainServiceImpl.class);
+    bind(MrpLineSaleOrderService.class).to(MrpLineSaleOrderServiceImpl.class);
+
+    bind(AnalyticMoveLineParentServiceImpl.class)
+        .to(AnalyticMoveLineParentSupplychainServiceImpl.class);
   }
 }

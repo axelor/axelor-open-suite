@@ -34,4 +34,6 @@ public interface AccountingSituationSupplychainService extends AccountingSituati
   void checkExceededUsedCredit(SaleOrder saleOrder) throws AxelorException;
 
   boolean isUsedCreditExceeded(SaleOrder saleOrder) throws AxelorException;
+
+  void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

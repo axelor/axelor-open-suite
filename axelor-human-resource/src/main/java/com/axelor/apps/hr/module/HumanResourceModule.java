@@ -75,6 +75,10 @@ import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.hr.service.EmployeeFileDMSServiceImpl;
 import com.axelor.apps.hr.service.HRDashboardService;
 import com.axelor.apps.hr.service.HRDashboardServiceImpl;
+import com.axelor.apps.hr.service.KilometricExpenseService;
+import com.axelor.apps.hr.service.KilometricExpenseServiceImpl;
+import com.axelor.apps.hr.service.KilometricLogService;
+import com.axelor.apps.hr.service.KilometricLogServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
@@ -248,12 +252,18 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateUpdateService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateUpdateServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeToolService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeToolServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeWarningService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeWarningServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectTaskPPTGenerateService;
+import com.axelor.apps.hr.service.project.ProjectTaskPPTGenerateServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
 import com.axelor.apps.hr.service.project.ProjectTaskSprintServiceImpl;
 import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
@@ -492,5 +502,11 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseLineDomainService.class).to(ExpenseLineDomainServiceImpl.class);
     bind(PartnerEmployeeService.class).to(PartnerEmployeeServiceImpl.class);
     bind(PartnerConvertServiceImpl.class).to(PartnerConvertHRServiceImpl.class);
+    bind(ProjectPlanningTimeWarningService.class).to(ProjectPlanningTimeWarningServiceImpl.class);
+    bind(ProjectTaskPPTGenerateService.class).to(ProjectTaskPPTGenerateServiceImpl.class);
+    bind(ProjectPlanningTimeCreateUpdateService.class)
+        .to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
+    bind(KilometricLogService.class).to(KilometricLogServiceImpl.class);
+    bind(KilometricExpenseService.class).to(KilometricExpenseServiceImpl.class);
   }
 }
