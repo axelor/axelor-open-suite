@@ -305,6 +305,8 @@
     <bind to="companySpecificProductFieldsSet" column="companySpecificFieldName"
       search="self.name IN :companySpecificFieldName AND self.metaModel.name = 'Product'"
       eval="companySpecificFieldName.split('\\|') as List"/>
+    <bind to="barcodeTypeConfig" column="barcodeTypeConfig_name"
+      search="self.name = :barcodeTypeConfig_name"/>
   </input>
 
 
