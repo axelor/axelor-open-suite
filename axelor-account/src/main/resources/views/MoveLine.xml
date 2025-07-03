@@ -213,7 +213,7 @@
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
-      onChange="action-move-line-method-analytic-distribution-template-onchange-light"/>
+      onChange="action-move-line-method-analytic-move-line-onchange"/>
     <field name="reconcileGroup" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
@@ -866,12 +866,6 @@
 
   <action-method name="account-move-line-update-tax-equiv">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxEquiv"/>
-  </action-method>
-
-  <action-method
-    name="action-move-line-method-analytic-distribution-template-onchange-light">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="analyticDistributionTemplateOnChangeLight"/>
   </action-method>
 
   <action-method name="action-move-line-method-analytic-move-line-onchange">

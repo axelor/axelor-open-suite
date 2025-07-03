@@ -111,6 +111,8 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
@@ -1005,5 +1007,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveGroupOnChangeService.class).to(MoveGroupOnChangeServiceImpl.class);
     bind(BankDetailsDomainServiceAccount.class).to(BankDetailsDomainServiceAccountImpl.class);
     bind(BankDetailsServiceAccount.class).to(BankDetailsServiceAccountImpl.class);
+
+    bind(AnalyticMoveLineParentService.class).to(AnalyticMoveLineParentServiceImpl.class);
   }
 }
