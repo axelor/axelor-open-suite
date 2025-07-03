@@ -33,6 +33,7 @@ import com.axelor.apps.contract.service.AccountManagementContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractService;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl;
+import com.axelor.apps.contract.service.AnalyticMoveLineParentContractServiceImpl;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractFileService;
@@ -72,6 +73,7 @@ import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
 import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 
@@ -110,5 +112,7 @@ public class ContractModule extends AxelorModule {
     bind(AccountManagementContractService.class).to(AccountManagementContractServiceImpl.class);
     bind(ContractLineContextToolService.class).to(ContractLineContextToolServiceImpl.class);
     bind(ContractInvoicingService.class).to(ContractInvoicingServiceImpl.class);
+    bind(AnalyticMoveLineParentSupplychainServiceImpl.class)
+        .to(AnalyticMoveLineParentContractServiceImpl.class);
   }
 }

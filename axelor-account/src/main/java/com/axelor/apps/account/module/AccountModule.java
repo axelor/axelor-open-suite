@@ -111,6 +111,8 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -965,5 +967,6 @@ public class AccountModule extends AxelorModule {
     bind(PaymentModeInterestRateService.class).to(PaymentModeInterestRateServiceImpl.class);
 
     bind(InvoiceTaxComputeService.class).to(InvoiceTaxComputeServiceImpl.class);
+    bind(AnalyticMoveLineParentService.class).to(AnalyticMoveLineParentServiceImpl.class);
   }
 }
