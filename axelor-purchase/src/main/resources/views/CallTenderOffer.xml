@@ -8,12 +8,13 @@
     <field name="statusSelect"/>
     <field name="product"/>
     <field name="supplierPartner"/>
-    <field name="requestedQty"/>
+    <field name="requestedQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="requestedUnit"/>
     <field name="requestedDate"/>
-    <field name="proposedQty"/>
+    <field name="proposedQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="proposedUnit"/>
-    <field name="proposedPrice"/>
+    <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
   </grid>
 
   <form name="call-tender-offer-form" model="com.axelor.apps.purchase.db.CallTenderOffer"
@@ -30,16 +31,20 @@
       <field name="product" colSpan="6"/>
       <field name="supplierPartner" colSpan="6" form-view="partner-form"
         grid-view="partner-grid"/>
-      <field name="requestedQty" colSpan="6"/>
+      <field name="requestedQty" colSpan="6" x-scale="$nbDecimalDigitForQty"/>
       <field name="requestedUnit" colSpan="6"/>
     </panel>
     <panel name="proposalPanel" title="Proposal">
-      <field name="proposedQty"/>
+      <field name="proposedQty" x-scale="$nbDecimalDigitForQty"/>
       <field name="proposedUnit"/>
-      <field name="proposedPrice"/>
+      <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     </panel>
     <panel name="commentPanel">
       <field name="offerComment"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true" x-dirty="false"/>
     </panel>
 
   </form>

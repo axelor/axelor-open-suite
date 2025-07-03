@@ -7,7 +7,7 @@
 
   <entity name="CallTender">
 
-    <string name="name"/>
+    <string name="name" title="Call tender name"/>
     <string name="description" title="Description"/>
     <one-to-many name="callTenderNeedList"
       ref="com.axelor.apps.purchase.db.CallTenderNeed" title="Product needs" mappedBy="callTender"/>
