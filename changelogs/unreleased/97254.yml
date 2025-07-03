@@ -1,3 +1,8 @@
 ---
 title: "Call for tender: added a option to activate the feature."
 module: axelor-purchase
+developer: |
+  The following script must be played if the database is not auto updated:
+  ```
+  ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
+  ```
