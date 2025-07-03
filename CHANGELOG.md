@@ -1,3 +1,53 @@
+## [7.2.43] (2025-07-03)
+
+### Fixes
+#### Base
+
+* Data Backup: fixed translations and added help for some fields.
+
+#### Account
+
+* AnalyticMoveLine/MoveLine : fixed the reset of analytic accounts on moveline when changing it on analytic move line
+* MassEntryMove: fixed the error message list.
+
+#### Human Resource
+
+* Issue on Windows when we try to build the AOS project.
+
+#### Purchase
+
+* Purchase order line: fixed an issue where quantity was not reset to valid when managing multiple quantity.
+
+
+### Developer
+
+#### Base
+
+Migration script -
+
+```
+UPDATE meta_field
+SET label = 'Relative dates',
+description = 'Allows exporting dates by calculating the difference with the export date. During import, the data will be updated based on the import date and the previously saved offset.'
+WHERE name = 'isRelativeDate' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Batch size used when reading data. Allows you to optimize performance based on database volume.'
+WHERE name = 'fetchLimit' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Can be used in order to keep a fixed reference to update the current existing database. Not required for loading into another database.'
+WHERE name = 'updateImportId' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+```
+
+#### Account
+
+Migration script -
+
+```
+ALTER TABLE account_move ALTER COLUMN mass_entry_errors TYPE text;
+```
+
 ## [7.2.42] (2025-06-26)
 
 ### Fixes
@@ -1798,6 +1848,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.43]: https://github.com/axelor/axelor-open-suite/compare/v7.2.42...v7.2.43
 [7.2.42]: https://github.com/axelor/axelor-open-suite/compare/v7.2.41...v7.2.42
 [7.2.41]: https://github.com/axelor/axelor-open-suite/compare/v7.2.40...v7.2.41
 [7.2.40]: https://github.com/axelor/axelor-open-suite/compare/v7.2.39...v7.2.40
