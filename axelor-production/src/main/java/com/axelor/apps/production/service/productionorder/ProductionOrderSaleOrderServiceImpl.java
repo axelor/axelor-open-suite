@@ -91,6 +91,13 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     }
   }
 
+  @Override
+  public boolean areAllBlocked(List<SaleOrderLine> saleOrderLineList) {
+    return saleOrderLineList.stream()
+        .filter(this::isGenerationNeeded)
+        .allMatch(saleOrderLineBlockingProductionService::isProductionBlocked);
+  }
+
   protected String getMessageForOneProdPerSo(
       SaleOrder saleOrder,
       List<SaleOrderLine> selectedSaleOrderLine,

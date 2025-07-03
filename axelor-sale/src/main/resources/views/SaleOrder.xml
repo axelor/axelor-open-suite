@@ -797,7 +797,7 @@
         !__config__.app.getApp('production')?.productionOrderGenerationAuto"
         name="generateProductionOrderBtn" title="Generate production order"
         if-module="axelor-production" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
-        colSpan="12" onClick="save,action-sale-order-method-create-production-order"
+        colSpan="12" onClick="save,action-sale-order-group-create-production-order"
         icon="house-gear-fill" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button
         if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain')?.getPurchaseOrderGenerationAuto()"
