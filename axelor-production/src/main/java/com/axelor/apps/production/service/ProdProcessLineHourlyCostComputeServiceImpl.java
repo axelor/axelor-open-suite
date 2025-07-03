@@ -61,17 +61,40 @@ public class ProdProcessLineHourlyCostComputeServiceImpl
     } else if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE) {
       costAmount = machineCostAmount;
     } else {
-      BigDecimal humanDuration =
-          prodProcessLineComputationService.getHourHumanDuration(prodProcessLine, nbCycles);
-      BigDecimal machineDuration =
-          prodProcessLineComputationService.getHourMachineDuration(prodProcessLine, qtyToProduce);
-      if (machineDuration.compareTo(humanDuration) > 0) {
-        costAmount = machineCostAmount;
-      } else {
-        costAmount = humanCostAmount;
-      }
+
+      costAmount =
+          getHumanAndMachineCostAmount(
+              prodProcessLine, qtyToProduce, humanCostAmount, nbCycles, machineCostAmount);
     }
 
+    return costAmount;
+  }
+
+  protected BigDecimal getHumanAndMachineCostAmount(
+      ProdProcessLine prodProcessLine,
+      BigDecimal qtyToProduce,
+      BigDecimal humanCostAmount,
+      BigDecimal nbCycles,
+      BigDecimal machineCostAmount)
+      throws AxelorException {
+    BigDecimal costAmount;
+    humanCostAmount =
+        humanCostAmount.multiply(
+            prodProcessLineComputationService.getHourHumanDuration(prodProcessLine, nbCycles));
+    machineCostAmount =
+        machineCostAmount.multiply(
+            prodProcessLineComputationService.getHourMachineDuration(
+                prodProcessLine, qtyToProduce));
+    BigDecimal totalAmount = humanCostAmount.add(machineCostAmount);
+    BigDecimal totalDuration =
+        prodProcessLineComputationService.getHourTotalDuration(prodProcessLine, nbCycles);
+    if (totalDuration.compareTo(BigDecimal.ZERO) > 0) {
+      costAmount =
+          totalAmount.divide(
+              totalDuration, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    } else {
+      costAmount = BigDecimal.ZERO;
+    }
     return costAmount;
   }
 
