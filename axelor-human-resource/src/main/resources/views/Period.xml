@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="period-hr-grid" title="Period" model="com.axelor.apps.base.db.Period"
     orderBy="-fromDate">
@@ -11,7 +11,7 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="year.company" form-view="company-form" readonly="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="period-hr-form" title="Period" model="com.axelor.apps.base.db.Period"
@@ -33,7 +33,7 @@
           onClick="save,action-method-period-status-open"
           showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
       </panel>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="closureDateTime" showIf="statusSelect == 2"/>
     </panel>
     <panel-mail name="mailPanel">
@@ -62,7 +62,7 @@
           onClick="save,action-method-period-status-open"
           showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
       </panel>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="closureDateTime" showIf="statusSelect == 2"/>
     </panel>
   </form>

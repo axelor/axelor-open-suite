@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -48,6 +48,8 @@
 
     <boolean name="isTrackerMessageEnabled" title="Enable tracker messages." default="false"
       help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
+    <boolean name="isInboxAccessEnabled" title="Activate inbox access" default="false"
+      help="This configuration allows all users to access their inbox."/>
 
     <!-- Stock line verification config -->
     <boolean name="isVerifyCustomerDeliveryLineEnabled"
@@ -171,6 +173,7 @@
       <field name="isPurchaseAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
+      <field name="isInboxAccessEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
       <field name="qrCode" on="UPDATE"/>
       <field name="isInventoryValidationEnabled" on="UPDATE"/>
@@ -202,6 +205,9 @@
       <field name="isFolderCreationAllowed" on="UPDATE"/>
       <field name="isFileCreationAllowed" on="UPDATE"/>
       <field name="isFileDeletionAllowed" on="UPDATE"/>
+      <field name="fieldsToShowOnTimesheet" on="UPDATE"/>
+      <field name="isStockLocationManagementEnabled" on="UPDATE"/>
+      <field name="isOneLineShortcut" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

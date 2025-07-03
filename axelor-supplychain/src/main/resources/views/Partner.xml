@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="incl-sales-order-dashelt-form" title="Partner"
     model="com.axelor.apps.base.db.Partner">
@@ -13,7 +13,16 @@
   <form name="incl-sales-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
     <panel-dashlet name="partnerSOPanel" colSpan="12"
       action="action-partner-view-sales-orders" title="Sales orders"
-      showIf="id != null &amp;&amp; (isCustomer || isProspect)"/>
+      showIf="id != null &amp;&amp; (isCustomer || isProspect)"
+      if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+    <panel-dashlet name="partnerQuotationPanel" colSpan="12"
+      action="action-partner-view-quotations" title="Quotations"
+      showIf="id != null &amp;&amp; (isCustomer || isProspect)"
+      if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+    <panel-dashlet name="partnerOrdersPanel" colSpan="12"
+      action="action-partner-view-orders" title="Orders"
+      showIf="id != null &amp;&amp; (isCustomer || isProspect)"
+      if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
   </form>
 
   <form name="incl-sales-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner">
@@ -52,6 +61,22 @@
     <view type="grid" name="sale-order-partner-grid"/>
     <view type="form" name="sale-order-form"/>
     <domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-quotations" title="Sales quotations"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-partner-quotation-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND (self.statusSelect
+      &lt;= 2 OR self.statusSelect = 5)</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-orders" title="Sales orders"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-partner-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND (self.statusSelect = 3
+      OR self.statusSelect = 4)</domain>
   </action-view>
 
   <action-view name="action-contact-view-sales-orders" title="Sales orders"

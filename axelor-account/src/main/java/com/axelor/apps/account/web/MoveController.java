@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.record.MoveGroupOnChangeService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
@@ -597,10 +598,10 @@ public class MoveController {
   public void onChangePaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      MoveGroupOnChangeService movePaymentModeService = Beans.get(MoveGroupOnChangeService.class);
 
-      response.setValues(moveGroupService.getPaymentModeOnChangeValuesMap(move));
-      response.setAttrs(moveGroupService.getHeaderChangeAttrsMap());
+      response.setValues(movePaymentModeService.getPaymentModeOnChangeValuesMap(move));
+      response.setAttrs(movePaymentModeService.getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -719,7 +720,7 @@ public class MoveController {
 
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
+      response.setAttrs(Beans.get(MoveGroupOnChangeService.class).getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

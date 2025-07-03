@@ -1,87 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="message-form" id="base-message-form" title="Email"
-    model="com.axelor.message.db.Message" onNew="action-group-base-message-onnew">
-    <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
-      <button name="sendBtn" title="Send" icon="fa-envelope"
-        onClick="action-group-message-message-send-click" showIf="statusSelect == 1 "/>
-      <button name="trashBtn" title="Delete" icon="fa-trash"
-        onClick="action-group-message-message-delete-click" showIf="statusSelect != 4 "/>
-    </toolbar>
-    <panel name="informationsPanel" title="Information" readonlyIf="statusSelect != 1">
-      <field name="$statusSelectTag" colSpan="12" css="label-bold bold" showTitle="false"
-        readonly="true">
-        <viewer><![CDATA[
-					<>
-						<Box d="flex" justifyContent="flex-end">
-							{statusSelect == 1 && sentDateT == null && <Badge bg="info">{_t('Not sent')}</Badge>}
-							{statusSelect == 3 && sentDateT != null && <Badge bg="success">{_t('Successful send')}</Badge>}
-							{statusSelect == 2 && sentDateT == null && <Badge bg="danger">{_t('In progress')}</Badge>}
-						</Box>
-					</>
-				]]></viewer>
-      </field>
-      <field name="mediaTypeSelect" readonlyIf="statusSelect != 1"/>
-      <field name="statusSelect"/>
-      <field name="senderUser" canNew="false" canEdit="false" canView="false"/>
-      <field name="sentDateT" showIf="sentDateT"/>
-      <panel name="emailDetailsPanel" colSpan="12" showIf="mediaTypeSelect == 2">
-        <field name="fromEmailAddress" widget="SuggestBox" form-view="email-address-form"
-          grid-view="email-address-grid"/>
-        <field name="mailAccount" widget="SuggestBox"
-          onChange="action-message-record-get-signature"
-          onSelect="action-message-attribute-mail-account" requiredIf="mediaTypeSelect == 2"
-          form-view="mail-account-form" grid-view="mail-account-grid"/>
-        <field name="replyToEmailAddressSet" hidden="true" widget="TagSelect"
-          x-create="address" form-view="email-address-form" colSpan="12"
-          grid-view="email-address-grid"/>
-      </panel>
-    </panel>
-    <panel name="recipientAddressPanel" title="Recipient address"
-      readonlyIf="statusSelect != 1" showIf="mediaTypeSelect == 1">
-      <field name="addressBlock" colSpan="12" widget="html" x-lite="false" height="5"
-        showTitle="false" showIf="mediaTypeSelect == 1" requiredIf="mediaTypeSelect == 1"/>
-    </panel>
-    <panel name="recipientsPanel" title="Recipients" readonlyIf="statusSelect != 1"
-      showIf="mediaTypeSelect == 2">
-      <field name="toEmailAddressSet" widget="TagSelect" x-create="address"
-        form-view="email-address-form" colSpan="12" requiredIf="mediaTypeSelect == 2"
-        grid-view="email-address-grid"/>
-      <field name="ccEmailAddressSet" widget="TagSelect" x-create="address"
-        form-view="email-address-form" colSpan="12" grid-view="email-address-grid"/>
-      <field name="bccEmailAddressSet" widget="TagSelect" x-create="address"
-        form-view="email-address-form" colSpan="12" grid-view="email-address-grid"/>
-    </panel>
-    <panel name="messageDestinatedToPanel" title="Message destinated to"
-      readonlyIf="statusSelect != 1" showIf="mediaTypeSelect == 3">
-      <field name="recipientUser" colSpan="6" showTitle="false" showIf="mediaTypeSelect == 3"
-        requiredIf="mediaTypeSelect == 3" form-view="user-form" grid-view="user-grid" canNew="false"
-        canEdit="false" canView="false"/>
-    </panel>
-    <panel name="contentPanel" title="Content" readonlyIf="statusSelect != 1">
-      <field name="subject" title="Subject" colSpan="12" required="true"/>
-      <field name="content" colSpan="12" showTitle="false" widget="html"
-        showIf="mediaTypeSelect != 5"/>
-      <field name="content" colSpan="12" showTitle="false" widget="html" x-lite="true"
-        showIf="mediaTypeSelect == 5"/>
-    </panel>
-    <panel name="relatedToPanel" title="Related to" sidebar="true" colSpan="12"
-      readonlyIf="statusSelect == 4">
-      <field name="company" colSpan="12" form-view="company-form" grid-view="company-grid"
-        canEdit="false"/>
-      <field name="multiRelatedList">
-        <editor>
-          <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"
-            colSpan="12" showTitle="false"/>
-          <field name="relatedToSelectId" hidden="true"/>
-        </editor>
-      </field>
-    </panel>
+    model="com.axelor.message.db.Message" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-group-base-message-onnew"/>
+    </extend>
+    <extend target="//field[@name='$statusSelectTag']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='mediaTypeSelect']">
+      <insert position="before">
+        <field name="$statusSelectTag" showTitle="false" readonly="true" colSpan="12"
+          css="label-bold bold">
+          <viewer><![CDATA[
+	          <>
+	              <Box d="flex" justifyContent="flex-end">
+	                  {statusSelect == 1 && sentDateT == null && <Badge bg="info">{_t('Not sent')}</Badge>}
+	                  {statusSelect == 3 && sentDateT != null && <Badge bg="success">{_t('Successful send')}</Badge>}
+	                  {statusSelect == 2 && sentDateT == null && <Badge bg="danger">{_t('In progress')}</Badge>}
+	              </Box>
+	          </>
+          ]]></viewer>
+        </field>
+      </insert>
+    </extend>
+    <extend target="//field[@name='senderUser']">
+      <attribute name="canNew" value="false"/>
+      <attribute name="canView" value="false"/>
+      <attribute name="canEdit" value="false"/>
+    </extend>
+    <extend target="//field[@name='sentDateT']">
+      <attribute name="colSpan" value=""/>
+      <attribute name="showIf" value="sentDateT"/>
+    </extend>
+    <extend target="//field[@name='mailAccount']">
+      <attribute name="domain" value=""/>
+      <attribute name="onSelect" value="action-message-attribute-mail-account"/>
+    </extend>
+    <extend target="//field[@name='replyToEmailAddressSet']">
+      <attribute name="hidden" value="true"/>
+    </extend>
+    <extend target="//panel[@name='recipientsPanel']">
+      <attribute name="showIf" value="mediaTypeSelect == 2"/>
+    </extend>
+    <extend target="//panel[@name='recipientPanel']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='recipientUser']">
+      <attribute name="canNew" value="false"/>
+      <attribute name="canView" value="false"/>
+      <attribute name="canEdit" value="false"/>
+    </extend>
+    <extend target="//field[@name='multiRelatedList']">
+      <insert position="before">
+        <field name="company" form-view="company-form" grid-view="company-grid" colSpan="12"
+          canEdit="false"/>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-group-base-message-onnew">

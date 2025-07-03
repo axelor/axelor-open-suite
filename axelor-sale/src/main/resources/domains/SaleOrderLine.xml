@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -138,6 +138,8 @@
     <many-to-one name="configurator" ref="com.axelor.apps.sale.db.Configurator"
       title="Configurator"/>
 
+    <decimal name="orderedQty" title="Ordered qty" default="0" precision="20" scale="10"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-imports>
@@ -159,6 +161,8 @@
 
 	  	]]>
     </extra-code>
+
+    <entity-listener class="com.axelor.apps.sale.db.repo.SaleOrderLineListener"/>
 
   </entity>
 

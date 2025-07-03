@@ -19,23 +19,53 @@
 package com.axelor.apps.supplychain.service.cart;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class CartStockLocationServiceImpl implements CartStockLocationService {
 
   protected CartProductService cartProductService;
+  protected StockLocationLineRepository stockLocationLineRepository;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
-  public CartStockLocationServiceImpl(CartProductService cartProductService) {
+  public CartStockLocationServiceImpl(
+      CartProductService cartProductService,
+      StockLocationLineRepository stockLocationLineRepository,
+      AppSupplychainService appSupplychainService) {
     this.cartProductService = cartProductService;
+    this.stockLocationLineRepository = stockLocationLineRepository;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
   public void addToCart(StockLocation stockLocation) throws AxelorException {
-    for (StockLocationLine stockLocationLine : stockLocation.getStockLocationLineList()) {
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
+    int cartLimit = appSupplychain.getStockLocationToCartLimit();
+
+    List<StockLocationLine> stockLocationLineList =
+        stockLocationLineRepository
+            .all()
+            .filter("self.stockLocation = :stockLocation")
+            .bind("stockLocation", stockLocation)
+            .fetch();
+    if (stockLocationLineList.size() > cartLimit) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_LOCATION_TO_CART_LIMIT_EXCEEDED),
+          cartLimit);
+    }
+
+    for (StockLocationLine stockLocationLine : stockLocationLineList) {
       cartProductService.addToCart(stockLocationLine.getProduct());
     }
   }

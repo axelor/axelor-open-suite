@@ -108,7 +108,7 @@ public class StockMoveController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  stockMove.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  stockMove.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {

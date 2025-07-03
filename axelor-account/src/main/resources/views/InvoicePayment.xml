@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="invoice-payment-grid" title="Payments"
     model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
@@ -15,7 +15,7 @@
       grid-view="bank-details-grid"/>
     <field name="typeSelect"/>
     <field name="move" width="120" form-view="move-form" grid-view="move-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="cancelBtn" icon="fa-times-circle"
       onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
   </grid>
@@ -94,9 +94,9 @@
       <field name="move" form-view="move-form" grid-view="move-grid"/>
       <field name="bankOrder" if-module="axelor-bank-payment" showIf="bankOrder"
         form-view="bank-order-form" grid-view="bank-order-grid"/>
-      <field name="statusSelect"
+      <field name="statusSelect" widget="single-select"
         showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
-      <field name="statusSelect"
+      <field name="statusSelect" widget="single-select"
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
       <button name="cancelBtn" title="Cancel"

@@ -26,10 +26,14 @@ import com.axelor.apps.sale.db.SaleOrder;
 
 public interface AccountingSituationSupplychainService extends AccountingSituationService {
 
-  public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
-
   public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation)
       throws AxelorException;
 
   public void updateUsedCredit(Partner partner) throws AxelorException;
+
+  void checkExceededUsedCredit(SaleOrder saleOrder) throws AxelorException;
+
+  boolean isUsedCreditExceeded(SaleOrder saleOrder) throws AxelorException;
+
+  void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

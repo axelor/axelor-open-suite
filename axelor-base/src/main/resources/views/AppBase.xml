@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
@@ -187,7 +187,7 @@
             <field name="certificate" widget="binary-link"
               onChange="action-pfx-certificate-group-certificate-onchange"/>
             <field name="password" readonlyIf="!certificate" widget="password"
-              onChange="action-pfx-certificate-method-get-validity-dates" hideIf="fromValidityDate"/>
+              onChange="action-pfx-certificate-group-password-onchange" hideIf="fromValidityDate"/>
             <spacer colSpan="6"/>
             <field name="fromValidityDate"/>
             <field name="toValidityDate"/>

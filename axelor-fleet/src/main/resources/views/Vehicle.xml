@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="vehicle-grid" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle">
     <field name="plateNo"/>
@@ -93,6 +93,13 @@
       </panel-related>
       <panel-related name="vehicleRepairListPanel" field="vehicleRepairList"
         title="Repairs" colSpan="12"/>
+      <panel name="odometerspanel" title="Odometers">
+        <spacer/>
+        <button name="createOdometerBtn" title="Create odometer"
+          onClick="save,action-vehicle-view-create-odometer"/>
+        <panel-dashlet name="viewOdometerspanel" title="Odometers"
+          action="action-vehicle-view-odometers" colSpan="12"/>
+      </panel>
     </panel-tabs>
 
 
@@ -137,4 +144,23 @@
     model="com.axelor.apps.fleet.web.Vehicle">
     <call class="com.axelor.apps.fleet.web.VehicleController" method="setImage"/>
   </action-method>
+
+  <action-view name="action-vehicle-view-odometers" title="Odometers"
+    model="com.axelor.apps.fleet.db.VehicleOdometer">
+    <view type="grid" name="vehicle-odometer-grid"/>
+    <view type="form" name="vehicle-odometer-form"/>
+    <domain>self.vehicle.id = :_id</domain>
+  </action-view>
+
+  <action-view name="action-vehicle-view-create-odometer" title="Create odometer"
+    model="com.axelor.apps.fleet.db.VehicleOdometer">
+    <view type="form" name="vehicle-odometer-form"/>
+    <view type="grid" name="vehicle-odometer-grid"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_vehicle" expr="eval: __this__"/>
+  </action-view>
+
 </object-views>

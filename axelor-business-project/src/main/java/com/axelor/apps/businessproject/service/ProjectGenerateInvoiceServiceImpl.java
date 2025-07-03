@@ -23,7 +23,9 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxNumberRepository;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -83,6 +85,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected AnalyticLineService analyticLineService;
   protected PartnerAccountService partnerAccountService;
+  protected TaxNumberRepository taxNumberRepository;
 
   protected int sequence = 0;
 
@@ -103,7 +106,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       AppBusinessProjectService appBusinessProjectService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       AnalyticLineService analyticLineService,
-      PartnerAccountService partnerAccountService) {
+      PartnerAccountService partnerAccountService,
+      TaxNumberRepository taxNumberRepository) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -120,6 +124,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
     this.analyticLineService = analyticLineService;
     this.partnerAccountService = partnerAccountService;
+    this.taxNumberRepository = taxNumberRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -163,6 +168,15 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoice.setIsExpenseLineOnInvoiceGrouped(appBusinessProject.getIsExpenseLineOnInvoiceGrouped());
     invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
 
+    Partner companyPartner = company.getPartner();
+    if (companyPartner != null && companyPartner.getTaxNbr() != null) {
+      TaxNumber companyTaxNumber =
+          taxNumberRepository
+              .findByCompanyAndTaxNbr(company, companyPartner.getTaxNbr())
+              .fetchOne();
+      invoice.setCompanyTaxNumber(companyTaxNumber);
+    }
+
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
     invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     invoiceRepository.save(invoice);
@@ -192,6 +206,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         invoicedPartnerContact,
         invoicedPartner.getCurrency(),
         partnerPriceListService.getDefaultPriceList(invoicedPartner, PriceListRepository.TYPE_SALE),
+        null,
         null,
         null,
         null,

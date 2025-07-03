@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
     <field name="actionSelect"/>
@@ -47,8 +47,8 @@
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
       <field name="description" showTitle="false" colSpan="12"/>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-batch-method-show-batches" canSearch="true"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="runBatchBtn" title="Run batch" showIf="actionSelect >= 2"

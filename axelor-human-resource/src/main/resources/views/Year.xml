@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form onSave="action-year-check-date"
     onNew="action-year-record-new,action-year-hr-record-new" name="year-hr-form"
@@ -22,7 +22,7 @@
       readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
     <panel name="selectPanel" sidebar="true" readonlyIf="statusSelect == 2">
       <field name="typeSelect" readonly="true" colSpan="6"/>
-      <field name="statusSelect" colSpan="6"/>
+      <field name="statusSelect" colSpan="6" widget="single-select"/>
     </panel>
     <panel sidebar="true" name="periodsGenerationAssistantPanel"
       title="Periods generation assistant">

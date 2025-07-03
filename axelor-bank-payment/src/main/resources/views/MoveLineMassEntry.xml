@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="move-line-mass-entry-move-grid"
+    model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines"
+    id="bank-payment-move-line-mass-entry-move-grid" extension="true">
+    <extend target="//field[@name='movePaymentMode']">
+      <attribute name="onChange"
+        value="action-move-line-mass-entry-group-on-change-payment-mode-bank-payment"/>
+    </extend>
+  </grid>
+
+  <action-group
+    name="action-move-line-mass-entry-group-on-change-payment-mode-bank-payment">
+    <action name="action-move-line-mass-entry-group-on-change-payment-mode"/>
+    <action name="action-move-line-mass-entry-method-check-partner-bank-details"/>
+  </action-group>
+
+  <action-method name="action-move-line-mass-entry-method-check-partner-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.MoveLineMassEntryController"
+      method="checkPartnerBankDetails"/>
+  </action-method>
+
+</object-views>

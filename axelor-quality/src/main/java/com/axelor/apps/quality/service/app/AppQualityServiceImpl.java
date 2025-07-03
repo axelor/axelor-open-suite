@@ -25,9 +25,8 @@ import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.db.repo.QualityConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
 import com.axelor.studio.db.repo.AppRepository;
@@ -47,21 +46,13 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
       AppQualityRepository appQualityRepo,
       CompanyRepository companyRepository,
       QualityConfigRepository qualityConfigRepository) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appQualityRepo = appQualityRepo;
     this.companyRepository = companyRepository;
     this.qualityConfigRepository = qualityConfigRepository;

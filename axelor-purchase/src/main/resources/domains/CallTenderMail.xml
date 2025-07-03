@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="CallTenderMail">
+
+    <many-to-one name="mailTemplate" title="Mail template"
+      ref="com.axelor.message.db.Template"/>
+    <many-to-one name="sentMessage" title="Sent message"
+      ref="com.axelor.message.db.Message"/>
+    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="Attachment"
+      copy="false"/>
+
+    <track on="UPDATE">
+      <field name="mailTemplate"/>
+      <field name="sentMessage"/>
+      <field name="metaFile"/>
+    </track>
+  </entity>
+
+</domain-models>

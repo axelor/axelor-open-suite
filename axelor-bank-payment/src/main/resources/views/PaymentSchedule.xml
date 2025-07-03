@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form name="payment-schedule-form" title="Payment schedule"
+    model="com.axelor.apps.account.db.PaymentSchedule" id="bank-payment-payment-schedule-form"
+    extension="true">
+    <extend target="//field[@name='paymentMode']">
+      <attribute name="onChange"
+        value="action-payment-schedule-group-payment-mode-on-change"/>
+    </extend>
+  </form>
+
+  <action-group name="action-payment-schedule-group-payment-mode-on-change">
+    <action name="action-payment-schedule-method-fill-company-bank-details"/>
+    <action name="action-payment-schedule-method-check-bank-details"/>
+  </action-group>
+
+  <action-method name="action-payment-schedule-method-check-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.PaymentScheduleController"
+      method="checkPaymentScheduleBankDetails"/>
+  </action-method>
+
+
+</object-views>
+
+
+

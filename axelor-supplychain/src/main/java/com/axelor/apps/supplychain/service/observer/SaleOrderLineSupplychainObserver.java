@@ -25,7 +25,8 @@ import com.axelor.apps.sale.service.event.SaleOrderLineProductOnChange;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnLoad;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class SaleOrderLineSupplychainObserver {
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineViewSupplychainService.class)
+        Beans.get(SaleOrderLineSupplychainOnNewService.class)
             .getSupplychainOnNewAttrs(saleOrderLine, saleOrder));
   }
 
@@ -45,7 +46,7 @@ public class SaleOrderLineSupplychainObserver {
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineViewSupplychainService.class)
+        Beans.get(SaleOrderLineSupplychainOnLoadService.class)
             .getSupplychainOnLoadAttrs(saleOrderLine, saleOrder));
   }
 

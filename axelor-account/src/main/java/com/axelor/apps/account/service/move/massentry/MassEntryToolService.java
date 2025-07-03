@@ -42,4 +42,6 @@ public interface MassEntryToolService {
   void fillMassEntryLinesFields(Move parentMove, Move move, Integer newStatusSelect);
 
   boolean verifyJournalAuthorizeNewMove(List<MoveLineMassEntry> moveLineList, Journal journal);
+
+  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList);
 }

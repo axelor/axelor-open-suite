@@ -25,9 +25,8 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppSupplychain;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSupplychainRepository;
@@ -51,21 +50,13 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
       AppSupplychainRepository appSupplychainRepo,
       CompanyRepository companyRepo,
       SupplyChainConfigRepository supplyChainConfigRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appSupplychainRepo = appSupplychainRepo;
     this.companyRepo = companyRepo;
     this.supplyChainConfigRepo = supplyChainConfigRepo;

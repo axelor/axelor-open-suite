@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -226,6 +226,7 @@
       <field name="emailAccountByCompany" on="UPDATE"/>
 
       <field name="qasWsdlUrl" on="UPDATE"/>
+      <field name="draftPrefix" on="UPDATE"/>
       <field name="mapApiSelect" on="UPDATE"/>
       <field name="googleMapsApiKey" on="UPDATE"/>
       <field name="currencyWsURL" on="UPDATE"/>
@@ -244,6 +245,7 @@
       <field name="activateSendingEmail" on="UPDATE"/>
 
       <field name="activateBarCodeGeneration" on="UPDATE"/>
+      <field name="enableMultiBarcodeOnProducts" on="UPDATE"/>
       <field name="editProductBarcodeType" on="UPDATE"/>
       <field name="barcodeTypeConfig" on="UPDATE"/>
       <field name="generateProductSequence" on="UPDATE"/>
@@ -282,8 +284,24 @@
       <field name="activatePartnerRelations" on="UPDATE"/>
       <field name="enablePricingScale" on="UPDATE"/>
       <field name="isPricingComputingOrder" on="UPDATE"/>
+      <field name="isActivateInstanceInfoShortcut" on="UPDATE"/>
+      <field name="shortcutMultiSelect" on="UPDATE"/>
       <field name="defaultBatchFetchLimit" on="UPDATE"/>
       <field name="isRegistrationCodeCheckBlocking" on="UPDATE"/>
+      <field name="isGlobalDiscountEnabled" on="UPDATE"/>
+      <field name="enableTaxNumbers" on="UPDATE"/>
+      <field name="defaultAddressTemplate" on="UPDATE"/>
+      <field name="pfxCertificate" on="UPDATE"/>
+      <field name="sireneTokenGeneratorUrl" on="UPDATE"/>
+      <field name="sireneUrl" on="UPDATE"/>
+      <field name="sireneKey" on="UPDATE"/>
+      <field name="sireneSecret" on="UPDATE"/>
+      <field name="sireneAccessToken" on="UPDATE"/>
+
+      <field name="clientSituationPrintTemplate" on="UPDATE"/>
+      <field name="companyPhoneBookPrintTemplate" on="UPDATE"/>
+      <field name="contactPhoneBookPrintTemplate" on="UPDATE"/>
+      <field name="productCatalogPGQLPrintTemplate" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 

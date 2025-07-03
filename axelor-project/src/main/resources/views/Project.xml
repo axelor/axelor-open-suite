@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -130,9 +130,6 @@
         <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -325,6 +322,7 @@
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
     </panel>
     <panel-include view="incl-custom-fields-to-display-panel-form"/>
+    <panel-include view="incl-project-customized-field-panel-form"/>
   </form>
 
   <form name="project-select-wizard-form" title="Select Projects"
@@ -403,6 +401,20 @@
       <panel-dashlet action="action-project-method-tasks-per-sprint"
         name="tasksPerSprintPanel" colSpan="12" height="200%"/>
       <field name="sprintManagementSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="incl-project-customized-field-panel-form" title="Customized fields"
+    model="com.axelor.apps.project.db.Project">
+    <panel name="customizedFieldsPanel" title="Customized fields" collapseIf="true"
+      canCollapse="true" colSpan="12">
+      <panel name="appJsonPanel" colSpan="12"
+        showIf="$contains(customFieldManagementSelect, 'app')" title="App customized fields">
+        <field name="appJson" colSpan="12"/>
+      </panel>
+      <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
+        <field name="attrs" colSpan="12"/>
+      </panel>
     </panel>
   </form>
 

@@ -1,5 +1,0 @@
----
-title: "Interco: manually created purchase order from sale order are now tagged as interco when it should."
-module: axelor-supplychain
-developer: |
-  Added 'AppSupplychainService' and 'IntercoService' to SaleOrderPurchaseServiceImpl and its extensions.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="fixed-asset-line-grid" title="Fixed asset lines"
     model="com.axelor.apps.account.db.FixedAssetLine" orderBy="depreciationDate">
@@ -12,7 +12,7 @@
     <field name="accountingValue" x-scale="$currencyNumberOfDecimals"/>
     <field name="correctedAccountingValue" x-scale="$currencyNumberOfDecimals"/>
     <field name="impairmentValue" x-scale="$currencyNumberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
@@ -29,7 +29,7 @@
     <field name="depreciation" x-scale="$currencyNumberOfDecimals"/>
     <field name="cumulativeDepreciation" x-scale="$currencyNumberOfDecimals"/>
     <field name="accountingValue" x-scale="$currencyNumberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     <field name="ifrsFixedAsset.statusSelect" hidden="true"/>

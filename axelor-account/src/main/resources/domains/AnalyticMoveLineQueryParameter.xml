@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -18,6 +18,7 @@
       title="Analytic Acc."/>
     <integer name="typeSelect" title="Type"
       selection="account.analytic.move.line.query.parameter.type.select" required="true" default="1"/>
+    <decimal name="percentage" title="%" default="100" min="0"/>
 
     <extra-code><![CDATA[
 

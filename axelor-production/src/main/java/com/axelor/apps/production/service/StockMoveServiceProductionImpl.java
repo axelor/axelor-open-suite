@@ -23,16 +23,21 @@ import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
@@ -48,9 +53,14 @@ import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
     implements StockMoveProductionService {
+  protected SaleOrderLineRepository saleOrderLineRepository;
+
   @Inject
   public StockMoveServiceProductionImpl(
       StockMoveLineService stockMoveLineService,
@@ -74,7 +84,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
       SaleOrderConfirmService saleOrderConfirmService,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
+      SaleOrderLineRepository saleOrderLineRepository) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -98,6 +109,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         pfpService,
         saleOrderConfirmService,
         stockMoveLineServiceSupplychain);
+    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   @Override
@@ -141,5 +153,40 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   // future code specific to stock move cancellation in production module goes here
   protected void cancelStockMoveInProduction(StockMove stockMove) throws AxelorException {
     super.cancel(stockMove);
+    updateSaleOrderLineOnCancelOnRealized(stockMove);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
+    String newStockSeq = super.realizeStockMove(stockMove, check);
+    updateSaleOrderLineOnCancelOnRealized(stockMove);
+    return newStockSeq;
+  }
+
+  protected void updateSaleOrderLineOnCancelOnRealized(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    for (StockMoveLine sml : stockMoveLineList) {
+      ManufOrder manufOrder = sml.getProducedManufOrder();
+      if (manufOrder != null
+          && manufOrder.getSaleOrderLine() != null
+          && manufOrder.getSaleOrderLine().getProduct() != null) {
+        SaleOrderLine saleOrderLine = manufOrder.getSaleOrderLine();
+        saleOrderLine.setQtyProduced(computeMOQtyProduced(manufOrder, saleOrderLine.getProduct()));
+        saleOrderLineRepository.save(saleOrderLine);
+      }
+    }
+  }
+
+  protected BigDecimal computeMOQtyProduced(ManufOrder manufOrder, Product product) {
+    List<StockMoveLine> stockMoveLineList = manufOrder.getProducedStockMoveLineList();
+    BigDecimal qtyProduced = BigDecimal.ZERO;
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      if (product != null
+          && product.equals(stockMoveLine.getProduct())
+          && stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_REALIZED)
+        qtyProduced = qtyProduced.add(stockMoveLine.getQty());
+    }
+    return qtyProduced;
   }
 }

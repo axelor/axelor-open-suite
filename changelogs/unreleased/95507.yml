@@ -1,6 +1,0 @@
----
-title: "Sale order: invoicing state is correctly updated when editing lines quantity."
-module: axelor-supplychain
-developer: |
-  SaleOrderInvoiceService#updateInvoicingState has been moved to SaleInvoicingStateService#updateInvoicingState.
-  By consequences, SaleInvoicingStateService has been added to SaleOrderServiceSupplychainServiceImpl, WorkflowCancelServiceSupplychainImpl and their respective extensions.

@@ -52,6 +52,8 @@ public final class PurchaseExceptionMessage {
       "The trading name must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION = /*$$(*/
       "The fiscal position must be the same for all purchase orders" /*)*/;
+  public static final String PURCHASE_ORDER_MERGE_ERROR_ATI_CONFIG = /*$$(*/
+      "The ATI configuration must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
       "The contact partner and price list must be the same for all purchase orders." /*)*/;
 
@@ -98,4 +100,8 @@ public final class PurchaseExceptionMessage {
       "The supplier of the purchase order is different from the default supplier of the product." /*)*/;
   public static final String PURCHASE_ORDER_CANNOT_DELETE_VALIDATED_ORDER = /*$$(*/
       "It is not possible to delete a validated order." /*)*/;
+
+  public static final String CALL_FOR_TENDER_MISSING_TEMPLATE = /*$$(*/
+      "A message template is needed to send a mail" /*)*/;
+  ;
 }

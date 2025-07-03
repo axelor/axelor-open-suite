@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
@@ -245,5 +246,12 @@ public class BankOrderController {
       return;
     }
     Beans.get(BankOrderEncryptionService.class).encryptUploadedBankOrderFile(originalFile);
+  }
+
+  public void checkBankOrderLineBankDetails(ActionRequest request, ActionResponse response) {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    List<BankOrderLine> bankOrderLines =
+        Beans.get(BankOrderCheckService.class).checkBankOrderLineBankDetails(bankOrder);
+    response.setValue("bankOrderLineList", bankOrderLines);
   }
 }

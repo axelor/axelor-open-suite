@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
     orderBy="-sentDateTime" groupBy="period">
@@ -17,7 +17,7 @@
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="currency" colSpan="2" required="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="ventilated"/>
   </grid>
 
@@ -45,7 +45,7 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
@@ -205,7 +205,7 @@
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
-          <field name="paymentStatusSelect" colSpan="4"/>
+          <field name="paymentStatusSelect" colSpan="4" widget="single-select"/>
           <field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
           <field name="paymentDate" showIf="paymentDate" colSpan="4" readonly="true"/>
           <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
@@ -302,6 +302,7 @@
     <action name="action-expense-method-compute"/>
     <action name="action-expense-method-update-moveDate-and-period"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-method-check-analytic-axis"/>
   </action-group>
 
   <action-record name="action-expense-record-default"
@@ -485,6 +486,10 @@
 
   <action-method name="action-expense-method-draft">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="backToDraft"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-analytic-axis">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkAnalyticAxis"/>
   </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"

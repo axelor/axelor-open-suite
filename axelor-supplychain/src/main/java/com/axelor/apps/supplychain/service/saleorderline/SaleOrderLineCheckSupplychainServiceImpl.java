@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
@@ -44,9 +45,11 @@ public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheck
 
   @Inject
   public SaleOrderLineCheckSupplychainServiceImpl(
+      AppSaleService appSaleService,
       StockLocationLineService stockLocationLineService,
       AppSupplychainService appSupplychainService,
       TaxAccountService taxAccountService) {
+    super(appSaleService);
     this.stockLocationLineService = stockLocationLineService;
     this.appSupplychainService = appSupplychainService;
     this.taxAccountService = taxAccountService;

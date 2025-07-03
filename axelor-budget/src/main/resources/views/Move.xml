@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="budget-move-form" name="move-form" title="Account move"
     model="com.axelor.apps.account.db.Move" extension="true">
@@ -16,6 +16,18 @@
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; technicalOriginSelect == 1
 			&amp;&amp; (journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2)
 			&amp;&amp; (statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; moveLineList &amp;&amp; moveLineList.length != 0"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='othersPanel']">
+      <insert position="before">
+        <panel name="datesBudgetPanel" title="Budget dates" colSpan="12" itemSpan="4"
+          readonlyIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('budget')">
+          <field name="budgetFromDate" requiredIf="budgetToDate"/>
+          <field name="budgetToDate" requiredIf="budgetFromDate"/>
+          <button name="initBudgetDatesBtn" title="Init budget dates"
+            onClick="action-move-method-initialize-budget-dates"/>
+        </panel>
       </insert>
     </extend>
 
@@ -48,6 +60,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-move-method-budget-validate-accounting"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-account-move-group-accounting-click"/>
   </action-group>
 
@@ -63,6 +76,10 @@
   <action-method name="action-method-budget-move-compute-budget-remaining-amount">
     <call class="com.axelor.apps.budget.web.MoveController"
       method="computeMoveBudgetRemainingAmountToAllocate"/>
+  </action-method>
+
+  <action-method name="action-move-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.MoveController" method="initializeBudgetDates"/>
   </action-method>
 
 </object-views>
