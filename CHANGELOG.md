@@ -1,3 +1,59 @@
+## [8.3.10] (2025-07-03)
+
+### Fixes
+#### Base
+
+* Data Backup: fixed translations and added help for some fields.
+
+#### Account
+
+* MoveLine/TaxSet: fixed technical error generating movelines without taxes in some process
+* AnalyticMoveLine/MoveLine : fixed the reset of analytic accounts on moveline when changing it on analytic move line
+* MassEntryMove: fixed the error message list.
+* Move: improve move validation time fixing global audit tracker
+
+#### Human Resource
+
+* Issue on Windows when we try to build the AOS project.
+
+#### Purchase
+
+* Purchase order line: fixed an issue where quantity was not reset to valid when managing multiple quantity.
+
+#### Stock
+
+* Inventory: fixed missing parameter for inventory birt template.
+
+
+### Developer
+
+#### Base
+
+Migration script -
+
+```
+UPDATE meta_field
+SET label = 'Relative dates',
+description = 'Allows exporting dates by calculating the difference with the export date. During import, the data will be updated based on the import date and the previously saved offset.'
+WHERE name = 'isRelativeDate' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Batch size used when reading data. Allows you to optimize performance based on database volume.'
+WHERE name = 'fetchLimit' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Can be used in order to keep a fixed reference to update the current existing database. Not required for loading into another database.'
+WHERE name = 'updateImportId' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+```
+
+#### Account
+
+Migration script -
+
+```
+ALTER TABLE account_move ALTER COLUMN mass_entry_errors TYPE text;
+```
+
 ## [8.3.9] (2025-06-26)
 
 ### Fixes
@@ -785,6 +841,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.10]: https://github.com/axelor/axelor-open-suite/compare/v8.3.9...v8.3.10
 [8.3.9]: https://github.com/axelor/axelor-open-suite/compare/v8.3.8...v8.3.9
 [8.3.8]: https://github.com/axelor/axelor-open-suite/compare/v8.3.7...v8.3.8
 [8.3.7]: https://github.com/axelor/axelor-open-suite/compare/v8.3.6...v8.3.7

@@ -1,2 +1,0 @@
-title: "AnalyticMoveLine/MoveLine : fixed the reset of analytic accounts on moveline when changing it on analytic move line"
-module: axelor-account
