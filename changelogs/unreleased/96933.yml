@@ -1,0 +1,9 @@
+---
+title: "MassEntryMove: fixed the error message list."
+module: axelor-account
+developer: |
+  Migration script -
+
+  ```
+  ALTER TABLE account_move ALTER COLUMN mass_entry_errors TYPE text;
+  ```
