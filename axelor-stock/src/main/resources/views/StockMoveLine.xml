@@ -338,7 +338,7 @@
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       x-scale="$nbDecimalDigitForQty"/>
-    <field name="isRealQtyModifiedByUser" hidden="true"/>
+    <field name="isRealQtyModifiedByUser" hidden="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>

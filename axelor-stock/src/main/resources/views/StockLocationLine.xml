@@ -19,6 +19,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="avgPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="rack"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
     <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
