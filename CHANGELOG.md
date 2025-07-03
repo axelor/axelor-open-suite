@@ -1,3 +1,58 @@
+## [8.2.19] (2025-07-03)
+
+### Fixes
+#### Base
+
+* Data Backup: fixed translations and added help for some fields.
+
+#### Account
+
+* AnalyticMoveLine/MoveLine : fixed the reset of analytic accounts on moveline when changing it on analytic move line
+* MassEntryMove: fixed the error message list.
+* Move: improve move validation time fixing global audit tracker
+
+#### Human Resource
+
+* Issue on Windows when we try to build the AOS project.
+
+#### Purchase
+
+* Purchase order line: fixed an issue where quantity was not reset to valid when managing multiple quantity.
+
+#### Stock
+
+* Inventory: fixed missing parameter for inventory birt template.
+
+
+### Developer
+
+#### Base
+
+Migration script -
+
+```
+UPDATE meta_field
+SET label = 'Relative dates',
+description = 'Allows exporting dates by calculating the difference with the export date. During import, the data will be updated based on the import date and the previously saved offset.'
+WHERE name = 'isRelativeDate' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Batch size used when reading data. Allows you to optimize performance based on database volume.'
+WHERE name = 'fetchLimit' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Can be used in order to keep a fixed reference to update the current existing database. Not required for loading into another database.'
+WHERE name = 'updateImportId' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+```
+
+#### Account
+
+Migration script -
+
+```
+ALTER TABLE account_move ALTER COLUMN mass_entry_errors TYPE text;
+```
+
 ## [8.2.18] (2025-06-26)
 
 ### Fixes
@@ -1187,6 +1242,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.19]: https://github.com/axelor/axelor-open-suite/compare/v8.2.18...v8.2.19
 [8.2.18]: https://github.com/axelor/axelor-open-suite/compare/v8.2.17...v8.2.18
 [8.2.17]: https://github.com/axelor/axelor-open-suite/compare/v8.2.16...v8.2.17
 [8.2.16]: https://github.com/axelor/axelor-open-suite/compare/v8.2.15...v8.2.16
