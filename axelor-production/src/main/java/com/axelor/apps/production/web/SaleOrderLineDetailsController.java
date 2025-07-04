@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineDetailsPriceService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
+import com.axelor.apps.production.service.SolDetailsCostAmountService;
 import com.axelor.apps.production.service.SolDetailsDurationService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -113,6 +114,51 @@ public class SaleOrderLineDetailsController {
         "$totalDuration",
         Beans.get(SolDetailsDurationService.class)
             .computeSolDetailsDuration(saleOrderLineDetails, parentSol));
+  }
+
+  public void computeTotalHumanDuration(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass() == SaleOrderLine.class) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
+    response.setValue(
+        "$totalHumanDuration",
+        Beans.get(SolDetailsDurationService.class)
+            .computeSolDetailsHumanDuration(saleOrderLineDetails, parentSol));
+  }
+
+  public void computeMachineCostAmount(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass() == SaleOrderLine.class) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
+    response.setValue(
+        "$machineCostAmount",
+        Beans.get(SolDetailsCostAmountService.class)
+            .computeSolDetailsMachineCostAmount(saleOrderLineDetails, parentSol));
+  }
+
+  public void computeHumanCostAmount(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass() == SaleOrderLine.class) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
+    response.setValue(
+        "$humanCostAmount",
+        Beans.get(SolDetailsCostAmountService.class)
+            .computeSolDetailsHumanCostAmount(saleOrderLineDetails, parentSol));
   }
 
   protected SaleOrder getSaleOrder(Context context) {
