@@ -34,7 +34,8 @@
         required="true"/>
       <field name="allBomLevels"/>
       <field name="productSet" widget="TagSelect"
-        onSelect="action-unit-cost-calculation-method-create-product-domain" colSpan="12"/>
+        onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
+        colSpan="12"/>
       <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
       <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
     </panel>
@@ -53,7 +54,8 @@
           required="true"/>
         <field name="allBomLevels"/>
         <field name="productSet" widget="TagSelect"
-          onSelect="action-unit-cost-calculation-method-create-product-domain" colSpan="12"/>
+          onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
+          colSpan="12"/>
         <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
         <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
       </panel>
