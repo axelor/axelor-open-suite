@@ -4,7 +4,40 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice"
-    call="com.axelor.csv.script.ImportInvoice:importInvoice">
+    call="com.axelor.csv.script.ImportInvoice:importInvoice" search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="partner_importId" to="partner" search="self.importId = :partner_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', partner_importId)"
+      check-message="Partner with importId :partner_importId doesn't exist"/>
+    <bind column="currency_code" to="currency" search="self.code = :currency_code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Currency','code', currency_code)"
+      check-message="Currency with code :currency_code doesn't exist"/>
+    <bind column="operationTypeSelect" to="operationTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iinvoice.operation.type.select', operationTypeSelect, true)"
+      check-message="Invalid operationTypeSelect :operationTypeSelect"/>
+    <bind column="operationSubTypeSelect" to="operationSubTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iinvoice.operation.sub.type.select', operationSubTypeSelect, true)"
+      check-message="Invalid operationSubTypeSelect :operationSubTypeSelect"/>
+    <bind column="discountTypeSelect" to="discountTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.price.list.line.amount.type.select', discountTypeSelect, false)"
+      check-message="Invalid discountTypeSelect :discountTypeSelect"/>
+    <bind column="irrecoverableStatusSelect" to="irrecoverableStatusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iaccount.account.schedule.irrecoverable.status.select', irrecoverableStatusSelect, false)"
+      check-message="Invalid irrecoverableStatusSelect :irrecoverableStatusSelect"/>
+    <bind column="invoicesCopySelect" to="invoicesCopySelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('grade.1.up.to.10.select', invoicesCopySelect, false)"
+      check-message="Invalid invoicesCopySelect :invoicesCopySelect"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iinvoice.operation.type.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="pfpValidateStatusSelect" to="pfpValidateStatusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('invoice.pfp.validate.status.select', pfpValidateStatusSelect, false)"
+      check-message="Invalid pfpValidateStatusSelect :pfpValidateStatusSelect"/>
+    <bind column="invoiceId" to="invoiceId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.Invoice', 'importId', importId, 'invoiceId, company.importId', invoiceId, company_importId)"
+      check-message="Invoice N° and company must be unique"/>
     <bind to="invoiceDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)" column="invoiceDate"/>
     <bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)"
@@ -14,12 +47,43 @@
 
   <input file="account_invoiceLine.csv" separator=";"
     type="com.axelor.apps.account.db.InvoiceLine">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('line.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect :typeSelect"/>
+    <bind column="discountTypeSelect" to="discountTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.price.list.line.amount.type.select', discountTypeSelect, false)"
+      check-message="Invalid discountTypeSelect :discountTypeSelect"/>
     <bind search="self.importId in :taxLineSet" to="taxLineSet" column="taxLineSet"
       eval="taxLineSet.split('\\|') as List"/>
   </input>
 
   <input file="account_paymentVoucher.csv" separator=";"
-    type="com.axelor.apps.account.db.PaymentVoucher">
+    type="com.axelor.apps.account.db.PaymentVoucher" search="self.importId = :importId">
+    <bind column="partner_importId" to="partner" search="self.importId = :partner_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', partner_importId)"
+      check-message="Partner with importId :partner_importId doesn't exist"/>
+    <bind column="paymentMode_importId" to="paymentMode"
+      search="self.importId = :paymentMode_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.account.db.PaymentMode','importId', paymentMode_importId)"
+      check-message="Payment mode with importId :paymentMode_importId doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company with importId :company_importId doesn't exist"/>
+    <bind column="currency_code" to="currency" search="self.code = :currency_code"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Currency','code', currency_code)"
+      check-message="Currency with code :currency_code doesn't exist"/>
+    <bind column="operationTypeSelect" to="operationTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iinvoice.operation.type.select', operationTypeSelect, true)"
+      check-message="Invalid operationTypeSelect :operationTypeSelect"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iaccount.payment.voucher.status.select', statusSelect, false)"
+      check-message="Invalid statusSelect :statusSelect"/>
+    <bind column="ref" to="ref"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.PaymentVoucher', 'importId', importId, 'ref, company.importId', ref, company_importId)"
+      check-message="Reference and company must be unique"/>
+    <bind column="receiptNo" to="receiptNo"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.PaymentVoucher', 'importId', importId, 'receiptNo, company.importId', receiptNo, company_importId)"
+      check-message="Receipt N° and company must be unique"/>
     <bind to="paymentDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(paymentDate)" column="paymentDate"/>
   </input>
@@ -29,6 +93,18 @@
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="mediaTypeSelect" to="mediaTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('message.media.type.select', mediaTypeSelect, true)"
+      check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
+    <bind column="language" to="language"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('select.language', language, false)"
+      check-message="Invalid language :language"/>
     <bind to="templateContextList" search="self.name = :templateContext"
       if="templateContext != null &amp;&amp; !templateContext.empty"/>
     <bind column="printTemplateSet_importId" to="printTemplateSet"
