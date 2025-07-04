@@ -5,12 +5,40 @@
 
   <input file="supplychain_mrpLineType.csv" separator=";"
     type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId">
+    <bind column="elementSelect" to="elementSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.element.select', elementSelect, false)"
+      check-message="Invalid elementSelect: :elementSelect"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect: :typeSelect"/>
+    <bind column="includeOneOffSalesSelect" to="includeOneOffSalesSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.off.of.sales.select', includeOneOffSalesSelect, false)"
+      check-message="Invalid includeOneOffSalesSelect: :includeOneOffSalesSelect"/>
+    <bind column="lateSalesSelect" to="lateSalesSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.type.late.sales.select', lateSalesSelect, false)"
+      check-message="Invalid lateSalesSelect: :lateSalesSelect"/>
     <bind to="applicationFieldSelect" column="applicationFieldSelect"
-      eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"/>
+      eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('supplychain.mrp.line.type.application.field.select', applicationFieldSelect?.empty ? 1 : applicationFieldSelect, false)"
+      check-message="Invalid applicationFieldSelect: :applicationFieldSelect"/>
   </input>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check-message="Invalid codeSelect :codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence','importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
+      if="yearlyResetOk"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -25,11 +53,27 @@
 
   <input file="studio_appSupplychain.csv" separator=";"
     type="com.axelor.studio.db.AppSupplychain" search="self.app.code = :code">
+    <bind column="intercoPurchaseCreatingStatusSelect" to="intercoPurchaseCreatingStatusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('purchase.purchase.order.status.select', intercoPurchaseCreatingStatusSelect, false)"
+      check-message="Invalid intercoPurchaseCreatingStatusSelect: :intercoPurchaseCreatingStatusSelect"/>
+    <bind column="intercoSaleCreatingStatusSelect" to="intercoSaleCreatingStatusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sale.order.status.select', intercoSaleCreatingStatusSelect, false)"
+      check-message="Invalid intercoSaleCreatingStatusSelect: :intercoSaleCreatingStatusSelect"/>
+    <bind column="sOFilterOnStockDetailStatusSelect" to="sOFilterOnStockDetailStatusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sale.order.status.select', sOFilterOnStockDetailStatusSelect, false)"
+      check-message="Invalid sOFilterOnStockDetailStatusSelect: :sOFilterOnStockDetailStatusSelect"/>
+    <bind column="pOFilterOnStockDetailStatusSelect" to="pOFilterOnStockDetailStatusSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('purchase.purchase.order.status.select', pOFilterOnStockDetailStatusSelect, false)"
+      check-message="Invalid pOFilterOnStockDetailStatusSelect: :pOFilterOnStockDetailStatusSelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
   <input file="base_partner_link_type.csv" separator=";"
     type="com.axelor.apps.base.db.PartnerLinkType"
-    search="self.importId = :importId OR self.typeSelect = :typeSelect"/>
+    search="self.importId = :importId OR self.typeSelect = :typeSelect">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.partner.link.type.type.select', typeSelect, false)"
+      check-message="Invalid typeSelect: :typeSelect"/>
+  </input>
 
 </csv-inputs>
