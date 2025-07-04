@@ -90,6 +90,8 @@
       title="Authorized roles"
       help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
 
+    <long name="defaultQiDetectionId" title="Default detection id for QI"/>
+
     <many-to-many name="verifyCustomerDeliveryLineRoleSet"
       ref="com.axelor.auth.db.Role" title="Authorized roles"
       help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
@@ -208,6 +210,7 @@
       <field name="fieldsToShowOnTimesheet" on="UPDATE"/>
       <field name="isStockLocationManagementEnabled" on="UPDATE"/>
       <field name="isOneLineShortcut" on="UPDATE"/>
+      <field name="defaultQiDetectionId" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>
