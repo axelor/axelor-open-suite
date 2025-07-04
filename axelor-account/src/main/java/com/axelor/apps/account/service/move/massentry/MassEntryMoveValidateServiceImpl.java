@@ -69,7 +69,7 @@ public class MassEntryMoveValidateServiceImpl implements MassEntryMoveValidateSe
               .sorted()
               .collect(Collectors.toList());
       for (Integer x : uniqueIdList) {
-        Move element = massEntryMoveCreateService.createMoveFromMassEntryList(massEntryMove, x);
+        Move element = massEntryMoveCreateService.createMoveFromMassEntryList(move, x);
         Map.Entry<Move, Integer> moveMap =
             this.validateMove(element, massEntryMove).entrySet().iterator().next();
 

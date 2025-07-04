@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -57,7 +58,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -81,7 +81,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   @Inject
   public PaymentSessionValidateBankPaymentServiceImpl(
-      AppBaseService appBaseService,
+      AppAccountService appService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       MoveCutOffService moveCutOffService,
@@ -110,7 +110,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderValidationService bankOrderValidationService,
       PaymentSessionBankOrderService paymentSessionBankOrderService) {
     super(
-        appBaseService,
+        appService,
         moveCreateService,
         moveValidateService,
         moveCutOffService,

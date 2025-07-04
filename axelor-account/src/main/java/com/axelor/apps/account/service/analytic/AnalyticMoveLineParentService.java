@@ -16,17 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.move.massentry;
+package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.AxelorException;
-import java.util.List;
 
-public interface MassEntryMoveCreateService {
-
-  Move generateMassEntryMove(Move move) throws AxelorException;
-
-  List<Move> createMoveListFromMassEntryList(Move parentMove);
-
-  Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber);
+public interface AnalyticMoveLineParentService {
+  void refreshAxisOnParent(AnalyticMoveLine analyticMoveLine) throws AxelorException;
 }
