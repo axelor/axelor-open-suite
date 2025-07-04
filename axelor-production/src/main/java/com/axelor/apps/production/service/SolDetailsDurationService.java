@@ -25,4 +25,7 @@ import java.math.BigDecimal;
 public interface SolDetailsDurationService {
   BigDecimal computeSolDetailsDuration(
       SaleOrderLineDetails saleOrderLineDetails, SaleOrderLine saleOrderLine);
+
+  BigDecimal computeSolDetailsHumanDuration(
+      SaleOrderLineDetails saleOrderLineDetails, SaleOrderLine saleOrderLine);
 }

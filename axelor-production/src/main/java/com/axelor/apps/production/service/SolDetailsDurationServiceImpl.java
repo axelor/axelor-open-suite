@@ -52,4 +52,15 @@ public class SolDetailsDurationServiceImpl implements SolDetailsDurationService 
                 saleOrderLineDetails.getSetupDuration()))
         .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
+
+  @Override
+  public BigDecimal computeSolDetailsHumanDuration(
+      SaleOrderLineDetails saleOrderLineDetails, SaleOrderLine saleOrderLine) {
+    BigDecimal nbCycle =
+        prodProcessLineComputationService.computeNbCycle(
+            saleOrderLine.getQtyToProduce(), saleOrderLineDetails.getMaxCapacityPerCycle());
+    return prodProcessLineComputationService
+        .computeHumanDuration(nbCycle, saleOrderLineDetails.getHumanDuration())
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
 }

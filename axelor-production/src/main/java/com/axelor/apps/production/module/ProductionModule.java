@@ -151,6 +151,8 @@ import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolBomUpdateServiceImpl;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateServiceImpl;
+import com.axelor.apps.production.service.SolDetailsCostAmountService;
+import com.axelor.apps.production.service.SolDetailsCostAmountServiceImpl;
 import com.axelor.apps.production.service.SolDetailsDurationService;
 import com.axelor.apps.production.service.SolDetailsDurationServiceImpl;
 import com.axelor.apps.production.service.SolDetailsProdProcessComputeQtyService;
@@ -490,5 +492,6 @@ public class ProductionModule extends AxelorModule {
     bind(SolDetailsProdProcessComputeQtyService.class)
         .to(SolDetailsProdProcessComputeQtyServiceImpl.class);
     bind(SolDetailsDurationService.class).to(SolDetailsDurationServiceImpl.class);
+    bind(SolDetailsCostAmountService.class).to(SolDetailsCostAmountServiceImpl.class);
   }
 }

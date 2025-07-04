@@ -20,10 +20,20 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.WorkCenter;
 import java.math.BigDecimal;
 
 public interface ProdProcessLineHourlyCostComputeService {
 
   BigDecimal computeLineHourlyCost(ProdProcessLine prodProcessLine, BigDecimal qtyToProduce)
       throws AxelorException;
+
+  BigDecimal getHumanCostAmount(int costTypeSelect, BigDecimal costAmount, WorkCenter workCenter);
+
+  BigDecimal getMachineCostAmount(
+      long durationPerCycle,
+      BigDecimal maxCapacityPerCycle,
+      int costTypeSelect,
+      BigDecimal nbCycles,
+      BigDecimal costAmount);
 }

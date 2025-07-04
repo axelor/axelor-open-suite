@@ -82,6 +82,8 @@ public interface ProdProcessLineComputationService {
    */
   BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles);
 
+  BigDecimal computeHumanDuration(BigDecimal nbCycle, long humanDuration);
+
   /**
    * Convert the result of {@link ProdProcessLineComputationService#getHumanDuration} in hour. The
    * result of this method should be scaled before being saved.
@@ -125,5 +127,5 @@ public interface ProdProcessLineComputationService {
       OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException;
 
-  BigDecimal getHourDurationPerCycle(ProdProcessLine prodProcessLine);
+  BigDecimal computeHourDurationPerCycle(long durationPerCycle);
 }
