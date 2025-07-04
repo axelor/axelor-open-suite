@@ -4,6 +4,13 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="studio_appBusinessProject.csv" separator=";"
-    type="com.axelor.studio.db.AppBusinessProject" search="self.app.code = :code"/>
+    type="com.axelor.studio.db.AppBusinessProject" search="self.app.code = :code">
+    <bind column="closingProjectRuleSelect" to="closingProjectRuleSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('business.project.app.closing.project.rule.select', closingProjectRuleSelect, false)"
+      check-message="Invalid closingProjectRuleSelect :closingProjectRuleSelect"/>
+    <bind column="groupingPeriodSelect" to="groupingPeriodSelect"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('business.project.invoice.grouping.period.select', groupingPeriodSelect, false)"
+      check-message="Invalid groupingPeriodSelect :groupingPeriodSelect"/>
+  </input>
 
 </csv-inputs>
