@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed an issue where the payment date was not emptied when duplicate or generate from a paid invoice."
+module: axelor-account
