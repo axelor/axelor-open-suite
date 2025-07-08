@@ -50,7 +50,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
@@ -116,7 +116,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
       ProductCategoryService productCategoryService,
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       MailMessageService mailMessageService,
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
@@ -147,7 +147,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineService,
         mrpForecastRepository,
         productCategoryService,
-        stockLocationService,
+        stockLocationFetchService,
         mailMessageService,
         unitConversionService,
         appBaseService,

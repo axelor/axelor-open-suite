@@ -51,7 +51,7 @@ import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpFamily;
@@ -95,7 +95,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +117,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockRulesService stockRulesService;
   protected MrpLineService mrpLineService;
   protected MrpForecastRepository mrpForecastRepository;
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
   protected MailMessageService mailMessageService;
   protected UnitConversionService unitConversionService;
   protected ProductCategoryService productCategoryService;
@@ -149,7 +151,7 @@ public class MrpServiceImpl implements MrpService {
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
       ProductCategoryService productCategoryService,
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       MailMessageService mailMessageService,
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
@@ -172,7 +174,7 @@ public class MrpServiceImpl implements MrpService {
     this.mrpLineService = mrpLineService;
     this.mrpForecastRepository = mrpForecastRepository;
     this.productCategoryService = productCategoryService;
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
     this.mailMessageService = mailMessageService;
     this.unitConversionService = unitConversionService;
     this.appBaseService = appBaseService;
@@ -249,10 +251,7 @@ public class MrpServiceImpl implements MrpService {
 
     // Initialize
     this.mrp = mrp;
-    List<StockLocation> slList =
-        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false).stream()
-            .filter(x -> !x.getIsNotInMrp())
-            .collect(Collectors.toList());
+    List<StockLocation> slList = getStockLocations(mrp.getStockLocation(), true);
     this.stockLocationList = slList;
 
     this.assignProductAndLevel(this.getProductList());
@@ -1576,8 +1575,7 @@ public class MrpServiceImpl implements MrpService {
     this.mrp = mrp;
     mrp.addProductSetItem(product);
     if (stockLocation != null) {
-      this.stockLocationList =
-          stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
+      this.stockLocationList = getStockLocations(stockLocation, false);
     } else if (company != null) {
       this.stockLocationList =
           stockLocationRepository
@@ -1652,5 +1650,20 @@ public class MrpServiceImpl implements MrpService {
   @Transactional
   public void saveErrorInMrp(Mrp mrp, Exception e) {
     mrp.setErrorLog(e.getMessage());
+  }
+
+  protected List<StockLocation> getStockLocations(
+      StockLocation stockLocation, boolean excludeIsNotInMrp) {
+    List<Predicate> extraFilters = new ArrayList<>();
+
+    if (excludeIsNotInMrp) {
+      CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+      Root<StockLocation> root = cb.createQuery().from(StockLocation.class);
+      extraFilters.add(cb.isFalse(root.get("isNotInMrp")));
+    }
+    List<Long> idList =
+        stockLocationFetchService.getAllLocationAndSubLocation(
+            stockLocation.getId(), false, extraFilters);
+    return stockLocationRepository.findByIds(idList);
   }
 }
