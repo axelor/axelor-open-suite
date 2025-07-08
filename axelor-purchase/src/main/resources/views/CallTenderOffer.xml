@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="call-tender-offer-grid" title="Supplier offers"
-    model="com.axelor.apps.purchase.db.CallTenderOffer">
+    model="com.axelor.apps.purchase.db.CallTenderOffer"
+    onNew="action-call-tender-offer-record-init-dummy-fields">
     <field name="statusSelect"/>
     <field name="product"/>
     <field name="supplierPartner"/>
@@ -15,10 +16,11 @@
     <field name="proposedUnit"/>
     <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true" x-dirty="false"/>
   </grid>
 
   <form name="call-tender-offer-form" model="com.axelor.apps.purchase.db.CallTenderOffer"
-    title="Supplier offer">
+    title="Supplier offer" onNew="action-call-tender-offer-record-init-dummy-fields">
     <panel name="sidePanel" showTitle="false" sidebar="true">
       <field name="requestedDate" colSpan="12"/>
       <field name="proposedDate" colSpan="12"/>
@@ -49,4 +51,11 @@
 
   </form>
 
+  <action-record name="action-call-tender-offer-record-init-dummy-fields"
+    model="com.axelor.apps.purchase.db.CallTenderOffer">
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getApp('base')?.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty"
+      expr="eval:  __config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
+  </action-record>
 </object-views>
