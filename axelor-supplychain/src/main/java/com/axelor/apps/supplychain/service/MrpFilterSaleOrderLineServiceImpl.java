@@ -22,31 +22,39 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.db.JPA;
 import com.axelor.utils.helpers.StringHelper;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLineService {
 
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected MrpLineTypeService mrpLineTypeService;
   protected MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService;
 
   @Inject
   public MrpFilterSaleOrderLineServiceImpl(
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       SaleOrderLineRepository saleOrderLineRepository,
       MrpLineTypeService mrpLineTypeService,
       MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService) {
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.mrpLineTypeService = mrpLineTypeService;
     this.mrpSaleOrderCheckLateSaleService = mrpSaleOrderCheckLateSaleService;
@@ -55,33 +63,42 @@ public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLine
   @Override
   public List<Long> getSaleOrderLinesComplyingToMrpLineTypes(Mrp mrp) {
 
-    List<Long> idList = new ArrayList<>();
-    idList.add((long) -1);
+    Set<Long> idSet = new LinkedHashSet<>();
+    idSet.add(0L);
+
+    if (mrp.getStockLocation() == null) {
+      return new ArrayList<>(idSet);
+    }
 
     List<MrpLineType> saleOrderMrpLineTypeList =
         mrpLineTypeService.getMrpLineTypeList(
             MrpLineTypeRepository.ELEMENT_SALE_ORDER, mrp.getMrpTypeSelect());
 
-    if ((saleOrderMrpLineTypeList != null && !saleOrderMrpLineTypeList.isEmpty())
-        && mrp.getStockLocation() != null) {
-
-      List<StockLocation> stockLocationList =
-          stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false).stream()
-              .filter(x -> !x.getIsNotInMrp())
-              .collect(Collectors.toList());
-
-      for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
-        idList.addAll(
-            getSaleOrderLinesComplyingToMrpLineType(mrp, stockLocationList, saleOrderMrpLineType));
-        idList = idList.stream().distinct().collect(Collectors.toList());
-      }
+    if (CollectionUtils.isEmpty(saleOrderMrpLineTypeList)) {
+      return new ArrayList<>(idSet);
     }
 
-    return idList;
+    EntityManager em = JPA.em();
+    CriteriaBuilder cb = em.getCriteriaBuilder();
+    Root<StockLocation> root = cb.createQuery().from(StockLocation.class);
+
+    List<Predicate> extraFilters = new ArrayList<>();
+    extraFilters.add(cb.isFalse(root.get("isNotInMrp")));
+
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllLocationAndSubLocation(
+            mrp.getStockLocation().getId(), false, extraFilters);
+
+    for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
+      idSet.addAll(
+          getSaleOrderLinesComplyingToMrpLineType(mrp, stockLocationList, saleOrderMrpLineType));
+    }
+
+    return new ArrayList<>(idSet);
   }
 
   protected List<Long> getSaleOrderLinesComplyingToMrpLineType(
-      Mrp mrp, List<StockLocation> stockLocationList, MrpLineType saleOrderMrpLineType) {
+      Mrp mrp, List<Long> stockLocationList, MrpLineType saleOrderMrpLineType) {
 
     List<Integer> statusList = StringHelper.getIntegerList(saleOrderMrpLineType.getStatusSelect());
 
@@ -92,7 +109,7 @@ public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLine
             + " AND self.product.stockManaged = true"
             + " AND self.deliveryState != :deliveryState"
             + " AND self.saleOrder.company.id = :companyId"
-            + " AND self.saleOrder.stockLocation IN (:stockLocations)"
+            + " AND self.saleOrder.stockLocation.id IN (:stockLocations)"
             + " AND (:mrpTypeSelect = :mrpTypeMrp OR self.product.productSubTypeSelect = :productSubTypeFinished)"
             + " AND self.saleOrder.statusSelect IN (:saleOrderStatusList)"
             + " AND self.deliveredQty < self.qty"

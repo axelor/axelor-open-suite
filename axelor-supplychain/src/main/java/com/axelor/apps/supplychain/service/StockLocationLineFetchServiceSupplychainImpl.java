@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import jakarta.inject.Inject;
@@ -33,7 +34,10 @@ public class StockLocationLineFetchServiceSupplychainImpl
   protected AppSupplychainService appSupplychainService;
 
   @Inject
-  public StockLocationLineFetchServiceSupplychainImpl(AppSupplychainService appSupplychainService) {
+  public StockLocationLineFetchServiceSupplychainImpl(
+      StockLocationFetchService stockLocationFetchService,
+      AppSupplychainService appSupplychainService) {
+    super(stockLocationFetchService);
     this.appSupplychainService = appSupplychainService;
   }
 

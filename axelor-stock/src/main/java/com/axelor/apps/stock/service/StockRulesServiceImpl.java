@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.db.JPA;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -34,13 +35,13 @@ import org.apache.commons.lang3.tuple.Pair;
 public class StockRulesServiceImpl implements StockRulesService {
 
   protected StockRulesRepository stockRuleRepo;
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
 
   @Inject
   public StockRulesServiceImpl(
-      StockRulesRepository stockRuleRepo, StockLocationService stockLocationService) {
+      StockRulesRepository stockRuleRepo, StockLocationFetchService stockLocationFetchService) {
     this.stockRuleRepo = stockRuleRepo;
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
   }
 
   /**
@@ -123,8 +124,7 @@ public class StockRulesServiceImpl implements StockRulesService {
   public StockRules getStockRules(
       Product product, StockLocation stockLocation, int type, int useCase) {
     Set<Long> stockLocationIds =
-        stockLocationService.getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(
-            stockLocation);
+        stockLocationFetchService.getLocationAndAllParentLocationIds(stockLocation);
 
     StockRules stockRules = null;
     if (useCase == StockRulesRepository.USE_CASE_USED_FOR_MRP) {
@@ -180,8 +180,10 @@ public class StockRulesServiceImpl implements StockRulesService {
   protected Pair<BigDecimal, BigDecimal>
       getCurrentQtySumAndFutureQtySumOfProductInStockLocationAndItsContainedStockLocations(
           StockLocation stockLocation, Product product) {
-    Set<Long> containedStockLocationIds =
-        stockLocationService.getContentStockLocationIds(stockLocation);
+    Set<Long> containedStockLocationIds = new HashSet<>();
+    containedStockLocationIds.add(0l);
+    containedStockLocationIds.addAll(
+        stockLocationFetchService.getAllLocationAndSubLocation(stockLocation.getId(), false));
 
     List<Object[]> resultList =
         JPA.em()

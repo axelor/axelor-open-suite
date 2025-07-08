@@ -30,11 +30,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
@@ -54,18 +53,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineServiceSupplyChain {
 
   protected AppSupplychainService appSupplychainService;
   protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected StockLocationFetchService stockLocationFetchService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
       AppSupplychainService appSupplychainService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      StockLocationLineFetchService stockLocationLineFetchService,
+      StockLocationFetchService stockLocationFetchService) {
     this.appSupplychainService = appSupplychainService;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.stockLocationFetchService = stockLocationFetchService;
   }
 
   @Override
@@ -148,13 +151,16 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
       Long productId, Long companyId, Long stockLocationId) {
     List<Integer> statusList = new ArrayList<>();
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+
     String status =
         appSupplychainService.getAppSupplychain().getsOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
       statusList = StringHelper.getIntegerList(status);
     }
+
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+
     String query =
         "self.product.id = "
             + productId
@@ -164,22 +170,28 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
             + statusListQuery
             + ")";
 
-    if (companyId != 0L) {
-      query += " AND self.saleOrder.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        StockLocation stockLocation =
-            Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
-            Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
-          query +=
-              " AND self.saleOrder.stockLocation.id IN ("
-                  + StringHelper.getIdListString(stockLocationList)
-                  + ") ";
-        }
-      }
+    if (companyId == 0L) {
+      return query;
     }
+
+    query += " AND self.saleOrder.company.id = " + companyId;
+
+    StockLocation stockLocation = JPA.find(StockLocation.class, stockLocationId);
+    if (stockLocation == null || !stockLocation.getCompany().getId().equals(companyId)) {
+      return query;
+    }
+
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllContentLocationAndSubLocation(stockLocationId);
+    if (CollectionUtils.isEmpty(stockLocationList)) {
+      return query;
+    }
+
+    query +=
+        stockLocationList.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(",", " AND self.saleOrder.stockLocation.id IN (", ")"));
+
     return query;
   }
 

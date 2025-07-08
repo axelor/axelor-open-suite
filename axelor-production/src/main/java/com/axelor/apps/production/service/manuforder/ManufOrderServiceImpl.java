@@ -61,13 +61,14 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -122,6 +123,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected StockLocationFetchService stockLocationFetchService;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -143,7 +145,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      StockLocationFetchService stockLocationFetchService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderPlanService = manufOrderPlanService;
@@ -163,6 +166,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.stockLocationFetchService = stockLocationFetchService;
   }
 
   @Override
@@ -734,6 +738,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     List<Integer> statusList = getMOFiltersOnProductionConfig();
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+
     String query =
         "self.product.id = "
             + productId
@@ -741,32 +746,37 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             + StockMoveRepository.STATUS_PLANNED
             + " AND self.fromStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
-            + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
+            + " AND ( "
+            + "(self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
             + statusListQuery
             + "))"
-            + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN ( "
+            + " OR "
+            + "(self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN ("
             + statusListQuery
-            + ") ) ) ";
-    if (companyId != 0L) {
-      query += " AND self.stockMove.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        if (stockLocationId != 0L) {
-          StockLocation stockLocation =
-              Beans.get(StockLocationRepository.class).find(stockLocationId);
-          List<StockLocation> stockLocationList =
-              Beans.get(StockLocationService.class)
-                  .getAllLocationAndSubLocation(stockLocation, false);
-          if (!stockLocationList.isEmpty()
-              && stockLocation.getCompany().getId().equals(companyId)) {
-            query +=
-                " AND self.fromStockLocation.id IN ("
-                    + StringHelper.getIdListString(stockLocationList)
-                    + ") ";
-          }
-        }
-      }
+            + "))"
+            + " )";
+
+    if (companyId == 0L) {
+      return query;
     }
 
+    query += " AND self.stockMove.company.id = " + companyId;
+
+    StockLocation stockLocation = JPA.find(StockLocation.class, stockLocationId);
+    if (stockLocation == null || !stockLocation.getCompany().getId().equals(companyId)) {
+      return query;
+    }
+
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllContentLocationAndSubLocation(stockLocationId);
+    if (CollectionUtils.isEmpty(stockLocationList)) {
+      return query;
+    }
+
+    query +=
+        stockLocationList.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(",", " AND self.stockMove.fromStockLocation.id IN (", ")"));
     return query;
   }
 
@@ -775,6 +785,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     List<Integer> statusList = getMOFiltersOnProductionConfig();
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+
     String query =
         "self.product.id = "
             + productId
@@ -786,23 +797,28 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             + " AND self.producedManufOrder.statusSelect IN ( "
             + statusListQuery
             + " )";
-    if (companyId != 0L) {
-      query += "AND self.stockMove.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        StockLocation stockLocation =
-            Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
-            Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
-          query +=
-              " AND self.stockMove.toStockLocation.id IN ("
-                  + StringHelper.getIdListString(stockLocationList)
-                  + ") ";
-        }
-      }
+
+    if (companyId == 0L) {
+      return query;
     }
 
+    query += "AND self.stockMove.company.id = " + companyId;
+
+    StockLocation stockLocation = JPA.find(StockLocation.class, stockLocationId);
+    if (stockLocation == null || !stockLocation.getCompany().getId().equals(companyId)) {
+      return query;
+    }
+
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllContentLocationAndSubLocation(stockLocationId);
+    if (CollectionUtils.isEmpty(stockLocationList)) {
+      return query;
+    }
+
+    query +=
+        stockLocationList.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(",", " AND self.stockMove.toStockLocation.id IN (", ")"));
     return query;
   }
 

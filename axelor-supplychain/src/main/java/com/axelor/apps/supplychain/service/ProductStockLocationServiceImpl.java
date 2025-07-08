@@ -34,8 +34,8 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
@@ -47,7 +47,6 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ProductStockLocationServiceImpl implements ProductStockLocationService {
 
@@ -56,7 +55,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
   protected ProductRepository productRepository;
   protected CompanyRepository companyRepository;
   protected StockLocationRepository stockLocationRepository;
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
   protected StockLocationLineFetchService stockLocationLineFetchService;
   protected StockLocationLineRepository stockLocationLineRepository;
   protected StockLocationUtilsServiceSupplychain stockLocationUtilsServiceSupplychain;
@@ -70,7 +69,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       ProductRepository productRepository,
       CompanyRepository companyRepository,
       StockLocationRepository stockLocationRepository,
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       StockLocationUtilsServiceSupplychain stockLocationUtilsServiceSupplychain,
       StockLocationLineFetchService stockLocationLineFetchService,
       StockLocationLineRepository stockLocationLineRepository,
@@ -83,7 +82,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     this.productRepository = productRepository;
     this.companyRepository = companyRepository;
     this.stockLocationRepository = stockLocationRepository;
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
     this.stockLocationUtilsServiceSupplychain = stockLocationUtilsServiceSupplychain;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.stockLocationLineRepository = stockLocationLineRepository;
@@ -100,9 +99,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     int scale = appBaseService.getNbDecimalDigitForQty();
 
     List<Long> stockLocationIds =
-        stockLocationService.getAllLocationAndSubLocation(stockLocation, false).stream()
-            .map(StockLocation::getId)
-            .collect(Collectors.toList());
+        stockLocationFetchService.getAllContentLocationAndSubLocation(stockLocationId);
 
     BigDecimal reservedQty =
         stockLocationUtilsServiceSupplychain.getReservedQtyOfProductInStockLocations(

@@ -39,13 +39,14 @@ import java.time.ZoneId;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StockLocationPrintServiceImpl implements StockLocationPrintService {
 
   protected StockConfigService stockConfigService;
   protected PrintingTemplatePrintService printingTemplatePrintService;
   protected StockLocationRepository stockLocationRepository;
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
   protected AppBaseService appBaseService;
 
   @Inject
@@ -53,12 +54,12 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
       StockConfigService stockConfigService,
       PrintingTemplatePrintService printingTemplatePrintService,
       StockLocationRepository stockLocationRepository,
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       AppBaseService appBaseService) {
     this.stockConfigService = stockConfigService;
     this.printingTemplatePrintService = printingTemplatePrintService;
     this.stockLocationRepository = stockLocationRepository;
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
     this.appBaseService = appBaseService;
   }
 
@@ -111,24 +112,17 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
     if (withoutDetailsByStockLocation) {
       stockLocationIdsString = Long.toString(firstStockLocationId);
     } else {
+
       Set<Long> stockLocationAndSubStockLocationsIds = new LinkedHashSet<>();
-      stockLocationAndSubStockLocationsIds.addAll(
-          stockLocationService.getContentStockLocationIds(stockLocation));
-      for (int i = 1; i < stockLocationIds.length; i++) {
-        Long stockLocationId = stockLocationIds[i];
-        if (stockLocationAndSubStockLocationsIds.contains(stockLocationId)) {
-          continue;
-        }
+      for (Long id : stockLocationIds) {
         stockLocationAndSubStockLocationsIds.addAll(
-            stockLocationService.getContentStockLocationIds(
-                stockLocationRepository.find(stockLocationIds[0])));
+            stockLocationFetchService.getAllContentLocationAndSubLocation(id));
       }
 
       stockLocationIdsString =
           stockLocationAndSubStockLocationsIds.stream()
-              .map(id -> Long.toString(id))
-              .reduce("", (id1, id2) -> id1 + "," + id2)
-              .substring(1);
+              .map(String::valueOf)
+              .collect(Collectors.joining(","));
     }
 
     if (ObjectUtils.isEmpty(stockLocationPrintTemplate)) {

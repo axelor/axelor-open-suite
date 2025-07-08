@@ -24,13 +24,21 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
-import com.axelor.inject.Beans;
-import com.axelor.utils.helpers.StringHelper;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationLineFetchServiceImpl implements StockLocationLineFetchService {
+
+  protected final StockLocationFetchService stockLocationFetchService;
+
+  @Inject
+  public StockLocationLineFetchServiceImpl(StockLocationFetchService stockLocationFetchService) {
+    this.stockLocationFetchService = stockLocationFetchService;
+  }
 
   @Override
   public BigDecimal getTrackingNumberAvailableQty(
@@ -135,22 +143,28 @@ public class StockLocationLineFetchServiceImpl implements StockLocationLineFetch
             + productId
             + " AND self.stockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL;
-
-    if (companyId != 0L) {
-      query += " AND self.stockLocation.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        StockLocation stockLocation = JPA.find(StockLocation.class, stockLocationId);
-        List<StockLocation> stockLocationList =
-            Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
-          query +=
-              " AND self.stockLocation.id IN ("
-                  + StringHelper.getIdListString(stockLocationList)
-                  + ") ";
-        }
-      }
+    if (companyId == 0L) {
+      return query;
     }
+
+    query += " AND self.stockLocation.company.id = " + companyId;
+
+    StockLocation stockLocation = JPA.find(StockLocation.class, stockLocationId);
+    if (stockLocation == null || !stockLocation.getCompany().getId().equals(companyId)) {
+      return query;
+    }
+
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllContentLocationAndSubLocation(stockLocationId);
+    if (CollectionUtils.isEmpty(stockLocationList)) {
+      return query;
+    }
+
+    query +=
+        stockLocationList.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(",", " AND self.stockLocation.id IN (", ")"));
+
     return query;
   }
 

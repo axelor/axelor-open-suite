@@ -1,0 +1,3 @@
+---
+title: "Reduce execution time for stockLocationService.getContentStockLocationIds method"
+module: axelor-stock
