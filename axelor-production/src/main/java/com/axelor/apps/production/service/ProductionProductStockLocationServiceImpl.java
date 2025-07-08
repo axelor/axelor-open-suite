@@ -36,8 +36,8 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -64,7 +64,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       ProductRepository productRepository,
       CompanyRepository companyRepository,
       StockLocationRepository stockLocationRepository,
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       StockLocationUtilsServiceSupplychain stockLocationUtilsServiceSupplychain,
       StockLocationLineFetchService stockLocationLineFetchService,
       StockLocationLineRepository stockLocationLineRepository,
@@ -80,7 +80,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         productRepository,
         companyRepository,
         stockLocationRepository,
-        stockLocationService,
+        stockLocationFetchService,
         stockLocationUtilsServiceSupplychain,
         stockLocationLineFetchService,
         stockLocationLineRepository,

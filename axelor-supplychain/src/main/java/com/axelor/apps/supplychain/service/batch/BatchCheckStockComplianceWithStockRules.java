@@ -25,7 +25,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
@@ -47,7 +47,7 @@ public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
   protected final StockRulesService stockRulesService;
   protected final StockRulesSupplychainService stockRulesSupplychainService;
   protected final AppStockService appStockService;
-  protected final StockLocationService stockLocationService;
+  protected final StockLocationFetchService stockLocationFetchService;
   protected final StockRulesRepository stockRulesRepository;
 
   @Inject
@@ -55,12 +55,12 @@ public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
       StockRulesService stockRulesService,
       StockRulesSupplychainService stockRulesSupplychainService,
       AppStockService appStockService,
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       StockRulesRepository stockRulesRepository) {
     this.stockRulesService = stockRulesService;
     this.stockRulesSupplychainService = stockRulesSupplychainService;
     this.appStockService = appStockService;
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
     this.stockRulesRepository = stockRulesRepository;
   }
 
@@ -150,22 +150,22 @@ public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
   }
 
   protected List<StockRules> getToBeCheckedStockRules(StockLocation stockLocation) {
-    Set<StockLocation> stockLocationAndItsParents =
-        stockLocationService.getListOfStockLocationAndAllItsParentsStockLocations(stockLocation);
+    Set<Long> stockLocationAndItsParents =
+        stockLocationFetchService.getLocationAndAllParentLocationIds(stockLocation);
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
     Set<StockRules> usedStockRules = supplychainBatch.getUsedStockRulesSet();
     return ObjectUtils.notEmpty(usedStockRules)
         ? usedStockRules.stream()
-            .filter(sr -> stockLocationAndItsParents.contains(sr.getStockLocation()))
+            .filter(sr -> stockLocationAndItsParents.contains(sr.getStockLocation().getId()))
             .collect(Collectors.toList())
         : getStockRulesOfStockLocationsAndUseCaseStockControl(stockLocationAndItsParents);
   }
 
   protected List<StockRules> getStockRulesOfStockLocationsAndUseCaseStockControl(
-      Set<StockLocation> stockLocations) {
+      Set<Long> stockLocations) {
     return stockRulesRepository
         .all()
-        .filter(" self.stockLocation in :stockLocations AND self.useCaseSelect = :useCase")
+        .filter("self.stockLocation.id in :stockLocations AND self.useCaseSelect = :useCase")
         .bind("stockLocations", stockLocations)
         .bind("useCase", StockRulesRepository.USE_CASE_STOCK_CONTROL)
         .fetch();

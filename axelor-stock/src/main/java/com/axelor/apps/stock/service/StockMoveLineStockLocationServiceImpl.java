@@ -36,16 +36,16 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
 
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
 
   @Inject
   public StockMoveLineStockLocationServiceImpl(
       AppBaseService appBaseService,
       AppStockService appStockService,
-      StockLocationService stockLocationService) {
+      StockLocationFetchService stockLocationFetchService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
   }
 
   @Override
@@ -149,8 +149,8 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
       return "self.id in (0)";
     }
 
-    List<StockLocation> stockLocationList =
-        stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllContentLocationAndSubLocation(stockLocation.getId());
 
     // add default stockLocation if options are enabled
     if (appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()
@@ -168,14 +168,12 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
       }
 
       if (stockLocationForMoveLine != null) {
-        stockLocationList.add(stockLocationForMoveLine);
+        stockLocationList.add(stockLocationForMoveLine.getId());
       }
     }
 
     return String.format(
         "self.id in (%s)",
-        stockLocationList.stream()
-            .map(location -> location.getId().toString())
-            .collect(Collectors.joining(",")));
+        stockLocationList.stream().map(String::valueOf).collect(Collectors.joining(",")));
   }
 }
