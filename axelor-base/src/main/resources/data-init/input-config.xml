@@ -108,5 +108,7 @@
       search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
   </input>
 
+  <input file="meta_theme.csv" separator=";" type="com.axelor.meta.db.MetaTheme"
+    search="self.name = :name"/>
 
 </csv-inputs>
