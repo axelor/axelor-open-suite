@@ -133,7 +133,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
 
-    if (product == null) {
+    if (product == null || supplierPartner == null) {
       return null;
     }
 
