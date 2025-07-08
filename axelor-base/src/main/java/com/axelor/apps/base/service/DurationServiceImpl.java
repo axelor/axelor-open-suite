@@ -91,6 +91,9 @@ public class DurationServiceImpl implements DurationService {
     long durationValue = duration.getValue();
     if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
       long months = ChronoUnit.MONTHS.between(totalStart, totalEnd);
+      if (months == 0) {
+        return 30;
+      }
       if (months < durationValue) {
         LocalDate theoryStart = totalStart.minusMonths(duration.getValue() - months);
         totalDays = ChronoUnit.DAYS.between(theoryStart, totalEnd);
