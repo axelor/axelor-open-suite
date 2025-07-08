@@ -142,7 +142,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Override
   public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
     List<Timetable> timetableList = saleOrder.getTimetableList();
-    BigDecimal totalHT = saleOrder.getExTaxTotal();
+    BigDecimal totalHT =
+        saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
     BigDecimal sumTimetableAmount = BigDecimal.ZERO;
     if (timetableList != null) {
       for (Timetable timetable : timetableList) {
@@ -379,11 +380,12 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             I18n.get(SupplychainExceptionMessage.SALE_ORDER_TIMETABLE_CAN_NOT_BE_UPDATED),
             saleOrder.getAmountToBeSpreadOverTheTimetable());
       }
+      BigDecimal amount =
+          saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
       timetableList.forEach(
           timetable ->
               timetable.setAmount(
-                  saleOrder
-                      .getExTaxTotal()
+                  amount
                       .multiply(
                           timetable
                               .getPercentage()

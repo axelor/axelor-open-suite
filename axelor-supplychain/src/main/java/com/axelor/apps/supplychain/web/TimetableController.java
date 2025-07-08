@@ -125,7 +125,7 @@ public class TimetableController {
           timetableService.computeAmount(
               timetable,
               saleOrder.getTimetableList(),
-              saleOrder.getExTaxTotal(),
+              saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal(),
               saleOrder.getCurrency()));
     }
 
@@ -136,7 +136,9 @@ public class TimetableController {
           timetableService.computeAmount(
               timetable,
               purchaseOrder.getTimetableList(),
-              purchaseOrder.getExTaxTotal(),
+              purchaseOrder.getInAti()
+                  ? purchaseOrder.getInTaxTotal()
+                  : purchaseOrder.getExTaxTotal(),
               purchaseOrder.getCurrency()));
     }
   }
