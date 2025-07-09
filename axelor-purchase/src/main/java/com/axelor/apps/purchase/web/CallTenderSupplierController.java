@@ -28,8 +28,7 @@ public class CallTenderSupplierController {
 
     var callTenderSupplier = request.getContext().asType(CallTenderSupplier.class);
     if (callTenderSupplier != null && callTenderSupplier.getContactPartnerSet() != null) {
-      callTenderSupplier.clearContactPartnerSet();
-      response.setValue("contactPartnerSet", callTenderSupplier.getContactPartnerSet());
+      response.setValue("contactPartnerSet", null);
     }
   }
 }
