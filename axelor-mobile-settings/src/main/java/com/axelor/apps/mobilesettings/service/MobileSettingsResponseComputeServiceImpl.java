@@ -117,7 +117,8 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsRenamingAllowed(),
         appMobileSettings.getIsFolderCreationAllowed(),
         appMobileSettings.getIsFileCreationAllowed(),
-        appMobileSettings.getIsFileDeletionAllowed());
+        appMobileSettings.getIsFileDeletionAllowed(),
+        appMobileSettings.getDefaultQiDetectionId());
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
