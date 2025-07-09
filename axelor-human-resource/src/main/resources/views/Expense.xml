@@ -391,8 +391,7 @@
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-    <attribute name="hidden" for="cancelBtn"
-      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || ventilated"/>
+    <attribute name="hidden" for="cancelBtn" expr="eval: statusSelect == 6 || ventilated"/>
     <attribute name="readonly" for="period" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="period" expr="eval: ventilated"
