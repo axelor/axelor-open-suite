@@ -1,0 +1,3 @@
+---
+title: "Invoice/BillOfExchange: fixed the fact the placement move was a Sale move and not a Payment move"
+module: axelor-bank-payment
