@@ -319,7 +319,7 @@
     <field name="bankDetails"
       expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
     <field name="currency"
-      expr="eval: employee?.mainEmploymentContract?.payCompany.currency ?: employee?.user?.activeCompany?.currency"/>
+      expr="eval: employee?.mainEmploymentContract?.payCompany?.currency ?: employee?.user?.activeCompany?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
