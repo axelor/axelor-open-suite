@@ -10,15 +10,14 @@
   </grid>
 
   <form name="call-tender-supplier-form" model="com.axelor.apps.purchase.db.CallTenderSupplier"
-    title="Supplier" width="large" onLoad="action-call-tender-supplier-attrs-set-contact-domain">
+    title="Supplier" width="large">
     <panel name="mainPanel" showTitle="false">
       <field name="supplierPartner" domain="self.isSupplier IS true" form-view="partner-form"
-        grid-view="partner-grid"
-        onChange="action-call-tender-supplier-attrs-set-contact-domain,action-call-tender-supplier-method-clear-contact-set"/>
+        grid-view="partner-grid" onChange="action-call-tender-supplier-method-clear-contact-set"/>
     </panel>
     <panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
       form-view="partner-contact-form" grid-view="partner-contact-grid" canNew="false"
-      canSelect="true"/>
+      canSelect="true" onSelect="action-call-tender-supplier-attrs-set-contact-domain"/>
   </form>
 
   <action-attrs name="action-call-tender-supplier-attrs-set-contact-domain">
