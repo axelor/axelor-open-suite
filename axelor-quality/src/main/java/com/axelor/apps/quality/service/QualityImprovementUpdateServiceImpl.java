@@ -27,6 +27,8 @@ import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -35,18 +37,22 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class QualityImprovementUpdateServiceImpl implements QualityImprovementUpdateService {
 
   protected QualityImprovementRepository qualityImprovementRepository;
   protected QualityImprovementCheckValuesService qualityImprovementCheckValuesService;
+  protected MetaFiles metaFiles;
 
   @Inject
   public QualityImprovementUpdateServiceImpl(
       QualityImprovementRepository qualityImprovementRepository,
-      QualityImprovementCheckValuesService qualityImprovementCheckValuesService) {
+      QualityImprovementCheckValuesService qualityImprovementCheckValuesService,
+      MetaFiles metaFiles) {
     this.qualityImprovementRepository = qualityImprovementRepository;
     this.qualityImprovementCheckValuesService = qualityImprovementCheckValuesService;
+    this.metaFiles = metaFiles;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -62,12 +68,22 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
     baseQualityImprovement.setQiDetection(newQualityImprovement.getQiDetection());
     baseQualityImprovement.setAnalysisMethod(newQualityImprovement.getAnalysisMethod());
 
+    QIResolution baseQIResolution = baseQualityImprovement.getQiResolution();
     updateQIIdentification(baseQualityImprovement.getQiIdentification(), newQiIdentification);
-    updateQIResolution(baseQualityImprovement.getQiResolution(), newQiResolution);
+    updateQIResolution(baseQIResolution, newQiResolution);
 
     qualityImprovementCheckValuesService.checkQualityImprovementValues(baseQualityImprovement);
 
-    return qualityImprovementRepository.save(baseQualityImprovement);
+    baseQualityImprovement = qualityImprovementRepository.save(baseQualityImprovement);
+
+    for (QIResolutionDefault qiResolutionDefault : baseQIResolution.getQiResolutionDefaultsList()) {
+      List<MetaFile> fileList = qiResolutionDefault.getMetaFileList();
+      if (CollectionUtils.isNotEmpty(fileList)) {
+        fileList.forEach(file -> metaFiles.attach(file, file.getFileName(), qiResolutionDefault));
+      }
+    }
+
+    return baseQualityImprovement;
   }
 
   protected void updateQIIdentification(
@@ -144,5 +160,6 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
     target.setQiDefault(source.getQiDefault());
     target.setQuantity(source.getQuantity());
     target.setDescription(source.getDescription());
+    target.setMetaFileList(source.getMetaFileList());
   }
 }

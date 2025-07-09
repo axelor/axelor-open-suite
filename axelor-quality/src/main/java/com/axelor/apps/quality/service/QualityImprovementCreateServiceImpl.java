@@ -21,26 +21,34 @@ package com.axelor.apps.quality.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
+import com.axelor.apps.quality.db.QIResolutionDefault;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class QualityImprovementCreateServiceImpl implements QualityImprovementCreateService {
 
   protected QualityImprovementRepository qualityImprovementRepository;
   protected QualityImprovementService qualityImprovementService;
   protected QualityImprovementCheckValuesService qualityImprovementCheckValuesService;
+  protected MetaFiles metaFiles;
 
   @Inject
   public QualityImprovementCreateServiceImpl(
       QualityImprovementRepository qualityImprovementRepository,
       QualityImprovementService qualityImprovementService,
-      QualityImprovementCheckValuesService qualityImprovementCheckValuesService) {
+      QualityImprovementCheckValuesService qualityImprovementCheckValuesService,
+      MetaFiles metaFiles) {
     this.qualityImprovementRepository = qualityImprovementRepository;
     this.qualityImprovementService = qualityImprovementService;
     this.qualityImprovementCheckValuesService = qualityImprovementCheckValuesService;
+    this.metaFiles = metaFiles;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -61,6 +69,14 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
     qualityImprovement.setQiStatus(qualityImprovementService.getDefaultQIStatus());
     qualityImprovementCheckValuesService.checkQualityImprovementValues(qualityImprovement);
 
-    return qualityImprovementRepository.save(qualityImprovement);
+    qualityImprovement = qualityImprovementRepository.save(qualityImprovement);
+
+    for (QIResolutionDefault qiResolutionDefault : qiResolution.getQiResolutionDefaultsList()) {
+      List<MetaFile> fileList = qiResolutionDefault.getMetaFileList();
+      if (CollectionUtils.isNotEmpty(fileList)) {
+        fileList.forEach(file -> metaFiles.attach(file, file.getFileName(), qiResolutionDefault));
+      }
+    }
+    return qualityImprovement;
   }
 }
