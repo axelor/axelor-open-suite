@@ -2016,6 +2016,7 @@
 "Invoice.imputedOn",,,
 "Invoice.invoiceAdvPaymentNo",,,
 "Invoice.invoiceBalanceNo",,,
+"Invoice.invoiceCreditAdvPaymentNo",,,
 "Invoice.invoiceNo",,,
 "Invoice.invoiceTermAmount",,,
 "Invoice.invoiceTermAmountRemaining",,,

@@ -62,6 +62,7 @@ public class SolDetailsProdProcessLineUpdateServiceImpl
         && prodProcessLine.getCostTypeSelect().equals(saleOrderLineDetails.getCostTypeSelect())
         && prodProcessLine.getCostAmount().compareTo(saleOrderLineDetails.getCostAmount()) == 0
         && prodProcessLine.getHrCostTypeSelect().equals(saleOrderLineDetails.getHrCostTypeSelect())
-        && prodProcessLine.getHrCostAmount().compareTo(saleOrderLineDetails.getHrCostAmount()) == 0;
+        && prodProcessLine.getHrCostAmount().compareTo(saleOrderLineDetails.getHrCostAmount()) == 0
+        && prodProcessLine.getHumanDuration().equals(saleOrderLineDetails.getHumanDuration());
   }
 }
