@@ -99,6 +99,12 @@ public class SequenceService {
     this.sequenceVersionGeneratorService = sequenceVersionGeneratorService;
   }
 
+  /**
+   * * Validates if the sequence contains a year pattern when yearly reset is enabled.
+   *
+   * @param sequence
+   * @return true if the sequence is valid for yearly reset, false otherwise.
+   */
   public static boolean isYearValid(Sequence sequence) {
 
     boolean yearlyResetOk = sequence.getYearlyResetOk();
@@ -114,6 +120,12 @@ public class SequenceService {
     return seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR);
   }
 
+  /**
+   * Validates if the sequence contains a month and year pattern when monthly reset is enabled.
+   *
+   * @param sequence
+   * @return true if the sequence is valid for monthly reset, false otherwise.
+   */
   public static boolean isMonthValid(Sequence sequence) {
 
     boolean monthlyResetOk = sequence.getMonthlyResetOk();
@@ -130,6 +142,12 @@ public class SequenceService {
         && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
   }
 
+  /**
+   * Checks if the generated sequence length is within the allowed limit.
+   *
+   * @param sequence
+   * @throws AxelorException
+   */
   public void checkSequenceLengthValidity(Sequence sequence) throws AxelorException {
     Company company = sequence.getCompany();
     String nextSeq = computeTestSeq(sequence, appBaseService.getTodayDate(company));
@@ -141,6 +159,13 @@ public class SequenceService {
     }
   }
 
+  /**
+   * Retrieves a sequence by its code and associated company.
+   *
+   * @param code
+   * @param company
+   * @return {@link Sequence} or null if not found.
+   */
   public Sequence getSequence(String code, Company company) {
 
     if (code == null) {
@@ -153,12 +178,31 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
+  /**
+   * Retrieves a sequence number by code, entity, and field.
+   *
+   * @param code
+   * @param objectClass
+   * @param fieldName
+   * @return The generated sequence number, or null if sequence doesn't exists.
+   * @throws AxelorException
+   */
   public String getSequenceNumber(String code, Class objectClass, String fieldName)
       throws AxelorException {
 
     return this.getSequenceNumber(code, null, objectClass, fieldName);
   }
 
+  /**
+   * Retrieves a sequence number by code, company, entity, and field.
+   *
+   * @param code
+   * @param company
+   * @param objectClass
+   * @param fieldName
+   * @return The generated sequence number, or null if sequence doesn't exists.
+   * @throws AxelorException
+   */
   public String getSequenceNumber(String code, Company company, Class objectClass, String fieldName)
       throws AxelorException {
 
@@ -172,11 +216,27 @@ public class SequenceService {
         sequence, appBaseService.getTodayDate(company), objectClass, fieldName);
   }
 
+  /**
+   * Checks if a sequence exists for the given code and company.
+   *
+   * @param code
+   * @param company
+   * @return {@code true} if a sequence exists, {@code false} otherwise.
+   */
   public boolean hasSequence(String code, Company company) {
 
     return getSequence(code, company) != null;
   }
 
+  /**
+   * Generates a sequence number for a given sequence, entity, and field.
+   *
+   * @param sequence
+   * @param objectClass
+   * @param fieldName
+   * @return The generated sequence number.
+   * @throws AxelorException
+   */
   public String getSequenceNumber(Sequence sequence, Class objectClass, String fieldName)
       throws AxelorException {
     return getSequenceNumber(
@@ -360,6 +420,13 @@ public class SequenceService {
     return convertNextSeqLongToString(q + 1) + ALPHABET.charAt(r);
   }
 
+  /**
+   * Get or creates a sequence version for the given sequence and reference date.
+   *
+   * @param sequence
+   * @param refDate
+   * @return {@link SequenceVersion}.
+   */
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
 
     log.debug("Reference date : : : : {}", refDate);
@@ -372,6 +439,12 @@ public class SequenceService {
     return sequenceVersion;
   }
 
+  /**
+   * Get the default title for a sequence based on its code.
+   *
+   * @param sequence
+   * @return default title
+   */
   public String getDefaultTitle(Sequence sequence) {
     MetaSelectItem item =
         Beans.get(MetaSelectItemRepository.class)
@@ -471,6 +544,14 @@ public class SequenceService {
     return fn.toString();
   }
 
+  /**
+   * Updates sequence versions by setting the end date for the active version.
+   *
+   * @param sequence
+   * @param todayDate
+   * @param endOfDate
+   * @return The updated list of sequence versions.
+   */
   public List<SequenceVersion> updateSequenceVersions(
       Sequence sequence, LocalDate todayDate, LocalDate endOfDate) {
 
@@ -490,6 +571,12 @@ public class SequenceService {
     return sequenceVersionList;
   }
 
+  /**
+   * Validates that the sequence prefix does not start with the draft prefix.
+   *
+   * @param sequence
+   * @throws AxelorException
+   */
   public void validateSequence(Sequence sequence) throws AxelorException {
     String draftPrefix = getDraftPrefix();
 
