@@ -130,13 +130,14 @@ public abstract class GenericApiFetchService {
     HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
     JSONObject jsonObject = new JSONObject(response.body());
-    String accessToken = jsonObject.getString("access_token");
 
-    if (accessToken == null) {
+    if (!jsonObject.has("accessToken")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.API_BAD_REQUEST));
     }
+
+    String accessToken = jsonObject.getString("access_token");
     appBaseService.getAppBase().setSireneAccessToken(accessToken);
   }
 }
