@@ -397,6 +397,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   public boolean isIncotermRequired(SaleOrder saleOrder) {
+    Partner clientPartner = saleOrder.getClientPartner();
     return saleOrder.getSaleOrderLineList() != null
         && saleOrder.getSaleOrderLineList().stream()
             .anyMatch(
@@ -407,7 +408,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
                             .getProductTypeSelect()
                             .equals(ProductRepository.PRODUCT_TYPE_STORABLE))
         && isSameAlpha2Code(saleOrder)
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION;
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+            & clientPartner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY;
   }
 
   protected boolean isSameAlpha2Code(SaleOrder saleOrder) {
