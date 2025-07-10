@@ -43,6 +43,7 @@ import wslite.json.JSONObject;
 public abstract class GenericApiFetchService {
 
   protected final AppBaseService appBaseService;
+  protected final String SIRENE_API_ACCESS_TOKEN = "access_token";
 
   @Inject
   protected GenericApiFetchService(AppBaseService appBaseService) {
@@ -131,13 +132,13 @@ public abstract class GenericApiFetchService {
 
     JSONObject jsonObject = new JSONObject(response.body());
 
-    if (!jsonObject.has("accessToken")) {
+    if (!jsonObject.has(SIRENE_API_ACCESS_TOKEN)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.API_BAD_REQUEST));
     }
 
-    String accessToken = jsonObject.getString("access_token");
+    String accessToken = jsonObject.getString(SIRENE_API_ACCESS_TOKEN);
     appBaseService.getAppBase().setSireneAccessToken(accessToken);
   }
 }
