@@ -121,13 +121,13 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
   @Transactional(rollbackOn = {Exception.class})
   public void createPartnerAccounts(AccountingSituation situation) throws AxelorException {
     AccountConfig accountConfig = situation.getCompany().getAccountConfig();
-    int creationMode;
-    if (accountConfig == null
-        || (creationMode = accountConfig.getPartnerAccountGenerationModeSelect())
-            == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+
+    if (accountConfig == null) {
       // Ignore even if account config is null since this means no automatic creation
       return;
     }
+
+    int creationMode = accountConfig.getPartnerAccountGenerationModeSelect();
     createCustomerAccount(accountConfig, situation, creationMode);
     createSupplierAccount(accountConfig, situation, creationMode);
     createEmployeeAccount(accountConfig, situation, creationMode);
@@ -164,6 +164,12 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     }
 
     final String accountCode;
+
+    if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+      situation.setCustomerAccount(accountConfig.getCustomerAccount());
+      return;
+    }
+
     if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_PREFIX) {
       final String prefix = accountConfig.getCustomerAccountPrefix();
       if (StringUtils.isBlank(prefix)) {
@@ -220,6 +226,12 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     }
 
     final String accountCode;
+
+    if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+      situation.setSupplierAccount(accountConfig.getSupplierAccount());
+      return;
+    }
+
     if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_PREFIX) {
       final String prefix = accountConfig.getSupplierAccountPrefix();
       if (StringUtils.isBlank(prefix)) {
@@ -277,6 +289,12 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     }
 
     final String accountCode;
+
+    if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+      situation.setEmployeeAccount(accountConfig.getEmployeeAccount());
+      return;
+    }
+
     if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_PREFIX) {
       final String prefix = accountConfig.getEmployeeAccountPrefix();
       if (StringUtils.isBlank(prefix)) {
