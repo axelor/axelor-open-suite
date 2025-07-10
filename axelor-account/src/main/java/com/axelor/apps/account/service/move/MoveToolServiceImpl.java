@@ -693,14 +693,6 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Integer> getMoveStatusSelectWithoutAccounted(
-      String moveStatusSelect, Set<Company> companySet) {
-    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, companySet);
-    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
-    return statusList;
-  }
-
-  @Override
   public List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet) {
     List<Integer> statusList = null;
 
@@ -714,14 +706,6 @@ public class MoveToolServiceImpl implements MoveToolService {
       }
     }
 
-    return statusList;
-  }
-
-  @Override
-  public List<Integer> getMoveStatusSelectWithoutAccounted(
-      String moveStatusSelect, Company company) {
-    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, company);
-    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
     return statusList;
   }
 
