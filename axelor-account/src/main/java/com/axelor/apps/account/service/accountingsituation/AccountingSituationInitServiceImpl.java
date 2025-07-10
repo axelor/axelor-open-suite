@@ -121,13 +121,13 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
   @Transactional(rollbackOn = {Exception.class})
   public void createPartnerAccounts(AccountingSituation situation) throws AxelorException {
     AccountConfig accountConfig = situation.getCompany().getAccountConfig();
-    int creationMode;
-    if (accountConfig == null
-        || (creationMode = accountConfig.getPartnerAccountGenerationModeSelect())
-            == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+
+    if (accountConfig == null) {
       // Ignore even if account config is null since this means no automatic creation
       return;
     }
+
+    int creationMode = accountConfig.getPartnerAccountGenerationModeSelect();
     createCustomerAccount(accountConfig, situation, creationMode);
     createSupplierAccount(accountConfig, situation, creationMode);
     createEmployeeAccount(accountConfig, situation, creationMode);
@@ -161,6 +161,11 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           I18n.get(AccountExceptionMessage.ACCOUNT_CUSTOMER_1),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           situation.getCompany().getName());
+    }
+
+    if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+      situation.setCustomerAccount(accountConfig.getCustomerAccount());
+      return;
     }
 
     String accountCode = null;
@@ -219,6 +224,11 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           situation.getCompany().getName());
     }
 
+    if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+      situation.setSupplierAccount(accountConfig.getSupplierAccount());
+      return;
+    }
+
     String accountCode = null;
     Account account =
         this.createAccount(
@@ -274,6 +284,11 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
           I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_40),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           situation.getCompany().getName());
+    }
+
+    if (creationMode == AccountConfigRepository.AUTOMATIC_ACCOUNT_CREATION_NONE) {
+      situation.setEmployeeAccount(accountConfig.getEmployeeAccount());
+      return;
     }
 
     String accountCode = null;
