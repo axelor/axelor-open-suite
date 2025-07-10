@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsBomService {
 
@@ -49,16 +48,6 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
       throws AxelorException {
     Objects.requireNonNull(billOfMaterial);
 
-    List<SaleOrderLineDetails> saleOrderLineDetailsList =
-        saleOrderLine.getSaleOrderLineDetailsList();
-
-    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
-      saleOrderLineDetailsList.removeAll(
-          saleOrderLineDetailsList.stream()
-              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
-              .collect(Collectors.toList()));
-    }
-
     var saleOrderLinesDetailsList = new ArrayList<SaleOrderLineDetails>();
 
     for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
@@ -71,5 +60,20 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
     }
 
     return saleOrderLinesDetailsList;
+  }
+
+  @Override
+  public List<SaleOrderLineDetails> getUpdatedSaleOrderLineDetailsFromBom(
+      BillOfMaterial billOfMaterial, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    List<SaleOrderLineDetails> operationSolDetailsLineList =
+        saleOrderLine.getSaleOrderLineDetailsList().stream()
+            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
+            .collect(Collectors.toList());
+    List<SaleOrderLineDetails> updatedSolDetailsLineList =
+        createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine);
+    updatedSolDetailsLineList.addAll(operationSolDetailsLineList);
+    return updatedSolDetailsLineList;
   }
 }
