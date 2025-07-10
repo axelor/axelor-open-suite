@@ -65,7 +65,7 @@
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
         <field name="billOfExchangeStepBatchSelect" widget="NavSelect" colSpan="12"/>
-        <field name="billOfExchangeDataTypeSelect"
+        <field name="billOfExchangeDataTypeSelect" selection-in="[1]"
           readonlyIf="billOfExchangeStepBatchSelect != 1"
           requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1"/>
         <field name="billOfExhangeMailTemplate" showIf="billOfExchangeStepBatchSelect == 2"
