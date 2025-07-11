@@ -288,10 +288,10 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
-
+    BigDecimal qtyRatio = costSheetService.getQtyRatio(billOfMaterial);
     UnitCostCalcLine unitCostCalcLine =
         unitCostCalcLineService.createUnitCostCalcLine(
-            product, billOfMaterial.getCompany(), level, costSheet);
+            product, billOfMaterial.getCompany(), level, costSheet, qtyRatio);
     unitCostCalculation.addUnitCostCalcLineListItem(unitCostCalcLine);
     unitCostCalculationRepository.save(unitCostCalculation);
   }
