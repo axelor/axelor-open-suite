@@ -23,7 +23,8 @@
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="reservedQty"
-      if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
+      if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"
+      x-scale="$nbDecimalDigitForQty"/>
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate"
       icon="fa-plus-square"
@@ -51,6 +52,15 @@
     <field name="hasTree" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="deliveredQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+      if="__config__.app.isApp('supplychain')"/>
+    <field name="requestedReservedQty" x-scale="$nbDecimalDigitForQty" hidden="true"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
@@ -118,16 +128,27 @@
     <field name="saleOrder.currency" hidden="true"/>
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
-    <field name="deliveredQty" aggregate="sum" x-scale="2"/>
+    <field name="deliveredQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="reservedQty"
-      if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
+      if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
     <field name="saleOrder.confirmationDateTime"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+      if="__config__.app.isApp('supplychain')"/>
+    <field name="requestedReservedQty" x-scale="$nbDecimalDigitForQty" hidden="true"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
   </grid>
 
   <grid name="sale-order-line-invoice-grid" title="SO lines"
@@ -231,7 +252,8 @@
 
             <field name="isQtyRequested" showTitle="false" colSpan="2"
               showIf="isQtyRequested &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service'"
-              if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+              if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"
+              x-scale="$nbDecimalDigitForQty">
               <viewer>
                 <![CDATA[<>{isQtyRequested && <Badge bg="success">{_t('Reservation requested')}</Badge>}</>]]>
               </viewer>
@@ -250,13 +272,13 @@
           <field name="typeSelect" colSpan="2"
             onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
           <field name="productName" colSpan="12"/>
-          <field name="oldQty"/>
+          <field name="oldQty" x-scale="$nbDecimalDigitForQty"/>
         </panel>
         <panel name="productDetailPanel" colSpan="12">
           <field name="qty" colSpan="3"
             onChange="action-group-sale-saleorderline-qty-onchange"
             readonlyIf="$availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))"
-            validIf="$qtyValid != false"/>
+            validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
           <field name="unit" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
             onChange="action-group-sale-saleorderline-unit-onchange" requiredIf="typeSelect == 0"
@@ -264,11 +286,11 @@
           <field name="price" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
             onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-            hidden="true"/>
+            hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
             onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-            hidden="true"/>
+            hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
           <panel name="discountPanel" colSpan="12"
             readonlyIf="$isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
@@ -277,12 +299,13 @@
             <panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
               <field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
-                onChange="action-sale-order-line-group-discount-amount-onchange"
-                x-scale="saleOrder.currency.numberOfDecimals"/>
+                onChange="action-sale-order-line-method-discount-amount-onchange"
+                x-scale="$nbDecimalDigitForUnitPrice"/>
               <field name="discountDerogation" colSpan="3"
                 onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-group-discount-amount-onchange"/>
             </panel>
-            <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
+            <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"
+              x-scale="$nbDecimalDigitForUnitPrice"/>
 
             <field name="$maxDiscount" colSpan="12" showTitle="false" showIf="$maxDiscount"
               readonly="true">
@@ -293,7 +316,7 @@
           </panel>
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
           <field name="discountsNeedReview" hidden="true"/>
-          <field name="$qtyValid" hidden="true" colSpan="12"/>
+          <field name="$qtyValid" hidden="true" colSpan="12" x-scale="$nbDecimalDigitForQty"/>
         </panel>
 
         <panel name="taxPanel" colSpan="12">
@@ -315,10 +338,12 @@
           <field name="requestedReservedQty" colSpan="6" hidden="true"
             if-module="axelor-supplychain"
             onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty"
-            if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+            if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
+            x-scale="$nbDecimalDigitForQty"/>
           <field name="reservedQty" colSpan="6" readonly="true" hidden="true"
             if-module="axelor-supplychain"
-            if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+            if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
+            x-scale="$nbDecimalDigitForQty"/>
           <field hidden="true" name="isQtyRequested"/>
           <panel name="requestedQtyBtnsPanel" colSpan="12" if-module="axelor-supplychain"
             if="__config__.app.getApp('supplychain')?.getManageStockReservation()">
@@ -396,7 +421,8 @@
           onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
           readonlyIf="$availabiltyRequest"/>
         <field name="estimatedDeliveryDate" readonlyIf="$availabiltyRequest"/>
-        <field name="deliveredQty" readonly="true" hidden="true"/>
+        <field name="deliveredQty" readonly="true" hidden="true"
+          x-scale="$nbDecimalDigitForQty"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
@@ -412,7 +438,7 @@
       <panel name="invoicingFollowUpPanel" title="Invoicing"
         readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
-        <field name="amountInvoiced" x-scale="$currency.numberOfDecimals"/>
+        <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>
@@ -441,6 +467,8 @@
       <field name="product.isUnrenewed"/>
       <field name="product.isPrototype"/>
       <field name="saleOrder"/>
+      <field name="$nbDecimalDigitForQty"/>
+      <field name="$nbDecimalDigitForUnitPrice"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>

@@ -8,6 +8,22 @@
     <extend target="//field[@name='estimatedDeliveryDate']">
       <insert position="after">
         <field name="budgetStr" if="__config__.app.isApp('budget')"/>
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="budget-sale-order-line-menu-grid" name="sale-order-line-menu-grid" title="SO lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true">
+    <extend target="//field[@name='estimatedDeliveryDate']">
+      <insert position="after">
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -46,13 +62,7 @@
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetRemainingAmountToAllocate" readonly="true" colSpan="6"
-            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="budgetRemainingAmountToAllocate">
-              <![CDATA[
-				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
-              ]]>
-            </viewer>
-          </field>
+            x-scale="$nbDecimalDigitForUnitPrice"/>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
             onChange="action-budget-sale-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
@@ -67,6 +77,7 @@
             onChange="action-group-budget-sale-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
           <field name="$companyCurrencyScale" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
       </insert>
     </extend>
