@@ -219,7 +219,7 @@ public class TimesheetLineController {
         ActionView.define(I18n.get("Create Timesheet line"))
             .model(TimesheetLine.class.getName())
             .add("form", "timesheet-line-timesheet-project-task-form")
-            .param("popup", "true")
+            .param("popup", "reload")
             .param("forceEdit", "true")
             .param("show-toolbar", "false")
             .param("popup-save", "true")
