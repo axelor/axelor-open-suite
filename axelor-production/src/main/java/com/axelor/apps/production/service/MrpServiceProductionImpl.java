@@ -537,7 +537,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       } else {
         for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
           Product subProduct = billOfMaterialLine.getProduct();
-          if (this.isMrpProduct(subProduct)) {
+          if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
             MrpLine subProductMrpLine =
                 super.createProposalMrpLine(
                     mrp,
@@ -764,7 +764,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct)) {
+        if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
           this.assignProductLevel(billOfMaterialLine, level);
 
           Company company = mrp.getStockLocation().getCompany();

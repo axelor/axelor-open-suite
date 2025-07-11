@@ -1,0 +1,3 @@
+---
+title: "MRP: fixed an issue where bill of material line marked as not stock managed where taken into account for computation."
+module: axelor-production
