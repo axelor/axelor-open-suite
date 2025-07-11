@@ -996,9 +996,9 @@ public class DataBackupCreateService {
       case BOOLEAN:
         return "Boolean";
       case INTEGER:
-        return "Long";
-      case LONG:
         return "Integer";
+      case LONG:
+        return "Long";
       case DOUBLE:
         return "Double";
       case DECIMAL:
