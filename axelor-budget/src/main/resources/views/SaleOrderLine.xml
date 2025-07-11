@@ -8,6 +8,22 @@
     <extend target="//field[@name='estimatedDeliveryDate']">
       <insert position="after">
         <field name="budgetStr" if="__config__.app.isApp('budget')"/>
+        <field name="budgetDistributionSumAmount" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="budget-sale-order-line-menu-grid" name="sale-order-line-menu-grid" title="SO lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true">
+    <extend target="//field[@name='estimatedDeliveryDate']">
+      <insert position="after">
+        <field name="budgetDistributionSumAmount" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -46,13 +62,8 @@
 	      ]]></viewer>
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-            name="budgetDistributionSumAmount" readonly="true" colSpan="6">
-            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
-              <![CDATA[
-							<dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
-						]]>
-            </viewer>
-          </field>
+            name="budgetDistributionSumAmount" readonly="true" colSpan="6"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
           <field name="groupBudget" title="Group" colSpan="4"
             onSelect="action-budget-sale-order-line-method-group-domain"
             form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
@@ -75,6 +86,7 @@
             grid-view="reduce-budget-distribution-grid" editable="true"
             onChange="action-group-budget-sale-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
       </insert>
     </extend>

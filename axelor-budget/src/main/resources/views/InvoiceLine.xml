@@ -3,6 +3,26 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
+  <grid id="budget-invoice-line-grid" name="invoice-line-grid" title="Invoice lines"
+    model="com.axelor.apps.account.db.InvoiceLine" extension="true">
+    <extend target="//field[@name='typeSelect']">
+      <insert position="after">
+        <field name="budgetDistributionSumAmount" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="budget-invoice-line-menu-grid" name="invoice-line-menu-grid" title="Invoice lines"
+    model="com.axelor.apps.account.db.InvoiceLine" extension="true">
+    <extend target="//field[@name='invoice.dueDate']">
+      <insert position="after">
+        <field name="budgetDistributionSumAmount" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      </insert>
+    </extend>
+  </grid>
+
   <form id="budget-invoice-line-form" name="invoice-line-form" title="Invoice line"
     model="com.axelor.apps.account.db.InvoiceLine" extension="true">
 
@@ -25,13 +45,7 @@
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true">
-            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
-              <![CDATA[
-                              <dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
-                          ]]>
-            </viewer>
-          </field>
+            readonly="true" x-scale="$nbDecimalDigitForUnitPrice"/>
           <field name="budget"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
@@ -41,6 +55,7 @@
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             onChange="action-group-budget-invoice-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
       </insert>
     </extend>

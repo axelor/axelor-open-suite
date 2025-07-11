@@ -12,6 +12,10 @@
           if="__config__.app.getApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
         <field name="budget"
           if="__config__.app.getApp('budget') &amp;&amp; !__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budgetDistributionSumAmount" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -25,6 +29,10 @@
           if="__config__.app.getApp('budget')"/>
         <field name="budget.budgetLevel" title="Section" if="__config__.app.getApp('budget')"/>
         <field name="budget" if="__config__.app.getApp('budget')"/>
+        <field name="budgetDistributionSumAmount" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -65,13 +73,8 @@
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true">
-            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
-              <![CDATA[
-							<dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
-						]]>
-            </viewer>
-          </field>
+            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
             onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
@@ -98,6 +101,7 @@
             onChange="action-group-budget-purchase-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
           <field name="purchaseOrder.statusSelect" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
       </insert>
     </extend>

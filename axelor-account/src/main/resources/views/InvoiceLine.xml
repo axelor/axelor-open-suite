@@ -17,6 +17,11 @@
     <field name="typeSelect" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="lineAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="invoice-line-menu-grid" title="Invoice lines"
@@ -50,6 +55,11 @@
     <field name="invoice.dueDate" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="lineAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="invoice-line-form" title="Invoice line"
@@ -59,7 +69,8 @@
     <panel name="titlePanel" showIf="typeSelect > 0">
       <field name="productName" title="Title" requiredIf="typeSelect != 0" colSpan="9"/>
       <field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line"/>
-      <field name="qty" colSpan="6" onChange="action-invoice-line-group-qty-onchange"/>
+      <field name="qty" colSpan="6" onChange="action-invoice-line-group-qty-onchange"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="isShowTotal" colSpan="3"
         if="__config__.app.getApp('sale')?.enablePackManagement"
         onChange="action-invoice-line-record-reset-is-hide-unit-amounts" showIf="typeSelect == 3"/>
@@ -103,21 +114,23 @@
         </panel>
         <field name="productName" colSpan="12" requiredIf="typeSelect == 0"/>
         <field name="qty" colSpan="3" required="true"
-          onChange="action-group-account-invoice-line-qty-onchange"/>
+          onChange="action-group-account-invoice-line-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
         <field name="unit" colSpan="3" canEdit="false" requiredIf="typeSelect == 0"
           form-view="unit-form" grid-view="unit-grid"/>
         <field name="price" colSpan="3" required="true"
-          onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
+          onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
+          x-scale="$nbDecimalDigitForUnitPrice"/>
         <field name="inTaxPrice" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-          hidden="true"/>
+          hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-            hideIf="discountTypeSelect == 0"/>
-          <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
+            hideIf="discountTypeSelect == 0" x-scale="$nbDecimalDigitForUnitPrice"/>
+          <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
@@ -131,6 +144,8 @@
         <field name="invoice" hidden="true"/>
         <field name="companyExTaxTotal" hidden="true"/>
         <field name="companyInTaxTotal" hidden="true"/>
+        <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+        <field name="$nbDecimalDigitForQty" hidden="true"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
