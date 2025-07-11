@@ -961,20 +961,31 @@ public class DataBackupCreateService {
   }
 
   protected String getFieldTitle(Property property) {
+    if ("id".equalsIgnoreCase(property.getName())) {
+      return I18n.get("Import ID");
+    }
     return I18n.get(property.getTitle());
   }
 
   protected String getFieldHelp(Property property) {
+    if ("id".equalsIgnoreCase(property.getName())) {
+      return "";
+    }
     return I18n.get(property.getHelp());
   }
 
   protected String getFieldAttrs(Property property) {
+    boolean isIdProperty = "id".equalsIgnoreCase(property.getName());
+    PropertyType type = property.getType();
     List<String> attributes = new ArrayList<>();
-    attributes.add(I18n.get(getPropertyTitle(property.getType())));
-    if (property.isRequired()) {
+    if (isIdProperty) {
+      type = PropertyType.STRING;
+    }
+    attributes.add(I18n.get(getPropertyTitle(type)));
+    if (property.isRequired() && !isIdProperty) {
       attributes.add(I18n.get("Required"));
     }
-    if (property.isUnique()) {
+    if (property.isUnique() || isIdProperty) {
       attributes.add(I18n.get("Unique"));
     }
     String attrs = String.join(" | ", attributes);
