@@ -23,11 +23,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
-import java.math.BigDecimal;
 
 public interface UnitCostCalcLineService {
 
-  UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet, BigDecimal qtyRatio)
-      throws AxelorException;
+  public UnitCostCalcLine createUnitCostCalcLine(
+      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException;
 }

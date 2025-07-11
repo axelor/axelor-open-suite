@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
@@ -31,7 +30,6 @@ import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,22 +40,17 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
   protected ProductRepository productRepository;
   protected UnitCostCalcLineRepository unitCostCalcLineRepository;
   protected ProductCompanyService productCompanyService;
-  protected AppBaseService appService;
 
   @Inject
   public UnitCostCalcLineServiceImpl(
       UnitCostCalcLineRepository unitCostCalcLineRepository,
-      ProductCompanyService productCompanyService,
-      AppBaseService appService) {
+      ProductCompanyService productCompanyService) {
     this.unitCostCalcLineRepository = unitCostCalcLineRepository;
     this.productCompanyService = productCompanyService;
-    this.appService = appService;
   }
 
-  @Override
   public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet, BigDecimal qtyRatio)
-      throws AxelorException {
+      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException {
 
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);
@@ -65,13 +58,8 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
     unitCostCalcLine.setPreviousCost(
         (BigDecimal) productCompanyService.get(product, "costPrice", company));
     unitCostCalcLine.setCostSheet(costSheet);
-
-    BigDecimal costPrice =
-        costSheet
-            .getCostPrice()
-            .divide(qtyRatio, appService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-    unitCostCalcLine.setComputedCost(costPrice);
-    unitCostCalcLine.setCostToApply(costPrice);
+    unitCostCalcLine.setComputedCost(costSheet.getCostPrice());
+    unitCostCalcLine.setCostToApply(costSheet.getCostPrice());
     unitCostCalcLine.setMaxLevel(maxLevel);
 
     return unitCostCalcLine;
