@@ -29,4 +29,8 @@ public interface SaleOrderLineDetailsBomService {
   List<SaleOrderLineDetails> createSaleOrderLineDetailsFromBom(
       BillOfMaterial billOfMaterial, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  List<SaleOrderLineDetails> getUpdatedSaleOrderLineDetailsFromBom(
+      BillOfMaterial billOfMaterial, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }

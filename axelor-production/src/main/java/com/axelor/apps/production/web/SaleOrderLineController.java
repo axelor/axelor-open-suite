@@ -121,6 +121,8 @@ public class SaleOrderLineController {
     }
     SaleOrderLineBomService saleOrderLineBomService = Beans.get(SaleOrderLineBomService.class);
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+    SaleOrderLineDetailsBomService saleOrderLineDetailsBomService =
+        Beans.get(SaleOrderLineDetailsBomService.class);
 
     if (billOfMaterial != null && saleOrder != null) {
       if (!Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)
@@ -131,8 +133,8 @@ public class SaleOrderLineController {
             saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder));
         response.setValue(
             "saleOrderLineDetailsList",
-            Beans.get(SaleOrderLineDetailsBomService.class)
-                .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine));
+            saleOrderLineDetailsBomService.getUpdatedSaleOrderLineDetailsFromBom(
+                billOfMaterial, saleOrder, saleOrderLine));
       }
     }
   }
@@ -148,9 +150,11 @@ public class SaleOrderLineController {
     }
 
     if (prodProcess != null) {
-      Beans.get(SaleOrderLineDetailsProdProcessService.class)
-          .addSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrder, saleOrderLine);
-      response.setValue("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());
+      response.setValue(
+          "saleOrderLineDetailsList",
+          Beans.get(SaleOrderLineDetailsProdProcessService.class)
+              .getUpdatedSaleOrderLineDetailsFromProdProcess(
+                  prodProcess, saleOrder, saleOrderLine));
     }
   }
 }
