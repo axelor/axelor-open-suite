@@ -71,8 +71,8 @@
         </panel>
       </panel>
       <panel-dashlet name="dashlet-views-stock-location-line-view-by-product"
-        colSpan="12" action="action-stock-location-line-view-by-product" height="150"
-        showIf="$product" readonly="true"/>
+        colSpan="12" action="action-stock-location-line-view-by-product" showIf="$product"
+        readonly="true"/>
     </panel>
   </form>
 
