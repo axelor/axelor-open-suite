@@ -1,3 +1,3 @@
 ---
-title: "'/ by zero error' when Calculation quantity is 0"
+title: "Bill of material: fixed the error message when updating cost price and the price was 0."
 module: axelor-production
