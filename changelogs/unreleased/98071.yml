@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed read only condition for add pack button when there are no sale order lines and corrected action."
+module: axelor-sale

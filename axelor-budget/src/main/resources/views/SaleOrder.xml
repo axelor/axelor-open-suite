@@ -10,10 +10,12 @@
       <attribute name="onSave" value="action-budget-sale-order-group-on-save"/>
     </extend>
 
-    <extend target="//button[@name='addPackBtn']">
+    <extend target="//button[@name='cancelBtn']">
       <attribute name="onClick"
         value="save,action-sale-order-view-cancel,action-budget-sale-order-method-update-budget-lines"/>
+    </extend>
 
+    <extend target="//button[@name='addPackBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-sale-order-compute-budget-distribution"
