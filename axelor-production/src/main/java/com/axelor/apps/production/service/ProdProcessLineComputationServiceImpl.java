@@ -127,10 +127,15 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
     if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
         || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      return nbCycles.multiply(BigDecimal.valueOf(prodProcessLine.getHumanDuration()));
+      return computeHumanDuration(nbCycles, prodProcessLine.getHumanDuration());
     }
 
     return BigDecimal.ZERO;
+  }
+
+  @Override
+  public BigDecimal computeHumanDuration(BigDecimal nbCycle, long humanDuration) {
+    return nbCycle.multiply(BigDecimal.valueOf(humanDuration));
   }
 
   @Override
@@ -178,8 +183,8 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   }
 
   @Override
-  public BigDecimal getHourDurationPerCycle(ProdProcessLine prodProcessLine) {
-    return BigDecimal.valueOf(prodProcessLine.getDurationPerCycle())
+  public BigDecimal computeHourDurationPerCycle(long durationPerCycle) {
+    return BigDecimal.valueOf(durationPerCycle)
         .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 }
