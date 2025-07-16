@@ -1,0 +1,5 @@
+---
+title: "Sale order: removed a useless extension in business project module."
+module: axelor-business-project
+developer: |
+  Removed the onLoad extension fromt the SaleOrder form with id `business-project-sale-order-form` as it was unnecessary.
