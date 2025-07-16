@@ -5,9 +5,6 @@
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="business-project-sale-order-form" extension="true">
-    <extend target="/">
-      <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
-    </extend>
   </form>
 
   <form name="sale-order-template-form" title="Template"
