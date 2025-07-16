@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -255,7 +256,9 @@ public class ContractVersionServiceImpl implements ContractVersionService {
                 invoiceLine ->
                     invoiceLine.getInvoice().getStatusSelect()
                         == InvoiceRepository.STATUS_VENTILATED)
-            .map(InvoiceLine::getInTaxTotal)
+            .map(
+                invoiceLine ->
+                    getInvoiceLineAmount(invoiceLine.getInvoice(), invoiceLine.getInTaxTotal()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO));
   }
@@ -275,8 +278,27 @@ public class ContractVersionServiceImpl implements ContractVersionService {
     }
     contractVersion.setTotalPaidAmount(
         invoiceList.stream()
-            .map(Invoice::getAmountPaid)
+            .map(inv -> getInvoiceLineAmount(inv, inv.getAmountPaid()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO));
+  }
+
+  protected BigDecimal getInvoiceLineAmount(Invoice invoice, BigDecimal amount) {
+    if (invoice == null) {
+      return amount;
+    }
+
+    boolean isRefund = false;
+    try {
+      isRefund = InvoiceToolService.isRefund(invoice);
+    } catch (Exception e) {
+      return amount;
+    }
+
+    if (isRefund) {
+      amount = amount.negate();
+    }
+
+    return amount;
   }
 }

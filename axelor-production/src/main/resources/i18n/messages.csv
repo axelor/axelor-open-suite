@@ -882,6 +882,7 @@
 "Supplier RFQ/PO",,,
 "Supply method for manufacturing orders",,,
 "Surcharge",,,
+"The Calculation quantity of the bill of material %s is equal to zero.",,,
 "The bill of materials %s has been generated",,,
 "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s.",,,
 "The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s.",,,

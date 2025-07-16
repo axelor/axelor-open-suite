@@ -1,0 +1,3 @@
+---
+title: "Sale order: changing the bill of material and production process in a sale order line now correctly updates the sale order line details."
+module: axelor-production

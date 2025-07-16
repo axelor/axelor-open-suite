@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.costsheet;
+package com.axelor.apps.purchase.web;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.production.db.CostSheet;
-import com.axelor.apps.production.db.UnitCostCalcLine;
-import java.math.BigDecimal;
+import com.axelor.apps.purchase.db.CallTenderSupplier;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public interface UnitCostCalcLineService {
+public class CallTenderSupplierController {
 
-  UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet, BigDecimal qtyRatio)
-      throws AxelorException;
+  public void clearContactSet(ActionRequest request, ActionResponse response) {
+
+    var callTenderSupplier = request.getContext().asType(CallTenderSupplier.class);
+    if (callTenderSupplier != null && callTenderSupplier.getContactPartnerSet() != null) {
+      response.setValue("contactPartnerSet", null);
+    }
+  }
 }

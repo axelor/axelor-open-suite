@@ -110,16 +110,17 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
           I18n.get(ProductionExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
     }
 
-    productCompanyService.set(
-        product,
-        "costPrice",
-        billOfMaterial
-            .getCostPrice()
-            .divide(
-                costSheetService.getQtyRatio(billOfMaterial),
-                Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_UP),
-        billOfMaterial.getCompany());
+    BigDecimal qtyRatio = costSheetService.getQtyRatio(billOfMaterial);
+    BigDecimal costPrice =
+        qtyRatio.signum() == 0
+            ? BigDecimal.ZERO
+            : billOfMaterial
+                .getCostPrice()
+                .divide(
+                    qtyRatio,
+                    Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                    RoundingMode.HALF_UP);
+    productCompanyService.set(product, "costPrice", costPrice, billOfMaterial.getCompany());
 
     if ((Boolean)
         productCompanyService.get(product, "autoUpdateSalePrice", billOfMaterial.getCompany())) {
