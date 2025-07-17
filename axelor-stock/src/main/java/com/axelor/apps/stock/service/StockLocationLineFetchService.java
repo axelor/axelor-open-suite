@@ -105,4 +105,7 @@ public interface StockLocationLineFetchService {
    * @return the query.
    */
   String getRequestedReservedQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
+
+  BigDecimal getTrackingNumberAvailableQtyIncludingSubLocations(
+      StockLocation stockLocation, TrackingNumber trackingNumber);
 }

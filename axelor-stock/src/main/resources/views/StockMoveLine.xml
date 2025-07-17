@@ -789,6 +789,8 @@
                   SELECT sll.id FROM StockLocationLine sll
                     WHERE sll.trackingNumber.id = self.id
                     AND sll.detailsStockLocation.id = ${fromStockLocation?.id}
+                    AND (sll.detailsStockLocation.parentStockLocation IS NULL OR
+                    (sll.detailsStockLocation.parentStockLocation IS NOT NULL AND sll.detailsStockLocation.usableOnSaleOrder = true))
                )
                OR NOT EXISTS (
                  SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
