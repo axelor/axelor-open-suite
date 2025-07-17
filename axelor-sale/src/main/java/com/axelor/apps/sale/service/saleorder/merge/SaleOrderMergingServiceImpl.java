@@ -467,9 +467,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
     SaleOrder firstSaleOrder = saleOrdersToMerge.get(0);
     fillCommonFields(firstSaleOrder, result);
-    saleOrdersToMerge.stream()
-        .skip(1)
-        .forEach(saleOrder -> updateDiffsCommonFields(saleOrder, result));
+    checkDiffs(saleOrdersToMerge, result, firstSaleOrder);
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
@@ -669,5 +667,12 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
                     .map(id -> saleOrderRepository.find(Long.valueOf(id)))
                     .collect(Collectors.toList()))
         .orElse(List.of());
+  }
+
+  protected void checkDiffs(
+      List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result, SaleOrder firstSaleOrder) {
+    saleOrdersToMerge.stream()
+        .skip(1)
+        .forEach(saleOrder -> updateDiffsCommonFields(saleOrder, result));
   }
 }
