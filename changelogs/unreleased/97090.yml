@@ -1,0 +1,17 @@
+---
+title: "APPBUSINESSPROJECT : Update help of booleans under displayPanel"
+module: axelor-business-project
+developer: |
+  UPDATE meta_help SET help_value = 'By enabling this option, you will display the purchase order lines attached to a business project, in the financial datas of a business project.' WHERE field_name = 'showPurchaseOrderLineRelatedToProject' and meta_help.language = 'en';
+  UPDATE meta_help SET help_value = 'By enabling this option, you will display the sale order lines attached to a business project, in the financial datas of a business project.' WHERE field_name = 'showSaleOrderLineRelatedToProject' and meta_help.language = 'en';
+  UPDATE meta_help SET help_value = 'By enabling this option, you will display the production orders attached to a business project, in the financial datas of a business project.' WHERE field_name = 'showProductionOrderRelatedToProject' and meta_help.language = 'en';
+  UPDATE meta_help SET help_value = 'By enabling this option, you will display the expenses attached to a business project, in the financial datas of a business project.' WHERE field_name = 'showExpenseLineRelatedToProject' and meta_help.language = 'en';
+  UPDATE meta_help SET help_value = 'By enabling this option, you will display the purchase invoice lines attached to a business project, in the financial datas of a business project.' WHERE field_name = 'showPurchaseInvoiceLineRelatedToProject' and meta_help.language = 'en';
+  UPDATE meta_help SET help_value = 'By enabling this option, you will display the sale invoice lines attached to a business project, in the financial datas of a business project.' WHERE field_name = 'showSaleInvoiceLineRelatedToProject' and meta_help.language = 'en';
+  
+  UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de commandes fournisseurs rattachées à une affaire, dans les données financières d''une affaire.' WHERE field_name = 'showPurchaseOrderLineRelatedToProject' and meta_help.language = 'fr';
+  UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de commandes clients rattachées à une affaire, dans les données financières d''une affaire.' WHERE field_name = 'showSaleOrderLineRelatedToProject' and meta_help.language = 'fr';
+  UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les ordres de production rattachés à une affaire, dans les données financières d''une affaire.' WHERE field_name = 'showProductionOrderRelatedToProject' and meta_help.language = 'fr';
+  UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les notes de frais rattachées à une affaire, dans les données financières d''une affaire.' WHERE field_name = 'showExpenseLineRelatedToProject' and meta_help.language = 'fr';
+  UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de factures fournisseurs rattachées à une affaire, dans les données financières d''une affaire.' WHERE field_name = 'showPurchaseInvoiceLineRelatedToProject' and meta_help.language = 'fr';
+  UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de factures clients rattachées à une affaire, dans les données financières d''une affaire.' WHERE field_name = 'showSaleInvoiceLineRelatedToProject' and meta_help.language = 'fr';
