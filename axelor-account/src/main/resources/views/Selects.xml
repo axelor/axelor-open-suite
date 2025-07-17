@@ -572,6 +572,14 @@
     <option value="12">1 Year</option>
   </selection>
 
+  <selection name='account.forecast.date.select.years'>
+    <option value='2021-01-01'>2021</option>
+    <option value='2022-01-01'>2022</option>
+    <option value='2023-01-01'>2023</option>
+    <option value='2024-01-01'>2024</option>
+    <option value='2025-01-01'>2025</option>
+  </selection>
+
   <selection name='trace.back.origin.select' id="trace.back.origin.select.account">
     <option value='invoice'>Invoicing</option>
     <option value='debtRecovery'>Debt recovery</option>

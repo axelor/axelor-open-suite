@@ -9,28 +9,28 @@ import com.axelor.i18n.I18n;
 import jakarta.xml.ws.Binding;
 import jakarta.xml.ws.BindingProvider;
 import jakarta.xml.ws.handler.Handler;
+import org.apache.commons.lang3.StringUtils;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 
-public class EInvoiceService {
+public class NewEInvoiceService {
 
-  private static EInvoiceService instance;
+  private static NewEInvoiceService instance;
   private static ErpDataExchange port;
   private static String apiKey;
 
   private static final String TEST_ENDPOINT = "https://prelive.finbite.eu/finance/erp/";
   private static final String PROD_ENDPOINT = "https://finance.omniva.eu/finance/erp/";
 
-  private EInvoiceService() {}
+  private NewEInvoiceService() {}
 
-  public static synchronized EInvoiceService getInstance() {
+  public static synchronized NewEInvoiceService getInstance() {
     if (instance == null) {
-      instance = new EInvoiceService();
+      instance = new NewEInvoiceService();
       apiKey = System.getProperties().getProperty("einvoice.authkey");
       String environment = System.getProperties().getProperty("einvoice.environment", "test");
       String endpoint =
@@ -98,7 +98,7 @@ public class EInvoiceService {
     Partner contactPerson = axelorInvoice.getContactPartner();
 
     InvoiceParties invoiceParties = invoiceParties(seller, buyer, bankDetails, contactPerson);
-    InvoiceInformation invoiceInformation = invoiceInformation(invoiceId, daysToPay, axelorInvoice.getInvoiceDate());
+    InvoiceInformation invoiceInformation = invoiceInformation(invoiceId, daysToPay);
     InvoiceSumGroup invoiceSumGroup = invoiceSumGroup(exTaxTotal, taxTotal, inTaxTotal, currency);
     InvoiceItem invoiceItem = invoiceItem(axelorInvoice.getInvoiceLineList());
     PaymentInfo paymentInfo =
@@ -204,7 +204,7 @@ public class EInvoiceService {
     return invoiceParties;
   }
 
-  private InvoiceInformation invoiceInformation(String invoiceId, int daysToPay, LocalDate invoiceDate) {
+  private InvoiceInformation invoiceInformation(String invoiceId, int daysToPay) {
     InvoiceInformation.Type invoiceType = new InvoiceInformation.Type();
     invoiceType.setType("DEB");
 
@@ -216,7 +216,7 @@ public class EInvoiceService {
     invoiceInformation.setType(invoiceType);
     invoiceInformation.setDocumentName("Arve");
     invoiceInformation.setInvoiceNumber(invoiceId);
-    invoiceInformation.setInvoiceDate(invoiceDate);
+    invoiceInformation.setInvoiceDate(LocalDate.now());
     invoiceInformation.setDueDate(LocalDate.now().plus(daysToPay, ChronoUnit.DAYS));
     invoiceInformation.setFineRatePerDay(new BigDecimal("0.05"));
     invoiceInformation.getExtension().add(extensionRecord);

@@ -19,8 +19,10 @@
     <dashlet action="dashlet.customer.invoices.to.collect" height="350" canSearch="true"
       colSpan="12"/>
     <dashlet action="dashlet.invoice.turnover.cust.history" height="350" canSearch="true"/>
-    <dashlet action="dashlet.invoice.prod.qty.sold.history" height="350" canSearch="true"/>
+    <dashlet action="dashlet.invoice.prod.qty.sold.history"   height="350" canSearch="true"/>
+    <dashlet action="dashlet.invoice.prod.qty.sold.history.year" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.total.revenue.by.product" height="350" canSearch="true"/>
+
     <dashlet action="dashlet.total.revenue.by.geo.region" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoiced.turnover.ytd.vs.lastyear" height="350"
       canSearch="true"/>
@@ -228,6 +230,16 @@
 
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
+
+  <action-view name="dashlet.invoice.prod.qty.sold.history" title="Top customers by turnover by month" model="com.axelor.apps.account.db.Invoice">
+    <view type="chart" name="chart.invoice.prod.qty.sold.history"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
+  </action-view>
+
+  <action-view name="dashlet.invoice.prod.qty.sold.history.year" title="Top customers by year" model="com.axelor.apps.account.db.Invoice">
+    <view type="chart" name="chart.invoice.prod.qty.sold.history.year"/>
+  </action-view>
+
 
   <action-view name="dashlet.invoice.turnover.by.customer"
     title="Business turnover research by customer" model="com.axelor.apps.account.db.Invoice">

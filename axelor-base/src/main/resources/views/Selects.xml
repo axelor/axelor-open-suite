@@ -623,6 +623,12 @@
     <option value="3">Error</option>
   </selection>
 
+  <selection name="base.partner.type.select">
+    <option value="1">Select partner type</option>
+    <option value="2">Supplier</option>
+    <option value="3">Customer</option>
+  </selection>
+
   <selection name="user.partner.type.select">
     <option value="1">Employee</option>
     <option value="2">Contact</option>

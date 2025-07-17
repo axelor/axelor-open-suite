@@ -7,6 +7,7 @@
     model="com.axelor.apps.cash.management.db.Forecast">
     <field name="forecastSeq"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="projectName"/>
     <field name="bankDetails"/>
     <field name="amount" aggregate="sum"/>
     <field name="typeSelect"/>
@@ -26,6 +27,10 @@
         if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
       <field name="typeSelect"/>
       <field name="amount"/>
+      <field name="projectName"/>
+      <field name="projectStartDate"/>
+      <field name="projectEndDate"/>
+      <field name="projectActDate"/>
       <field name="estimatedDate"/>
       <field name="forecastRecapLineType" domain="self.elementSelect = 5"/>
       <field name="realizationDate"/>

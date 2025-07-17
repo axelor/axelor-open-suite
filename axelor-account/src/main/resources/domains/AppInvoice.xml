@@ -14,6 +14,8 @@
       title="Enable product description copy for customers"/>
     <boolean name="isEnabledProductDescriptionCopyForSuppliers"
       title="Enable product description copy for suppliers"/>
+    <string name="urlImportSupplierInvoices" title="URL to external application for importing supplier invoices"/>
+    <boolean name="enableInvoiceAutoExport" title="Enable invoice automatic export using FTP" default="false" />
     <boolean name="autoGenerateInvoicePrintingFileOnSaleInvoice" default="true"
       title="Auto generate invoice printing file on sale invoice"/>
     <boolean name="autoGenerateInvoicePrintingFileOnPurchaseInvoice" default="false"

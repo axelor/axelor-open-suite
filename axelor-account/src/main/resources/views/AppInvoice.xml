@@ -11,6 +11,7 @@
       <field name="isEnabledProductDescriptionCopyForSuppliers" widget="boolean-switch"/>
       <field name="autoGenerateInvoicePrintingFileOnSaleInvoice" widget="boolean-switch"/>
       <field name="autoGenerateInvoicePrintingFileOnPurchaseInvoice" widget="boolean-switch"/>
+      <field name="urlImportSupplierInvoices" widget="url"/>
     </panel>
 
     <panel-mail name="mailPanel">

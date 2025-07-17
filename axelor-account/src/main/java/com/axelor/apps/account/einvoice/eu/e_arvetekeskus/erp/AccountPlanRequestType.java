@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
     name = "AccountPlanRequestType",
+    namespace = "test1",
     propOrder = {"any"})
 public class AccountPlanRequestType {
 

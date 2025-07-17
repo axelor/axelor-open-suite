@@ -107,8 +107,11 @@
             and month as _month
 
             */
+select _type, _month, _amount from
+(
+(
             select 'Forecast'                              as _type,
-                   to_char(date_part('month', mm), 'FM00') as _month,
+                   to_char(mm, 'MM') as _month,
                    (
                        select coalesce(sum(amount), 0)
                        from management_forecast
@@ -121,10 +124,12 @@
 
 
             from generate_series(CAST(:forecastYear as timestamp), CAST(:forecastYear as timestamp) + interval '11 month',
-                                 interval '1 month') mm
+                                 interval '1 month') as mm
+            )
             UNION
+            (
             select 'Revenue'                               as _type,
-                   to_char(date_part('month', mm), 'FM00') as _month,
+                   to_char(mm, 'MM') as _month,
                    (
                        select coalesce(
                                       sum(
@@ -148,8 +153,11 @@
                    )                                       as _amount
 
             from generate_series(CAST(:forecastYear as timestamp), CAST(:forecastYear as timestamp) + interval '11 month',
-                                 interval '1 month') mm
+                                 interval '1 month') as mm
+                                 )
 
+)
+order by _month
 			]]>
     </dataset>
     <category key="_month" type="month" title="Month"/>
@@ -164,10 +172,6 @@
     <option value="2023">2023</option>
     <option value="2022">2022</option>
     <option value="2021">2021</option>
-    <option value="2020">2020</option>
-    <option value="2019">2019</option>
-    <option value="2018">2018</option>
-    <option value="2017">2017</option>
   </selection>
 
   <action-record name="select.default.five.years"
@@ -180,6 +184,13 @@
     <field name="year" expr="eval: __date__.getYear()"/>
     <field name="companyCode" expr="ALL"/>
   </action-record>
+
+  <action-record name=""
+                 model="com.axelor.apps.account.db.Account">
+    <field name="partnerFilter" expr="1"/>
+  </action-record>
+
+
 
   <!-- Operations select -->
   <selection name="select.invoice.type.revenue.cost">

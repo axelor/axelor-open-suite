@@ -212,6 +212,7 @@
   <grid name="invoice-supplier-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
+      <button name="supplierImport" icon="fa-rocket" title="Import supplier invoices" onClick="action-view-supplier-import" if="__config__.app.getApp('invoice').getUrlImportSupplierInvoices()"/>
       <button name="printBtn" title="Print invoices"
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
@@ -2361,6 +2362,13 @@
       method="checkNotLetteredAdvancePaymentMoveLines"/>
   </action-method>
 
+  <action-method name="action-invoice-ftp-export">
+    <call class="com.axelor.apps.account.web.InvoiceFtpExport" method="invoiceExport"/>
+  </action-method>
+
+  <action-view name="action-view-supplier-import" title="Import supplier invoices">
+    <view type="html" name="eval: __config__.app.getApp('invoice').getUrlImportSupplierInvoices()"/>
+  </action-view>
   <action-method name="action-invoice-method-check-partner-bank-details-list">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="checkPartnerBankDetailsList"/>
