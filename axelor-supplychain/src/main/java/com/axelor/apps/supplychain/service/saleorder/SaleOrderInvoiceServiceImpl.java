@@ -190,7 +190,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                   timetable
                       .getAmount()
                       .divide(
-                          saleOrder.getExTaxTotal(),
+                          saleOrder.getInAti()
+                              ? saleOrder.getInTaxTotal()
+                              : saleOrder.getExTaxTotal(),
                           AppBaseService.COMPUTATION_SCALING,
                           RoundingMode.HALF_UP)
                       .multiply(BigDecimal.valueOf(100)));
