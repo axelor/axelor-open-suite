@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed read only condition for add line from configurator button when there are no sale order lines."
+module: axelor-sale
