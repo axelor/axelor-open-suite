@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.saleorderline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
@@ -41,14 +42,17 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplemen
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.db.FreightCarrierPricing;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLineProductServiceImpl
     implements SaleOrderLineProductSupplychainService {
@@ -122,6 +126,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       saleOrderLineMap.putAll(
           saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
       saleOrderLineMap.putAll(setShippingCostPrice(saleOrderLine, saleOrder));
+      saleOrderLineMap.putAll(fillRequestQty(saleOrder, saleOrderLine));
     } else {
       return saleOrderLineMap;
     }
@@ -238,5 +243,26 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     saleOrderLineMap.put("price", saleOrderLine.getPrice());
 
     return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> fillRequestQty(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    Map<String, Object> values = new HashMap<>();
+    Boolean stockManaged =
+        Optional.ofNullable(saleOrderLine.getProduct()).map(Product::getStockManaged).orElse(false);
+    Boolean autoRequestReservedQty =
+        Optional.ofNullable(saleOrder.getCompany())
+            .map(Company::getSupplyChainConfig)
+            .map(SupplyChainConfig::getAutoRequestReservedQty)
+            .orElse(false);
+    Boolean isQtyRequested = stockManaged && autoRequestReservedQty;
+    BigDecimal requestedReservedQty = isQtyRequested ? saleOrderLine.getQty() : BigDecimal.ZERO;
+
+    saleOrderLine.setIsQtyRequested(isQtyRequested);
+    saleOrderLine.setRequestedReservedQty(requestedReservedQty);
+
+    values.put("isQtyRequested", saleOrderLine.getIsQtyRequested());
+    values.put("requestedReservedQty", saleOrderLine.getRequestedReservedQty());
+
+    return values;
   }
 }
