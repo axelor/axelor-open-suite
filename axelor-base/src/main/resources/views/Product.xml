@@ -544,17 +544,17 @@
         grid-view="alternative-barcode-grid" form-view="alternative-barcode-form"
         if="__config__.app.getApp('base')?.getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base')?.getEnableMultiBarcodeOnProducts()"/>
       <panel name="safetyPanel" title="Safety">
-        <field name="safetyLabel" widget="image"/>
+        <field name="safetyLabel" widget="image" title="Safety label"/>
         <field name="isClp"/>
-        <field name="retentionTypeSelect"/>
+        <field name="retentionTypeSelect" showIf="isClp"/>
         <panel-related field="icpeSet" colSpan="12" form-view="base-icpe-form"
-          grid-view="base-icpe-grid" canSelect="true"/>
+          grid-view="base-icpe-grid" canSelect="true" title="ICPE"/>
         <panel-related field="hazardPictogramSet" colSpan="12"
           form-view="base-hazard-pictogram-form" grid-view="base-hazard-pictogram-form"
-          canSelect="true" title="Hazard pictograms"/>
+          canSelect="true" title="Hazard pictograms" showIf="isClp"/>
         <panel-related field="hazardPhraseSet" colSpan="12"
           form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-form" canSelect="true"
-          title="Hazard phrases"/>
+          title="Hazard phrases" showIf="isClp"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">

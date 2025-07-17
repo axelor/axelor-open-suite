@@ -7,13 +7,15 @@
     model="com.axelor.apps.base.db.HazardPhrase">
     <field name="phraseCode"/>
     <field name="phrase"/>
+    <field name="clpDesignation"/>
   </grid>
 
   <form name="base-hazard-phrase-form" title="Hazard phrase"
     model="com.axelor.apps.base.db.HazardPhrase">
     <panel name="mainPanel">
       <field name="phraseCode"/>
-      <field name="phrase"/>
+      <field name="phrase" colSpan="12"/>
+      <field name="clpDesignation" colSpan="12"/>
     </panel>
   </form>
 

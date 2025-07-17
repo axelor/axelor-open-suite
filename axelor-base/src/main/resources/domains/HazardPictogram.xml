@@ -8,9 +8,8 @@
   <entity name="HazardPictogram">
 
     <string name="clpCode" title="CLP code" required="true"/>
-    <string name="clpDesignation" title="CLP designation" large="true"/>
-    <many-to-one name="clpPictogram" title="CLP pictogram"
-      ref="com.axelor.meta.db.MetaFile"/>
+    <string name="clpDesignation" title="Designation" large="true"/>
+    <many-to-one name="clpPictogram" title="Pictogram" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Products"/>
   </entity>

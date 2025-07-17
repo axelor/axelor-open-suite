@@ -7,8 +7,9 @@
 
   <entity name="HazardPhrase">
 
-    <string name="phraseCode" title="Hazard code" required="true"/>
-    <string name="phrase" title="Phrase" large="true"/>
+    <string name="phraseCode" title="Phrase code" required="true"/>
+    <string name="phrase" title="Hazard phrase" large="true"/>
+    <string name="clpDesignation" title="Designation" large="true"/>
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Products"/>
   </entity>
