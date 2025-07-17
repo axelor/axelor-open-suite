@@ -781,7 +781,7 @@
         onClick="save,action-sale-order-view-add-pack"
         if="__config__.app.getApp('sale')?.enablePackManagement"
         hideIf="clientPartner == null || [2,4,5].indexOf(statusSelect) != -1 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)"
-        icon="box-seam-fill" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+        icon="box-seam-fill"/>
       <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"
