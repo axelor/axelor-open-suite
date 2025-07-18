@@ -22,12 +22,6 @@
     }
   },
   ""components"": {
-    ""Shell"": {
-      ""sidebar"": {
-        ""bg"": ""#010165"",
-        ""color"": ""#FFF""
-      }
-    },
     ""Panel"": {
       ""header"": {
         ""bg"": ""#FBFBFF"",
@@ -55,8 +49,11 @@
       }
     },
     ""NavMenu"": {
+     ""bg"": ""#010165"",
+     ""color"": ""#FFF"",
       ""border"": {
-        ""color"": ""#010132""
+        ""color"": ""#010132"",
+        ""radius"": ""1rem""
       },
       ""item"": {
         ""border"": {
