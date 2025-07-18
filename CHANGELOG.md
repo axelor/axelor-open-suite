@@ -1,3 +1,52 @@
+## [7.2.44] (2025-07-18)
+
+### Fixes
+#### Base
+
+* App Base: fixed French translation for 'Daily Work Hours'
+* Price list line: fixed the display issue with the 'Amount' title.
+
+#### Account
+
+* Partner/AccountingSituation : Correct anomaly causing account fields to be empty when generating automatically a new accounting situation on the partner (when adding a new company)
+* AccountingBatch/BillOfExchange : Fixed the bill of exchange data type select.
+* Invoice: fixed an issue where the payment date was not emptied when duplicate or generate from a paid invoice.
+
+#### Bank Payment
+
+* Invoice/BillOfExchange: fixed the fact the placement move was a Sale move and not a Payment move
+
+#### Business Project
+
+* Sale order: removed the unnecessary form view extension in business project
+* Sale order: removed a duplicated extension in business project module.
+
+#### Production
+
+* Sales and Operations Planning: added missing title on 'Generate MPS forecasts' wizard
+* MRP: fixed an issue where bill of material line marked as not stock managed where taken into account for computation.
+* Cost calculation: prevent product creation.
+
+#### Stock
+
+* Stock: fixed stock location lines by product panel in stock details by product view.
+* STOCK/LOGISTICALFORM : Fix html column headers titles on line grid
+
+#### Supply Chain
+
+* Sale / Purchase / Stock: fixed some views where quantity and price decimal config wasn't being used.
+
+
+### Developer
+
+#### Business Project
+
+Removed SaleOrder form with id `business-project-sale-order-form` as the onLoad extension was deleted
+
+---
+
+Removed the onLoad extension from the SaleOrder form with id `business-project-sale-order-form` as it was a duplicate.
+
 ## [7.2.43] (2025-07-03)
 
 ### Fixes
@@ -1848,6 +1897,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.44]: https://github.com/axelor/axelor-open-suite/compare/v7.2.43...v7.2.44
 [7.2.43]: https://github.com/axelor/axelor-open-suite/compare/v7.2.42...v7.2.43
 [7.2.42]: https://github.com/axelor/axelor-open-suite/compare/v7.2.41...v7.2.42
 [7.2.41]: https://github.com/axelor/axelor-open-suite/compare/v7.2.40...v7.2.41

@@ -1,3 +1,0 @@
----
-title: "Partner/AccountingSituation : Correct anomaly causing account fields to be empty when generating automatically a new accounting situation on the partner (when adding a new company)"
-module: axelor-account

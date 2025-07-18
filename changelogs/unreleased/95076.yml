@@ -1,5 +1,0 @@
----
-title: "Sale order: removed a duplicated extension in business project module."
-module: axelor-business-project
-developer: |
-  Removed the onLoad extension from the SaleOrder form with id `business-project-sale-order-form` as it was a duplicate.

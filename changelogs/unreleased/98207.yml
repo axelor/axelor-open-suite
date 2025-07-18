@@ -1,5 +1,0 @@
----
-title: "Sale order: removed the unnecessary form view extension in business project"
-module: axelor-business-project
-developer: |
-  Removed SaleOrder form with id `business-project-sale-order-form` as the onLoad extension was deleted
