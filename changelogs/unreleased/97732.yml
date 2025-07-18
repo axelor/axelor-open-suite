@@ -1,3 +1,0 @@
----
-title: "Move/MassEntry : fixed error when changing partner bank details on a move line mass entry."
-module: axelor-bank-payment
