@@ -64,9 +64,11 @@ public interface ProdProcessLineComputationService {
    *
    * @param prodProcessLine
    * @param nbCycles
-   * @return totalMachineDuration
+   * @return human duration
+   * @throws AxelorException
    */
-  BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles);
+  BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
 
   /**
    * Compute the total duration for a given nbCycles
