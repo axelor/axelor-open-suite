@@ -1,4 +1,4 @@
-"name";"isSelectable";"label";"content"
+"name";"isSelectable";"label";"content";"logoMode"
 "Modern";"true";"Modern";"{
   ""palette"": {
     ""blue"": ""#0303b0"",
@@ -169,4 +169,4 @@
       ""border_width"": ""0 0 1px 0""
     }
   }
-}"
+}";DARK
