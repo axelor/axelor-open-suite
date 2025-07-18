@@ -1,4 +1,0 @@
----
-title: "Cost Calculation : Wrong calculation when Calculation quantity from the BOM is > 1"
-module: axelor-production
-developer: UnitCostCalcLineService.createUnitCostCalcLine takes qtyRatio as argument

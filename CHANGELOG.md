@@ -1,3 +1,75 @@
+## [8.3.11] (2025-07-18)
+
+### Fixes
+#### Base
+
+* Product: fixed products per companies to be copied during duplication.
+* Price list line: fixed the display issue with the 'Amount' title.
+* App Base: fixed French translation for some configuration settings.
+* Siren API: fixed message when having wrong credentials.
+
+#### Account
+
+* INVOICE : Wrong title displayed on PDF for a credit note issued on an advance payment.
+* Partner/AccountingSituation : Correct anomaly causing account fields to be empty when generating automatically a new accounting situation on the partner (when adding a new company)
+* AccountingBatch/BillOfExchange : Fixed the bill of exchange data type select.
+* Invoice: fixed an issue where the payment date was not emptied when duplicate or generate from a paid invoice.
+* Accounting report: fixed moveStatusSelect filter display issue after a status is being selected.
+
+#### Bank Payment
+
+* Invoice/BillOfExchange: fixed the fact the placement move was a Sale move and not a Payment move
+
+#### Business Project
+
+* Sale order: removed a duplicated extension in business project module.
+
+#### Contract
+
+* Contract/Invoice/Credit Note : fixed the issue where the invoiced amount of the contract was positive even for credit note.
+
+#### Human Resource
+
+* Expense: fixed an error when emptying employee
+
+#### Production
+
+* Cost Calculation : Wrong calculation when Calculation quantity from the BOM is > 1
+* Prod Process: fixed NPE during creation of a phases
+* Sales and Operations Planning: added missing title on 'Generate MPS forecasts' wizard
+* Sale order: sublines are now correctly personalized.
+* MRP: fixed an issue where bill of material line marked as not stock managed where taken into account for computation.
+* Prod process: Update stock locations on company change
+* Bill of material: fixed the error message when updating cost price and the price was 0.
+* Cost calculation: prevent product creation.
+
+#### Sale
+
+* Sale: fixed error message when currency conversion is not found.
+
+#### Stock
+
+* Stock: fixed stock location lines by product panel in stock details by product view.
+* Incoterm: set incoterm required in sale order only for company client partner.
+* STOCK/LOGISTICALFORM : Fix html column headers titles on line grid
+
+#### Supply Chain
+
+* Sale / Purchase / Stock: fixed some views where quantity and price decimal config wasn't being used.
+* Sale order: fixed interco configuration when merging sale orders.
+* Sale order: timetable amount take into account taxes or not depending on the configuration.
+
+
+### Developer
+
+#### Business Project
+
+Removed the onLoad extension from the SaleOrder form with id `business-project-sale-order-form` as it was a duplicate.
+
+#### Production
+
+UnitCostCalcLineService.createUnitCostCalcLine takes qtyRatio as argument
+
 ## [8.3.10] (2025-07-03)
 
 ### Fixes
@@ -841,6 +913,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.11]: https://github.com/axelor/axelor-open-suite/compare/v8.3.10...v8.3.11
 [8.3.10]: https://github.com/axelor/axelor-open-suite/compare/v8.3.9...v8.3.10
 [8.3.9]: https://github.com/axelor/axelor-open-suite/compare/v8.3.8...v8.3.9
 [8.3.8]: https://github.com/axelor/axelor-open-suite/compare/v8.3.7...v8.3.8

@@ -1,2 +1,0 @@
-title: "Contract/Invoice/Credit Note : fixed the issue where the invoiced amount of the contract was positive even for credit note."
-module: axelor-contract
