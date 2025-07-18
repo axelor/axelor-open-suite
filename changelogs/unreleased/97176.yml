@@ -1,0 +1,3 @@
+---
+title: "AccountingBatch/BillOfExchange : Fixed the bill of exchange data type select."
+module: axelor-account
