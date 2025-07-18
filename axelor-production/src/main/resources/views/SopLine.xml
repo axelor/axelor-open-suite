@@ -46,7 +46,7 @@
     <panel name="wizardPanel" colSpan="12">
       <panel-related name="mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
-        target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
+        target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false" title="MRP forecasts">
         <field name="forecastDate" title="Forecast date" type="date" required="true"
           onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" readonly="true"/>
