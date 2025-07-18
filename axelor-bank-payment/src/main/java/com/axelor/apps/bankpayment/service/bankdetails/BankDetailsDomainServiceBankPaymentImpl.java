@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.BankDetailsDomainServiceAccountImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.List;
@@ -43,13 +44,17 @@ public class BankDetailsDomainServiceBankPaymentImpl extends BankDetailsDomainSe
       Partner partner, PaymentMode paymentMode, Company company) {
     String domain = super.createDomainForBankDetails(partner, paymentMode, company);
 
-    if (partner != null && !partner.getBankDetailsList().isEmpty()) {
-      List<BankDetails> bankDetailsList =
-          bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
-              paymentMode, partner, company);
-      if (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
-        domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
-      }
+    if (partner == null
+        || paymentMode == null
+        || ObjectUtils.isEmpty(partner.getBankDetailsList())) {
+      return domain;
+    }
+
+    List<BankDetails> bankDetailsList =
+        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
+            paymentMode, partner, company);
+    if (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
+      domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
     }
     return domain;
   }
