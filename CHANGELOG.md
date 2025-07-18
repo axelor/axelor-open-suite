@@ -1,3 +1,70 @@
+## [8.2.20] (2025-07-18)
+
+### Fixes
+#### Base
+
+* Price list line: fixed the display issue with the 'Amount' title.
+* App Base: fixed French translation for some configuration settings.
+
+#### Account
+
+* INVOICE : Wrong title displayed on PDF for a credit note issued on an advance payment.
+* Partner/AccountingSituation : Correct anomaly causing account fields to be empty when generating automatically a new accounting situation on the partner (when adding a new company)
+* AccountingBatch/BillOfExchange : Fixed the bill of exchange data type select.
+* Invoice: fixed an issue where the payment date was not emptied when duplicate or generate from a paid invoice.
+* Accounting report: fixed moveStatusSelect filter display issue after a status is being selected.
+
+#### Bank Payment
+
+* Invoice/BillOfExchange: fixed the fact the placement move was a Sale move and not a Payment move
+
+#### Business Project
+
+* Sale order: removed the unnecessary form view extension in business project
+* Sale order: removed a duplicated extension in business project module.
+
+#### Contract
+
+* Contract/Invoice/Credit Note : fixed the issue where the invoiced amount of the contract was positive even for credit note.
+
+#### Human Resource
+
+* Expense: fixed an error when emptying employee
+
+#### Production
+
+* Sales and Operations Planning: added missing title on 'Generate MPS forecasts' wizard
+* Sale order: sublines are now correctly personalized.
+* MRP: fixed an issue where bill of material line marked as not stock managed where taken into account for computation.
+* Prod process: Update stock locations on company change
+* Cost calculation: prevent product creation.
+
+#### Sale
+
+* Sale: fixed error message when currency conversion is not found.
+
+#### Stock
+
+* Stock: fixed stock location lines by product panel in stock details by product view.
+* Incoterm: set incoterm required in sale order only for company client partner.
+* STOCK/LOGISTICALFORM : Fix html column headers titles on line grid
+
+#### Supply Chain
+
+* Sale / Purchase / Stock: fixed some views where quantity and price decimal config wasn't being used.
+* Sale order: fixed interco configuration when merging sale orders.
+
+
+### Developer
+
+#### Business Project
+
+Removed SaleOrder form with id `business-project-sale-order-form` as the onLoad extension was deleted
+
+---
+
+Removed the onLoad extension from the SaleOrder form with id `business-project-sale-order-form` as it was a duplicate.
+
 ## [8.2.19] (2025-07-03)
 
 ### Fixes
@@ -1242,6 +1309,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.20]: https://github.com/axelor/axelor-open-suite/compare/v8.2.19...v8.2.20
 [8.2.19]: https://github.com/axelor/axelor-open-suite/compare/v8.2.18...v8.2.19
 [8.2.18]: https://github.com/axelor/axelor-open-suite/compare/v8.2.17...v8.2.18
 [8.2.17]: https://github.com/axelor/axelor-open-suite/compare/v8.2.16...v8.2.17
