@@ -18,7 +18,7 @@
       title="Sale order"/>
 
     <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder"
-      title="Manufacturing orders" orderBy="prioritySelect"/>
+      mappedBy="productionOrderSet" title="Manufacturing orders" orderBy="prioritySelect"/>
     <integer name="statusSelect" title="Status" selection="production.order.status.select"
       default="1"/>
 
