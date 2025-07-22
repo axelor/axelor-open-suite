@@ -63,6 +63,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -88,6 +89,7 @@ public class IntercoServiceImpl implements IntercoService {
   protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
   protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected final AppBaseService appBaseService;
+  protected SaleOrderSupplychainService saleOrderSupplychainService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
@@ -99,7 +101,8 @@ public class IntercoServiceImpl implements IntercoService {
       SaleOrderStockLocationService saleOrderStockLocationService,
       PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
     this.taxService = taxService;
@@ -107,6 +110,7 @@ public class IntercoServiceImpl implements IntercoService {
     this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.appBaseService = appBaseService;
+    this.saleOrderSupplychainService = saleOrderSupplychainService;
   }
 
   @Override
@@ -163,6 +167,11 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
     saleOrder.setAmountToBeSpreadOverTheTimetable(
         purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+
+    // Set default invoiced and delivered partners and address in case of partner delegations
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrderSupplychainService.setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
+    }
 
     // create lines
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
