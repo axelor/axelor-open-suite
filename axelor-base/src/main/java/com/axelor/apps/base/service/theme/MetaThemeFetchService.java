@@ -16,25 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.db.repo;
+package com.axelor.apps.base.service.theme;
 
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
-import java.util.Map;
+import com.axelor.auth.db.User;
+import com.axelor.meta.db.MetaTheme;
+import com.axelor.meta.db.ThemeLogoMode;
 
-public class CallTenderNeedManagementRepository extends CallTenderNeedRepository {
+public interface MetaThemeFetchService {
 
-  protected final AppBaseService appBaseService;
+  MetaTheme getCurrentTheme(User user);
 
-  @Inject
-  public CallTenderNeedManagementRepository(AppBaseService appBaseService) {
-    this.appBaseService = appBaseService;
-  }
-
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put("$nbDecimalDigitForQty", appBaseService.getNbDecimalDigitForQty());
-
-    return super.populate(json, context);
-  }
+  ThemeLogoMode getCurrentThemeLogoMode(User user);
 }

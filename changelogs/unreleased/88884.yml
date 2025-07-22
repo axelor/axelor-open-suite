@@ -1,3 +1,0 @@
----
-title: "Sale / Purchase / Stock: fixed some views where quantity and price decimal config wasn't being used."
-module: axelor-supplychain

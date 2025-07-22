@@ -121,9 +121,19 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   }
 
   @Override
-  public BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles) {
+  public BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
+    if (workCenter == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
+    }
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
     if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
         || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
@@ -134,7 +144,8 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   }
 
   @Override
-  public BigDecimal getHourHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles) {
+  public BigDecimal getHourHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException {
     return getHumanDuration(prodProcessLine, nbCycles)
         .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }

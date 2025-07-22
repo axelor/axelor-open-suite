@@ -1,4 +1,4 @@
-"name";"isSelectable";"label";"content"
+"name";"isSelectable";"label";"content";"logoMode"
 "Modern";"true";"Modern";"{
   ""palette"": {
     ""blue"": ""#0303b0"",
@@ -22,12 +22,6 @@
     }
   },
   ""components"": {
-    ""Shell"": {
-      ""sidebar"": {
-        ""bg"": ""#010165"",
-        ""color"": ""#FFF""
-      }
-    },
     ""Panel"": {
       ""header"": {
         ""bg"": ""#FBFBFF"",
@@ -55,8 +49,11 @@
       }
     },
     ""NavMenu"": {
+     ""bg"": ""#010165"",
+     ""color"": ""#FFF"",
       ""border"": {
-        ""color"": ""#010132""
+        ""color"": ""#010132"",
+        ""radius"": ""1rem""
       },
       ""item"": {
         ""border"": {
@@ -169,4 +166,4 @@
       ""border_width"": ""0 0 1px 0""
     }
   }
-}"
+}";DARK

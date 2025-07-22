@@ -115,7 +115,11 @@
   <action-record name="action-timetable-record-on-amount-change"
     model="com.axelor.apps.supplychain.db.Timetable">
     <field name="percentage"
-      expr="eval: (__parent__.exTaxTotal != null &amp;&amp; __parent__.exTaxTotal &gt; 0) ? amount * 100 / __parent__.exTaxTotal : 0"/>
+      expr="eval: (__parent__.exTaxTotal != null &amp;&amp; __parent__.exTaxTotal &gt; 0) ? amount * 100 / __parent__.exTaxTotal : 0"
+      if="!__parent__.inAti"/>
+    <field name="percentage"
+      expr="eval: (__parent__.inTaxTotal != null &amp;&amp; __parent__.inTaxTotal &gt; 0) ? amount * 100 / __parent__.inTaxTotal : 0"
+      if="__parent__.inAti"/>
   </action-record>
 
   <action-method name="action-timetable-method-generate-invoice">
