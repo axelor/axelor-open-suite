@@ -355,11 +355,17 @@
 
   <action-group name="action-app-mobile-settings-config-group-on-load">
     <action name="action-app-mobile-settings-config-attrs-boolean-readonly"/>
+    <action name="action-app-mobile-settings-config-attrs-qi-detection-on-load"/>
   </action-group>
 
   <action-attrs name="action-app-mobile-settings-attrs-update-stock-boolean">
     <attribute for="isStockAppEnabled" name="value" expr="true"
       if="!isStockAppEnabled &amp;&amp; isProductionAppEnabled"/>
+  </action-attrs>
+
+  <action-attrs name="action-app-mobile-settings-config-attrs-qi-detection-on-load">
+    <attribute for="$defaultQiDetection" name="value"
+      expr="eval:__repo__(QIDetection).find(defaultQiDetectionId)" if="defaultQiDetectionId"/>
   </action-attrs>
 
   <action-attrs name="action-app-mobile-settings-config-attrs-qi-detection-on-change">
