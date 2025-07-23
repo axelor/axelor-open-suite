@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -54,6 +55,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -79,6 +81,8 @@ public class IntercoServiceImpl implements IntercoService {
   protected AnalyticLineModelService analyticLineModelService;
   protected TaxService taxService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
+  protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected final AppBaseService appBaseService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
@@ -87,11 +91,15 @@ public class IntercoServiceImpl implements IntercoService {
       PurchaseConfigService purchaseConfigService,
       AnalyticLineModelService analyticLineModelService,
       TaxService taxService,
-      SaleOrderStockLocationService saleOrderStockLocationService) {
+      SaleOrderStockLocationService saleOrderStockLocationService,
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      AppBaseService appBaseService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
     this.taxService = taxService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -120,6 +128,10 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             clientPartner.getFiscalPosition());
 
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrder.setInvoicedPartner(clientPartner);
+      saleOrder.setDeliveredPartner(clientPartner);
+    }
     // in ati
     saleOrder.setInAti(purchaseOrder.getInAti());
 
@@ -303,6 +315,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     saleOrderLine.setSaleOrder(saleOrder);
     saleOrderLine.setProduct(purchaseOrderLine.getProduct());
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
     saleOrderLine.setProductName(purchaseOrderLine.getProductName());
 
     saleOrderLine.setDescription(purchaseOrderLine.getDescription());
