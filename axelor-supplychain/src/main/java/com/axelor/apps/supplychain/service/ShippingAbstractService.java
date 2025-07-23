@@ -48,17 +48,11 @@ public abstract class ShippingAbstractService {
       return null;
     }
 
-    List<CustomerShippingCarriagePaid> customerShippingCarriagePaidList =
-        getShippingCarriagePaidList(shippableOrder);
-
     CustomerShippingCarriagePaid supplierShippingCarriagePaid =
-        customerShippingCarriagePaidList.stream()
-            .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
-            .findFirst()
-            .orElse(null);
-
+        getCustomerShippingCarriagePaid(shippableOrder, shipmentMode);
     Product shippingCostProduct =
         shippingService.getShippingCostProduct(shipmentMode, supplierShippingCarriagePaid);
+
     if (shippingCostProduct == null) {
       return null;
     }
@@ -68,11 +62,23 @@ public abstract class ShippingAbstractService {
     }
 
     if (alreadyHasShippingCostLine(shippableOrder, shippingCostProduct)) {
+      updateLineAndComputeOrder(shippableOrder, shippingCostProduct);
       return null;
     }
 
     addLineAndComputeOrder(shippableOrder, shippingCostProduct);
     return null;
+  }
+
+  protected CustomerShippingCarriagePaid getCustomerShippingCarriagePaid(
+      ShippableOrder shippableOrder, ShipmentMode shipmentMode) {
+    List<CustomerShippingCarriagePaid> customerShippingCarriagePaidList =
+        getShippingCarriagePaidList(shippableOrder);
+
+    return customerShippingCarriagePaidList.stream()
+        .filter(carriage -> carriage.getShipmentMode().equals(shipmentMode))
+        .findFirst()
+        .orElse(null);
   }
 
   protected BigDecimal getCarriagePaidThreshold(
@@ -147,10 +153,9 @@ public abstract class ShippingAbstractService {
         linesToRemove.add(shippableOrderLine);
       }
     }
-    if (linesToRemove.isEmpty()) {
-      return null;
+    if (!linesToRemove.isEmpty()) {
+      removeShippableOrderLineList(shippableOrder, linesToRemove);
     }
-    removeShippableOrderLineList(shippableOrder, linesToRemove);
     return I18n.get(SupplychainExceptionMessage.SHIPMENT_THRESHOLD_EXCEEDED);
   }
 
@@ -167,5 +172,8 @@ public abstract class ShippingAbstractService {
       throws AxelorException;
 
   protected abstract void addLineAndComputeOrder(
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
+
+  protected abstract void updateLineAndComputeOrder(
       ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
 }

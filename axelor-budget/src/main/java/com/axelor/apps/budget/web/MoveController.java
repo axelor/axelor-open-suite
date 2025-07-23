@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
@@ -113,5 +114,13 @@ public class MoveController {
         BudgetControllerTool.verifyMissingBudget(response);
       }
     }
+  }
+
+  public void initializeBudgetDates(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    Beans.get(BudgetInitDateService.class).initializeBudgetDates(move);
+
+    response.setValue("moveLineList", move.getMoveLineList());
   }
 }

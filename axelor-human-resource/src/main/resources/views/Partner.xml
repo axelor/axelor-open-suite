@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <action-method name="action-partner-method-change-employee-type">
+    <call class="com.axelor.apps.hr.web.PartnerController" method="changeEmployeeType"/>
+  </action-method>
+
+</object-views>

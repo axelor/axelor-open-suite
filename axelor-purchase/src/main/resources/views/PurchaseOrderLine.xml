@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -30,6 +30,13 @@
     <field name="estimatedReceiptDate"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="receivedQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="maxPurchasePrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+      if="__config__.app.isApp('supplychain')"/>
   </grid>
 
   <grid name="purchase-order-line-invoicing-project-grid" title="PO lines"
@@ -64,12 +71,21 @@
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="purchaseOrder.currency"/>
     <field name="purchaseOrder.buyerUser"/>
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="receivedQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="maxPurchasePrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+      if="__config__.app.isApp('supplychain')"/>
   </grid>
 
   <grid name="purchase-order-line-menu-grid" title="PO lines"
@@ -168,32 +184,38 @@
         <field name="productName" colSpan="9" requiredIf="!isTitleLine"/>
         <panel name="orderDetailsPanel" colSpan="12">
           <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"
-            colSpan="3" validIf="$qtyValid != false"/>
+            colSpan="3" validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
           <field name="unit" colSpan="3" canEdit="false" form-view="unit-form"
             grid-view="unit-grid" requiredIf="!isTitleLine"
             onChange="action-purchase-order-line-attrs-display-different-unit-message"/>
           <panel name="pricePanel" colSpan="3">
             <field name="price" hidden="true" colSpan="12"
-              onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
+              onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
+              x-scale="$nbDecimalDigitForUnitPrice">
               <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
             </field>
             <field name="inTaxPrice" hidden="true" colSpan="12"
-              onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
+              onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
+              x-scale="$nbDecimalDigitForUnitPrice">
               <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
             </field>
           </panel>
-          <field name="maxPurchasePrice" colSpan="3" readonly="true"/>
+          <field name="maxPurchasePrice" colSpan="3" readonly="true"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
           <label name="qtyLimitNotRespectedLabel" hidden="true" colSpan="12"/>
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
-          <field name="$qtyValid" hidden="true" colSpan="12"/>
+          <field name="$qtyValid" hidden="true" colSpan="12" x-scale="$nbDecimalDigitForQty"/>
+          <field name="$nbDecimalDigitForQty" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
             onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
-            hideIf="discountTypeSelect == 3"/>
-          <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"/>
+            hideIf="discountTypeSelect == 3" x-scale="$nbDecimalDigitForUnitPrice"/>
+          <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
         <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-group-purchase-purchase-orderline-taxline-onchange"
@@ -249,7 +271,7 @@
           <field name="estimatedReceiptDate"/>
         </panel>
         <panel name="deliveryInformationPanel" colSpan="12">
-          <field name="receivedQty" readonly="true"/>
+          <field name="receivedQty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
           <field name="supplierComment" colSpan="12"/>
           <panel-dashlet title="In Stock Moves" name="POLineStockMoveLinePanel"
             action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
@@ -257,7 +279,7 @@
       </panel>
       <panel name="invoicingPanel" title="Invoicing" if-module="axelor-account"
         if="__config__.app.isApp('supplychain')">
-        <field name="amountInvoiced"/>
+        <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel-dashlet name="POLineInvoicelinesPanel"
           action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="purchase-request-grid" title="Purchase request"
     model="com.axelor.apps.purchase.db.PurchaseRequest">
@@ -42,6 +42,11 @@
     <panel name="mainPanel" readonlyIf="!$contains([1,2],statusSelect)">
       <field name="company" form-view="company-form" grid-view="company-grid" canEdit="false"
         onChange="action-purchase-request-group-company-onchange"/>
+      <field name="tradingName" grid-view="trading-name-grid" form-view="trading-name-form"
+        if="__config__.app.getApp('base')?.enableTradingNamesManagement"
+        domain="self.company = :company" canEdit="false"
+        requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"/>
+      <field name="company.tradingNameList" hidden="true"/>
       <field name="$product" hidden="true" domain="self.dtype = 'Product'"/>
     </panel>
     <panel-related field="purchaseRequestLineList"

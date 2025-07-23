@@ -7,7 +7,7 @@
 522;27;"FinancialDataDateTime";"${hasVariable('FinancialDataDateTime')?FinancialDataDateTime:__datetime__}";"dateTime"
 93;27;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
 94;27;"StockLocationId";"${hasVariable('StockLocationId')?StockLocationId:'('+StockLocation?.id+')'}";"string"
-521;27;"WithoutDetailsByStockLocation";"${hasVariable('WithoutDetailsByStockLocation') && WithoutDetailsByStockLocation}";"boolean"
+523;27;"WithoutDetailsByStockLocation";"${hasVariable('WithoutDetailsByStockLocation') && WithoutDetailsByStockLocation}";"boolean"
 95;28;"Timezone";"${StockMove.company?.timezone}";"string"
 96;28;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale(StockMove.partner)}";"string"
 97;28;"StockMoveId";"$StockMove.id";"decimal"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -46,6 +46,12 @@
       <field name="isEnableSignature" on="UPDATE"/>
       <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
       <field name="generateProjectSequence" on="UPDATE"/>
+      <field name="completedProjectStatus" on="UPDATE"/>
+      <field name="canceledProjectStatus" on="UPDATE"/>
+      <field name="completedTaskStatus" on="UPDATE"/>
+      <field name="fullNameGroovyFormula" on="UPDATE"/>
+      <field name="selectAutoProgressOnProjectTask" on="UPDATE"/>
+      <field name="enableStatusManagementByTaskCategory" on="UPDATE"/>
     </track>
   </entity>
 

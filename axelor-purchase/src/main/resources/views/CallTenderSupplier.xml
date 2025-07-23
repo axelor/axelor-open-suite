@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="call-tender-supplier-grid" title="Supplier partners"
+    model="com.axelor.apps.purchase.db.CallTenderNeed">
+    <field name="supplierPartner"/>
+    <field name="contactPartnerSet" widget="TagSelect"/>
+  </grid>
+
+  <form name="call-tender-supplier-form" model="com.axelor.apps.purchase.db.CallTenderSupplier"
+    title="Supplier" width="large">
+    <panel name="mainPanel" showTitle="false">
+      <field name="supplierPartner" domain="self.isSupplier IS true" form-view="partner-form"
+        grid-view="partner-grid" onChange="action-call-tender-supplier-method-clear-contact-set"/>
+    </panel>
+    <panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
+      form-view="partner-contact-form" grid-view="partner-contact-grid" canNew="false"
+      canSelect="true" onSelect="action-call-tender-supplier-attrs-set-contact-domain"/>
+  </form>
+
+  <action-attrs name="action-call-tender-supplier-attrs-set-contact-domain">
+    <attribute for="contactPartnerSet" name="domain" expr="eval: &quot;self = null&quot;"/>
+    <attribute for="contactPartnerSet" name="domain"
+      expr="eval: &quot;self.isContact = 'true' and self.id in (${supplierPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"
+      if="supplierPartner?.contactPartnerSet &amp;&amp; !supplierPartner?.contactPartnerSet.isEmpty()"/>
+  </action-attrs>
+
+  <action-method name="action-call-tender-supplier-method-clear-contact-set">
+    <call class="com.axelor.apps.purchase.web.CallTenderSupplierController"
+      method="clearContactSet"/>
+  </action-method>
+
+</object-views>

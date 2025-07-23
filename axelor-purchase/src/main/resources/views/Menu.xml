@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
@@ -175,6 +175,16 @@
 
   <action-view name="purchase.dashboard.2" title="Purchase Manager">
     <view type="dashboard" name="purchase.dashboard.2"/>
+  </action-view>
+
+  <menuitem name="purchase-root-call-for-tenders" title="Call for tenders" order="1200"
+    action="purchase.root.call.for.tenders" parent="sc-root-purchase"
+    if="__config__.app.getApp('purchase')?.manageCallForTender"/>
+
+  <action-view name="purchase.root.call.for.tenders" title="Call for tenders"
+    model="com.axelor.apps.purchase.db.CallTender">
+    <view type="grid" name="call-tender-grid"/>
+    <view type="form" name="call-tender-form"/>
   </action-view>
 
 

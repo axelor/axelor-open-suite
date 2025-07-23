@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -49,6 +50,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /** Classe de création de ligne de facture abstraite. */
@@ -282,6 +284,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             .getTaxEquivFromOrToTaxSet(invoice.getFiscalPosition(), taxLineSet);
 
     invoiceLine.setTaxEquiv(taxEquiv);
+
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
+    if (purchaseOrder != null) {
+      computeCompanyTotal(
+          invoiceLine, Optional.ofNullable(purchaseOrder.getOrderDate()).orElse(today));
+    }
 
     return invoiceLine;
   }

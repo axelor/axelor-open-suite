@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <selection name="equipment.type.select">
     <option value="place">Place</option>
@@ -28,11 +28,11 @@
   </selection>
 
   <selection name="customer.request.status.select">
-    <option value="10">Draft</option>
-    <option value="20">Taken into account</option>
-    <option value="30">In progress</option>
-    <option value="40">Finished</option>
-    <option value="50">Cancelled</option>
+    <option value="10" color="blue">Draft</option>
+    <option value="20" color="yellow">Taken into account</option>
+    <option value="30" color="orange">In progress</option>
+    <option value="40" color="green">Finished</option>
+    <option value="50" color="red">Cancelled</option>
   </selection>
 
   <selection name="customer.request.priority.select">
@@ -51,12 +51,12 @@
   </selection>
 
   <selection name="intervention.status.select">
-    <option value="10">To plan</option>
-    <option value="20">Planned</option>
-    <option value="30">Started</option>
-    <option value="40">Suspended</option>
-    <option value="50">Finished</option>
-    <option value="60">Cancelled</option>
+    <option value="10" color="grey">To plan</option>
+    <option value="20" color="blue">Planned</option>
+    <option value="30" color="orange">Started</option>
+    <option value="40" color="purple">Suspended</option>
+    <option value="50" color="green">Finished</option>
+    <option value="60" color="red">Cancelled</option>
   </selection>
 
   <selection name="intervention.advanced.monitoring.answer.select">

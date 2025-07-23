@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="analytic-move-line-query-grid" title="Analytic review"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery" x-selector="checkbox">
@@ -50,15 +50,16 @@
         <field name="reverseAnalyticMoveLineQueryParameterList"
           readonlyIf="!searchAnalyticMoveLineQueryParameterList.length" colSpan="12"
           showTitle="false">
-          <editor x-show-on-new="false"
+          <editor x-show-on-new="false" itemSpan="4"
             onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
               form-view="analytic-axis-form"
               onSelect="action-analytic-move-line-query-method-reverse-query-axis-domain"
-              onChange="action-analytic-move-line-reverse-query-attrs-axis-onchange"/>
+              onChange="action-analytic-move-line-reverse-query-group-axis-onchange"/>
             <field name="analyticAccount" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
               onSelect="action-method-domain-account-distribution-line"/>
+            <field name="percentage"/>
           </editor>
         </field>
       </panel>
@@ -78,6 +79,11 @@
   <action-group name="action-analytic-move-line-query-group-on-new">
     <action name="action-analytic-move-line-query-record-default"/>
     <action name="action-analytic-move-line-query-origin-select-domain"/>
+  </action-group>
+
+  <action-group name="action-analytic-move-line-reverse-query-group-axis-onchange">
+    <action name="action-analytic-move-line-reverse-query-attrs-axis-onchange"/>
+    <action name="action-analytic-move-line-reverse-query-method-init-percentage"/>
   </action-group>
 
   <action-attrs name="action-analytic-move-line-query-attrs-set-company-domain">
@@ -146,6 +152,11 @@
     name="action-analytic-move-line-query-method-reverse-query-axis-domain">
     <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
       method="reverseQueryAxisDomain"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-reverse-query-method-init-percentage">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="initPercentage"/>
   </action-method>
 
 </object-views>

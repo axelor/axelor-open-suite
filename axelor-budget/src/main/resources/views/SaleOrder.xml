@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="sale-order-form" id="budget-sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" extension="true">
@@ -13,12 +13,16 @@
     <extend target="//button[@name='cancelBtn']">
       <attribute name="onClick"
         value="save,action-sale-order-view-cancel,action-budget-sale-order-method-update-budget-lines"/>
+    </extend>
 
+    <extend target="//button[@name='addPackBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-sale-order-compute-budget-distribution"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
+          icon="clipboard2-data-fill"
+          readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       </insert>
     </extend>
 
@@ -34,10 +38,27 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='pastVersionRecoveryPanel']">
+      <insert position="after">
+        <panel name="budgetDistributionPanel" title="Budget distribution"
+          if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
+          showIf="statusSelect &lt;= 4" colSpan="12">
+          <panel name="datesPanel" colSpan="12" itemSpan="4"
+            readonlyIf="statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4">
+            <field name="budgetFromDate" requiredIf="budgetToDate"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"/>
+            <button name="initBudgetDatesBtn" title="Init budget dates"
+              onClick="action-sale-order-method-initialize-budget-dates"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-budget-sale-order-group-on-save">
     <action name="action-supplychain-saleorder-onsave"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="save"/>
     <action name="action-budget-sale-order-method-fill-budget-str"
       if="__config__.app.isApp('budget')"/>
@@ -62,6 +83,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-method-budget-validate-finalize"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-method-finalize-quotation"/>
   </action-group>
 
@@ -92,6 +114,10 @@
 
   <action-method name="action-budget-sale-order-method-update-budget-lines">
     <call class="com.axelor.apps.budget.web.SaleOrderController" method="updateBudgetLines"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="initializeBudgetDates"/>
   </action-method>
 
 </object-views>

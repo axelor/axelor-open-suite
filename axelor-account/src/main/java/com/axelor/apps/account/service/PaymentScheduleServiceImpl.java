@@ -31,6 +31,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -43,6 +44,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,6 +62,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
   protected SequenceService sequenceService;
   protected PaymentScheduleRepository paymentScheduleRepo;
+  protected PartnerRepository partnerRepository;
   protected PartnerService partnerService;
 
   protected AppAccountService appAccountService;
@@ -71,11 +74,13 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
       PaymentScheduleLineRepository paymentScheduleLineRepo,
       SequenceService sequenceService,
       PaymentScheduleRepository paymentScheduleRepo,
+      PartnerRepository partnerRepository,
       PartnerService partnerService) {
     this.paymentScheduleLineService = paymentScheduleLineService;
     this.paymentScheduleLineRepo = paymentScheduleLineRepo;
     this.sequenceService = sequenceService;
     this.paymentScheduleRepo = paymentScheduleRepo;
+    this.partnerRepository = partnerRepository;
     this.partnerService = partnerService;
 
     this.appAccountService = appAccountService;
@@ -340,8 +345,10 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
           paymentSchedule,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_LINE_AMOUNT_MISMATCH),
-          total,
-          paymentSchedule.getInTaxAmount());
+          total.setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
+          paymentSchedule
+              .getInTaxAmount()
+              .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
     }
   }
 

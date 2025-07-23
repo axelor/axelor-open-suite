@@ -26,7 +26,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
@@ -50,7 +52,10 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
       }
     }
     if (!isPercent) {
-      amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_UP);
+      amount =
+          amount
+              .multiply(new BigDecimal("100"))
+              .divide(total, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     }
     if (amount.compareTo(new BigDecimal("100")) > 0) {
       throw new AxelorException(
@@ -73,8 +78,8 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
             .multiply(inTaxTotal)
             .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
 
-    InvoiceLineGenerator invoiceLineGenerator =
-        new InvoiceLineGenerator(
+    InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
+        new InvoiceLineGeneratorSupplyChain(
             invoice,
             invoicingProduct,
             invoicingProduct.getName(),
@@ -90,7 +95,10 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
             PriceListLineRepository.AMOUNT_TYPE_NONE,
             lineAmountToInvoice,
             null,
-            false) {
+            false,
+            null,
+            null,
+            null) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

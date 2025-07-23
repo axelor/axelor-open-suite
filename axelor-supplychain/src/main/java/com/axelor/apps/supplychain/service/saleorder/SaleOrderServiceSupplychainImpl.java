@@ -52,8 +52,10 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
@@ -77,6 +79,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected TrackingNumberSupplychainService trackingNumberSupplychainService;
 
   protected PartnerLinkSupplychainService partnerLinkSupplychainService;
+  protected SaleInvoicingStateService saleInvoicingStateService;
+  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -95,7 +99,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderStockService saleOrderStockService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       TrackingNumberSupplychainService trackingNumberSupplychainService,
-      PartnerLinkSupplychainService partnerLinkSupplychainService) {
+      PartnerLinkSupplychainService partnerLinkSupplychainService,
+      SaleInvoicingStateService saleInvoicingStateService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -113,6 +119,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.trackingNumberSupplychainService = trackingNumberSupplychainService;
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
+    this.saleInvoicingStateService = saleInvoicingStateService;
+    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -134,7 +142,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Override
   public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
     List<Timetable> timetableList = saleOrder.getTimetableList();
-    BigDecimal totalHT = saleOrder.getExTaxTotal();
+    BigDecimal totalHT =
+        saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
     BigDecimal sumTimetableAmount = BigDecimal.ZERO;
     if (timetableList != null) {
       for (Timetable timetable : timetableList) {
@@ -212,6 +221,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
 
     checkTimetable(saleOrderView);
+    saleOrderLineAnalyticService.checkAnalyticAxisByCompany(saleOrder);
 
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
@@ -270,6 +280,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
 
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
+    saleInvoicingStateService.updateInvoicingState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
 
     if (appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()) {
@@ -369,11 +380,12 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             I18n.get(SupplychainExceptionMessage.SALE_ORDER_TIMETABLE_CAN_NOT_BE_UPDATED),
             saleOrder.getAmountToBeSpreadOverTheTimetable());
       }
+      BigDecimal amount =
+          saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
       timetableList.forEach(
           timetable ->
               timetable.setAmount(
-                  saleOrder
-                      .getExTaxTotal()
+                  amount
                       .multiply(
                           timetable
                               .getPercentage()
@@ -387,6 +399,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   public boolean isIncotermRequired(SaleOrder saleOrder) {
+    Partner clientPartner = saleOrder.getClientPartner();
     return saleOrder.getSaleOrderLineList() != null
         && saleOrder.getSaleOrderLineList().stream()
             .anyMatch(
@@ -397,7 +410,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
                             .getProductTypeSelect()
                             .equals(ProductRepository.PRODUCT_TYPE_STORABLE))
         && isSameAlpha2Code(saleOrder)
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION;
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+            & clientPartner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY;
   }
 
   protected boolean isSameAlpha2Code(SaleOrder saleOrder) {

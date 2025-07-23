@@ -27,6 +27,8 @@ public interface SaleInvoicingStateService {
   int SALE_ORDER_INVOICE_PARTIALLY_INVOICED = 2;
   int SALE_ORDER_INVOICE_INVOICED = 3;
 
+  void updateInvoicingState(SaleOrder saleOrder);
+
   int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine);
 
   int computeSaleOrderInvoicingState(SaleOrder saleOrder);

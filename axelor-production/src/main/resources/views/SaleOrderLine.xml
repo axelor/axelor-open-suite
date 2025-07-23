@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid id="production-sale-order-line-editable-grid" name="sale-order-line-editable-grid"
     title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence"
@@ -35,7 +35,8 @@
         <panel name="prodProcessPanel" if="__config__.app.isApp('production')" colSpan="4">
           <field name="prodProcess"
             onSelect="action-sale-order-line-method-set-prod-process-domain"
-            form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
+            form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"
+            onChange="action-sale-order-line-method-prod-process-onchange"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
             if="__config__.app.getApp('production')?.allowPersonalizedProdProcess"/>
@@ -44,6 +45,29 @@
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
           <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true"
             colSpan="12"/>
+        </panel>
+        <panel name="qtyProducedPanel" colSpan="4" if="__config__.app.isApp('production')"
+          hidden="true">
+          <field name="qtyProduced" x-scale="$nbDecimalDigitForQty" readonly="true"
+            colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//field[@name='isDeliveryBlocking']">
+      <insert position="after">
+        <field name="isProductionBlocking" colSpan="3"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='deliveryBlockingGroupPanel']">
+      <insert position="after">
+        <panel name="productionBlockingGroupPanel" title="Production blocking"
+          showIf="isProductionBlocking" colSpan="12">
+          <field name="productionBlockingByUser" canNew="false" canEdit="false"
+            canView="false" form-view="user-form" grid-view="user-grid"/>
+          <field name="productionBlockingToDate"/>
+          <field name="productionBlockingReason" form-view="stop-reason-form"
+            grid-view="stop-reason-grid"/>
+          <field name="commentProductionBlocking" widget="html" colSpan="12"/>
         </panel>
       </insert>
     </extend>
@@ -111,6 +135,11 @@
   <action-method name="action-sale-order-line-method-set-prod-process-domain">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="setProdProcessDomain"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-prod-process-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="prodProcessOnChange"/>
   </action-method>
 
 </object-views>

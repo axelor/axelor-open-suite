@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -179,6 +179,29 @@
 
     <boolean name="isDisplaySubLinesOnReport" title="Display sublines on report"/>
 
+    <many-to-one name="originSaleQuotation" ref="com.axelor.apps.sale.db.SaleOrder"
+      readonly="true"/>
+    <integer name="orderingStatus" selection="sale.sale.order.ordering.status.select"
+      title="Ordering status" readonly="true" default="0"/>
+    <decimal name="exTaxTotalOrdered" title="Total ordered W.T." formula="true"
+      precision="20" scale="10">
+      <![CDATA[
+          SELECT SUM(self.ex_tax_total) FROM sale_sale_order AS self WHERE self.origin_sale_quotation = id
+      ]]>
+    </decimal>
+    <decimal name="inTaxTotalOrdered" title="Total ordered A.T.I." formula="true"
+      precision="20" scale="10">
+      <![CDATA[
+          SELECT SUM(self.in_tax_total) FROM sale_sale_order AS self WHERE self.origin_sale_quotation = id
+      ]]>
+    </decimal>
+    <decimal name="inTaxTotalRemainingToOrder" title="Amount remaining to order"
+      formula="true" precision="20" scale="10">
+      <![CDATA[
+          SELECT in_tax_total - (SELECT SUM(self.in_tax_total) FROM sale_sale_order AS self WHERE self.origin_sale_quotation = id) FROM sale_sale_order WHERE id = id LIMIT 1
+      ]]>
+    </decimal>
+
     <unique-constraint columns="saleOrderSeq,company"/>
 
     <finder-method name="findBySaleOrderSeqAndCompany" using="saleOrderSeq,company"/>
@@ -195,6 +218,10 @@
 			public static final int STATUS_ORDER_CONFIRMED = 3;
 			public static final int STATUS_ORDER_COMPLETED = 4;
 			public static final int STATUS_CANCELED = 5;
+
+			// ORDERING STATUS
+			public static final int ORDERING_STATUS_PARTIALLY_ORDERED = 1;
+			public static final int ORDERING_STATUS_CLOSED = 2;
    		]]>
     </extra-code>
 

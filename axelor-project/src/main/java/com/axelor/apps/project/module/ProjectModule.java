@@ -45,6 +45,8 @@ import com.axelor.apps.project.service.ProjectDashboardService;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
+import com.axelor.apps.project.service.ProjectNameComputeService;
+import com.axelor.apps.project.service.ProjectNameComputeServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskAttrsService;
@@ -150,5 +152,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
     bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
     bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
+    bind(ProjectNameComputeService.class).to(ProjectNameComputeServiceImpl.class);
   }
 }

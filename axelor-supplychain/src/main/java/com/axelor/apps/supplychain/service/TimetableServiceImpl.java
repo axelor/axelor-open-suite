@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -38,10 +40,12 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimetableServiceImpl implements TimetableService {
 
@@ -141,5 +145,38 @@ public class TimetableServiceImpl implements TimetableService {
             "UPDATE Timetable self SET self.invoice = NULL WHERE self.invoice.id = :invoiceId")
         .setParameter("invoiceId", invoice.getId())
         .executeUpdate();
+  }
+
+  @Override
+  public BigDecimal computeAmount(
+      Timetable timetable,
+      List<Timetable> timetableList,
+      BigDecimal exTaxTotal,
+      Currency currency) {
+    BigDecimal percentage = timetable.getPercentage();
+    BigDecimal result =
+        exTaxTotal
+            .multiply(percentage)
+            .divide(
+                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+            .setScale(currency.getNumberOfDecimals(), RoundingMode.HALF_UP);
+
+    if (CollectionUtils.isEmpty(timetableList)) {
+      return result;
+    }
+    List<Timetable> computeTimetableList = new ArrayList<>(timetableList);
+    computeTimetableList.add(timetable);
+    if (computeTimetableList.stream()
+            .map(Timetable::getPercentage)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .compareTo(new BigDecimal(100))
+        == 0) {
+      return exTaxTotal.subtract(
+          timetableList.stream()
+              .map(Timetable::getAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add));
+    } else {
+      return result;
+    }
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="prod-process-line-grid" title="Phases"
     model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
@@ -53,7 +53,7 @@
 
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
-      <field name="stockLocation"/>
+      <field name="stockLocation" domain="self.usableOnProduction is true"/>
       <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12"
         hideIf="outsourcing">
         <field name="minCapacityPerCycle" colSpan="4"/>
@@ -146,13 +146,9 @@
       if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
     <field name="humanDuration" expr="eval: workCenter?.hrDurationPerCycle"
       if="workCenter?.workCenterTypeSelect == 1 || workCenter?.workCenterTypeSelect == 3"/>
-    <field name="product" expr="eval: workCenter?.product"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costAmount" expr="eval: workCenter?.costAmount"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <field name="hrProduct" expr="eval: workCenter?.hrProduct"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="hrCostTypeSelect" expr="eval: workCenter?.hrCostTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>

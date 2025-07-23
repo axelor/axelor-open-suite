@@ -19,11 +19,13 @@
 package com.axelor.apps.sale.service.saleorderline.product;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.exceptions.ObserverBaseException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.event.SaleOrderLineProductOnChange;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.event.Event;
+import com.axelor.event.ObserverException;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +55,12 @@ public class SaleOrderLineOnProductChangeServiceImpl
       SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
     SaleOrderLineProductOnChange saleOrderLineProductOnChange =
         new SaleOrderLineProductOnChange(saleOrderLine, saleOrder);
-    saleOrderLineProductOnChangeEvent.fire(saleOrderLineProductOnChange);
+    try {
+      saleOrderLineProductOnChangeEvent.fire(saleOrderLineProductOnChange);
+    } catch (ObserverException e) {
+      throw new ObserverBaseException(e.getCause(), e.getCause().getMessage());
+    }
+
     Map<String, Object> saleOrderLineMap =
         new HashMap<>(saleOrderLineProductOnChange.getSaleOrderLineMap());
     saleOrderLineMap.putAll(saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine));

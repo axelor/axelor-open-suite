@@ -18,13 +18,9 @@
  */
 package com.axelor.apps.account.service.move.massentry;
 
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface MassEntryService {
 
@@ -32,14 +28,4 @@ public interface MassEntryService {
       List<MoveLineMassEntry> moveLineMassEntryList,
       MoveLineMassEntry moveLineMassEntry,
       Company company);
-
-  void verifyFieldsAndGenerateTaxLineAndCounterpart(Move parentMove, LocalDate dueDate)
-      throws AxelorException;
-
-  void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
-      throws AxelorException;
-
-  void checkMassEntryMoveGeneration(Move move) throws AxelorException;
-
-  Map<List<Long>, String> validateMassEntryMove(Move move);
 }

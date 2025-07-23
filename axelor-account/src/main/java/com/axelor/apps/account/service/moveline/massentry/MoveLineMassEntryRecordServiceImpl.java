@@ -29,7 +29,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
-import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
+import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -51,7 +51,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   protected MoveLineRecordService moveLineRecordService;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
-  protected MassEntryMoveCreateService massEntryMoveCreateService;
+  protected MassEntryToolService massEntryToolService;
   protected MoveLineTaxService moveLineTaxService;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected MoveLineToolService moveLineToolService;
@@ -62,7 +62,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       MoveLineRecordService moveLineRecordService,
       TaxAccountToolService taxAccountToolService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      MassEntryMoveCreateService massEntryMoveCreateService,
+      MassEntryToolService massEntryToolService,
       MoveLineTaxService moveLineTaxService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       MoveLineToolService moveLineToolService) {
@@ -70,7 +70,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     this.moveLineRecordService = moveLineRecordService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
-    this.massEntryMoveCreateService = massEntryMoveCreateService;
+    this.massEntryToolService = massEntryToolService;
     this.moveLineTaxService = moveLineTaxService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.moveLineToolService = moveLineToolService;
@@ -140,7 +140,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   }
 
   @Override
-  public void setMovePartnerBankDetails(MoveLineMassEntry moveLine) {
+  public void setMovePartnerBankDetails(MoveLineMassEntry moveLine, Move move) {
     moveLine.setMovePartnerBankDetails(
         moveLine.getPartner().getBankDetailsList().stream()
             .filter(it -> it.getIsDefault() && it.getActive())
@@ -255,7 +255,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   @Override
   public void setNextTemporaryMoveNumber(MoveLineMassEntry moveLine, Move move) {
     moveLine.setTemporaryMoveNumber(
-        massEntryMoveCreateService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
+        massEntryToolService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
   }
 
   @Override
@@ -273,7 +273,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
         move.setPartner(null);
         this.setVatSystemSelect(moveLine, move);
       }
-      this.setMovePartnerBankDetails(moveLine);
+      this.setMovePartnerBankDetails(moveLine, move);
       this.setCurrencyCode(moveLine);
     }
   }

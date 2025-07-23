@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -29,6 +29,8 @@
     <field name="amountRemaining" aggregate="sum" width="100"
       x-scale="companyCurrencyDecimals"/>
     <field name="taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
@@ -159,15 +161,17 @@
       readonlyIf="amountPaid &gt; 0" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" hidden="true" width="80" x-scale="companyCurrencyDecimals"/>
     <field name="amountPaid" hidden="true"/>
-    <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine" canNew="false"
+    <field name="taxLineSet"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3" canNew="false"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80" widget="TagSelect"/>
     <field name="vatSystemSelect"
       validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
-      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
+      readonlyIf="move.journal.journalType.technicalTypeSelect == 3 || account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
       width="80"/>
+    <field name="move.journal.journalType.technicalTypeSelect"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="analyticDistributionTemplate"
@@ -209,7 +213,7 @@
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
-      onChange="action-move-line-method-analytic-distribution-template-onchange-light"/>
+      onChange="action-move-line-method-analytic-move-line-onchange"/>
     <field name="reconcileGroup" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
@@ -225,7 +229,8 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="currencyDecimals" hidden="true"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
-    <field name="move.functionalOriginSelect" hidden="true"/>
+    <field name="move.statusSelect" hidden="true"/>
+    <field name="move" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
@@ -247,7 +252,8 @@
     <field name="credit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="taxLineSet"
-      requiredIf="!account.isTaxAuthorizedOnMoveLine || ['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect)"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
     <field name="analyticDistributionTemplate"
@@ -283,7 +289,8 @@
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
     <field name="taxLineSet"
-      requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
+      requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
+      readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
     <field name="analyticDistributionTemplate"
@@ -507,10 +514,10 @@
           </field>
         </panel>
         <panel name="taxPanel" title="Tax" colSpan="6"
-          showIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'tax'">
+          showIf="account.isTaxAuthorizedOnMoveLine || account.accountType.technicalTypeSelect == 'tax'">
           <field name="taxLineSet" canEdit="false" canNew="false"
             readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
-            showIf="account.isTaxRequiredOnMoveLine" colSpan="6" form-view="tax-line-form"
+            showIf="account.isTaxAuthorizedOnMoveLine" colSpan="6" form-view="tax-line-form"
             grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
             onChange="account-move-line-update-tax-equiv" widget="TagSelect"/>
           <field name="vatSystemSelect"
@@ -861,12 +868,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxEquiv"/>
   </action-method>
 
-  <action-method
-    name="action-move-line-method-analytic-distribution-template-onchange-light">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="analyticDistributionTemplateOnChangeLight"/>
-  </action-method>
-
   <action-method name="action-move-line-method-analytic-move-line-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="analyticMoveLineOnChange"/>
@@ -932,7 +933,7 @@
     <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
     <view type="grid" name="move-line-account-reconcile-group-grid" if="reconcileOk"/>
     <view type="form" name="move-line-form"/>
-    <domain>self.account.id = :_id</domain>
+    <domain>self.account.id = :_id AND self.move IS NOT NULL</domain>
   </action-view>
 
   <action-view name="action-move-line-view-bank-reconciliation-lines"

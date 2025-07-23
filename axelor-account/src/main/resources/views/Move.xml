@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves"
     model="com.axelor.apps.account.db.Move" canDelete="false">
@@ -33,21 +33,7 @@
     <field name="tradingName"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
       form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
-    <field name="statusSelect" width="90"/>
-  </grid>
-
-  <grid name="move-grid-period" orderBy="date,id" title="Account moves to validate"
-    model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
-    <field name="date" width="90"/>
-    <field name="reference" width="200"/>
-    <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
-    <field name="functionalOriginSelect"/>
-    <field name="period" form-view="period-form" grid-view="period-grid" width="120"
-      canEdit="false" canView="false"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
-    <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
-    <field name="statusSelect" width="90"/>
+    <field name="statusSelect" width="90" widget="single-select"/>
   </grid>
 
   <grid name="move-mass-entry-grid" orderBy="-date" canArchive="false" title="Account moves"
@@ -66,7 +52,7 @@
     <field name="tradingName"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
       form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
-    <field name="massEntryStatusSelect" title="Status"/>
+    <field name="massEntryStatusSelect" title="Status" widget="single-select"/>
     <field name="createdOn" title="Created on"/>
     <field name="createdBy" title="Created by"/>
   </grid>

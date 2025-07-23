@@ -48,7 +48,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -195,7 +194,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
   @Override
   public List<Move> createMoveListFromMassEntryList(Move parentMove) {
-    List<Move> moveList = new ArrayList();
+    List<Move> moveList = new ArrayList<>();
     Move moveToAdd;
 
     List<Integer> uniqueIdList =
@@ -213,7 +212,15 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
   @Override
   public Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber) {
+    if (parentMove == null) {
+      return null;
+    }
+
     Move moveResult = new Move();
+
+    if (parentMove.getId() != null) {
+      parentMove = moveRepository.find(parentMove.getId());
+    }
 
     moveResult.setJournal(parentMove.getJournal());
     moveResult.setFunctionalOriginSelect(parentMove.getFunctionalOriginSelect());
@@ -273,13 +280,5 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         move.addMoveLineMassEntryListItem(copy);
       }
     }
-  }
-
-  @Override
-  public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList) {
-    return moveLineList.stream()
-        .map(MoveLineMassEntry::getTemporaryMoveNumber)
-        .max(Comparator.naturalOrder())
-        .get();
   }
 }

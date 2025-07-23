@@ -1131,90 +1131,105 @@ WHERE Partner.id = ?]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">creation_date</property>
+                    <property name="alias">creation_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">creation_date</text-property>
                     <text-property name="heading">creation_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">confirmation_date</property>
+                    <property name="alias">confirmation_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">confirmation_date</text-property>
                     <text-property name="heading">confirmation_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_date</property>
+                    <property name="alias">display_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">display_date</text-property>
                     <text-property name="heading">display_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sale_order_seq</property>
+                    <property name="alias">sale_order_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">sale_order_seq</text-property>
                     <text-property name="heading">sale_order_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_type_select</property>
+                    <property name="alias">partner_type_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">partner_type_select</text-property>
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">title_select</property>
+                    <property name="alias">title_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">title_select</text-property>
                     <text-property name="heading">title_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
+                    <property name="alias">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">first_name</property>
+                    <property name="alias">first_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">first_name</text-property>
                     <text-property name="heading">first_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ex_tax_total</property>
+                    <property name="alias">ex_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">tax_total</property>
+                    <property name="alias">tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">tax_total</text-property>
                     <text-property name="heading">tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">in_tax_total</property>
+                    <property name="alias">in_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">in_tax_total</text-property>
                     <text-property name="heading">in_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">status_select</property>
+                    <property name="alias">status_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">status_select</text-property>
                     <text-property name="heading">status_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">order_date</property>
+                    <property name="alias">order_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">order_date</text-property>
                     <text-property name="heading">order_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
@@ -1381,6 +1396,16 @@ WHERE Partner.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
+                        <property name="name">is_quotation_and_order_split_enabled</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">amount_remaining_to_order</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
                         <property name="name">AvgOfSO</property>
                         <property name="dataType">float</property>
                     </structure>
@@ -1393,105 +1418,90 @@ WHERE Partner.id = ?]]></xml-property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">creation_date</property>
                     <property name="nativeName">creation_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">confirmation_date</property>
                     <property name="nativeName">confirmation_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">display_date</property>
                     <property name="nativeName">display_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">sale_order_seq</property>
                     <property name="nativeName">sale_order_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">first_name</property>
                     <property name="nativeName">first_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">tax_total</property>
                     <property name="nativeName">tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">in_tax_total</property>
                     <property name="nativeName">in_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">status_select</property>
                     <property name="nativeName">status_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">order_date</property>
                     <property name="nativeName">order_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
@@ -1504,6 +1514,18 @@ WHERE Partner.id = ?]]></xml-property>
                     <property name="name">trading_name</property>
                     <property name="nativeName">trading_name</property>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">is_quotation_and_order_split_enabled</property>
+                    <property name="nativeName">is_quotation_and_order_split_enabled</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">amount_remaining_to_order</property>
+                    <property name="nativeName">amount_remaining_to_order</property>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select * from customer_situation_sale_order(cast(? as bigint), cast(? as bigint), cast(? as bigint), cast(? as date), cast(? as date), cast(? as varchar));
@@ -2041,7 +2063,9 @@ sale_order_seq varchar, partner_type_select int,
 title_select int, name varchar, first_name varchar,
 ex_tax_total numeric, tax_total numeric, in_tax_total numeric,
 status_select int, order_date date, currency varchar, 
-enable_trading_names_management boolean, trading_name varchar) as
+enable_trading_names_management boolean, trading_name varchar,
+is_quotation_and_order_split_enabled boolean,
+amount_remaining_to_order numeric) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('sale_sale_order')) != 0) THEN
@@ -2058,7 +2082,9 @@ SaleOrder.status_select, SaleOrder.order_date,
 THEN Currency.symbol
 ELSE '' END) AS currency,
 AppBase.enable_trading_names_management,
-TradingName.name as trading_name
+TradingName.name as trading_name,
+AppSale.is_quotation_and_order_split_enabled,
+SaleOrder.in_tax_total - (SELECT COALESCE(SUM(SubSaleOrder.in_tax_total), 0) FROM sale_sale_order AS SubSaleOrder WHERE SubSaleOrder.origin_sale_quotation = SaleOrder.id) AS amount_remaining_to_order
 FROM base_partner AS Partner
 INNER JOIN sale_sale_order AS SaleOrder ON (SaleOrder.client_partner = Partner.id)
 LEFT JOIN base_partner AS ContactPartner ON (ContactPartner.id = SaleOrder.contact_partner)
@@ -2067,6 +2093,7 @@ LEFT JOIN base_company as Company on (SaleOrder.company = Company.id)
 LEFT JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT JOIN base_trading_name as TradingName on (SaleOrder.trading_name = TradingName.id)
 LEFT JOIN studio_app_base AS AppBase on true
+LEFT JOIN studio_app_sale AS AppSale on true
 WHERE Partner.id = partnerId
 and (companyId IS NULL OR Company.id = companyId) 
 and (tradingNameId IS NULL OR TradingName.id = tradingNameId)
@@ -5424,41 +5451,57 @@ BirtMath.roundUp(BirtDateTime.diffDay(row["LatestSO"], row["OldestSO"])/(row["Co
                 </cell>
             </row>
         </grid>
-        <text id="4801">
-            <property name="color">#000000</property>
-            <property name="borderBottomColor">#000000</property>
-            <property name="borderBottomStyle">solid</property>
-            <property name="borderBottomWidth">thin</property>
-            <property name="marginTop">8pt</property>
-            <property name="marginLeft">0pt</property>
-            <property name="marginBottom">3pt</property>
-            <property name="textAlign">left</property>
-            <property name="dataSet">TranslateDS</property>
-            <list-property name="paramBindings">
-                <structure>
-                    <property name="paramName">param_1</property>
-                    <simple-property-list name="expression">
-                        <value type="javascript">"ClientSituation.orders"</value>
-                    </simple-property-list>
-                </structure>
-            </list-property>
+        <grid id="4931">
+            <property name="dataSet">SaleOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">key</property>
-                    <text-property name="displayName">key</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">translation</property>
-                    <text-property name="displayName">translation</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="name">is_quotation_and_order_split_enabled</property>
+                    <text-property name="displayName">is_quotation_and_order_split_enabled</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_quotation_and_order_split_enabled"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
-            <property name="contentType">html</property>
-            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
-        </text>
+            <column id="4932"/>
+            <row id="4933">
+                <cell id="4934">
+                    <text id="4935">
+                        <property name="color">#000000</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="marginTop">8pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">3pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">row["is_quotation_and_order_split_enabled"] ? "ClientSituation.quotations" : "ClientSituation.quotations/orders"</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
         <table id="4152">
             <property name="marginTop">0pt</property>
             <property name="marginLeft">0pt</property>
@@ -5592,6 +5635,18 @@ BirtMath.roundUp(BirtDateTime.diffDay(row["LatestSO"], row["OldestSO"])/(row["Co
                     <expression name="expression" type="javascript">dataSetRow["trading_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">is_quotation_and_order_split_enabled</property>
+                    <text-property name="displayName">is_quotation_and_order_split_enabled</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_quotation_and_order_split_enabled"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">amount_remaining_to_order</property>
+                    <text-property name="displayName">amount_remaining_to_order</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["amount_remaining_to_order"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -5630,6 +5685,15 @@ row["creation_date"]
             </column>
             <column id="4191">
                 <property name="width">2.0108333333333333cm</property>
+            </column>
+            <column id="4810">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_quotation_and_order_split_enabled"]</expression>
+                    </structure>
+                </list-property>
+                <property name="width">1.83cm</property>
             </column>
             <column id="4195">
                 <property name="width">1.5cm</property>
@@ -6047,6 +6111,65 @@ row["creation_date"]
                             <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
                         </text>
                     </cell>
+                    <cell id="4807">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4811">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.amountRemainingToOrder"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="4192">
                         <property name="backgroundColor">#7F7F7F</property>
                         <property name="color">#FFFFFF</property>
@@ -6167,6 +6290,12 @@ row["creation_date"]
             <detail>
                 <row id="4166">
                     <property name="height">0.635cm</property>
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">row["is_quotation_and_order_split_enabled"] &amp;&amp; (row["status_select"] == 3 || row["status_select"] == 4)</expression>
+                        </structure>
+                    </list-property>
                     <cell id="4697">
                         <property name="borderBottomColor">#7F7F7F</property>
                         <property name="borderBottomStyle">solid</property>
@@ -6347,6 +6476,29 @@ row["first_name"]
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["in_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
+                    <cell id="4808">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4812">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="marginRight">1pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount_remaining_to_order"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="4193">
                         <property name="borderBottomColor">#7F7F7F</property>
                         <property name="borderBottomStyle">solid</property>
@@ -6430,8 +6582,1152 @@ default:
                     <cell id="4183"/>
                     <cell id="4184"/>
                     <cell id="4185"/>
+                    <cell id="4809"/>
                     <cell id="4194"/>
                     <cell id="4198"/>
+                </row>
+            </footer>
+        </table>
+        <grid id="4927">
+            <property name="dataSet">SaleOrderDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">!row["is_quotation_and_order_split_enabled"]</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">is_quotation_and_order_split_enabled</property>
+                    <text-property name="displayName">is_quotation_and_order_split_enabled</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_quotation_and_order_split_enabled"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <column id="4928"/>
+            <row id="4929">
+                <cell id="4930">
+                    <text id="4868">
+                        <property name="color">#000000</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="marginTop">8pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">3pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">row["is_quotation_and_order_split_enabled"] ? "ClientSituation.orders" : "ClientSituation.quotations/orders"</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+        <table id="4869">
+            <property name="marginTop">0pt</property>
+            <property name="marginLeft">0pt</property>
+            <property name="width">19.52625cm</property>
+            <property name="dataSet">SaleOrderDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row["NoOfRecords"] == 0 || !row["is_quotation_and_order_split_enabled"]</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">id</property>
+                    <text-property name="displayName">id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">creation_date</property>
+                    <text-property name="displayName">creation_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["creation_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">confirmation_date</property>
+                    <text-property name="displayName">confirmation_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["confirmation_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">sale_order_seq</property>
+                    <text-property name="displayName">sale_order_seq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["sale_order_seq"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">title_select</property>
+                    <text-property name="displayName">title_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">name</property>
+                    <text-property name="displayName">name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">first_name</property>
+                    <text-property name="displayName">first_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["first_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ex_tax_total</property>
+                    <text-property name="displayName">ex_tax_total</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">in_tax_total</property>
+                    <text-property name="displayName">in_tax_total</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">status_select</property>
+                    <text-property name="displayName">status_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">NoOfRecords</property>
+                    <property name="dataType">integer</property>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["id"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">partner_type_select</property>
+                    <text-property name="displayName">partner_type_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["partner_type_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">order_date</property>
+                    <text-property name="displayName">order_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["order_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">AvgOfSO</property>
+                    <text-property name="displayName">AvgOfSO</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["AvgOfSO"]</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">tax_total</property>
+                    <text-property name="displayName">tax_total</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["tax_total"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">title_select_1</property>
+                    <text-property name="displayName">title_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">Currency</property>
+                    <text-property name="displayName">Currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">enable_trading_names_management</property>
+                    <text-property name="displayName">enable_trading_names_management</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["enable_trading_names_management"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">trading_name</property>
+                    <text-property name="displayName">trading_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["trading_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">is_quotation_and_order_split_enabled</property>
+                    <text-property name="displayName">is_quotation_and_order_split_enabled</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_quotation_and_order_split_enabled"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">amount_remaining_to_order</property>
+                    <text-property name="displayName">amount_remaining_to_order</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["amount_remaining_to_order"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <list-property name="sort">
+                <structure>
+                    <expression name="key" type="javascript">if(row["status_select"] == "3"){
+row["confirmation_date"]
+}else{
+row["creation_date"]
+}</expression>
+                    <property name="direction">asc</property>
+                    <property name="strength">-1</property>
+                </structure>
+            </list-property>
+            <column id="4918">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["enable_trading_names_management"]</expression>
+                    </structure>
+                </list-property>
+                <property name="width">1.5cm</property>
+            </column>
+            <column id="4919">
+                <property name="width">2cm</property>
+            </column>
+            <column id="4920">
+                <property name="width">2.1166666666666667cm</property>
+            </column>
+            <column id="4921">
+                <property name="width">3.5cm</property>
+            </column>
+            <column id="4922">
+                <property name="width">2.328333333333333cm</property>
+            </column>
+            <column id="4923">
+                <property name="width">2.4341666666666666cm</property>
+            </column>
+            <column id="4924">
+                <property name="width">2.0108333333333333cm</property>
+            </column>
+            <column id="4945">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_quotation_and_order_split_enabled"]</expression>
+                    </structure>
+                </list-property>
+                <property name="width">1.83cm</property>
+            </column>
+            <column id="4925">
+                <property name="width">1.5cm</property>
+            </column>
+            <column id="4926">
+                <property name="width">1.905cm</property>
+            </column>
+            <header>
+                <row id="4870">
+                    <property name="height">0.5027083333333333cm</property>
+                    <cell id="4871">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4872">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.tradingName"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4873">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4874">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.date"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4875">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4876">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.reference"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4877">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4878">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.contact"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4879">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4880">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.totalHT"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4881">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4882">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.totalTax"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4883">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4884">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.totalATI"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4942">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4946">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.amountRemainingToOrder"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4885">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4886">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.toInvoice"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4887">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4888">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.status"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="4889">
+                    <property name="height">0.635cm</property>
+                    <list-property name="visibility">
+                        <structure>
+                            <property name="format">all</property>
+                            <expression name="valueExpr" type="javascript">row["status_select"] == 1 || row["status_select"] == 2 || row["status_select"] == 5</expression>
+                        </structure>
+                    </list-property>
+                    <cell id="4890">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4891">
+                            <property name="fontSize">8pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["trading_name"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4892">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <data id="4893">
+                            <property name="fontSize">8pt</property>
+                            <property name="display">inline</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["status_select"] != 3</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">confirmation_date</property>
+                        </data>
+                        <data id="4894">
+                            <property name="fontSize">8pt</property>
+                            <property name="display">inline</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["status_select"] == 3</expression>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">creation_date</property>
+                        </data>
+                    </cell>
+                    <cell id="4895">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4896">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["sale_order_seq"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4897">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4898">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="textAlign">left</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] != "1"){
+	if(row["title_select"] == "1"){"M."}
+	else if(row["title_select"]=="2"){"Mme"}
+	else if(row["title_select"]=="3"){"Mlle"}
+	else if(row["title_select"]=="4"){"Dr"}
+	else if(row["title_select"]=="5"){"Prof."}
+}</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["partner_type_select"] != "1"){
+row["first_name"]
+}</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["name"]</VALUE-OF>
+]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4899">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4900">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="marginRight">1pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["ex_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4901">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4902">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="marginRight">1pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4903">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4904">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="marginRight">1pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["in_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4943">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4947">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="marginRight">1pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount_remaining_to_order"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4905">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                    </cell>
+                    <cell id="4906">
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#7F7F7F</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <text id="4907">
+                            <property name="fontSize">8pt</property>
+                            <property name="marginBottom">1pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">switch (row["status_select"]) {
+case 1:
+    "Draft quotation";
+    break;
+case 2:
+    "Finalized quotation";
+    break;
+case 3:
+    "Order confirmed";
+    break;
+case 4:
+    "Order completed";
+    break;
+case 5:
+    "Canceled";
+    break;
+default:
+    "Unknown";
+}</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="4908">
+                    <cell id="4909"/>
+                    <cell id="4910"/>
+                    <cell id="4911"/>
+                    <cell id="4912"/>
+                    <cell id="4913"/>
+                    <cell id="4914"/>
+                    <cell id="4915"/>
+                    <cell id="4944"/>
+                    <cell id="4916"/>
+                    <cell id="4917"/>
                 </row>
             </footer>
         </table>

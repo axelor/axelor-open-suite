@@ -62,12 +62,21 @@ public class TimesheetLineUpdateBusinessServiceImpl extends TimesheetLineUpdateS
       ProjectTask projectTask,
       Product product,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       LocalDate date,
       String comments,
       Boolean toInvoice)
       throws AxelorException {
     super.updateTimesheetLine(
-        timesheetLine, project, projectTask, product, duration, date, comments, toInvoice);
+        timesheetLine,
+        project,
+        projectTask,
+        product,
+        duration,
+        hoursDuration,
+        date,
+        comments,
+        toInvoice);
     if (!appProductionService.isApp("production")) {
       return;
     }
@@ -82,6 +91,7 @@ public class TimesheetLineUpdateBusinessServiceImpl extends TimesheetLineUpdateS
       ProjectTask projectTask,
       Product product,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       LocalDate date,
       String comments,
       Boolean toInvoice,
@@ -98,7 +108,15 @@ public class TimesheetLineUpdateBusinessServiceImpl extends TimesheetLineUpdateS
     }
 
     this.updateTimesheetLine(
-        timesheetLine, project, projectTask, product, duration, date, comments, toInvoice);
+        timesheetLine,
+        project,
+        projectTask,
+        product,
+        duration,
+        hoursDuration,
+        date,
+        comments,
+        toInvoice);
 
     if (manufOrder != null) {
       timesheetLine.setManufOrder(manufOrder);

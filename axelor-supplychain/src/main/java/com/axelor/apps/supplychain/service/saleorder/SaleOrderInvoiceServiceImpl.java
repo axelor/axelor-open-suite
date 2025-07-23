@@ -185,7 +185,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         for (Long timetableId : timetableIdList) {
           Timetable timetable = timetableRepo.find(timetableId);
           timetableList.add(timetable);
-          percentSum = percentSum.add(timetable.getPercentage());
+          percentSum =
+              percentSum.add(
+                  timetable
+                      .getAmount()
+                      .divide(
+                          saleOrder.getInAti()
+                              ? saleOrder.getInTaxTotal()
+                              : saleOrder.getExTaxTotal(),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)
+                      .multiply(BigDecimal.valueOf(100)));
         }
         invoice =
             generateInvoiceFromLines(
@@ -223,6 +233,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setHideDiscount(saleOrder.getHideDiscount());
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
+    invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());
 
     invoiceTermService.computeInvoiceTerms(invoice);
 
@@ -387,18 +398,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
     if (taxLineList != null) {
       for (SaleOrderLineTax saleOrderLineTax : taxLineList) {
-        InvoiceLineGenerator invoiceLineGenerator =
+        SaleOrderLine saleOrderLine = saleOrderLineTax.getSaleOrder().getSaleOrderLineList().get(0);
+        InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
             invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice, invoicingProduct, percentToInvoice, saleOrderLineTax);
-
-        List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
-        // link to the created invoice line the first line of the sale order.
-        for (InvoiceLine invoiceLine : invoiceOneLineList) {
-          SaleOrderLine saleOrderLine =
-              saleOrderLineTax.getSaleOrder().getSaleOrderLineList().get(0);
-          invoiceLine.setSaleOrderLine(saleOrderLine);
-        }
-        createdInvoiceLineList.addAll(invoiceOneLineList);
+                invoice, invoicingProduct, percentToInvoice, saleOrderLineTax, saleOrderLine, null);
+        createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
       }
     }
     return createdInvoiceLineList;
@@ -427,7 +431,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                   .multiply(percent)
                   .divide(
                       new BigDecimal("100"),
-                      appBaseService.getNbDecimalDigitForQty(),
+                      AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP);
           qtyToInvoiceMap.put(SOrderId, realQty);
         }
@@ -673,7 +677,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           saleOrder.getSaleOrderSeq());
     }
     saleOrder.setAmountInvoiced(amountInvoiced);
-    updateInvoicingState(saleOrder);
+    saleInvoicingStateService.updateInvoicingState(saleOrder);
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
         && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
@@ -937,14 +941,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
-  }
-
-  @Transactional
-  @Override
-  public void updateInvoicingState(SaleOrder saleOrder) {
-    saleInvoicingStateService.updateSaleOrderLinesInvoicingState(saleOrder.getSaleOrderLineList());
-    saleOrder.setInvoicingState(
-        saleInvoicingStateService.computeSaleOrderInvoicingState(saleOrder));
   }
 
   @Transactional(rollbackOn = {Exception.class})

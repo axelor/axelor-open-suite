@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="bank-statement-grid" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name" canDelete="false">
@@ -16,7 +16,7 @@
     <field name="name"/>
     <field name="fromDate" width="120"/>
     <field name="toDate" width="120"/>
-    <field name="statusSelect" title="Status" width="120"/>
+    <field name="statusSelect" title="Status" width="120" widget="single-select"/>
   </grid>
 
 
@@ -44,7 +44,7 @@
         </panel>
         <panel colSpan="4" name="actionsPanel">
           <field name="createdBy"/>
-          <field name="statusSelect" title="Status"/>
+          <field name="statusSelect" title="Status" widget="single-select"/>
           <button name="runImportBtn" title="BankStatement.Import"
             onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile"
             hideIf="statusSelect == 2"/>

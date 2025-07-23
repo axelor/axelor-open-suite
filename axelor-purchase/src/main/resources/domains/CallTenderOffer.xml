@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="CallTenderOffer">
+
+    <many-to-one name="callTenderNeed" ref="com.axelor.apps.purchase.db.CallTenderNeed"/>
+    <many-to-one name="callTenderSupplier"
+      ref="com.axelor.apps.purchase.db.CallTenderSupplier"/>
+    <many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Supplier partner" required="true"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <decimal name="requestedQty" required="true" title="Requested quantity" precision="20"
+      scale="10"/>
+    <many-to-one name="requestedUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Requested unit"/>
+    <date name="requestedDate" title="Requested date"/>
+    <decimal name="proposedQty" title="Proposed quantity" precision="20" scale="10"/>
+    <many-to-one name="proposedUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Proposed unit"/>
+    <date name="proposedDate" title="Proposed date"/>
+    <decimal name="proposedPrice" title="Proposed price" precision="20" scale="10" min="0"/>
+    <string name="offerComment" title="Comment"/>
+    <integer name="statusSelect" selection="purchase.call.tender.offer.status.select"/>
+    <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
+    <many-to-one name="offerMail" ref="com.axelor.apps.purchase.db.CallTenderMail"/>
+
+
+    <extra-code>
+      <![CDATA[
+		  public static final int STATUS_DRAFT = 1;
+		  public static final int STATUS_SENT = 2 ;
+		  public static final int STATUS_REPLIED = 3;
+		  public static final int STATUS_SELECTED = 4;
+		  public static final int STATUS_REJECTED = 5;
+   		]]>
+    </extra-code>
+
+  </entity>
+
+</domain-models>

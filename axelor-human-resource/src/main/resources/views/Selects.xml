@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <selection name="hrs.expenses.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Waiting validation</option>
-    <option value="3">Validated</option>
-    <option value="4">Reimbursed</option>
-    <option value="5">Refused</option>
-    <option value="6">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="amber">Waiting validation</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="teal">Reimbursed</option>
+    <option value="5" color="red">Refused</option>
+    <option value="6" color="grey">Canceled</option>
   </selection>
 
   <selection name="hrs.leave.request.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Waiting validation</option>
-    <option value="3">Validated</option>
-    <option value="4">Refused</option>
-    <option value="5">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="amber">Waiting validation</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="red">Refused</option>
+    <option value="5" color="grey">Canceled</option>
   </selection>
 
   <selection name="hrs.timesheet.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Waiting validation</option>
-    <option value="3">Validated</option>
-    <option value="4">Refused</option>
-    <option value="5">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="yellow">Waiting validation</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="bluegrey">Refused</option>
+    <option value="5" color="red">Canceled</option>
   </selection>
 
 
@@ -67,9 +67,9 @@
   </selection>
 
   <selection name="hr.employment.contract.status">
-    <option value="1">In Trial</option>
-    <option value="2">Active</option>
-    <option value="3">Closed</option>
+    <option value="1" color="blue">In Trial</option>
+    <option value="2" color="green">Active</option>
+    <option value="3" color="red">Closed</option>
   </selection>
 
   <selection name="hr.employment.contract.executiveStatus.select">
@@ -110,10 +110,10 @@
   </selection>
 
   <selection name="hrs.lunch.voucher.mgt.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Calculated</option>
-    <option value="3">Validated</option>
-    <option value="4">Finished</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="amber">Calculated</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="brown">Finished</option>
   </selection>
 
   <selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
@@ -128,25 +128,25 @@
   </selection>
 
   <selection name="hr.employee.advance.status.select">
-    <option value="1">Requested</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Requested</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
   <selection name="hr.employee.bonus.mgt.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Anomaly</option>
-    <option value="3">Calculated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="red">Anomaly</option>
+    <option value="3" color="green">Calculated</option>
   </selection>
 
   <selection name="hr.employee.bonus.mgt.line.status.select">
-    <option value="1">Calculated</option>
-    <option value="2">Anomaly</option>
+    <option value="1" color="green">Calculated</option>
+    <option value="2" color="orange">Anomaly</option>
   </selection>
 
   <selection name="hr.lunch.voucher.line.status.select">
-    <option value="1">Calculated</option>
-    <option value="2">Anomaly</option>
-    <option value="3">To calculate</option>
+    <option value="1" color="green">Calculated</option>
+    <option value="2" color="red">Anomaly</option>
+    <option value="3" color="yellow">To calculate</option>
   </selection>
 
   <selection name="hr.batch.payroll.preparation.export.type.select">
@@ -222,9 +222,9 @@
   </selection>
 
   <selection name="hr.employee.employee.status.select">
-    <option value="new">New employee</option>
-    <option value="former">Former employee</option>
-    <option value="active">Active employee</option>
+    <option value="new" color="blue">New employee</option>
+    <option value="former" color="grey">Former employee</option>
+    <option value="active" color="green">Active employee</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="hr.batch.batch.type.select">
@@ -232,10 +232,10 @@
   </selection>
 
   <selection name="hr.medical.leave.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">Realized</option>
-    <option value="4">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="indigo">Planned</option>
+    <option value="3" color="green">Realized</option>
+    <option value="4" color="red">Canceled</option>
   </selection>
 
   <selection name="hr.leave.reason.type.select">

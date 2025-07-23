@@ -45,4 +45,6 @@ public interface AnalyticLineModelService {
 
   boolean analyticDistributionTemplateRequired(boolean isPurchase, Company company)
       throws AxelorException;
+
+  void checkRequiredAxisByCompany(AnalyticLineModel analyticLineModel) throws AxelorException;
 }

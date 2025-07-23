@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
-    name="data-create-backup-grid">
-    <field name="statusSelect"/>
+    name="data-create-backup-grid" orderBy="-backupDate">
+    <field name="description" width="750"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="backupMetaFile" widget="binary-link"/>
     <field name="backupDate"/>
   </grid>
@@ -13,46 +14,49 @@
   <form model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
     name="data-create-backup-form" onNew="action-data-backup-group-on-new" width="large"
     readonlyIf="backupMetaFile">
-    <panel name="mainPanel" large="true">
-      <panel name="userPanel" colSpan="9">
-        <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
-          colSpan="12" showTitle="false"/>
-        <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
-        <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="2"/>
-        <field name="isRelativeDate" widget="boolean-switch"
-          onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
-        <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"
-          colSpan="2"/>
-        <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
-        <field name="anonymizer" colSpan="4" canRemove="true"/>
-        <field name="anonymizer.anonymizerLineList" showIf="anonymizer != null"/>
+    <panel name="mainPanel">
+      <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
+        colSpan="12" showTitle="false"/>
+      <help colSpan="12" showIf="statusSelect == 1">
+        <![CDATA[The export process may take some time, please refresh the record to see the result.]]>
+      </help>
+      <field name="description" colSpan="12"/>
+      <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
+      <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="4"/>
+      <field name="isRelativeDate" widget="boolean-switch" colSpan="4"/>
+      <field name="updateImportId" widget="boolean-switch" colSpan="4"/>
+      <field name="isExportApp" widget="boolean-switch" colSpan="4"/>
+      <field name="anonymizer" colSpan="4" canRemove="true"/>
+      <field name="anonymizer.anonymizerLineList" showIf="anonymizer != null" colSpan="12"/>
+    </panel>
 
+    <panel-tabs name="mainPanelTab">
+      <panel name="templatePanel" title="Templates.title">
+        <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="4"/>
+        <field name="isTemplateWithDescription" widget="boolean-switch" colSpan="4"/>
+        <field name="maxLinesPerFile" colSpan="4"/>
       </panel>
-      <panel name="actionPanel" colSpan="3" itemSpan="12" sidebar="true">
-        <button name="backToDraftBtn" title="Return to draft status"
-          showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
-          onClick="data.create.backup.set.draft.status"/>
-        <button name="createBtn" title="Create"
-          showIf="backupMetaFile == null &amp;&amp; statusSelect != 1"
-          onClick="action-data-backup-group-create-button"/>
-        <spacer name="btnGrpSpacer" colSpan="12"/>
-        <field name="backupDate" readonly="true" showIf="backupDate != null" colSpan="4"
-          hidden="true"/>
-        <spacer name="backupDateSpacer"/>
-        <field name="backupMetaFile" readonly="true" widget="binary-link"
-          showIf="backupMetaFile != null" hidden="true"/>
-        <spacer name="backupMetaFileSpacer"/>
-        <field name="logMetaFile" readonly="true" widget="binary-link"
-          showIf="logMetaFile != null" colSpan="4" hidden="true"/>
-      </panel>
+    </panel-tabs>
 
+    <panel name="actionPanel" sidebar="true">
+      <button name="backToDraftBtn" title="Return to draft status"
+        showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
+        onClick="data.create.backup.set.draft.status"/>
+      <button name="createBtn" title="Create"
+        showIf="backupMetaFile == null &amp;&amp; statusSelect != 1"
+        onClick="action-data-backup-group-create-button"/>
+      <field name="backupDate" readonly="true" showIf="backupDate != null" hidden="true"/>
+      <field name="backupMetaFile" readonly="true" widget="binary-link"
+        showIf="backupMetaFile != null" hidden="true"/>
+      <field name="logMetaFile" readonly="true" widget="binary-link"
+        showIf="logMetaFile != null" hidden="true"/>
     </panel>
 
   </form>
 
   <grid model="com.axelor.apps.base.db.DataBackup" title="Restore Backup"
     name="data-restore-backup-grid">
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="backupMetaFile" widget="binary-link"/>
     <field name="restoreDate"/>
   </grid>
@@ -63,13 +67,14 @@
       <field name="statusSelect" selection-in="[0,1,3,4]" readonly="true" widget="NavSelect"
         colSpan="12"/>
       <field name="backupMetaFile" required="true" domain="self.fileName LIKE '%.zip'"
-        colSpan="3" widget="binary-link"/>
+        widget="binary-link"/>
+      <field name="isTemplateWithDescription" widget="boolean-switch"/>
       <button name="restoreBtn" title="Restore"
         showIf="backupMetaFile != null &amp;&amp; statusSelect != 2"
-        onClick="save,action.data.backup.call.restorebackup,save" colSpan="3"/>
+        onClick="save,action.data.backup.call.restorebackup,save"/>
       <spacer name="restoreBtnSpacer"/>
-      <field name="restoreDate" readonly="true" colSpan="3"/>
-      <field name="logMetaFile" readonly="true" widget="binary-link" colSpan="3"/>
+      <field name="restoreDate" readonly="true"/>
+      <field name="logMetaFile" readonly="true" widget="binary-link"/>
     </panel>
   </form>
 
@@ -105,9 +110,5 @@
   <action-method name="action.data.backup.call.restorebackup">
     <call class="com.axelor.apps.base.web.DataBackupController" method="restoreBackup"/>
   </action-method>
-
-  <action-attrs name="action-data-backup-attrs-onchange-relativedate">
-    <attribute name="value" for="updateImportId" expr="false" if="!isRelativeDate"/>
-  </action-attrs>
 
 </object-views>

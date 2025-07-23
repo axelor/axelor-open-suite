@@ -30,9 +30,8 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.repo.AppProjectRepository;
 import com.axelor.studio.db.repo.AppRepository;
@@ -54,21 +53,13 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
       AppProjectRepository appProjectRepo,
       CompanyRepository companyRepo,
       ProjectConfigRepository projectConfigRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appProjectRepo = appProjectRepo;
     this.companyRepo = companyRepo;
     this.projectConfigRepo = projectConfigRepo;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="product-company-grid" title="Product per company"
     model="com.axelor.apps.base.db.ProductCompany">
@@ -51,10 +51,11 @@
       <field name="costTypeSelect" onChange="action-product-group-cost-type-select-onchange"
         if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'costTypeSelect'})"/>
       <field name="managPriceCoef" colSpan="12"
+        onChange="action-product-record-compute-sale-price"
         if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'managPriceCoef'})"/>
       <field name="avgPrice" readonly="true"
         if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
-      <field name="autoUpdateSalePrice"
+      <field name="autoUpdateSalePrice" onChange="action-product-record-compute-sale-price"
         if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'autoUpdateSalePrice'})"/>
       <field name="lastPurchasePrice" readonly="true" colSpan="3"
         if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'lastPurchasePrice'})"/>

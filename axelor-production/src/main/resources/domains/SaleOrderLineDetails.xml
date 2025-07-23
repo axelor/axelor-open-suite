@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -27,12 +27,29 @@
     <decimal name="subTotalMarkup" title="Sub Total markup"/>
     <decimal name="costPrice" title="Cost price" precision="20" scale="3"/>
     <decimal name="marginCoefficient" title="Margin coefficient" default="1"/>
+    <many-to-one name="prodProcessLine"
+      ref="com.axelor.apps.production.db.ProdProcessLine" title="Prod process line"/>
+
+    <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
+    <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <long name="setupDuration" title="Duration between two cycles (hhh:mm:ss)"/>
+    <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
+    <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
+    <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
+    <integer name="costTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="costAmount" title="Cost (W.T.)"/>
+    <integer name="hrCostTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="hrCostAmount" title="Cost (W.T.)"/>
 
     <extra-code>
             <![CDATA[
 			// TYPE SELECT
 			public static final int TYPE_COMPONENT = 1;
             public static final int TYPE_BUDGET_ITEM = 2;
+            public static final int TYPE_OPERATION = 3;
 	  	]]>
     </extra-code>
 

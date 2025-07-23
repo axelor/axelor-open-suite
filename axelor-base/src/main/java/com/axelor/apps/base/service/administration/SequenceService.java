@@ -34,6 +34,8 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
@@ -54,9 +56,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
+import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -104,6 +108,12 @@ public class SequenceService {
     this.sequenceVersionGeneratorService = sequenceVersionGeneratorService;
   }
 
+  /**
+   * * Validates if the sequence contains a year pattern when yearly reset is enabled.
+   *
+   * @param sequence
+   * @return true if the sequence is valid for yearly reset, false otherwise.
+   */
   public static boolean isYearValid(Sequence sequence) {
 
     boolean yearlyResetOk = sequence.getYearlyResetOk();
@@ -119,6 +129,12 @@ public class SequenceService {
     return seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR);
   }
 
+  /**
+   * Validates if the sequence contains a month and year pattern when monthly reset is enabled.
+   *
+   * @param sequence
+   * @return true if the sequence is valid for monthly reset, false otherwise.
+   */
   public static boolean isMonthValid(Sequence sequence) {
 
     boolean monthlyResetOk = sequence.getMonthlyResetOk();
@@ -135,6 +151,12 @@ public class SequenceService {
         && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
   }
 
+  /**
+   * Checks if the generated sequence length is within the allowed limit.
+   *
+   * @param sequence
+   * @throws AxelorException
+   */
   public void checkSequenceLengthValidity(Sequence sequence) throws AxelorException {
     Company company = sequence.getCompany();
     String nextSeq = computeTestSeq(sequence, appBaseService.getTodayDate(company));
@@ -146,6 +168,13 @@ public class SequenceService {
     }
   }
 
+  /**
+   * Retrieves a sequence by its code and associated company.
+   *
+   * @param code
+   * @param company
+   * @return {@link Sequence} or null if not found.
+   */
   public Sequence getSequence(String code, Company company) {
 
     if (code == null) {
@@ -158,6 +187,13 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
+  /**
+   * Checks if a sequence exists for the given code and company.
+   *
+   * @param code
+   * @param company
+   * @return {@code true} if a sequence exists, {@code false} otherwise.
+   */
   public boolean hasSequence(String code, Company company) {
 
     return getSequence(code, company) != null;
@@ -166,29 +202,59 @@ public class SequenceService {
   /**
    * Method returning a sequence number from a given generic sequence and a date
    *
-   * @param sequence
-   * @param refDate
-   * @return
+   * @param objectClass
+   * @param fieldName
+   * @param nextSeq
+   * @param seq
+   * @throws AxelorException
    */
+  @SuppressWarnings({"unchecked", "rawtypes"})
   protected void isSequenceAlreadyExisting(
       Class objectClass, String fieldName, String nextSeq, Sequence seq) throws AxelorException {
     String table = objectClass.getSimpleName();
-    boolean isSequenceAlreadyExisting =
-        CollectionUtils.isNotEmpty(
-            JPA.em()
-                .createQuery(
-                    "SELECT self FROM " + table + " self WHERE " + fieldName + " = :nextSeq",
-                    objectClass)
-                .setParameter("nextSeq", nextSeq)
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                .setFlushMode(FlushModeType.COMMIT)
-                .getResultList());
+    String baseQuery = "SELECT self FROM " + table + " self WHERE " + fieldName + " = :nextSeq";
+    String companyQuery = computeCompanyQuery(objectClass);
+
+    TypedQuery<?> query =
+        JPA.em()
+            .createQuery(baseQuery + companyQuery, objectClass)
+            .setParameter("nextSeq", nextSeq)
+            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+            .setFlushMode(FlushModeType.COMMIT);
+
+    if (!StringUtils.isEmpty(companyQuery)) {
+      query.setParameter("company", seq.getCompany());
+    }
+
+    boolean isSequenceAlreadyExisting = CollectionUtils.isNotEmpty(query.getResultList());
     if (isSequenceAlreadyExisting) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.SEQUENCE_ALREADY_EXISTS),
           nextSeq,
           seq.getFullName());
+    }
+  }
+
+  @SuppressWarnings("rawtypes")
+  protected String computeCompanyQuery(Class objectClass) {
+    Property property =
+        Stream.of(Mapper.of(objectClass).getProperties())
+            .filter(p -> p.getTarget() == Company.class)
+            .findFirst()
+            .orElse(null);
+    if (property == null) {
+      return "";
+    }
+    PropertyType type = property.getType();
+    String name = property.getName();
+    switch (type) {
+      case MANY_TO_MANY:
+        return " AND :company MEMBER OF self." + name;
+      case ONE_TO_MANY:
+        return " AND EXISTS (SELECT c FROM self." + name + " c WHERE c = :company)";
+      default:
+        return " AND self." + name + " = :company";
     }
   }
 
@@ -357,6 +423,13 @@ public class SequenceService {
     return convertNextSeqLongToString(q + 1) + ALPHABET.charAt(r);
   }
 
+  /**
+   * Get or creates a sequence version for the given sequence and reference date.
+   *
+   * @param sequence
+   * @param refDate
+   * @return {@link SequenceVersion}.
+   */
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
 
     log.debug("Reference date : : : : {}", refDate);
@@ -369,6 +442,12 @@ public class SequenceService {
     return sequenceVersion;
   }
 
+  /**
+   * Get the default title for a sequence based on its code.
+   *
+   * @param sequence
+   * @return default title
+   */
   public String getDefaultTitle(Sequence sequence) {
     MetaSelectItem item =
         Beans.get(MetaSelectItemRepository.class)
@@ -468,6 +547,14 @@ public class SequenceService {
     return fn.toString();
   }
 
+  /**
+   * Updates sequence versions by setting the end date for the active version.
+   *
+   * @param sequence
+   * @param todayDate
+   * @param endOfDate
+   * @return The updated list of sequence versions.
+   */
   public List<SequenceVersion> updateSequenceVersions(
       Sequence sequence, LocalDate todayDate, LocalDate endOfDate) {
 
@@ -487,6 +574,12 @@ public class SequenceService {
     return sequenceVersionList;
   }
 
+  /**
+   * Validates that the sequence prefix does not start with the draft prefix.
+   *
+   * @param sequence
+   * @throws AxelorException
+   */
   public void validateSequence(Sequence sequence) throws AxelorException {
     String draftPrefix = getDraftPrefix();
 
@@ -498,6 +591,16 @@ public class SequenceService {
           draftPrefix);
   }
 
+  /**
+   * Generates a sequence number for a given sequence, entity, and field.
+   *
+   * @param sequence
+   * @param objectClass
+   * @param fieldName
+   * @param model
+   * @return The generated sequence number.
+   * @throws AxelorException If the sequence is invalid or the number already exists.
+   */
   public String getSequenceNumber(
       Sequence sequence, Class objectClass, String fieldName, Model model) throws AxelorException {
     return this.getSequenceNumber(
@@ -508,6 +611,12 @@ public class SequenceService {
         model);
   }
 
+  /**
+   * Verifies that the sequence pattern length matches the padding.
+   *
+   * @param sequence
+   * @throws AxelorException If the pattern length does not match the padding.
+   */
   public void verifyPattern(Sequence sequence) throws AxelorException {
     if (sequence.getPattern() != null && sequence.getPadding() != sequence.getPattern().length()) {
       throw new AxelorException(
@@ -516,12 +625,32 @@ public class SequenceService {
     }
   }
 
+  /**
+   * Retrieves a sequence number by code, entity, and field.
+   *
+   * @param code
+   * @param objectClass
+   * @param fieldName
+   * @param model
+   * @return The generated sequence number, or null if sequence doesn't exists.
+   * @throws AxelorException If the sequence is invalid or the number already exists.
+   */
   public String getSequenceNumber(String code, Class objectClass, String fieldName, Model model)
       throws AxelorException {
 
     return this.getSequenceNumber(code, null, objectClass, fieldName, model);
   }
 
+  /**
+   * Retrieves a sequence number by code, company, entity, and field.
+   *
+   * @param code
+   * @param objectClass
+   * @param fieldName
+   * @param model
+   * @return The generated sequence number, or null if sequence doesn't exists.
+   * @throws AxelorException If the sequence is invalid or the number already exists.
+   */
   public String getSequenceNumber(
       String code, Company company, Class objectClass, String fieldName, Model model)
       throws AxelorException {
@@ -536,6 +665,16 @@ public class SequenceService {
         sequence, appBaseService.getTodayDate(company), objectClass, fieldName, model);
   }
 
+  /**
+   * Generates a sequence number for a given sequence, date, entity, and field.
+   *
+   * @param code
+   * @param objectClass
+   * @param fieldName
+   * @param model
+   * @return The generated sequence number
+   * @throws AxelorException If the sequence is invalid or the number already exists.
+   */
   @Transactional(rollbackOn = {Exception.class})
   public String getSequenceNumber(
       Sequence sequence, LocalDate refDate, Class objectClass, String fieldName, Model model)

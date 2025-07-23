@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="leave-request-grid" title="Leave Requests"
     model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
@@ -23,7 +23,7 @@
     <field name="startOnSelect"/>
     <field name="toDateT"/>
     <field name="endOnSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="leave-request-validate-grid" title="Leave Requests"
@@ -45,7 +45,7 @@
     <field name="startOnSelect"/>
     <field name="toDateT" onChange="action-leave-request-validate-dates"/>
     <field name="endOnSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="leave-request-form" title="Leave Request"

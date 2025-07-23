@@ -24,4 +24,6 @@ import java.util.Map;
 
 public interface SaleOrderDummyService {
   Map<String, Object> getOnNewDummies(SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> getOnLoadSplitDummies(SaleOrder saleOrder) throws AxelorException;
 }

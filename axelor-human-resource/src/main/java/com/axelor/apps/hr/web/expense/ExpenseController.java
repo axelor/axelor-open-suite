@@ -55,6 +55,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
@@ -524,7 +525,8 @@ public class ExpenseController {
     }
   }
 
-  public void validateAndCompute(ActionRequest request, ActionResponse response) {
+  public void validateAndCompute(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
     ExpenseLineService expenseLineService = Beans.get(ExpenseLineService.class);
@@ -564,6 +566,7 @@ public class ExpenseController {
     }
 
     compute(request, response);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)
@@ -594,7 +597,8 @@ public class ExpenseController {
 
     BigDecimal amount = BigDecimal.ZERO;
     try {
-      amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+      amount =
+          Beans.get(KilometricExpenseService.class).computeKilometricExpense(expenseLine, employee);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -728,7 +732,8 @@ public class ExpenseController {
             AuthUtils.getUser().getName());
       }
 
-      amount = kilometricService.computeKilometricExpense(expenseLine, employee);
+      amount =
+          Beans.get(KilometricExpenseService.class).computeKilometricExpense(expenseLine, employee);
       response.setValue("totalAmount", amount);
       response.setValue("untaxedAmount", amount);
 
@@ -763,5 +768,11 @@ public class ExpenseController {
       response.setValue("generalExpenseLineList", generalExpenseLineList);
       response.setValue("kilometricExpenseLineList", kilometricExpenseLineList);
     }
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 }

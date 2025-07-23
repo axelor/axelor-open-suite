@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="vehicle-odometer-grid" title="Odometers"
     model="com.axelor.apps.fleet.db.VehicleOdometer">
@@ -12,7 +12,8 @@
   </grid>
 
   <form name="vehicle-odometer-form" title="Odometer"
-    model="com.axelor.apps.fleet.db.VehicleOdometer" width="large">
+    model="com.axelor.apps.fleet.db.VehicleOdometer" width="large"
+    onNew="action-vehicle-odometer-record-default">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="date"/>
@@ -21,5 +22,10 @@
       <field name="unit" domain="self.name IN ('Kilometer','Miles')"/>
     </panel>
   </form>
+
+  <action-record name="action-vehicle-odometer-record-default"
+    model="com.axelor.apps.fleet.db.VehicleOdometer">
+    <field name="vehicle" expr="eval: _vehicle" if="_vehicle"/>
+  </action-record>
 
 </object-views>

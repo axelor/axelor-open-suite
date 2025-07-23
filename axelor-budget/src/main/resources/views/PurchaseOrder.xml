@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="purchase-order-grid" id="budget-purchase-order-grid" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
@@ -28,6 +28,12 @@
         <panel name="budgetDistributionPanel" title="Budget distribution"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           showIf="statusSelect &lt;= 4">
+          <panel name="datesPanel" colSpan="12" itemSpan="4" readonlyIf="statusSelect &gt;= 3">
+            <field name="budgetFromDate" requiredIf="budgetToDate"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"/>
+            <button name="initBudgetDatesBtn" title="Init budget dates"
+              onClick="action-purchase-order-method-initialize-budget-dates"/>
+          </panel>
           <field name="project" colSpan="3"
             onChange="action-business-project-purchase-order-method-update-lines"
             hideIf="orderTypeSelect == 4"/>
@@ -54,12 +60,14 @@
         value="action-budget-group-purchase-order-on-validate-actions"/>
     </extend>
 
-    <extend target="//button[@name='cancelBtn']">
+    <extend target="//button[@name='requestedBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           onClick="action-budget-group-purchase-order-compute-budget-distribution" hidden="true"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"
+          icon="clipboard2-data-fill"
+          readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       </insert>
     </extend>
 
@@ -88,6 +96,7 @@
   <action-group name="action-budget-purchase-order-group-on-save">
     <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="save"/>
     <action name="action-budget-purchase-order-method-fill-budget-str"
       if="__config__.app.isApp('budget')"/>
@@ -113,6 +122,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-budget-validate-request"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
@@ -125,6 +135,11 @@
 
   <action-method name="action-purchase-order-method-budget-validate-request">
     <call class="com.axelor.apps.budget.web.PurchaseOrderController" method="validateRequest"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="initializeBudgetDates"/>
   </action-method>
 
   <action-record name="action-budget-purchase-order-record-get-budget-balance"

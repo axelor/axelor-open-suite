@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
     <field name="reconcileSeq" width="120"/>
@@ -12,7 +12,7 @@
     <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
     <field name="amount" aggregate="sum"/>
     <field name="reconciliationDateTime"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="move-line-reconcile-grid" title="Reconcile"
@@ -22,7 +22,7 @@
     <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="amount" aggregate="sum"/>
     <field name="reconciliationDateTime"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"
@@ -69,7 +69,7 @@
     </panel>
     <panel sidebar="true" name="infoPanel" title="Info">
       <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="reconciliationDateTime"/>
       <field name="effectiveDate"/>
       <field name="reconciliationCancelDateTime" hidden="true" showIf="statusSelect == 3"/>

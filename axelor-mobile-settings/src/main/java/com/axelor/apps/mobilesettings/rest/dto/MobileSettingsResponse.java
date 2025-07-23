@@ -29,6 +29,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final List<MobileConfigResponse> apps;
   protected final Boolean isLoginUserQrcodeEnabled;
   protected final Boolean isTrackerMessageEnabled;
+  protected final Boolean isInboxAccessEnabled;
   protected final Boolean isInventoryValidationEnabled;
   protected final Boolean isStockCorrectionValidationEnabled;
   protected final Boolean isCustomerDeliveryLineAdditionEnabled;
@@ -70,6 +71,7 @@ public class MobileSettingsResponse extends ResponseStructure {
       List<MobileConfigResponse> apps,
       Boolean isLoginUserQrcodeEnabled,
       Boolean isTrackerMessageEnabled,
+      Boolean isInboxAccessEnabled,
       Boolean isInventoryValidationEnabled,
       Boolean isStockCorrectionValidationEnabled,
       Boolean isCustomerDeliveryLineAdditionEnabled,
@@ -109,6 +111,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
     this.isTrackerMessageEnabled = isTrackerMessageEnabled;
+    this.isInboxAccessEnabled = isInboxAccessEnabled;
     this.isInventoryValidationEnabled = isInventoryValidationEnabled;
     this.isStockCorrectionValidationEnabled = isStockCorrectionValidationEnabled;
     this.isCustomerDeliveryLineAdditionEnabled = isCustomerDeliveryLineAdditionEnabled;
@@ -158,6 +161,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isTrackerMessageEnabled")
   public Boolean getTrackerMessageEnabled() {
     return isTrackerMessageEnabled;
+  }
+
+  @JsonProperty(value = "isInboxAccessEnabled")
+  public Boolean getInboxAccessEnabled() {
+    return isInboxAccessEnabled;
   }
 
   @JsonProperty(value = "isInventoryValidationEnabled")

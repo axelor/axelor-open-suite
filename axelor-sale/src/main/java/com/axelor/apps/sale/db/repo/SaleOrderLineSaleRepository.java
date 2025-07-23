@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -61,6 +62,10 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
                 : saleOrderLine.getOldVersionSaleOrder();
         json.put(
             "$currencyNumberOfDecimals", Beans.get(CurrencyScaleService.class).getScale(saleOrder));
+
+        json.put(
+            "$qtyToOrderLeft",
+            Beans.get(SaleOrderSplitService.class).getQtyToOrderLeft(saleOrderLine));
       }
     }
     return super.populate(json, context);

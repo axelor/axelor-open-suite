@@ -21,12 +21,12 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionService;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderMOGenerationService;
+import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.google.inject.Inject;
 
 public class ProductionOrderSaleOrderServiceBusinessImpl
@@ -37,20 +37,20 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
-      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      ManufOrderSaleOrderService manufOrderSaleOrderService,
+      SaleOrderLineBlockingProductionService saleOrderLineBlockingProductionService) {
     super(
         productionOrderService,
         productionOrderRepo,
         appProductionService,
-        productionOrderSaleOrderMOGenerationService,
-        stockLocationLineFetchService);
+        manufOrderSaleOrderService,
+        saleOrderLineBlockingProductionService);
   }
 
   @Override
-  public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException {
+  public ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException {
 
-    ProductionOrder productionOrder = super.createProductionOrder(saleOrder);
+    ProductionOrder productionOrder = super.fetchOrCreateProductionOrder(saleOrder);
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()) {

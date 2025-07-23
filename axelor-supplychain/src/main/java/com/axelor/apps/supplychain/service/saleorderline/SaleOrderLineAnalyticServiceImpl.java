@@ -23,16 +23,22 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.Map;
 
 public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticService {
 
   protected AnalyticGroupService analyticGroupService;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
-  public SaleOrderLineAnalyticServiceImpl(AnalyticGroupService analyticGroupService) {
+  public SaleOrderLineAnalyticServiceImpl(
+      AnalyticGroupService analyticGroupService,
+      AnalyticLineModelService analyticLineModelService) {
     this.analyticGroupService = analyticGroupService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -41,5 +47,17 @@ public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticSe
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
     return analyticGroupService.getAnalyticAccountValueMap(
         analyticLineModel, saleOrder.getCompany());
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder == null || ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      return;
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+      analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
+    }
   }
 }

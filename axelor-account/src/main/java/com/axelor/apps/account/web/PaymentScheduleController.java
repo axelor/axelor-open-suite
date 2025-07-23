@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
@@ -32,8 +34,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -138,12 +140,12 @@ public class PaymentScheduleController {
    */
   public void fillPartnerBankDetails(ActionRequest request, ActionResponse response) {
     PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-    Partner partner = paymentSchedule.getPartner();
-
-    if (partner != null) {
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
-    }
-    BankDetails defaultBankDetails = Beans.get(PartnerService.class).getDefaultBankDetails(partner);
+    BankDetails defaultBankDetails =
+        Beans.get(BankDetailsServiceAccount.class)
+            .getDefaultBankDetails(
+                paymentSchedule.getPartner(),
+                paymentSchedule.getCompany(),
+                paymentSchedule.getPaymentMode());
     response.setValue("bankDetails", defaultBankDetails);
   }
 
@@ -181,5 +183,19 @@ public class PaymentScheduleController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
+
+    String domain =
+        Beans.get(BankDetailsDomainServiceAccount.class)
+            .createDomainForBankDetails(
+                paymentSchedule.getPartner(),
+                paymentSchedule.getPaymentMode(),
+                paymentSchedule.getCompany());
+
+    response.setAttr("bankDetails", "domain", domain);
   }
 }

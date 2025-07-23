@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="analytic-distribution-template-grid" title="Analytic distribution templates"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate">
@@ -31,7 +31,7 @@
   <form name="analytic-distribution-template-fixed-asset-form"
     title="Analytic distribution template"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
-    onSave="action-method-analytic-distribution-template-check-analytic-axis,action-analytic-distribution-template-on-save,action-method-parent-fixed-asset-calculate-analytic">
+    onSave="action-analytic-distribution-template-on-save,action-method-parent-fixed-asset-calculate-analytic">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="company" required="true" onChange="save"/>
@@ -50,7 +50,7 @@
   <form name="analytic-distribution-template-account-form"
     title="Analytic distribution template"
     model="com.axelor.apps.account.db.AnalyticDistributionTemplate"
-    onSave="action-method-analytic-distribution-template-check-analytic-axis,action-analytic-distribution-template-on-save">
+    onSave="action-analytic-distribution-template-on-save">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="company" required="true" onChange="save"/>
@@ -77,6 +77,7 @@
   </action-method>
 
   <action-group name="action-analytic-distribution-template-on-save">
+    <action name="action-method-analytic-distribution-template-check-analytic-axis"/>
     <action name="action-analytic-dist-template-method-validate-tot-percentage"/>
     <action name="action-analytic-dist-template-method-validate-all-percentage"/>
     <action name="action-method-analytic-distribution-template-check-company"/>

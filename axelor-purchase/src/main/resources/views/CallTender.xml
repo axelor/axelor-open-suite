@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="call-tender-grid" title="Call for tenders"
+    model="com.axelor.apps.purchase.db.CallTender" orderBy="-createdOn">
+    <field name="name"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="call-tender-form" model="com.axelor.apps.purchase.db.CallTender"
+    title="Call for tender">
+    <panel name="headerPanel" showTitle="false">
+      <field name="name" colSpan="6"/>
+      <field name="description" colSpan="6"/>
+      <field name="callForTenderMailTemplate" colSpan="6"
+        domain="self.metaModel.name='CallTenderOffer'"/>
+    </panel>
+    <panel name="actionPanel" showTitle="false" sidebar="true">
+      <button name="generateCallTenderBtn" title="Generate call for tenders"
+        onClick="save,action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
+      <button name="sendCallTendersBtn" title="Send call for tenders"
+        onClick="save,action-call-tender-method-send-call-tender-offers" colSpan="12"/>
+    </panel>
+    <panel-related field="callTenderNeedList" title="Product needs"
+      form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"
+      canSelect="false"/>
+    <panel-related field="callTenderSupplierList"
+      form-view="call-tender-supplier-form" grid-view="call-tender-supplier-grid" colSpan="12"
+      canSelect="false"/>
+    <panel-related field="callTenderOfferList" form-view="call-tender-offer-form"
+      grid-view="call-tender-offer-grid" colSpan="12" canSelect="false"/>
+  </form>
+
+  <action-method name="action-call-tender-method-generate-call-tender-offers">
+    <call class="com.axelor.apps.purchase.web.CallTenderController"
+      method="generateCallTenderOffers"/>
+  </action-method>
+
+
+  <action-method name="action-call-tender-method-send-call-tender-offers">
+    <call class="com.axelor.apps.purchase.web.CallTenderController"
+      method="sendCallTenderOffers"/>
+  </action-method>
+
+</object-views>

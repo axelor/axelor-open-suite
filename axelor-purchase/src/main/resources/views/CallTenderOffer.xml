@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="call-tender-offer-grid" title="Supplier offers"
+    model="com.axelor.apps.purchase.db.CallTenderOffer"
+    onNew="action-call-tender-offer-record-init-dummy-fields">
+    <field name="statusSelect"/>
+    <field name="product"/>
+    <field name="supplierPartner"/>
+    <field name="requestedQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="requestedUnit"/>
+    <field name="requestedDate"/>
+    <field name="proposedQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="proposedUnit"/>
+    <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true" x-dirty="false"/>
+  </grid>
+
+  <form name="call-tender-offer-form" model="com.axelor.apps.purchase.db.CallTenderOffer"
+    title="Supplier offer" onNew="action-call-tender-offer-record-init-dummy-fields">
+    <panel name="sidePanel" showTitle="false" sidebar="true">
+      <field name="requestedDate" colSpan="12"/>
+      <field name="proposedDate" colSpan="12"/>
+      <field name="offerMail" readonly="true" showIf="offerMail != null"/>
+    </panel>
+    <panel name="mainPanel" showTitle="false">
+      <field name="statusSelect" colSpan="12" widget="NavSelect"/>
+    </panel>
+    <panel name="requestPanel" title="Requested">
+      <field name="product" colSpan="6"/>
+      <field name="supplierPartner" colSpan="6" form-view="partner-form"
+        grid-view="partner-grid"/>
+      <field name="requestedQty" colSpan="6" x-scale="$nbDecimalDigitForQty"/>
+      <field name="requestedUnit" colSpan="6"/>
+    </panel>
+    <panel name="proposalPanel" title="Proposal">
+      <field name="proposedQty" x-scale="$nbDecimalDigitForQty"/>
+      <field name="proposedUnit"/>
+      <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    </panel>
+    <panel name="commentPanel">
+      <field name="offerComment"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true" x-dirty="false"/>
+    </panel>
+
+  </form>
+
+  <action-record name="action-call-tender-offer-record-init-dummy-fields"
+    model="com.axelor.apps.purchase.db.CallTenderOffer">
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getApp('base')?.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty"
+      expr="eval:  __config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
+  </action-record>
+</object-views>

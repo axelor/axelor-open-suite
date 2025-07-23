@@ -57,15 +57,18 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   protected WeeklyPlanningService weeklyPlanningService;
   protected HRConfigService hrConfigService;
   protected AppBaseService appBaseService;
+  protected EmployeeRepository employeeRepository;
 
   @Inject
   public EmployeeServiceImpl(
       WeeklyPlanningService weeklyPlanningService,
       HRConfigService hrConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      EmployeeRepository employeeRepository) {
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;
+    this.employeeRepository = employeeRepository;
   }
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
@@ -302,5 +305,18 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return employeePhoneBookPrintTemplate;
+  }
+
+  @Override
+  public Company getDefaultCompany(Employee employee) {
+    if (employee != null) {
+      employee = employeeRepository.find(employee.getId());
+      if (employee.getMainEmploymentContract() != null) {
+        return employee.getMainEmploymentContract().getPayCompany();
+      } else if (employee.getUser() != null) {
+        return employee.getUser().getActiveCompany();
+      }
+    }
+    return null;
   }
 }

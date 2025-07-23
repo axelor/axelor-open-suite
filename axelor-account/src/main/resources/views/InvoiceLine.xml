@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="invoice-line-grid" title="Invoice lines"
     model="com.axelor.apps.account.db.InvoiceLine">
@@ -18,6 +18,11 @@
     <field name="typeSelect" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="lineAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="invoice-line-menu-grid" title="Invoice lines"
@@ -52,6 +57,11 @@
     <field name="invoice.dueDate" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="discountAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="lineAmount" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="invoice-line-form" title="Invoice line"
@@ -61,7 +71,8 @@
     <panel name="titlePanel" showIf="typeSelect > 0">
       <field name="productName" title="Title" requiredIf="typeSelect != 0" colSpan="9"/>
       <field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line"/>
-      <field name="qty" colSpan="6" onChange="action-invoice-line-method-check-qty"/>
+      <field name="qty" colSpan="6" onChange="action-invoice-line-method-check-qty"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="isShowTotal" colSpan="3"
         if="__config__.app.getApp('sale')?.enablePackManagement"
         onChange="action-invoice-line-record-reset-is-hide-unit-amounts" showIf="typeSelect == 3"/>
@@ -103,22 +114,24 @@
         </panel>
         <field name="productName" colSpan="12" requiredIf="typeSelect == 0"/>
         <field name="qty" colSpan="3" required="true"
-          onChange="action-group-account-invoice-line-qty-onchange"/>
+          onChange="action-group-account-invoice-line-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
         <field name="unit" colSpan="3" canEdit="false" requiredIf="typeSelect == 0"
           form-view="unit-form" grid-view="unit-grid"/>
         <field name="coefficient" onChange="action-invoice-line-method-compute" hidden="true"/>
         <field name="price" colSpan="3" required="true"
-          onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
+          onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
+          x-scale="$nbDecimalDigitForUnitPrice"/>
         <field name="inTaxPrice" colSpan="3" required="true"
           onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-          hidden="true"/>
+          hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel name="discountPanel" colSpan="12" readonlyIf="$isGlobalDiscount">
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
-            hideIf="discountTypeSelect == 0"/>
-          <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
+            hideIf="discountTypeSelect == 0" x-scale="$nbDecimalDigitForUnitPrice"/>
+          <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
         <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
@@ -134,6 +147,8 @@
         <field name="invoice.company.accountConfig.isInvoiceCoefficientEnabled" hidden="true"/>
         <field name="companyExTaxTotal" hidden="true"
           x-currency="invoice.company.currency.symbol"/>
+        <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+        <field name="$nbDecimalDigitForQty" hidden="true"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
         </panel>
@@ -381,7 +396,6 @@
     <action name="action-invoice-line-method-check-analytic-on-invoice-line"/>
     <action name="action-invoice-line-method-create-distribution"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
-    <action name="action-invoice-line-check-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-invoice-line-group-analytic-move-line-onchange">
@@ -521,11 +535,6 @@
     name="action-invoice-line-method-check-analytic-account-on-invoice-line">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="checkAnalyticMoveLineForAxis"/>
-  </action-method>
-
-  <action-method name="action-invoice-line-check-distribution-template-account">
-    <call class="com.axelor.apps.account.web.InvoiceLineController"
-      method="checkAnalyticAccount"/>
   </action-method>
 
   <action-method name="action-invoice-line-method-set-scale">

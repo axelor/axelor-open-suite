@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip"
     title="Deposit slips" orderBy="-depositDate,-depositNumber">
@@ -68,7 +68,7 @@
         canRemove="false" grid-view="selector-payment-voucher-deposit-slip-grid"
         form-view="payment-voucher-deposit-slip-form" colSpan="12"/>
       <button
-        onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count,save"
+        onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count,save,action-deposit-slip-load-payment-voucher-due-list"
         name="loadSelectedLinesBtn" title="Load selected lines" colOffset="6" colSpan="3"
         readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"/>
       <button
@@ -96,7 +96,7 @@
           title="Publish deposit slip" css="btn-success"/>
         <button onClick="save,action-deposit-slip-method-validate"
           name="updateValidateDepositSlipBtn" title="Validate deposit slip" css="btn-success"
-          hidden="true" hideIf="companyBankDetails"/>
+          hideIf="!publicationDate"/>
       </panel>
     </panel>
 

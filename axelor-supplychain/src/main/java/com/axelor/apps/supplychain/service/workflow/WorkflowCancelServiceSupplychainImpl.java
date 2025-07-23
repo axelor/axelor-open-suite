@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -53,17 +54,21 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
 
   private SaleOrderRepository saleOrderRepository;
 
+  protected SaleInvoicingStateService saleInvoicingStateService;
+
   @Inject
   public WorkflowCancelServiceSupplychainImpl(
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
-      PurchaseOrderRepository purchaseOrderRepository) {
+      PurchaseOrderRepository purchaseOrderRepository,
+      SaleInvoicingStateService saleInvoicingStateService) {
 
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
+    this.saleInvoicingStateService = saleInvoicingStateService;
   }
 
   private PurchaseOrderRepository purchaseOrderRepository;
@@ -100,7 +105,7 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
           "Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
       invoiceSaleOrder.setAmountInvoiced(
           saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), true));
-      saleOrderInvoiceService.updateInvoicingState(invoiceSaleOrder);
+      saleInvoicingStateService.updateInvoicingState(invoiceSaleOrder);
 
     } else {
 
@@ -120,7 +125,7 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
         log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
         saleOrder.setAmountInvoiced(
             saleOrderInvoiceService.getInvoicedAmount(saleOrder, invoice.getId(), true));
-        saleOrderInvoiceService.updateInvoicingState(saleOrder);
+        saleInvoicingStateService.updateInvoicingState(saleOrder);
         saleOrderRepository.save(saleOrder);
       }
     }

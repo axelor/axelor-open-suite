@@ -37,10 +37,12 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppProductionRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
@@ -73,11 +75,13 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
+      SaleInvoicingStateService saleInvoicingStateService,
       AppSaleService appSaleService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService,
       SolDetailsBusinessProductionService solDetailsBusinessProductionService,
-      SolBomCustomizationService solBomCustomizationService) {
+      SolBomCustomizationService solBomCustomizationService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -94,7 +98,9 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
         saleOrderStockService,
         accountingSituationSupplychainService,
         trackingNumberSupplychainService,
-        partnerLinkSupplychainService);
+        partnerLinkSupplychainService,
+        saleInvoicingStateService,
+        saleOrderLineAnalyticService);
     this.appSaleService = appSaleService;
     this.appProductionService = appProductionService;
     this.saleOrderProductionSyncService = saleOrderProductionSyncService;
@@ -114,7 +120,8 @@ public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupp
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       solDetailsBusinessProductionService.deleteSolDetailsList(saleOrder);
       solBomCustomizationService.customSaleOrderLineList(saleOrder.getSaleOrderLineList());
-      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder.getSaleOrderLineList());
+      saleOrderProductionSyncService.syncSaleOrderLineList(
+          saleOrder, saleOrder.getSaleOrderLineList());
       solDetailsBusinessProductionService.copySolDetailsList(saleOrder);
     }
     super.validateChanges(saleOrder);

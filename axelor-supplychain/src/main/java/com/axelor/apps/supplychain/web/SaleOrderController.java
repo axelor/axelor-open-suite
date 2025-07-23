@@ -37,16 +37,15 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.FreightCarrierModeRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.FreightCarrierModeService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderServiceSupplychainImpl;
@@ -57,7 +56,6 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.exception.MessageExceptionMessage;
@@ -84,9 +82,17 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderController {
 
-  private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
+  private final String SO_LINES_WIZARD_PRICE_FIELD = "priceDiscounted";
   private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
   private final String SO_LINES_WIZARD_INVOICE_ALL_FIELD = "invoiceAll";
+
+  public void checkBlocking(ActionRequest request, ActionResponse response) {
+    SaleOrder saleorder = request.getContext().asType(SaleOrder.class);
+
+    if (Beans.get(SaleOrderBlockingSupplychainService.class).hasOnGoingBlocking(saleorder)) {
+      response.setAlert(I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINES_CANNOT_DELIVER));
+    }
+  }
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -699,6 +705,21 @@ public class SaleOrderController {
       String message =
           Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder, shipmentMode);
       if (message != null) {
+        response.setNotify(message);
+      }
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      ShipmentMode shipmentMode = saleOrder.getShipmentMode();
+      String message =
+          Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder, shipmentMode);
+      if (message != null) {
         response.setInfo(message);
       }
       response.setValues(saleOrder);
@@ -720,7 +741,7 @@ public class SaleOrderController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -741,7 +762,7 @@ public class SaleOrderController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_TO);
 
       response.setAttr("deliveredPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -827,24 +848,32 @@ public class SaleOrderController {
     }
   }
 
-  public void selectFreightCarrierPricings(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
+  public void updateEstimatedDeliveryDateWithPricingDelay(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     try {
-      FreightCarrierModeRepository freightCarrierModeRepository =
-          Beans.get(FreightCarrierModeRepository.class);
-      List<FreightCarrierMode> freightCarrierModeList =
-          ((List<Map<String, Object>>) context.get("freightCarrierPricingsSet"))
-              .stream()
-                  .map(o -> Mapper.toBean(FreightCarrierMode.class, o))
-                  .filter(FreightCarrierMode::isSelected)
-                  .map(it -> freightCarrierModeRepository.find(it.getId()))
-                  .collect(Collectors.toList());
 
-      if (context.get("_id") != null) {
-        Beans.get(FreightCarrierModeService.class)
-            .computeFreightCarrierMode(
-                freightCarrierModeList, Long.valueOf(context.get("_id").toString()));
-        response.setCanClose(true);
+      if (saleOrder != null) {
+        Beans.get(FreightCarrierPricingService.class)
+            .updateEstimatedDeliveryDateWithPricingDelay(saleOrder);
+        response.setValue("estimatedDeliveryDate", saleOrder.getEstimatedDeliveryDate());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void notifyEstimatedDeliveryDateUpdate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+
+      if (saleOrder != null) {
+        String message =
+            Beans.get(FreightCarrierPricingService.class)
+                .notifyEstimatedDeliveryDateUpdate(saleOrder);
+        if (message != null) {
+          response.setNotify(message);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

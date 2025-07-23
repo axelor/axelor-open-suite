@@ -41,6 +41,9 @@ public class TimesheetLinePutRequest extends RequestStructure {
   @Min(0)
   private BigDecimal duration;
 
+  @Min(0)
+  private BigDecimal hoursDuration;
+
   private LocalDate date;
 
   private String comments;
@@ -77,6 +80,14 @@ public class TimesheetLinePutRequest extends RequestStructure {
 
   public void setDuration(BigDecimal duration) {
     this.duration = duration;
+  }
+
+  public BigDecimal getHoursDuration() {
+    return hoursDuration;
+  }
+
+  public void setHoursDuration(BigDecimal hoursDuration) {
+    this.hoursDuration = hoursDuration;
   }
 
   public LocalDate getDate() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -71,6 +71,8 @@
       title="Allow to personalize production process" default="true"/>
     <boolean name="isBomLineGenerationInSODisabled"
       title="Disable BOM lines generation in sale order."/>
+    <boolean name="isProdProcessLineGenerationInSODisabled"
+      title="Disable prod process lines generation in sale order."/>
 
     <extra-code><![CDATA[
 		// OPERATION_CONTINUITY_SELECT
@@ -113,6 +115,11 @@
 
       <field name="allowPersonalizedBOM" on="UPDATE"/>
       <field name="allowPersonalizedProdProcess" on="UPDATE"/>
+      <field name="operationContinuitySelect" on="UPDATE"/>
+      <field name="generatePurchaseOrderOnMoPlanning" on="UPDATE"/>
+      <field name="isCostPerProcessLine" on="UPDATE"/>
+      <field name="employeeScheduling" on="UPDATE"/>
+      <field name="isBomLineGenerationInSODisabled" on="UPDATE"/>
     </track>
   </entity>
 

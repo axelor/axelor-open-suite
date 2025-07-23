@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -18,6 +18,8 @@
       mappedBy="saleOrderLine"/>
     <decimal name="budgetRemainingAmountToAllocate"
       title="Remaining amount to allocate on budgets" precision="20" scale="3"/>
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
   </entity>
 
 </domain-models>
