@@ -5,18 +5,16 @@
 
   <grid name="base-hazard-pictogram-grid" title="Hazard pictogram"
     model="com.axelor.apps.base.db.HazardPictogram">
-    <field name="clpCode" widget="image"/>
+    <field name="clpCode"/>
     <field name="clpDesignation"/>
-    <field name="clpPictogram"/>
   </grid>
 
   <form name="base-hazard-pictogram-form" title="Hazard pictogram"
     model="com.axelor.apps.base.db.HazardPictogram">
     <panel name="mainPanel">
-      <field name="clpPictogram" widget="image" x-accept=".svg"/>
+      <field name="clpPictogram" widget="image" colSpan="12"/>
       <field name="clpCode"/>
-      <field name="clpDesignation"/>
-
+      <field name="clpDesignation" colSpan="12"/>
     </panel>
   </form>
 
