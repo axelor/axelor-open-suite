@@ -5,6 +5,7 @@
 
   <grid name="base-hazard-pictogram-grid" title="Hazard pictogram"
     model="com.axelor.apps.base.db.HazardPictogram">
+    <field name="clpPictogram" widget="image"/>
     <field name="clpCode"/>
     <field name="clpDesignation"/>
   </grid>
