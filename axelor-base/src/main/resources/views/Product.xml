@@ -553,7 +553,7 @@
           form-view="base-hazard-pictogram-form" grid-view="base-hazard-pictogram-grid"
           canSelect="true" title="Hazard pictograms" showIf="isClp"/>
         <panel-related field="hazardPhraseSet" colSpan="12"
-          form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-form" canSelect="true"
+          form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-grid" canSelect="true"
           title="Hazard phrases" showIf="isClp"/>
       </panel>
     </panel-tabs>
