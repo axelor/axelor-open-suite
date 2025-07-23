@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -74,15 +75,18 @@ public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected final AppBaseService appBaseService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
   public IntercoServiceImpl(
       PurchaseConfigService purchaseConfigService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      AppBaseService appBaseService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -111,6 +115,10 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             clientPartner.getFiscalPosition());
 
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrder.setInvoicedPartner(clientPartner);
+      saleOrder.setDeliveredPartner(clientPartner);
+    }
     // in ati
     saleOrder.setInAti(purchaseOrder.getInAti());
 
