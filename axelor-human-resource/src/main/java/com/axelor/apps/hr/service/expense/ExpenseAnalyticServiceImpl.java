@@ -71,7 +71,7 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
                       .orElse(null));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, expenseLine.getUntaxedAmount(), date);
+            analyticMoveLine, expenseLine.getUntaxedAmount(), date); // aaa
       }
     }
     return expenseLine;
@@ -94,7 +94,7 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
             expenseLine.getAnalyticDistributionTemplate(),
             expenseLine.getUntaxedAmount(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            date);
+            date); // aaa
 
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;

@@ -209,7 +209,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     expense.setPaymentMove(movePayment);
     movePayment.setExpensePayment(expense);
 
-    reconcileService.reconcile(expenseMoveLine, employeeMoveLine, true, false);
+    // reconcileService.reconcile(expenseMoveLine, employeeMoveLine, true, false);
 
     expenseRepository.save(expense);
 
