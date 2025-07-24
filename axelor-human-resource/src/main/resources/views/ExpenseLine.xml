@@ -153,14 +153,15 @@
           onChange="action-expense-line-group-expense-product-on-change"/>
         <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
         <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-          onChange="action-expense-line-group-total-amount-on-change">
+          onChange="action-expense-line-group-total-amount-on-change"
+          x-currency="expense.currency.symbol">
           <hilite color="danger"
             if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
         </field>
         <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
           onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"
-          readonlyIf="expenseProduct.blockExpenseTax"/>
-        <field name="untaxedAmount"/>
+          readonlyIf="expenseProduct.blockExpenseTax" x-currency="expense.currency.symbol"/>
+        <field name="untaxedAmount" x-currency="expense.currency.symbol"/>
         <field name="toInvoice" colSpan="3"/>
         <field name="invoiced" colSpan="3"
           showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
@@ -186,6 +187,9 @@
         <field name="employee" hidden="true" form-view="employee-form"
           grid-view="employee-grid" onSelect="action-expense-line-attrs-company" canNew="false"
           canEdit="false" canView="false"/>
+        <field name="expense" hidden="true"/>
+        <field name="expense.currency" hidden="true"/>
+        <field name="expense.currency.symbol" hidden="true"/>
       </panel>
 
       <panel name="analyticDistributionPanel" title="Analytic distribution"
@@ -248,13 +252,15 @@
         </panel>
         <field name="totalAmount"
           onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"
-          readonly="true"/>
+          readonly="true" x-currency="expense.currency.symbol"/>
         <field name="comments" colSpan="12"/>
         <field name="employee" hidden="true" form-view="employee-form"
           grid-view="employee-grid" onSelect="action-expense-line-attrs-company" canNew="false"
           canEdit="false" canView="false"/>
         <field name="expenseProduct" hidden="true"/>
-
+        <field name="expense" hidden="true"/>
+        <field name="expense.currency" hidden="true"/>
+        <field name="expense.currency.symbol" hidden="true"/>
       </panel>
 
       <panel name="analyticDistributionPanel" title="Analytic distribution"

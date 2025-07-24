@@ -107,6 +107,9 @@ public class ExpenseLineController {
     Beans.get(ExpenseLineComputeService.class)
         .computeUntaxedAndCompanyAmounts(expenseLine, expense);
 
-    response.setValues(expenseLine);
+    response.setValue("untaxedAmount", expenseLine.getUntaxedAmount());
+    response.setValue("companyUntaxedAmount", expenseLine.getCompanyUntaxedAmount());
+    response.setValue("companyTotalTax", expenseLine.getCompanyTotalTax());
+    response.setValue("companyTotalAmount", expenseLine.getCompanyTotalAmount());
   }
 }
