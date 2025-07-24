@@ -10,7 +10,7 @@
     <string name="icpeCode" title="ICPE code" required="true"/>
     <string name="icpeDesignation" title="ICPE designation" required="true" large="true"/>
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
-      title="Products" mappedBy="icpeSet"/>
+      title="Products"/>
   </entity>
 
 </domain-models>
