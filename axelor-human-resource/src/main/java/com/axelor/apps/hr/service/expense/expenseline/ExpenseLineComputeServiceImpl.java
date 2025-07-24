@@ -47,15 +47,13 @@ public class ExpenseLineComputeServiceImpl implements ExpenseLineComputeService 
 
     if (!Objects.equals(companyCurrency, expenseCurrency)) {
       LocalDate date = expenseLine.getExpenseDate();
-      companyUntaxedAmount =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              expenseCurrency, companyCurrency, companyUntaxedAmount, date);
       companyTotalTax =
           currencyService.getAmountCurrencyConvertedAtDate(
               expenseCurrency, companyCurrency, companyTotalTax, date);
       companyTotalAmount =
           currencyService.getAmountCurrencyConvertedAtDate(
               expenseCurrency, companyCurrency, companyTotalAmount, date);
+      companyUntaxedAmount = companyTotalAmount.subtract(companyTotalTax);
     }
 
     expenseLine.setCompanyUntaxedAmount(companyUntaxedAmount);
