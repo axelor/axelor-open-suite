@@ -150,7 +150,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     SaleOrder order =
         saleOrderGeneratorService.createSaleOrder(
-            clientPartner, company, contactPartner, currency, null);
+            clientPartner, null, company, contactPartner, currency, null);
 
     order.setProject(projectRepository.find(project.getId()));
 
