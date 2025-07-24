@@ -541,7 +541,7 @@
         </panel>
       </panel>
       <panel-related field="alternativeBarcodeList" name="alternativeBarcodeListPanel"
-        grid-view="alternative-barcode-grid" form-view="alternative-barcode-form" title="Safety"
+        grid-view="alternative-barcode-grid" form-view="alternative-barcode-form"
         if="__config__.app.getApp('base')?.getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base')?.getEnableMultiBarcodeOnProducts()"/>
       <panel name="safetyPanel" title="Safety">
         <field name="safetyLabel" widget="image"/>
