@@ -31,11 +31,17 @@
       grid-view="product-expense-grid" width="200"/>
     <field name="expenseDate" width="120"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="totalAmount" aggregate="sum" width="170"/>
-    <field name="totalTax" aggregate="sum" width="80"/>
+    <field name="companyTotalAmount" aggregate="sum" width="170"
+      x-currency="expense.company.currency.symbol"/>
+    <field name="companyTotalTax" aggregate="sum" width="80"
+      x-currency="expense.company.currency.symbol"/>
     <field name="toInvoice"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
+    <field name="expense" hidden="true"/>
+    <field name="expense.company" hidden="true"/>
+    <field name="expense.company.currency" hidden="true"/>
+    <field name="expense.company.currency.symbol" hidden="true"/>
   </grid>
 
   <!-- HR GRID EXTENSTION -->
