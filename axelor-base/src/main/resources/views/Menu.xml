@@ -1210,4 +1210,12 @@
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
+  <menuitem name="base-icpe-all" parent="referential-root" title="ICPE"
+    action="base.icpe.all" order="100"/>
+
+  <action-view name="base.icpe.all" title="ICPE" model="com.axelor.apps.base.db.Icpe">
+    <view type="grid" name="base-icpe-grid"/>
+    <view type="form" name="base-icpe-form"/>
+  </action-view>
+
 </object-views>
