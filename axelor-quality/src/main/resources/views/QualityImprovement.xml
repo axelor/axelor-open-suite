@@ -13,6 +13,18 @@
     <field name="analysisMethod"/>
   </grid>
 
+  <grid name="quality-improvement-partner-grid" title="Quality improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
+    <field name="sequence"/>
+    <field name="company"/>
+    <field name="type"/>
+    <field name="qiStatus"/>
+    <field name="gravityTypeSelect"/>
+    <field name="analysisMethod"/>
+    <button name="openInNewTabBtn" onClick="action-quality-improvement-view-open-in-new-tab"
+      title="Open in new tab" icon="tab"/>
+  </grid>
+
   <form name="quality-improvement-form" title="Quality improvement"
     model="com.axelor.apps.quality.db.QualityImprovement" width="large"
     onLoad="action-quality-improvement-group-on-load"
@@ -890,5 +902,12 @@
     <attribute name="value" for="$qiDecisionDistributionList"
       expr="eval: _qiDecisionDistributionList"/>
   </action-attrs>
+
+  <action-view name="action-quality-improvement-view-open-in-new-tab"
+    title="Quality Improvement" model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="form" name="quality-improvement-form"/>
+    <view-param name="popup" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>
