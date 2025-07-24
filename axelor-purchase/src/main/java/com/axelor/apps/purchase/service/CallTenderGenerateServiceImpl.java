@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.purchase.db.CallTender;
+import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -27,10 +28,14 @@ import java.util.Objects;
 public class CallTenderGenerateServiceImpl implements CallTenderGenerateService {
 
   protected final CallTenderOfferService callTenderOfferService;
+  protected final CallTenderOfferRepository callTenderOfferRepository;
 
   @Inject
-  public CallTenderGenerateServiceImpl(CallTenderOfferService callTenderOfferService) {
+  public CallTenderGenerateServiceImpl(
+      CallTenderOfferService callTenderOfferService,
+      CallTenderOfferRepository callTenderOfferRepository) {
     this.callTenderOfferService = callTenderOfferService;
+    this.callTenderOfferRepository = callTenderOfferRepository;
   }
 
   @Override
@@ -53,6 +58,8 @@ public class CallTenderGenerateServiceImpl implements CallTenderGenerateService 
               if (!callTenderOfferService.alreadyGenerated(
                   resultOffer, callTender.getCallTenderOfferList())) {
                 callTender.addCallTenderOfferListItem(resultOffer);
+                callTenderOfferService.setCounter(resultOffer, callTender);
+                callTenderOfferRepository.save(resultOffer);
               }
             });
   }
