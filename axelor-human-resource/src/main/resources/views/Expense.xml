@@ -102,7 +102,7 @@
           <field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"
             readonlyIf="statusSelect != 1"/>
           <field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1"
-            readonlyIf="statusSelect != 1"/>
+            readonlyIf="statusSelect != 1" onChange="action-expense-method-compute-dummy-amounts"/>
           <field name="employee.companyCbDetails" colSpan="12" hidden="true"
             showIf="employee != null &amp;&amp; companyCbSelect &gt; 1"/>
           <field name="personalExpenseAmount" hidden="true"/>
@@ -131,7 +131,6 @@
             onClick="save,action-expense-method-cancel-payment"/>
         </panel>
         <panel name="inTaxTotalPanel" readonly="true">
-          <field name="currency.symbol" hidden="true"/>
           <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
             <viewer
               depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
@@ -145,11 +144,11 @@
 			                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
 			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
 			                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
-			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('personalExpenseAmount')}</Box>}
+			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('personalExpenseAmount')}</Box>}
 			                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
-			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('withdrawnCash')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('withdrawnCash')}</Box>}
 			                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
-			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('advanceAmount')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('advanceAmount')}</Box>}
 			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
 			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">- {$fmt('paymentAmount')}</Box>}
 			                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
@@ -159,16 +158,19 @@
 		                    ]]>
             </viewer>
           </field>
+          <field name="currency.symbol" hidden="true"/>
           <field name="$totalToRefund" title="Total to refund" type="decimal" hidden="true"
             x-currency="currency.symbol"/>
           <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"/>
           <field name="taxTotal" x-currency="currency.symbol" hidden="true"/>
           <field name="paymentAmount" x-currency="currency.symbol" hidden="true"/>
+          <field name="personalExpenseAmount" x-currency="currency.symbol" hidden="true"/>
+          <field name="withdrawnCash" x-currency="currency.symbol" hidden="true"/>
+          <field name="advanceAmount" x-currency="currency.symbol" hidden="true"/>
         </panel>
         <panel name="companyTotalPanel" readonly="true"
-          showIf="currency != company.currency &amp;&amp; statusSelect != 1">
+          hideIf="company == null || currency == null || company.currency.code == currency.code">
           <field name="statusSelect" hidden="true"/>
-          <field name="company.currency" hidden="true"/>
           <field name="company.currency.symbol" hidden="true"/>
           <field name="company.currency.numberOfDecimals" hidden="true"/>
           <field name="companyExTaxTotal" x-currency="company.currency.symbol" hidden="true"
@@ -178,7 +180,7 @@
           <field name="companyInTaxTotal" showTitle="false" colSpan="12"
             x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals">
             <viewer
-              depends="companyExTaxTotal,companyTaxTotal,statusSelect,paymentAmount,$companyPaymentAmount,paymentStatusSelect,$companyTotalToRefund">
+              depends="companyExTaxTotal,companyTaxTotal,statusSelect,paymentAmount,$companyPaymentAmount,paymentStatusSelect">
               <![CDATA[
 			                  <>
 			                      <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -188,6 +190,12 @@
 			                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('companyTaxTotal')}</Box>
 			                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
 			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('companyInTaxTotal')}</Box>
+			                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
+			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('$companyPersonalExpenseAmount')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('$companyWithdrawnCash')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('$companyAdvanceAmount')}</Box>}
 			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
 			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">- {$fmt('$companyPaymentAmount')}</Box>}
 			                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
@@ -202,6 +210,12 @@
             x-scale="company.currency.numberOfDecimals"/>
           <field name="$companyPaymentAmount" type="decimal" hidden="true"
             x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals"/>
+          <field name="$companyPersonalExpenseAmount" type="decimal"
+            x-currency="company.currency.symbol" hidden="true"/>
+          <field name="$companyWithdrawnCash" type="decimal"
+            x-currency="company.currency.symbol" hidden="true"/>
+          <field name="$companyAdvanceAmount" type="decimal"
+            x-currency="company.currency.symbol" hidden="true"/>
         </panel>
       </panel>
     </panel>

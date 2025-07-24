@@ -43,6 +43,7 @@
       grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2"/>
     <panel name="statusPanel" sidebar="true">
       <field name="statusSelect"/>
+      <field name="employee.mainEmploymentContract.payCompany.currency"/>
       <button name="validateBtn" title="Validate"
         onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1"/>
     </panel>
@@ -64,6 +65,7 @@
       grid-view="employee-advance-usage-advance-grid" hidden="true" showIf="statusSelect == 2"/>
     <panel name="statusPanel" sidebar="true">
       <field name="statusSelect" widget="single-select"/>
+      <field name="employee.mainEmploymentContract.payCompany.currency"/>
       <button name="validateBtn" title="Validate"
         onClick="action-hr-employee-advance-group-validate" hidden="true" showIf="statusSelect == 1"/>
     </panel>

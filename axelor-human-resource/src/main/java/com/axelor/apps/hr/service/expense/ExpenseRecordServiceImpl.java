@@ -28,26 +28,53 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService {
     BigDecimal totalImputed = computeTotalImputed(expense);
     values.put("$totalToRefund", expense.getInTaxTotal().subtract(totalImputed));
 
+    computedCompanyAmounts(values, expense, totalImputed);
+
+    return values;
+  }
+
+  protected void computedCompanyAmounts(
+      Map<String, Object> values, Expense expense, BigDecimal totalImputed) throws AxelorException {
     Currency companyCurrency =
         Optional.of(expense).map(Expense::getCompany).map(Company::getCurrency).orElse(null);
 
-    BigDecimal companyTotalImputed = BigDecimal.ZERO;
-    if (!Objects.equals(companyCurrency, expense.getCurrency())) {
-      companyTotalImputed =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              expense.getCurrency(), companyCurrency, totalImputed, expense.getPaymentDate());
-      values.put(
-          "$companyTotalToRefund", expense.getCompanyInTaxTotal().subtract(companyTotalImputed));
-      values.put(
-          "$companyPaymentAmount",
-          currencyService.getAmountCurrencyConvertedAtDate(
-              expense.getCurrency(),
-              companyCurrency,
-              expense.getPaymentAmount(),
-              expense.getPaymentDate()));
+    if (Objects.equals(companyCurrency, expense.getCurrency())) {
+      return;
     }
 
-    return values;
+    BigDecimal companyTotalImputed =
+        currencyService.getAmountCurrencyConvertedAtDate(
+            expense.getCurrency(), companyCurrency, totalImputed, expense.getPaymentDate());
+    values.put(
+        "$companyTotalToRefund", expense.getCompanyInTaxTotal().subtract(companyTotalImputed));
+    values.put(
+        "$companyPaymentAmount",
+        currencyService.getAmountCurrencyConvertedAtDate(
+            expense.getCurrency(),
+            companyCurrency,
+            expense.getPaymentAmount(),
+            expense.getPaymentDate()));
+    values.put(
+        "$companyPersonalExpenseAmount",
+        currencyService.getAmountCurrencyConvertedAtDate(
+            expense.getCurrency(),
+            companyCurrency,
+            expense.getPersonalExpenseAmount(),
+            expense.getMoveDate()));
+    values.put(
+        "$companyWithdrawnCash",
+        currencyService.getAmountCurrencyConvertedAtDate(
+            expense.getCurrency(),
+            companyCurrency,
+            expense.getWithdrawnCash(),
+            expense.getMoveDate()));
+    values.put(
+        "$companyAdvanceAmount",
+        currencyService.getAmountCurrencyConvertedAtDate(
+            expense.getCurrency(),
+            companyCurrency,
+            expense.getAdvanceAmount(),
+            expense.getMoveDate()));
   }
 
   protected BigDecimal computeTotalImputed(Expense expense) {

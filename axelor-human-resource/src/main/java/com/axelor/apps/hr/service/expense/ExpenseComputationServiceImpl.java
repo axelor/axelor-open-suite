@@ -18,6 +18,10 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -26,15 +30,19 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class ExpenseComputationServiceImpl implements ExpenseComputationService {
 
   protected ExpenseLineService expenseLineService;
+  protected CurrencyService currencyService;
 
   @Inject
-  public ExpenseComputationServiceImpl(ExpenseLineService expenseLineService) {
+  public ExpenseComputationServiceImpl(
+      ExpenseLineService expenseLineService, CurrencyService currencyService) {
     this.expenseLineService = expenseLineService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -100,7 +108,7 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
   }
 
   @Override
-  public BigDecimal computeAdvanceAmount(Expense expense) {
+  public BigDecimal computeAdvanceAmount(Expense expense) throws AxelorException {
 
     BigDecimal advanceAmount = new BigDecimal("0.00");
 
@@ -111,6 +119,10 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
       }
     }
 
-    return advanceAmount;
+    Currency companyCurrency =
+        Optional.of(expense).map(Expense::getCompany).map(Company::getCurrency).orElse(null);
+
+    return currencyService.getAmountCurrencyConvertedAtDate(
+        companyCurrency, expense.getCurrency(), advanceAmount, expense.getPaymentDate());
   }
 }
