@@ -740,4 +740,13 @@ public final class BaseExceptionMessage {
 
   public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
       "Signature certificate is expired. Please change to a new certificate." /*)*/;
+
+  public static final String PARTNER_BOOLEAN_MISSING = /*$$(*/
+      "At least one of isContact, isCustomer, isSupplier or isProspect must be true." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_1 = /*$$(*/
+      "A partner cannot be both a contact and a customer, supplier, or prospect." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_2 = /*$$(*/
+      "A partner cannot be both a customer and a prospect." /*)*/;
 }

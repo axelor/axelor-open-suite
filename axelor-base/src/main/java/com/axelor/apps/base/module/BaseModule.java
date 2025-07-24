@@ -259,6 +259,8 @@ import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.PartnerCreationService;
+import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
@@ -560,5 +562,6 @@ public class BaseModule extends AxelorModule {
     bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
     bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
+    bind(PartnerCreationService.class).to(PartnerCreationServiceImpl.class);
   }
 }
