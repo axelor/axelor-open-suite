@@ -113,13 +113,26 @@ public class BatchContractInvoicing extends AbstractBatch {
   @Override
   protected void process() {
     for (List<Long> idList : getIdsGroupedBy()) {
-      try {
-        invoiceContracts(findContractsInList(idList));
-        incrementDone();
-        JPA.clear();
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
+      List<Contract> allContractsList = findContractsInList(idList);
+
+      if (allContractsList.isEmpty()) {
+        return;
+      }
+
+      Boolean isGroupedInvoicing = allContractsList.get(0).getIsGroupedInvoicing();
+      List<List<Contract>> contractsToInvoice =
+          isGroupedInvoicing
+              ? List.of(allContractsList)
+              : allContractsList.stream().map(List::of).collect(Collectors.toList());
+
+      for (List<Contract> contractsList : contractsToInvoice) {
+        try {
+          invoiceContracts(contractsList);
+          incrementDone();
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
+        }
       }
     }
   }
