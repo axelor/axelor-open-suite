@@ -556,6 +556,9 @@
           form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-grid" canSelect="true"
           title="Hazard phrases" showIf="isClp"/>
       </panel>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
+        <panel-dashlet action="action-product-view-quality-improvements" colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -1008,5 +1011,13 @@
     <attribute name="required" for="procurementMethodSelect"
       expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.isEmpty())"/>
   </action-attrs>
+
+  <action-view name="action-product-view-quality-improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Quality improvements">
+    <view type="grid" name="quality-improvement-partner-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.product = :product</domain>
+    <context name="product" expr="eval:__self__"/>
+  </action-view>
 
 </object-views>
