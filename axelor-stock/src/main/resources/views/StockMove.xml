@@ -397,7 +397,7 @@
           onClick="action-group-stock-stockmove-realize-click"/>
         <button
           if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"
-          if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice"
+          if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate control invoice"
           hidden="true" icon="fa-file-o"
           onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
         <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
