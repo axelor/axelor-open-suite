@@ -309,7 +309,8 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
             null,
             null,
             stockMove.getFromStockLocation(),
-            stockMove.getToStockLocation());
+            stockMove.getToStockLocation(),
+            "");
 
     addProductInManufOrder(manufOrder, stockMoveLine, productType);
 
