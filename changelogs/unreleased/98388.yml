@@ -1,0 +1,3 @@
+---
+title: "Bank details: fixed an issue where a bank detail could not be selected with a direct debit payment mode"
+module: axelor-bank-payment
