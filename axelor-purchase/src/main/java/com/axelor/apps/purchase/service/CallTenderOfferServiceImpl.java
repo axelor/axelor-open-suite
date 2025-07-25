@@ -18,11 +18,14 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderNeed;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.apps.purchase.db.CallTenderSupplier;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
+import com.axelor.common.ObjectUtils;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -72,5 +75,20 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
             offerInList ->
                 offer.getCallTenderNeed().equals(offerInList.getCallTenderNeed())
                     && offer.getCallTenderSupplier().equals(offerInList.getCallTenderSupplier()));
+  }
+
+  @Override
+  public void setCounter(CallTenderOffer offer, CallTender callTender) {
+    if (callTender == null) {
+      return;
+    }
+    int counter =
+        ObjectUtils.notEmpty(callTender.getCallTenderOfferList())
+            ? callTender.getCallTenderOfferList().stream()
+                .map(CallTenderOffer::getCounter)
+                .max(Comparator.naturalOrder())
+                .orElse(0)
+            : 0;
+    offer.setCounter(counter + 1);
   }
 }

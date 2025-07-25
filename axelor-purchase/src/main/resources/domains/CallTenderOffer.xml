@@ -7,6 +7,20 @@
 
   <entity name="CallTenderOffer">
 
+    <string name="callTenderOfferSeq" title="Sequence" namecolumn="true">
+      <![CDATA[
+          if (this.getCallTender() != null) {
+            return
+                String.format(
+                    "%s-%04d",
+                    this.getCallTender().getCallTenderSeq(), counter);
+          }
+          else {
+			return Integer.toString(counter);
+		 }
+	    ]]>
+    </string>
+    <integer name="counter" title="Line Nbr." initParam="true"/>
     <many-to-one name="callTenderNeed" ref="com.axelor.apps.purchase.db.CallTenderNeed"/>
     <many-to-one name="callTenderSupplier"
       ref="com.axelor.apps.purchase.db.CallTenderSupplier"/>
@@ -37,6 +51,7 @@
 		  public static final int STATUS_REPLIED = 3;
 		  public static final int STATUS_SELECTED = 4;
 		  public static final int STATUS_REJECTED = 5;
+
    		]]>
     </extra-code>
 
