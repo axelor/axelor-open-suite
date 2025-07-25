@@ -620,7 +620,8 @@
         <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
           action="action-partner-view-related-invoicing-projects" colSpan="12"/>
       </panel>
-      <panel name="qualityPanel" title="Quality" showIf="isSupplier">
+      <panel name="qualityPanel" title="Quality" showIf="isSupplier"
+        if="__config__.app.isApp('quality')">
         <panel-dashlet action="action-partner-view-supplier-quality-improvements"
           showIf="isSupplier" colSpan="12"/>
       </panel>
