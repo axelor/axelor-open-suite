@@ -146,6 +146,8 @@
     <boolean name="isClp" title="CLP"/>
     <many-to-many name="icpeSet" ref="com.axelor.apps.base.db.Icpe"
       mappedBy="productSet"/>
+    <integer name="retentionTypeSelect" selection="base.product.retention.type.select"
+      title="Retention type"/>
 
     <unique-constraint columns="product,company"/>
 

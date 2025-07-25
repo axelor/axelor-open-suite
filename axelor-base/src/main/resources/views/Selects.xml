@@ -818,4 +818,12 @@
     <option value="1">Active trading name</option>
   </selection>
 
+  <selection name="base.product.retention.type.select">
+    <option value="0">Acid retention</option>
+    <option value="1">Tank retention</option>
+    <option value="2">Individual retention</option>
+    <option value="3">Retention pool</option>
+    <option value="4">Powder retention</option>
+  </selection>
+
 </object-views>
