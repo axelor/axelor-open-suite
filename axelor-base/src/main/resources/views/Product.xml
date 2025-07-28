@@ -549,6 +549,9 @@
         <field name="retentionTypeSelect"/>
         <panel-related field="icpeSet" colSpan="12" form-view="base-icpe-form"
           grid-view="base-icpe-grid" canSelect="true"/>
+        <panel-related field="hazardPictogramSet" colSpan="12"
+          form-view="base-hazard-pictogram-form" grid-view="base-hazard-pictogram-form"
+          canSelect="true" title="Hazard pictograms"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
