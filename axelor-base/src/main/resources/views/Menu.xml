@@ -1211,7 +1211,7 @@
   </action-view>
 
   <menuitem name="base-icpe-all" parent="referential-root" title="ICPE"
-    action="base.icpe.all" order="100"/>
+    action="base.icpe.all" order="610"/>
 
   <action-view name="base.icpe.all" title="ICPE" model="com.axelor.apps.base.db.Icpe">
     <view type="grid" name="base-icpe-grid"/>
@@ -1219,7 +1219,7 @@
   </action-view>
 
   <menuitem name="base-hazard-pictogram-all" parent="referential-root"
-    title="Hazard Pictograms" action="base.hazard.pictogram.all" order="100"/>
+    title="Hazard Pictograms" action="base.hazard.pictogram.all" order="620"/>
 
   <action-view name="base.hazard.pictogram.all" title="Hazard Pictograms"
     model="com.axelor.apps.base.db.HazardPictogram">
