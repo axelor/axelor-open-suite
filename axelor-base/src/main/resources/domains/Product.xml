@@ -147,7 +147,7 @@
     <many-to-many name="icpeSet" ref="com.axelor.apps.base.db.Icpe"
       mappedBy="productSet"/>
     <many-to-many name="hazardPictogramSet"
-      ref="com.axelor.apps.base.db.HazardPictogram"/>
+      ref="com.axelor.apps.base.db.HazardPictogram" mappedBy="productSet"/>
     <integer name="retentionTypeSelect" selection="base.product.retention.type.select"
       title="Retention type"/>
 
