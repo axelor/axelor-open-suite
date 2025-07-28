@@ -1,0 +1,2 @@
+title: "Product: fixed wrong calculation of available stock when the 'Manage stock reservation' configuration is enabled."
+module: axelor-supplychain
