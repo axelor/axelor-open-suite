@@ -5,11 +5,11 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="HazardPictogram">
+  <entity name="HazardPhrase">
 
-    <string name="clpCode" title="CLP code" required="true"/>
+    <string name="phraseCode" title="Phrase code" required="true"/>
+    <string name="phrase" title="Hazard phrase" large="true"/>
     <string name="clpDesignation" title="Designation" large="true"/>
-    <many-to-one name="clpPictogram" title="Pictogram" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Products"/>
   </entity>
