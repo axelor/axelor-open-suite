@@ -150,7 +150,8 @@
       ref="com.axelor.apps.base.db.HazardPictogram" mappedBy="productSet"/>
     <integer name="retentionTypeSelect" selection="base.product.retention.type.select"
       title="Retention type"/>
-    <many-to-many name="hazardPhraseSet" ref="com.axelor.apps.base.db.HazardPhrase"/>
+    <many-to-many name="hazardPhraseSet" ref="com.axelor.apps.base.db.HazardPhrase"
+      mappedBy="productSet"/>
 
     <unique-constraint columns="product,company"/>
 
