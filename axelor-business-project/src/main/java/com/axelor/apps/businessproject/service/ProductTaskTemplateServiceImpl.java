@@ -155,6 +155,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     }
 
     task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
+    task.setCompanyExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
     if (saleOrderLine.getInvoicingModeSelect() == SaleOrderLineRepository.INVOICING_MODE_PACKAGE) {
       task.setToInvoice(true);
       task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);

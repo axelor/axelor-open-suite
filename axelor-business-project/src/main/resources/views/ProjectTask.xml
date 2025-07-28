@@ -259,6 +259,7 @@
             form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="drawing"/>
+          <field name="exTaxTotal" hidden="true"/>
         </panel>
       </panel>
 

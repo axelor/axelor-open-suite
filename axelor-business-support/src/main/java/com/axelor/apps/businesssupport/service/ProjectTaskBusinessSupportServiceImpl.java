@@ -21,6 +21,8 @@ package com.axelor.apps.businesssupport.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
@@ -61,7 +63,9 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       ProjectTimeUnitService projectTimeUnitService,
-      TaskTemplateService taskTemplateService) {
+      TaskTemplateService taskTemplateService,
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -77,7 +81,9 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         productCompanyService,
         timesheetLineRepository,
         projectTimeUnitService,
-        taskTemplateService);
+        taskTemplateService,
+        currencyService,
+        currencyScaleService);
   }
 
   @Override

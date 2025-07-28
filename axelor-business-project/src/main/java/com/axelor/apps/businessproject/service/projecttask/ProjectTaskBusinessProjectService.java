@@ -46,7 +46,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
   ProjectTask updateDiscount(ProjectTask projectTask);
 
-  ProjectTask compute(ProjectTask projectTask);
+  ProjectTask compute(ProjectTask projectTask) throws AxelorException;
 
   List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<ProjectTask> projectTaskList, int priority) throws AxelorException;

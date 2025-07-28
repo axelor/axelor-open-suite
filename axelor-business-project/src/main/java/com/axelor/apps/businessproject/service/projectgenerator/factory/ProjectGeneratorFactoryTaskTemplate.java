@@ -211,6 +211,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setTotalCosts(
         product.getCostPrice().multiply(orderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
+    childTask.setCompanyExTaxTotal(orderLine.getCompanyExTaxTotal());
     Company company =
         orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
     childTask.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));

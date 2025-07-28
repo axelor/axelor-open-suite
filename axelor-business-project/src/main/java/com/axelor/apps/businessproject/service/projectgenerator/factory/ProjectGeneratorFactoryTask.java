@@ -178,6 +178,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     task.setTaskDate(startDate.toLocalDate());
     task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
+    task.setCompanyExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
     projectTaskRepo.save(task);
     return task;
   }

@@ -69,6 +69,9 @@
     <decimal name="totalCosts" title="Total cost" readonly="true"/>
     <decimal name="invoicingProgress" title="Invoicing progress"/>
 
+    <decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"
+      precision="20" scale="3" readonly="true"/>
+
     <extra-code>
 			<![CDATA[
 				public static final Integer INVOICING_TYPE_TIME_SPENT= 1;
