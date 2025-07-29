@@ -197,6 +197,12 @@
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
         grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
+      <field name="timesheetProjectSet" colSpan="12"
+        domain=":user MEMBER OF self.membersUserSet" widget="TagSelect" canEdit="false"
+        canNew="false" form-view="project-form" grid-view="project-grid"/>
+      <field name="timesheetProjectTaskSet" colSpan="12"
+        domain="self.project IN :timesheetProjectSet" widget="TagSelect" canEdit="false"
+        canNew="false" form-view="project-task-form" grid-view="project-task-grid"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
 
@@ -466,6 +472,12 @@
           domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
           grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
+        <field name="timesheetProjectSet" colSpan="12"
+          domain=":user MEMBER OF self.membersUserSet" widget="TagSelect" canEdit="false"
+          canNew="false" form-view="project-form" grid-view="project-grid"/>
+        <field name="timesheetProjectTaskSet" colSpan="12"
+          domain="self.project IN :timesheetProjectSet" widget="TagSelect" canEdit="false"
+          canNew="false" form-view="project-task-form" grid-view="project-task-grid"/>
 
         <panel-dashlet name="employeeUserTimesheetsPanel"
           action="action-employee-view-user-timesheets" colSpan="12"/>
