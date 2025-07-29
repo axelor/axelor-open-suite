@@ -110,4 +110,7 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_SPRINTS_OVERLAPPED =
       /*$$(*/ "The project contains overlapping sprints. Please correct the date ranges." /*)*/;
+
+  public static final String PROJECT_CHECK_LIST_ITEM_API_UPDATE_OK =
+      /*$$(*/ "Project check list item has been successfully updated." /*)*/;
 }
