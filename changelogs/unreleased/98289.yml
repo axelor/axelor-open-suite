@@ -1,0 +1,3 @@
+---
+title: "Timetable: removed unnecessary check when changing amount."
+module: axelor-supplychain
