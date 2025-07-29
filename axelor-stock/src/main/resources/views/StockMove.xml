@@ -341,7 +341,7 @@
 								]]></viewer>
               </field>
               <field name="$invoicingTags" showTitle="false" readonly="true"
-                showIf="statusSelect == 3" if-module="axelor-supplychain"
+                showIf="statusSelect == 3 &amp;&amp; typeSelect != 1" if-module="axelor-supplychain"
                 if="__config__.app.isApp('supplychain')">
                 <viewer depends="invoicingStatusSelect"><![CDATA[
 						<>
