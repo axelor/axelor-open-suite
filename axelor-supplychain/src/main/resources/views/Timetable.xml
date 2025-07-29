@@ -100,17 +100,9 @@
   </form>
 
   <action-group name="action-timetable-group-on-amount-change">
-    <action name="action-timetable-condition-on-amount-change"
-      if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
     <action name="action-timetable-record-on-amount-change"
       if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
   </action-group>
-
-  <action-condition name="action-timetable-condition-on-amount-change">
-    <check field="amount"
-      error="Amount cannot be superior to the order's total excluding taxes"
-      if="amount &gt; __parent__.exTaxTotal || __parent__.exTaxTotal == null"/>
-  </action-condition>
 
   <action-record name="action-timetable-record-on-amount-change"
     model="com.axelor.apps.supplychain.db.Timetable">
