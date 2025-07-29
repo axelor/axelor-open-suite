@@ -90,7 +90,7 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
         if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
           soLine.setDescription(product.getDescription());
         }
-        saleOrderLinePackService.fillPriceFromPackLine(soLine, saleOrder);
+        saleOrderLinePackService.fillPriceFromPackLine(soLine, saleOrder, packLine);
         saleOrderLineComputeService.computeValues(saleOrder, soLine);
       }
       return soLine;
