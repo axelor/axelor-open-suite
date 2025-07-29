@@ -1470,11 +1470,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
-      //      if (draft) {
-      newStockMoveLine.setQty(counter);
-      //      } else {
+      if (counter.compareTo(stockMoveLine.getQty()) > 0) {
+        newStockMoveLine.setQty(BigDecimal.ZERO);
+      } else {
+        newStockMoveLine.setQty(counter);
+      }
       newStockMoveLine.setRealQty(counter);
-      //      }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
       stockMoveLineRepository.save(newStockMoveLine);
