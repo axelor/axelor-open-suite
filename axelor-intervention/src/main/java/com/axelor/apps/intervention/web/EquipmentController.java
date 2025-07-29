@@ -30,8 +30,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class EquipmentController {
 
@@ -40,9 +38,6 @@ public class EquipmentController {
 
   public void fillDefaultValues(ActionRequest request, ActionResponse response) {
     try {
-      response.setValue(
-          "customerWarrantyOnPartEndDate",
-          LocalDate.parse("01/01/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
       if (request.getContext().get(FIELD_PARTNER_ID) != null) {
         response.setValue(
             "partner",
