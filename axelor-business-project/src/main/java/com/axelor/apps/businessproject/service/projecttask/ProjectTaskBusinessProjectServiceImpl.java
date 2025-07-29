@@ -145,9 +145,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     Product product = saleOrderLine.getProduct();
     task.setProduct(product);
-    task.setUnitCost(product.getCostPrice());
-    task.setTotalCosts(
-        product.getCostPrice().multiply(saleOrderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
+    task.setUnitCost(saleOrderLine.getCompanyCostPrice());
+    task.setTotalCosts(saleOrderLine.getCompanyCostTotal());
     Unit orderLineUnit = saleOrderLine.getUnit();
     task.setInvoicingUnit(orderLineUnit);
 

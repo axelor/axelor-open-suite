@@ -136,7 +136,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       product = saleOrderLine.getProduct();
     }
     task.setProduct(product);
-    BigDecimal costPrice = product.getCostPrice();
+    BigDecimal costPrice =
+        (BigDecimal) productCompanyService.get(product, "costPrice", project.getCompany());
     task.setUnitCost(costPrice);
     task.setTotalCosts(costPrice.multiply(qty).setScale(2, RoundingMode.HALF_UP));
     task.setInvoicingUnit(product.getUnit());
