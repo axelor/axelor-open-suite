@@ -6,17 +6,17 @@
   <input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch"
     search="self.code = :code">
     <bind column="actionSelect" to="actionSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.batch.action.select', actionSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.CrmBatch', 'actionSelect', actionSelect)"
       check-message="Invalid actionSelect :actionSelect"/>
     <bind column="durationTypeSelect" to="durationTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.batch.action.select', durationTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.CrmBatch', 'durationTypeSelect', durationTypeSelect)"
       check-message="Invalid durationTypeSelect :durationTypeSelect"/>
   </input>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
       check-message="Invalid codeSelect :codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
@@ -44,10 +44,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="titleSelect" to="titleSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('partner.title.type.select', titleSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Lead', 'titleSelect', titleSelect)"
       check-message="Invalid titleSelect :titleSelect"/>
     <bind column="sizeSelect" to="sizeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.lead.size.select', sizeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Lead', 'sizeSelect', sizeSelect)"
       check-message="Invalid sizeSelect :sizeSelect"/>
     <bind column="description" to="description"/>
     <bind to="jobTitleFunction" search="self.name = :jobTitle">
@@ -76,23 +76,23 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('icalendar.event.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.EventCategory', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
   </input>
 
   <input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event"
     search="self.importId = :importId">
     <bind column="relatedToSelect" to="relatedToSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.related.to.select', relatedToSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'relatedToSelect', relatedToSelect)"
       check-message="Invalid relatedToSelect :relatedToSelect"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind column="callTypeSelect" to="callTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.call.type.select', callTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'callTypeSelect', callTypeSelect)"
       check-message="Invalid callTypeSelect :callTypeSelect"/>
     <bind column="prioritySelect" to="prioritySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.priority.select', prioritySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'prioritySelect', prioritySelect)"
       check-message="Invalid prioritySelect :prioritySelect"/>
     <bind to="startDateTime"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTimeNow)"
@@ -105,16 +105,16 @@
   <input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event"
     search="self.importId = :importId">
     <bind column="relatedToSelect" to="relatedToSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.related.to.select', relatedToSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'relatedToSelect', relatedToSelect)"
       check-message="Invalid relatedToSelect :relatedToSelect"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind column="callTypeSelect" to="callTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.call.type.select', callTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'callTypeSelect', callTypeSelect)"
       check-message="Invalid callTypeSelect :callTypeSelect"/>
     <bind column="prioritySelect" to="prioritySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('crm.event.priority.select', prioritySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.crm.db.Event', 'prioritySelect', prioritySelect)"
       check-message="Invalid prioritySelect :prioritySelect"/>
     <bind column="subject" to="subjectTeam"/>
   </input>
@@ -182,13 +182,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('message.media.type.select', mediaTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
       check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
       check-message="Invalid templateEngineSelect :templateEngineSelect"/>
     <bind column="language" to="language"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('select.language', language, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
       check-message="Invalid language :language"/>
   </input>
 
@@ -198,7 +198,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.ResearchPrimaryKey', 'importId', importId, 'code', code)"
       check-message="Code must be unique"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('research.primary.key.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.ResearchPrimaryKey', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
   </input>
 
@@ -208,7 +208,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.ResearchParameterConfig', 'importId', importId, 'model', model)"
       check-message="Model must be unique"/>
     <bind column="model" to="model"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('research.model.selection', model, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.ResearchParameterConfig', 'model', model)"
       check-message="Invalid model :model"/>
     <bind to="metaModel" column="metaModel" search="self.fullName = :metaModel"/>
   </input>
@@ -230,7 +230,7 @@
   <input file="base_researchRequest.csv" separator=";"
     type="com.axelor.apps.base.db.ResearchRequest" search="self.importId = :importId">
     <bind column="models" to="models"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('research.model.selection', models, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.ResearchRequest', 'models', models)"
       check-message="Invalid models :models"/>
     <bind to="research1" column="research1_importId"
       search="self.importId = :research1_importId"/>
