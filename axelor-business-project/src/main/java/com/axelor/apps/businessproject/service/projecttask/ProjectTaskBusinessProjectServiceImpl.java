@@ -62,6 +62,7 @@ import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
@@ -140,13 +141,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   }
 
   @Override
-  public ProjectTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
+  public ProjectTask create(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Project project, User assignedTo)
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     Product product = saleOrderLine.getProduct();
     task.setProduct(product);
     task.setUnitCost(saleOrderLine.getCompanyCostPrice());
     task.setTotalCosts(saleOrderLine.getCompanyCostTotal());
+    Company company = saleOrder != null ? saleOrder.getCompany() : null;
     Unit orderLineUnit = saleOrderLine.getUnit();
     task.setInvoicingUnit(orderLineUnit);
 
@@ -159,8 +162,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       }
     }
     if (task.getUnitPrice() == null) {
-      Company company =
-          saleOrderLine.getSaleOrder() != null ? saleOrderLine.getSaleOrder().getCompany() : null;
       task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     }
     task.setDescription(saleOrderLine.getDescription());

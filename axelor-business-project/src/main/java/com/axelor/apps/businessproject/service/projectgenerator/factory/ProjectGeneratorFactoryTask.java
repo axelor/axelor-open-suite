@@ -102,7 +102,8 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     List<ProjectTask> tasks = new ArrayList<>();
     projectRepository.save(project);
 
-    List<SaleOrderLine> saleOrderLineList = filterSaleOrderLinesForTasks(saleOrder);
+    List<SaleOrderLine> saleOrderLineList =
+        filterSaleOrderLinesForTasks(saleOrder, saleOrder.getSaleOrderLineList());
 
     if (saleOrderLineList.isEmpty()) {
       throw new AxelorException(
@@ -110,9 +111,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
           I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
     }
 
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      processSaleOrderLine(project, saleOrder, startDate, tasks, saleOrderLine);
-    }
+    processSaleOrderLines(project, null, saleOrder, startDate, tasks, saleOrderLineList);
 
     if (tasks.isEmpty()) {
       throw new AxelorException(
@@ -128,8 +127,31 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .domain(String.format("self.id in (%s)", StringHelper.getIdListString(tasks)));
   }
 
+  protected void processSaleOrderLines(
+      Project project,
+      ProjectTask parentTask,
+      SaleOrder saleOrder,
+      LocalDateTime startDate,
+      List<ProjectTask> tasks,
+      List<SaleOrderLine> saleOrderLineList)
+      throws AxelorException {
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      processSaleOrderLine(project, parentTask, saleOrder, startDate, tasks, saleOrderLine);
+      List<SaleOrderLine> subLines =
+          filterSaleOrderLinesForTasks(saleOrder, saleOrderLine.getSubSaleOrderLineList());
+      ProjectTask task = tasks.isEmpty() ? null : tasks.get(tasks.size() - 1);
+      if (task != null && !subLines.isEmpty()) {
+        task.setImputable(false);
+        task = projectTaskRepo.save(task);
+        processSaleOrderLines(project, task, saleOrder, startDate, tasks, subLines);
+      }
+    }
+  }
+
   protected void processSaleOrderLine(
       Project project,
+      ProjectTask parentTask,
       SaleOrder saleOrder,
       LocalDateTime startDate,
       List<ProjectTask> tasks,
@@ -152,13 +174,16 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
                 tasks.add(task);
               });
     } else {
-      tasks.add(createProjectTask(project, startDate, saleOrderLine));
+      ProjectTask newTask = createProjectTask(saleOrder, project, startDate, saleOrderLine);
+      newTask.setParentTask(parentTask);
+      tasks.add(newTask);
     }
   }
 
   /**
    * create task from saleOrderLine
    *
+   * @param saleOrder
    * @param project
    * @param startDate
    * @param saleOrderLine
@@ -167,11 +192,12 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    */
   @Transactional
   protected ProjectTask createProjectTask(
-      Project project, LocalDateTime startDate, SaleOrderLine saleOrderLine)
+      SaleOrder saleOrder, Project project, LocalDateTime startDate, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
     ProjectTask task =
-        projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
+        projectTaskBusinessProjectService.create(
+            saleOrder, saleOrderLine, project, project.getAssignedTo());
 
     setTaskInvoicingType(saleOrderLine, task);
 
@@ -214,16 +240,16 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   }
 
   /**
-   * Check if saleOrder contains a valid product
+   * Check if saleOrderLines contains a valid product
    *
-   * @param saleOrder
+   * @param saleOrderLines
    * @return
    * @throws AxelorException
    */
-  protected List<SaleOrderLine> filterSaleOrderLinesForTasks(SaleOrder saleOrder)
-      throws AxelorException {
+  protected List<SaleOrderLine> filterSaleOrderLinesForTasks(
+      SaleOrder saleOrder, List<SaleOrderLine> saleOrderLines) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
       Product product = saleOrderLine.getProduct();
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
