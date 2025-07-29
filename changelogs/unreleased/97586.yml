@@ -1,0 +1,3 @@
+---
+title: "Sale order: prevent already invoiced lines to be invoiced again."
+module: axelor-supplychain

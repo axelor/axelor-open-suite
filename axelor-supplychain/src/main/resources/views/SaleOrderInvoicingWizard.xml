@@ -48,10 +48,11 @@
     <field name="exTaxTotal" readonly="true" aggregate="sum"
       x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="amountInvoiced" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
-    <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll"
-      min="0" x-scale="2"/>
+    <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
+      readonlyIf="invoiceAll || amountInvoiced == exTaxTotal" min="0" x-scale="2"/>
     <field name="invoiceAll" title="Invoice all" type="boolean"
-      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"
+      readonlyIf="amountInvoiced == exTaxTotal"/>
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
