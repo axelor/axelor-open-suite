@@ -5,7 +5,7 @@
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
-  <entity name="RequiredDocument">
+  <entity name="RequiredDocument" implements="com.axelor.apps.base.interfaces.PdfViewer">
 
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <string name="sequence" title="Document n°"/>
@@ -31,7 +31,13 @@
       selection="quality.required.document.related.to.select"/>
     <long name="relatedToSelectId"/>
     <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
+    <many-to-one name="dmsFile" ref="com.axelor.dms.db.DMSFile"/>
     <string name="commentStr" title="Comment" large="true" multiline="true"/>
+
+    <finder-method name="findBySequence" using="sequence" all="false"
+      orderBy="-docVersion"/>
+    <finder-method name="findActiveVersionBySequence" using="sequence"
+      filter="self.isActiveVersion = true AND self.sequence = :sequence" all="false"/>
 
     <extra-code>
 			<![CDATA[

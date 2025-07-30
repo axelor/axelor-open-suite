@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form name="required-document-form" title="Required document"
+    model="com.axelor.apps.quality.db.RequiredDocument" width="large"
+    onLoad="action-required-documents-method-set-inline-url">
+    <panel name="overviewPanel">
+      <panel name="statusPanel" colSpan="12">
+        <field name="statusSelect" widget="NavSelect" showTitle="false" readonly="true"
+          colSpan="6"/>
+        <field name="isActiveVersion" showTitle="false" readonly="true" colSpan="3">
+          <viewer><![CDATA[
+					<>
+						<Box d="flex">
+							{(isActiveVersion && (statusSelect == 1 || statusSelect == 2)) && <Badge bg="primary">{_t('Active version')}</Badge>}
+							{(!isActiveVersion && statusSelect == 3) && <Badge bg="danger">{_t('Obsolete')}</Badge>}
+						</Box>
+					</>
+          ]]></viewer>
+        </field>
+        <field name="documentId" showTitle="false" colSpan="3" readonly="true">
+          <viewer><![CDATA[
+                    <>
+                    	<Box as="h4">{documentId}</Box>
+               		</>
+           		]]></viewer>
+        </field>
+      </panel>
+      <field name="name"/>
+      <field name="sequence" readonly="true" hidden="true"/>
+      <field name="typeSelect"
+        onChange="action-required-documents-attrs-type-select-on-change"/>
+      <panel name="typeSelectPanel" colSpan="6" itemSpan="12">
+        <panel name="saleOrderPanel" itemSpan="12" showIf="typeSelect == 1">
+          <field name="saleOrder"/>
+        </panel>
+        <panel name="projectPanel" itemSpan="12" showIf="typeSelect == 2">
+          <field name="project"/>
+        </panel>
+      </panel>
+      <panel name="commentPanel" colSpan="12" itemSpan="12">
+        <field name="commentStr"/>
+      </panel>
+    </panel>
+    <panel name="filePanel" title="File" height="500"
+      showIf="($readonly() &amp;&amp; metaFile) || !$readonly()">
+      <field name="metaFile" widget="binary-link"
+        onChange="save,action-required-documents-method-file-onchange" showTitle="false"/>
+      <field name="$inlineUrl" hidden="true"/>
+      <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
+        <viewer depends="$inlineUrl">
+            <![CDATA[
+              <>
+                  <Box as="iframe" height="900" border="0" src={$inlineUrl}></Box>
+              </>
+            ]]>
+        </viewer>
+      </field>
+    </panel>
+    <panel name="actionsPanel" sidebar="true">
+      <button onClick="save,action-required-documents-method-create-new-version"
+        name="newVersionBtn" title="New version" showIf="isActiveVersion"/>
+      <button onClick="save,action-required-documents-method-activate-version"
+        name="newVersionBtn" title="Activate the version" showIf="!isActiveVersion"/>
+    </panel>
+    <panel name="relatedPanel" sidebar="true">
+      <field name="relatedToSelect" widget="RefSelect"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-required-documents-attrs-type-select-on-change">
+    <attribute name="value" for="saleOrder" expr="eval: null" if="typeSelect == 2"/>
+    <attribute name="value" for="project" expr="eval: null" if="typeSelect == 1"/>
+  </action-attrs>
+
+  <action-method name="action-required-documents-method-create-new-version">
+    <call class="com.axelor.apps.quality.web.RequiredDocumentController"
+      method="createNewVersion"/>
+  </action-method>
+
+  <action-method name="action-required-documents-method-activate-version">
+    <call class="com.axelor.apps.quality.web.RequiredDocumentController"
+      method="activateVersion"/>
+  </action-method>
+
+  <action-method name="action-required-documents-method-file-onchange">
+    <call class="com.axelor.apps.quality.web.RequiredDocumentController"
+      method="onChangeMetaFile"/>
+  </action-method>
+
+  <action-method name="action-required-documents-method-set-inline-url">
+    <call class="com.axelor.apps.quality.web.RequiredDocumentController" method="setInlineUrl"/>
+  </action-method>
+
+</object-views>

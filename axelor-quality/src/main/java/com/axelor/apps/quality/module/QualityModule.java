@@ -73,6 +73,14 @@ import com.axelor.apps.quality.service.QualityImprovementService;
 import com.axelor.apps.quality.service.QualityImprovementServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateService;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentDMSService;
+import com.axelor.apps.quality.service.RequiredDocumentDMSServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentFileOnChangeService;
+import com.axelor.apps.quality.service.RequiredDocumentFileOnChangeServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentStatusService;
+import com.axelor.apps.quality.service.RequiredDocumentStatusServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentVersionService;
+import com.axelor.apps.quality.service.RequiredDocumentVersionServiceImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
 import com.axelor.apps.quality.service.app.QIActionDistributionService;
@@ -114,5 +122,10 @@ public class QualityModule extends AxelorModule {
     bind(QualityImprovementCheckValuesService.class)
         .to(QualityImprovementCheckValuesServiceImpl.class);
     bind(RequiredDocumentRepository.class).to(RequiredDocumentManagementRepository.class);
+    bind(RequiredDocumentDMSService.class).to(RequiredDocumentDMSServiceImpl.class);
+    bind(RequiredDocumentVersionService.class).to(RequiredDocumentVersionServiceImpl.class);
+    bind(RequiredDocumentStatusService.class).to(RequiredDocumentStatusServiceImpl.class);
+    bind(RequiredDocumentFileOnChangeService.class)
+        .to(RequiredDocumentFileOnChangeServiceImpl.class);
   }
 }
