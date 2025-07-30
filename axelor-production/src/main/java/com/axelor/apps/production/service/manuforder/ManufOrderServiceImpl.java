@@ -167,10 +167,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   public boolean areLinesOutsourced(ManufOrder manufOrder) {
 
-    if (manufOrder.getOutsourcing()) {
+    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    if (manufOrder.getOutsourcing() || CollectionUtils.isEmpty(operationOrderList)) {
       return false;
     }
-    return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+    return operationOrderList.stream().anyMatch(OperationOrder::getOutsourcing);
   }
 
   @Override

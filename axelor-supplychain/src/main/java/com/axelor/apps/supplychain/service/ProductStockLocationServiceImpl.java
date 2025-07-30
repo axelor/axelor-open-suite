@@ -134,7 +134,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$availableQty",
-        this.getNonReservedAvailableQuantity(product, company, stockLocation, reservedQty)
+        this.getAvailableQty(product, company, stockLocation)
             .setScale(scale, RoundingMode.HALF_UP));
 
     return map;
@@ -314,11 +314,5 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       }
     }
     return sumAvailableQty;
-  }
-
-  protected BigDecimal getNonReservedAvailableQuantity(
-      Product product, Company company, StockLocation stockLocation, BigDecimal reservedQty)
-      throws AxelorException {
-    return getAvailableQty(product, company, stockLocation).subtract(reservedQty);
   }
 }

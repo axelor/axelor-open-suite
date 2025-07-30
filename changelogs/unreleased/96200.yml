@@ -1,0 +1,3 @@
+---
+title: 'Contract batch: fixed an issue on customer contract invoicing when grouped invoicing was false.'
+module: axelor-contract
