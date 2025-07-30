@@ -1394,12 +1394,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     //      draft = false;
     //    }
     BigDecimal totalSplitQty = BigDecimal.ZERO;
+    boolean isAlreadyExceeded = false;
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
       if (counter.compareTo(BigDecimal.ZERO) == 0) {
         continue;
       }
-      totalSplitQty = totalSplitQty.add(counter);
 
       TrackingNumber trackingNumber =
           trackingNumberRepo
@@ -1470,11 +1470,21 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
-      //      if (draft) {
-      newStockMoveLine.setQty(counter);
-      //      } else {
+      boolean isExceeded = totalSplitQty.add(counter).compareTo(stockMoveLine.getQty()) > 0;
+      BigDecimal remainder = stockMoveLine.getQty().subtract(totalSplitQty);
+      totalSplitQty = totalSplitQty.add(counter);
+      if (!isAlreadyExceeded) {
+        if (isExceeded) {
+          newStockMoveLine.setQty(remainder);
+          isAlreadyExceeded = true;
+        } else {
+          newStockMoveLine.setQty(counter);
+        }
+      } else {
+        newStockMoveLine.setQty(BigDecimal.ZERO);
+      }
+
       newStockMoveLine.setRealQty(counter);
-      //      }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
       stockMoveLineRepository.save(newStockMoveLine);
