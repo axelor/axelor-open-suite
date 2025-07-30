@@ -23,10 +23,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderCopy;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
 
 public class SaleOrderProjectObserver {
 
-  public void copySaleOrder(@Observes SaleOrderCopy event) {
+  public void copySaleOrder(@Observes @Priority(value = 40) SaleOrderCopy event) {
     SaleOrder saleOrder = event.getSaleOrder();
     Beans.get(SaleOrderCopyProjectService.class).copySaleOrderProjectProcess(saleOrder);
   }
