@@ -76,7 +76,11 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
     int colHeaderNum = 0;
     for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
       Cell headerCell = headerRow.createCell(colHeaderNum++);
-      headerCell.setCellValue(I18n.get(advancedExportLine.getTitle()));
+      String header =
+          advancedExport.getUseTechnicalFieldName()
+              ? advancedExportLine.getTargetField()
+              : I18n.get(advancedExportLine.getTitle());
+      headerCell.setCellValue(header);
     }
   }
 
