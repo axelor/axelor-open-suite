@@ -71,6 +71,7 @@
     <option value="qualityImprovement">Quality improvement</option>
     <option value="qiActionDistribution">QI Action distribution</option>
     <option value="qiDecisionDistribution">QI Decision distribution</option>
+    <option value="requiredDocument">Required document</option>
   </selection>
 
   <selection name="team.type.select" id="quality.team.type.select">
@@ -123,6 +124,23 @@
     <option value="1">No checked</option>
     <option value="2">Yes</option>
     <option value="3">No</option>
+  </selection>
+
+  <selection name="quality.required.document.status.select">
+    <option value="1">Required</option>
+    <option value="2">Available</option>
+    <option value="3">Obsolete</option>
+  </selection>
+
+  <selection name="quality.required.document.type.select">
+    <option value="1">Sale order</option>
+    <option value="2">Project</option>
+  </selection>
+
+  <selection name="quality.required.document.related.to.select">
+    <option value="com.axelor.apps.base.db.Product">Product</option>
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+    <option value="com.axelor.apps.production.db.ManufOrder">ManufOrder</option>
   </selection>
 
 </object-views>
