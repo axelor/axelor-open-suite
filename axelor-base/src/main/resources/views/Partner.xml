@@ -620,10 +620,12 @@
         <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
           action="action-partner-view-related-invoicing-projects" colSpan="12"/>
       </panel>
-      <panel name="qualityPanel" title="Quality" showIf="isSupplier"
+      <panel name="qualityPanel" title="Quality" showIf="isSupplier || isCustomer"
         if="__config__.app.isApp('quality')">
         <panel-dashlet action="action-partner-view-supplier-quality-improvements"
           showIf="isSupplier" colSpan="12"/>
+        <panel-dashlet action="action-partner-view-customer-quality-improvements"
+          showIf="isCustomer" colSpan="12"/>
       </panel>
     </panel-tabs>
     <panel name="partnerAttrsPanel">
@@ -1848,6 +1850,14 @@
     <view type="grid" name="quality-improvement-partner-grid"/>
     <view type="form" name="quality-improvement-form"/>
     <domain>self.qiIdentification.supplierPartner = :partner</domain>
+    <context name="partner" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-partner-view-customer-quality-improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Customer quality improvements">
+    <view type="grid" name="quality-improvement-partner-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.customerPartner = :partner</domain>
     <context name="partner" expr="eval:__self__"/>
   </action-view>
 
