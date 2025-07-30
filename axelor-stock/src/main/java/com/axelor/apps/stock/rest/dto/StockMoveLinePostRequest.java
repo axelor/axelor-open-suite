@@ -61,6 +61,8 @@ public class StockMoveLinePostRequest extends RequestStructure {
   @Min(0)
   private Long toStockLocationId;
 
+  private String description;
+
   public StockMoveLinePostRequest() {}
 
   public Long getProductId() {
@@ -159,5 +161,13 @@ public class StockMoveLinePostRequest extends RequestStructure {
       return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
     }
     return null;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 }

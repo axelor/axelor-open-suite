@@ -126,7 +126,8 @@ public class MassStockMovableProductRealizeServiceImpl
               movableProduct.getUnit(),
               StockMoveLineRepository.CONFORMITY_NONE,
               fromStockLocation,
-              toStockLocation);
+              toStockLocation,
+              "");
 
       stockMoveService.plan(stockMove);
       stockMoveService.realize(stockMove);
