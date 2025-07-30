@@ -290,7 +290,6 @@ public class StockMoveLineController {
       map.put("$moveTypeSelect", stockMove.getTypeSelect());
       map.put("origin", trackingNumber.getOrigin());
       map.put("note", trackingNumber.getNote());
-
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);
