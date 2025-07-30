@@ -1273,10 +1273,13 @@
     <view-param name="show-confirm" value="false"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
     <context name="_saleOrderId" expr="eval: id"/>
+    <context name="_company" expr="eval: company"/>
   </action-view>
 
   <action-attrs name="action-sale-order-reports-wizard-attrs">
     <attribute name="value" for="$reportType" expr="eval: 1"/>
+    <attribute name="value" for="$saleOrderPrintTemplate"
+      expr="eval: __repo__(SaleConfig).all().filter('self.company = ?', _company).fetchOne()?.saleOrderPrintTemplate"/>
   </action-attrs>
 
   <cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
