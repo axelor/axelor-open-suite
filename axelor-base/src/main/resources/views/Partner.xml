@@ -1854,7 +1854,7 @@
   </action-view>
 
   <action-view name="action-partner-view-customer-quality-improvements"
-    model="com.axelor.apps.quality.db.QualityImprovement" title="Quality improvements">
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Customer quality improvements">
     <view type="grid" name="quality-improvement-partner-grid"/>
     <view type="form" name="quality-improvement-form"/>
     <domain>self.qiIdentification.customerPartner = :partner</domain>
