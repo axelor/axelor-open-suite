@@ -23,8 +23,9 @@
         onChange="action-advanced-export-validate-export-limit" required="true"/>
       <field name="queryFetchSize" colSpan="4"
         onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
-      <field name="includeArchivedRecords" colSpan="5"/>
-      <field name="useTechnicalFieldName"/>
+      <spacer colSpan="4"/>
+      <field name="includeArchivedRecords" colSpan="4"/>
+      <field name="useTechnicalFieldName" colSpan="4 "/>
       <label name="technicalHelperLabel"
         title="Warning, modifying those configuration can have technical repercussions."
         colSpan="12" css="label-bold label-danger"/>
