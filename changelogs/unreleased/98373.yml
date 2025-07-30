@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the default value of the printing template for sale order report wizards when generating reports."
+module: axelor-sale
