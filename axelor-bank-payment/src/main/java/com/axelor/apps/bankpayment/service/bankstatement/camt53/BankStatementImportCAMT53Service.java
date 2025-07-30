@@ -24,9 +24,8 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementBankDetail
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportCheckService;
-import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
-import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineCreateAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatementLineCreateCAMT53Service;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -34,33 +33,33 @@ import java.io.IOException;
 
 public class BankStatementImportCAMT53Service extends BankStatementImportAbstractService {
 
-    protected BankStatementLineCreateCAMT53Service bankStatementLineCreateCAMT53Service;
+  protected BankStatementLineCreateCAMT53Service bankStatementLineCreateCAMT53Service;
 
-    @Inject
-    public BankStatementImportCAMT53Service(
-            BankStatementRepository bankStatementRepository,
-            BankStatementImportCheckService bankStatementImportCheckService,
-            BankStatementLineFetchService bankStatementLineFetchService,
-            BankStatementBankDetailsService bankStatementBankDetailsService,
-            BankStatementCreateService bankStatementCreateService,
-            BankStatementLineCreateCAMT53Service bankStatementLineCreateCAMT53Service) {
-        super(
-                bankStatementRepository,
-                bankStatementImportCheckService,
-                bankStatementLineFetchService,
-                bankStatementBankDetailsService,
-                bankStatementCreateService);
-        this.bankStatementLineCreateCAMT53Service = bankStatementLineCreateCAMT53Service;
-    }
+  @Inject
+  public BankStatementImportCAMT53Service(
+      BankStatementRepository bankStatementRepository,
+      BankStatementImportCheckService bankStatementImportCheckService,
+      BankStatementLineFetchService bankStatementLineFetchService,
+      BankStatementBankDetailsService bankStatementBankDetailsService,
+      BankStatementCreateService bankStatementCreateService,
+      BankStatementLineCreateCAMT53Service bankStatementLineCreateCAMT53Service) {
+    super(
+        bankStatementRepository,
+        bankStatementImportCheckService,
+        bankStatementLineFetchService,
+        bankStatementBankDetailsService,
+        bankStatementCreateService);
+    this.bankStatementLineCreateCAMT53Service = bankStatementLineCreateCAMT53Service;
+  }
 
-    @Override
-    @Transactional(rollbackOn = {Exception.class})
-    public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
-        bankStatementLineCreateCAMT53Service.processCAMT53(bankStatement, file);
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
+    bankStatementLineCreateCAMT53Service.processCAMT53(bankStatement);
 
-        checkImport(bankStatement);
-        updateBankDetailsBalance(bankStatement);
-        computeBankStatementName(bankStatement);
-        setBankStatementImported(bankStatement);
-    }
+    checkImport(bankStatement);
+    updateBankDetailsBalance(bankStatement);
+    computeBankStatementName(bankStatement);
+    setBankStatementImported(bankStatement);
+  }
 }
