@@ -138,8 +138,6 @@
     title="Control plan characteristics" action="quality.control.plan.characteristics.view"
     order="90"/>
 
-
-
   <action-view name="quality.control.plan.characteristics.view"
     title="Control plan characteristics"
     model="com.axelor.apps.quality.db.ControlPlanLineCharacteristic">
@@ -265,6 +263,14 @@
     model="com.axelor.apps.quality.db.QIAction">
     <view type="grid" name="qi-action-grid"/>
     <view type="form" name="qi-action-form"/>
+  </action-view>
+
+  <menuitem name="quality-required-document" parent="menu-dms" title="Required documents"
+    action="quality.required.document" order="-75" if="__config__.app.isApp('quality')"/>
+  <action-view name="quality.required.document" title="Required documents"
+    model="com.axelor.apps.quality.db.RequiredDocument">
+    <view type="grid" name="required-document-grid"/>
+    <view type="form" name="required-document-form"/>
   </action-view>
 
 </object-views>

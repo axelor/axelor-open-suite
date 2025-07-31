@@ -33,6 +33,8 @@ import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityImprovementManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
+import com.axelor.apps.quality.db.repo.RequiredDocumentManagementRepository;
+import com.axelor.apps.quality.db.repo.RequiredDocumentRepository;
 import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIService;
 import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementParseService;
@@ -71,6 +73,12 @@ import com.axelor.apps.quality.service.QualityImprovementService;
 import com.axelor.apps.quality.service.QualityImprovementServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateService;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentDMSService;
+import com.axelor.apps.quality.service.RequiredDocumentDMSServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentExportService;
+import com.axelor.apps.quality.service.RequiredDocumentExportServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentVersionService;
+import com.axelor.apps.quality.service.RequiredDocumentVersionServiceImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
 import com.axelor.apps.quality.service.app.QIActionDistributionService;
@@ -111,5 +119,9 @@ public class QualityModule extends AxelorModule {
     bind(QualityImprovementUpdateAPIService.class).to(QualityImprovementUpdateAPIServiceImpl.class);
     bind(QualityImprovementCheckValuesService.class)
         .to(QualityImprovementCheckValuesServiceImpl.class);
+    bind(RequiredDocumentRepository.class).to(RequiredDocumentManagementRepository.class);
+    bind(RequiredDocumentDMSService.class).to(RequiredDocumentDMSServiceImpl.class);
+    bind(RequiredDocumentVersionService.class).to(RequiredDocumentVersionServiceImpl.class);
+    bind(RequiredDocumentExportService.class).to(RequiredDocumentExportServiceImpl.class);
   }
 }
