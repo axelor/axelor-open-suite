@@ -3,6 +3,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
+  <grid name="required-document-grid" title="Required documents"
+    model="com.axelor.apps.quality.db.RequiredDocument" orderBy="-docVersion">
+    <field name="statusSelect"/>
+    <field name="saleOrder"/>
+    <field name="project"/>
+    <field name="sequence"/>
+    <field name="docVersion"/>
+    <field name="isActiveVersion"/>
+    <field name="name"/>
+    <field name="relatedToSelect"/>
+  </grid>
+
   <form name="required-document-form" title="Required document"
     model="com.axelor.apps.quality.db.RequiredDocument" width="large"
     onLoad="action-required-documents-method-set-inline-url">
