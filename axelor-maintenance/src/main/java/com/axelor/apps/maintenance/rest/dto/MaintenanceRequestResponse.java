@@ -5,14 +5,14 @@ import com.axelor.utils.api.ResponseStructure;
 
 public class MaintenanceRequestResponse extends ResponseStructure {
 
-  protected Long maintenanRequestId;
+  protected Long maintenanceRequestId;
 
   public MaintenanceRequestResponse(MaintenanceRequest maintenanceRequest) {
     super(maintenanceRequest.getVersion());
-    this.maintenanRequestId = maintenanceRequest.getId();
+    this.maintenanceRequestId = maintenanceRequest.getId();
   }
 
-  public Long getMaintenanRequestId() {
-    return maintenanRequestId;
+  public Long getMaintenanceRequestId() {
+    return maintenanceRequestId;
   }
 }
