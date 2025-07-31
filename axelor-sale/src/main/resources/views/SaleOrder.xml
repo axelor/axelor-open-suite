@@ -1436,8 +1436,7 @@
 
   <action-group name="action-sale-group-onchange-company">
     <action name="action-sale-order-record-company-configuration"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null &amp;&amp; stockLocation == null"/>
+    <action name="action-supplychain-sale-order-method-get-stock-location"/>
     <action name="action-supplychain-sale-order-method-get-to-stock-location"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-method-fill-company-bank-details"/>
