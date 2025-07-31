@@ -81,4 +81,7 @@ public final class QualityExceptionMessage {
 
   public static final String REQUIRED_DOCUMENT_SEQUENCE = /*$$(*/
       "There is no sequence set for the required documents" /*)*/;
+
+  public static final String NO_RECORD_SELECTED_TO_EXPORT = /*$$(*/
+      "Please select records having files for export" /*)*/;
 }

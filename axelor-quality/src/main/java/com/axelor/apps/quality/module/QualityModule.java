@@ -75,6 +75,8 @@ import com.axelor.apps.quality.service.QualityImprovementUpdateService;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentDMSService;
 import com.axelor.apps.quality.service.RequiredDocumentDMSServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentExportService;
+import com.axelor.apps.quality.service.RequiredDocumentExportServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentFileOnChangeService;
 import com.axelor.apps.quality.service.RequiredDocumentFileOnChangeServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentStatusService;
@@ -127,5 +129,6 @@ public class QualityModule extends AxelorModule {
     bind(RequiredDocumentStatusService.class).to(RequiredDocumentStatusServiceImpl.class);
     bind(RequiredDocumentFileOnChangeService.class)
         .to(RequiredDocumentFileOnChangeServiceImpl.class);
+    bind(RequiredDocumentExportService.class).to(RequiredDocumentExportServiceImpl.class);
   }
 }
