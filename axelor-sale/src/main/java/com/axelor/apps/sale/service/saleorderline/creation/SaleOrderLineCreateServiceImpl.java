@@ -92,7 +92,7 @@ public class SaleOrderLineCreateServiceImpl implements SaleOrderLineCreateServic
           soLine.setDescription(product.getDescription());
         }
         try {
-          saleOrderLinePackService.fillPriceFromPackLine(soLine, saleOrder);
+          saleOrderLinePackService.fillPriceFromPackLine(soLine, saleOrder, packLine);
           saleOrderLineComputeService.computeValues(saleOrder, soLine);
         } catch (AxelorException e) {
           TraceBackService.trace(e);
