@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.bankdetails;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccountImpl;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -32,11 +33,14 @@ import java.util.List;
 public class BankDetailsDomainServiceBankPaymentImpl extends BankDetailsDomainServiceAccountImpl {
 
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
   public BankDetailsDomainServiceBankPaymentImpl(
-      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+      BankDetailsBankPaymentService bankDetailsBankPaymentService,
+      AppBankPaymentService appBankPaymentService) {
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+    this.appBankPaymentService = appBankPaymentService;
   }
 
   @Override
@@ -46,6 +50,7 @@ public class BankDetailsDomainServiceBankPaymentImpl extends BankDetailsDomainSe
 
     if (partner == null
         || paymentMode == null
+        || !appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment()
         || ObjectUtils.isEmpty(partner.getBankDetailsList())) {
       return domain;
     }

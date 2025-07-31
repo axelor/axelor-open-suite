@@ -53,7 +53,7 @@ public class ImportInvoice {
     if (invoice.getStatusSelect() < InvoiceRepository.STATUS_VENTILATED
         && invoice.getPaymentMode() != null
         && invoice.getInTaxTotal() != null
-        && !invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        && !invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
     }
 
