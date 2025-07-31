@@ -691,6 +691,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
+    response.setReload(true);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
