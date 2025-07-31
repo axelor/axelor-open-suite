@@ -378,9 +378,11 @@ public class ContractLineServiceImpl implements ContractLineService {
             + " and (self.endDate = null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 
+    if (contract == null) {
+      return domain;
+    }
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
         && appSaleService.getAppSale().getEnableSalesProductByTradName()
-        && contract != null
         && contract.getTradingName() != null
         && contract.getCompany() != null
         && !CollectionUtils.isEmpty(contract.getCompany().getTradingNameList())) {
