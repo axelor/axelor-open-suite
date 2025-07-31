@@ -362,6 +362,8 @@ public final class SupplychainExceptionMessage {
       "The incoterm must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_INTERCO = /*$$(*/
       "The interco configuration must be the same for all sale orders." /*)*/;
+  public static final String PURCHASE_ORDER_MERGE_ERROR_INTERCO_CONFIG = /*$$(*/
+      "The interco configuration must be the same for all purchase orders" /*)*/;
 
   public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
       "The stock location must be the same for all purchase orders." /*)*/;
