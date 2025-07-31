@@ -1,3 +1,118 @@
+## [8.3.12] (2025-07-31)
+
+### Fixes
+#### Base
+
+* Event: creating an event now automatically fill the user field.
+
+#### Account
+
+* PaymentSession/Refund : fixed the fact that refund were not being taken into account during the payment session
+* FIXEDASSET : Issue with imported fixed assets using prorata temporis
+* MoveLine: fixed invoice term due date when we update move line's due date with free payment condition.
+
+#### Bank Payment
+
+* Bank payment: removed some files that are not necessary anymore.
+
+#### Budget
+
+* Budget: fixed the 'Display realized with no po' button filter
+
+#### Business Project
+
+* App business project: updated help of options under display panel
+
+#### Contract
+
+* Contract: fixed NPE when creating a contract line from contract templates.
+* Contract batch: fixed an issue on customer contract invoicing when grouped invoicing was false.
+
+#### Human Resource
+
+* Project task: reload project task view after time sheet line creation.
+
+#### Production
+
+* Manufacturing Order: fixed NPE of multi-level planning
+* WorkCenter: removed old references of product and hrProduct
+
+#### Project
+
+* Project : fixed performance technical issue on project action-attrs
+
+#### Purchase
+
+* PurchaseOrder : Filter partner selection according to purchase order currency
+
+#### Sale
+
+* Sale order:  fixed the issue where partner complementary product lines were being duplicated with each new version creation.
+* Sale order: fixed the default value of the printing template for sale order report wizards when generating reports.
+* Sale order: refresh origin sale order when splitting lines.
+* Sale order: fixed pack currency conversion.
+* Sale order: sub total cost price can now be changed when not using tree grid.
+* Sale order: fixed French translation on the customer deliveries button.
+
+#### Stock
+
+* Stock move: fixed the title of Generate invoice button.
+* Tracking number: fixed the fields that were not displayed in wizard.
+* Stock Move: removed 'invoiced' status on internal stock moves.
+* Product: fixed 'Stock history' chart.
+* Stock move: moved stock move line menu under 'Stock' menu.
+
+#### Supply Chain
+
+* Sale order: fixed an issue where some informations were not filled when generating a sale order from a purchase order.
+* Timetable: removed unnecessary check when changing amount.
+* Product: fixed wrong calculation of available stock when the 'Manage stock reservation' configuration is enabled.
+* Sale order: fixed invoiced partner and delivery partner when creating a sale order from interco, taking into account the partner relations.
+* Purchase order: fixed interco configuration when merging purchase orders.
+
+#### Intervention
+
+* Equipment: fixed the duplicated equipment display on the tree view.
+* Equipment: removed the default value on 'customerWarrantyOnPartEndDate' to keep it empty on new.
+
+
+### Developer
+
+#### Account
+
+Changed the InvoiceTermService.checkIfCustomizedInvoiceTerms parameter. Now using a list of invoice terms instead of an invoice.
+New method in InvoiceTermService, called computeInvoiceTermsDueDates used to recompute the invoice terms due dates when 
+changing the move line's due date on a free payment condition.
+New method in InvoiceTermService, called recomputeFreeDueDates used to recompute the invoice terms due dates.
+
+#### Business Project
+
+Migration script
+```
+UPDATE meta_help SET help_value = 'By enabling this option, you will display the purchase order lines attached to a business project in the financial datas of a business project.' WHERE field_name = 'showPurchaseOrderLineRelatedToProject' and meta_help.language = 'en';
+UPDATE meta_help SET help_value = 'By enabling this option, you will display the sale order lines attached to a business project in the financial datas of a business project.' WHERE field_name = 'showSaleOrderLineRelatedToProject' and meta_help.language = 'en';
+UPDATE meta_help SET help_value = 'By enabling this option, you will display the production orders attached to a business project in the financial datas of a business project.' WHERE field_name = 'showProductionOrderRelatedToProject' and meta_help.language = 'en';
+UPDATE meta_help SET help_value = 'By enabling this option, you will display the expenses attached to a business project in the financial datas of a business project.' WHERE field_name = 'showExpenseLineRelatedToProject' and meta_help.language = 'en';
+UPDATE meta_help SET help_value = 'By enabling this option, you will display the purchase invoice lines attached to a business project in the financial datas of a business project.' WHERE field_name = 'showPurchaseInvoiceLineRelatedToProject' and meta_help.language = 'en';
+UPDATE meta_help SET help_value = 'By enabling this option, you will display the sale invoice lines attached to a business project in the financial datas of a business project.' WHERE field_name = 'showSaleInvoiceLineRelatedToProject' and meta_help.language = 'en';
+
+UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de commandes fournisseurs rattachées à une affaire dans les données financières d''une affaire.' WHERE field_name = 'showPurchaseOrderLineRelatedToProject' and meta_help.language = 'fr';
+UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de commandes clients rattachées à une affaire dans les données financières d''une affaire.' WHERE field_name = 'showSaleOrderLineRelatedToProject' and meta_help.language = 'fr';
+UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les ordres de production rattachés à une affaire dans les données financières d''une affaire.' WHERE field_name = 'showProductionOrderRelatedToProject' and meta_help.language = 'fr';
+UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les notes de frais rattachées à une affaire dans les données financières d''une affaire.' WHERE field_name = 'showExpenseLineRelatedToProject' and meta_help.language = 'fr';
+UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de factures fournisseurs rattachées à une affaire dans les données financières d''une affaire.' WHERE field_name = 'showPurchaseInvoiceLineRelatedToProject' and meta_help.language = 'fr';
+UPDATE meta_help SET help_value = 'En activant cette option, vous afficherez les lignes de factures clients rattachées à une affaire dans les données financières d''une affaire.' WHERE field_name = 'showSaleInvoiceLineRelatedToProject' and meta_help.language = 'fr';
+```
+
+#### Sale
+
+Added new PackLine parameter to SaleOrderLinePackService#fillPriceFromPackLine, SaleOrderLinePackService#getExTaxUnitPriceFromPackLine and SaleOrderLinePackService#getInTaxUnitPriceFromPackLine.
+Added new Currency parameter to SaleOrderLinePackServiceImpl#getUnitPriceFromPackLine.
+
+#### Supply Chain
+
+Added the SaleOrderSupplychainService in the IntercoServiceImpl constructor
+
 ## [8.3.11] (2025-07-18)
 
 ### Fixes
@@ -913,6 +1028,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.12]: https://github.com/axelor/axelor-open-suite/compare/v8.3.11...v8.3.12
 [8.3.11]: https://github.com/axelor/axelor-open-suite/compare/v8.3.10...v8.3.11
 [8.3.10]: https://github.com/axelor/axelor-open-suite/compare/v8.3.9...v8.3.10
 [8.3.9]: https://github.com/axelor/axelor-open-suite/compare/v8.3.8...v8.3.9
