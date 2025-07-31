@@ -1,4 +1,0 @@
----
-title: "Sale order: fixed invoiced partner and delivery partner when creating a sale order from interco, taking into account the partner relations."
-module: axelor-supplychain
-developer: Added the SaleOrderSupplychainService in the IntercoServiceImpl constructor

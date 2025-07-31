@@ -1,8 +1,0 @@
----
-title: "MoveLine: fixed invoice term due date when we update move line's due date with free payment condition."
-module: axelor-account
-developer: |
-  Changed the InvoiceTermService.checkIfCustomizedInvoiceTerms parameter. Now using a list of invoice terms instead of an invoice.
-  New method in InvoiceTermService, called computeInvoiceTermsDueDates used to recompute the invoice terms due dates when 
-  changing the move line's due date on a free payment condition.
-  New method in InvoiceTermService, called recomputeFreeDueDates used to recompute the invoice terms due dates.
