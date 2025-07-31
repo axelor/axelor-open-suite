@@ -530,7 +530,7 @@
     model="com.axelor.apps.project.db.Project">
     <attribute name="value" for="fromDate" expr="eval: __datetime__"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
-    <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+    <attribute name="value:add" for="membersUserSet" expr="eval: [id:__user__.id]"/>
     <attribute name="value" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
     <attribute name="value" for="parentProject"
       expr="eval:__repo__(Project).find(_parentProjectId)" if="_parentProjectId != null"/>
