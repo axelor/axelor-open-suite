@@ -200,13 +200,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public boolean checkIfCustomizedInvoiceTerms(Invoice invoice) {
+  public boolean checkIfCustomizedInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return false;
+    }
 
-    if (!CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-        if (invoiceTerm.getIsCustomized()) {
-          return true;
-        }
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (invoiceTerm.getIsCustomized()) {
+        return true;
       }
     }
     return false;
@@ -557,6 +558,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setFinancialDiscountDeadlineDate(
           invoiceTermFinancialDiscountService.computeFinancialDiscountDeadlineDate(invoiceTerm));
     }
+  }
+
+  @Override
+  public MoveLine recomputeFreeDueDates(MoveLine moveLine, LocalDate dueDate) {
+    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+      return moveLine;
+    }
+
+    for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
+      if (!invoiceTerm.getIsCustomized()) {
+        computeDueDateValues(invoiceTerm, dueDate);
+      }
+    }
+
+    return moveLine;
   }
 
   @Override
@@ -1728,7 +1744,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException {
     if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-        || checkIfCustomizedInvoiceTerms(invoice)) {
+        || checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
       return;
     }
     if (InvoiceToolService.isPurchase(invoice)) {
@@ -1751,6 +1767,27 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
+  public void computeInvoiceTermsDueDates(MoveLine moveLine, Move move) {
+    if (moveLine == null
+        || CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+        || checkIfCustomizedInvoiceTerms(moveLine.getInvoiceTermList())) {
+      return;
+    }
+
+    if (move == null) {
+      move = moveLine.getMove();
+    }
+
+    PaymentCondition paymentCondition =
+        Optional.ofNullable(move).map(Move::getPaymentCondition).orElse(null);
+    if (paymentCondition == null || !paymentCondition.getIsFree()) {
+      return;
+    }
+
+    recomputeFreeDueDates(moveLine, moveLine.getDueDate());
+  }
+
+  @Override
   public void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null
         || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
@@ -1764,7 +1801,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        || checkIfCustomizedInvoiceTerms(invoice)) {
+        || checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
       return;
     }
 
