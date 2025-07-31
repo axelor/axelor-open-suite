@@ -255,8 +255,8 @@ public interface SaleOrderLineService {
    * @return
    * @throws AxelorException
    */
-  public void fillPriceFromPackLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException;
+  public void fillPriceFromPackLine(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, PackLine packLine) throws AxelorException;
 
   /**
    * A function used to get the ex tax unit price of a sale order line from pack line
@@ -268,7 +268,8 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   public BigDecimal getExTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine, PackLine packLine)
+      throws AxelorException;
 
   /**
    * A function used to get the in tax unit price of a sale order line from pack line
@@ -280,7 +281,8 @@ public interface SaleOrderLineService {
    * @throws AxelorException
    */
   public BigDecimal getInTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine, PackLine packLine)
+      throws AxelorException;
 
   /**
    * Compute product domain from configurations and sale order.
