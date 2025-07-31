@@ -462,13 +462,13 @@
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <domain><![CDATA[self.budget.id= :_budgetId AND
-      (self.invoiceLine.invoice.purchaseOrder is null AND
+      ((self.invoiceLine.invoice.purchaseOrder is null AND
       self.invoiceLine.invoice.saleOrder is null AND
       self.invoiceLine.invoice.statusSelect = 3)
       OR
       (self.moveLine IS NOT NULL AND
       self.moveLine.move.statusSelect in (2,3) AND
-      self.moveLine.move.invoice IS NULL)]]></domain>
+      self.moveLine.move.invoice IS NULL))]]></domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
   <action-view
