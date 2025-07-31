@@ -173,8 +173,8 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
   }
 
   @Override
-  public Map<String, Object> fillPriceFromPackLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
+  public Map<String, Object> fillPriceFromPackLine(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, PackLine packLine) throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
         saleOrderLineProductService.fillTaxInformation(saleOrderLine, saleOrder));
@@ -186,7 +186,7 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
     if (saleOrderLine.getProduct().getInAti()) {
       inTaxPrice =
           this.getInTaxUnitPriceFromPackLine(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet(), packLine);
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
       inTaxPrice =
@@ -203,7 +203,7 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
     } else {
       exTaxPrice =
           this.getExTaxUnitPriceFromPackLine(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet(), packLine);
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
       exTaxPrice =
@@ -227,16 +227,18 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
 
   @Override
   public BigDecimal getExTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet, PackLine packLine)
       throws AxelorException {
-    return this.getUnitPriceFromPackLine(saleOrder, saleOrderLine, taxLineSet, false);
+    Currency currency = packLine != null ? packLine.getPack().getCurrency() : null;
+    return this.getUnitPriceFromPackLine(saleOrder, saleOrderLine, taxLineSet, false, currency);
   }
 
   @Override
   public BigDecimal getInTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet, PackLine packLine)
       throws AxelorException {
-    return this.getUnitPriceFromPackLine(saleOrder, saleOrderLine, taxLineSet, true);
+    Currency currency = packLine != null ? packLine.getPack().getCurrency() : null;
+    return this.getUnitPriceFromPackLine(saleOrder, saleOrderLine, taxLineSet, true, currency);
   }
 
   /**
@@ -253,7 +255,8 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
       Set<TaxLine> taxLineSet,
-      boolean resultInAti)
+      boolean resultInAti,
+      Currency startCurrency)
       throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
@@ -268,12 +271,14 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
             : taxService.convertUnitPrice(
                 productInAti, taxLineSet, productSalePrice, AppBaseService.COMPUTATION_SCALING);
 
+    Currency currency =
+        startCurrency != null
+            ? startCurrency
+            : (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany());
+
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-            (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
-            saleOrder.getCurrency(),
-            price,
-            saleOrder.getCreationDate())
+            currency, saleOrder.getCurrency(), price, saleOrder.getCreationDate())
         .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
