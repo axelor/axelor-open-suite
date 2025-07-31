@@ -456,7 +456,8 @@
         requiredIf="account.useForPartnerBalance"/>
       <panel name="datesPanel" colSpan="12" itemSpan="3">
         <field name="date" onChange="account-move-line-method-date-onchange"/>
-        <field name="dueDate" showIf="dueDate"/>
+        <field name="dueDate" showIf="dueDate"
+          onChange="action-move-line-method-compute-invoice-terms-due-dates"/>
         <field name="accountingDate" showIf="accountingDate"/>
       </panel>
       <panel name="amountPanel" colSpan="12" itemSpan="3">
@@ -902,6 +903,11 @@
     name="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups">
     <call class="com.axelor.apps.account.web.BatchAccountController"
       method="partialReconcileSelectedMoveLines"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-compute-invoice-terms-due-dates">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="computeInvoiceTermsDueDates"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

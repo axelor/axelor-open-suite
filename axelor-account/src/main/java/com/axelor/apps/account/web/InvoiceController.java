@@ -259,7 +259,7 @@ public class InvoiceController {
             I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_DELETION_PROHIBITED));
         return;
       }
-      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
         if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
           response.setError(I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
           return;
