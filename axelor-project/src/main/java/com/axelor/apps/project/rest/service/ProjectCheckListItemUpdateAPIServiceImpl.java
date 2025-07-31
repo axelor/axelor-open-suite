@@ -24,16 +24,37 @@ public class ProjectCheckListItemUpdateAPIServiceImpl
       ProjectCheckListItem projectCheckListItem,
       ProjectCheckListItemPutStructure projectCheckListItemPutStructure) {
 
-    boolean complete = projectCheckListItemPutStructure.isComplete();
-    projectCheckListItem.setCompleted(complete);
+    boolean isComplete = projectCheckListItemPutStructure.isComplete();
+    projectCheckListItem.setCompleted(isComplete);
 
-    List<ProjectCheckListItem> childItems = projectCheckListItem.getProjectCheckListItemList();
+    updateChildren(projectCheckListItem, isComplete);
+    updateParentItem(projectCheckListItem, isComplete);
 
-    if (childItems != null) {
-      for (ProjectCheckListItem checkListItem : childItems) {
-        checkListItem.setCompleted(complete);
-      }
-    }
     projectCheckListItemRepository.save(projectCheckListItem);
+  }
+
+  protected void updateChildren(ProjectCheckListItem projectCheckListItem, boolean isComplete) {
+    List<ProjectCheckListItem> childItems = projectCheckListItem.getProjectCheckListItemList();
+    if (childItems != null) {
+      childItems.forEach(childItem -> childItem.setCompleted(isComplete));
+    }
+  }
+
+  protected void updateParentItem(ProjectCheckListItem projectCheckListItem, boolean isComplete) {
+    ProjectCheckListItem parentItem = projectCheckListItem.getParentItem();
+
+    if (parentItem == null) {
+      return;
+    }
+    List<ProjectCheckListItem> siblings = parentItem.getProjectCheckListItemList();
+
+    if (isComplete) {
+      boolean allSiblingsCompleted = siblings.stream().allMatch(ProjectCheckListItem::getCompleted);
+      if (allSiblingsCompleted) {
+        parentItem.setCompleted(true);
+      }
+    } else {
+      parentItem.setCompleted(false);
+    }
   }
 }

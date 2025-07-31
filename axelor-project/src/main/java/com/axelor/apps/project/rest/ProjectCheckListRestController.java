@@ -14,7 +14,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.PATCH;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,7 +30,7 @@ public class ProjectCheckListRestController {
       summary = "Update a project check list item",
       tags = {"Project check list item"})
   @Path("/{projectCheckListItemId}/complete")
-  @PATCH
+  @PUT
   @HttpExceptionHandler
   public Response updateProjectCheckListItemCompleteStatus(
       @PathParam("projectCheckListItemId") Long projectCheckListItemId,
