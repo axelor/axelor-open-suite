@@ -115,10 +115,10 @@ public interface InvoiceTermService {
   /**
    * Check if invoice term were customized
    *
-   * @param invoice
+   * @param invoiceTermList
    * @return
    */
-  public boolean checkIfCustomizedInvoiceTerms(Invoice invoice);
+  public boolean checkIfCustomizedInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
   /**
    * Check if the sum of invoice terms amounts equals invoice inTaxTotal
@@ -143,6 +143,8 @@ public interface InvoiceTermService {
    * @throws AxelorException
    */
   public BigDecimal computePercentageSum(Invoice invoice);
+
+  MoveLine recomputeFreeDueDates(MoveLine moveLine, LocalDate dueDate);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -290,6 +292,8 @@ public interface InvoiceTermService {
       Company company);
 
   void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
+
+  void computeInvoiceTermsDueDates(MoveLine moveLine, Move move);
 
   void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException;
 

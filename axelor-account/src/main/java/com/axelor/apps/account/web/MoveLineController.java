@@ -683,4 +683,17 @@ public class MoveLineController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void computeInvoiceTermsDueDates(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    try {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      invoiceTermService.computeInvoiceTermsDueDates(moveLine, move);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
