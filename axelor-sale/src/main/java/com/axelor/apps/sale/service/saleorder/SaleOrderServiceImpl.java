@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
@@ -191,15 +190,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
     }
 
-    BigDecimal conversionRate = BigDecimal.valueOf(1.00);
-    if (pack.getCurrency() != null
-        && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
-      conversionRate =
-          Beans.get(CurrencyConversionFactory.class)
-              .getCurrencyConversionService()
-              .convert(pack.getCurrency(), saleOrder.getCurrency());
-    }
-
     if (Boolean.FALSE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
       if (saleOrderLinePackService.getPackLineTypes(packLineList) == null
           || !saleOrderLinePackService
@@ -223,7 +213,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
       soLine =
           saleOrderLineCreateService.createSaleOrderLine(
-              packLine, saleOrder, packQty, conversionRate, ++sequence);
+              packLine, saleOrder, packQty, BigDecimal.ONE, ++sequence);
       if (soLine != null) {
         soLine.setSaleOrder(saleOrder);
         soLines.add(soLine);
