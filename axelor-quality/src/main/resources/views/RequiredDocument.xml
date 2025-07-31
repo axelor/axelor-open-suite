@@ -114,4 +114,20 @@
     <call class="com.axelor.apps.quality.web.RequiredDocumentController" method="exportFiles"/>
   </action-method>
 
+  <!-- FILTERS -->
+
+  <search-filters name="quality-required-document-filters"
+    model="com.axelor.apps.quality.db.RequiredDocument" title="Required documents filters">
+    <filter name="quality-required-document-filters-required-document"
+      title="Required documents">
+      <domain>self.isActiveVersion = true AND self.statusSelect = :_status</domain>
+      <context name="_status" value="1"/>
+    </filter>
+    <filter name="quality-required-document-filters-available-document"
+      title="Available documents">
+      <domain>self.isActiveVersion = true AND self.statusSelect = :_status</domain>
+      <context name="_status" value="2"/>
+    </filter>
+  </search-filters>
+
 </object-views>
