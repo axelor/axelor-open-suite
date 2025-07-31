@@ -411,11 +411,9 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
           I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_LIST_EMPTY));
     }
 
+    PurchaseOrder firstPurchaseOrder = purchaseOrdersToMerge.get(0);
     fillCommonFields(purchaseOrdersToMerge, result);
-    purchaseOrdersToMerge.forEach(
-        purchaseOrder -> {
-          updateDiffsCommonFields(purchaseOrder, result);
-        });
+    checkDiffs(purchaseOrdersToMerge, result, firstPurchaseOrder);
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
@@ -633,5 +631,15 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
                     .map(id -> purchaseOrderRepository.find(Long.valueOf(id)))
                     .collect(Collectors.toList()))
         .orElse(List.of());
+  }
+
+  protected void checkDiffs(
+      List<PurchaseOrder> purchaseOrdersToMerge,
+      PurchaseOrderMergingResult result,
+      PurchaseOrder firstPurchaseOrder) {
+    purchaseOrdersToMerge.forEach(
+        purchaseOrder -> {
+          updateDiffsCommonFields(purchaseOrder, result);
+        });
   }
 }
