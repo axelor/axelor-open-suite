@@ -78,4 +78,7 @@ public final class QualityExceptionMessage {
 
   public static final String API_QI_RESOLUTION_DEFAULT_ERROR = /*$$(*/
       "Some defaults have been skipped as they were incompatibles. (%s line(s))" /*)*/;
+
+  public static final String NO_RECORD_SELECTED_TO_EXPORT = /*$$(*/
+      "Please select records having files for export" /*)*/;
 }
