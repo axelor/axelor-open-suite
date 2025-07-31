@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import java.math.BigDecimal;
@@ -106,4 +107,6 @@ public interface SaleOrderService {
   void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException;
 
   boolean isIncotermRequired(SaleOrder saleOrder);
+
+  boolean getInAti(SaleOrder saleOrder, Company company) throws AxelorException;
 }
