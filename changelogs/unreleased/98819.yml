@@ -1,6 +1,0 @@
----
-title: "Sale order: fixed pack currency conversion."
-module: axelor-sale
-developer: |
-  Added new PackLine parameter to SaleOrderLinePackService#fillPriceFromPackLine, SaleOrderLinePackService#getExTaxUnitPriceFromPackLine and SaleOrderLinePackService#getInTaxUnitPriceFromPackLine.
-  Added new Currency parameter to SaleOrderLinePackServiceImpl#getUnitPriceFromPackLine.

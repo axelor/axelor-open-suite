@@ -1,3 +1,58 @@
+## [7.2.45] (2025-07-31)
+
+### Fixes
+#### Base
+
+* Event: creating an event now automatically fill the user field.
+
+#### Bank Payment
+
+* Bank payment: removed some files that are not necessary anymore.
+
+#### Budget
+
+* Budget: fixed the 'Display realized with no po' button filter
+
+#### Contract
+
+* Contract batch: fixed an issue on customer contract invoicing when grouped invoicing was false.
+
+#### Project
+
+* Project : fixed performance technical issue on project action-attrs
+
+#### Sale
+
+* Sale order:  fixed the issue where partner complementary product lines were being duplicated with each new version creation.
+* Sale order: refresh origin sale order when splitting lines.
+* Sale order: fixed pack currency conversion.
+* Sale order: fixed French translation on the customer deliveries button.
+
+#### Stock
+
+* Stock move: fixed the title of Generate invoice button.
+* Tracking number: fixed the fields that were not displayed in wizard.
+* Stock Move: removed 'invoiced' status on internal stock moves.
+* Product: fixed 'Stock history' chart.
+* Stock move: moved stock move line menu under 'Stock' menu.
+
+#### Supply Chain
+
+* Sale order: fixed an issue where some informations were not filled when generating a sale order from a purchase order.
+* Sale order: fixed invoiced partner and delivery partner when creating a sale order from interco, taking into account the partner relations.
+
+
+### Developer
+
+#### Sale
+
+Added new PackLine parameter to SaleOrderLinePackService#fillPriceFromPackLine, SaleOrderLinePackService#getExTaxUnitPriceFromPackLine and SaleOrderLinePackService#getInTaxUnitPriceFromPackLine.
+Added new Currency parameter to SaleOrderLinePackServiceImpl#getUnitPriceFromPackLine.
+
+#### Supply Chain
+
+Added the SaleOrderSupplychainService in the IntercoServiceImpl constructor
+
 ## [7.2.44] (2025-07-18)
 
 ### Fixes
@@ -1897,6 +1952,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.45]: https://github.com/axelor/axelor-open-suite/compare/v7.2.44...v7.2.45
 [7.2.44]: https://github.com/axelor/axelor-open-suite/compare/v7.2.43...v7.2.44
 [7.2.43]: https://github.com/axelor/axelor-open-suite/compare/v7.2.42...v7.2.43
 [7.2.42]: https://github.com/axelor/axelor-open-suite/compare/v7.2.41...v7.2.42

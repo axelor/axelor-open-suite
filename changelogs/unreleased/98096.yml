@@ -1,3 +1,0 @@
----
-title: "Sale order:  fixed the issue where partner complementary product lines were being duplicated with each new version creation."
-module: axelor-sale
