@@ -1,0 +1,3 @@
+---
+title: "Tracking number: fixed the display of available qty when selecting a tracking number from a stock move line with a child stock location."
+module: axelor-stock
