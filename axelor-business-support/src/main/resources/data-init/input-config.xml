@@ -23,7 +23,7 @@
       check-message="Xml id must be unique"/>
     <bind column="tagStyle" to="tagStyle"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
-      check-message="Invalid tagStyle :tagStyle"/>
+      check-message="Invalid tagStyle"/>
   </input>
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
