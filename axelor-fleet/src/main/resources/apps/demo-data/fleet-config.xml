@@ -7,13 +7,13 @@
     type="com.axelor.apps.fleet.db.VehicleContract" search="self.importId = :importId">
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.VehicleContract', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.VehicleContract', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="costFrequencySelect" to="costFrequencySelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.VehicleContract', 'costFrequencySelect', costFrequencySelect)"
-      check-message="Invalid costFrequencySelect :costFrequencySelect"/>
+      check-message="Invalid costFrequencySelect"/>
     <bind column="invoiceDate" to="invoiceDate"
       eval="call: com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)"/>
     <bind column="startDate" to="startDate"
@@ -43,10 +43,10 @@
     search="self.importId = :importId" call="com.axelor.csv.script.ImportVehicle:importVehicle">
     <bind column="transmissionSelect" to="transmissionSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.Vehicle', 'transmissionSelect', transmissionSelect)"
-      check-message="Invalid transmissionSelect :transmissionSelect"/>
+      check-message="Invalid transmissionSelect"/>
     <bind column="fuelTypeSelect" to="fuelTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.Vehicle', 'fuelTypeSelect', fuelTypeSelect)"
-      check-message="Invalid fuelTypeSelect :fuelTypeSelect"/>
+      check-message="Invalid fuelTypeSelect"/>
     <bind column="acquisitionDate" to="acquisitionate"
       eval="call: com.axelor.csv.script.ImportDateTime:importDate(acquisitionDate)"/>
     <bind column="vehicleTagSetImportId" to="vehicleTagSet"
