@@ -11,7 +11,7 @@
       check-message="Name must not be null"/>
     <bind column="technicalTypeSelect" to="technicalTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountType', 'technicalTypeSelect', technicalTypeSelect)"
-      check-message="Invalid technicalTypeSelect :technicalTypeSelect"/>
+      check-message="Invalid technicalTypeSelect"/>
   </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
@@ -25,7 +25,7 @@
       check-message="Name must not be null"/>
     <bind column="commonPosition" to="commonPosition"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.Account', 'commonPosition', commonPosition)"
-      check-message="Invalid commonPosition :commonPosition"/>
+      check-message="Invalid commonPosition"/>
     <bind column="code" to="code"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.Account', 'code, company.id', code, _companyId, 'code, company.id', code, _companyId)"
       check-message="Code and company must be unique"/>
