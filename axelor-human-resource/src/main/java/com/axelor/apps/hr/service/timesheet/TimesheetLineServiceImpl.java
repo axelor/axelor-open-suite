@@ -29,11 +29,13 @@ import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -52,6 +54,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   protected TimesheetService timesheetService;
   protected EmployeeRepository employeeRepository;
   protected TimesheetRepository timesheetRepo;
+  protected TimesheetLineRepository timesheetLineRepo;
   protected AppHumanResourceService appHumanResourceService;
   protected UserHrService userHrService;
   protected DateService dateService;
@@ -61,12 +64,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetService timesheetService,
       EmployeeRepository employeeRepository,
       TimesheetRepository timesheetRepo,
+      TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
       DateService dateService) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
     this.timesheetRepo = timesheetRepo;
+    this.timesheetLineRepo = timesheetLineRepo;
     this.appHumanResourceService = appHumanResourceService;
     this.userHrService = userHrService;
     this.dateService = dateService;
@@ -274,5 +279,19 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     if (timesheetLine != null) {
       timesheetLine.setTimer(null);
     }
+  }
+
+  @Override
+  public List<TimesheetLine> getTimesheetLines(
+      Timesheet timesheet, LocalDate date, Project project, ProjectTask projectTask) {
+    return timesheetLineRepo
+        .all()
+        .filter(
+            "self.timesheet = ? AND self.date = ? AND self.project = ? AND self.projectTask = ?",
+            timesheet,
+            date,
+            project,
+            projectTask)
+        .fetch();
   }
 }
