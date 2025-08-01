@@ -26,6 +26,10 @@ import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.maintenance.service.BillOfMaterialComputeNameServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.BillOfMaterialMaintenanceService;
 import com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl;
+import com.axelor.apps.maintenance.service.MaintenanceRequestCreateService;
+import com.axelor.apps.maintenance.service.MaintenanceRequestCreateServiceImpl;
+import com.axelor.apps.maintenance.service.MaintenanceRequestInitValueService;
+import com.axelor.apps.maintenance.service.MaintenanceRequestInitValueServiceImpl;
 import com.axelor.apps.maintenance.service.MaintenanceRequestService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestServiceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderPlanServiceMaintenanceImpl;
@@ -52,5 +56,7 @@ public class MaintenanceModule extends AxelorModule {
     bind(BillOfMaterialComputeNameServiceImpl.class)
         .to(BillOfMaterialComputeNameServiceMaintenanceImpl.class);
     bind(ManufOrderPlanServiceImpl.class).to(ManufOrderPlanServiceMaintenanceImpl.class);
+    bind(MaintenanceRequestInitValueService.class).to(MaintenanceRequestInitValueServiceImpl.class);
+    bind(MaintenanceRequestCreateService.class).to(MaintenanceRequestCreateServiceImpl.class);
   }
 }
