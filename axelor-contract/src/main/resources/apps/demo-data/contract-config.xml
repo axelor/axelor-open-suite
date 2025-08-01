@@ -9,7 +9,7 @@
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
       check-message="Invalid codeSelect :codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
@@ -36,13 +36,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
       check-message="Company with importId :company_importId doesn't exist"/>
     <bind column="targetTypeSelect" to="targetTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.target.type.select', targetTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.ContractTemplate', 'targetTypeSelect', targetTypeSelect)"
       check-message="Invalid targetTypeSelect :targetTypeSelect"/>
     <bind column="contractTypeSelect" to="contractTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.contract.type.select', contractTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.ContractTemplate', 'contractTypeSelect', contractTypeSelect)"
       check-message="Invalid contractTypeSelect :contractTypeSelect"/>
     <bind column="invoicingMomentSelect" to="invoicingMomentSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.version.invoicing.moment.select', invoicingMomentSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.ContractTemplate', 'invoicingMomentSelect', invoicingMomentSelect)"
       check-message="Invalid invoicingMomentSelect :invoicingMomentSelect"/>
   </input>
 
