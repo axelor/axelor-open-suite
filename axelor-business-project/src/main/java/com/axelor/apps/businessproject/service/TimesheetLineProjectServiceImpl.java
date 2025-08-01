@@ -46,33 +46,31 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
 
   protected ProjectRepository projectRepo;
   protected ProjectTaskRepository projectTaskRepo;
-  protected TimesheetLineRepository timesheetLineRepo;
   protected TimesheetCreateService timesheetCreateService;
 
   @Inject
   public TimesheetLineProjectServiceImpl(
       TimesheetService timesheetService,
-      TimesheetRepository timesheetRepo,
       EmployeeRepository employeeRepository,
-      ProjectRepository projectRepo,
-      ProjectTaskRepository projectTaskaRepo,
+      TimesheetRepository timesheetRepo,
       TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
       DateService dateService,
+      ProjectRepository projectRepo,
+      ProjectTaskRepository projectTaskaRepo,
       TimesheetCreateService timesheetCreateService) {
     super(
         timesheetService,
         employeeRepository,
         timesheetRepo,
+        timesheetLineRepo,
         appHumanResourceService,
         userHrService,
         dateService);
 
     this.projectRepo = projectRepo;
     this.projectTaskRepo = projectTaskaRepo;
-    this.timesheetLineRepo = timesheetLineRepo;
-    this.timesheetRepo = timesheetRepo;
     this.timesheetCreateService = timesheetCreateService;
   }
 
