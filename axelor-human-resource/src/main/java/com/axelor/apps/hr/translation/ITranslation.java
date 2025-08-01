@@ -95,6 +95,10 @@ public interface ITranslation {
   public static final String TIMESHEET_UPDATED = /*$$(*/ "Timesheet successfully updated." /*)*/;
   public static final String TIMESHEET_LINE_UPDATED = /*$$(*/
       "Timesheet line successfully updated." /*)*/;
+
+  public static final String TIMESHEET_LINES_DELETED = /*$$(*/
+      "Timesheet lines successfully deleted." /*)*/;
+
   public static final String TIMESHEET_CONVERTED_PERIOD_TOTAL = /*$$(*/
       "Timesheet converted period total." /*)*/;
   public static final String TIMER_UPDATED = /*$$(*/ "Timer successfully updated." /*)*/;
