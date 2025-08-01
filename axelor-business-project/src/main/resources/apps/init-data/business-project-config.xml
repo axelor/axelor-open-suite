@@ -7,10 +7,10 @@
     type="com.axelor.studio.db.AppBusinessProject" search="self.app.code = :code">
     <bind column="closingProjectRuleSelect" to="closingProjectRuleSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppBusinessProject', 'closingProjectRuleSelect', closingProjectRuleSelect)"
-      check-message="Invalid closingProjectRuleSelect :closingProjectRuleSelect"/>
+      check-message="Invalid closingProjectRuleSelect"/>
     <bind column="groupingPeriodSelect" to="groupingPeriodSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppBusinessProject', 'groupingPeriodSelect', groupingPeriodSelect)"
-      check-message="Invalid groupingPeriodSelect :groupingPeriodSelect"/>
+      check-message="Invalid groupingPeriodSelect"/>
   </input>
 
 </csv-inputs>
