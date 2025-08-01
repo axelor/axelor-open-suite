@@ -22,7 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -32,6 +34,8 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
@@ -40,27 +44,36 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TimesheetProjectPlanningTimeServiceImpl
     implements TimesheetProjectPlanningTimeService {
 
+  protected static final int BIGDECIMAL_SCALE = 2;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
   protected TimesheetLineService timesheetLineService;
   protected AppBaseService appBaseService;
   protected UserHrService userHrService;
+  protected UnitConversionRepository unitConversionRepository;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
   public TimesheetProjectPlanningTimeServiceImpl(
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TimesheetLineService timesheetLineService,
       AppBaseService appBaseService,
-      UserHrService userHrService) {
+      UserHrService userHrService,
+      UnitConversionRepository unitConversionRepository,
+      UnitConversionForProjectService unitConversionForProjectService) {
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.timesheetLineService = timesheetLineService;
     this.appBaseService = appBaseService;
     this.userHrService = userHrService;
+    this.unitConversionRepository = unitConversionRepository;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -152,6 +165,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
     BigDecimal time = projectPlanningTime.getPlannedTime();
     Unit timeUnit = projectPlanningTime.getTimeUnit();
     String timeLoggingPreference = timesheet.getTimeLoggingPreferenceSelect();
+    Project project = projectPlanningTime.getProject();
 
     if (timeLoggingPreference == null && timesheet.getEmployee() != null) {
       timeLoggingPreference = timesheet.getEmployee().getTimeLoggingPreferenceSelect();
@@ -171,26 +185,32 @@ public class TimesheetProjectPlanningTimeServiceImpl
 
     switch (timeLoggingPreference) {
       case EmployeeRepository.TIME_PREFERENCE_DAYS:
-        return computeDaysDuration(dailyWorkHours, time, timeUnit);
+        return computeDaysDuration(dailyWorkHours, time, timeUnit, project);
       case EmployeeRepository.TIME_PREFERENCE_HOURS:
-        return computeHoursDuration(dailyWorkHours, time, timeUnit);
+        return computeHoursDuration(dailyWorkHours, time, timeUnit, project);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return computeMinutesDuration(dailyWorkHours, time, timeUnit);
+        return computeMinutesDuration(dailyWorkHours, time, timeUnit, project);
       default:
         return BigDecimal.ZERO;
     }
   }
 
   protected BigDecimal computeDaysDuration(
-      BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit) throws AxelorException {
+      BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit, Project project)
+      throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-
-    if (Objects.equals(timeUnit, appBase.getUnitDays())) {
+    Unit unitDays = appBase.getUnitDays();
+    List<UnitConversion> unitConversions = fetchUnitConversionForProjectList(timeUnit, unitDays);
+    if (Objects.equals(timeUnit, unitDays)) {
       return time;
     } else if (Objects.equals(timeUnit, appBase.getUnitHours())) {
-      return time.divide(dailyWorkHours, 2, RoundingMode.HALF_UP);
+      return time.divide(dailyWorkHours, BIGDECIMAL_SCALE, RoundingMode.HALF_UP);
     } else if (Objects.equals(timeUnit, appBase.getUnitMinutes())) {
-      return time.divide(dailyWorkHours.multiply(BigDecimal.valueOf(60)), 2, RoundingMode.HALF_UP);
+      return time.divide(
+          dailyWorkHours.multiply(BigDecimal.valueOf(60)), BIGDECIMAL_SCALE, RoundingMode.HALF_UP);
+    } else if (ObjectUtils.notEmpty(unitConversions)) {
+      return unitConversionForProjectService.convert(
+          timeUnit, unitDays, time, BIGDECIMAL_SCALE, project);
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -198,15 +218,20 @@ public class TimesheetProjectPlanningTimeServiceImpl
   }
 
   protected BigDecimal computeHoursDuration(
-      BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit) throws AxelorException {
+      BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit, Project project)
+      throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-
+    Unit unitHours = appBase.getUnitHours();
+    List<UnitConversion> unitConversions = fetchUnitConversionForProjectList(timeUnit, unitHours);
     if (Objects.equals(timeUnit, appBase.getUnitDays())) {
       return time.multiply(dailyWorkHours);
-    } else if (Objects.equals(timeUnit, appBase.getUnitHours())) {
+    } else if (Objects.equals(timeUnit, unitHours)) {
       return time;
     } else if (Objects.equals(timeUnit, appBase.getUnitMinutes())) {
-      return time.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+      return time.divide(BigDecimal.valueOf(60), BIGDECIMAL_SCALE, RoundingMode.HALF_UP);
+    } else if (ObjectUtils.notEmpty(unitConversions)) {
+      return unitConversionForProjectService.convert(
+          timeUnit, unitHours, time, BIGDECIMAL_SCALE, project);
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -214,18 +239,40 @@ public class TimesheetProjectPlanningTimeServiceImpl
   }
 
   protected BigDecimal computeMinutesDuration(
-      BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit) throws AxelorException {
+      BigDecimal dailyWorkHours, BigDecimal time, Unit timeUnit, Project project)
+      throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-
+    Unit unitMinutes = appBase.getUnitMinutes();
+    List<UnitConversion> unitConversions = fetchUnitConversionForProjectList(timeUnit, unitMinutes);
     if (Objects.equals(timeUnit, appBase.getUnitDays())) {
       return time.multiply(dailyWorkHours.multiply(BigDecimal.valueOf(60)));
     } else if (Objects.equals(timeUnit, appBase.getUnitHours())) {
       return time.multiply(BigDecimal.valueOf(60));
-    } else if (Objects.equals(timeUnit, appBase.getUnitMinutes())) {
+    } else if (Objects.equals(timeUnit, unitMinutes)) {
       return time;
+    } else if (ObjectUtils.notEmpty(unitConversions)) {
+      return unitConversionForProjectService.convert(
+          timeUnit, unitMinutes, time, BIGDECIMAL_SCALE, project);
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(HumanResourceExceptionMessage.PROJECT_PLANNING_WRONG_TIME_UNIT));
+  }
+
+  protected List<UnitConversion> fetchUnitConversionForProjectList(Unit startUnit, Unit endUnit) {
+    return unitConversionRepository
+        .all()
+        .filter(
+            "(self.entitySelect = :entitySelectProject or (self.entitySelect = :entitySelectAll and self.typeSelect = :typeSelect))"
+                + "AND ((self.startUnit = :startUnit AND self.endUnit = :endUnit) OR (self.startUnit = :endUnit AND self.endUnit = :startUnit))")
+        .bind("entitySelectProject", UnitConversionRepository.ENTITY_PROJECT)
+        .bind("entitySelectAll", UnitConversionRepository.ENTITY_ALL)
+        .bind("typeSelect", UnitConversionRepository.TYPE_COEFF)
+        .bind("startUnit", startUnit)
+        .bind("endUnit", endUnit)
+        .fetch()
+        .stream()
+        .sorted(Comparator.comparing(UnitConversion::getEntitySelect).reversed())
+        .collect(Collectors.toList());
   }
 }
