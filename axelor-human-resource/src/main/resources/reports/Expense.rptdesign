@@ -503,7 +503,7 @@
 FROM hr_expense AS Expense
 LEFT JOIN hr_employee AS Emp ON (Emp.id = Expense.employee)
 LEFT JOIN base_company AS Company ON (Expense.company = Company.id)
-LEFT JOIN base_currency AS Currency ON Company.currency = Currency.id
+LEFT JOIN base_currency AS Currency ON Expense.currency = Currency.id
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN base_period AS PaymentPeriod ON (Expense.period = PaymentPeriod.id)
 LEFT JOIN auth_user AS ValidatedUser ON (Expense.validated_by = ValidatedUser.id)
@@ -992,7 +992,7 @@ left join project_project as Project on (Task.parent_project = Project.id)
 left join base_partner as ClientPartner on ((Task.client_partner is null and Project.client_partner = ClientPartner.id) or (Task.client_partner = ClientPartner.id))
 left join base_product as Product on (ExpenseLine.expense_product = Product.id)
 left join base_company as Company on (Expense.company = Company.id)
-left join base_currency as Currency on (Currency.id = Company.currency)
+left join base_currency as Currency on (Currency.id = Expense.currency)
 where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1289,7 +1289,7 @@ LEFT JOIN meta_select_item AS select_item ON (select_item.value = CAST( ExpenseL
 LEFT JOIN hr_kilometric_allow_param AS param ON ExpenseLine.kilometric_allow_param = param.id
 LEFT JOIN hr_expense AS Expense ON (Expense.id = ExpenseLine.kilometric_expense)
 LEFT JOIN base_company AS Company ON (Expense.company = Company.id)
-LEFT JOIN base_currency AS Currency ON (Currency.id = Company.currency)
+LEFT JOIN base_currency AS Currency ON (Currency.id = Expense.currency)
 WHERE ExpenseLine.kilometric_expense = ?
 
 ]]></xml-property>
