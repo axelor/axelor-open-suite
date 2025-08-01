@@ -320,6 +320,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
+import com.axelor.apps.hr.service.timesheet.editor.TimesheetLineTimesheetEditorService;
+import com.axelor.apps.hr.service.timesheet.editor.TimesheetLineTimesheetEditorServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationService;
 import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerCreateService;
@@ -513,5 +515,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(KilometricExpenseService.class).to(KilometricExpenseServiceImpl.class);
     bind(PublicHolidayServiceImpl.class).to(PublicHolidayHrServiceImpl.class);
     bind(PublicHolidayHrService.class).to(PublicHolidayHrServiceImpl.class);
+    bind(TimesheetLineTimesheetEditorService.class)
+        .to(TimesheetLineTimesheetEditorServiceImpl.class);
   }
 }
