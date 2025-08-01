@@ -10,7 +10,7 @@
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
-      check-message="Invalid codeSelect :codeSelect"/>
+      check-message="Invalid codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
@@ -34,16 +34,16 @@
       check-message="Name must not be null"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind column="targetTypeSelect" to="targetTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.ContractTemplate', 'targetTypeSelect', targetTypeSelect)"
-      check-message="Invalid targetTypeSelect :targetTypeSelect"/>
+      check-message="Invalid targetTypeSelect"/>
     <bind column="contractTypeSelect" to="contractTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.ContractTemplate', 'contractTypeSelect', contractTypeSelect)"
-      check-message="Invalid contractTypeSelect :contractTypeSelect"/>
+      check-message="Invalid contractTypeSelect"/>
     <bind column="invoicingMomentSelect" to="invoicingMomentSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.ContractTemplate', 'invoicingMomentSelect', invoicingMomentSelect)"
-      check-message="Invalid invoicingMomentSelect :invoicingMomentSelect"/>
+      check-message="Invalid invoicingMomentSelect"/>
   </input>
 
 </csv-inputs>
