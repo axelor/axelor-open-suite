@@ -42,9 +42,11 @@
     <extend target="//field[@name='timesheet']">
       <insert position="before">
         <field name="durationForCustomer" colSpan="4" if-module="axelor-business-project"
+          onChange="action-timesheet-line-method-set-customer-duration-hours"
           if="__config__.app.isApp('business-project')" showIf="project.isBusinessProject"/>
         <label name="durationLabel" colSpan="2" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')" showIf="project.isBusinessProject"/>
+        <field name="customerDurationHours" hidden="true"/>
       </insert>
 
       <insert position="after">
@@ -56,6 +58,89 @@
     </extend>
   </form>
 
+  <grid id="business-project-timesheet-line-project-grid" name="timesheet-line-project-grid"
+    title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+    <extend target="//field[@name='durationForCustomer']">
+      <replace>
+        <field name="durationForCustomer" if-module="axelor-business-project"
+          onChange="action-timesheet-line-method-set-customer-duration-hours"
+          if="__config__.app.isApp('business-project')"/>
+        <field name="customerDurationHours" hidden="true" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project')"/>
+      </replace>
+    </extend>
+  </grid>
+
+  <grid id="business-project-timesheet-line-project-task-grid"
+    name="timesheet-line-project-task-grid" title="Log Times"
+    model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+    <extend target="//field[@name='durationForCustomer']">
+      <replace>
+        <field name="durationForCustomer" if-module="axelor-business-project"
+          onChange="action-timesheet-line-method-set-customer-duration-hours"
+          if="__config__.app.isApp('business-project')"/>
+        <field name="customerDurationHours" hidden="true" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project')"/>
+      </replace>
+    </extend>
+  </grid>
+
+  <grid id="business-project-timesheet-line-timesheet-project-grid"
+    name="timesheet-line-timesheet-project-grid" title="Timesheet Lines"
+    model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+    <extend target="//field[@name='durationForCustomer']">
+      <replace>
+        <field name="durationForCustomer" if-module="axelor-business-project"
+          onChange="action-timesheet-line-method-set-customer-duration-hours"
+          if="__config__.app.isApp('business-project')"/>
+        <field name="customerDurationHours" hidden="true" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project')"/>
+      </replace>
+    </extend>
+  </grid>
+
+
+  <form id="business-project-timesheet-line-project-form" name="timesheet-line-project-form"
+    title="Log Time" model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+    <extend target="//field[@name='durationForCustomer']">
+      <replace>
+        <field name="customerDurationHours" colSpan="12" hidden="true"
+          if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+        <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
+          onChange="action-timesheet-line-method-set-customer-duration-hours"
+          if="__config__.app.isApp('business-project')"/>
+      </replace>
+    </extend>
+  </form>
+
+  <form id="business-project-timesheet-line-timesheet-form"
+    name="timesheet-line-timesheet-form" title="Timesheet Line"
+    model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+    <extend target="//field[@name='durationForCustomer']">
+      <replace>
+        <field name="customerDurationHours" colSpan="12" hidden="true"
+          if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+        <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
+          onChange="action-timesheet-line-method-set-customer-duration-hours"
+          if="__config__.app.isApp('business-project')"/>
+      </replace>
+    </extend>
+  </form>
+
+  <form id="business-project-timesheet-line-timesheet-project-form"
+    name="timesheet-line-timesheet-project-form" title="Timesheet Line"
+    model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+    <extend target="//field[@name='durationForCustomer']">
+      <replace>
+        <field name="customerDurationHours" colSpan="12" hidden="true"
+          if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+        <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
+          onChange="action-timesheet-line-method-set-customer-duration-hours"
+          if="__config__.app.isApp('business-project')"/>
+      </replace>
+    </extend>
+  </form>
+
   <action-group name="action-timesheet-line-group-business-project-task-form-on-new">
     <action name="action-timesheet-line-group-project-task-form-on-new"/>
     <action name="action-timesheet-line-attrs-manage-business-fields"/>
@@ -64,6 +149,11 @@
   <action-method name="action-timesheet-line-method-set-default-to-invoice">
     <call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController"
       method="setDefaultToInvoice"/>
+  </action-method>
+
+  <action-method name="action-timesheet-line-method-set-customer-duration-hours">
+    <call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController"
+      method="setCustomerDurationHours"/>
   </action-method>
 
   <action-attrs name="action-timesheet-line-attrs-manage-business-fields">

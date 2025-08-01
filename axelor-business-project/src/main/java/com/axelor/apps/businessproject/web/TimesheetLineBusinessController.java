@@ -20,10 +20,12 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
+import com.axelor.apps.businessproject.service.TimesheetProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
 
 public class TimesheetLineBusinessController {
 
@@ -33,6 +35,17 @@ public class TimesheetLineBusinessController {
       timesheetLine =
           Beans.get(TimesheetLineBusinessService.class).getDefaultToInvoice(timesheetLine);
       response.setValue("toInvoice", timesheetLine.getToInvoice());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setCustomerDurationHours(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      BigDecimal customerDurationHours =
+          Beans.get(TimesheetProjectService.class).computeDurationForCustomer(timesheetLine);
+      response.setValue("customerDurationHours", customerDurationHours);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
