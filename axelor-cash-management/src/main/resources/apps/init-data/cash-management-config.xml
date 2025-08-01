@@ -8,26 +8,26 @@
     search="self.importId = :importId">
     <bind column="elementSelect" to="elementSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'elementSelect', elementSelect)"
-      check-message="Invalid elementSelect :elementSelect"/>
+      check-message="Invalid elementSelect"/>
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
     <bind column="operationTypeSelect" to="operationTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'operationTypeSelect', operationTypeSelect)"
-      check-message="Invalid operationTypeSelect :operationTypeSelect"/>
+      check-message="Invalid operationTypeSelect"/>
     <bind column="payDaySelect" to="payDaySelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'payDaySelect', payDaySelect)"
-      check-message="Invalid payDaySelect :payDaySelect"/>
+      check-message="Invalid payDaySelect"/>
     <bind column="functionalOriginSelect" to="functionalOriginSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'functionalOriginSelect', functionalOriginSelect)"
-      check-message="Invalid functionalOriginSelect :functionalOriginSelect"/>
+      check-message="Invalid functionalOriginSelect"/>
   </input>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
-      check-message="Invalid codeSelect :codeSelect"/>
+      check-message="Invalid codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
