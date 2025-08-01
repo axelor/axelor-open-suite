@@ -6,13 +6,13 @@
   <input file="fleet_vehicleContract.csv" separator=";"
     type="com.axelor.apps.fleet.db.VehicleContract" search="self.importId = :importId">
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.cost.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.VehicleContract', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.contract.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.VehicleContract', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind column="costFrequencySelect" to="costFrequencySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.contract.cost.frequency.select', costFrequencySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.VehicleContract', 'costFrequencySelect', costFrequencySelect)"
       check-message="Invalid costFrequencySelect :costFrequencySelect"/>
     <bind column="invoiceDate" to="invoiceDate"
       eval="call: com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)"/>
@@ -42,10 +42,10 @@
   <input file="fleet_vehicle.csv" separator=";" type="com.axelor.apps.fleet.db.Vehicle"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportVehicle:importVehicle">
     <bind column="transmissionSelect" to="transmissionSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.transimission.select', transmissionSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.Vehicle', 'transmissionSelect', transmissionSelect)"
       check-message="Invalid transmissionSelect :transmissionSelect"/>
     <bind column="fuelTypeSelect" to="fuelTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('fleet.vehicle.fuel.type.select', fuelTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.fleet.db.Vehicle', 'fuelTypeSelect', fuelTypeSelect)"
       check-message="Invalid fuelTypeSelect :fuelTypeSelect"/>
     <bind column="acquisitionDate" to="acquisitionate"
       eval="call: com.axelor.csv.script.ImportDateTime:importDate(acquisitionDate)"/>
