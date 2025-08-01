@@ -53,8 +53,12 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrder.currency"/>
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
-    <field name="toInvoice"/>
-    <field name="invoiced"/>
+    <field name="toInvoice"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
+    <field name="invoiced"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
+    <field name="finalInvoice"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
@@ -289,18 +293,22 @@
         <field name="project" domain="self.isBusinessProject = true" title="Business Project"
           requiredIf="toInvoice &amp;&amp; !isTitleLine" form-view="business-project-form"
           grid-view="project-grid" canEdit="false"/>
+        <field name="projectTask" title="Project Task"
+          domain="self.project = :project AND self.imputable IS TRUE"
+          form-view="business-project-task-form" grid-view="business-project-task-grid"
+          canEdit="false"/>
         <field name="toInvoice"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectPurchaseOrderLines()"
-          colSpan="3" if-module="axelor-business-project"/>
-        <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()"
-          colSpan="3" showTitle="false">
+          if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()" colSpan="3"
+          if-module="axelor-business-project"/>
+        <field name="invoiced"
+          if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"
+          showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3" showTitle="false">
           <viewer>
             <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
           </viewer>
         </field>
-        <field name="projectTask" title="Project Task" domain="self.project = :project"
-          form-view="business-project-task-form" grid-view="business-project-task-grid"
-          canEdit="false"/>
+        <field name="finalInvoice"
+          if="__config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -593,7 +601,7 @@
     <field name="project" expr="eval: __parent__?.project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" expr="eval: __parent__?.project?.isInvoicingPurchases"
-      if="__config__.app.isApp('business-project')"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablSupInvLine()"/>
     <field name="projectTask" expr="eval: __parent__?.projectTask"
       if="__config__.app.isApp('business-project')"/>
   </action-record>

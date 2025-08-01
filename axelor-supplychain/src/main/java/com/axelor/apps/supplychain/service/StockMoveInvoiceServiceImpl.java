@@ -202,7 +202,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     invoiceGenerator.populate(
         invoice,
         this.createInvoiceLines(
-            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap, 0));
 
     if (invoice != null) {
       // do not create empty invoices
@@ -296,7 +296,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     invoiceGenerator.populate(
         invoice,
         this.createInvoiceLines(
-            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap, 0));
 
     if (invoice != null) {
 
@@ -371,7 +371,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     invoiceGenerator.populate(
         invoice,
         this.createInvoiceLines(
-            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap));
+            invoice, stockMove, stockMove.getStockMoveLineList(), qtyToInvoiceMap, 0));
 
     if (invoice != null) {
 
@@ -412,7 +412,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       Invoice invoice,
       StockMove stockMove,
       List<StockMoveLine> stockMoveLineList,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      int sequence)
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
@@ -431,20 +432,30 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     } else {
       stockMoveLineToInvoiceList = getConsolidatedStockMoveLineList(stockMoveLineList);
     }
+    int count = 1;
+    int seq = 0;
     for (StockMoveLine stockMoveLine : stockMoveLineToInvoiceList) {
+
+      if (sequence != 0) {
+        seq = sequence * 100 + count;
+      } else {
+        seq = sequence;
+      }
 
       InvoiceLine invoiceLineCreated;
       Long id = stockMoveLine.getId();
       if (qtyToInvoiceMap != null) {
         invoiceLineCreated =
-            this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
+            this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id), seq);
       } else {
         invoiceLineCreated =
             this.createInvoiceLine(
                 invoice,
                 stockMoveLine,
-                stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine)));
+                stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine)),
+                seq);
       }
+      count++;
 
       if (invoiceLineCreated != null) {
         invoiceLineList.add(invoiceLineCreated);
@@ -455,23 +466,27 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
+  public InvoiceLine createInvoiceLine(
+      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty, int sequence)
       throws AxelorException {
 
     Product product = stockMoveLine.getProduct();
     boolean isTitleLine = false;
 
-    int sequence = InvoiceLineGenerator.DEFAULT_SEQUENCE;
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 
-    if (saleOrderLine != null) {
-      sequence = saleOrderLine.getSequence();
-    } else if (purchaseOrderLine != null) {
-      if (purchaseOrderLine.getIsTitleLine()) {
-        isTitleLine = true;
+    if (sequence == 0) {
+      if (saleOrderLine != null) {
+        sequence = saleOrderLine.getSequence();
+      } else if (purchaseOrderLine != null) {
+        if (purchaseOrderLine.getIsTitleLine()) {
+          isTitleLine = true;
+        }
+        sequence = purchaseOrderLine.getSequence();
+      } else {
+        sequence = InvoiceLineGenerator.DEFAULT_SEQUENCE;
       }
-      sequence = purchaseOrderLine.getSequence();
     }
 
     // do not create lines with no qties
@@ -498,7 +513,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             false,
             stockMoveLine.getSaleOrderLine(),
             stockMoveLine.getPurchaseOrderLine(),
-            stockMoveLine) {
+            stockMoveLine,
+            null) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
 

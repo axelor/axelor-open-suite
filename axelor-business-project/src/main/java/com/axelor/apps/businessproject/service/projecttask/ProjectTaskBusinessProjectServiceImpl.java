@@ -33,6 +33,8 @@ import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
@@ -60,6 +62,7 @@ import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
@@ -95,6 +98,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   protected TimesheetLineRepository timesheetLineRepository;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected TaskTemplateService taskTemplateService;
+  protected CurrencyService currencyService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -112,7 +117,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       ProjectTimeUnitService projectTimeUnitService,
-      TaskTemplateService taskTemplateService) {
+      TaskTemplateService taskTemplateService,
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -129,17 +136,20 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.timesheetLineRepository = timesheetLineRepository;
     this.projectTimeUnitService = projectTimeUnitService;
     this.taskTemplateService = taskTemplateService;
+    this.currencyService = currencyService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   @Override
-  public ProjectTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
+  public ProjectTask create(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Project project, User assignedTo)
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     Product product = saleOrderLine.getProduct();
     task.setProduct(product);
-    task.setUnitCost(product.getCostPrice());
-    task.setTotalCosts(
-        product.getCostPrice().multiply(saleOrderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
+    task.setUnitCost(saleOrderLine.getCompanyCostPrice());
+    task.setTotalCosts(saleOrderLine.getCompanyCostTotal());
+    Company company = saleOrder != null ? saleOrder.getCompany() : null;
     Unit orderLineUnit = saleOrderLine.getUnit();
     task.setInvoicingUnit(orderLineUnit);
 
@@ -152,8 +162,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       }
     }
     if (task.getUnitPrice() == null) {
-      Company company =
-          saleOrderLine.getSaleOrder() != null ? saleOrderLine.getSaleOrder().getCompany() : null;
       task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     }
     task.setDescription(saleOrderLine.getDescription());
@@ -242,7 +250,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   }
 
   @Override
-  public ProjectTask compute(ProjectTask projectTask) {
+  public ProjectTask compute(ProjectTask projectTask) throws AxelorException {
     if (projectTask.getProduct() == null && projectTask.getProject() == null
         || projectTask.getUnitPrice() == null
         || projectTask.getQuantity() == null) {
@@ -253,6 +261,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     projectTask.setPriceDiscounted(priceDiscounted);
     projectTask.setExTaxTotal(exTaxTotal);
+    projectTask.setCompanyExTaxTotal(exTaxTotal);
+    Company company = projectTask.getProject().getCompany();
+    if (company != null && company.getCurrency() != null && projectTask.getCurrency() != null) {
+      BigDecimal companyExTaxTotal =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              projectTask.getCurrency(), company.getCurrency(), exTaxTotal, null);
+      projectTask.setCompanyExTaxTotal(
+          currencyScaleService.getCompanyScaledValue(company, companyExTaxTotal));
+    }
 
     if (projectTask.getProduct() != null) {
       projectTask.setTotalCosts(
@@ -324,7 +341,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.getDiscountAmount(),
             projectTask.getDiscountTypeSelect(),
             projectTask.getExTaxTotal(),
-            BigDecimal.ZERO,
+            null,
             false) {
 
           @Override
@@ -370,6 +387,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     // Module 'business project' fields
     nextProjectTask.setToInvoice(projectTask.getToInvoice());
     nextProjectTask.setExTaxTotal(projectTask.getExTaxTotal());
+    nextProjectTask.setCompanyExTaxTotal(projectTask.getCompanyExTaxTotal());
     nextProjectTask.setDiscountTypeSelect(projectTask.getDiscountTypeSelect());
     nextProjectTask.setDiscountAmount(projectTask.getDiscountAmount());
     nextProjectTask.setPriceDiscounted(projectTask.getPriceDiscounted());
@@ -497,6 +515,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setUnitPrice(null);
     projectTask.setCurrency(null);
     projectTask.setExTaxTotal(null);
+    projectTask.setCompanyExTaxTotal(null);
     return projectTask;
   }
 

@@ -119,6 +119,13 @@
     <one-to-many name="projectHoldBackLineList" mappedBy="project"
       ref="com.axelor.apps.businessproject.db.ProjectHoldBackLine"/>
 
+    <!-- lines invoicing booleans -->
+    <boolean name="isReinvoiceablTimesheetLine" title="Timesheet line reinvoiceable"/>
+    <boolean name="isReinvoiceablExpenseLine" title="Expense line reinvoiceable"/>
+    <boolean name="isReinvoiceablPoLine" title="Purchase order line reinvoiceable"/>
+    <boolean name="isReinvoiceablSupInvLine" title="Supplier invoice line reinvoiceable"/>
+    <boolean name="isReinvoiceablStockMoveLine" title="Stock move line reinvoiceable"/>
+
     <!-- Analytic fields -->
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"

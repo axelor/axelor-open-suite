@@ -1,0 +1,3 @@
+---
+title: "GlobalAuditInterceptor : Fix null pointer exception on deleting records"
+module: axelor-base

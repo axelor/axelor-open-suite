@@ -103,6 +103,8 @@
       ref="com.axelor.apps.project.db.Sprint" transient="true"/>
     <decimal name="oldBudgetedTime" title="Old budgeted time" transient="true"/>
 
+    <boolean name="imputable" title="Imputable" default="true"/>
+
     <extra-code>
 
       // TYPE SELECT

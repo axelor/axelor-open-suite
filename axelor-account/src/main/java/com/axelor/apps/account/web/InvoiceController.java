@@ -964,12 +964,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
-      LocalDate cutOffStartDate =
-          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
-      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
-
       if (invoiceService.checkManageCutOffDates(invoice)) {
-        invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
+        invoiceService.applyCutOffDates(invoice);
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {

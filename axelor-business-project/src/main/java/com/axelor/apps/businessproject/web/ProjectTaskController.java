@@ -58,6 +58,7 @@ public class ProjectTaskController {
       response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
       response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
       response.setValue("exTaxTotal", projectTask.getExTaxTotal());
+      response.setValue("companyExTaxTotal", projectTask.getCompanyExTaxTotal());
       response.setValue("totalCosts", projectTask.getTotalCosts());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

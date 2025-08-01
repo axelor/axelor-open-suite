@@ -98,6 +98,7 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
             false,
             null,
             null,
+            null,
             null) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

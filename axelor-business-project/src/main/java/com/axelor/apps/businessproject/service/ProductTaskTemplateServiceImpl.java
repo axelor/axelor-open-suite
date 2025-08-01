@@ -136,7 +136,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       product = saleOrderLine.getProduct();
     }
     task.setProduct(product);
-    BigDecimal costPrice = product.getCostPrice();
+    BigDecimal costPrice =
+        (BigDecimal) productCompanyService.get(product, "costPrice", project.getCompany());
     task.setUnitCost(costPrice);
     task.setTotalCosts(costPrice.multiply(qty).setScale(2, RoundingMode.HALF_UP));
     task.setInvoicingUnit(product.getUnit());
@@ -155,6 +156,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     }
 
     task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
+    task.setCompanyExTaxTotal(saleOrderLine.getCompanyExTaxTotal());
     if (saleOrderLine.getInvoicingModeSelect() == SaleOrderLineRepository.INVOICING_MODE_PACKAGE) {
       task.setToInvoice(true);
       task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);

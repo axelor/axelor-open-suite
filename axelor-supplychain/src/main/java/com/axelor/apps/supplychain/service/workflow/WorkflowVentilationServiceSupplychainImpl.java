@@ -226,7 +226,8 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       invoicedAmountToAdd = rate.multiply(saleOrderLine.getExTaxTotal());
     }
 
-    saleOrderLine.setAmountInvoiced(saleOrderLine.getAmountInvoiced().add(invoicedAmountToAdd));
+    saleOrderLine.setAmountInvoiced(
+        saleOrderLine.getAmountInvoiced().add(invoicedAmountToAdd).setScale(3));
 
     return saleOrder;
   }

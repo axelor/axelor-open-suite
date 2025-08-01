@@ -636,6 +636,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             false,
             saleOrderLine,
             null,
+            null,
             null) {
 
           @Override

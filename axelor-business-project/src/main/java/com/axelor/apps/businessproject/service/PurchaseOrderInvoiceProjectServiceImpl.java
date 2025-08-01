@@ -274,6 +274,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl
               false,
               null,
               purchaseOrderLine,
+              null,
               null) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {

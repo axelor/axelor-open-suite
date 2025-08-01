@@ -15,8 +15,10 @@
     <field name="expenseProduct" canView="false" readonly="true"/>
     <field name="expenseDate" readonly="true"/>
     <field name="totalAmount" aggregate="sum" readonly="true"/>
-    <field name="toInvoice"/>
-    <field name="invoiced"/>
+    <field name="toInvoice"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
+    <field name="invoiced"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
     <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced"
       icon="fa-check-circle" onClick="action-expense-line-method-update-to-invoice"/>
     <field name="expense" hidden="true"/>
@@ -33,7 +35,8 @@
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"/>
     <field name="totalAmount" aggregate="sum" width="170"/>
     <field name="totalTax" aggregate="sum" width="80"/>
-    <field name="toInvoice"/>
+    <field name="toInvoice"
+      if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
   </grid>

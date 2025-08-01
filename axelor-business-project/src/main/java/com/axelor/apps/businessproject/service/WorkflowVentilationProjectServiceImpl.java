@@ -44,6 +44,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -128,10 +129,11 @@ public class WorkflowVentilationProjectServiceImpl extends WorkflowVentilationCo
       }
       for (PurchaseOrderLine purchaseOrderLine : invoicingProject.getPurchaseOrderLineSet()) {
         purchaseOrderLine.setInvoiced(true);
+        purchaseOrderLine.setFinalInvoice(invoice);
       }
       for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
         timesheetLine.setInvoiced(true);
-
+        timesheetLine.setFinalInvoice(invoice);
         if (timesheetLine.getProjectTask() == null) {
           continue;
         }
@@ -139,12 +141,24 @@ public class WorkflowVentilationProjectServiceImpl extends WorkflowVentilationCo
         timesheetLine
             .getProjectTask()
             .setInvoiced(this.checkInvoicedTimesheetLines(timesheetLine.getProjectTask()));
+        if (!timesheetLine.getInvoiced()) {
+          timesheetLine.setFinalInvoice(null);
+        }
       }
       for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
         expenseLine.setInvoiced(true);
+        expenseLine.setFinalInvoice(invoice);
       }
       for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
-        updateInvoicingStatus(projectTask);
+        updateInvoicingStatus(projectTask, invoice);
+      }
+      for (StockMoveLine stockMoveLine : invoicingProject.getStockMoveLineSet()) {
+        stockMoveLine.setInvoiced(true);
+        stockMoveLine.setFinalInvoice(invoice);
+      }
+      for (InvoiceLine invoiceLine : invoicingProject.getInvoiceLineSet()) {
+        invoiceLine.setInvoiced(true);
+        invoiceLine.setFinalInvoice(invoice);
       }
 
       invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);
@@ -152,7 +166,7 @@ public class WorkflowVentilationProjectServiceImpl extends WorkflowVentilationCo
     }
   }
 
-  protected void updateInvoicingStatus(ProjectTask projectTask) {
+  protected void updateInvoicingStatus(ProjectTask projectTask, Invoice invoice) {
     BigDecimal newProgress =
         projectTask.getInvoiceLineSet().stream()
             .map(InvoiceLine::getNewProgress)
@@ -163,9 +177,11 @@ public class WorkflowVentilationProjectServiceImpl extends WorkflowVentilationCo
       projectTask.setInvoicingProgress(newProgress);
       if (newProgress.compareTo(BigDecimal.valueOf(100)) == 0) {
         projectTask.setInvoiced(true);
+        projectTask.setFinalInvoice(invoice);
       }
     } else {
       projectTask.setInvoiced(true);
+      projectTask.setFinalInvoice(invoice);
     }
   }
 

@@ -9,6 +9,8 @@
 
     <boolean name="toInvoice" title="To invoice"/>
     <boolean name="invoiced" title="Invoiced"/>
+    <many-to-one name="finalInvoice" title="Final invoice"
+      ref="com.axelor.apps.account.db.Invoice" readonly="true"/>
     <decimal name="exTaxTotal" title="ProjectTask.exTaxTotal"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
@@ -66,6 +68,9 @@
     <decimal name="unitCost" title="Unit cost"/>
     <decimal name="totalCosts" title="Total cost" readonly="true"/>
     <decimal name="invoicingProgress" title="Invoicing progress"/>
+
+    <decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"
+      precision="20" scale="3" readonly="true"/>
 
     <extra-code>
 			<![CDATA[

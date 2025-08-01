@@ -130,6 +130,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
       }
 
       timesheetLine.setInvoiced(true);
+      timesheetLine.setFinalInvoice(invoice);
     }
 
     for (Object[] timesheetInformations : timeSheetInformationsMap.values()) {

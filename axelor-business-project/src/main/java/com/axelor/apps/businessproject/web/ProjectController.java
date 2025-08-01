@@ -46,6 +46,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -59,6 +60,31 @@ import org.slf4j.LoggerFactory;
 public class ProjectController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  public void setDefault(ActionRequest request, ActionResponse response) {
+
+    AppBusinessProject app = Beans.get(AppBusinessProjectService.class).getAppBusinessProject();
+
+    if (app.getIsReinvoiceablTimesheetLine()) {
+      response.setValue("isReinvoiceablTimesheetLine", app.getDefaultReinvoiceablTimesheetLine());
+    }
+
+    if (app.getIsReinvoiceablPoLine()) {
+      response.setValue("isReinvoiceablPoLine", app.getDefaultReinvoiceablPoLine());
+    }
+
+    if (app.getIsReinvoiceablSupInvLine()) {
+      response.setValue("isReinvoiceablSupInvLine", app.getDefaultReinvoiceablSupInvLine());
+    }
+
+    if (app.getIsReinvoiceablExpenseLine()) {
+      response.setValue("isReinvoiceablExpenseLine", app.getDefaultReinvoiceablExpenseLine());
+    }
+
+    if (app.getIsReinvoiceablStockMoveLine()) {
+      response.setValue("isReinvoiceablStockMoveLine", app.getDefaultReinvoiceablStockMoveLine());
+    }
+  }
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
