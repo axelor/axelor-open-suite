@@ -15,7 +15,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
       check-message="Xml id must be unique"/>
     <bind column="tagStyle" to="tagStyle"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('label.style.selection', tagStyle, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
       check-message="Invalid tagStyle :tagStyle"/>
   </input>
 
@@ -29,7 +29,7 @@
   <input file="budget_advanced_export_line.csv" search="self.importId = :importId"
     type="com.axelor.apps.base.db.AdvancedExportLine" separator=";">
     <bind column="orderByType" to="orderByType"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('order.by.type', orderByType, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.AdvancedExportLine', 'orderByType', orderByType)"
       check-message="Invalid orderByType :orderByType"/>
   </input>
 
@@ -39,10 +39,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="format" to="format"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iadministration.export.type.select', format, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'format', format)"
       check-message="Invalid format :format"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'templateEngineSelect', templateEngineSelect)"
       check-message="Invalid templateEngineSelect :templateEngineSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
@@ -53,14 +53,14 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="type" to="type"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.birt.template.parameter.type.select', type, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplateParameter', 'type', type)"
       check-message="Invalid type :type"/>
   </input>
 
   <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
     separator=";" search="self.importId = :importId">
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.printing.template.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplate', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
@@ -69,7 +69,7 @@
     type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
     search="self.importId = :importId">
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.printing.template.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplateLine', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
   </input>
 
