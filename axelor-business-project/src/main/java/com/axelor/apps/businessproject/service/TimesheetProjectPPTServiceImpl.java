@@ -19,9 +19,11 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -36,8 +38,15 @@ public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTime
   public TimesheetProjectPPTServiceImpl(
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TimesheetLineService timesheetLineService,
-      AppBaseService appBaseService) {
-    super(projectPlanningTimeRepository, timesheetLineService, appBaseService);
+      AppBaseService appBaseService,
+      UnitConversionRepository unitConversionRepository,
+      UnitConversionForProjectService unitConversionForProjectService) {
+    super(
+        projectPlanningTimeRepository,
+        timesheetLineService,
+        appBaseService,
+        unitConversionRepository,
+        unitConversionForProjectService);
   }
 
   @Override
