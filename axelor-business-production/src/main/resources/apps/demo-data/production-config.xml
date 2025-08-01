@@ -7,14 +7,14 @@
     type="com.axelor.studio.db.AppProduction" search="self.app.code = :code" update="true">
     <bind column="mOFilterOnStockDetailStatusSelect" to="mOFilterOnStockDetailStatusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppProduction', 'mOFilterOnStockDetailStatusSelect', mOFilterOnStockDetailStatusSelect)"
-      check-message="Invalid mOFilterOnStockDetailStatusSelect :mOFilterOnStockDetailStatusSelect"/>
+      check-message="Invalid mOFilterOnStockDetailStatusSelect"/>
     <bind column="operationContinuitySelect" to="operationContinuitySelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppProduction', 'operationContinuitySelect', operationContinuitySelect)"
-      check-message="Invalid operationContinuitySelect :operationContinuitySelect"/>
+      check-message="Invalid operationContinuitySelect"/>
     <bind column="updateProjectSolDetailsLineTypeSelect"
       to="updateProjectSolDetailsLineTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppProduction', 'updateProjectSolDetailsLineTypeSelect', updateProjectSolDetailsLineTypeSelect)"
-      check-message="Invalid updateProjectSolDetailsLineTypeSelect :updateProjectSolDetailsLineTypeSelect"/>
+      check-message="Invalid updateProjectSolDetailsLineTypeSelect"/>
   </input>
 
 </csv-inputs>
