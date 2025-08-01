@@ -10,7 +10,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="technicalTypeSelect" to="technicalTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('account.account.technical.type.select', technicalTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountType', 'technicalTypeSelect', technicalTypeSelect)"
       check-message="Invalid technicalTypeSelect :technicalTypeSelect"/>
   </input>
 
@@ -24,7 +24,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="commonPosition" to="commonPosition"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('account.account.common.position.select', commonPosition, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.Account', 'commonPosition', commonPosition)"
       check-message="Invalid commonPosition :commonPosition"/>
     <bind column="code" to="code"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.Account', 'code, company.id', code, _companyId, 'code, company.id', code, _companyId)"
