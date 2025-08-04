@@ -270,7 +270,7 @@ public class InvoicingProjectService {
 
       Map<String, Object> invoiceLineQueryMap = new HashMap<>();
       invoiceLineQueryMap.put("project", project);
-      invoiceLineQueryMap.put("statusSelect", InvoiceRepository.STATUS_VALIDATED);
+      invoiceLineQueryMap.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
       invoiceLineQueryMap.put(
           "operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
 
