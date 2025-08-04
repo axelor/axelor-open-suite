@@ -35,6 +35,7 @@
       <field name="preTaskStatusSet" widget="TagSelect"/>
       <field name="postTaskStatusSet" widget="TagSelect"/>
       <field name="excludeTaskInvoicing"/>
+      <field name="projectInvoicingConsolidationSelect"/>
     </panel>
     <panel name="projectReporting" title="Reinvoicing" colSpan="12">
       <field name="isReinvoiceablTimesheetLine" widget="boolean-switch" colSpan="3"/>

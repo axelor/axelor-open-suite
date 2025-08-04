@@ -81,10 +81,17 @@
     <boolean name="defaultReinvoiceablStockMoveLine"
       title="Default stock move line reinvoiceable"/>
 
+    <integer name="projectInvoicingConsolidationSelect"
+      title="Project invoicing consolidation"
+      selection="business.project.project.invoicing.consolidation.select"/>
+
     <extra-code><![CDATA[
 		public static final int CLOSING_PROJECT_RULE_NONE = 0;
 		public static final int CLOSING_PROJECT_RULE_NON_BLOCKING = 1;
 		public static final int CLOSING_PROJECT_RULE_BLOCKING = 2;
+
+		public static final int INVOICING_CONSOLIDATION_PER_PROJECT = 0;
+		public static final int INVOICING_CONSOLIDATION_PER_TASK = 1;
 		]]>
     </extra-code>
 

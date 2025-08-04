@@ -112,4 +112,10 @@
     <option value="1">Non-blocking</option>
     <option value="2">AppBusinessProject.Blocking</option>
   </selection>
+
+  <selection name="business.project.project.invoicing.consolidation.select">
+    <option value="0">Per project</option>
+    <option value="1">Per task</option>
+  </selection>
+
 </object-views>
