@@ -45,13 +45,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('message.media.type.select', mediaTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
       check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
       check-message="Invalid templateEngineSelect :templateEngineSelect"/>
     <bind column="language" to="language"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('select.language', language, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
       check-message="Invalid language :language"/>
   </input>
 
@@ -75,7 +75,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(mapping)"
       check-message="Mapping must not be null"/>
     <bind column="key" to="key"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('gdpr.search.config.line.key.select', key, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.gdpr.db.GDPRSearchConfigLine', 'key', key)"
       check-message="Invalid key :key"/>
     <bind column="key" to="key"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.gdpr.db.GDPRSearchConfigLine', 'importId', importId, 'searchConfig.metaModel.name, key', searchConfig, key)"
