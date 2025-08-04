@@ -336,7 +336,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMoveLine.getFromStockLocation() == null) {
       stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     }
-
     stockMoveLine.setIsRealQtyModifiedByUser(true);
     stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
     stockMove.addStockMoveLineListItem(stockMoveLine);
