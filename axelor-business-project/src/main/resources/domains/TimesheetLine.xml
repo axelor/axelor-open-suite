@@ -8,6 +8,8 @@
   <entity name="TimesheetLine" cacheable="true">
 
     <decimal name="customerDurationHours" title="Customer duration hours" nullable="true"/>
+    <many-to-one name="invoiceLine" title="Invoice line"
+      ref="com.axelor.apps.account.db.InvoiceLine" readonly="true"/>
 
   </entity>
 

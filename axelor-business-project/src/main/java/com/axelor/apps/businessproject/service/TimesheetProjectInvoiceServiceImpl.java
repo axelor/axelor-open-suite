@@ -41,7 +41,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceImpl {
 
@@ -84,7 +86,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
-      Object[] tabInformations = new Object[8];
+      Object[] tabInformations = new Object[9];
       Product product = timesheetLine.getProduct();
       if (product == null) {
         product = timesheetLineService.getDefaultProduct(timesheetLine);
@@ -115,6 +117,9 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       tabInformations[5] = timesheetLine.getProject();
       tabInformations[6] = forcedUnitPrice;
       tabInformations[7] = forcedPriceDiscounted;
+      Set<TimesheetLine> tmLines = new HashSet<TimesheetLine>();
+      tmLines.add(timesheetLine);
+      tabInformations[8] = tmLines;
 
       String key = null;
       if (consolidate) {
@@ -139,6 +144,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
                       timesheetLine.getDurationForCustomer() != null
                           ? timesheetProjectService.computeDurationForCustomer(timesheetLine)
                           : timesheetLine.getHoursDuration());
+          ((Set<TimesheetLine>) tabInformations[8]).add(timesheetLine);
         } else {
           timeSheetInformationsMap.put(key, tabInformations);
         }
@@ -182,7 +188,9 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
               priceList,
               forcedUnitPrice,
               forcedPriceDiscounted));
-      invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
+      InvoiceLine invoiceLine = invoiceLineList.get(invoiceLineList.size() - 1);
+      invoiceLine.setProject(project);
+      ((Set<TimesheetLine>) timesheetInformations[8]).forEach(it -> it.setInvoiceLine(invoiceLine));
       count++;
     }
 
