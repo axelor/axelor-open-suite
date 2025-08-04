@@ -8,12 +8,21 @@
   <entity name="InvoiceLine">
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
+      title="Task"/>
     <many-to-many name="projectTaskSet" ref="com.axelor.apps.project.db.ProjectTask"
       title="Tasks"/>
     <decimal name="previousProgress" title="Previous progress" nullable="true"/>
     <decimal name="newProgress" title="New progress" nullable="true"/>
     <many-to-one name="expenseLine" title="Expense line"
       ref="com.axelor.apps.hr.db.ExpenseLine"/>
+    <many-to-one name="invoiceLine" title="Invoice line"
+      ref="com.axelor.apps.account.db.InvoiceLine"/>
+
+    <boolean name="toInvoice" title="To invoice"/>
+    <boolean name="invoiced" title="Invoiced"/>
+    <many-to-one name="finalInvoice" title="Final invoice"
+      ref="com.axelor.apps.account.db.Invoice" readonly="true"/>
 
   </entity>
 

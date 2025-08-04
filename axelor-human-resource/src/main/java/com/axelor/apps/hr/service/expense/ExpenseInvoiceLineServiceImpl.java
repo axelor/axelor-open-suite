@@ -45,6 +45,7 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
       invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
       count++;
       expenseLine.setInvoiced(true);
+      expenseLine.setFinalInvoice(invoice);
     }
 
     return invoiceLineList;

@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -111,8 +110,7 @@ public interface InvoiceLineService {
 
   boolean checkManageCutOffDates(InvoiceLine invoiceLine);
 
-  void applyCutOffDates(
-      InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+  void applyCutOffDates(InvoiceLine invoiceLine, Invoice invoice);
 
   Map<String, String> getProductDescriptionAndNameTranslation(
       Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;

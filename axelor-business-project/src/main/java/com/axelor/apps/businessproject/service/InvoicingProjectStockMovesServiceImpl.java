@@ -102,7 +102,7 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
 
   @Override
   public List<InvoiceLine> createStockMovesInvoiceLines(
-      Invoice invoice, Set<StockMoveLine> stockMoveLineSet) throws AxelorException {
+      Invoice invoice, Set<StockMoveLine> stockMoveLineSet, int priority) throws AxelorException {
 
     Map<StockMove, List<StockMoveLine>> stockMoveMap = groupStockMoveLines(stockMoveLineSet);
 
@@ -115,7 +115,7 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
 
       invoiceLineList.addAll(
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMove, stockMoveLines, qtyToInvoiceMap));
+              invoice, stockMove, stockMoveLines, qtyToInvoiceMap, priority));
 
       Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
       if (stockMoveSet == null) {

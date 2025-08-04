@@ -207,6 +207,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl
             public List<InvoiceLine> creates() throws AxelorException {
               InvoiceLine invoiceLine = this.createInvoiceLine();
               invoiceLine.setProject(purchaseOrderLine.getProject());
+              invoiceLine.setProjectTask(purchaseOrderLine.getProjectTask());
 
               List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
               invoiceLines.add(invoiceLine);
@@ -253,6 +254,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl
 
               InvoiceLine invoiceLine = this.createInvoiceLine();
               invoiceLine.setProject(purchaseOrderLine.getProject());
+              invoiceLine.setProjectTask(purchaseOrderLine.getProjectTask());
 
               List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
               invoiceLines.add(invoiceLine);
@@ -274,12 +276,14 @@ public class PurchaseOrderInvoiceProjectServiceImpl
               false,
               null,
               purchaseOrderLine,
+              null,
               null) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
               InvoiceLine invoiceLine = this.createInvoiceLine();
               invoiceLine.setProject(purchaseOrderLine.getProject());
+              invoiceLine.setProjectTask(purchaseOrderLine.getProjectTask());
 
               List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
               invoiceLines.add(invoiceLine);

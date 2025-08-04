@@ -104,10 +104,11 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       Invoice invoice,
       StockMove stockMove,
       List<StockMoveLine> stockMoveLineList,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      int sequence)
       throws AxelorException {
     List<InvoiceLine> invoiceLineList =
-        super.createInvoiceLines(invoice, stockMove, stockMoveLineList, qtyToInvoiceMap);
+        super.createInvoiceLines(invoice, stockMove, stockMoveLineList, qtyToInvoiceMap, sequence);
 
     if (appBudgetService.isApp("budget")) {
       budgetInvoiceService.setComputedBudgetLinesAmount(invoiceLineList);
@@ -117,9 +118,10 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
   }
 
   @Override
-  public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
+  public InvoiceLine createInvoiceLine(
+      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty, int sequence)
       throws AxelorException {
-    InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty);
+    InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty, sequence);
     if (appBudgetService.isApp("budget")
         && invoiceLine != null
         && invoiceLine.getCompanyExTaxTotal().signum() != 0) {
