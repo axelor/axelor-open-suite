@@ -6,7 +6,7 @@
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
       check-message="Invalid codeSelect :codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
@@ -34,16 +34,16 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
       check-message="Company with importId :company_importId doesn't exist"/>
     <bind column="targetTypeSelect" to="targetTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.target.type.select', targetTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.Contract', 'targetTypeSelect', targetTypeSelect)"
       check-message="Invalid targetTypeSelect :targetTypeSelect"/>
     <bind column="contractTypeSelect" to="contractTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.contract.type.select', contractTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.Contract', 'contractTypeSelect', contractTypeSelect)"
       check-message="Invalid contractTypeSelect :contractTypeSelect"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('contract.status.select', statusSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.Contract', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind column="planningPreferenceSelect" to="planningPreferenceSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('intervention.contract.intervention.planning.preference', planningPreferenceSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.contract.db.Contract', 'planningPreferenceSelect', planningPreferenceSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind to="startDate" column="startDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"/>
@@ -79,10 +79,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', partner_importId)"
       check-message="Partner with importId :partner_importId doesn't exist"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('equipment.type.select', typeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.Equipment', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
     <bind column="indicatorSelect" to="indicatorSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('equipment.indicator.select', indicatorSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.Equipment', 'indicatorSelect', indicatorSelect)"
       check-message="Invalid indicatorSelect :indicatorSelect"/>
     <bind to="commissioningDate" column="commissioningDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(commissioningDate)"/>
@@ -105,16 +105,16 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('equipment.type.select', typeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.EquipmentModel', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
   </input>
 
   <input file="base_duration.csv" separator=";" type="com.axelor.apps.base.db.Duration">
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.duration.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Duration', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
     <bind column="applicationTypeSelect" to="applicationTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.duration.application.type.select', applicationTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Duration', 'applicationTypeSelect', applicationTypeSelect)"
       check-message="Invalid applicationTypeSelect :applicationTypeSelect"/>
   </input>
 
@@ -140,7 +140,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="answerTypeSelect" to="answerTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('answer.type.select', answerTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.AnswerType', 'answerTypeSelect', answerTypeSelect)"
       check-message="Invalid answerTypeSelect :answerTypeSelect"/>
   </input>
 
@@ -181,7 +181,7 @@
   <input file="intervention_rangeType.csv" separator=";"
     type="com.axelor.apps.intervention.db.RangeType">
     <bind column="rangeTypeSelect" to="rangeTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('range.type.type.select', rangeTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.RangeType', 'rangeTypeSelect', rangeTypeSelect)"
       check-message="Invalid rangeTypeSelect :rangeTypeSelect"/>
     <bind to="equipmentFamilySet" column="equipmentFamilySet"
       search="self.importId in :equipmentFamilySet" eval="equipmentFamilySet.split('\\|') as List"/>
@@ -225,16 +225,16 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.intervention.db.CustomerRequest', 'importId', importId, 'sequence', sequence)"
       check-message="Sequence must be unique"/>
     <bind column="priority" to="priority"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.priority.select', priority, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.CustomerRequest', 'priority', priority)"
       check-message="Invalid priority :priority"/>
     <bind column="gitStatusIndicator" to="gitStatusIndicator"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.real.gt.indicator.select', gitStatusIndicator, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.CustomerRequest', 'gitStatusIndicator', gitStatusIndicator)"
       check-message="Invalid gitStatusIndicator :gitStatusIndicator"/>
     <bind column="grtStatusIndicator" to="grtStatusIndicator"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.real.gt.indicator.select', grtStatusIndicator, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.CustomerRequest', 'grtStatusIndicator', grtStatusIndicator)"
       check-message="Invalid grtStatusIndicator :grtStatusIndicator"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.CustomerRequest', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind to="requestDateTime" column="requestDateTime"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(requestDateTime)"
@@ -251,16 +251,16 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.intervention.db.Intervention', 'importId', importId, 'sequence', sequence)"
       check-message="Sequence must be unique"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('intervention.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.Intervention', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind column="planningPreferenceSelect" to="planningPreferenceSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('intervention.contract.intervention.planning.preference', planningPreferenceSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.Intervention', 'planningPreferenceSelect', planningPreferenceSelect)"
       check-message="Invalid planningPreferenceSelect :planningPreferenceSelect"/>
     <bind column="priority" to="priority"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('customer.request.priority.select', priority, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.Intervention', 'priority', priority)"
       check-message="Invalid priority :priority"/>
     <bind column="estimatedDateMonth" to="estimatedDateMonth"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('iadministration.month.select', estimatedDateMonth, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.intervention.db.Intervention', 'estimatedDateMonth', estimatedDateMonth)"
       check-message="Invalid estimatedDateMonth :estimatedDateMonth"/>
     <bind to="equipmentSet" column="equipmentSet" search="self.importId in :equipmentSet"
       eval="equipmentSet.split('\\|') as List"/>
