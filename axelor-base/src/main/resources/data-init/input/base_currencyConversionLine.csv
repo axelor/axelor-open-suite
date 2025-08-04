@@ -1,4 +1,4 @@
-"importId";"appBase";"startCurrency.code";"endCurrency.code";"exchangeRate";"fromDate";"toDate"
+"importId";"appBase";"startCurrency_code";"endCurrency_code";"exchangeRate";"fromDate";"toDate"
 1;"base";"EUR";"USD";"1.3008";"2012-05-02";"2013-05-01"
 2;"base";"EUR";"GBP";"0.8533";"2012-05-02";"2013-05-01"
 3;"base";"EUR";"CNY";"8.0321";"2012-05-02";"2013-05-01"
