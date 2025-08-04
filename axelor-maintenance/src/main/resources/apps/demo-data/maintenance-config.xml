@@ -13,13 +13,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.production.db.ProductionConfig', 'importId', importId, 'company.importId', company_importId)"
       check-message="Company must be unique"/>
     <bind column="stockMoveRealizeOrderSelect" to="stockMoveRealizeOrderSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.manuf.order.stock.move.realize.order.select', stockMoveRealizeOrderSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.production.db.ProductionConfig', 'stockMoveRealizeOrderSelect', stockMoveRealizeOrderSelect)"
       check-message="Invalid stockMoveRealizeOrderSelect :stockMoveRealizeOrderSelect"/>
     <bind column="capacity" to="capacity"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.config.capacity.select', capacity, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.production.db.ProductionConfig', 'capacity', capacity)"
       check-message="Invalid capacity :capacity"/>
     <bind column="scheduling" to="scheduling"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('production.config.scheduling.select', scheduling, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.production.db.ProductionConfig', 'scheduling', scheduling)"
       check-message="Invalid scheduling :scheduling"/>
   </input>
 
