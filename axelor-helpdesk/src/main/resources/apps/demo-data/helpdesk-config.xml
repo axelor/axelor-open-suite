@@ -21,10 +21,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(subject)"
       check-message="Subject must not be null"/>
     <bind column="progressSelect" to="progressSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('helpdesk.ticket.progress.select', progressSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.helpdesk.db.Ticket', 'progressSelect', progressSelect)"
       check-message="Invalid progressSelect :progressSelect"/>
     <bind column="prioritySelect" to="prioritySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('helpdesk.priority.select', prioritySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.helpdesk.db.Ticket', 'prioritySelect', prioritySelect)"
       check-message="Invalid prioritySelect :prioritySelect"/>
     <bind to="startDateT" column="startDateT" adapter="LocalDateTime"/>
     <bind to="endDateT" column="endDateT" adapter="LocalDateTime"/>
@@ -33,7 +33,7 @@
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
       check-message="Invalid codeSelect :codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
