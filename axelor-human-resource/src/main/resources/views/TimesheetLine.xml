@@ -633,7 +633,18 @@
       expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_user" expr="eval: __user__"/>
     <context name="_employee" expr="eval: __user__.employee"/>
+  </action-view>
 
+  <action-view name="action-timesheet-line-view-timesheet-editor-timesheet-line"
+    title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">
+    <view type="grid" name=""/>
+    <view type="form" name=""/>
+    <domain>self.timesheet.id = :_timesheetId AND self.date = :_date AND self.projectTask.id =
+      :_projectTaskId AND self.project.id = :_projectId</domain>
+    <context name="_timesheetId" expr="eval: id"/>
+    <context name="_date" expr="eval: date"/>
+    <context name="_projectTaskId" expr="eval: projectTask?.id"/>
+    <context name="_projectId" expr="eval: project?.id"/>
   </action-view>
 
   <action-attrs name="action-timesheet-line-attrs-set-site-domain">
