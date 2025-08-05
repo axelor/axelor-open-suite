@@ -10,13 +10,13 @@
       check-message="Name must not be null"/>
     <bind column="partnerTypeSelect" to="partnerTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.TargetList', 'partnerTypeSelect', partnerTypeSelect)"
-      check-message="Invalid partnerTypeSelect :partnerTypeSelect"/>
+      check-message="Invalid partnerTypeSelect"/>
     <bind column="partnerQueryTypeSelect" to="partnerQueryTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.TargetList', 'partnerQueryTypeSelect', partnerQueryTypeSelect)"
-      check-message="Invalid partnerQueryTypeSelect :partnerQueryTypeSelect"/>
+      check-message="Invalid partnerQueryTypeSelect"/>
     <bind column="leadQueryTypeSelect" to="leadQueryTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.TargetList', 'leadQueryTypeSelect', leadQueryTypeSelect)"
-      check-message="Invalid leadQueryTypeSelect :leadQueryTypeSelect"/>
+      check-message="Invalid leadQueryTypeSelect"/>
   </input>
 
   <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template">
@@ -25,13 +25,13 @@
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
-      check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
+      check-message="Invalid mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
-      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
+      check-message="Invalid templateEngineSelect"/>
     <bind column="language" to="language"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
-      check-message="Invalid language :language"/>
+      check-message="Invalid language"/>
   </input>
 
   <input file="marketing_campaignType.csv" separator=";"
@@ -48,10 +48,10 @@
       check-message="Name must not be null"/>
     <bind column="stageSelect" to="stageSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.Campaign', 'stageSelect', stageSelect)"
-      check-message="Invalid stageSelect :stageSelect"/>
+      check-message="Invalid stageSelect"/>
     <bind column="eventTypeSelect" to="eventTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.Campaign', 'eventTypeSelect', eventTypeSelect)"
-      check-message="Invalid eventTypeSelect :eventTypeSelect"/>
+      check-message="Invalid eventTypeSelect"/>
   </input>
 
   <input file="marketing_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer"
@@ -65,11 +65,11 @@
     separator=";">
     <bind to="metaModel" column="metaModel" search="self.name = :metaModel"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel)"
-      check-message="Meta model with name :metaModel doesn't exist"/>
+      check-message="Meta model doesn't exist"/>
     <bind to="metaField" column="metaField"
       search="self.name = :metaField AND self.metaModel.name = :metaModel"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
-      check-message="Meta field with name :metaField and model :metaModel doesn't exist"/>
+      check-message="Meta field doesn't exist"/>
     <bind to="anonymizer" column="anonymizer_importId"
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
