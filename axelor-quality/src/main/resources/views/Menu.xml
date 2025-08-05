@@ -6,8 +6,8 @@
   <menuitem name="menu-quality-root" order="-1700" if="__config__.app.isApp('quality')"
     title="Quality" icon="check" icon-background="#3f6bb9"/>
 
-  <menuitem name="quality-controls-root" parent="menu-quality-root"
-    title="Quality controls" order="100"/>
+  <menuitem name="quality-controls-root" parent="menu-quality-root" title="Quality audits"
+    order="100"/>
 
   <menuitem name="quality-control-entries" parent="menu-quality-root"
     title="Control entries" action="quality.control.entries.view" order="80"/>
@@ -37,10 +37,10 @@
   </action-view>
 
 
-  <menuitem name="quality-controls" parent="quality-controls-root" title="Quality controls"
+  <menuitem name="quality-controls" parent="quality-controls-root" title="Quality audits"
     action="quality.controls" order="200"/>
 
-  <action-view name="quality.controls" title="Quality controls"
+  <action-view name="quality.controls" title="Quality audits"
     model="com.axelor.apps.quality.db.QualityControl">
     <view type="kanban" name="quality-control-kanban"/>
     <view type="grid" name="quality-control-grid"/>
