@@ -106,8 +106,9 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       BigDecimal forcedPriceDiscounted = null;
 
       ProjectTask projectTask = timesheetLine.getProjectTask();
-      if (projectTask != null && projectTask.getProduct() != null) {
-        product = projectTask.getProduct();
+      if (projectTask != null
+          && projectTask.getProduct() != null
+          && product.equals(projectTask.getProduct())) {
         forcedUnitPrice = projectTask.getUnitPrice();
         forcedPriceDiscounted = projectTask.getPriceDiscounted();
       }
