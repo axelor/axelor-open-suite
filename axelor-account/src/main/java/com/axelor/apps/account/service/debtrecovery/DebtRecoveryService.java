@@ -230,7 +230,7 @@ public class DebtRecoveryService {
     LocalDate todayDate = appAccountService.getTodayDate(company);
     int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
-    javax.persistence.Query invoiceTermQuery =
+    jakarta.persistence.Query invoiceTermQuery =
         JPA.em()
             .createQuery(computeQuery(tradingName))
             .setParameter("partner", partner)
@@ -247,8 +247,8 @@ public class DebtRecoveryService {
     idList.addAll(invoiceTermQuery.getResultList());
   }
 
-  protected javax.persistence.Query addTradingNameBinding(
-      TradingName tradingName, javax.persistence.Query invoiceTermQuery) {
+  protected jakarta.persistence.Query addTradingNameBinding(
+      TradingName tradingName, jakarta.persistence.Query invoiceTermQuery) {
     if (tradingName != null) {
       invoiceTermQuery = invoiceTermQuery.setParameter("tradingName", tradingName);
     }

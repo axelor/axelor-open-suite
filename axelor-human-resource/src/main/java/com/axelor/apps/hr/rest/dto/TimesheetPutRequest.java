@@ -21,10 +21,10 @@ package com.axelor.apps.hr.rest.dto;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.validation.constraints.Pattern;
 import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetPutRequest extends RequestStructure {

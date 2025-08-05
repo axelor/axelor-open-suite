@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaTranslation;
@@ -36,6 +37,8 @@ import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +99,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     List<String[]> translationList =
         addRecordRowIntoList(map, languageNumber, importExportTranslationHistory);
     String fileName = "Exported Translations" + " - " + java.time.LocalDateTime.now();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
     CsvHelper.csvWriter(
         file.getParent(), file.getName(), separator, '\"', headers, translationList);
     try (InputStream is = new FileInputStream(file)) {

@@ -319,7 +319,7 @@ public class StockMoveInvoiceController {
       String stockMoveListStr = (String) request.getContext().get("customerStockMoveToInvoice");
 
       for (String stockMoveId : stockMoveListStr.split(",")) {
-        stockMoveList.add(JPA.em().find(StockMove.class, new Long(stockMoveId)));
+        stockMoveList.add(JPA.em().find(StockMove.class, Long.valueOf(stockMoveId)));
       }
 
       // Check if paymentCondition, paymentMode or contactPartner are content in parameters
@@ -491,7 +491,7 @@ public class StockMoveInvoiceController {
       String stockMoveListStr = (String) request.getContext().get("supplierStockMoveToInvoice");
 
       for (String stockMoveId : stockMoveListStr.split(",")) {
-        stockMoveList.add(JPA.em().find(StockMove.class, new Long(stockMoveId)));
+        stockMoveList.add(JPA.em().find(StockMove.class, Long.valueOf(stockMoveId)));
       }
 
       PaymentCondition paymentCondition = null;

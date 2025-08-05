@@ -785,7 +785,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
 
-    javax.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
+    jakarta.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
 
     q.setParameter("saleOrderId", saleOrder.getId());
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);

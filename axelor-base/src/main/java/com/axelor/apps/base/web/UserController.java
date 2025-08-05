@@ -42,8 +42,8 @@ import com.axelor.utils.helpers.ModelHelper;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
+import jakarta.validation.ValidationException;
 import java.util.Map;
-import javax.validation.ValidationException;
 
 @Singleton
 public class UserController {

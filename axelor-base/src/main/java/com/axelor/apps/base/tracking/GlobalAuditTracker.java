@@ -15,355 +15,361 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-package com.axelor.apps.base.tracking;
+ *//*
 
-import com.axelor.apps.base.db.GlobalTrackingConfigurationLine;
-import com.axelor.apps.base.db.GlobalTrackingLog;
-import com.axelor.apps.base.db.GlobalTrackingLogLine;
-import com.axelor.apps.base.db.repo.GlobalTrackingConfigurationLineRepository;
-import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
-import com.axelor.auth.AuditInterceptor;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.AuditableModel;
-import com.axelor.auth.db.User;
-import com.axelor.db.EntityHelper;
-import com.axelor.db.JPA;
-import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
-import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaField;
-import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.script.GroovyScriptHelper;
-import com.axelor.script.ScriptBindings;
-import com.google.common.base.Strings;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.Transaction;
-import org.hibernate.collection.internal.AbstractPersistentCollection;
-import org.hibernate.collection.internal.PersistentBag;
-import org.hibernate.collection.internal.PersistentSet;
+   package com.axelor.apps.base.tracking;
 
-public class GlobalAuditTracker {
+   import com.axelor.apps.base.db.GlobalTrackingConfigurationLine;
+   import com.axelor.apps.base.db.GlobalTrackingLog;
+   import com.axelor.apps.base.db.GlobalTrackingLogLine;
+   import com.axelor.apps.base.db.repo.GlobalTrackingConfigurationLineRepository;
+   import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
+   import com.axelor.auth.AuditInterceptor;
+   import com.axelor.auth.AuthUtils;
+   import com.axelor.auth.db.AuditableModel;
+   import com.axelor.auth.db.User;
+   import com.axelor.db.EntityHelper;
+   import com.axelor.db.JPA;
+   import com.axelor.db.Model;
+   import com.axelor.db.mapper.Mapper;
+   import com.axelor.inject.Beans;
+   import com.axelor.meta.db.MetaField;
+   import com.axelor.meta.db.MetaModel;
+   import com.axelor.meta.db.repo.MetaFieldRepository;
+   import com.axelor.meta.db.repo.MetaModelRepository;
+   import com.axelor.script.GroovyScriptHelper;
+   import com.axelor.script.ScriptBindings;
+   import com.google.common.base.Strings;
+   import com.google.common.cache.Cache;
+   import com.google.common.cache.CacheBuilder;
+   import java.beans.BeanInfo;
+   import java.beans.IntrospectionException;
+   import java.beans.Introspector;
+   import java.beans.PropertyDescriptor;
+   import java.lang.reflect.InvocationTargetException;
+   import java.lang.reflect.Method;
+   import java.time.LocalDateTime;
+   import java.util.ArrayList;
+   import java.util.Arrays;
+   import java.util.Collection;
+   import java.util.HashMap;
+   import java.util.List;
+   import java.util.Map;
+   import java.util.concurrent.ExecutionException;
+   import java.util.concurrent.TimeUnit;
+   import java.util.stream.Collectors;
+   import org.apache.commons.collections.CollectionUtils;
+   import org.hibernate.Transaction;
+   import org.hibernate.collection.internal.AbstractPersistentCollection;
+   import org.hibernate.collection.internal.PersistentBag;
+   import org.hibernate.collection.internal.PersistentSet;
 
-  private static final ThreadLocal<List<GlobalTrackingLog>> LOGS = new ThreadLocal<>();
+   public class GlobalAuditTracker {
 
-  private final Cache<String, List<GlobalTrackingConfigurationLine>>
-      globalTrackingConfigurationLineCache =
-          CacheBuilder.newBuilder()
-              .expireAfterWrite(10, TimeUnit.MINUTES)
-              .maximumSize(100)
-              .recordStats()
-              .build();
+     private static final ThreadLocal<List<GlobalTrackingLog>> LOGS = new ThreadLocal<>();
 
-  private final Cache<String, MetaModel> metaModelCache =
-      CacheBuilder.newBuilder()
-          .expireAfterWrite(10, TimeUnit.MINUTES)
-          .maximumSize(100)
-          .recordStats()
-          .build();
+     private final Cache<String, List<GlobalTrackingConfigurationLine>>
+         globalTrackingConfigurationLineCache =
+             CacheBuilder.newBuilder()
+                 .expireAfterWrite(10, TimeUnit.MINUTES)
+                 .maximumSize(100)
+                 .recordStats()
+                 .build();
 
-  private final Cache<String, MetaField> metaFieldCache =
-      CacheBuilder.newBuilder()
-          .expireAfterWrite(10, TimeUnit.MINUTES)
-          .maximumSize(1000)
-          .recordStats()
-          .build();
+     private final Cache<String, MetaModel> metaModelCache =
+         CacheBuilder.newBuilder()
+             .expireAfterWrite(10, TimeUnit.MINUTES)
+             .maximumSize(100)
+             .recordStats()
+             .build();
 
-  /**
-   * This method should be called from {@link
-   * AuditInterceptor#beforeTransactionCompletion(Transaction)} method to finish change recording.
-   *
-   * @param tx the transaction in which the change tracking is being done
-   * @param user the session user
+     private final Cache<String, MetaField> metaFieldCache =
+         CacheBuilder.newBuilder()
+             .expireAfterWrite(10, TimeUnit.MINUTES)
+             .maximumSize(1000)
+             .recordStats()
+             .build();
+
+     */
+/**
+ * This method should be called from {@link
+ * AuditInterceptor#beforeTransactionCompletion(Transaction)} method to finish change recording.
+ *
+ * @param tx the transaction in which the change tracking is being done
+ * @param user the session user
+ *//*
+
+   public void onComplete(Transaction tx, User user) {
+
+     List<GlobalTrackingLog> logList = LOGS.get();
+     LOGS.remove();
+     if (CollectionUtils.isEmpty(logList)) {
+       return;
+     }
+
+     GlobalTrackingLogRepository logRepo = Beans.get(GlobalTrackingLogRepository.class);
+     GlobalTrackingConfigurationLine configLine;
+     List<GlobalTrackingConfigurationLine> configLineList;
+     ScriptBindings bindings;
+
+     for (GlobalTrackingLog log : logList) {
+
+       configLineList = getByModelName(log.getMetaModelName());
+       if (configLineList.isEmpty()) {
+         continue;
+       }
+
+       log.setMetaModel(getMetaModel(log.getMetaModelName()));
+
+       List<GlobalTrackingLogLine> logLinesToSave = new ArrayList<>();
+
+       if ((CollectionUtils.isNotEmpty(log.getGlobalTrackingLogLineList()))) {
+         try {
+           bindings =
+               new ScriptBindings(
+                   this.getContext(
+                       JPA.find(
+                           (Class<Model>) Class.forName(log.getMetaModel().getFullName()),
+                           log.getRelatedId())));
+         } catch (Exception e) {
+           continue;
+         }
+         for (GlobalTrackingLogLine line : log.getGlobalTrackingLogLineList()) {
+           configLine =
+               configLineList.stream()
+                   .filter(l -> l.getMetaField().getName().equals(line.getMetaFieldName()))
+                   .findFirst()
+                   .orElse(null);
+
+           if (configLine == null
+               || !this.canTrack(configLine, log.getTypeSelect())
+               || (!Strings.isNullOrEmpty(configLine.getTrackingCondition())
+                   && !Boolean.TRUE.equals(
+                       new GroovyScriptHelper(bindings).eval(configLine.getTrackingCondition())))) {
+             continue;
+           }
+           line.setMetaField(getMetaField(log.getMetaModel().getId(), line.getMetaFieldName()));
+           logLinesToSave.add(line);
+         }
+       }
+       if (!logLinesToSave.isEmpty()
+           || (GlobalTrackingLogRepository.TYPE_DELETE == log.getTypeSelect()
+               && configLineList.stream()
+                   .anyMatch(l -> Boolean.TRUE.equals(l.getTrackDeletion())))) {
+         log.getGlobalTrackingLogLineList().stream().forEach(l -> l.setGlobalTrackingLog(null));
+         logLinesToSave.stream().forEach(l -> l.setGlobalTrackingLog(log));
+         log.setUser(user);
+         logRepo.save(log);
+       }
+     }
+     invalidateAll();
+   }
+
+   protected boolean canTrack(GlobalTrackingConfigurationLine confLine, int typeSelect) {
+
+     switch (typeSelect) {
+       case GlobalTrackingLogRepository.TYPE_CREATE:
+         return confLine.getTrackCreation();
+       case GlobalTrackingLogRepository.TYPE_READ:
+         return confLine.getTrackReading();
+       case GlobalTrackingLogRepository.TYPE_UPDATE:
+         return confLine.getTrackUpdate();
+       case GlobalTrackingLogRepository.TYPE_DELETE:
+         return confLine.getTrackDeletion();
+       case GlobalTrackingLogRepository.TYPE_EXPORT:
+         return confLine.getTrackExport();
+       default:
+         return false;
+     }
+   }
+
+   private Map<String, Object> getContext(Object obj)
+       throws IntrospectionException,
+           InvocationTargetException,
+           IllegalAccessException,
+           IllegalArgumentException {
+     Map<String, Object> result = new HashMap<>();
+     BeanInfo info = Introspector.getBeanInfo(obj.getClass());
+     Method reader = null;
+     for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
+       reader = pd.getReadMethod();
+       if (reader != null) {
+         result.put(pd.getName(), reader.invoke(obj));
+       }
+     }
+     return result;
+   }
+
+   protected void init() {
+     LOGS.set(new ArrayList<>());
+   }
+
    */
-  public void onComplete(Transaction tx, User user) {
+/**
+ * This method should be called from {@link
+ * AuditInterceptor#afterTransactionCompletion(Transaction)} method to clear the change recording.
+ *//*
 
-    List<GlobalTrackingLog> logList = LOGS.get();
-    LOGS.remove();
-    if (CollectionUtils.isEmpty(logList)) {
-      return;
-    }
+     protected void clear() {
+       LOGS.remove();
+     }
 
-    GlobalTrackingLogRepository logRepo = Beans.get(GlobalTrackingLogRepository.class);
-    GlobalTrackingConfigurationLine configLine;
-    List<GlobalTrackingConfigurationLine> configLineList;
-    ScriptBindings bindings;
+     protected void addLog(GlobalTrackingLog log) {
+       if (LOGS.get() == null) {
+         this.init();
+       }
+       LOGS.get().add(log);
+     }
 
-    for (GlobalTrackingLog log : logList) {
+     protected GlobalTrackingLog addLog(AuditableModel entity, int type) {
 
-      configLineList = getByModelName(log.getMetaModelName());
-      if (configLineList.isEmpty()) {
-        continue;
-      }
+       GlobalTrackingLog log = new GlobalTrackingLog();
+       log.setDateT(LocalDateTime.now());
+       log.setMetaModelName(entity.getClass().getSimpleName());
+       log.setTypeSelect(type);
+       log.setUser(AuthUtils.getUser());
+       log.setRelatedId(entity.getId());
+       log.setRelatedReference(this.getRelatedReference(entity));
+       log.setGlobalTrackingLogLineList(new ArrayList<>());
 
-      log.setMetaModel(getMetaModel(log.getMetaModelName()));
+       this.addLog(log);
+       return log;
+     }
 
-      List<GlobalTrackingLogLine> logLinesToSave = new ArrayList<>();
+     protected String getRelatedReference(AuditableModel entity) {
+       Mapper classMapper = Mapper.of(EntityHelper.getEntityClass(entity));
 
-      if ((CollectionUtils.isNotEmpty(log.getGlobalTrackingLogLineList()))) {
-        try {
-          bindings =
-              new ScriptBindings(
-                  this.getContext(
-                      JPA.find(
-                          (Class<Model>) Class.forName(log.getMetaModel().getFullName()),
-                          log.getRelatedId())));
-        } catch (Exception e) {
-          continue;
-        }
-        for (GlobalTrackingLogLine line : log.getGlobalTrackingLogLineList()) {
-          configLine =
-              configLineList.stream()
-                  .filter(l -> l.getMetaField().getName().equals(line.getMetaFieldName()))
-                  .findFirst()
-                  .orElse(null);
+       if (classMapper.getNameField() != null && classMapper.getNameField().getName() != null) {
+         String fieldName = classMapper.getNameField().getName();
+         return (String) Mapper.toMap(entity).get(fieldName);
+       }
 
-          if (configLine == null
-              || !this.canTrack(configLine, log.getTypeSelect())
-              || (!Strings.isNullOrEmpty(configLine.getTrackingCondition())
-                  && !Boolean.TRUE.equals(
-                      new GroovyScriptHelper(bindings).eval(configLine.getTrackingCondition())))) {
-            continue;
-          }
-          line.setMetaField(getMetaField(log.getMetaModel().getId(), line.getMetaFieldName()));
-          logLinesToSave.add(line);
-        }
-      }
-      if (!logLinesToSave.isEmpty()
-          || (GlobalTrackingLogRepository.TYPE_DELETE == log.getTypeSelect()
-              && configLineList.stream()
-                  .anyMatch(l -> Boolean.TRUE.equals(l.getTrackDeletion())))) {
-        log.getGlobalTrackingLogLineList().stream().forEach(l -> l.setGlobalTrackingLog(null));
-        logLinesToSave.stream().forEach(l -> l.setGlobalTrackingLog(log));
-        log.setUser(user);
-        logRepo.save(log);
-      }
-    }
-    invalidateAll();
-  }
+       return "";
+     }
 
-  protected boolean canTrack(GlobalTrackingConfigurationLine confLine, int typeSelect) {
+     @SuppressWarnings("unchecked")
+     protected void addCollectionModification(Object collection, Long id) {
 
-    switch (typeSelect) {
-      case GlobalTrackingLogRepository.TYPE_CREATE:
-        return confLine.getTrackCreation();
-      case GlobalTrackingLogRepository.TYPE_READ:
-        return confLine.getTrackReading();
-      case GlobalTrackingLogRepository.TYPE_UPDATE:
-        return confLine.getTrackUpdate();
-      case GlobalTrackingLogRepository.TYPE_DELETE:
-        return confLine.getTrackDeletion();
-      case GlobalTrackingLogRepository.TYPE_EXPORT:
-        return confLine.getTrackExport();
-      default:
-        return false;
-    }
-  }
+       if (collection instanceof AbstractPersistentCollection) {
 
-  private Map<String, Object> getContext(Object obj)
-      throws IntrospectionException,
-          InvocationTargetException,
-          IllegalAccessException,
-          IllegalArgumentException {
-    Map<String, Object> result = new HashMap<>();
-    BeanInfo info = Introspector.getBeanInfo(obj.getClass());
-    Method reader = null;
-    for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
-      reader = pd.getReadMethod();
-      if (reader != null) {
-        result.put(pd.getName(), reader.invoke(obj));
-      }
-    }
-    return result;
-  }
+         AbstractPersistentCollection newValues = null;
+         Collection<AuditableModel> oldValues = null;
+         if (collection instanceof PersistentSet) {
+           // MANY-TO-MANY
+           newValues = (PersistentSet) collection;
+           oldValues =
+               (Collection<AuditableModel>) ((Map<?, ?>) newValues.getStoredSnapshot()).keySet();
+         } else if (collection instanceof PersistentBag) {
+           // ONE-TO-MANY
+           newValues = (PersistentBag) collection;
+           oldValues = (Collection<AuditableModel>) newValues.getStoredSnapshot();
+         }
 
-  protected void init() {
-    LOGS.set(new ArrayList<>());
-  }
+         if (newValues == null) {
+           return;
+         }
 
-  /**
-   * This method should be called from {@link
-   * AuditInterceptor#afterTransactionCompletion(Transaction)} method to clear the change recording.
+         Object owner = newValues.getOwner();
+
+         if (owner == null
+             || Arrays.asList(GlobalAuditInterceptor.BACKLISTED_CLASSES).contains(owner.getClass())
+             || !(owner instanceof AuditableModel)) {
+           return;
+         }
+
+         String fieldName = newValues.getRole().replace(owner.getClass().getCanonicalName() + ".", "");
+
+         GlobalTrackingLog log =
+             LOGS.get().stream()
+                 .filter(
+                     l ->
+                         l.getRelatedId().equals(id)
+                             && l.getMetaModelName().equals(owner.getClass().getSimpleName()))
+                 .findFirst()
+                 .orElse(addLog((AuditableModel) owner, GlobalTrackingLogRepository.TYPE_UPDATE));
+
+         List<Long> previousIdList = new ArrayList<>();
+         List<Long> newIdList = new ArrayList<>();
+
+         if (CollectionUtils.isNotEmpty(oldValues)) {
+           for (AuditableModel oldValue : oldValues) {
+             if (oldValue != null) {
+               previousIdList.add(oldValue.getId());
+             }
+           }
+         }
+
+         for (AuditableModel newValue : (Collection<AuditableModel>) newValues) {
+           if (newValue != null) {
+             newIdList.add(newValue.getId());
+           }
+         }
+
+         GlobalTrackingLogLine line =
+             log.getGlobalTrackingLogLineList().stream()
+                 .filter(l -> l.getMetaFieldName().equals(fieldName))
+                 .findFirst()
+                 .orElse(null);
+
+         if (line == null) {
+           line = new GlobalTrackingLogLine();
+           line.setMetaFieldName(fieldName);
+           line.setGlobalTrackingLog(log);
+           line.setPreviousValue(
+               String.format(
+                   "[%s]",
+                   previousIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+           log.addGlobalTrackingLogLineListItem(line);
+         }
+         line.setNewValue(
+             String.format(
+                 "[%s]", newIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+       }
+     }
+
+     protected List<GlobalTrackingConfigurationLine> getByModelName(String modelName) {
+       try {
+         return globalTrackingConfigurationLineCache.get(
+             modelName,
+             () ->
+                 Beans.get(GlobalTrackingConfigurationLineRepository.class)
+                     .all()
+                     .filter("self.metaModel.name = ?", modelName)
+                     .fetch());
+       } catch (ExecutionException e) {
+         throw new RuntimeException("Failed to load config lines", e);
+       }
+     }
+
+     protected MetaModel getMetaModel(String modelName) {
+       try {
+         return metaModelCache.get(
+             modelName, () -> Beans.get(MetaModelRepository.class).findByName(modelName));
+       } catch (ExecutionException e) {
+         throw new RuntimeException("Failed to load MetaModel for " + modelName, e);
+       }
+     }
+
+     protected MetaField getMetaField(Long metaModelId, String fieldName) {
+       String key = metaModelId + "::" + fieldName;
+       try {
+         return metaFieldCache.get(
+             key,
+             () ->
+                 Beans.get(MetaFieldRepository.class)
+                     .all()
+                     .filter("self.metaModel.id = ? AND self.name = ?", metaModelId, fieldName)
+                     .fetchOne());
+       } catch (ExecutionException e) {
+         throw new RuntimeException(
+             "Failed to load MetaField " + fieldName + " for model " + metaModelId, e);
+       }
+     }
+
+     protected void invalidateAll() {
+       globalTrackingConfigurationLineCache.invalidateAll();
+       metaModelCache.invalidateAll();
+       metaFieldCache.invalidateAll();
+     }
+   }
    */
-  protected void clear() {
-    LOGS.remove();
-  }
-
-  protected void addLog(GlobalTrackingLog log) {
-    if (LOGS.get() == null) {
-      this.init();
-    }
-    LOGS.get().add(log);
-  }
-
-  protected GlobalTrackingLog addLog(AuditableModel entity, int type) {
-
-    GlobalTrackingLog log = new GlobalTrackingLog();
-    log.setDateT(LocalDateTime.now());
-    log.setMetaModelName(entity.getClass().getSimpleName());
-    log.setTypeSelect(type);
-    log.setUser(AuthUtils.getUser());
-    log.setRelatedId(entity.getId());
-    log.setRelatedReference(this.getRelatedReference(entity));
-    log.setGlobalTrackingLogLineList(new ArrayList<>());
-
-    this.addLog(log);
-    return log;
-  }
-
-  protected String getRelatedReference(AuditableModel entity) {
-    Mapper classMapper = Mapper.of(EntityHelper.getEntityClass(entity));
-
-    if (classMapper.getNameField() != null && classMapper.getNameField().getName() != null) {
-      String fieldName = classMapper.getNameField().getName();
-      return (String) Mapper.toMap(entity).get(fieldName);
-    }
-
-    return "";
-  }
-
-  @SuppressWarnings("unchecked")
-  protected void addCollectionModification(Object collection, Long id) {
-
-    if (collection instanceof AbstractPersistentCollection) {
-
-      AbstractPersistentCollection newValues = null;
-      Collection<AuditableModel> oldValues = null;
-      if (collection instanceof PersistentSet) {
-        // MANY-TO-MANY
-        newValues = (PersistentSet) collection;
-        oldValues =
-            (Collection<AuditableModel>) ((Map<?, ?>) newValues.getStoredSnapshot()).keySet();
-      } else if (collection instanceof PersistentBag) {
-        // ONE-TO-MANY
-        newValues = (PersistentBag) collection;
-        oldValues = (Collection<AuditableModel>) newValues.getStoredSnapshot();
-      }
-
-      if (newValues == null) {
-        return;
-      }
-
-      Object owner = newValues.getOwner();
-
-      if (owner == null
-          || Arrays.asList(GlobalAuditInterceptor.BACKLISTED_CLASSES).contains(owner.getClass())
-          || !(owner instanceof AuditableModel)) {
-        return;
-      }
-
-      String fieldName = newValues.getRole().replace(owner.getClass().getCanonicalName() + ".", "");
-
-      GlobalTrackingLog log =
-          LOGS.get().stream()
-              .filter(
-                  l ->
-                      l.getRelatedId().equals(id)
-                          && l.getMetaModelName().equals(owner.getClass().getSimpleName()))
-              .findFirst()
-              .orElse(addLog((AuditableModel) owner, GlobalTrackingLogRepository.TYPE_UPDATE));
-
-      List<Long> previousIdList = new ArrayList<>();
-      List<Long> newIdList = new ArrayList<>();
-
-      if (CollectionUtils.isNotEmpty(oldValues)) {
-        for (AuditableModel oldValue : oldValues) {
-          if (oldValue != null) {
-            previousIdList.add(oldValue.getId());
-          }
-        }
-      }
-
-      for (AuditableModel newValue : (Collection<AuditableModel>) newValues) {
-        if (newValue != null) {
-          newIdList.add(newValue.getId());
-        }
-      }
-
-      GlobalTrackingLogLine line =
-          log.getGlobalTrackingLogLineList().stream()
-              .filter(l -> l.getMetaFieldName().equals(fieldName))
-              .findFirst()
-              .orElse(null);
-
-      if (line == null) {
-        line = new GlobalTrackingLogLine();
-        line.setMetaFieldName(fieldName);
-        line.setGlobalTrackingLog(log);
-        line.setPreviousValue(
-            String.format(
-                "[%s]",
-                previousIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
-        log.addGlobalTrackingLogLineListItem(line);
-      }
-      line.setNewValue(
-          String.format(
-              "[%s]", newIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
-    }
-  }
-
-  protected List<GlobalTrackingConfigurationLine> getByModelName(String modelName) {
-    try {
-      return globalTrackingConfigurationLineCache.get(
-          modelName,
-          () ->
-              Beans.get(GlobalTrackingConfigurationLineRepository.class)
-                  .all()
-                  .filter("self.metaModel.name = ?", modelName)
-                  .fetch());
-    } catch (ExecutionException e) {
-      throw new RuntimeException("Failed to load config lines", e);
-    }
-  }
-
-  protected MetaModel getMetaModel(String modelName) {
-    try {
-      return metaModelCache.get(
-          modelName, () -> Beans.get(MetaModelRepository.class).findByName(modelName));
-    } catch (ExecutionException e) {
-      throw new RuntimeException("Failed to load MetaModel for " + modelName, e);
-    }
-  }
-
-  protected MetaField getMetaField(Long metaModelId, String fieldName) {
-    String key = metaModelId + "::" + fieldName;
-    try {
-      return metaFieldCache.get(
-          key,
-          () ->
-              Beans.get(MetaFieldRepository.class)
-                  .all()
-                  .filter("self.metaModel.id = ? AND self.name = ?", metaModelId, fieldName)
-                  .fetchOne());
-    } catch (ExecutionException e) {
-      throw new RuntimeException(
-          "Failed to load MetaField " + fieldName + " for model " + metaModelId, e);
-    }
-  }
-
-  protected void invalidateAll() {
-    globalTrackingConfigurationLineCache.invalidateAll();
-    metaModelCache.invalidateAll();
-    metaFieldCache.invalidateAll();
-  }
-}

@@ -19,7 +19,7 @@
 package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.utils.api.RequestStructure;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class SaleOrderAddLinePutRequest extends RequestStructure {
   @NotNull SaleOrderLinePostRequest saleOrderLine;

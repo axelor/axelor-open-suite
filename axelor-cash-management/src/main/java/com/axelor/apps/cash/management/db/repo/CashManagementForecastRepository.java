@@ -28,7 +28,7 @@ import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class CashManagementForecastRepository extends ForecastRepository {
 

@@ -49,6 +49,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
@@ -954,7 +955,7 @@ public class InventoryService {
 
     String fileName = computeExportFileName(inventory);
 
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File Located at: {}", file.getPath());
 

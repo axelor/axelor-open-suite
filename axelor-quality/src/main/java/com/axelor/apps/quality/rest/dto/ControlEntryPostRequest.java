@@ -19,7 +19,7 @@
 package com.axelor.apps.quality.rest.dto;
 
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class ControlEntryPostRequest extends RequestPostStructure {
 

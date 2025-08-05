@@ -32,8 +32,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import jakarta.annotation.Nullable;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @Singleton
 public class InvoicePaymentBankPayController extends InvoicePaymentController {

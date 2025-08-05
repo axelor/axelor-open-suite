@@ -247,7 +247,7 @@ public class EventController {
 
   @Transactional
   public void deleteThis(ActionRequest request, ActionResponse response) {
-    Long eventId = new Long(request.getContext().getParent().get("id").toString());
+    Long eventId = Long.parseLong(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
     Event event = eventRepository.find(eventId);
     Event child =
@@ -262,7 +262,7 @@ public class EventController {
 
   @Transactional
   public void deleteNext(ActionRequest request, ActionResponse response) {
-    Long eventId = new Long(request.getContext().getParent().get("id").toString());
+    Long eventId = Long.parseLong(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
     Event event = eventRepository.find(eventId);
     Event child =
@@ -279,7 +279,7 @@ public class EventController {
 
   @Transactional
   public void deleteAll(ActionRequest request, ActionResponse response) {
-    Long eventId = new Long(request.getContext().getParent().get("id").toString());
+    Long eventId = Long.parseLong(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
     Event event = eventRepository.find(eventId);
     Event child =
@@ -302,7 +302,7 @@ public class EventController {
 
   @Transactional(rollbackOn = {Exception.class})
   public void changeAll(ActionRequest request, ActionResponse response) throws AxelorException {
-    Long eventId = new Long(request.getContext().getParent().get("id").toString());
+    Long eventId = Long.parseLong(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
     Event event = eventRepository.find(eventId);
 
@@ -462,7 +462,7 @@ public class EventController {
   public void applyChangesToAll(ActionRequest request, ActionResponse response) {
     EventRepository eventRepository = Beans.get(EventRepository.class);
     Event thisEvent =
-        eventRepository.find(new Long(request.getContext().get("_idEvent").toString()));
+        eventRepository.find(Long.parseLong(request.getContext().get("_idEvent").toString()));
     Event event = eventRepository.find(thisEvent.getId());
 
     Beans.get(EventService.class).applyChangesToAll(event);

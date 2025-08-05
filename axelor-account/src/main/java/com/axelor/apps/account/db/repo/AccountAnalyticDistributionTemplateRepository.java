@@ -20,8 +20,8 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
-import javax.persistence.PersistenceException;
 
 public class AccountAnalyticDistributionTemplateRepository
     extends AnalyticDistributionTemplateRepository {

@@ -19,7 +19,7 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class KilometricGetRequest extends RequestPostStructure {
   @NotNull private String fromCity;

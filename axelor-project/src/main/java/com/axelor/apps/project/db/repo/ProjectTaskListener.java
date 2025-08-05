@@ -19,7 +19,7 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.ProjectTask;
-import javax.persistence.PostLoad;
+import jakarta.persistence.PostLoad;
 
 public class ProjectTaskListener {
 

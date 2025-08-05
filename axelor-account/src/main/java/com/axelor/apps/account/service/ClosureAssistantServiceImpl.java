@@ -29,12 +29,12 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ClosureAssistantServiceImpl implements ClosureAssistantService {

@@ -31,10 +31,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticAccountServiceImpl implements AnalyticAccountService {

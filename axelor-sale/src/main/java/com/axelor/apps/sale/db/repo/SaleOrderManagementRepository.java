@@ -37,8 +37,8 @@ import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSale;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.List;
-import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 

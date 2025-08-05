@@ -23,8 +23,8 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUp
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Collections;
-import javax.persistence.PersistenceException;
 
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
 

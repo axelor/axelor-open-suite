@@ -113,7 +113,7 @@ public class ExtraHoursController {
   public void editExtraHoursSelected(ActionRequest request, ActionResponse response) {
     Map extraHoursMap = (Map) request.getContext().get("extraHoursSelect");
     ExtraHours extraHours =
-        Beans.get(ExtraHoursRepository.class).find(new Long((Integer) extraHoursMap.get("id")));
+        Beans.get(ExtraHoursRepository.class).find(Long.valueOf((Integer) extraHoursMap.get("id")));
     response.setView(
         ActionView.define(I18n.get("Extra hours"))
             .model(ExtraHours.class.getName())

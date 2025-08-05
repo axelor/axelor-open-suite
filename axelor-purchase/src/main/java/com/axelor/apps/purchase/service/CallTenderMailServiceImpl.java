@@ -33,12 +33,12 @@ import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 
 public class CallTenderMailServiceImpl implements CallTenderMailService {
 

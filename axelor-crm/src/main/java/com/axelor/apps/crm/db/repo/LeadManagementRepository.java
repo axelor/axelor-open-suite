@@ -26,7 +26,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.service.LeadComputeNameService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class LeadManagementRepository extends LeadRepository {
 

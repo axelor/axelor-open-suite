@@ -24,7 +24,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class TeamTaskBaseRepository extends TeamTaskRepository {
 

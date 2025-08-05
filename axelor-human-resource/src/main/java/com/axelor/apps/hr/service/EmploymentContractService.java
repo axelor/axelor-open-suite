@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -59,7 +60,7 @@ public class EmploymentContractService {
     this.employmentContractExportSilae(employmentContract, list);
 
     String fileName = this.employmentContractExportName();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     String[] headers = employmentContractExportHeaders();
 

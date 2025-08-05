@@ -42,7 +42,7 @@ public class PayrollPreparationController {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
     EmploymentContract employmentContract =
         Beans.get(EmploymentContractRepository.class)
-            .find(new Long(request.getContext().get("_idEmploymentContract").toString()));
+            .find(Long.parseLong(request.getContext().get("_idEmploymentContract").toString()));
 
     response.setValues(
         Beans.get(PayrollPreparationService.class)

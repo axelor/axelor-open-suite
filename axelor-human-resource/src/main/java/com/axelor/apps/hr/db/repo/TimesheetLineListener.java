@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PreRemove;
 import java.lang.invoke.MethodHandles;
-import javax.persistence.PreRemove;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

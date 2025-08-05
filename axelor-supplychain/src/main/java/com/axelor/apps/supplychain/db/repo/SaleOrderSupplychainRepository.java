@@ -29,7 +29,7 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 

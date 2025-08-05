@@ -35,7 +35,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
-import javax.inject.Singleton;
+import com.google.inject.Singleton;
 
 @Singleton
 public class PeriodServiceAccountImpl extends PeriodServiceImpl implements PeriodServiceAccount {

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -134,22 +135,22 @@ public class MergeExcel {
     }
 
     switch (oldCell.getCellType()) {
-      case 0:
+      case CellType.NUMERIC:
         newCell.setCellValue(oldCell.getNumericCellValue());
         break;
-      case 1:
+      case CellType.STRING:
         newCell.setCellValue(oldCell.getStringCellValue());
         break;
-      case 2:
+      case CellType.FORMULA:
         newCell.setCellFormula(oldCell.getCellFormula());
         break;
-      case 3:
-        newCell.setCellType(3);
+      case CellType.BLANK:
+        newCell.setBlank();
         break;
-      case 4:
+      case CellType.BOOLEAN:
         newCell.setCellValue(oldCell.getBooleanCellValue());
         break;
-      case 5:
+      case CellType.ERROR:
         newCell.setCellErrorValue(oldCell.getErrorCellValue());
         break;
       default:

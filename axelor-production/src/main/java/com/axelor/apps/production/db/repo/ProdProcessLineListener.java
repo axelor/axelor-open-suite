@@ -21,10 +21,10 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 
 public class ProdProcessLineListener {
 

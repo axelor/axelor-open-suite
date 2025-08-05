@@ -112,7 +112,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void resetStockLocations() {
 
-    javax.persistence.Query clearWapHistoryLinesQuery =
+    jakarta.persistence.Query clearWapHistoryLinesQuery =
         JPA.em()
             .createNativeQuery(
                 "UPDATE stock_stock_location_line SET "
@@ -204,7 +204,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void clearWapHistoryLines() {
 
-    javax.persistence.Query clearStockLocationsHistoryLinesQuery =
+    jakarta.persistence.Query clearStockLocationsHistoryLinesQuery =
         JPA.em().createNativeQuery("Delete FROM stock_stock_location_line_history");
 
     JPA.runInTransaction(clearStockLocationsHistoryLinesQuery::executeUpdate);
@@ -259,7 +259,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected List<StockMoveGroup> fetchStockMoveGroup() {
     List<StockMoveGroup> stockMoveGroups = new ArrayList<>();
-    javax.persistence.Query query =
+    jakarta.persistence.Query query =
         JPA.em()
             .createQuery(
                 "SELECT "

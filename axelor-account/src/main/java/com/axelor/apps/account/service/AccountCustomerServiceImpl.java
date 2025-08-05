@@ -40,13 +40,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.Query;
+import jakarta.persistence.TemporalType;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

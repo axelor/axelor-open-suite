@@ -34,6 +34,7 @@ import com.axelor.db.JPA;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +43,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 
 public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQueryService {
 

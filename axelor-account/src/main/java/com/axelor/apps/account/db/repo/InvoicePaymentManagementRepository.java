@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class InvoicePaymentManagementRepository extends InvoicePaymentRepository {
 

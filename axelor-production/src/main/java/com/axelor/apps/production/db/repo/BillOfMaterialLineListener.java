@@ -32,11 +32,11 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
+import jakarta.persistence.PreRemove;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.PreRemove;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BillOfMaterialLineListener {

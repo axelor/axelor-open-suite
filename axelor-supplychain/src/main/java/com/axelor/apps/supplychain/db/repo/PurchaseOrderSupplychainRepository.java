@@ -29,7 +29,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
 

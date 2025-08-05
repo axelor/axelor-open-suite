@@ -111,7 +111,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
       Object computedPriority =
           configuratorService.computeFormula(confProdProcessLine.getPriorityFormula(), attributes);
       if (computedPriority != null) {
-        priority = new Integer(String.valueOf(computedPriority));
+        priority = Integer.parseInt(String.valueOf(computedPriority));
       } else {
         priority = 0;
       }

@@ -46,6 +46,7 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 
 public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineServiceSupplyChain {
 

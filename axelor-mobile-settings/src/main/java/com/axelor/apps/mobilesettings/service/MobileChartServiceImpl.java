@@ -24,11 +24,11 @@ import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.rest.dto.MobileChartValueResponse;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MobileChartServiceImpl implements MobileChartService {

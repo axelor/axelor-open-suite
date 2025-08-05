@@ -33,7 +33,7 @@ import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseHRRepository extends ExpenseRepository {

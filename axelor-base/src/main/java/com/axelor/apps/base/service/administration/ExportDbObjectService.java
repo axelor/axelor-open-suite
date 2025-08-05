@@ -22,6 +22,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.MetaScanner;
@@ -272,7 +273,7 @@ public class ExportDbObjectService {
       List<URL> urls = MetaScanner.findAll(module, "domains", "(.*?)\\.xml$");
 
       for (URL url : urls) {
-        File file = MetaFiles.createTempFile("tempXml", ".xml").toFile();
+        File file = TempFiles.createTempFile("tempXml", ".xml").toFile();
         org.apache.commons.io.FileUtils.copyURLToFile(url, file);
         String objectName = Paths.get(url.getPath()).getFileName().toString().split("\\.")[0];
         parser.parse(new InputSource(new FileInputStream(file)), xmlHandler);

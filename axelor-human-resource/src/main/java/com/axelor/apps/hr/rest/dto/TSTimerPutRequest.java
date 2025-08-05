@@ -24,9 +24,9 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 
 public class TSTimerPutRequest extends RequestStructure {
 

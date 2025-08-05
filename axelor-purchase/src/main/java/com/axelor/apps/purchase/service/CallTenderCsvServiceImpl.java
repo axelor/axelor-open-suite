@@ -21,6 +21,7 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.CallTenderOffer;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -65,7 +66,7 @@ public class CallTenderCsvServiceImpl implements CallTenderCsvService {
                 Optional.ofNullable(supplier).map(Partner::getSimpleFullName).orElse(""),
                 DateTimeFormatter.ofPattern("ddMMyyyyhhmm")
                     .format(appBaseService.getTodayDateTime())));
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
     fileName += ".csv";
 
     CsvHelper.csvWriter(file.getParent(), file.getName(), ';', getOfferCsvHeaders(), list);

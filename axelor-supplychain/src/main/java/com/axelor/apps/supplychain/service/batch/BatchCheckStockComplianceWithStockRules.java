@@ -34,13 +34,13 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 
 public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
 

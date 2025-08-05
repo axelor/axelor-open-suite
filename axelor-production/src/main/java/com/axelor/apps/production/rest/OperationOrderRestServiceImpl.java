@@ -32,7 +32,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.api.ResponseConstructor;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 public class OperationOrderRestServiceImpl implements OperationOrderRestService {
 

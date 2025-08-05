@@ -25,8 +25,8 @@ import com.axelor.apps.crm.service.OpportunitySequenceService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.studio.db.AppCrm;
 import com.google.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class OpportunityManagementRepository extends OpportunityRepository {
 

@@ -41,9 +41,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
 import com.google.inject.Inject;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Table;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BatchDebtRecovery extends BatchStrategy {
@@ -231,7 +231,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 
     // Insert using native query for performance reasons in case of big batch set.
     String sqlString = String.format("INSERT INTO %s VALUES (:modelId, :batchId)", tableName);
-    javax.persistence.Query query = JPA.em().createNativeQuery(sqlString);
+    jakarta.persistence.Query query = JPA.em().createNativeQuery(sqlString);
     query.setParameter("modelId", model.getId());
     query.setParameter("batchId", batch.getId());
     JPA.runInTransaction(query::executeUpdate);

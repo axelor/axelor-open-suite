@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.i18n.I18n;
+import jakarta.persistence.PreRemove;
 import java.math.BigDecimal;
-import javax.persistence.PreRemove;
 
 public class SaleOrderLineListener {
 

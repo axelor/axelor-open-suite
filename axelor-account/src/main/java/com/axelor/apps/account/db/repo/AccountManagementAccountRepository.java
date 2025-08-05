@@ -23,8 +23,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class AccountManagementAccountRepository extends AccountManagementRepository {
 

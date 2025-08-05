@@ -24,10 +24,10 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class TimesheetLinePostRequest extends RequestPostStructure {
 

@@ -30,11 +30,11 @@ import com.axelor.events.PreRequest;
 import com.axelor.events.RequestEvent;
 import com.axelor.events.qualifiers.EntityType;
 import com.axelor.inject.Beans;
+import com.google.inject.name.Named;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Named;
 
 public class ICalendarEventObserver {
   void onSave(

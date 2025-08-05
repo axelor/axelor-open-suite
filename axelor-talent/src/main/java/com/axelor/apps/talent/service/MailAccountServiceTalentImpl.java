@@ -33,8 +33,8 @@ import com.axelor.studio.db.repo.AppRecruitmentRepository;
 import com.axelor.utils.service.CipherService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.mail.MessagingException;
 import java.util.Date;
-import javax.mail.MessagingException;
 
 public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 

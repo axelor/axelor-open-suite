@@ -23,10 +23,10 @@ import com.axelor.apps.production.rest.ManufOrderProductRestService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 public class ManufOrderProductPostRequest extends RequestStructure {
 

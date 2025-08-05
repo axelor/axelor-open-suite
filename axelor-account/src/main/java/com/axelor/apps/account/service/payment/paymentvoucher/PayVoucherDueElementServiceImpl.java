@@ -29,10 +29,10 @@ import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import javax.inject.Inject;
 
 public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementService {
 

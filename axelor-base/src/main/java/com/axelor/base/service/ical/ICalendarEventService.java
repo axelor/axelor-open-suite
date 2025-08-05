@@ -23,10 +23,10 @@ import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.message.db.EmailAddress;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import javax.mail.MessagingException;
 
 public interface ICalendarEventService {
 

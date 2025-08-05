@@ -21,7 +21,7 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class DurationBaseRepository extends DurationRepository {
 

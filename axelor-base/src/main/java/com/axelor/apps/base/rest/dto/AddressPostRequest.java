@@ -19,7 +19,7 @@
 package com.axelor.apps.base.rest.dto;
 
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public class AddressPostRequest extends RequestPostStructure {
 

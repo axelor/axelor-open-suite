@@ -27,10 +27,10 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.inject.Inject;
 
 public class BudgetGroupServiceImpl implements BudgetGroupService {
 

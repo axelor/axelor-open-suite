@@ -25,8 +25,8 @@ import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.api.ResponseConstructor;
+import jakarta.ws.rs.core.Response;
 import java.math.BigDecimal;
-import javax.ws.rs.core.Response;
 
 public class ExpenseLineResponseComputeServiceImpl implements ExpenseLineResponseComputeService {
   @Override
