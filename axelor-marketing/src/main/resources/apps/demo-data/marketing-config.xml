@@ -9,13 +9,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="partnerTypeSelect" to="partnerTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('target.partner.type.select', partnerTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.TargetList', 'partnerTypeSelect', partnerTypeSelect)"
       check-message="Invalid partnerTypeSelect :partnerTypeSelect"/>
     <bind column="partnerQueryTypeSelect" to="partnerQueryTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('marketing.target.list.query.type.select', partnerQueryTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.TargetList', 'partnerQueryTypeSelect', partnerQueryTypeSelect)"
       check-message="Invalid partnerQueryTypeSelect :partnerQueryTypeSelect"/>
     <bind column="leadQueryTypeSelect" to="leadQueryTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('marketing.target.list.query.type.select', leadQueryTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.TargetList', 'leadQueryTypeSelect', leadQueryTypeSelect)"
       check-message="Invalid leadQueryTypeSelect :leadQueryTypeSelect"/>
   </input>
 
@@ -24,13 +24,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('message.media.type.select', mediaTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
       check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
       check-message="Invalid templateEngineSelect :templateEngineSelect"/>
     <bind column="language" to="language"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('select.language', language, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
       check-message="Invalid language :language"/>
   </input>
 
@@ -47,10 +47,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="stageSelect" to="stageSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('campaign.stage.select', stageSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.Campaign', 'stageSelect', stageSelect)"
       check-message="Invalid stageSelect :stageSelect"/>
     <bind column="eventTypeSelect" to="eventTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('icalendar.event.type.select', eventTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.marketing.db.Campaign', 'eventTypeSelect', eventTypeSelect)"
       check-message="Invalid eventTypeSelect :eventTypeSelect"/>
   </input>
 
