@@ -88,8 +88,7 @@ public class AllocationLineComputeServiceImpl implements AllocationLineComputeSe
   }
 
   @Override
-  public BigDecimal getLeaves(LocalDate fromDate, LocalDate toDate, Employee employee)
-      throws AxelorException {
+  public BigDecimal getLeaves(LocalDate fromDate, LocalDate toDate, Employee employee) {
     BigDecimal leaveDayCount = BigDecimal.ZERO;
     if (fromDate == null || toDate == null || employee == null) {
       return leaveDayCount;

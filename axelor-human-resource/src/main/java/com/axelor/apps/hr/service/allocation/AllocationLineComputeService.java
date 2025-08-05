@@ -30,8 +30,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AllocationLineComputeService {
-  BigDecimal getLeaves(LocalDate fromDate, LocalDate toDate, Employee employee)
-      throws AxelorException;
+  BigDecimal getLeaves(LocalDate fromDate, LocalDate toDate, Employee employee);
 
   BigDecimal getAlreadyAllocated(AllocationLine allocationLine, Period period, Employee employee);
 

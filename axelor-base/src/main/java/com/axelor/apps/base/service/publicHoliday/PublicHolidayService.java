@@ -84,12 +84,16 @@ public class PublicHolidayService {
     }
 
     List<EventsPlanningLine> publicHolidayDayList =
-        eventsPlanningLineRepo
-            .all()
-            .filter(
-                "self.eventsPlanning = ?1 AND self.date = ?2", publicHolidayEventsPlanning, date)
-            .fetch();
+        getPublicHolidayList(date, publicHolidayEventsPlanning);
     return ObjectUtils.notEmpty(publicHolidayDayList);
+  }
+
+  public List<EventsPlanningLine> getPublicHolidayList(
+      LocalDate date, EventsPlanning publicHolidayEventsPlanning) {
+    return eventsPlanningLineRepo
+        .all()
+        .filter("self.eventsPlanning = ?1 AND self.date = ?2", publicHolidayEventsPlanning, date)
+        .fetch();
   }
 
   @Transactional
