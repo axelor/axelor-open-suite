@@ -6,13 +6,13 @@
   <input file="studio_appMobileSettings.csv" separator=";"
     type="com.axelor.studio.db.AppMobileSettings" search="self.app.code = :code">
     <bind column="fieldsToShowOnTimesheet" to="fieldsToShowOnTimesheet"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('mobilesettings.employee.timesheet.imputation.select', fieldsToShowOnTimesheet, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'fieldsToShowOnTimesheet', fieldsToShowOnTimesheet)"
       check-message="Invalid fieldsToShowOnTimesheet :fieldsToShowOnTimesheet"/>
     <bind column="productTypesToDisplaySelect" to="productTypesToDisplaySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('product.product.type.select', productTypesToDisplaySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'productTypesToDisplaySelect', productTypesToDisplaySelect)"
       check-message="Invalid productTypesToDisplaySelect :productTypesToDisplaySelect"/>
     <bind column="reportingTypesToDisplaySelect" to="reportingTypesToDisplaySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('mobilesettings.reporting.type.display.select', reportingTypesToDisplaySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'reportingTypesToDisplaySelect', reportingTypesToDisplaySelect)"
       check-message="Invalid reportingTypesToDisplaySelect :reportingTypesToDisplaySelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
@@ -20,7 +20,7 @@
   <input file="mobilesettings_mobileConfig.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.mobilesettings.db.MobileConfig">
     <bind column="sequence" to="sequence"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('mobilesettings.mobile.config.sequence.select', sequence, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.mobilesettings.db.MobileConfig', 'sequence', sequence)"
       check-message="Invalid sequence :sequence"/>
     <bind column="sequence" to="sequence"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.mobilesettings.db.MobileConfig', 'importId', importId, 'sequence', sequence)"
