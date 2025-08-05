@@ -20,9 +20,11 @@ package com.axelor.apps.base.service.publicHoliday;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
+import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface PublicHolidayService {
 
@@ -47,4 +49,7 @@ public interface PublicHolidayService {
    * @return holiday free local date.
    */
   LocalDate getFreeDay(LocalDate date, Company company);
+
+  public List<EventsPlanningLine> getPublicHolidayList(
+      LocalDate date, EventsPlanning publicHolidayEventsPlanning);
 }
