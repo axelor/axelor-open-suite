@@ -21,13 +21,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.project.db.Project', 'importId', importId, 'code', code)"
       check-message="Code must be unique"/>
     <bind column="taskStatusManagementSelect" to="taskStatusManagementSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('task.project.status.management.select', taskStatusManagementSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.project.db.Project', 'taskStatusManagementSelect', taskStatusManagementSelect)"
       check-message="Invalid taskStatusManagementSelect :taskStatusManagementSelect"/>
     <bind column="customFieldManagementSelect" to="customFieldManagementSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('project.custom.field.management.select', customFieldManagementSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.project.db.Project', 'customFieldManagementSelect', customFieldManagementSelect)"
       check-message="Invalid customFieldManagementSelect :customFieldManagementSelect"/>
     <bind column="sprintManagementSelect" to="sprintManagementSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('project.sprint.management.select', sprintManagementSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.project.db.Project', 'sprintManagementSelect', sprintManagementSelect)"
       check-message="Invalid sprintManagementSelect :sprintManagementSelect"/>
     <bind to="fromDate" column="fromDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"/>
@@ -51,7 +51,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('project.task.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.project.db.ProjectTask', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
     <bind to="taskDate" column="taskDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(taskDate)"/>
@@ -107,7 +107,7 @@
     type="com.axelor.apps.project.db.ProjectCheckListTemplate" separator=";"
     search="self.importId = :importId">
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('check.list.template.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.project.db.ProjectCheckListTemplate', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
   </input>
 
@@ -132,10 +132,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(coef)"
       check-message="Coeff. must not be null"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('unit.conversion.type.select', typeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.UnitConversion', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
     <bind column="entitySelect" to="entitySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('unit.conversion.entity.select', entitySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.UnitConversion', 'entitySelect', entitySelect)"
       check-message="Invalid entitySelect :entitySelect"/>
   </input>
 
