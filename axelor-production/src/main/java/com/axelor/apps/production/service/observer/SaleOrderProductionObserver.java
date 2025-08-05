@@ -36,7 +36,7 @@ public class SaleOrderProductionObserver {
     Beans.get(SaleOrderConfirmProductionService.class).confirmProcess(saleOrder);
   }
 
-  public void copySaleOrder(@Observes SaleOrderCopy event) {
+  public void copySaleOrder(@Observes @Priority(value = 30) SaleOrderCopy event) {
     SaleOrder saleOrder = event.getSaleOrder();
     Beans.get(SaleOrderCopyProductionService.class).copySaleOrderProductionProcess(saleOrder);
   }
