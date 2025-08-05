@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.rest.dto.TimesheetLineDurationSummary;
 import com.axelor.apps.hr.rest.dto.TimesheetLineEditorResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
@@ -38,6 +39,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.Response;
@@ -183,5 +185,31 @@ public class TimesheetLineTimesheetEditorServiceImpl
             .collect(Collectors.toList()));
 
     timesheetPeriodComputationService.setComputedPeriodTotal(timesheet);
+  }
+
+  @Override
+  public Response getTimesheetLineCount(Timesheet timesheet) {
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+
+    Map<LocalDate, TimesheetLineDurationSummary> dateTSLDurationSummaryMap =
+        timesheetLineList.stream()
+            .collect(
+                Collectors.groupingBy(
+                    TimesheetLine::getDate,
+                    Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> {
+                          BigDecimal duration =
+                              list.stream()
+                                  .map(TimesheetLine::getDuration)
+                                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+                          BigDecimal hoursDuration =
+                              list.stream()
+                                  .map(TimesheetLine::getHoursDuration)
+                                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+                          return new TimesheetLineDurationSummary(duration, hoursDuration);
+                        })));
+
+    return ResponseConstructor.build(Response.Status.OK, dateTSLDurationSummaryMap);
   }
 }
