@@ -30,7 +30,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
       check-message="Xml id must be unique"/>
     <bind column="tagStyle" to="tagStyle"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('label.style.selection', tagStyle, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
       check-message="Invalid tagStyle :tagStyle"/>
   </input>
 
@@ -40,7 +40,7 @@
   <input file="project_priority.csv" separator=";"
     type="com.axelor.apps.project.db.ProjectPriority" search="self.importId = :importId">
     <bind column="technicalTypeSelect" to="technicalTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('project.priority.technical.type.select', technicalTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.project.db.ProjectPriority', 'technicalTypeSelect', technicalTypeSelect)"
       check-message="Invalid technicalTypeSelect :technicalTypeSelect"/>
   </input>
 
