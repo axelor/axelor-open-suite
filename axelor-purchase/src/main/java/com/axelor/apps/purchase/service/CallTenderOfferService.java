@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderNeed;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.apps.purchase.db.CallTenderSupplier;
@@ -31,4 +32,6 @@ public interface CallTenderOfferService {
   CallTenderOffer createCallTenderOffer(CallTenderSupplier supplier, CallTenderNeed need);
 
   boolean alreadyGenerated(CallTenderOffer offer, List<CallTenderOffer> offerList);
+
+  void setCounter(CallTenderOffer offer, CallTender callTender);
 }

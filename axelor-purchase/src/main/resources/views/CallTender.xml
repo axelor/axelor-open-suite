@@ -5,6 +5,7 @@
 
   <grid name="call-tender-grid" title="Call for tenders"
     model="com.axelor.apps.purchase.db.CallTender" orderBy="-createdOn">
+    <field name="callTenderSeq"/>
     <field name="name"/>
     <field name="description"/>
   </grid>
@@ -12,6 +13,7 @@
   <form name="call-tender-form" model="com.axelor.apps.purchase.db.CallTender"
     title="Call for tender">
     <panel name="headerPanel" showTitle="false">
+
       <field name="name" colSpan="6"/>
       <field name="description" colSpan="6"/>
       <field name="callForTenderMailTemplate" colSpan="6"
@@ -22,6 +24,9 @@
         onClick="save,action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
       <button name="sendCallTendersBtn" title="Send call for tenders"
         onClick="save,action-call-tender-method-send-call-tender-offers" colSpan="12"/>
+    </panel>
+    <panel name="seqPanel" showTitle="false" sidebar="true">
+      <field name="callTenderSeq"/>
     </panel>
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"
