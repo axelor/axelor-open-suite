@@ -20,10 +20,9 @@ package com.axelor.apps.base.service.imports.importer;
 
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaSelect;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaSelectItem;
-import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.google.api.client.util.Strings;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,23 +110,39 @@ public final class ImportHelper {
     }
   }
 
-  public static boolean checkSelection(String selectionName, Object value, boolean isRequired) {
-    if (!isValuePresent(value)) {
-      return !isRequired;
-    }
-    List<MetaSelect> selections =
-        Beans.get(MetaSelectRepository.class).all().filter("self.name = ?", selectionName).fetch();
-    if (CollectionUtils.isEmpty(selections)) {
+  @SuppressWarnings("unchecked")
+  public static boolean checkSelection(String entityName, String fieldName, Object value) {
+    if (Strings.isNullOrEmpty(entityName) || Strings.isNullOrEmpty(fieldName)) {
       return false;
     }
-    Set<String> validValues =
-        selections.stream()
-            .flatMap(selection -> selection.getItems().stream())
-            .map(MetaSelectItem::getValue)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+    try {
+      Class<? extends Model> entityClass = (Class<? extends Model>) Class.forName(entityName);
+      Property property = Mapper.of(entityClass).getProperty(fieldName);
+      if (property == null) {
+        return false;
+      }
+      if (!isValuePresent(value)) {
+        return !property.isRequired();
+      }
+      String selectionName = property.getSelection();
+      if (Strings.isNullOrEmpty(selectionName)) {
+        return false;
+      }
+      List<MetaSelectItem> items =
+          JPA.all(MetaSelectItem.class).filter("self.select.name = ?", selectionName).fetch();
+      if (CollectionUtils.isEmpty(items)) {
+        return false;
+      }
+      Set<String> validValues =
+          items.stream()
+              .map(MetaSelectItem::getValue)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toSet());
 
-    return Arrays.stream(String.valueOf(value).split(",")).allMatch(validValues::contains);
+      return Arrays.stream(String.valueOf(value).split(",")).allMatch(validValues::contains);
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
   }
 
   protected static boolean isValidInput(String entityName, String fieldNames, Object[] values) {

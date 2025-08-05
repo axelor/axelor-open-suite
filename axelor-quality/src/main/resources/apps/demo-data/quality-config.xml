@@ -6,7 +6,7 @@
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
       check-message="Invalid codeSelect :codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
@@ -73,7 +73,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="origin" to="origin"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.detection.origin.select', origin, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIDetection', 'origin', origin)"
       check-message="Invalid origin :origin"/>
   </input>
 
@@ -189,10 +189,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIStatus', 'importId', qiStatus_importId)"
       check-message="Status with importId :qiStatus_importId doesn't exist"/>
     <bind column="type" to="type"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.type.select', type, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QualityImprovement', 'type', type)"
       check-message="Invalid type :type"/>
     <bind column="gravityTypeSelect" to="gravityTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.gravity.type.select', gravityTypeSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QualityImprovement', 'gravityTypeSelect', gravityTypeSelect)"
       check-message="Invalid gravityTypeSelect :gravityTypeSelect"/>
     <bind column="qiIdentification_importId" to="qiIdentification"
       search="self.importId = :qiIdentification_importId"
@@ -244,7 +244,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIDefault', 'importId', qiDefault_importId)"
       check-message="Defect with importId :qiDefault_importId doesn't exist"/>
     <bind column="identification" to="identification"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.resolution.default.identification.select', identification, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIResolutionDefault', 'identification', identification)"
       check-message="Invalid identification :identification"/>
     <bind column="trackingNumbersSet" to="trackingNumbersSet"
       search="self.trackingNumberSeq in :trackingNumbersSet"
@@ -270,10 +270,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', responsiblePartner_importId)"
       check-message="Responsible partner with importId :responsiblePartner_importId doesn't exist"/>
     <bind column="responsible" to="responsible"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.resolution.decision.responsible.select', responsible, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIResolutionDecision', 'responsible', responsible)"
       check-message="Invalid responsible :responsible"/>
     <bind column="acceptance" to="acceptance"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.resolution.decision.acceptance.select', acceptance, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIResolutionDecision', 'acceptance', acceptance)"
       check-message="Invalid acceptance :acceptance"/>
   </input>
 
@@ -291,7 +291,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', responsiblePartner_importId)"
       check-message="Responsible partner with importId :responsiblePartner_importId doesn't exist"/>
     <bind column="responsiblePartnerTypeSelect" to="responsiblePartnerTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.resolution.decision.responsible.select', responsiblePartnerTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIAnalysisCause', 'responsiblePartnerTypeSelect', responsiblePartnerTypeSelect)"
       check-message="Invalid responsiblePartnerTypeSelect :responsiblePartnerTypeSelect"/>
   </input>
 
@@ -302,7 +302,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', responsiblePartner_importId)"
       check-message="Responsible partner with importId :responsiblePartner_importId doesn't exist"/>
     <bind column="responsiblePartnerTypeSelect" to="responsiblePartnerTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.resolution.decision.responsible.select', responsiblePartnerTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QITask', 'responsiblePartnerTypeSelect', responsiblePartnerTypeSelect)"
       check-message="Invalid responsiblePartnerTypeSelect :responsiblePartnerTypeSelect"/>
     <bind to="startDateTime"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)"
@@ -325,7 +325,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.auth.db.User', 'importId', planOwner_importId)"
       check-message="Plan owner with importId :planOwner_importId doesn't exist"/>
     <bind column="efficiencySelect" to="efficiencySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('quality.qi.analysis.efficiency.select', efficiencySelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIAnalysis', 'efficiencySelect', efficiencySelect)"
       check-message="Invalid efficiencySelect :efficiencySelect"/>
     <bind to="causesWrittenOn"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(causesWrittenOn)"

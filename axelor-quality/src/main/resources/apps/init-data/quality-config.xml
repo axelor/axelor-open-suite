@@ -6,7 +6,7 @@
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('sequence.generic.code.select', codeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect' codeSelect)"
       check-message="Invalid codeSelect :codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
@@ -34,7 +34,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind to="type" column="type"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('json.field.type', type, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaJsonField', 'type', type)"
       check-message="Invalid type :type"/>
     <bind to="model" column="model"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(model)"
@@ -43,7 +43,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(modelField)"
       check-message="Model field must not be null"/>
     <bind to="trackEvent" column="trackEvent"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('json.field.track.event', trackEvent, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaJsonField', 'trackEvent', trackEvent)"
       check-message="Invalid trackEvent :trackEvent"/>
   </input>
 
