@@ -20,9 +20,14 @@ package com.axelor.apps.hr.service.timesheet.editor;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.rest.dto.TimesheetLineCount;
 import com.axelor.apps.hr.rest.dto.TimesheetLineEditorResponse;
+import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
@@ -37,7 +42,10 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.Response;
@@ -51,6 +59,8 @@ public class TimesheetLineTimesheetEditorServiceImpl
   protected TimesheetLineUpdateService timesheetLineUpdateService;
   protected TimesheetLineRemoveService timesheetLineRemoveService;
   protected TimesheetPeriodComputationService timesheetPeriodComputationService;
+  protected WeeklyPlanningService weeklyPlanningService;
+  protected AllocationLineComputeService allocationLineComputeService;
 
   @Inject
   public TimesheetLineTimesheetEditorServiceImpl(
@@ -59,13 +69,17 @@ public class TimesheetLineTimesheetEditorServiceImpl
       TimesheetLineCreateService timesheetLineCreateService,
       TimesheetLineUpdateService timesheetLineUpdateService,
       TimesheetLineRemoveService timesheetLineRemoveService,
-      TimesheetPeriodComputationService timesheetPeriodComputationService) {
+      TimesheetPeriodComputationService timesheetPeriodComputationService,
+      WeeklyPlanningService weeklyPlanningService,
+      AllocationLineComputeService allocationLineComputeService) {
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineCheckService = timesheetLineCheckService;
     this.timesheetLineCreateService = timesheetLineCreateService;
     this.timesheetLineUpdateService = timesheetLineUpdateService;
     this.timesheetLineRemoveService = timesheetLineRemoveService;
     this.timesheetPeriodComputationService = timesheetPeriodComputationService;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.allocationLineComputeService = allocationLineComputeService;
   }
 
   @Override
@@ -183,5 +197,68 @@ public class TimesheetLineTimesheetEditorServiceImpl
             .collect(Collectors.toList()));
 
     timesheetPeriodComputationService.setComputedPeriodTotal(timesheet);
+  }
+
+  @Override
+  public Response getTimesheetLineCount(Timesheet timesheet) {
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
+
+    if (toDate == null) {
+      toDate = fromDate.withDayOfMonth(fromDate.lengthOfMonth());
+    }
+
+    Map<LocalDate, TimesheetLineCount> dateTSLDurationSummaryMap = new HashMap<>();
+
+    if (toDate != null) {
+      fromDate
+          .datesUntil(toDate)
+          .forEach(it -> updateCount(dateTSLDurationSummaryMap, it, timesheet));
+    }
+
+    return ResponseConstructor.build(Response.Status.OK, dateTSLDurationSummaryMap);
+  }
+
+  protected void updateCount(
+      Map<LocalDate, TimesheetLineCount> map, LocalDate date, Timesheet timesheet) {
+    List<TimesheetLine> timeSheetLineList = timesheet.getTimesheetLineList();
+
+    Employee employee = timesheet.getEmployee();
+    WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
+
+    BigDecimal weeklyPlanningDuration =
+        new BigDecimal(weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date));
+    BigDecimal weeklyPlanningHoursDuration =
+        weeklyPlanningService.getWorkingDayValueInHours(
+            weeklyPlanning, date, LocalTime.MIN, LocalTime.MAX);
+
+    BigDecimal leavesDuration;
+    try {
+      leavesDuration = allocationLineComputeService.getLeaves(date, date, employee);
+    } catch (AxelorException e) {
+      e.printStackTrace();
+      leavesDuration = new BigDecimal(-1);
+    }
+
+    BigDecimal duration =
+        timeSheetLineList.stream()
+            .filter(x -> x.getDate().equals(date))
+            .map(TimesheetLine::getDuration)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal hoursDuration =
+        timeSheetLineList.stream()
+            .filter(x -> x.getDate().equals(date))
+            .map(TimesheetLine::getHoursDuration)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    map.put(
+        date,
+        new TimesheetLineCount(
+            duration,
+            hoursDuration,
+            weeklyPlanningDuration,
+            weeklyPlanningHoursDuration,
+            leavesDuration));
   }
 }

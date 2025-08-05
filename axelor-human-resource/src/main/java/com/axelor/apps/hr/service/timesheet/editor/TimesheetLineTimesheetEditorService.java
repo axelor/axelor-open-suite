@@ -53,4 +53,6 @@ public interface TimesheetLineTimesheetEditorService {
 
   TimesheetLineEditorResponse buildEditorReponse(
       Timesheet timesheet, LocalDate date, Project project, ProjectTask projectTask);
+
+  Response getTimesheetLineCount(Timesheet timesheet);
 }

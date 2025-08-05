@@ -40,6 +40,7 @@ import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -178,5 +179,18 @@ public class TimesheetLineRestController {
             requestBody.getDate(),
             requestBody.fetchProject(),
             requestBody.fetchProjectTask()));
+  }
+
+  @Operation(
+      summary = "Get timesheetlines count per day",
+      tags = {"Timesheet line"})
+  @Path("/count/{timesheetId}")
+  @GET
+  @HttpExceptionHandler
+  public Response getTimesheetLineCount(@PathParam("timesheetId") Long timesheetId) {
+    new SecurityCheck().readAccess(Timesheet.class, timesheetId).readAccess(TimesheetLine.class);
+
+    Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
+    return Beans.get(TimesheetLineTimesheetEditorService.class).getTimesheetLineCount(timesheet);
   }
 }
