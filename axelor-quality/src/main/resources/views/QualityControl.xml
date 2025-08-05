@@ -12,7 +12,8 @@
     </toolbar>
     <field name="reference" width="120"/>
     <field name="name"/>
-    <field name="project"/>
+    <field name="relatedToSelect"/>
+    <field name="relatedToSelectId"/>
     <field name="team"/>
     <field name="responsible"/>
   </grid>
@@ -42,7 +43,7 @@
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
       <field name="reference" showTitle="false" colSpan="12" css="label-bold bold large"/>
       <field name="name"/>
-      <field name="project" required="true"
+      <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"
         onChange="action-quality-control-record-set-printing-setting-on-project-change"/>
       <field name="responsible"/>
       <field name="team" domain="self.typeSelect = 'quality'"/>
@@ -239,13 +240,15 @@
   <action-record
     name="action-quality-control-record-set-printing-setting-on-project-change"
     model="com.axelor.apps.quality.db.QualityControl">
-    <field name="printingSettings" expr="eval: project?.company?.printingSettings"
-      if="project != null &amp;&amp; project?.company != null"/>
+    <field name="printingSettings"
+      expr="eval: __repo__(Project).find(relatedToSelectId)?.company?.printingSettings"
+      if="relatedToSelect = 'com.axelor.apps.project.db.Project' &amp;&amp; relatedToSelectId != null"/>
   </action-record>
 
   <action-validate name="action-quality-control-validate-printing-settings">
     <error message="Please fill printing settings on quality control" if="!printingSettings"/>
   </action-validate>
+
 
   <search-filters name="quality-control-filters"
     model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
