@@ -1,4 +1,4 @@
-"importId";"subject";"startDateTime";"endDateTime";"description";"qiDecision.importId";"qiAction.importId";"advancement";"qiProcess.importId";"fixedAmount";"directCost";"totalCost";"qiResolutionDefaultsSet";"responsiblePartner.importId"
+"importId";"subject";"startDateTime";"endDateTime";"description";"qiDecision.importId";"qiAction.importId";"advancement";"qiProcess.importId";"fixedAmount";"directCost";"totalCost";"qiResolutionDefaultsSet";"responsiblePartner_importId"
 "100";"Review packaging with supplier";"NOW[-5M09H00m]";"NOW[-5M09H30m]";;"8";"1";"20";"4";"500";"1000";;"1";"90022"
 "101";"Review the process";"NOW[-4M09H00m]";"NOW[-4M09H45m]";;"8";;;"5";;"600";;"2";"90022"
 "102";"Drafting a new procedure";"NOW[-3M09H15m]";"NOW[-3M09H45m]";;"8";"2";;"5";;"400";;"3";"90022"
