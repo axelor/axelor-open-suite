@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <grid name="quality-control-grid" title="Quality controls"
+  <grid name="quality-control-grid" title="Quality audits"
     model="com.axelor.apps.quality.db.QualityControl">
     <toolbar>
       <button name="sendEmailBtn" title="Send email"
@@ -17,13 +17,13 @@
     <field name="responsible"/>
   </grid>
 
-  <calendar name="quality-control-calendar" title="Quality control calendar" mode="month"
+  <calendar name="quality-control-calendar" title="Quality audit calendar" mode="month"
     colorBy="statusSelect" eventStart="startDate" eventStop="endDate" eventLength="1"
     model="com.axelor.apps.quality.db.QualityControl">
     <field name="reference"/>
   </calendar>
 
-  <form name="quality-control-form" title="Quality controls"
+  <form name="quality-control-form" title="Quality audits"
     model="com.axelor.apps.quality.db.QualityControl"
     onNew="action-quality-control-group-onnew-actions"
     onLoad="action-quality-control-group-onload-actions">
@@ -118,7 +118,7 @@
   </form>
 
   <kanban columnBy="statusSelect" sequenceBy="sequence" name="quality-control-kanban"
-    title="Quality control" model="com.axelor.apps.quality.db.QualityControl">
+    title="Quality audit" model="com.axelor.apps.quality.db.QualityControl">
     <field name="reference"/>
     <field name="team"/>
     <field name="responsible"/>
