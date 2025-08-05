@@ -626,6 +626,8 @@
           showIf="isSupplier" colSpan="12"/>
         <panel-dashlet action="action-partner-view-customer-quality-improvements"
           showIf="isCustomer" colSpan="12"/>
+        <panel-dashlet action="action-partner-view-quality-controls"
+          showIf="isSupplier" colSpan="12"/>
       </panel>
     </panel-tabs>
     <panel name="partnerAttrsPanel">
@@ -1861,4 +1863,12 @@
     <context name="partner" expr="eval:__self__"/>
   </action-view>
 
+  <action-view name="action-partner-view-quality-controls"
+    model="com.axelor.apps.quality.db.QualityControl" title="Quality audits">
+    <view type="grid" name="quality-control-grid"/>
+    <view type="form" name="quality-control-form"/>
+    <domain>self.relatedToSelectId = :partnerId AND self.relatedToSelect =
+      'com.axelor.apps.base.db.Partner'</domain>
+    <context name="partnerId" expr="eval:__self__?.id"/>
+  </action-view>
 </object-views>
