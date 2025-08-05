@@ -36,12 +36,23 @@
       canSelect="false"/>
     <panel-related field="callTenderOfferList" form-view="call-tender-offer-form"
       grid-view="call-tender-offer-grid" colSpan="12" canSelect="false"/>
+
+    <panel-dashlet action="action-call-tender-view-mails" colSpan="12"/>
   </form>
 
   <action-method name="action-call-tender-method-generate-call-tender-offers">
     <call class="com.axelor.apps.purchase.web.CallTenderController"
       method="generateCallTenderOffers"/>
   </action-method>
+
+  <action-view name="action-call-tender-view-mails" title="Mails"
+    model="com.axelor.apps.purchase.db.CallTenderMail">
+    <view type="grid" name="call-tender-mail-grid"/>
+    <view type="form" name="call-tender-mail-form"/>
+    <domain>self.id IN (SELECT cfo.offerMail FROM CallTenderOffer cfo WHERE cfo.callTender =
+      :callTender)</domain>
+    <context name="callTender" expr="eval: __self__"/>
+  </action-view>
 
 
   <action-method name="action-call-tender-method-send-call-tender-offers">
