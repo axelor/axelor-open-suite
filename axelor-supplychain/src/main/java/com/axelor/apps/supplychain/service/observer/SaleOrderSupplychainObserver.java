@@ -26,10 +26,12 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainSer
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderConfirmSupplychainService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
 
 public class SaleOrderSupplychainObserver {
 
-  public void supplychainConfirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
+  public void supplychainConfirmSaleOrder(@Observes @Priority(value = 20) SaleOrderConfirm event)
+      throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     event.setNotifyMessage(
         Beans.get(SaleOrderConfirmSupplychainService.class).confirmProcess(saleOrder));

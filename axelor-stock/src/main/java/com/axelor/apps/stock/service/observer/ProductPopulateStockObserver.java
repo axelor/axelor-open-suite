@@ -33,11 +33,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Priority;
 
 public class ProductPopulateStockObserver {
 
   @SuppressWarnings("rawtypes")
-  void populate(@Observes ProductPopulate event) {
+  void populate(@Observes @Priority(value = 20) ProductPopulate event) {
     Map<String, Object> json = event.getJson();
     Map<String, Object> context = event.getContext();
 

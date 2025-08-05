@@ -30,16 +30,18 @@ import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
 
 public class SaleOrderLineProductionObserver {
-  void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) {
+  void onSaleOrderLineOnNew(@Observes @Priority(value = 40) SaleOrderLineViewOnNew event) {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
         Beans.get(SaleOrderLineViewProductionService.class).hideBomAndProdProcess(saleOrderLine));
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 40) SaleOrderLineViewOnLoad event)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
@@ -47,8 +49,8 @@ public class SaleOrderLineProductionObserver {
             .getProductionOnLoadAttrs(saleOrderLine, event.getSaleOrder()));
   }
 
-  void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)
-      throws AxelorException {
+  void onSaleOrderLineProductOnChange(
+      @Observes @Priority(value = 30) SaleOrderLineProductOnChange event) throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Object> saleOrderLineMap = event.getSaleOrderLineMap();
