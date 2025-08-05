@@ -5,6 +5,7 @@
 
   <grid name="call-tender-grid" title="Call for tenders"
     model="com.axelor.apps.purchase.db.CallTender" orderBy="-createdOn">
+    <field name="callTenderSeq"/>
     <field name="name"/>
     <field name="description"/>
   </grid>
@@ -12,6 +13,7 @@
   <form name="call-tender-form" model="com.axelor.apps.purchase.db.CallTender"
     title="Call for tender">
     <panel name="headerPanel" showTitle="false">
+
       <field name="name" colSpan="6"/>
       <field name="description" colSpan="6"/>
       <field name="callForTenderMailTemplate" colSpan="6"
@@ -23,6 +25,9 @@
       <button name="sendCallTendersBtn" title="Send call for tenders"
         onClick="save,action-call-tender-method-send-call-tender-offers" colSpan="12"/>
     </panel>
+    <panel name="seqPanel" showTitle="false" sidebar="true">
+      <field name="callTenderSeq"/>
+    </panel>
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"
       canSelect="false"/>
@@ -31,12 +36,23 @@
       canSelect="false"/>
     <panel-related field="callTenderOfferList" form-view="call-tender-offer-form"
       grid-view="call-tender-offer-grid" colSpan="12" canSelect="false"/>
+
+    <panel-dashlet action="action-call-tender-view-mails" colSpan="12"/>
   </form>
 
   <action-method name="action-call-tender-method-generate-call-tender-offers">
     <call class="com.axelor.apps.purchase.web.CallTenderController"
       method="generateCallTenderOffers"/>
   </action-method>
+
+  <action-view name="action-call-tender-view-mails" title="Mails"
+    model="com.axelor.apps.purchase.db.CallTenderMail">
+    <view type="grid" name="call-tender-mail-grid"/>
+    <view type="form" name="call-tender-mail-form"/>
+    <domain>self.id IN (SELECT cfo.offerMail FROM CallTenderOffer cfo WHERE cfo.callTender =
+      :callTender)</domain>
+    <context name="callTender" expr="eval: __self__"/>
+  </action-view>
 
 
   <action-method name="action-call-tender-method-send-call-tender-offers">
