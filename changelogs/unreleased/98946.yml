@@ -1,0 +1,3 @@
+---
+title: "Account management: fixed interbank code issue on 'Direct Debit' payment mode."
+module: axelor-account
