@@ -14,13 +14,13 @@
     type="com.axelor.apps.talent.db.TrainingRegister" search="self.importId = :importId">
     <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
-      check-message="Employee with importId :employee_importId doesn't exist"/>
+      check-message="Employee doesn't exist"/>
     <bind column="training_importId" to="training" search="self.importId = :training_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.talent.db.Training', 'importId', training_importId)"
-      check-message="Training with importId :training_importId doesn't exist"/>
+      check-message="Training doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.talent.db.TrainingRegister', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind to="fromDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(fromDate)" column="fromDate"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(fromDate)"
@@ -43,10 +43,10 @@
     <bind column="appraisalType_importId" to="appraisalType"
       search="self.importId = :appraisalType_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.talent.db.AppraisalType', 'importId', appraisalType_importId)"
-      check-message="Type of appraisal with importId :appraisalType_importId doesn't exist"/>
+      check-message="Type of appraisal doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.talent.db.Appraisal', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
   </input>
 
 </csv-inputs>
