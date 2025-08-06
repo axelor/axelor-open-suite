@@ -6,10 +6,10 @@
   <input file="studio_appTimesheet.csv" separator=";" type="com.axelor.studio.db.AppTimesheet"
     search="self.app.code = :code">
     <bind column="invoicingTypeLogTimesSelect" to="invoicingTypeLogTimesSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('hrs.timesheet.line.invoicing.type.select', invoicingTypeLogTimesSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppTimesheet', 'invoicingTypeLogTimesSelect', invoicingTypeLogTimesSelect)"
       check-message="Invalid invoicingTypeLogTimesSelect :invoicingTypeLogTimesSelect"/>
     <bind column="defaultEndFormat" to="defaultEndFormat"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('hr.timesheet.default.end.format', defaultEndFormat, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppTimesheet', 'defaultEndFormat', defaultEndFormat)"
       check-message="Invalid defaultEndFormat :defaultEndFormat"/>
   </input>
 
@@ -19,10 +19,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
       check-message="Employee with importId :employee_importId doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('hrs.timesheet.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Timesheet', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind column="timeLoggingPreferenceSelect" to="timeLoggingPreferenceSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('hr.time.logging.preference.select', timeLoggingPreferenceSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Timesheet', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
       check-message="Invalid timeLoggingPreferenceSelect :timeLoggingPreferenceSelect"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
@@ -58,13 +58,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('message.media.type.select', mediaTypeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
       check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('template.engine.select', templateEngineSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
       check-message="Invalid templateEngineSelect :templateEngineSelect"/>
     <bind column="language" to="language"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('select.language', language, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
       check-message="Invalid language :language"/>
     <bind column="printTemplateSet_importId" to="printTemplateSet"
       search="self.importId in :printTemplateSet_importId"
@@ -90,13 +90,13 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('account.year.type.select', typeSelect, true)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Year', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect :typeSelect"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.year.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Year', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
     <bind column="periodDurationSelect" to="periodDurationSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('base.year.period.duration.select', periodDurationSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Year', 'periodDurationSelect', periodDurationSelect)"
       check-message="Invalid periodDurationSelect :periodDurationSelect"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"
