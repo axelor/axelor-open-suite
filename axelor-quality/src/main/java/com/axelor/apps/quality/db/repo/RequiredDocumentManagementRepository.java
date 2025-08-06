@@ -62,4 +62,12 @@ public class RequiredDocumentManagementRepository extends RequiredDocumentReposi
     }
     return document;
   }
+
+  @Override
+  public RequiredDocument copy(RequiredDocument entity, boolean deep) {
+    RequiredDocument copy = super.copy(entity, deep);
+    copy.setMetaFile(null);
+    copy.setDmsFile(null);
+    return copy;
+  }
 }
