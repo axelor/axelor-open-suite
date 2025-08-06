@@ -33,6 +33,8 @@ import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityImprovementManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
+import com.axelor.apps.quality.db.repo.RequiredDocumentManagementRepository;
+import com.axelor.apps.quality.db.repo.RequiredDocumentRepository;
 import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIService;
 import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementParseService;
@@ -111,5 +113,6 @@ public class QualityModule extends AxelorModule {
     bind(QualityImprovementUpdateAPIService.class).to(QualityImprovementUpdateAPIServiceImpl.class);
     bind(QualityImprovementCheckValuesService.class)
         .to(QualityImprovementCheckValuesServiceImpl.class);
+    bind(RequiredDocumentRepository.class).to(RequiredDocumentManagementRepository.class);
   }
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="RequiredDocument">
+
+    <string name="name" title="Name" required="true" namecolumn="true"/>
+    <string name="sequence" title="Document n°"/>
+    <integer name="docVersion" title="Version" default="1"/>
+    <integer name="statusSelect" selection="quality.required.document.status.select"
+      title="Status" default="1"/>
+    <string name="documentId" title="Document ID">
+		<![CDATA[
+			if (sequence == null || sequence.isEmpty()) {
+			    return "";
+			}
+
+			return sequence + " " + docVersion;
+		]]>
+    </string>
+    <boolean name="isActiveVersion" title="Active version ?" default="true"/>
+    <integer name="typeSelect" selection="quality.required.document.type.select"
+      title="Type"/>
+    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
+      title="Sale order"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <string name="relatedToSelect" title="Related to"
+      selection="quality.required.document.related.to.select"/>
+    <long name="relatedToSelectId"/>
+    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
+    <string name="commentStr" title="Comment" large="true" multiline="true"/>
+
+    <extra-code>
+			<![CDATA[
+			    //status select
+				public static final int STATUS_REQUIRED = 1;
+				public static final int STATUS_AVAILABLE = 2;
+				public static final int STATUS_OBSOLETE = 3;
+
+				//type select
+				public static final int TYPE_SALE_ORDER = 1;
+				public static final int TYPE_PROJECT = 2;
+			]]>
+    </extra-code>
+  </entity>
+
+</domain-models>
