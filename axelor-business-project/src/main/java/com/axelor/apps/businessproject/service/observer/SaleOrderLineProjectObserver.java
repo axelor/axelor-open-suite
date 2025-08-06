@@ -23,8 +23,8 @@ import com.axelor.apps.sale.service.event.SaleOrderLineViewOnLoad;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 import java.util.Map;
-import javax.annotation.Priority;
 
 public class SaleOrderLineProjectObserver {
   void onSaleOrderLineOnNew(@Observes @Priority(value = 30) SaleOrderLineViewOnNew event) {
