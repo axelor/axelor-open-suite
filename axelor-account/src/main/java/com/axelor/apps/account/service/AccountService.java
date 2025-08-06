@@ -90,17 +90,17 @@ public class AccountService {
     return this.computeBalance(account, null, null, balanceType);
   }
 
-  public BigDecimal computeBalance(AccountType accountType, Year year, int balanceType) {
-    return this.computeBalance(null, accountType, year, balanceType);
+  public BigDecimal computeBalance(List<AccountType> accountTypeList, Year year, int balanceType) {
+    return this.computeBalance(null, accountTypeList, year, balanceType);
   }
 
   protected BigDecimal computeBalance(
-      Account account, AccountType accountType, Year year, int balanceType) {
+      Account account, List<AccountType> accountTypeList, Year year, int balanceType) {
     Query balanceQuery =
         JPA.em()
             .createQuery(
                 String.format(
-                    "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
+                    "select sum(self.debit - self.credit) from MoveLine self where self.account%s IN (:account) "
                         + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN ("
                         + Joiner.on(',')
                             .join(
@@ -110,7 +110,7 @@ public class AccountService {
                     account == null ? ".accountType" : "",
                     year != null ? " and self.move.period.year = :year" : ""));
 
-    balanceQuery.setParameter("account", account != null ? account : accountType);
+    balanceQuery.setParameter("account", account != null ? account : accountTypeList);
 
     if (year != null) {
       balanceQuery.setParameter("year", year);
