@@ -25,14 +25,28 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportServ
 import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ImportBankStatement {
+
+  protected static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("ddMMyy");
+
+  protected static final String DATE_PATTERN =
+      "(TODAY|\\d{4}-\\d{2}-\\d{2})(\\[((?:[\\+\\-=]?\\d{1,4}y)?(?:[\\+\\-=]?\\d{1,2}M)?(?:[\\+\\-=]?\\d{1,2}d)?)\\])?";
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -40,17 +54,20 @@ public class ImportBankStatement {
   protected MetaFiles metaFiles;
   protected BankStatementRepository bankStatementRepository;
   protected BankStatementCreateService bankStatementCreateService;
+  protected ImportDateTime importDateTime;
 
   @Inject
   public ImportBankStatement(
       BankStatementImportService bankStatementImportService,
       MetaFiles metaFiles,
       BankStatementRepository bankStatementRepository,
-      BankStatementCreateService bankStatementCreateService) {
+      BankStatementCreateService bankStatementCreateService,
+      ImportDateTime importDateTime) {
     this.bankStatementImportService = bankStatementImportService;
     this.metaFiles = metaFiles;
     this.bankStatementRepository = bankStatementRepository;
     this.bankStatementCreateService = bankStatementCreateService;
+    this.importDateTime = importDateTime;
   }
 
   public Object importBankStatement(Object bean, Map<String, Object> values) {
@@ -64,6 +81,13 @@ public class ImportBankStatement {
         InputStream stream =
             this.getClass().getResourceAsStream("/apps/demo-data/demo-bank-statement/" + fileName);
         if (stream != null) {
+          String rawContent =
+              new BufferedReader(new InputStreamReader(stream))
+                  .lines()
+                  .collect(Collectors.joining("\n"));
+          String processedContent = preprocessAfb120Content(rawContent);
+          stream = new ByteArrayInputStream(processedContent.getBytes(StandardCharsets.UTF_8));
+
           final MetaFile metaFile = metaFiles.upload(stream, fileName);
           bankStatement.setBankStatementFile(metaFile);
           bankStatementRepository.save(bankStatement);
@@ -74,5 +98,22 @@ public class ImportBankStatement {
       }
     }
     return bankStatementRepository.find(bankStatement.getId());
+  }
+
+  protected String preprocessAfb120Content(String content) {
+    Pattern pattern = Pattern.compile(DATE_PATTERN);
+    Matcher matcher = pattern.matcher(content);
+    StringBuffer sb = new StringBuffer();
+
+    while (matcher.find()) {
+      String expression = matcher.group();
+      String isoDate = importDateTime.importDate(expression);
+      String formattedDate = LocalDate.parse(isoDate.substring(0, 10)).format(DATE_FORMAT);
+
+      matcher.appendReplacement(sb, formattedDate);
+    }
+
+    matcher.appendTail(sb);
+    return sb.toString();
   }
 }
