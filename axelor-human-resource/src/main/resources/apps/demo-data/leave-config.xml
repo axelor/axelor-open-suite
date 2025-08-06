@@ -7,17 +7,17 @@
     search="self.app.code = :code" update="true">
     <bind column="useWeeklyPlanningCoefficientSelect" to="useWeeklyPlanningCoefficientSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppLeave', 'useWeeklyPlanningCoefficientSelect', useWeeklyPlanningCoefficientSelect)"
-      check-message="Invalid useWeeklyPlanningCoefficientSelect :useWeeklyPlanningCoefficientSelect"/>
+      check-message="Invalid useWeeklyPlanningCoefficientSelect"/>
   </input>
 
   <input file="hr_leaveLine.csv" separator=";" type="com.axelor.apps.hr.db.LeaveLine">
     <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
-      check-message="Employee with importId :employee_importId doesn't exist"/>
+      check-message="Employee doesn't exist"/>
     <bind to="name" column="leaveReasonName"/>
     <bind to="leaveReason" search="self.name = :leaveReasonName" column="leaveReasonName"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.LeaveReason', 'name', leaveReasonName)"
-      check-message="Leave reason with name :leaveReasonName doesn't exist"/>
+      check-message="Leave reason doesn't exist"/>
   </input>
 
   <input file="hr_leaveManagement.csv" separator=";"
@@ -39,48 +39,48 @@
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
-      check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
+      check-message="Invalid mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
-      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
+      check-message="Invalid templateEngineSelect"/>
     <bind column="language" to="language"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
-      check-message="Invalid language :language"/>
+      check-message="Invalid language"/>
   </input>
 
   <input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";"
     search="self.importId = :importId" update="true">
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.HRConfig', 'importId', importId, 'company.importId', company_importId)"
       check-message="Company must be unique"/>
     <bind column="lunchVoucherFormatSelect" to="lunchVoucherFormatSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.HRConfig', 'lunchVoucherFormatSelect', lunchVoucherFormatSelect)"
-      check-message="Invalid lunchVoucherFormatSelect :lunchVoucherFormatSelect"/>
+      check-message="Invalid lunchVoucherFormatSelect"/>
   </input>
 
   <input file="hr_leaveRequest.csv" separator=";" type="com.axelor.apps.hr.db.LeaveRequest"
     search="self.importId = :importId">
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
-      check-message="Employee with importId :employee_importId doesn't exist"/>
+      check-message="Employee doesn't exist"/>
     <bind column="startOnSelect" to="startOnSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveRequest', 'startOnSelect', startOnSelect)"
-      check-message="Invalid startOnSelect :startOnSelect"/>
+      check-message="Invalid startOnSelect"/>
     <bind column="endOnSelect" to="endOnSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveRequest', 'endOnSelect', endOnSelect)"
-      check-message="Invalid endOnSelect :endOnSelect"/>
+      check-message="Invalid endOnSelect"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveRequest', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="injectConsumeSelect" to="injectConsumeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveRequest', 'injectConsumeSelect', injectConsumeSelect)"
-      check-message="Invalid injectConsumeSelect :injectConsumeSelect"/>
+      check-message="Invalid injectConsumeSelect"/>
     <bind to="fromDateT"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(fromDateT)" column="fromDateT"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(fromDateT)"

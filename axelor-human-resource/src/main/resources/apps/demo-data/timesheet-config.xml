@@ -7,23 +7,23 @@
     search="self.app.code = :code">
     <bind column="invoicingTypeLogTimesSelect" to="invoicingTypeLogTimesSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppTimesheet', 'invoicingTypeLogTimesSelect', invoicingTypeLogTimesSelect)"
-      check-message="Invalid invoicingTypeLogTimesSelect :invoicingTypeLogTimesSelect"/>
+      check-message="Invalid invoicingTypeLogTimesSelect"/>
     <bind column="defaultEndFormat" to="defaultEndFormat"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppTimesheet', 'defaultEndFormat', defaultEndFormat)"
-      check-message="Invalid defaultEndFormat :defaultEndFormat"/>
+      check-message="Invalid defaultEndFormat"/>
   </input>
 
   <input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";"
     search="self.importId = :importId">
     <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
-      check-message="Employee with importId :employee_importId doesn't exist"/>
+      check-message="Employee doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Timesheet', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="timeLoggingPreferenceSelect" to="timeLoggingPreferenceSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Timesheet', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
-      check-message="Invalid timeLoggingPreferenceSelect :timeLoggingPreferenceSelect"/>
+      check-message="Invalid timeLoggingPreferenceSelect"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
@@ -59,13 +59,13 @@
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
-      check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
+      check-message="Invalid mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
-      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
+      check-message="Invalid templateEngineSelect"/>
     <bind column="language" to="language"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
-      check-message="Invalid language :language"/>
+      check-message="Invalid language"/>
     <bind column="printTemplateSet_importId" to="printTemplateSet"
       search="self.importId in :printTemplateSet_importId"
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
@@ -75,7 +75,7 @@
     separator=";" update="true" search="self.importId = :importId">
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.project.db.ProjectConfig', 'importId', importId, 'company.importId', company_importId)"
       check-message="Company must be unique"/>
@@ -91,13 +91,13 @@
       check-message="Name must not be null"/>
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Year', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Year', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="periodDurationSelect" to="periodDurationSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Year', 'periodDurationSelect', periodDurationSelect)"
-      check-message="Invalid periodDurationSelect :periodDurationSelect"/>
+      check-message="Invalid periodDurationSelect"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(fromDate)"
