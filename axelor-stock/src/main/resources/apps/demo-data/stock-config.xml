@@ -10,20 +10,20 @@
       check-message="Name must not be null"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockLocation', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
   </input>
 
   <input file="stock_stockRules.csv" separator=";" type="com.axelor.apps.stock.db.StockRules">
     <bind column="stockLocation_importId" to="stockLocation"
       search="self.importId = :stockLocation_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.stock.db.StockLocation', 'importId', stockLocation_importId)"
-      check-message="Stock location with importId :stockLocation_importId doesn't exist"/>
+      check-message="Stock location doesn't exist"/>
     <bind column="product_importId" to="product" search="self.importId = :product_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Product', 'importId', product_importId)"
-      check-message="Product with importId :product_importId doesn't exist"/>
+      check-message="Product doesn't exist"/>
     <bind column="minQty" to="minQty"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(minQty)"
       check-message="Min. qty must not be null"/>
@@ -32,20 +32,20 @@
       check-message="Refill qty must not be null"/>
     <bind column="useCaseSelect" to="useCaseSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockRules', 'useCaseSelect', useCaseSelect)"
-      check-message="Invalid useCaseSelect :useCaseSelect"/>
+      check-message="Invalid useCaseSelect"/>
     <bind column="orderAlertSelect" to="orderAlertSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockRules', 'orderAlertSelect', orderAlertSelect)"
-      check-message="Invalid orderAlertSelect :orderAlertSelect"/>
+      check-message="Invalid orderAlertSelect"/>
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockRules', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
   </input>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
-      check-message="Invalid codeSelect :codeSelect"/>
+      check-message="Invalid codeSelect"/>
     <bind column="name" to="name"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
@@ -65,23 +65,23 @@
       check-message="Name must not be null"/>
     <bind column="saleAutoTrackingNbrOrderSelect" to="saleAutoTrackingNbrOrderSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.TrackingNumberConfiguration', 'saleAutoTrackingNbrOrderSelect', saleAutoTrackingNbrOrderSelect)"
-      check-message="Invalid saleAutoTrackingNbrOrderSelect :saleAutoTrackingNbrOrderSelect"/>
+      check-message="Invalid saleAutoTrackingNbrOrderSelect"/>
     <bind column="productAutoTrackingNbrOrderSelect" to="productAutoTrackingNbrOrderSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.TrackingNumberConfiguration', 'productAutoTrackingNbrOrderSelect', productAutoTrackingNbrOrderSelect)"
-      check-message="Invalid productAutoTrackingNbrOrderSelect :productAutoTrackingNbrOrderSelect"/>
+      check-message="Invalid productAutoTrackingNbrOrderSelect"/>
   </input>
 
   <input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportInventory:importInventory">
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Inventory', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Inventory', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="formatSelect" to="formatSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Inventory', 'formatSelect', formatSelect)"
-      check-message="Invalid formatSelect :formatSelect"/>
+      check-message="Invalid formatSelect"/>
     <bind column="plannedStartDateT" to="plannedStartDateT"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(plannedStartDateT)"/>
     <bind column="plannedEndDateT" to="plannedEndDateT"
@@ -89,7 +89,7 @@
     <bind to="stockLocation" column="stockLocation_importId"
       search="self.importId = :stockLocation_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.stock.db.StockLocation', 'importId', stockLocation_importId)"
-      check-message="Stock location with importId :stockLocation_importId doesn't exist"/>
+      check-message="Stock location doesn't exist"/>
     <bind to="company" column="company_importId" search="self.importId = :company_importId"/>
     <bind column="inventorySeq" to="inventorySeq"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.stock.db.Inventory', 'importId', importId, 'inventorySeq, stockLocation.importId', inventorySeq, stockLocation_importId)"
@@ -100,16 +100,16 @@
     type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId">
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.stock.db.StockConfig', 'importId', importId, 'company.importId', company_importId)"
       check-message="Company must be unique"/>
     <bind column="stockValuationTypeSelect" to="stockValuationTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockConfig', 'stockValuationTypeSelect', stockValuationTypeSelect)"
-      check-message="Invalid stockValuationTypeSelect :stockValuationTypeSelect"/>
+      check-message="Invalid stockValuationTypeSelect"/>
     <bind column="inventoryValuationTypeSelect" to="inventoryValuationTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockConfig', 'inventoryValuationTypeSelect', inventoryValuationTypeSelect)"
-      check-message="Invalid inventoryValuationTypeSelect :inventoryValuationTypeSelect"/>
+      check-message="Invalid inventoryValuationTypeSelect"/>
   </input>
 
   <input file="stock_customsCodeNomenclature.csv" separator=";"
@@ -127,25 +127,25 @@
       check-message="Serial number must be unique"/>
     <bind column="saleSupplySelect" to="saleSupplySelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Product', 'saleSupplySelect', saleSupplySelect)"
-      check-message="Invalid saleSupplySelect :saleSupplySelect"/>
+      check-message="Invalid saleSupplySelect"/>
     <bind column="productTypeSelect" to="productTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Product', 'productTypeSelect', productTypeSelect)"
-      check-message="Invalid productTypeSelect :productTypeSelect"/>
+      check-message="Invalid productTypeSelect"/>
     <bind column="procurementMethodSelect" to="procurementMethodSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Product', 'procurementMethodSelect', procurementMethodSelect)"
-      check-message="Invalid procurementMethodSelect :procurementMethodSelect"/>
+      check-message="Invalid procurementMethodSelect"/>
     <bind column="productSubTypeSelect" to="productSubTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Product', 'productSubTypeSelect', productSubTypeSelect)"
-      check-message="Invalid productSubTypeSelect :productSubTypeSelect"/>
+      check-message="Invalid productSubTypeSelect"/>
     <bind column="inventoryTypeSelect" to="inventoryTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Product', 'inventoryTypeSelect', inventoryTypeSelect)"
-      check-message="Invalid inventoryTypeSelect :inventoryTypeSelect"/>
+      check-message="Invalid inventoryTypeSelect"/>
     <bind column="versionSelect" to="versionSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Product', 'versionSelect', versionSelect)"
-      check-message="Invalid versionSelect :versionSelect"/>
+      check-message="Invalid versionSelect"/>
     <bind column="costTypeSelect" to="costTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Product', 'costTypeSelect', costTypeSelect)"
-      check-message="Invalid costTypeSelect :costTypeSelect"/>
+      check-message="Invalid costTypeSelect"/>
     <bind to="customsCodeNomenclature" search="self.code = :customsCodeNomenclature_code"
       if="usedInDEB" update="true"/>
   </input>
@@ -155,7 +155,7 @@
     call="com.axelor.csv.script.ImportInventoryLine:importInventoryLine">
     <bind column="product_importId" to="product" search="self.importId = :product_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Product', 'importId', product_importId)"
-      check-message="Product with importId :product_importId doesn't exist"/>
+      check-message="Product doesn't exist"/>
     <bind to="stockLocation" column="stockLocation_importId"
       search="self.importId = :stockLocation_importId"/>
   </input>
@@ -165,17 +165,17 @@
     call="com.axelor.csv.script.ImportInventory:validateInventory">
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Inventory', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Inventory', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="formatSelect" to="formatSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Inventory', 'formatSelect', formatSelect)"
-      check-message="Invalid formatSelect :formatSelect"/>
+      check-message="Invalid formatSelect"/>
     <bind to="stockLocation" column="stockLocation_importId"
       search="self.importId = :stockLocation_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.stock.db.StockLocation', 'importId', stockLocation_importId)"
-      check-message="Stock location with importId :stockLocation_importId doesn't exist"/>
+      check-message="Stock location doesn't exist"/>
     <bind column="inventorySeq" to="inventorySeq"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.stock.db.Inventory', 'importId', importId, 'inventorySeq, stockLocation.importId', inventorySeq, stockLocation_importId)"
       check-message="Inventory N° and stock location must be unique"/>
@@ -195,37 +195,37 @@
       check-message="Code must not be null"/>
     <bind column="exportCustomsDeclaration" to="exportCustomsDeclaration"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'exportCustomsDeclaration', exportCustomsDeclaration)"
-      check-message="Invalid exportCustomsDeclaration :exportCustomsDeclaration"/>
+      check-message="Invalid exportCustomsDeclaration"/>
     <bind column="carriageToPortOfExport" to="carriageToPortOfExport"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'carriageToPortOfExport', carriageToPortOfExport)"
-      check-message="Invalid carriageToPortOfExport :carriageToPortOfExport"/>
+      check-message="Invalid carriageToPortOfExport"/>
     <bind column="unloadingOfTruckInPortOfExport" to="unloadingOfTruckInPortOfExport"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'unloadingOfTruckInPortOfExport', unloadingOfTruckInPortOfExport)"
-      check-message="Invalid unloadingOfTruckInPortOfExport :unloadingOfTruckInPortOfExport"/>
+      check-message="Invalid unloadingOfTruckInPortOfExport"/>
     <bind column="loadingInPortOfExport" to="loadingInPortOfExport"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'loadingInPortOfExport', loadingInPortOfExport)"
-      check-message="Invalid loadingInPortOfExport :loadingInPortOfExport"/>
+      check-message="Invalid loadingInPortOfExport"/>
     <bind column="carriageToPortOfImport" to="carriageToPortOfImport"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'carriageToPortOfImport', carriageToPortOfImport)"
-      check-message="Invalid carriageToPortOfImport :carriageToPortOfImport"/>
+      check-message="Invalid carriageToPortOfImport"/>
     <bind column="insurance" to="insurance"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'insurance', insurance)"
-      check-message="Invalid insurance :insurance"/>
+      check-message="Invalid insurance"/>
     <bind column="unloadingInPortOfImport" to="unloadingInPortOfImport"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'unloadingInPortOfImport', unloadingInPortOfImport)"
-      check-message="Invalid unloadingInPortOfImport :unloadingInPortOfImport"/>
+      check-message="Invalid unloadingInPortOfImport"/>
     <bind column="loadingOnTruckInPortOfImport" to="loadingOnTruckInPortOfImport"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'loadingOnTruckInPortOfImport', loadingOnTruckInPortOfImport)"
-      check-message="Invalid loadingOnTruckInPortOfImport :loadingOnTruckInPortOfImport"/>
+      check-message="Invalid loadingOnTruckInPortOfImport"/>
     <bind column="carriageToPlaceOfDestination" to="carriageToPlaceOfDestination"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'carriageToPlaceOfDestination', carriageToPlaceOfDestination)"
-      check-message="Invalid carriageToPlaceOfDestination :carriageToPlaceOfDestination"/>
+      check-message="Invalid carriageToPlaceOfDestination"/>
     <bind column="importCustomsClearance" to="importCustomsClearance"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'importCustomsClearance', importCustomsClearance)"
-      check-message="Invalid importCustomsClearance :importCustomsClearance"/>
+      check-message="Invalid importCustomsClearance"/>
     <bind column="importDutiesAndTaxes" to="importDutiesAndTaxes"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.Incoterm', 'importDutiesAndTaxes', importDutiesAndTaxes)"
-      check-message="Invalid importDutiesAndTaxes :importDutiesAndTaxes"/>
+      check-message="Invalid importDutiesAndTaxes"/>
   </input>
 
   <input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner"
@@ -238,10 +238,10 @@
       check-message="Reference must be unique"/>
     <bind column="partnerTypeSelect" to="partnerTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'partnerTypeSelect', partnerTypeSelect)"
-      check-message="Invalid partnerTypeSelect :partnerTypeSelect"/>
+      check-message="Invalid partnerTypeSelect"/>
     <bind column="titleSelect" to="titleSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'titleSelect', titleSelect)"
-      check-message="Invalid titleSelect :titleSelect"/>
+      check-message="Invalid titleSelect"/>
     <bind to="emailAddress" if="email &amp;&amp; email.trim() != ''"
       search="self.partner.importId = :importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'emailAddress.address', email)"
@@ -266,13 +266,13 @@
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
-      check-message="Invalid mediaTypeSelect :mediaTypeSelect"/>
+      check-message="Invalid mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
-      check-message="Invalid templateEngineSelect :templateEngineSelect"/>
+      check-message="Invalid templateEngineSelect"/>
     <bind column="language" to="language"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
-      check-message="Invalid language :language"/>
+      check-message="Invalid language"/>
     <bind column="printTemplateSet_importId" to="printTemplateSet"
       search="self.importId in :printTemplateSet_importId"
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
@@ -285,19 +285,19 @@
     search="self.importId = :importId" call="com.axelor.csv.script.ImportStockMove:importStockMove">
     <bind to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMove', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMove', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
     <bind column="availableStatusSelect" to="availableStatusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMove', 'availableStatusSelect', availableStatusSelect)"
-      check-message="Invalid availableStatusSelect :availableStatusSelect"/>
+      check-message="Invalid availableStatusSelect"/>
     <bind column="conformitySelect" to="conformitySelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMove', 'conformitySelect', conformitySelect)"
-      check-message="Invalid conformitySelect :conformitySelect"/>
+      check-message="Invalid conformitySelect"/>
     <bind column="stockMoveSeq" to="stockMoveSeq"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.stock.db.StockMove', 'importId', importId, 'stockMoveSeq, company.importId', stockMoveSeq, company_importId)"
       check-message="Ref. and company must be unique"/>
@@ -312,16 +312,16 @@
       check-message="Title must not be null"/>
     <bind column="availableStatusSelect" to="availableStatusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMoveLine', 'availableStatusSelect', availableStatusSelect)"
-      check-message="Invalid availableStatusSelect :availableStatusSelect"/>
+      check-message="Invalid availableStatusSelect"/>
     <bind column="conformitySelect" to="conformitySelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMoveLine', 'conformitySelect', conformitySelect)"
-      check-message="Invalid conformitySelect :conformitySelect"/>
+      check-message="Invalid conformitySelect"/>
     <bind column="productTypeSelect" to="productTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMoveLine', 'productTypeSelect', productTypeSelect)"
-      check-message="Invalid productTypeSelect :productTypeSelect"/>
+      check-message="Invalid productTypeSelect"/>
     <bind column="lineTypeSelect" to="lineTypeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.StockMoveLine', 'lineTypeSelect', lineTypeSelect)"
-      check-message="Invalid lineTypeSelect :lineTypeSelect"/>
+      check-message="Invalid lineTypeSelect"/>
     <bind to="stockMove" search="self.importId = :stockMove_importId"/>
     <bind to="product" search="self.importId = :product_importId"/>
     <bind to="unit" search="self.importId = :unit_importId"/>
@@ -332,17 +332,17 @@
     call="com.axelor.csv.script.ImportLogisticalForm:importLogisticalForm">
     <bind to="company" search="self.importId = :company_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
-      check-message="Company with importId :company_importId doesn't exist"/>
+      check-message="Company doesn't exist"/>
     <bind to="deliverToCustomerPartner"
       search="self.importId = :deliverToCustomerPartner_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', deliverToCustomerPartner_importId)"
-      check-message="Deliver to customer with importId :deliverToCustomerPartner_importId doesn't exist"/>
+      check-message="Deliver to customer doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.LogisticalForm', 'statusSelect', statusSelect)"
-      check-message="Invalid statusSelect :statusSelect"/>
+      check-message="Invalid statusSelect"/>
     <bind column="accountSelectionToCarrierSelect" to="accountSelectionToCarrierSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.LogisticalForm', 'accountSelectionToCarrierSelect', accountSelectionToCarrierSelect)"
-      check-message="Invalid accountSelectionToCarrierSelect :accountSelectionToCarrierSelect"/>
+      check-message="Invalid accountSelectionToCarrierSelect"/>
     <bind column="collectionDate" to="collectionDate"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(collectionDate)"
       check-message="Collection date must not be null"/>
@@ -354,7 +354,7 @@
     type="com.axelor.apps.stock.db.LogisticalFormLine" search="self.importId = :importId">
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.stock.db.LogisticalFormLine', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect :typeSelect"/>
+      check-message="Invalid typeSelect"/>
     <bind to="logisticalForm" search="self.importId = :logisticalForm_importId"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.stock.db.LogisticalFormLine', 'importId', importId, 'typeSelect, parcelPalletNumber, logisticalForm.importId, stockMoveId', typeSelect, parcelPalletNumber, logisticalForm_importId, stockMoveId)"
       check-message="Type, parcel/pallet number, logistical form and stock move must be unique"/>
@@ -372,11 +372,11 @@
     separator=";">
     <bind to="metaModel" column="metaModel" search="self.name = :metaModel"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel)"
-      check-message="Meta model with name :metaModel doesn't exist"/>
+      check-message="Meta model doesn't exist"/>
     <bind to="metaField" column="metaField"
       search="self.name = :metaField AND self.metaModel.name = :metaModel"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
-      check-message="Meta field with name :metaField and model :metaModel doesn't exist"/>
+      check-message="Meta field doesn't exist"/>
     <bind to="anonymizer" column="anonymizer_importId"
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
@@ -395,7 +395,7 @@
     <bind to="metaField" column="metaField"
       search="self.name = :metaField AND self.metaModel.name = :metaModel"
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
-      check-message="Meta field with name :metaField and model :metaModel doesn't exist"/>
+      check-message="Meta field doesn't exist"/>
   </input>
 
   <input file="stock_trackingNumberConfigurationProfile.csv" separator=";"
