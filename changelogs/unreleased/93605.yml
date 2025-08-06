@@ -1,0 +1,5 @@
+---
+title: "Sale order : hide delivery panel when we select a service product."
+module: axelor-supplychain
+developer: |
+  Added 'SaleOrderLineViewServiceSupplychain' to 'SaleOrderLineSupplychainOnLoadServiceImpl' constructor.
