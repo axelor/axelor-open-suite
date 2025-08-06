@@ -15,7 +15,7 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
       check-message="Employee with importId :employee_importId doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('hrs.leave.request.status.select', statusSelect, false)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.ExtraHoursType', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect :statusSelect"/>
   </input>
 
