@@ -5,6 +5,10 @@
 
   <grid name="required-document-grid" title="Required documents"
     model="com.axelor.apps.quality.db.RequiredDocument" orderBy="-docVersion">
+    <toolbar>
+      <button name="exportFilesBtn" onClick="action-required-documents-method-export-files"
+        title="Export selected files"/>
+    </toolbar>
     <field name="statusSelect"/>
     <field name="saleOrder"/>
     <field name="project"/>
@@ -104,6 +108,10 @@
 
   <action-method name="action-required-documents-method-set-inline-url">
     <call class="com.axelor.apps.quality.web.RequiredDocumentController" method="setInlineUrl"/>
+  </action-method>
+
+  <action-method name="action-required-documents-method-export-files">
+    <call class="com.axelor.apps.quality.web.RequiredDocumentController" method="exportFiles"/>
   </action-method>
 
 </object-views>
