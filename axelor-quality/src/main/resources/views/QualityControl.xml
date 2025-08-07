@@ -13,7 +13,6 @@
     <field name="reference" width="120"/>
     <field name="name"/>
     <field name="relatedToSelect"/>
-    <field name="relatedToSelectId"/>
     <field name="team"/>
     <field name="responsible"/>
   </grid>
