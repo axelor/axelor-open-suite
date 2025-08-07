@@ -29,10 +29,12 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
@@ -372,5 +374,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrder);
       }
     }
+  }
+
+  @Override
+  public boolean getInAti(SaleOrder saleOrder, Company company) throws AxelorException {
+    if (company == null) {
+      return false;
+    }
+    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
+    int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
+    return saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
+        || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
   }
 }
