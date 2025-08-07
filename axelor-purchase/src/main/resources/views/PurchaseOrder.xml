@@ -600,6 +600,8 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-update-info-company"/>
     <action name="action-purchase-order-record-display-price"/>
+    <action name="action-purchase-order-record-in-ati"/>
+    <action name="action-purchase-order-attrs-in-ati"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">

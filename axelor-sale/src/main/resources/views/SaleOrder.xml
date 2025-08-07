@@ -1441,14 +1441,15 @@
 
   <action-group name="action-sale-group-onchange-company">
     <action name="action-sale-order-record-company-configuration"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
+    <action name="action-supplychain-sale-order-method-get-stock-location"/>
     <action name="action-supplychain-sale-order-method-get-to-stock-location"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-method-fill-company-bank-details"/>
     <action name="action-sale-record-update-info-company"/>
     <action name="action-sale-order-record-compute-end-of-validity-date"/>
     <action name="action-sale-order-record-set-default-tax-number"/>
+    <action name="action-sale-order-record-in-ati"/>
+    <action name="action-sale-order-attrs-in-ati"/>
   </action-group>
 
   <action-group name="action-sale-group-onchange-client-partner">
@@ -1817,6 +1818,7 @@
 
   <action-record name="action-sale-order-record-company-configuration"
     model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="currency" expr="eval: company?.currency"/>
     <field name="duration" expr="eval: company?.saleConfig?.defaultValidityDuration"/>
   </action-record>
 
