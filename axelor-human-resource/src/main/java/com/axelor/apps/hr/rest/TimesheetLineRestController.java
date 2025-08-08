@@ -21,12 +21,14 @@ package com.axelor.apps.hr.rest;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.rest.dto.TimesheetLineDeleteRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetLinePostRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetLinePutRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
+import com.axelor.apps.hr.service.timesheet.editor.TimesheetLineTimesheetEditorService;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -37,6 +39,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -111,5 +114,69 @@ public class TimesheetLineRestController {
         Response.Status.OK,
         I18n.get(ITranslation.TIMESHEET_LINE_UPDATED),
         new TimesheetLineResponse(timesheetLine));
+  }
+
+  /**
+   * This endpoint updates {@link TimesheetLine} inform of creating new {@link TimesheetLine} by
+   * computing difference of duration or hoursDuration.
+   */
+  @Operation(
+      summary = "Create or update a timesheet line",
+      tags = {"Timesheet line"})
+  @Path("/update")
+  @POST
+  @HttpExceptionHandler
+  public Response updateTimesheetLine(TimesheetLinePostRequest requestBody) throws AxelorException {
+    new SecurityCheck()
+        .createAccess(TimesheetLine.class)
+        .writeAccess(TimesheetLine.class)
+        .readAccess(Timesheet.class, requestBody.getTimesheetId());
+    RequestValidator.validateBody(requestBody);
+
+    Timesheet timesheet = TimesheetLinePostRequestHelper.fetchOrCreateTimesheet(requestBody);
+    return Beans.get(TimesheetLineTimesheetEditorService.class)
+        .createOrUpdateTimesheetLine(
+            timesheet,
+            requestBody.fetchProject(),
+            requestBody.fetchProjectTask(),
+            requestBody.fetchProduct(),
+            requestBody.getDuration(),
+            requestBody.getHoursDuration(),
+            requestBody.getDate(),
+            requestBody.getComments(),
+            requestBody.isToInvoice());
+  }
+
+  /** This endpoint deleted {@link TimesheetLine}s of concerned {@link Timesheet}. */
+  @Operation(
+      summary = "Delete timesheet line",
+      tags = {"Timesheet line"})
+  @Path("/")
+  @DELETE
+  @HttpExceptionHandler
+  public Response removeTimesheetLines(TimesheetLineDeleteRequest requestBody) {
+    new SecurityCheck()
+        .removeAccess(TimesheetLine.class)
+        .readAccess(Timesheet.class, requestBody.getTimesheetId());
+
+    RequestValidator.validateBody(requestBody);
+    Timesheet timesheet = requestBody.fetchTimesheet();
+
+    TimesheetLineTimesheetEditorService timesheetLineTimesheetEditorService =
+        Beans.get(TimesheetLineTimesheetEditorService.class);
+    timesheetLineTimesheetEditorService.removeTimesheetLines(
+        timesheet,
+        requestBody.getDate(),
+        requestBody.fetchProject(),
+        requestBody.fetchProjectTask());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_LINES_DELETED),
+        timesheetLineTimesheetEditorService.buildEditorReponse(
+            timesheet,
+            requestBody.getDate(),
+            requestBody.fetchProject(),
+            requestBody.fetchProjectTask()));
   }
 }
