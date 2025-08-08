@@ -38,21 +38,25 @@
       <field name="projectInvoicingConsolidationSelect"/>
     </panel>
     <panel name="projectReporting" title="Reinvoicing" colSpan="12">
-      <field name="isReinvoiceablTimesheetLine" widget="boolean-switch" colSpan="3"/>
-      <field name="defaultReinvoiceablTimesheetLine" widget="boolean-switch" colSpan="3"
-        hidden="true" showIf="isReinvoiceablTimesheetLine"/>
-      <field name="isReinvoiceablExpenseLine" widget="boolean-switch" colSpan="3"/>
-      <field name="defaultReinvoiceablExpenseLine" widget="boolean-switch" colSpan="3"
-        hidden="true" showIf="isReinvoiceablExpenseLine"/>
-      <field name="isReinvoiceablPoLine" widget="boolean-switch" colSpan="3"/>
-      <field name="defaultReinvoiceablPoLine" widget="boolean-switch" colSpan="3"
-        hidden="true" showIf="isReinvoiceablPoLine"/>
-      <field name="isReinvoiceablSupInvLine" widget="boolean-switch" colSpan="3"/>
-      <field name="defaultReinvoiceablSupInvLine" widget="boolean-switch" colSpan="3"
-        hidden="true" showIf="isReinvoiceablSupInvLine"/>
-      <field name="isReinvoiceablStockMoveLine" widget="boolean-switch" colSpan="3"/>
-      <field name="defaultReinvoiceablStockMoveLine" widget="boolean-switch" colSpan="3"
-        hidden="true" showIf="isReinvoiceablStockMoveLine"/>
+      <panel showFrame="true">
+        <field name="isReinvoiceablTimesheetLine" widget="boolean-switch"/>
+        <field name="defaultReinvoiceablTimesheetLine" widget="boolean-switch" hidden="true"
+          showIf="isReinvoiceablTimesheetLine"/>
+        <field name="isReinvoiceablExpenseLine" widget="boolean-switch"/>
+        <field name="defaultReinvoiceablExpenseLine" widget="boolean-switch" hidden="true"
+          showIf="isReinvoiceablExpenseLine"/>
+        <field name="isReinvoiceablPoLine" widget="boolean-switch"/>
+        <field name="defaultReinvoiceablPoLine" widget="boolean-switch" hidden="true"
+          showIf="isReinvoiceablPoLine"/>
+      </panel>
+      <panel showFrame="true">
+        <field name="isReinvoiceablSupInvLine" widget="boolean-switch"/>
+        <field name="defaultReinvoiceablSupInvLine" widget="boolean-switch" hidden="true"
+          showIf="isReinvoiceablSupInvLine"/>
+        <field name="isReinvoiceablStockMoveLine" widget="boolean-switch"/>
+        <field name="defaultReinvoiceablStockMoveLine" widget="boolean-switch" hidden="true"
+          showIf="isReinvoiceablStockMoveLine"/>
+      </panel>
     </panel>
     <panel name="productPanel" title="Product" colSpan="12">
       <field name="enableTaskTemplatesByProduct" widget="boolean-switch"/>
