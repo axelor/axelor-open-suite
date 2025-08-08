@@ -22,7 +22,7 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class AdvancePaymentSaleRepository extends AdvancePaymentRepository {
 

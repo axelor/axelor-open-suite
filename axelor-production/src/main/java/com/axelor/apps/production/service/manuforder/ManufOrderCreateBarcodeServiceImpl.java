@@ -26,9 +26,9 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import jakarta.validation.ValidationException;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.validation.ValidationException;
 
 public class ManufOrderCreateBarcodeServiceImpl implements ManufOrderCreateBarcodeService {
 

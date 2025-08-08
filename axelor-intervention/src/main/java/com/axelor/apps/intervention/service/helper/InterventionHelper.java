@@ -31,14 +31,14 @@ import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.StringJoiner;
-import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 public class InterventionHelper {
   private InterventionHelper() {}

@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class PaymentVoucherManagementRepository extends PaymentVoucherRepository {
 

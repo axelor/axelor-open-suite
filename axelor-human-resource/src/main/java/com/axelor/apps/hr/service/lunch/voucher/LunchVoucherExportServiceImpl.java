@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.common.csv.CSVFile;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -57,7 +58,7 @@ public class LunchVoucherExportServiceImpl implements LunchVoucherExportService 
   @Transactional(rollbackOn = {Exception.class})
   public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 
-    File tempFile = MetaFiles.createTempFile(null, ".csv").toFile();
+    File tempFile = TempFiles.createTempFile(null, ".csv").toFile();
     try (CSVPrinter printer = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll().write(tempFile)) {
 
       printer.printRecord(createHeader());

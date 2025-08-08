@@ -38,12 +38,12 @@ import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.MetaModel;
 import com.google.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 
 public class BatchTimesheetReminder extends BatchStrategy {
 

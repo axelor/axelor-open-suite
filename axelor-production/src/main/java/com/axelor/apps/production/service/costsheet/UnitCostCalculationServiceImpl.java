@@ -47,6 +47,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -60,6 +61,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.validation.ValidationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -79,7 +81,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.validation.ValidationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -154,7 +155,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       list.add(item);
     }
 
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File located at: {}", file.getPath());
 
@@ -193,7 +194,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected File getConfigXmlFile() {
     File configFile = null;
     try {
-      configFile = MetaFiles.createTempFile("input-config", ".xml").toFile();
+      configFile = TempFiles.createTempFile("input-config", ".xml").toFile();
       InputStream bindFileInputStream =
           this.getClass().getResourceAsStream("/import-configs/" + "csv-config.xml");
       if (bindFileInputStream == null) {

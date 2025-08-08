@@ -23,9 +23,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.quality.db.QIActionDistribution;
 import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.message.db.Template;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
-import javax.mail.MessagingException;
 
 public interface QIAnalysisService {
 

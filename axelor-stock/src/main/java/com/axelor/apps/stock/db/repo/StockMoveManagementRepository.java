@@ -30,8 +30,8 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class StockMoveManagementRepository extends StockMoveRepository {
 

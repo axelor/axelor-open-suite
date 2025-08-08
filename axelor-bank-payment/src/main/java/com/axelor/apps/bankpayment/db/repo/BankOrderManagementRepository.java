@@ -26,7 +26,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderSequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BankOrderManagementRepository extends BankOrderRepository {

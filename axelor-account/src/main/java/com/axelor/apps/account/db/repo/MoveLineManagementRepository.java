@@ -27,8 +27,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PersistenceException;
 import java.util.List;
-import javax.persistence.PersistenceException;
 
 public class MoveLineManagementRepository extends MoveLineRepository {
 

@@ -20,8 +20,8 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.MainActivity;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 public class MainActivityListener {
 

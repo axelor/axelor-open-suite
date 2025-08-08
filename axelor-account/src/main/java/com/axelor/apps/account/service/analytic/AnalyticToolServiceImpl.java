@@ -26,9 +26,9 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticToolServiceImpl implements AnalyticToolService {

@@ -22,9 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.filter.Filter;
+import jakarta.persistence.Query;
 import java.io.File;
 import java.util.List;
-import javax.persistence.Query;
 
 public interface AdvancedExportService {
 

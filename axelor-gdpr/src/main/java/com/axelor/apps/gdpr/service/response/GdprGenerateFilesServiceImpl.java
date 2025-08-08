@@ -36,6 +36,7 @@ import com.axelor.db.mapper.Property;
 import com.axelor.db.mapper.PropertyType;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.GdprDmsFileRepository;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
@@ -240,7 +241,7 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
    * @throws IOException
    */
   public void addFilesToZip(File source, List<File> files) throws IOException {
-    MetaFiles.createTempFile(null, OUTPUT_EXT);
+    TempFiles.createTempFile(null, OUTPUT_EXT);
 
     File tmpZip = File.createTempFile(source.getName(), null);
 

@@ -21,8 +21,8 @@ package com.axelor.apps.production.rest.dto;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class ManufOrderProductGetRequest extends RequestPostStructure {
 

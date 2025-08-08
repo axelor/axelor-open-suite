@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.RawMaterialRequirement;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class RawMaterialRequirementProductionRepository extends RawMaterialRequirementRepository {
 

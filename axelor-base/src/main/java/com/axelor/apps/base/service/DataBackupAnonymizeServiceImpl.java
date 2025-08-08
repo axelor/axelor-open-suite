@@ -26,11 +26,11 @@ import com.axelor.apps.base.db.repo.AnonymizerLineRepository;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.utils.helpers.ComputeNameHelper;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import javax.inject.Inject;
 
 public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeService {
 

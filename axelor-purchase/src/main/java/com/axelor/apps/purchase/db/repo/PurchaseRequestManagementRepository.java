@@ -27,7 +27,7 @@ import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class PurchaseRequestManagementRepository extends PurchaseRequestRepository {
 

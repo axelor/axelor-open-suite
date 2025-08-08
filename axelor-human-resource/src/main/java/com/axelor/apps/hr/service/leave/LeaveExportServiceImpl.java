@@ -28,6 +28,7 @@ import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.csv.CSVFile;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -73,7 +74,7 @@ public class LeaveExportServiceImpl implements LeaveExportService {
 
     List<LeaveRequest> leaveRequests = leaveRequestRepo.findByIds(ids);
 
-    File tempFile = MetaFiles.createTempFile(null, ".csv").toFile();
+    File tempFile = TempFiles.createTempFile(null, ".csv").toFile();
     try (CSVPrinter printer = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll().write(tempFile)) {
       Map<Integer, String> selectionMap =
           Map.of(

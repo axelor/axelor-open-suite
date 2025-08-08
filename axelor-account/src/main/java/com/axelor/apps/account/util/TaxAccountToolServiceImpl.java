@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class TaxAccountToolServiceImpl implements TaxAccountToolService {

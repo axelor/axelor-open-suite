@@ -20,8 +20,8 @@ package com.axelor.apps.talent.service;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.Appraisal;
+import jakarta.mail.MessagingException;
 import java.util.Set;
-import javax.mail.MessagingException;
 
 public interface AppraisalService {
 

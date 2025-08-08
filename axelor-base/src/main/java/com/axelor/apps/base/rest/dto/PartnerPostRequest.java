@@ -21,8 +21,8 @@ package com.axelor.apps.base.rest.dto;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 public class PartnerPostRequest extends RequestPostStructure {
 

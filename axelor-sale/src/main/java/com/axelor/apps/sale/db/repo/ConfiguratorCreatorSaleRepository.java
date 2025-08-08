@@ -26,11 +26,11 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
+import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.PersistenceException;
 
 public class ConfiguratorCreatorSaleRepository extends ConfiguratorCreatorRepository {
 

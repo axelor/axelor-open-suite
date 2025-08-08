@@ -33,10 +33,10 @@ import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
+import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.Response;
 
 public class StockProductRestServiceImpl implements StockProductRestService {
   @Override

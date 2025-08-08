@@ -37,8 +37,8 @@ import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class ProjectManagementRepository extends ProjectRepository {
 

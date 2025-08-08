@@ -34,9 +34,9 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
 
 public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 

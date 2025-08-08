@@ -20,9 +20,9 @@ package com.axelor.apps.helpdesk.rest.dto;
 
 import com.axelor.apps.helpdesk.rest.service.TicketUpdateRestService;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 public class TicketPutRequest extends RequestStructure {
 

@@ -95,6 +95,7 @@ public final class BaseExceptionMessage {
 
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
+  public static final String PERIOD_4 = /*$$(*/ "Years in 360 days" /*)*/;
   public static final String PAY_PERIOD_CLOSED = /*$$(*/
       "Warning : the pay period %s is closed." /*)*/;
 

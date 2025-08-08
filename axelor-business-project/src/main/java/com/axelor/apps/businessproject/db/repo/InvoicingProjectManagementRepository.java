@@ -20,7 +20,7 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.i18n.I18n;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class InvoicingProjectManagementRepository extends InvoicingProjectRepository {
 

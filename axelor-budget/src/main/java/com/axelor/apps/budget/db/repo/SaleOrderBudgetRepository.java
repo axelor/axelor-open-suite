@@ -34,10 +34,10 @@ import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBudgetRepository extends SaleOrderSupplychainRepository {

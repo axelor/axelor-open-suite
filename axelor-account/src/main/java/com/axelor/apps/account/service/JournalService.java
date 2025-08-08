@@ -25,12 +25,12 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.Query;
 
 public class JournalService {
   protected JournalRepository journalRepository;

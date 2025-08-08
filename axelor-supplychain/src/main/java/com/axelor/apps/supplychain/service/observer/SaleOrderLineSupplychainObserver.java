@@ -29,8 +29,8 @@ import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSuppl
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 import java.util.Map;
-import javax.annotation.Priority;
 
 public class SaleOrderLineSupplychainObserver {
   void onSaleOrderLineOnNew(@Observes @Priority(value = 20) SaleOrderLineViewOnNew event)

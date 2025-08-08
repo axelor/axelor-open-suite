@@ -28,6 +28,7 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -49,7 +50,7 @@ public class ICalendarController {
   public void exportCalendar(ActionRequest request, ActionResponse response)
       throws IOException, ParseException {
     ICalendar cal = request.getContext().asType(ICalendar.class);
-    Path tempPath = MetaFiles.createTempFile(cal.getName(), ".ics");
+    Path tempPath = TempFiles.createTempFile(cal.getName(), ".ics");
     Beans.get(ICalendarService.class).export(cal, tempPath.toFile());
     Beans.get(MetaFiles.class)
         .attach(new FileInputStream(tempPath.toFile()), cal.getName() + ".ics", cal);

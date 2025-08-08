@@ -29,7 +29,7 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class MassStockMoveManagementRepository extends MassStockMoveRepository {
 

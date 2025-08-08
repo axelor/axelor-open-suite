@@ -26,9 +26,9 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.PersistenceException;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountAccountRepository extends AccountRepository {

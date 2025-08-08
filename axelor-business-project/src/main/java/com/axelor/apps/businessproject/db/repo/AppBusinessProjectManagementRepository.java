@@ -26,7 +26,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.common.base.Strings;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class AppBusinessProjectManagementRepository extends AppBusinessProjectRepository {
 

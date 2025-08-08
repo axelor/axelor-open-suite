@@ -30,7 +30,7 @@ import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class MrpManagementRepository extends MrpRepository {
 

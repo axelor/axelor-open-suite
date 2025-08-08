@@ -42,13 +42,13 @@ import com.axelor.studio.service.AppSettingsStudioService;
 import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import javax.inject.Singleton;
 
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {

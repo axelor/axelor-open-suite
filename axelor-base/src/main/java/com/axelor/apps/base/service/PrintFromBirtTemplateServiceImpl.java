@@ -30,8 +30,8 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
@@ -153,7 +153,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
     if (CollectionUtils.isEmpty(fileList)) {
       return null;
     }
-    Path zipFile = MetaFiles.createTempFile(zipFileName, ".zip");
+    Path zipFile = TempFiles.createTempFile(zipFileName, ".zip");
 
     try (ZipOutputStream zout = new ZipOutputStream(Files.newOutputStream(zipFile))) {
       for (File file : fileList) {

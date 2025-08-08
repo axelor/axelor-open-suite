@@ -148,7 +148,7 @@ public class LanguageServiceImpl implements LanguageService {
    * @param orderNumber
    */
   protected void updateOrderNumber(int orderNumber) {
-    javax.persistence.Query query =
+    jakarta.persistence.Query query =
         JPA.em()
             .createQuery(
                 "UPDATE MetaSelectItem self "

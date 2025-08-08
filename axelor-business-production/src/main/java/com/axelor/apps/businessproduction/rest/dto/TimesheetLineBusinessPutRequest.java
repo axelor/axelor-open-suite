@@ -22,7 +22,7 @@ import com.axelor.apps.hr.rest.dto.TimesheetLinePutRequest;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.utils.api.ObjectFinder;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 
 public class TimesheetLineBusinessPutRequest extends TimesheetLinePutRequest {
 

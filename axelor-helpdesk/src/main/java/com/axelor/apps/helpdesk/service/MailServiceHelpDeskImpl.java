@@ -25,9 +25,9 @@ import com.axelor.mail.db.MailMessage;
 import com.axelor.message.service.MailAccountService;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 

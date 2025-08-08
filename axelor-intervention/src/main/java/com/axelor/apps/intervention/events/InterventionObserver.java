@@ -31,12 +31,12 @@ import com.axelor.events.PreRequest;
 import com.axelor.events.RequestEvent;
 import com.axelor.events.qualifiers.EntityType;
 import com.axelor.inject.Beans;
+import com.google.inject.name.Named;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import javax.inject.Named;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InterventionObserver {

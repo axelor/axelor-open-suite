@@ -28,10 +28,10 @@ import com.axelor.message.db.EmailAddress;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.Query;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.Query;
 import wslite.json.JSONException;
 
 public class GdprResponseServiceImpl implements GdprResponseService {

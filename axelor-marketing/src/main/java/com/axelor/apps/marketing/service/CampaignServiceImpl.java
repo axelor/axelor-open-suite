@@ -39,11 +39,11 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.mail.MessagingException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class CampaignServiceImpl implements CampaignService {

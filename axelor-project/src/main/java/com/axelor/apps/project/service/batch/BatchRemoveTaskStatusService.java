@@ -133,7 +133,7 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
       return;
     }
 
-    javax.persistence.Query updateQuery =
+    jakarta.persistence.Query updateQuery =
         JPA.em()
             .createNativeQuery(
                 "DELETE FROM project_project_project_task_status_set WHERE project_project IN (:projectIds) AND project_task_status_set IN (:taskStatusIds)")
@@ -150,7 +150,7 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
       return;
     }
 
-    javax.persistence.Query updateQuery =
+    jakarta.persistence.Query updateQuery =
         JPA.em()
             .createNativeQuery(
                 "DELETE FROM project_project_task_category_project_task_status_set WHERE project_project_task_category IN (:categoryIds) AND project_task_status_set IN (:taskStatusIds)")

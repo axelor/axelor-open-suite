@@ -62,13 +62,13 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.TypedQuery;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.TypedQuery;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 

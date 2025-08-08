@@ -25,7 +25,7 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class InventoryManagementRepository extends InventoryRepository {
   @Override

@@ -25,8 +25,8 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
-import javax.persistence.PersistenceException;
 
 public class ExpenseLineHRRepository extends ExpenseLineRepository {
 

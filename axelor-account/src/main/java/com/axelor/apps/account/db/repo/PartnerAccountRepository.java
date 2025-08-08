@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton

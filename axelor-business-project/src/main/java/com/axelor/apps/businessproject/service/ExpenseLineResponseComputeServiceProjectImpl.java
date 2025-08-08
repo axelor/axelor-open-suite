@@ -29,8 +29,8 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.api.ResponseConstructor;
 import com.google.inject.Inject;
+import jakarta.ws.rs.core.Response;
 import java.math.BigDecimal;
-import javax.ws.rs.core.Response;
 
 public class ExpenseLineResponseComputeServiceProjectImpl
     extends ExpenseLineResponseComputeServiceImpl {

@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.base.module;
 
-import com.axelor.app.AppSettings;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -325,8 +324,6 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
-import com.axelor.apps.base.tracking.ExportObserver;
-import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
@@ -451,11 +448,6 @@ public class BaseModule extends AxelorModule {
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
     bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
     bind(GlobalTrackingLogService.class).to(GlobalTrackingLogServiceImpl.class);
-    if (AppSettings.get()
-        .get("hibernate.session_factory.interceptor", "")
-        .equals(GlobalAuditInterceptor.class.getName())) {
-      bind(ExportObserver.class);
-    }
     bind(ReportGenerator.class).to(BaseReportGenerator.class);
     bind(PrintTemplateService.class).to(PrintTemplateServiceImpl.class);
     bind(PrintService.class).to(PrintServiceImpl.class);
@@ -563,5 +555,10 @@ public class BaseModule extends AxelorModule {
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
     bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
     bind(PartnerCreationService.class).to(PartnerCreationServiceImpl.class);
+    /*    if (AppSettings.get()
+        .get("hibernate.session_factory.interceptor", "")
+        .equals(GlobalAuditInterceptor.class.getName())) {
+      bind(ExportObserver.class);
+    }*/
   }
 }

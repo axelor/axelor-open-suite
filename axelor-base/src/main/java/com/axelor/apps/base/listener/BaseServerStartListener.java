@@ -26,11 +26,11 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.google.inject.persist.Transactional;
+import jakarta.annotation.Priority;
 import java.lang.invoke.MethodHandles;
 import java.time.ZoneId;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.Priority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

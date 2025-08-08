@@ -25,9 +25,9 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 
 public class AddressBaseRepository extends AddressRepository {
 

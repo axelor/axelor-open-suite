@@ -34,6 +34,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationExportService;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -170,7 +171,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = payrollPreparationExportService.getPayrollPreparationExportName();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(
         file.getParent(),
@@ -199,7 +200,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = payrollPreparationExportService.getPayrollPreparationExportName();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(
         file.getParent(),
@@ -240,7 +241,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
 
     String fileName = payrollPreparationExportService.getPayrollPreparationExportName();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(
         file.getParent(),

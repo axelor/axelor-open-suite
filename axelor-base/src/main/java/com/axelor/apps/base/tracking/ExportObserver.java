@@ -23,17 +23,18 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.event.Observes;
 import com.axelor.events.PostRequest;
 import com.axelor.events.RequestEvent;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.google.inject.name.Named;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Named;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ExportObserver {
@@ -60,7 +61,7 @@ public class ExportObserver {
         return;
       }
       final String fileName = (String) data.get("fileName");
-      final Path filePath = MetaFiles.findTempFile(fileName);
+      final Path filePath = TempFiles.findTempFile(fileName);
       MetaFile mf = new MetaFile();
       mf.setFileName(fileName);
       Beans.get(MetaFiles.class).upload(new FileInputStream(filePath.toFile()), mf);

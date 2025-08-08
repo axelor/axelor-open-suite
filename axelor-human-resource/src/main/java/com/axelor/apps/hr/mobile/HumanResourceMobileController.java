@@ -59,6 +59,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -123,7 +124,7 @@ public class HumanResourceMobileController {
       expenseLine.setFromCity(request.getData().get("locationFrom").toString());
       expenseLine.setToCity(request.getData().get("locationTo").toString());
       expenseLine.setKilometricTypeSelect(
-          new Integer(request.getData().get("allowanceTypeSelect").toString()));
+          Integer.parseInt(request.getData().get("allowanceTypeSelect").toString()));
       expenseLine.setComments(request.getData().get("comments").toString());
       expenseLine.setExpenseDate(LocalDate.parse(request.getData().get("date").toString()));
       expenseLine.setProject(
@@ -284,7 +285,7 @@ public class HumanResourceMobileController {
         expenseLine.setTotalTax(new BigDecimal(requestData.get("taxTotal").toString()));
         expenseLine.setUntaxedAmount(
             expenseLine.getTotalAmount().subtract(expenseLine.getTotalTax()));
-        expenseLine.setToInvoice(new Boolean(requestData.get("toInvoice").toString()));
+        expenseLine.setToInvoice(Boolean.parseBoolean(requestData.get("toInvoice").toString()));
         String justification = (String) requestData.get("justification");
 
         if (!Strings.isNullOrEmpty(justification)) {
@@ -312,7 +313,7 @@ public class HumanResourceMobileController {
           String extension = "";
           if (mimeTypeMapping.containsKey(formatName)) {
             extension = "." + mimeTypeMapping.get(formatName);
-            File file = MetaFiles.createTempFile("justification", extension).toFile();
+            File file = TempFiles.createTempFile("justification", extension).toFile();
             Files.write(decodedFile, file);
             MetaFile metaFile = Beans.get(MetaFiles.class).upload(file);
             expenseLine.setJustificationMetaFile(metaFile);
@@ -402,10 +403,10 @@ public class HumanResourceMobileController {
       User user = AuthUtils.getUser();
       Project project =
           Beans.get(ProjectRepository.class)
-              .find(new Long(request.getData().get("project").toString()));
+              .find(Long.parseLong(request.getData().get("project").toString()));
       Product product =
           Beans.get(ProductRepository.class)
-              .find(new Long(request.getData().get("activity").toString()));
+              .find(Long.parseLong(request.getData().get("activity").toString()));
       LocalDate date =
           LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
       TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
@@ -535,13 +536,13 @@ public class HumanResourceMobileController {
             LocalDateTime.parse(
                 requestData.get("fromDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
-      leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
+      leave.setStartOnSelect(Integer.parseInt(requestData.get("startOn").toString()));
       if (requestData.get("toDateT") != null) {
         leave.setToDateT(
             LocalDateTime.parse(
                 requestData.get("toDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
-      leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
+      leave.setEndOnSelect(Integer.parseInt(requestData.get("endOn").toString()));
       leave.setDuration(Beans.get(LeaveRequestComputeDurationService.class).computeDuration(leave));
       leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
       if (requestData.get("comments") != null) {

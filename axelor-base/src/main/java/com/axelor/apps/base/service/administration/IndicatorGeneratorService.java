@@ -31,6 +31,7 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,8 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
-import org.hibernate.transform.BasicTransformerAdapter;
+import org.hibernate.transform.ResultTransformer;
 
 public class IndicatorGeneratorService {
 
@@ -114,7 +114,7 @@ public class IndicatorGeneratorService {
   }
 
   @SuppressWarnings("serial")
-  private static final class DataSetTransformer extends BasicTransformerAdapter {
+  private static final class DataSetTransformer implements ResultTransformer {
 
     @Override
     public Object transformTuple(Object[] tuple, String[] aliases) {

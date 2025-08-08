@@ -36,6 +36,7 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.common.StringUtils;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -106,7 +107,7 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     }
 
     String fileName = this.getPayrollPreparationExportName();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(file.getParent(), file.getName(), ';', headerLine, list);
 

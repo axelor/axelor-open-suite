@@ -42,6 +42,7 @@ import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.mail.MessagingException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,7 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class QIAnalysisServiceImpl implements QIAnalysisService {

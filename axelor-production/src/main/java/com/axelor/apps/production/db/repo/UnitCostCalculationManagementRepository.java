@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class UnitCostCalculationManagementRepository extends UnitCostCalculationRepository {
 

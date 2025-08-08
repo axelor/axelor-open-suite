@@ -26,8 +26,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import jakarta.persistence.PersistenceException;
 import java.util.stream.Collectors;
-import javax.persistence.PersistenceException;
 
 public class FiscalPositionManagementRepository extends FiscalPositionRepository {
 

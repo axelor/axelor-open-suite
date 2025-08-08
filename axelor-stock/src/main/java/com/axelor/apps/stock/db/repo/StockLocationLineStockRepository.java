@@ -25,8 +25,8 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class StockLocationLineStockRepository extends StockLocationLineRepository {
 

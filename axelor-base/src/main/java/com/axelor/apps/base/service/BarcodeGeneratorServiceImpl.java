@@ -32,6 +32,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import jakarta.validation.ValidationException;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -41,7 +42,6 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
-import javax.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
