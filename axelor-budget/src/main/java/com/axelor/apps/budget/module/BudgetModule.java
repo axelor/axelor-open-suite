@@ -114,6 +114,8 @@ import com.axelor.apps.budget.service.move.MoveLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineCreateBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineGroupBudgetServiceImpl;
+import com.axelor.apps.budget.service.move.MoveLineToolBudgetService;
+import com.axelor.apps.budget.service.move.MoveLineToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveReverseServiceBudgetImpl;
 import com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl;
@@ -242,5 +244,6 @@ public class BudgetModule extends AxelorModule {
 
     bind(BudgetLineComputeService.class).to(BudgetLineComputeServiceImpl.class);
     bind(MoveGroupServiceImpl.class).to(MoveGroupBudgetServiceImpl.class);
+    bind(MoveLineToolBudgetService.class).to(MoveLineToolBudgetServiceImpl.class);
   }
 }
