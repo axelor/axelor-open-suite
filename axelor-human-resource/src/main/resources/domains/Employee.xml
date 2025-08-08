@@ -131,6 +131,11 @@
     <one-to-many name="bankCardList" ref="com.axelor.apps.hr.db.BankCard"
       title="Bank cards" mappedBy="employee"/>
 
+    <many-to-many ref="com.axelor.apps.project.db.Project" name="timesheetProjectSet"
+      title="Favourite projects"/>
+    <many-to-many ref="com.axelor.apps.project.db.ProjectTask"
+      name="timesheetProjectTaskSet" title="Favourite tasks"/>
+
     <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";
