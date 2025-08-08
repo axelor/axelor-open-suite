@@ -33,6 +33,7 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBudget;
@@ -53,6 +54,8 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   protected BudgetDistributionService budgetDistributionService;
   protected AppBudgetService appBudgetService;
   protected CurrencyScaleService currencyScaleService;
+  protected BudgetToolsService budgetToolsService;
+  protected MoveLineToolBudgetService moveLineToolBudgetService;
 
   @Inject
   public MoveLineBudgetServiceImpl(
@@ -60,12 +63,16 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
       BudgetService budgetService,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      BudgetToolsService budgetToolsService,
+      MoveLineToolBudgetService moveLineToolBudgetService) {
     this.moveLineRepository = moveLineRepository;
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
     this.currencyScaleService = currencyScaleService;
+    this.budgetToolsService = budgetToolsService;
+    this.moveLineToolBudgetService = moveLineToolBudgetService;
   }
 
   @Override
@@ -175,14 +182,70 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
             .collect(Collectors.toList());
     if (!ObjectUtils.isEmpty(moveLineList)) {
       for (MoveLine moveLine : moveLineList) {
-        BudgetDistribution budgetDistribution =
-            budgetDistributionService.createDistributionFromBudget(
-                moveLine.getBudget(),
-                moveLine.getCredit().add(moveLine.getDebit()),
-                move.getDate());
-        budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
-        moveLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
+        createBudgetDistributionOnMonoBudget(moveLine);
       }
+    }
+  }
+
+  @Override
+  public void changeBudgetDistribution(MoveLine moveLine) {
+    if (moveLine == null
+        || Optional.of(appBudgetService.getAppBudget())
+            .map(AppBudget::getManageMultiBudget)
+            .orElse(true)) {
+      return;
+    }
+    List<BudgetDistribution> oldBudgetDistributionList =
+        moveLineToolBudgetService.copyBudgetDistributionList(moveLine);
+    moveLine.setOldBudgetDistributionList(oldBudgetDistributionList);
+
+    if (moveLine.getBudget() == null) {
+      if (ObjectUtils.notEmpty(moveLine.getBudgetDistributionList())) {
+        removeBudgetDistributionList(moveLine);
+      }
+    } else {
+      if (ObjectUtils.notEmpty(moveLine.getBudgetDistributionList())) {
+        changeBudgetDistributionOnMonoBudget(moveLine);
+      } else {
+        createBudgetDistributionOnMonoBudget(moveLine);
+      }
+    }
+
+    moveLine.setBudgetRemainingAmountToAllocate(
+        budgetToolsService.getBudgetRemainingAmountToAllocate(
+            moveLine.getBudgetDistributionList(), moveLine.getDebit().max(moveLine.getCredit())));
+  }
+
+  protected void removeBudgetDistributionList(MoveLine moveLine) {
+    if (ObjectUtils.isEmpty(moveLine.getBudgetDistributionList())) {
+      return;
+    }
+
+    moveLine.clearBudgetDistributionList();
+  }
+
+  protected void createBudgetDistributionOnMonoBudget(MoveLine moveLine) {
+    LocalDate date =
+        Optional.of(moveLine).map(MoveLine::getMove).map(Move::getDate).orElse(moveLine.getDate());
+    BudgetDistribution budgetDistribution =
+        budgetDistributionService.createDistributionFromBudget(
+            moveLine.getBudget(), moveLine.getCredit().add(moveLine.getDebit()), date);
+    budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
+    moveLine.setBudgetRemainingAmountToAllocate(BigDecimal.ZERO);
+  }
+
+  protected void changeBudgetDistributionOnMonoBudget(MoveLine moveLine) {
+    if (ObjectUtils.isEmpty(moveLine.getBudgetDistributionList()) || moveLine.getBudget() == null) {
+      return;
+    }
+
+    List<BudgetDistribution> budgetDistributionList = moveLine.getBudgetDistributionList();
+    if (budgetDistributionList.size() == 1) {
+      BudgetDistribution budgetDistribution = budgetDistributionList.get(0);
+      budgetDistribution.setBudget(moveLine.getBudget());
+    } else {
+      removeBudgetDistributionList(moveLine);
+      createBudgetDistributionOnMonoBudget(moveLine);
     }
   }
 }

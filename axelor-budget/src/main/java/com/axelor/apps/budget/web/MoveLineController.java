@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetDistributionService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
+import com.axelor.db.EntityHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -68,7 +69,19 @@ public class MoveLineController {
 
   public void updateBudgetAmounts(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine = EntityHelper.getEntity(moveLine);
 
     Beans.get(MoveBudgetDistributionService.class).checkChanges(moveLine);
+    response.setValue("oldBudgetDistributionList", moveLine.getBudgetDistributionList());
+  }
+
+  public void changeBudgetDistribution(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+    Beans.get(MoveLineBudgetService.class).changeBudgetDistribution(moveLine);
+    response.setValue("budgetDistributionList", moveLine.getBudgetDistributionList());
+    response.setValue("oldBudgetDistributionList", moveLine.getOldBudgetDistributionList());
+    response.setValue(
+        "budgetRemainingAmountToAllocate", moveLine.getBudgetRemainingAmountToAllocate());
   }
 }
