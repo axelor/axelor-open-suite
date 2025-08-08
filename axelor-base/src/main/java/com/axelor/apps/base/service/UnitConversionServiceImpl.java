@@ -34,6 +34,8 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.template.TemplateMaker;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -42,6 +44,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -50,6 +53,14 @@ public class UnitConversionServiceImpl implements UnitConversionService {
 
   private static final char TEMPLATE_DELIMITER = '$';
   private static final int DEFAULT_COEFFICIENT_SCALE = 12;
+  private static final String KEY_ENTITY_ALL = "ENTITY_ALL";
+
+  private final Cache<String, List<UnitConversion>> unitConversionCache =
+      Caffeine.newBuilder()
+          .expireAfterWrite(10, TimeUnit.MINUTES)
+          .maximumSize(100)
+          .recordStats()
+          .build();
 
   protected AppBaseService appBaseService;
 
@@ -227,6 +238,10 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   }
 
   protected List<UnitConversion> fetchUnitConversionList() {
+    return unitConversionCache.get(KEY_ENTITY_ALL, key -> loadUnitConversions());
+  }
+
+  protected List<UnitConversion> loadUnitConversions() {
     return unitConversionRepo
         .all()
         .filter("self.entitySelect = :entitySelect")

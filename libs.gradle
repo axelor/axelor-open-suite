@@ -76,3 +76,5 @@ libs.logback = 'ch.qos.logback:logback-classic:1.4.5'
 libs.swagger_jaxrs = 'io.swagger.core.v3:swagger-jaxrs2:2.2.26'
 
 libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf-openpdf:9.2.2'
+
+libs.caffeine = 'com.github.ben-manes.caffeine:caffeine:3.2.2'
