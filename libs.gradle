@@ -61,7 +61,7 @@ libs.google_api_services_people = dependencies.create('com.google.apis:google-ap
 
 libs.mockito = 'org.mockito:mockito-core:4.8.0'
 
-libs.pac4j_core = "org.pac4j:pac4j-core:5.7.7"
+libs.pac4j_core = "org.pac4j:pac4j-core:6.2.0"
 
 libs.wslite = 'com.github.groovy-wslite:groovy-wslite:1.1.3'
 
@@ -73,6 +73,12 @@ libs.faker = 'net.datafaker:datafaker:1.6.0'
 
 libs.logback = 'ch.qos.logback:logback-classic:1.4.5'
 
-libs.swagger_jaxrs = 'io.swagger.core.v3:swagger-jaxrs2:2.2.26'
+libs.swagger_jaxrs = dependencies.create("io.swagger.core.v3:swagger-jaxrs2-jakarta:2.2.35") {
+  exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
+  exclude group: "com.fasterxml.jackson.core", module: "jackson-annotations"
+  exclude group: "com.fasterxml.jackson.jakarta.rs", module: "jackson-jakarta-rs-json-provider"
+  exclude group: "com.fasterxml.jackson.datatype", module: "jackson-datatype-jsr310"
+  exclude group: "com.fasterxml.jackson.dataformat", module: "jackson-dataformat-yaml"
+}
 
 libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf-openpdf:9.2.2'
