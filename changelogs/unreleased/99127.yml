@@ -1,0 +1,5 @@
+---
+title: "ANALYTICDISTRIBUTIONTEMPLATE : duplicated templates shouldn't be visible"
+module: axelor-account
+developer: |
+  Added 'AnalyticAttrsService' to 'MoveLineAttrsServiceImpl' constructor.
