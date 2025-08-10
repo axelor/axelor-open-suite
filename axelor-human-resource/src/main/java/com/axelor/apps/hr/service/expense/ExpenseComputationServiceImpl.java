@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
@@ -42,32 +43,45 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     BigDecimal taxTotal = BigDecimal.ZERO;
     BigDecimal inTaxTotal = BigDecimal.ZERO;
+    BigDecimal companyExTaxTotal = BigDecimal.ZERO;
+    BigDecimal companyTaxTotal = BigDecimal.ZERO;
+    BigDecimal companyInTaxTotal = BigDecimal.ZERO;
     List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
     List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
 
-    if (generalExpenseLineList != null) {
+    if (ObjectUtils.notEmpty(generalExpenseLineList)) {
       for (ExpenseLine expenseLine : generalExpenseLineList) {
         exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
         taxTotal = taxTotal.add(expenseLine.getTotalTax());
         inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+        companyExTaxTotal = companyExTaxTotal.add(expenseLine.getCompanyUntaxedAmount());
+        companyTaxTotal = companyTaxTotal.add(expenseLine.getCompanyTotalTax());
+        companyInTaxTotal = companyInTaxTotal.add(expenseLine.getCompanyTotalAmount());
       }
     }
-    if (kilometricExpenseLineList != null) {
+    if (ObjectUtils.notEmpty(kilometricExpenseLineList)) {
       for (ExpenseLine kilometricExpenseLine : kilometricExpenseLineList) {
         if (kilometricExpenseLine.getUntaxedAmount() != null) {
           exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
+          companyExTaxTotal =
+              companyExTaxTotal.add(kilometricExpenseLine.getCompanyUntaxedAmount());
         }
         if (kilometricExpenseLine.getTotalTax() != null) {
           taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
+          companyTaxTotal = companyTaxTotal.add(kilometricExpenseLine.getCompanyTotalTax());
         }
         if (kilometricExpenseLine.getTotalAmount() != null) {
           inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
+          companyInTaxTotal = companyInTaxTotal.add(kilometricExpenseLine.getCompanyTotalAmount());
         }
       }
     }
     expense.setExTaxTotal(exTaxTotal);
     expense.setTaxTotal(taxTotal);
     expense.setInTaxTotal(inTaxTotal);
+    expense.setCompanyExTaxTotal(companyExTaxTotal);
+    expense.setCompanyTaxTotal(companyTaxTotal);
+    expense.setCompanyInTaxTotal(companyInTaxTotal);
     return expense;
   }
 

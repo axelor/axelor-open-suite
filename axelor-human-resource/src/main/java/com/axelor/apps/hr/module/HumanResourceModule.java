@@ -155,6 +155,8 @@ import com.axelor.apps.hr.service.expense.ExpensePrintService;
 import com.axelor.apps.hr.service.expense.ExpensePrintServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseRecordService;
+import com.axelor.apps.hr.service.expense.ExpenseRecordServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
@@ -167,6 +169,8 @@ import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseServiceImpl;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
@@ -508,5 +512,8 @@ public class HumanResourceModule extends AxelorModule {
         .to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
     bind(KilometricLogService.class).to(KilometricLogServiceImpl.class);
     bind(KilometricExpenseService.class).to(KilometricExpenseServiceImpl.class);
+
+    bind(ExpenseRecordService.class).to(ExpenseRecordServiceImpl.class);
+    bind(ExpenseLineComputeService.class).to(ExpenseLineComputeServiceImpl.class);
   }
 }
