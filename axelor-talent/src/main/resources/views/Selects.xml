@@ -25,9 +25,9 @@
   </selection>
 
   <selection name="training.session.status.select">
-    <option value="1">Planned</option>
-    <option value="2">Completed</option>
-    <option value="3">Canceled</option>
+    <option value="1" color="blue">Planned</option>
+    <option value="2" color="green">Completed</option>
+    <option value="3" color="red">Canceled</option>
   </selection>
 
   <selection name="job.position.experience.select">
