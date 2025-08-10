@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -94,5 +95,18 @@ public class ExpenseLineController {
     String domain =
         Beans.get(ExpenseLineDomainService.class).getInvitedCollaborators(expenseLine, expense);
     response.setAttr("invitedCollaboratorSet", "domain", domain);
+  }
+
+  public void computeUntaxedAndCompanyAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    Expense expense =
+        request.getContext().getParent() != null
+            ? request.getContext().getParent().asType(Expense.class)
+            : null;
+    Beans.get(ExpenseLineComputeService.class)
+        .computeUntaxedAndCompanyAmounts(expenseLine, expense);
+
+    response.setValues(expenseLine);
   }
 }

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import java.math.BigDecimal;
 
@@ -26,5 +27,5 @@ public interface ExpenseComputationService {
 
   public BigDecimal computePersonalExpenseAmount(Expense expense);
 
-  public BigDecimal computeAdvanceAmount(Expense expense);
+  public BigDecimal computeAdvanceAmount(Expense expense) throws AxelorException;
 }
