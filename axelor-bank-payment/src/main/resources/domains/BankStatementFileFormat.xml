@@ -56,6 +56,9 @@
         public static final String FILE_FORMAT_CSV_JMA_DOT = "csv.jma.dot";
         public static final String FILE_FORMAT_CSV_YMD_DOT = "csv.ymd.dot";
 
+        public static final String CAMT_BALANCE_TYPE_INITIAL_BALANCE = "OPBD";
+        public static final String CAMT_BALANCE_TYPE_FINAL_BALANCE = "CLBD";
+
 	]]></extra-code>
 
   </entity>
