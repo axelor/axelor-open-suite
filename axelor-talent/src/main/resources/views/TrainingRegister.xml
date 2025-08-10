@@ -10,7 +10,7 @@
     <field name="employee"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="rating" widget="Progress"/>
   </grid>
 
