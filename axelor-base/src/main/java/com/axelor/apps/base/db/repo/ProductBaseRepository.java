@@ -71,6 +71,10 @@ public class ProductBaseRepository extends ProductRepository {
     product = super.save(product);
 
     // Barcode generation
+    String serialNumber = product.getSerialNumber();
+    if (Strings.isNullOrEmpty(serialNumber)) {
+      product.setSerialNumber(product.getCode());
+    }
     if (product.getBarCode() == null
         && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
       boolean addPadding = false;
@@ -80,11 +84,7 @@ public class ProductBaseRepository extends ProductRepository {
       }
       MetaFile barcodeFile =
           barcodeGeneratorService.createBarCode(
-              product.getId(),
-              "ProductBarCode%d.png",
-              product.getSerialNumber(),
-              barcodeTypeConfig,
-              addPadding);
+              product.getId(), "ProductBarCode%d.png", serialNumber, barcodeTypeConfig, addPadding);
       if (barcodeFile != null) {
         product.setBarCode(barcodeFile);
       }
