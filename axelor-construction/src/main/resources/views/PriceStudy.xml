@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid name="price-study-grid" title="Price study" model="com.axelor.apps.sale.db.PriceStudy">
+    <field name="productType" readonly="true"/>
+    <field name="purchasePrice"/>
+    <field name="averageFG" onChange="action-price-study-method-on-fg-change"/>
+    <field name="costPrice"/>
+    <field name="averageGrossMarge" onChange="action-price-study-method-on-marge-change"/>
+    <field name="price" onChange="action-price-study-method-on-price-change"/>
+    <field name="saleOrder" hidden="true"/>
+  </grid>
+  <form name="price-study-form" title="Price study" model="com.axelor.apps.sale.db.PriceStudy">
+    <panel name="mainPanel">
+      <field name="productType" readonly="true"/>
+      <field name="purchasePrice" readonly="true"/>
+      <field name="averageFG"/>
+      <field name="costPrice" readonly="true"/>
+      <field name="averageGrossMarge"/>
+      <field name="price" onChange="action-price-study-method-on-price-change"/>
+      <field name="saleOrder" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-price-study-method-on-price-change">
+    <call class="com.axelor.apps.web.PriceStudyController" method="onPriceChange"/>
+  </action-method>
+
+  <action-method name="action-price-study-method-on-marge-change">
+    <call class="com.axelor.apps.web.PriceStudyController" method="onMargeChange"/>
+  </action-method>
+
+  <action-method name="action-price-study-method-on-fg-change">
+    <call class="com.axelor.apps.web.PriceStudyController" method="onGeneralExpensesChange"/>
+  </action-method>
+
+</object-views>
