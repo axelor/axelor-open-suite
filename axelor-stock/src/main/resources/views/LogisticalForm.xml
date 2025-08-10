@@ -16,14 +16,14 @@
       grid-view="partner-customer-grid" canEdit="false"/>
     <field name="carrierPartner"/>
     <field name="collectionDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms"
     name="logistical-form-stock-move-grid" orderBy="-deliveryNumberSeq,-collectionDate">
     <field name="deliveryNumberSeq" width="120"/>
     <field name="collectionDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form"
