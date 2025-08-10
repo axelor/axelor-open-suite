@@ -22,7 +22,7 @@
     model="com.axelor.apps.sale.db.SaleOrder">
     <view type="grid" name="sale-order-grid"/>
     <view type="form" name="sale-order-form"/>
-    <domain>self.salespersonUser = :__user__ and self.statusSelect in (1, 2) and self.company =
+    <domain>self.salespersonUser = :__user__ and self.statusSelect in (1, 2, 3) and self.company =
       :active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
