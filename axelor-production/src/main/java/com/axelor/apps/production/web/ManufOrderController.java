@@ -945,8 +945,10 @@ public class ManufOrderController {
   public void computeMissingComponentsLabel(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      BigDecimal producibleQty =
-          new BigDecimal(request.getContext().get("producibleQty").toString());
+      BigDecimal producibleQty = BigDecimal.ZERO;
+      if (request.getContext().get("producibleQty") != null) {
+        producibleQty = new BigDecimal(request.getContext().get("producibleQty").toString());
+      }
 
       Map<Product, BigDecimal> missingComponents = null;
       if (manufOrder.getQty().compareTo(producibleQty) > 0) {
