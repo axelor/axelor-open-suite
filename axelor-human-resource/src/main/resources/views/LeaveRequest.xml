@@ -51,11 +51,12 @@
   <form name="leave-request-form" title="Leave Request"
     model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
     onLoad="action-leave-request-group-on-form-load"
-    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
-
+    onSave="action-leave-request-validate-dates-on-save,action-leave-request-attrs-fill-toDateT"
+    canCopy="false">
     <panel sidebar="true" name="actionsPanel" stacked="true">
-      <button name="sendLeaveBtn" onClick="action-leave-request-group-send" colSpan="4"
-        title="Send" hideIf="statusSelect &gt; 1"/>
+      <button name="sendLeaveBtn"
+        onClick="action-leave-request-attrs-fill-toDateT,action-leave-request-group-send"
+        colSpan="4" title="Send" hideIf="statusSelect &gt; 1"/>
       <button name="validateBtn" hidden="true" onClick="action-leave-request-group-validate"
         title="Validate"/>
       <button name="refuseBtn" hidden="true" onClick="action-leave-request-group-refuse"
@@ -173,7 +174,8 @@
   <form name="complete-my-leave-request-form" title="Leave Request"
     model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
     onLoad="action-leave-request-group-on-form-load"
-    onSave="action-leave-request-validate-dates-on-save" canCopy="false" canNew="false">
+    onSave="action-leave-request-attrs-fill-toDateT,action-leave-request-validate-dates-on-save"
+    canCopy="false" canNew="false">
     <panel-include view="leave-request-form"/>
   </form>
 
@@ -308,10 +310,14 @@
 
   <action-validate name="action-leave-request-validate-dates-on-save">
     <error message="Invalid dates"
-      if="toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect)"/>
+      if="toDateT!=null &amp;&amp;(toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect))"/>
     <error message="Duration equals 0" if="duration == 0"/>
   </action-validate>
-
+  <action-record name="action-leave-request-attrs-fill-toDateT"
+    model="com.axelor.apps.hr.db.LeaveRequest">
+    <field name="toDateT" expr="eval:fromDateT"
+      if="toDateT==null &amp;&amp; fromDateT!=null  &amp;&amp; startOnSelect &lt;= endOnSelect "/>
+  </action-record>
   <action-method name="action-leave-request-method-leave-reason-to-justify">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveReasonToJustify"/>
   </action-method>
