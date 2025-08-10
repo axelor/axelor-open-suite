@@ -1,0 +1,3 @@
+---
+title: "Operation order: Fixed real duration calculation when timesheet is enabled on manuf order."
+module: axelor-business-production
