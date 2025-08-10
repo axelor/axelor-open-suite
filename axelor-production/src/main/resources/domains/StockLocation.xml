@@ -10,5 +10,6 @@
     <boolean name="usableOnProduction" title="Usable on production"/>
     <boolean name="isWorkshop"/>
     <boolean name="isOutsourcingLocation" title="Outsourcing location"/>
+    <boolean name="isConsignmentStock" title="Consignment stock"/>
   </entity>
 </domain-models>
