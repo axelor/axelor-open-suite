@@ -28,7 +28,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -58,7 +58,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -75,7 +75,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
