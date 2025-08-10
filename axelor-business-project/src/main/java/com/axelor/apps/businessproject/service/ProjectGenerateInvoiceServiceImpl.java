@@ -178,7 +178,6 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     }
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
-    invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     invoiceRepository.save(invoice);
 
     invoicingProject.setInvoice(invoice);
@@ -283,6 +282,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoiceLineList.addAll(
         projectTaskBusinessProjectService.createInvoiceLines(
             invoice, projectTaskList, folder.getProjectTaskSetPrioritySelect()));
+
+    invoiceLineList.addAll(projectHoldBackLineService.createInvoiceLines(invoice, invoiceLineList));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
