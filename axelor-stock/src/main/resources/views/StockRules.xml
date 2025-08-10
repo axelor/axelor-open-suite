@@ -71,9 +71,11 @@
       <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"
         showIf="orderAlertSelect == 1 || alert" colSpan="3" hidden="true"/>
       <panel name="quantitiesPanel" title="Quantities" colSpan="6">
-        <field name="minQty" colSpan="6" onChange="action-stock-rules-minqty-change"
+        <field name="minQty" colSpan="6"
+          onChange="action-stock-rules-minqty-change,action-stock-rules-validate-check-max-qty"
           validIf="$number(minQty) >= 0"/>
-        <field name="reOrderQty" colSpan="6" validIf="$number(reOrderQty) >= 0"/>
+        <field name="reOrderQty" colSpan="6" validIf="$number(reOrderQty) >= 0"
+          onChange="action-stock-rules-validate-check-max-qty"/>
         <field name="useIdealQty" colSpan="6"/>
         <field name="idealQty" showIf="useIdealQty" colSpan="6"
           onChange="action-stock-rules-idealqty-change"
@@ -81,7 +83,7 @@
           hidden="true"/>
         <field name="useMaxQty" colSpan="6"/>
         <field name="maxQty" showIf="useMaxQty" colSpan="6"
-          onChange="action-stock-rules-maxqty-change"
+          onChange="action-stock-rules-maxqty-change,action-stock-rules-validate-check-max-qty"
           validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)"
           hidden="true"/>
       </panel>
@@ -162,5 +164,11 @@
     <attribute name="scale" for="reOrderQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
+
+  <action-validate name="action-stock-rules-validate-check-max-qty">
+    <error
+      message="The sum of the minimum and refill quantities cannot exceed the maximum quantity."
+      if="(minQty + reOrderQty) > maxQty"/>
+  </action-validate>
 
 </object-views>
