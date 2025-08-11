@@ -1,5 +1,7 @@
 package com.axelor.apps.supplychain.service.saleorder;
 
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -16,6 +18,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
+import com.axelor.utils.api.ObjectFinder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -54,11 +57,22 @@ public class SaleOrderGeneratorSupplychainServiceImpl extends SaleOrderGenerator
       Company company,
       Partner contactPartner,
       Currency currency,
-      Boolean inAti)
+      Boolean inAti,
+      PaymentMode paymentMode,
+      Long paymentConditionId)
       throws AxelorException {
     SaleOrder saleOrder =
         super.createSaleOrder(
-            clientPartner, deliveredPartner, company, contactPartner, currency, inAti);
+            clientPartner,
+            deliveredPartner,
+            company,
+            contactPartner,
+            currency,
+            inAti,
+            paymentMode,
+            paymentConditionId);
+    setPaymentMode(paymentMode, saleOrder);
+    setPaymentCondition(paymentConditionId, saleOrder);
     setDeliveredPartner(deliveredPartner, clientPartner, saleOrder);
     return saleOrder;
   }
@@ -72,5 +86,20 @@ public class SaleOrderGeneratorSupplychainServiceImpl extends SaleOrderGenerator
     } else {
       saleOrder.setDeliveredPartner(clientPartner);
     }
+  }
+
+  protected void setPaymentMode(PaymentMode paymentMode, SaleOrder saleOrder) {
+    if (paymentMode != null) {
+      saleOrder.setPaymentMode(paymentMode);
+    }
+  }
+
+  protected void setPaymentCondition(Long paymentConditionId, SaleOrder saleOrder) {
+    if (paymentConditionId == null || paymentConditionId == 0L) {
+      return;
+    }
+    PaymentCondition paymentCondition =
+        ObjectFinder.find(PaymentCondition.class, paymentConditionId, ObjectFinder.NO_VERSION);
+    saleOrder.setPaymentCondition(paymentCondition);
   }
 }
