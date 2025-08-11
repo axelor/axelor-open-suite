@@ -604,7 +604,7 @@ public class BudgetServiceImpl implements BudgetService {
   @Transactional
   public void updateBudgetLinesFromMove(Move move, boolean excludeMoveInSimulated) {
 
-    if (move.getStatusSelect() == MoveRepository.STATUS_NEW || move.getInvoice() != null) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
       return;
     }
 
@@ -649,45 +649,6 @@ public class BudgetServiceImpl implements BudgetService {
       }
     }
     return false;
-  }
-
-  @Override
-  public void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
-    budgetLine.setRealizedWithNoPo(
-        currencyScaleService.getCompanyScaledValue(
-            budget, BigDecimal.ZERO.max(budgetLine.getRealizedWithNoPo().add(amount))));
-    updateOtherAmounts(budgetLine, budget, amount);
-  }
-
-  @Override
-  public void updateBudgetLineAmountWithPo(
-      BudgetLine budgetLine, Budget budget, BigDecimal amount) {
-    budgetLine.setRealizedWithPo(
-        currencyScaleService.getCompanyScaledValue(
-            budget, BigDecimal.ZERO.max(budgetLine.getRealizedWithPo().add(amount))));
-    budgetLine.setAmountCommitted(
-        currencyScaleService.getCompanyScaledValue(
-            budget, BigDecimal.ZERO.max(budgetLine.getAmountCommitted().subtract(amount))));
-    updateOtherAmounts(budgetLine, budget, amount);
-  }
-
-  protected void updateOtherAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount) {
-    budgetLine.setAmountRealized(
-        currencyScaleService.getCompanyScaledValue(
-            budget, BigDecimal.ZERO.max(budgetLine.getAmountRealized().add(amount))));
-    budgetLine.setToBeCommittedAmount(
-        currencyScaleService.getCompanyScaledValue(
-            budget, BigDecimal.ZERO.max(budgetLine.getToBeCommittedAmount().subtract(amount))));
-    BigDecimal firmGap =
-        currencyScaleService.getCompanyScaledValue(
-            budget,
-            budgetLine
-                .getAmountExpected()
-                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
-    budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
-    budgetLine.setAvailableAmount(
-        currencyScaleService.getCompanyScaledValue(
-            budget, BigDecimal.ZERO.max(budgetLine.getAvailableAmount().subtract(amount))));
   }
 
   @Override
