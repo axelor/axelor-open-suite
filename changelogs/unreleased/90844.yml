@@ -1,0 +1,3 @@
+---
+title: "Deposit slip: Initialization of depositeSlipDate and bankDetails on paymentVoucherLine"
+module: axelor-account
