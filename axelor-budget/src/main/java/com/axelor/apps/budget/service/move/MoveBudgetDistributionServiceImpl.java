@@ -63,7 +63,7 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
   }
 
   @Override
-  public void checkChanges(MoveLine moveLine) {
+  public void checkChanges(MoveLine moveLine, boolean budgetAlreadyChanged) {
     if (!appBudgetService.isApp("budget")
         || MoveRepository.STATUS_DAYBOOK
             != Optional.ofNullable(moveLine)
@@ -74,23 +74,28 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
       return;
     }
 
-    Map<Budget, BigDecimal> budgetChangesMap = getBudgetChanges(moveLine);
+    Map<Budget, BigDecimal> budgetChangesMap = getBudgetChanges(moveLine, budgetAlreadyChanged);
 
     updateChangedBudgetDistribution(budgetChangesMap, moveLine);
   }
 
-  protected Map<Budget, BigDecimal> getBudgetChanges(MoveLine moveLine) {
+  protected Map<Budget, BigDecimal> getBudgetChanges(
+      MoveLine moveLine, boolean budgetAlreadyChanged) {
     Map<Budget, BigDecimal> budgetChangesMap = new HashMap<>();
     List<BudgetDistribution> budgetDistributionList = moveLine.getBudgetDistributionList();
-    List<BudgetDistribution> savedBudgetDistributionList = getOldBudgetDistributionList(moveLine);
+    List<BudgetDistribution> savedBudgetDistributionList =
+        getOldBudgetDistributionList(moveLine, budgetAlreadyChanged);
 
     fillBudgetChangesMap(budgetChangesMap, budgetDistributionList, savedBudgetDistributionList);
     return budgetChangesMap;
   }
 
-  protected List<BudgetDistribution> getOldBudgetDistributionList(MoveLine moveLine) {
+  protected List<BudgetDistribution> getOldBudgetDistributionList(
+      MoveLine moveLine, boolean budgetAlreadyChanged) {
     List<BudgetDistribution> savedBudgetDistributionList = moveLine.getOldBudgetDistributionList();
-    if (ObjectUtils.isEmpty(savedBudgetDistributionList) && moveLine.getId() != null) {
+    if (ObjectUtils.isEmpty(savedBudgetDistributionList)
+        && !budgetAlreadyChanged
+        && moveLine.getId() != null) {
       MoveLine savedMoveLine = moveLineRepository.find(moveLine.getId());
       savedBudgetDistributionList =
           moveLineToolBudgetService.copyBudgetDistributionList(savedMoveLine);

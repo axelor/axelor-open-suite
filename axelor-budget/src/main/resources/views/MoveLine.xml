@@ -42,6 +42,7 @@
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             onChange="action-group-budget-move-line-budget-distribution-onchange"/>
           <field name="oldBudgetDistributionList" hidden="true"/>
+          <field name="$budgetAlreadyChanged" hidden="true"/>
         </panel>
       </insert>
     </extend>
