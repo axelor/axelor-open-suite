@@ -642,7 +642,7 @@ public class BudgetServiceImpl implements BudgetService {
   @Transactional
   public void updateBudgetLinesFromMove(Move move, boolean excludeMoveInSimulated) {
 
-    if (move.getStatusSelect() == MoveRepository.STATUS_NEW || move.getInvoice() != null) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
       return;
     }
 
@@ -655,31 +655,6 @@ public class BudgetServiceImpl implements BudgetService {
                     moveLine.getBudgetDistributionList(), move, moveLine, excludeMoveInSimulated);
               });
     }
-  }
-
-  @Override
-  @Transactional
-  public boolean updateLineFromMove(
-      BudgetDistribution budgetDistribution, Move move, MoveLine moveLine) {
-    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
-      LocalDate date = move.getDate();
-      budgetDistribution.setImputationDate(date);
-      Budget budget = budgetDistribution.getBudget();
-      Optional<BudgetLine> optBudgetLine =
-          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
-      if (optBudgetLine.isPresent()) {
-        BudgetLine budgetLine = optBudgetLine.get();
-        if ((move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
-                || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-            && !moveLine.getIsBudgetImputed()) {
-          updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount());
-          return true;
-        } else if (move.getStatusSelect() == MoveRepository.STATUS_CANCELED) {
-          updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount().negate());
-        }
-      }
-    }
-    return false;
   }
 
   @Override
@@ -719,6 +694,31 @@ public class BudgetServiceImpl implements BudgetService {
     budgetLine.setAvailableAmount(
         currencyScaleService.getCompanyScaledValue(
             budget, BigDecimal.ZERO.max(budgetLine.getAvailableAmount().subtract(amount))));
+  }
+
+  @Override
+  @Transactional
+  public boolean updateLineFromMove(
+      BudgetDistribution budgetDistribution, Move move, MoveLine moveLine) {
+    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
+      LocalDate date = move.getDate();
+      budgetDistribution.setImputationDate(date);
+      Budget budget = budgetDistribution.getBudget();
+      Optional<BudgetLine> optBudgetLine =
+          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
+      if (optBudgetLine.isPresent()) {
+        BudgetLine budgetLine = optBudgetLine.get();
+        if ((move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+                || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
+            && !moveLine.getIsBudgetImputed()) {
+          updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount());
+          return true;
+        } else if (move.getStatusSelect() == MoveRepository.STATUS_CANCELED) {
+          updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount().negate());
+        }
+      }
+    }
+    return false;
   }
 
   @Override

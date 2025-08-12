@@ -1,0 +1,8 @@
+---
+title: "Invoice/Move/Budget : Realized amounts needs to be computed with movelines datas"
+module: axelor-budget
+developer: |
+  "Delete updateBudgetLineAmounts and updateBudgetLineAmountWithPo from BudgetService
+   Delete updateBudgetLineAmounts from BudgetLineComputeService
+   Delete updateBudgetLinesFromInvoice and updateLineAmounts from BudgetInvoiceService
+   Delete WorkflowCancelBudgetServiceImpl and WorkflowVentilationBudgetServiceImpl"
