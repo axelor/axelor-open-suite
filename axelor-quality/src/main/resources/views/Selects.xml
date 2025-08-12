@@ -152,4 +152,9 @@
       data-form="project-form">Project</option>
   </selection>
 
+  <selection name="quality.control.plan.related.to.select">
+    <option value="com.axelor.apps.base.db.Product">Product</option>
+    <option value="com.axelor.apps.production.db.ProdProcessLine">ProdProcessLine</option>
+  </selection>
+
 </object-views>
