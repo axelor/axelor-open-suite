@@ -80,7 +80,9 @@ public class SaleOrderRestController {
                 requestBody.fetchCompany(),
                 requestBody.fetchContact(),
                 requestBody.fetchCurrency(),
-                requestBody.getInAti());
+                requestBody.getInAti(),
+                requestBody.fetchPaymentMode(),
+                requestBody.getPaymentConditionId());
 
     saleOrder =
         Beans.get(SaleOrderRestService.class)

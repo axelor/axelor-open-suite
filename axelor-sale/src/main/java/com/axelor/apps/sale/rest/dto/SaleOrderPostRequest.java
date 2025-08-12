@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.rest.dto;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -39,6 +40,8 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   private Long companyId;
   private Long contactId;
   private Long currencyId;
+  private Long paymentModeId;
+  private Long paymentConditionId;
   private Boolean inAti;
   private List<SaleOrderLinePostRequest> saleOrderLineList;
 
@@ -90,6 +93,22 @@ public class SaleOrderPostRequest extends RequestPostStructure {
     this.deliveredPartnerId = deliveredPartnerId;
   }
 
+  public Long getPaymentModeId() {
+    return paymentModeId;
+  }
+
+  public void setPaymentModeId(Long paymentModeId) {
+    this.paymentModeId = paymentModeId;
+  }
+
+  public Long getPaymentConditionId() {
+    return paymentConditionId;
+  }
+
+  public void setPaymentConditionId(Long paymentConditionId) {
+    this.paymentConditionId = paymentConditionId;
+  }
+
   public Boolean getInAti() {
     return inAti;
   }
@@ -131,5 +150,12 @@ public class SaleOrderPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Currency.class, currencyId, ObjectFinder.NO_VERSION);
+  }
+
+  public PaymentMode fetchPaymentMode() {
+    if (paymentModeId == null || paymentModeId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(PaymentMode.class, paymentModeId, ObjectFinder.NO_VERSION);
   }
 }

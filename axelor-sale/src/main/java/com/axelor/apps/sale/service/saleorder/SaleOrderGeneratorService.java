@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -32,6 +33,8 @@ public interface SaleOrderGeneratorService {
       Company company,
       Partner contactPartner,
       Currency currency,
-      Boolean inAti)
+      Boolean inAti,
+      PaymentMode paymentMode,
+      Long paymentConditionId)
       throws AxelorException;
 }
