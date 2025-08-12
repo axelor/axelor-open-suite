@@ -47,6 +47,7 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
   protected BudgetLineService budgetLineService;
   protected MoveLineRepository moveLineRepository;
   protected BudgetRepository budgetRepository;
+  protected MoveLineToolBudgetService moveLineToolBudgetService;
 
   @Inject
   public MoveBudgetDistributionServiceImpl(
@@ -54,16 +55,18 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
       BudgetService budgetService,
       BudgetLineService budgetLineService,
       MoveLineRepository moveLineRepository,
-      BudgetRepository budgetRepository) {
+      BudgetRepository budgetRepository,
+      MoveLineToolBudgetService moveLineToolBudgetService) {
     this.appBudgetService = appBudgetService;
     this.budgetService = budgetService;
     this.budgetLineService = budgetLineService;
     this.moveLineRepository = moveLineRepository;
     this.budgetRepository = budgetRepository;
+    this.moveLineToolBudgetService = moveLineToolBudgetService;
   }
 
   @Override
-  public void checkChanges(MoveLine moveLine) {
+  public void checkChanges(MoveLine moveLine, boolean budgetAlreadyChanged) {
     if (!appBudgetService.isApp("budget")
         || MoveRepository.STATUS_DAYBOOK
             != Optional.ofNullable(moveLine)
@@ -74,20 +77,34 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
       return;
     }
 
-    MoveLine savedMoveLine = moveLineRepository.find(moveLine.getId());
-    Map<Budget, BigDecimal> budgetChangesMap = getBudgetChanges(moveLine, savedMoveLine);
+    Map<Budget, BigDecimal> budgetChangesMap = getBudgetChanges(moveLine, budgetAlreadyChanged);
 
     updateChangedBudgetDistribution(budgetChangesMap, moveLine);
   }
 
-  protected Map<Budget, BigDecimal> getBudgetChanges(MoveLine moveLine, MoveLine savedMoveLine) {
+  protected Map<Budget, BigDecimal> getBudgetChanges(
+      MoveLine moveLine, boolean budgetAlreadyChanged) {
     Map<Budget, BigDecimal> budgetChangesMap = new HashMap<>();
     List<BudgetDistribution> budgetDistributionList = moveLine.getBudgetDistributionList();
     List<BudgetDistribution> savedBudgetDistributionList =
-        savedMoveLine.getBudgetDistributionList();
+        getOldBudgetDistributionList(moveLine, budgetAlreadyChanged);
 
     fillBudgetChangesMap(budgetChangesMap, budgetDistributionList, savedBudgetDistributionList);
     return budgetChangesMap;
+  }
+
+  protected List<BudgetDistribution> getOldBudgetDistributionList(
+      MoveLine moveLine, boolean budgetAlreadyChanged) {
+    List<BudgetDistribution> savedBudgetDistributionList = moveLine.getOldBudgetDistributionList();
+    if (ObjectUtils.isEmpty(savedBudgetDistributionList)
+        && !budgetAlreadyChanged
+        && moveLine.getId() != null) {
+      MoveLine savedMoveLine = moveLineRepository.find(moveLine.getId());
+      savedBudgetDistributionList =
+          moveLineToolBudgetService.copyBudgetDistributionList(savedMoveLine);
+    }
+
+    return savedBudgetDistributionList;
   }
 
   protected void fillBudgetChangesMap(
