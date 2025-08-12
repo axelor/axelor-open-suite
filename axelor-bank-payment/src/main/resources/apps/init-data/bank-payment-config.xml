@@ -20,4 +20,7 @@
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType"/>
 
+  <input file="meta_metaTranslation.csv" separator=";"
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
+
 </csv-inputs>
