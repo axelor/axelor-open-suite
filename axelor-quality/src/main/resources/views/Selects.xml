@@ -143,4 +143,13 @@
     <option value="com.axelor.apps.production.db.ManufOrder">ManufOrder</option>
   </selection>
 
+  <selection name="quality.control.origin.related.to.select">
+    <option value="com.axelor.apps.base.db.Product" data-grid="product-grid"
+      product-form="invoice-form">Product</option>
+    <option value="com.axelor.apps.base.db.Partner" data-grid="partner-grid"
+      data-form="partner-form" data-domain="self.isSupplier = true">Partner</option>
+    <option value="com.axelor.apps.project.db.Project" data-grid="project-grid"
+      data-form="project-form">Project</option>
+  </selection>
+
 </object-views>
