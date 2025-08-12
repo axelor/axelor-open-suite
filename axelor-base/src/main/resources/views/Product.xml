@@ -539,6 +539,18 @@
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'customsCodeNomenclature'})"/>
           <field name="countryOfOrigin" showIf="usedInDEB"/>
         </panel>
+        <panel name="packagingPanel" title="Packaging details" colSpan="12">
+          <field name="isPackaging" colSpan="12"/>
+          <panel name="dimensionPanel" colSpan="12" itemSpan="4" hidden="true"
+            showIf="isPackaging">
+            <field name="innerLength" requiredIf="isPackaging"/>
+            <field name="innerWidth" requiredIf="isPackaging"/>
+            <field name="innerHeight" requiredIf="isPackaging"/>
+            <field name="outerLength" requiredIf="isPackaging"/>
+            <field name="outerWidth" requiredIf="isPackaging"/>
+            <field name="outerHeight" requiredIf="isPackaging"/>
+          </panel>
+        </panel>
       </panel>
       <panel-related field="alternativeBarcodeList" name="alternativeBarcodeListPanel"
         grid-view="alternative-barcode-grid" form-view="alternative-barcode-form"
