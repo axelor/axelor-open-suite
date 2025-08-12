@@ -50,4 +50,6 @@ public interface MoveLineBudgetService {
   void manageMonoBudget(Move move);
 
   void negateAmount(MoveLine moveLine, Move move);
+
+  void changeBudgetDistribution(MoveLine moveLine);
 }
