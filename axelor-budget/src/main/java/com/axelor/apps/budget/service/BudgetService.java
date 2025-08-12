@@ -201,6 +201,10 @@ public interface BudgetService {
       MoveLine moveLine,
       boolean excludeMoveInSimulated);
 
+  void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount);
+
+  void updateBudgetLineAmountWithPo(BudgetLine budgetLine, Budget budget, BigDecimal amount);
+
   /**
    * Find the budget line with move date and update it amounts (realized wih no po, amount realized,
    * to be committed, firm gap, available)
@@ -226,10 +230,6 @@ public interface BudgetService {
    * @param budget
    */
   public void computeTotalAvailableWithSimulatedAmount(Budget budget);
-
-  void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount);
-
-  void updateBudgetLineAmountWithPo(BudgetLine budgetLine, Budget budget, BigDecimal amount);
 
   /**
    * If budget key is allowed (via config), check that analytic and account are filled then compute

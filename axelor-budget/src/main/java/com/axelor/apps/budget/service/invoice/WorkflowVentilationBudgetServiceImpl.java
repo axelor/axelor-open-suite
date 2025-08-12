@@ -113,8 +113,6 @@ public class WorkflowVentilationBudgetServiceImpl extends WorkflowVentilationPro
           budgetInvoiceService.generateBudgetDistribution(invoice);
         }
       }
-
-      budgetInvoiceService.updateBudgetLinesFromInvoice(invoice);
     }
   }
 }
