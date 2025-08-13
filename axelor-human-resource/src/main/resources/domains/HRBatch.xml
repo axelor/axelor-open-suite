@@ -57,6 +57,14 @@
     <long name="daysBeforeReminder" title="Number of days before reminder"/>
     <many-to-one name="template" ref="com.axelor.message.db.Template" title="Template"/>
 
+    <!-- Leave Request -->
+    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason"
+      title="Leave reason"/>
+    <integer name="startOnSelect" title="Start On" selection="hr.start.on.select"
+      required="true" default="1"/>
+    <integer name="endOnSelect" title="End On" selection="hr.start.on.select"
+      required="true" default="2"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
@@ -68,6 +76,7 @@
 		public static final int ACTION_EMPLOYMENT_CONTRACT_EXPORT = 6;
         public static final int ACTION_TIMESHEET_REMINDER = 7;
         public static final int ACTION_INCREMENT_LEAVE = 8;
+        public static final int ACTION_LEAVE_REQUEST = 9;
 
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;

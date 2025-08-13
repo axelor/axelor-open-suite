@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form id="hr-batch-batch-form" name="batch-form" title="Batch"
+    model="com.axelor.apps.base.db.Batch" extension="true">
+    <extend target="//button[@name='showProjectTaskBtn']">
+      <insert position="after">
+        <button name="showLeaveRequestBtn" title="Show leave request" colSpan="4"
+          onClick="action-batch-show-leave-request,close" if-module="axelor-human-resource"
+          showIf="hrBatch &amp;&amp; hrBatch.actionSelect == 9"/>
+        <field name="hrBatch.actionSelect" hidden="true"/>
+        <field name="hrBatch" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-batch-show-leave-request" title="Leaves request"
+    model="com.axelor.apps.hr.db.LeaveRequest">
+    <view type="grid" name="leave-request-grid"/>
+    <view type="form" name="leave-request-form"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+</object-views>

@@ -98,6 +98,7 @@
     <option value="6">Export des salariés</option>
     <option value="7">Email reminder for timesheets</option>
     <option value="8">Increment leave</option>
+    <option value="9">Leave request</option>
   </selection>
 
   <selection name="hr.batch.employment.contract.export.type.select">
