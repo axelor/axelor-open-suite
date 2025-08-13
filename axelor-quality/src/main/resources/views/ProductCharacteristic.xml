@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="product-characteristic-grid" title="Product characteristics"
+    model="com.axelor.apps.quality.db.ProductCharacteristic">
+    <field name="product"/>
+    <field name="characteristic"/>
+  </grid>
+
+  <form name="product-characteristic-form" title="Product characteristic"
+    model="com.axelor.apps.quality.db.ProductCharacteristic">
+    <panel name="mainPanel" colSpan="12">
+      <field name="product" colSpan="6"/>
+      <field name="characteristic" colSpan="6"/>
+      <panel name="measurablePanel" colSpan="12"
+        showIf="characteristic.characteristicTypeSelect == 1">
+        <field name="minValue" x-scale="3"/>
+        <field name="maxValue" x-scale="3"/>
+        <field name="characteristic.unit"/>
+        <field name="characteristic.characteristicTypeSelect" hidden="true"/>
+      </panel>
+      <panel name="listPanel" colSpan="12"
+        showIf="characteristic.characteristicTypeSelect == 2">
+        <field name="expectedValue" canNew="false"
+          onSelect="action-product-characteristic-set-expected-value-domain"/>
+      </panel>
+      <panel name="commentPanel" colSpan="12">
+        <field name="productComment"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-attrs name="action-product-characteristic-set-expected-value-domain">
+    <attribute for="expectedValue" name="domain"
+      expr="eval: &quot;self.id IN (${characteristic.characteristicSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+</object-views>

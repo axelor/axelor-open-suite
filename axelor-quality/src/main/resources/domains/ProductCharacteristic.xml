@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ProductCharacteristic">
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <many-to-one name="characteristic"
+      ref="com.axelor.apps.quality.db.CharacteristicType" title="Characteristic" required="true"/>
+    <decimal name="minValue" title="Min value" precision="20" scale="10"/>
+    <decimal name="maxValue" title="Max value" precision="20" scale="10"/>
+    <many-to-one name="expectedValue"
+      ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Expected value"/>
+    <string name="productComment" large="true" title="Comment"/>
+
+  </entity>
+
+</domain-models>

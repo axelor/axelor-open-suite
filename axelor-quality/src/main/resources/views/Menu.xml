@@ -294,4 +294,14 @@
     <view type="form" name="characteristic-property-form"/>
   </action-view>
 
+  <menuitem name="quality-product-characteristic" title="Product characteristics"
+    parent="referential-root-product-root" action="quality.product.characteristic" order="490"
+    if="__config__.app.isApp('quality')"/>
+
+  <action-view name="quality.product.characteristic" title="Product characteristics"
+    model="com.axelor.apps.quality.db.ProductCharacteristic">
+    <view type="grid" name="product-characteristic-grid"/>
+    <view type="form" name="product-characteristic-form"/>
+  </action-view>
+
 </object-views>
