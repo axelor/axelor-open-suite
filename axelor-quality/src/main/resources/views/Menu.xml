@@ -274,4 +274,24 @@
     <view-param name="search-filters" value="quality-required-document-filters"/>
   </action-view>
 
+  <menuitem name="quality-characteristic-type" title="Characteristics types"
+    parent="referential-root-product-root" action="quality.characteristic.type" order="500"
+    if="__config__.app.isApp('quality')"/>
+
+  <action-view name="quality.characteristic.type" title="Characteristics types"
+    model="com.axelor.apps.quality.db.CharacteristicType">
+    <view type="grid" name="characteristic-type-grid"/>
+    <view type="form" name="characteristic-type-form"/>
+  </action-view>
+
+  <menuitem name="quality-characteristic-property" title="Characteristics properties"
+    parent="referential-root-product-root" action="quality.characteristic.property" order="510"
+    if="__config__.app.isApp('quality')"/>
+
+  <action-view name="quality.characteristic.property" title="Characteristics properties"
+    model="com.axelor.apps.quality.db.CharacteristicProperty">
+    <view type="grid" name="characteristic-property-grid"/>
+    <view type="form" name="characteristic-property-form"/>
+  </action-view>
+
 </object-views>

@@ -170,4 +170,10 @@
     <option value="com.axelor.apps.production.db.OperationOrder">OperationOrder</option>
   </selection>
 
+  <selection name="quality.characteristic.type.characteristic.type.select">
+    <option value="1">Measurable</option>
+    <option value="2">List</option>
+    <option value="3">Comment</option>
+  </selection>
+
 </object-views>
