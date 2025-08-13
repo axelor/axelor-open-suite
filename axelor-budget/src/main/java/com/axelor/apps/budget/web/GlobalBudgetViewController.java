@@ -146,8 +146,8 @@ public class GlobalBudgetViewController {
 
     String domain =
         String.format(
-            "(self.moveLine IS NOT NULL AND self.moveLine.move.invoice IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND "
-                + "self.moveLine.move.invoice.purchaseOrder is not null OR self.moveLine.move.invoice.saleOrder is not null) "
+            "self.moveLine IS NOT NULL AND self.moveLine.move.invoice IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND "
+                + "(self.moveLine.move.invoice.purchaseOrder IS NOT NULL OR self.moveLine.move.invoice.saleOrder IS NOT NULL) "
                 + "AND self.budget.id IN (:budgetList)",
             MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
 
