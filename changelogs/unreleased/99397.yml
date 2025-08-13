@@ -1,0 +1,3 @@
+---
+title: "PurchaseOrder/Budget : fixed the use of order date to fetch the budget line associed to."
+module: axelor-budget
