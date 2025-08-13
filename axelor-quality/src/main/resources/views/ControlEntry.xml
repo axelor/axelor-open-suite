@@ -22,7 +22,8 @@
       <field name="entryDateTime" colSpan="6"/>
       <field name="inspector" colSpan="6"/>
       <field name="sampleCount" colSpan="6"/>
-      <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"/>
+      <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"
+        onChange="action-control-plan-attrs-control-plan-on-change"/>
     </panel>
     <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
@@ -37,6 +38,15 @@
         title="Finish" showIf="statusSelect == 2"/>
       <button name="cancelBtn" onClick="action-record-quality-control-cancel,save"
         title="Cancel" showIf="statusSelect == 2"/>
+    </panel>
+    <panel name="relatedPanel" sidebar="true">
+      <field name="relatedToSelect"
+        showIf="controlPlan.relatedToSelect != 'com.axelor.apps.production.db.ProdProcessLine'"
+        widget="RefSelect"/>
+      <field name="relatedToSelect"
+        showIf="controlPlan.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"
+        selection="quality.control.entry.operation.order.related.to.select" widget="RefSelect"/>
+      <field name="controlPlan.relatedToSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -55,6 +65,14 @@
     model="com.axelor.apps.quality.db.ControlEntry">
     <field name="statusSelect" expr="eval: 4"/>
   </action-record>
+
+  <action-attrs name="action-control-plan-attrs-control-plan-on-change">
+    <attribute name="value" for="relatedToSelect"
+      expr="eval: 'com.axelor.apps.production.db.OperationOrder'"
+      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"/>
+    <attribute name="value" for="relatedToSelectId" expr="eval: null"
+      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"/>
+  </action-attrs>
 
   <action-method name="action-method-quality-control-entry-create-samples">
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="createSamples"/>

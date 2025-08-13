@@ -18,6 +18,9 @@
     <one-to-many name="controlEntrySamplesList"
       ref="com.axelor.apps.quality.db.ControlEntrySample" title="Control entry samples"
       mappedBy="controlEntry"/>
+    <string name="relatedToSelect" title="Related to"
+      selection="quality.control.entry.related.to.select"/>
+    <long name="relatedToSelectId"/>
 
     <extra-code>
 			<![CDATA[
