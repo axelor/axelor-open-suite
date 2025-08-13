@@ -41,6 +41,8 @@ import com.axelor.apps.quality.rest.service.QualityImprovementParseService;
 import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementUpdateAPIService;
 import com.axelor.apps.quality.rest.service.QualityImprovementUpdateAPIServiceImpl;
+import com.axelor.apps.quality.service.CharacteristicPropertyService;
+import com.axelor.apps.quality.service.CharacteristicPropertyServiceImpl;
 import com.axelor.apps.quality.service.ControlEntryPlanLineService;
 import com.axelor.apps.quality.service.ControlEntryPlanLineServiceImpl;
 import com.axelor.apps.quality.service.ControlEntryProgressValuesComputeService;
@@ -130,5 +132,6 @@ public class QualityModule extends AxelorModule {
     bind(RequiredDocumentFileOnChangeService.class)
         .to(RequiredDocumentFileOnChangeServiceImpl.class);
     bind(RequiredDocumentExportService.class).to(RequiredDocumentExportServiceImpl.class);
+    bind(CharacteristicPropertyService.class).to(CharacteristicPropertyServiceImpl.class);
   }
 }
