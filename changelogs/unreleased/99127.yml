@@ -2,4 +2,9 @@
 title: "ANALYTICDISTRIBUTIONTEMPLATE : duplicated templates shouldn't be visible"
 module: axelor-account
 developer: |
-  Added 'AnalyticAttrsService' to 'MoveLineAttrsServiceImpl' constructor.
+  Added AnalyticDistributionTemplateRepository and AnalyticMoveLineService in AnalyticAttrsServiceImpl.
+  Added AnalyticAttrsService in MoveLineAttrsServiceImpl.
+  Added parameter 'moveline' in MoveLineAttrsServiceImpl.addAnalyticDistributionTemplateDomain.
+  Added parameter 'moveLine' in MoveLineGroupServiceImpl.getAnalyticDistributionTemplateOnSelectAttrsMap.
+  
+  DELETE FROM meta_action WHERE name LIKE 'action-purchase-order-line-attrs-set-domain-analytic-distribution-template';

@@ -183,7 +183,7 @@ public class PurchaseOrderLineController {
                   purchaseOrder.getCompany(),
                   purchaseOrder.getTradingName(),
                   null,
-                  false));
+                  true));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

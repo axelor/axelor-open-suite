@@ -113,12 +113,7 @@ public class ExpenseLineController {
             "domain",
             Beans.get(AnalyticAttrsService.class)
                 .getAnalyticDistributionTemplateDomain(
-                    null,
-                    expenseLine.getExpenseProduct(),
-                    expense.getCompany(),
-                    null,
-                    null,
-                    false));
+                    null, expenseLine.getExpenseProduct(), expense.getCompany(), null, null, true));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
