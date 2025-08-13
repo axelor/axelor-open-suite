@@ -550,6 +550,9 @@
             <field name="outerWidth" requiredIf="isPackaging"/>
             <field name="outerHeight" requiredIf="isPackaging"/>
           </panel>
+          <panel-dashlet name="productPackagingPanel" colSpan="12" hidden="true"
+            showIf="!isPackaging" action="action-product-view-product-packaging" canNew="true"
+            canDelete="true"/>
         </panel>
       </panel>
       <panel-related field="alternativeBarcodeList" name="alternativeBarcodeListPanel"
@@ -1040,6 +1043,15 @@
     <domain>self.relatedToSelectId = :productId AND self.relatedToSelect =
       'com.axelor.apps.base.db.Product'</domain>
     <context name="productId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-product-view-product-packaging" title="Product packaging"
+    model="com.axelor.apps.base.db.ProductPackaging">
+    <view type="grid" name="product-packaging-grid"/>
+    <view type="form" name="product-packaging-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.productToPackage.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
   </action-view>
 
 </object-views>
