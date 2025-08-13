@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
 import com.axelor.apps.account.service.DepositSlipService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.mapper.Adapter;
 import com.axelor.i18n.I18n;
@@ -110,6 +111,20 @@ public class DepositSlipController {
             .map(DepositSlip::getPaymentVoucherList)
             .orElse(new ArrayList<>());
     paymentVoucherList.addAll(selectedPaymentVoucherDueList);
+
+    Optional.ofNullable(depositSlip)
+        .ifPresent(
+            ds -> {
+              LocalDate depositDate = ds.getDepositDate();
+              BankDetails bankDetails = ds.getCompanyBankDetails();
+
+              paymentVoucherList.forEach(
+                  pv -> {
+                    pv.setChequeDate(depositDate);
+                    pv.setDepositBankDetails(bankDetails);
+                  });
+            });
+
     response.setValue("paymentVoucherList", paymentVoucherList);
   }
 
