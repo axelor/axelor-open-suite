@@ -54,6 +54,8 @@
     model="com.axelor.apps.quality.db.ControlEntry">
     <field name="inspector" expr="eval: __user__"/>
     <field name="entryDateTime" expr="eval: __time__"/>
+    <field name="relatedToSelect" expr="eval: relatedTo" if="relatedTo"/>
+    <field name="relatedToSelectId" expr="eval: relatedToId" if="relatedToId"/>
   </action-record>
 
   <action-record name="action-record-quality-control-finish"

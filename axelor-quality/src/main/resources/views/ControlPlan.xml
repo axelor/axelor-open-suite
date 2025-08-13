@@ -12,7 +12,7 @@
   </grid>
 
   <form name="control-plan-form" title="Control plan"
-    model="com.axelor.apps.quality.db.ControlPlan">
+    model="com.axelor.apps.quality.db.ControlPlan" onNew="action-control-plan-record-default">
     <panel name="mainPanel" colSpan="12">
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
       <field name="code" colSpan="6"/>
@@ -27,4 +27,11 @@
       <field name="relatedToSelect" widget="RefSelect"/>
     </panel>
   </form>
+
+  <action-record name="action-control-plan-record-default"
+    model="com.axelor.apps.quality.db.ControlPlan">
+    <field name="relatedToSelect" expr="eval: relatedTo" if="relatedTo"/>
+    <field name="relatedToSelectId" expr="eval: relatedToId" if="relatedToId"/>
+  </action-record>
+
 </object-views>
