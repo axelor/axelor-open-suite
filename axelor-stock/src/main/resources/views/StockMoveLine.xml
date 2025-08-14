@@ -241,6 +241,12 @@
       <field name="stockMove.typeSelect" hidden="true"/>
       <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
       <field name="$isReadOnly" hidden="true"/>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
+      </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
       </panel>
@@ -510,6 +516,12 @@
       <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
       <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
+      </panel>
       <field name="description" colSpan="12" widget="html"/>
       <field name="regime"/>
       <field name="natureOfTransaction"/>
@@ -840,6 +852,24 @@
     <domain>self.stockMove.statusSelect = 3 and
       (self.fromStockLocation.typeSelect = 1 or
       self.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
+  </action-view>
+
+  <action-view name="action-stock-move-line-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :stockMoveLineId AND self.relatedToSelect =
+      'com.axelor.apps.stock.db.StockMoveLine'</domain>
+    <context name="stockMoveLineId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-stock-move-line-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMoveLine'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-validate name="action-stock-move-line-validate-check-split-quantity">
