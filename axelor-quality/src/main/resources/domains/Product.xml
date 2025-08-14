@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Product">
+    <decimal name="density" title="Density" precision="20" scale="10"/>
+    <boolean name="isVoc" title="VOC ?"/>
+    <decimal name="vocValue" title="% VOC" precision="20" scale="10"/>
+    <decimal name="carbonFootprint" title="Carbon footprint (kg CO2 equivalent)"
+      precision="20" scale="10"/>
+    <many-to-many name="productCharacteristicSet"
+      ref="com.axelor.apps.quality.db.ProductCharacteristic" title="Characteristics"
+      mappedBy="productSet"/>
+  </entity>
+
+</domain-models>

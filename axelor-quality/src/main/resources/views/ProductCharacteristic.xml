@@ -7,6 +7,10 @@
     model="com.axelor.apps.quality.db.ProductCharacteristic">
     <field name="product"/>
     <field name="characteristic"/>
+    <field name="minValue" x-scale="3"/>
+    <field name="maxValue" x-scale="3"/>
+    <field name="expectedValue"/>
+    <field name="productComment"/>
   </grid>
 
   <form name="product-characteristic-form" title="Product characteristic"
