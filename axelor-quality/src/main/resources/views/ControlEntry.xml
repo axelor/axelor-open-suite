@@ -73,7 +73,8 @@
       expr="eval: 'com.axelor.apps.production.db.OperationOrder'"
       if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"/>
     <attribute name="value" for="relatedToSelectId" expr="eval: null"
-      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"/>
+      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'
+      	    &amp;&amp; relatedToSelect != 'com.axelor.apps.production.db.OperationOrder'"/>
   </action-attrs>
 
   <action-method name="action-method-quality-control-entry-create-samples">

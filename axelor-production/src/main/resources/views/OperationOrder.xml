@@ -167,6 +167,13 @@
       <field name="prodProcessLine.objectDescriptionList" colSpan="12" height="20"/>
     </panel>
 
+    <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+      colSpan="12">
+      <button name="addControlEntryBtn" title="Add a control entry"
+        onClick="save,action-operation-order-view-add-control-entry" colOffset="6"/>
+      <panel-dashlet action="action-operation-order-view-control-entry" colSpan="12"/>
+    </panel>
+
     <panel name="stockMovesPanel" hidden="true" title="Stock moves" colSpan="12"
       readonlyIf="statusSelect == 6">
       <field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid"
@@ -365,6 +372,24 @@
     <view type="calendar" name="planning-machine-calender"/>
     <domain>self.statusSelect IN (3,4,5,6) AND self.machine.id = :_machineId</domain>
     <context name="_machineId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-operation-order-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :operationOrderId AND self.relatedToSelect =
+      'com.axelor.apps.production.db.OperationOrder'</domain>
+    <context name="operationOrderId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-operation-order-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.production.db.OperationOrder'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <search-filters name="operation-order-filters"
