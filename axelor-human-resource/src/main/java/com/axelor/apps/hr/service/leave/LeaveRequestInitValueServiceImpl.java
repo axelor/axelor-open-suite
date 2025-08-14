@@ -22,15 +22,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.LeaveRequest;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import java.util.Optional;
 
 public class LeaveRequestInitValueServiceImpl implements LeaveRequestInitValueService {
   @Override
-  public void initLeaveRequest(LeaveRequest leaveRequest) {
-    User user = AuthUtils.getUser();
-    Employee employee = Optional.ofNullable(user).map(User::getEmployee).orElse(null);
+  public void initLeaveRequest(LeaveRequest leaveRequest, User user, Employee employee) {
     leaveRequest.setEmployee(employee);
     leaveRequest.setCompany(getCompany(user, employee));
   }
