@@ -1,6 +1,0 @@
-title: "MoveLine/Budget : fix budget distribution compute at budget change"
-module: axelor-budget
-developer: |
-  "Add MoveLineToolBudgetService in MoveBudgetDistributionServiceImpl constructor.
-   Add MoveLineToolBudgetService in MoveLineBudgetServiceImpl constructor
-   Add a new boolean as parameter in MoveBudgetDistributionService.checkChanges"

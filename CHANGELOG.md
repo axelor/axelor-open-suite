@@ -1,3 +1,190 @@
+## [8.2.22] (2025-08-14)
+
+### Fixes
+#### Account
+
+* Closure assistant : fixed outrun of year computation doesn't take into account all accountTypes.
+* Account management: fixed interbank code issue on 'Direct Debit' payment mode.
+* Accounting report: fixed the issue related to amount in Analytic general ledger report.
+* ANALYTICDISTRIBUTIONTEMPLATE : duplicated templates shouldn't be visible
+
+#### Bank Payment
+
+* Bank statement: fixed demo data to get dynamic dates and corrected interbank code.
+* Bank statement rule: fixed partner fetch method demo data.
+
+#### Budget
+
+* Invoice/Move/Budget : Realized amounts needs to be computed with movelines datas
+* MoveLine/Budget : fix budget distribution compute at budget change
+
+#### Business Project
+
+* PurchaseOrder : fixed technical error when saving a project or a business project on a purchase order.
+
+#### Human Resource
+
+* Expense: fixed display cancel button in form view.
+* Timesheet: fixed error when generating lines from planning with custom time units
+
+#### Stock
+
+* Product: fixed unit conversion for 'Stock history' chart.
+
+#### Supply Chain
+
+* Sale order: fixed stock location on change of company.
+
+#### Intervention
+
+* Equipment line: fixed the display of the tracking number on the form view.
+
+
+### Developer
+
+#### Account
+
+Changed the AccountService.computeBalance method parameter. Now using a list of account types instead of an account type.
+
+---
+
+Added AnalyticDistributionTemplateRepository and AnalyticMoveLineService in AnalyticAttrsServiceImpl.
+Added AnalyticAttrsService in MoveLineAttrsServiceImpl.
+Added parameter 'moveline' in MoveLineAttrsServiceImpl.addAnalyticDistributionTemplateDomain.
+Added parameter 'moveLine' in MoveLineGroupServiceImpl.getAnalyticDistributionTemplateOnSelectAttrsMap.
+
+DELETE FROM meta_action WHERE name LIKE 'action-purchase-order-line-attrs-set-domain-analytic-distribution-template';
+
+#### Budget
+
+Delete updateBudgetLineAmounts and updateBudgetLineAmountWithPo from BudgetService
+ Delete updateBudgetLineAmounts from BudgetLineComputeService
+ Delete updateBudgetLinesFromInvoice and updateLineAmounts from BudgetInvoiceService
+ Delete WorkflowCancelBudgetServiceImpl and WorkflowVentilationBudgetServiceImpl
+
+ If you have manually changed amounts on some budget distribution on daybook moves related to invoices, you will need this script to recompute all amounts :
+
+  UPDATE budget_budget_line bl SET realized_with_po = (SELECT COALESCE(SUM(bd.amount))
+  FROM budget_budget_distribution bd
+  JOIN budget_budget b ON b.id = bd.budget
+  JOIN account_move_line ml ON ml.id = bd.move_line
+  JOIN account_move m ON m.id = ml.move
+  JOIN account_invoice i ON m.invoice = i.id
+  WHERE bl.budget = b.id AND bd.move_line IS NOT NULL AND (i.purchase_order IS NOT NULL OR i.sale_order IS NOT NULL) AND bl.from_date < m.date_val AND bl.to_date >= m.date_val);
+  
+  UPDATE budget_budget_line bl SET realized_with_no_po = (SELECT COALESCE(SUM(bd.amount))
+  FROM budget_budget_distribution bd
+  JOIN budget_budget b ON b.id = bd.budget
+  JOIN account_move_line ml ON ml.id = bd.move_line
+  JOIN account_move m ON m.id = ml.move
+  WHERE bl.budget = b.id AND bd.move_line IS NOT NULL AND bl.from_date < m.date_val AND bl.to_date >= m.date_val) - bl.realized_with_po;
+  
+  UPDATE budget_budget_line bl SET amount_committed = (SELECT COALESCE(SUM(bd.amount))
+  FROM budget_budget_distribution bd
+  JOIN budget_budget b ON b.id = bd.budget
+  JOIN sale_sale_order_line sl ON sl.id = bd.sale_order_line
+  JOIN sale_sale_order s ON s.id = sl.sale_order
+  WHERE bl.budget = b.id AND bd.sale_order_line IS NOT NULL
+  AND bl.from_date < s.order_date AND bl.to_date >= s.order_date
+  AND (s.status_select = 3 OR s.status_select = 4)) - bl.realized_with_po;
+  
+  UPDATE budget_budget_line bl SET amount_committed = (SELECT COALESCE(SUM(bd.amount))
+  FROM budget_budget_distribution bd
+  JOIN budget_budget b ON b.id = bd.budget
+  JOIN purchase_purchase_order_line pl ON pl.id = bd.purchase_order_line
+  JOIN purchase_purchase_order p ON p.id = pl.purchase_order
+  WHERE bl.budget = b.id AND bd.purchase_order_line IS NOT NULL
+  AND bl.from_date < p.order_date AND bl.to_date >= p.order_date
+  AND (p.status_select = 3 OR p.status_select = 4)) - bl.realized_with_po;
+  
+  UPDATE budget_budget_line bl SET amount_realized = realized_with_po + realized_with_no_po,
+  available_amount = amount_expected - realized_with_no_po - realized_with_po,
+  to_be_committed_amount = amount_expected - amount_committed;
+  
+  UPDATE budget_budget_line SET firm_gap = 0 WHERE available_amount > 0;
+  UPDATE budget_budget_line SET firm_gap = -available_amount, available_amount = 0 WHERE available_amount < 0;
+  UPDATE budget_budget_line SET to_be_committed_amount = 0 WHERE to_be_committed_amount < 0;
+  
+  UPDATE budget_budget b SET total_amount_committed = agg.totalAmountCommitted,
+  total_amount_realized = agg.totalAmountRealized,
+  available_amount = agg.availableAmount,
+  realized_with_no_po = agg.realizedWithNoPo,
+  realized_with_po = agg.realizedWithPo,
+  total_firm_gap = agg.totalFirmGap
+  FROM (SELECT bl.budget,
+  SUM(bl.amount_committed) AS totalAmountCommitted,
+  SUM(bl.amount_realized) AS totalAmountRealized,
+  SUM(bl.available_amount) AS availableAmount,
+  SUM(bl.realized_with_no_po) AS realizedWithNoPo,
+  SUM(bl.realized_with_po) AS realizedWithPo,
+  SUM(bl.firm_gap) AS totalFirmGap
+  FROM budget_budget_line bl
+  GROUP BY bl.budget
+  ) agg WHERE b.id = agg.budget;
+  
+  UPDATE budget_budget_level bl SET total_amount_committed = agg.totalAmountCommitted,
+  total_amount_realized = agg.totalAmountRealized,
+  total_amount_available = agg.availableAmount,
+  realized_with_no_po = agg.realizedWithNoPo,
+  realized_with_po = agg.realizedWithPo,
+  total_firm_gap = agg.totalFirmGap
+  FROM (SELECT b.budget_level,
+  COUNT(*) AS countBudget,
+  SUM(b.total_amount_committed) AS totalAmountCommitted,
+  SUM(b.total_amount_realized) AS totalAmountRealized,
+  SUM(b.available_amount) AS availableAmount,
+  SUM(b.realized_with_no_po) AS realizedWithNoPo,
+  SUM(b.realized_with_po) AS realizedWithPo,
+  SUM(b.total_firm_gap) AS totalFirmGap
+  FROM budget_budget b
+  GROUP BY b.budget_level
+  ) agg WHERE bl.id = agg.budget_level AND countBudget > 0;
+  
+  UPDATE budget_budget_level parent SET total_amount_committed = agg.totalAmountCommitted,
+  total_amount_realized = agg.totalAmountRealized,
+  total_amount_available = agg.availableAmount,
+  realized_with_no_po = agg.realizedWithNoPo,
+  realized_with_po = agg.realizedWithPo,
+  total_firm_gap = agg.totalFirmGap
+  FROM (SELECT child.parent_budget_level,
+  COUNT(*) AS countBudget,
+  SUM(child.total_amount_committed) AS totalAmountCommitted,
+  SUM(child.total_amount_realized) AS totalAmountRealized,
+  SUM(child.total_amount_available) AS availableAmount,
+  SUM(child.realized_with_no_po) AS realizedWithNoPo,
+  SUM(child.realized_with_po) AS realizedWithPo,
+  SUM(child.total_firm_gap) AS totalFirmGap
+  FROM budget_budget_level child
+  GROUP BY child.parent_budget_level
+  ) agg WHERE parent.id = agg.parent_budget_level AND countBudget > 0;
+  
+  UPDATE budget_global_budget gb SET total_amount_committed = agg.totalAmountCommitted,
+  total_amount_realized = agg.totalAmountRealized,
+  total_amount_available = agg.availableAmount,
+  realized_with_no_po = agg.realizedWithNoPo,
+  realized_with_po = agg.realizedWithPo,
+  total_firm_gap = agg.totalFirmGap
+  FROM (SELECT b.global_budget,
+  SUM(b.total_amount_committed) AS totalAmountCommitted,
+  SUM(b.total_amount_realized) AS totalAmountRealized,
+  SUM(b.available_amount) AS availableAmount,
+  SUM(b.realized_with_no_po) AS realizedWithNoPo,
+  SUM(b.realized_with_po) AS realizedWithPo,
+  SUM(b.total_firm_gap) AS totalFirmGap
+  FROM budget_budget b
+  GROUP BY b.global_budget
+  ) agg WHERE gb.id = agg.global_budget;
+
+---
+
+Add MoveLineToolBudgetService in MoveBudgetDistributionServiceImpl constructor.
+ Add MoveLineToolBudgetService in MoveLineBudgetServiceImpl constructor
+ Add a new boolean as parameter in MoveBudgetDistributionService.checkChanges
+
+#### Human Resource
+
+`TimesheetProjectPlanningTimeServiceImpl` now has two new constructor parameters to support `UnitConversions`.
+
 ## [8.2.21] (2025-07-31)
 
 ### Fixes
@@ -1422,6 +1609,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.22]: https://github.com/axelor/axelor-open-suite/compare/v8.2.21...v8.2.22
 [8.2.21]: https://github.com/axelor/axelor-open-suite/compare/v8.2.20...v8.2.21
 [8.2.20]: https://github.com/axelor/axelor-open-suite/compare/v8.2.19...v8.2.20
 [8.2.19]: https://github.com/axelor/axelor-open-suite/compare/v8.2.18...v8.2.19
