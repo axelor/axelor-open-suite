@@ -1,6 +1,0 @@
----
-title: "Timesheet: fixed error when generating lines from planning with custom time units"
-module: axelor-human-resource
-developer: |
-  `TimesheetProjectPlanningTimeServiceImpl` now has two new constructor parameters to support `UnitConversions`.
-
