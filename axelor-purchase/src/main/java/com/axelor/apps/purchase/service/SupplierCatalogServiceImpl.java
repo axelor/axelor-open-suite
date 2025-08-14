@@ -133,19 +133,14 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
 
-    if (product == null) {
+    if (product == null || supplierPartner == null) {
       return null;
     }
-    List<SupplierCatalog> supplierCatalogList = null;
 
-    if (supplierPartner != null) {
-      supplierCatalogList =
-          supplierPartner.getSupplierCatalogList().stream()
-              .filter(catalog -> catalog.getProduct().equals(product))
-              .collect(Collectors.toList());
-    } else {
-      supplierCatalogList = product.getSupplierCatalogList();
-    }
+    List<SupplierCatalog> supplierCatalogList =
+        supplierPartner.getSupplierCatalogList().stream()
+            .filter(catalog -> catalog.getProduct().equals(product))
+            .collect(Collectors.toList());
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
         && CollectionUtils.isNotEmpty(supplierCatalogList)) {
