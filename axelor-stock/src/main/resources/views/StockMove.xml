@@ -694,6 +694,12 @@
         <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
       </panel>
 
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-stock-move-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-stock-move-view-control-entry" colSpan="12"/>
+      </panel>
+
       <panel name="configPanel" title="Configuration" itemSpan="6">
         <field name="isWithBackorder" colSpan="12"/>
         <field name="printingSettings" canEdit="false"/>
@@ -1628,6 +1634,24 @@
     <view type="form" name="stock-move-send-notification-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
+  </action-view>
+
+  <action-view name="action-stock-move-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :stockMoveId AND self.relatedToSelect =
+      'com.axelor.apps.stock.db.StockMove'</domain>
+    <context name="stockMoveId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-stock-move-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMove'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-method name="action-stock-move-method-send-notification">
