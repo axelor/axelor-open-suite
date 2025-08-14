@@ -121,13 +121,13 @@
       <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
       <field name="expenseProduct.blockExpenseTax" hidden="true"/>
     </panel>
-
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       showIf="expense.statusSelect >= 3">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
+        onSelect="action-expense-line-method-set-domain-analytic-distribution-template"
         onChange="action-expense-line-method-create-distribution"/>
       <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
         grid-view="analytic-move-line-distribution-grid"
@@ -366,4 +366,9 @@
       method="checkJustificationFile"/>
   </action-method>
 
+  <action-method
+    name="action-expense-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 </object-views>

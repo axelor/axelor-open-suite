@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.hr.web.expense;
 
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
@@ -40,6 +43,28 @@ public class ExpenseLineController {
       response.setInfo(
           I18n.get(
               HumanResourceExceptionMessage.EXPENSE_LINE_JUSTIFICATION_FILE_NOT_CORRECT_FORMAT));
+    }
+  }
+
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+      Expense expense =
+          request.getContext().getParent() != null
+              ? request.getContext().getParent().asType(Expense.class)
+              : null;
+
+      if (expense != null) {
+        response.setAttr(
+            "analyticDistributionTemplate",
+            "domain",
+            Beans.get(AnalyticAttrsService.class)
+                .getAnalyticDistributionTemplateDomain(
+                    null, expenseLine.getExpenseProduct(), expense.getCompany(), null, null, true));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
