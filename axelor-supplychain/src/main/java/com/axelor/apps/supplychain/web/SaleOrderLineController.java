@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -27,6 +28,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -37,7 +39,6 @@ import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDomainSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
@@ -427,16 +428,24 @@ public class SaleOrderLineController {
         .saleSupplySelectOnChangeCheck(saleOrderLine, saleOrder);
   }
 
-  public void getAnalyticDistributionTemplateDomain(
-      ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void getAnalyticDistributionTemplateDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
+
     response.setAttr(
         "analyticDistributionTemplate",
         "domain",
-        Beans.get(SaleOrderLineDomainSupplychainService.class)
-            .getAnalyticDistributionTemplateDomain(saleOrder));
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                saleOrderLine.getSupplierPartner(),
+                saleOrderLine.getProduct(),
+                saleOrder.getCompany(),
+                saleOrder.getTradingName(),
+                null,
+                false));
   }
 
   public void setDistributionLineReadonly(ActionRequest request, ActionResponse response) {

@@ -574,7 +574,7 @@ public class MoveLineController {
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class)
-              .getAnalyticDistributionTemplateOnSelectAttrsMap(move));
+              .getAnalyticDistributionTemplateOnSelectAttrsMap(move, moveLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
