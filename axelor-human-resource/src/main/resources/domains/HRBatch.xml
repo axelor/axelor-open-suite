@@ -61,9 +61,8 @@
     <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason"
       title="Leave reason"/>
     <integer name="startOnSelect" title="Start On" selection="hr.start.on.select"
-      required="true" default="1"/>
-    <integer name="endOnSelect" title="End On" selection="hr.start.on.select"
-      required="true" default="2"/>
+      default="1"/>
+    <integer name="endOnSelect" title="End On" selection="hr.start.on.select" default="2"/>
 
     <extra-code><![CDATA[
 
