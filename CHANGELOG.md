@@ -1,3 +1,10 @@
+## [6.5.51] (2025-08-14)
+
+### Fixes
+#### Account
+
+* Fixed an issue where imported fixed assets did not calculate depreciation correctly when using prorata temporis
+
 ## [6.5.50] (2025-02-06)
 
 ### Fixes
@@ -1628,6 +1635,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.51]: https://github.com/axelor/axelor-open-suite/compare/v6.5.50...v6.5.51
 [6.5.50]: https://github.com/axelor/axelor-open-suite/compare/v6.5.49...v6.5.50
 [6.5.49]: https://github.com/axelor/axelor-open-suite/compare/v6.5.48...v6.5.49
 [6.5.48]: https://github.com/axelor/axelor-open-suite/compare/v6.5.47...v6.5.48

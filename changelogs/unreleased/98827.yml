@@ -1,3 +1,0 @@
----
-title: Fixed an issue where imported fixed assets did not calculate depreciation correctly when using prorata temporis
-module: axelor-account
