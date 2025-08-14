@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -36,10 +37,12 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -84,17 +87,27 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     List<Partner> outsourcePartners = getOutsourcePartnersForGenerationPO(manufOrder);
 
     List<PurchaseOrder> generatedPurchaseOrders = new ArrayList<>();
+    Company company = manufOrder.getCompany();
+    LocalDate todayDate = appBaseService.getTodayDate(company);
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
+    StockLocation stockLocation = null;
+    if (company != null && company.getStockConfig() != null) {
+      stockLocation = stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig);
+    }
+    StockLocation outsourcingStockLocation =
+        stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig);
+    String manufOrderSeq = manufOrder.getManufOrderSeq();
     for (Partner outsourcePartner : outsourcePartners) {
       PurchaseOrder purchaseOrder =
           purchaseOrderCreateService.createPurchaseOrder(
               null,
-              manufOrder.getCompany(),
+              company,
               null,
               null,
               null,
-              manufOrder.getManufOrderSeq(),
+              manufOrderSeq,
               null,
-              null,
+              todayDate,
               null,
               outsourcePartner,
               null);
@@ -102,14 +115,8 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       purchaseOrder.setOutsourcingOrder(true);
       purchaseOrder.setTypeSelect(PurchaseOrderRepository.TYPE_SUBCONTRACTING);
       purchaseOrder.setFiscalPosition(outsourcePartner.getFiscalPosition());
-      StockConfig stockConfig =
-          stockConfigProductionService.getStockConfig(manufOrder.getCompany());
-      if (manufOrder.getCompany() != null && manufOrder.getCompany().getStockConfig() != null) {
-        purchaseOrder.setStockLocation(
-            stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig));
-      }
-      purchaseOrder.setFromStockLocation(
-          stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig));
+      purchaseOrder.setStockLocation(stockLocation);
+      purchaseOrder.setFromStockLocation(outsourcingStockLocation);
 
       this.setPurchaseOrderSupplierDetails(purchaseOrder);
 

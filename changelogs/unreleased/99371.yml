@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed an issue where the purchase order date was not set when generated automatically during planning."
+module: axelor-production
