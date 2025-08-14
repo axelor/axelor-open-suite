@@ -202,6 +202,7 @@
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form"
           onChange="action-invoice-line-group-analytic-distribution-template-onchange"
+          onSelect="action-invoice-line-method-set-domain-analytic-distribution-template"
           readonlyIf="!account || !account.analyticDistributionAuthorized"
           requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
@@ -571,6 +572,12 @@
 
   <action-method name="action-invoice-line-method-compute-tax-line-set-on-select">
     <call class="com.axelor.apps.account.web.InvoiceLineController" method="onSelectTaxLineSet"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
