@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -522,5 +523,25 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void getAnalyticDistributionTemplateDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                saleOrderLine.getSupplierPartner(),
+                saleOrderLine.getProduct(),
+                saleOrder.getCompany(),
+                saleOrder.getTradingName(),
+                null,
+                false));
   }
 }

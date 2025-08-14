@@ -608,4 +608,27 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = getInvoice(context);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomain(
+                  invoice.getPartner(),
+                  invoiceLine.getProduct(),
+                  invoice.getCompany(),
+                  invoice.getTradingName(),
+                  null,
+                  InvoiceToolService.isPurchase(invoice)));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
