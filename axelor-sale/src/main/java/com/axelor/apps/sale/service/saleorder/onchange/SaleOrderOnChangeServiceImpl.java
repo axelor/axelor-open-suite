@@ -112,6 +112,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(saleOrderBankDetailsService.getBankDetails(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
     values.putAll(resetTradingName(saleOrder));
+    values.putAll(getInAti(saleOrder));
     return values;
   }
 
@@ -255,6 +256,9 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       saleOrder.setPrintingSettings(company.getPrintingSettings());
       values.put("printingSettings", saleOrder.getPrintingSettings());
 
+      saleOrder.setCurrency(company.getCurrency());
+      values.put("currency", saleOrder.getCurrency());
+
       saleOrder.setCreationDate(appBaseService.getTodayDate(company));
       values.put("creationDate", saleOrder.getCreationDate());
     }
@@ -270,6 +274,13 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       values.put("tradingName", saleOrder.getTradingName());
     }
 
+    return values;
+  }
+
+  protected Map<String, Object> getInAti(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    saleOrder.setInAti(saleOrderService.getInAti(saleOrder, saleOrder.getCompany()));
+    values.put("inAti", saleOrder.getInAti());
     return values;
   }
 }

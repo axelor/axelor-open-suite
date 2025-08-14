@@ -204,8 +204,7 @@ public class BudgetDistributionController {
   @ErrorException
   public void resetBudgetDistributionList(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    if (Arrays.asList(
-            InvoiceLine.class, MoveLine.class, PurchaseOrderLine.class, SaleOrderLine.class)
+    if (Arrays.asList(InvoiceLine.class, PurchaseOrderLine.class, SaleOrderLine.class)
         .contains(request.getContext().getContextClass())) {
       response.setValue("budgetDistributionList", new ArrayList<>());
     }
