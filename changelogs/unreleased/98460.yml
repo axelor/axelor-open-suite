@@ -1,5 +1,0 @@
----
-title: "Closure assistant : fixed outrun of year computation doesn't take into account all accountTypes."
-module: axelor-account
-developer: |
-  Changed the AccountService.computeBalance method parameter. Now using a list of account types instead of an account type.

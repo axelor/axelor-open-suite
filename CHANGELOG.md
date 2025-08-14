@@ -1,3 +1,45 @@
+## [7.2.46] (2025-08-14)
+
+### Fixes
+#### Account
+
+* Fixed an issue where imported fixed assets did not calculate depreciation correctly when using prorata temporis
+* Closure assistant : fixed outrun of year computation doesn't take into account all accountTypes.
+* Account management: fixed interbank code issue on 'Direct Debit' payment mode.
+* ANALYTICDISTRIBUTIONTEMPLATE : duplicated templates shouldn't be visible
+
+#### Business Project
+
+* PurchaseOrder : fixed technical error when saving a project or a business project on a purchase order.
+
+#### Human Resource
+
+* Expense: fixed display cancel button in form view.
+
+#### Stock
+
+* Product: fixed unit conversion for 'Stock history' chart.
+
+#### Supply Chain
+
+* Sale order: fixed stock location on change of company.
+
+
+### Developer
+
+#### Account
+
+Changed the AccountService.computeBalance method parameter. Now using a list of account types instead of an account type.
+
+---
+
+Added AnalyticDistributionTemplateRepository and AnalyticMoveLineService in AnalyticAttrsServiceImpl.
+Added AnalyticAttrsService in MoveLineAttrsServiceImpl.
+Added parameter 'moveline' in MoveLineAttrsServiceImpl.addAnalyticDistributionTemplateDomain.
+Added parameter 'moveLine' in MoveLineGroupServiceImpl.getAnalyticDistributionTemplateOnSelectAttrsMap.
+
+DELETE FROM meta_action WHERE name LIKE 'action-purchase-order-line-attrs-set-domain-analytic-distribution-template';
+
 ## [7.2.45] (2025-07-31)
 
 ### Fixes
@@ -1952,6 +1994,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.46]: https://github.com/axelor/axelor-open-suite/compare/v7.2.45...v7.2.46
 [7.2.45]: https://github.com/axelor/axelor-open-suite/compare/v7.2.44...v7.2.45
 [7.2.44]: https://github.com/axelor/axelor-open-suite/compare/v7.2.43...v7.2.44
 [7.2.43]: https://github.com/axelor/axelor-open-suite/compare/v7.2.42...v7.2.43
