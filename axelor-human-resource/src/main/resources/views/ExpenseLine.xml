@@ -163,13 +163,13 @@
       <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
         onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
     </panel>
-
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       showIf="expense.statusSelect >= 3">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
+        onSelect="action-expense-line-method-set-domain-analytic-distribution-template"
         onChange="action-expense-line-method-create-distribution"/>
       <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
         grid-view="analytic-move-line-distribution-grid"
@@ -502,5 +502,11 @@
     <action name="action-expense-line-attrs-fill-arrival-from-site"/>
     <action name="action-kilometric-allowance-method-compute-distance"/>
   </action-group>
+
+  <action-method
+    name="action-expense-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>
