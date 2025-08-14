@@ -1,3 +1,85 @@
+## [8.1.28] (2025-08-14)
+
+### Fixes
+#### Base
+
+* Price list line: fixed the display issue with the 'Amount' title.
+* Data Backup: fixed translations and added help for some fields.
+
+#### Account
+
+* Closure assistant : fixed outrun of year computation doesn't take into account all accountTypes.
+* Account management: fixed interbank code issue on 'Direct Debit' payment mode.
+* Accounting report: fixed the issue related to amount in Analytic general ledger report.
+* ANALYTICDISTRIBUTIONTEMPLATE : duplicated templates shouldn't be visible
+
+#### Bank Payment
+
+* Bank statement: fixed demo data to get dynamic dates and corrected interbank code.
+
+#### Business Project
+
+* PurchaseOrder : fixed technical error when saving a project or a business project on a purchase order.
+
+#### Human Resource
+
+* Issue on Windows when we try to build the AOS project.
+* Timesheet: fixed error when generating lines from planning with custom time units
+
+#### Stock
+
+* Product: fixed 'Stock history' chart.
+* Inventory: fixed missing parameter for inventory birt template.
+* STOCK/LOGISTICALFORM : Fix html column headers titles on line grid
+
+#### Supply Chain
+
+* Sale order: fixed stock location on change of company.
+* Sale / Purchase / Stock: fixed some views where quantity and price decimal config wasn't being used.
+
+#### Intervention
+
+* Equipment: removed the default value on 'customerWarrantyOnPartEndDate' to keep it empty on new.
+
+
+### Developer
+
+#### Base
+
+Migration script -
+
+```
+UPDATE meta_field
+SET label = 'Relative dates',
+description = 'Allows exporting dates by calculating the difference with the export date. During import, the data will be updated based on the import date and the previously saved offset.'
+WHERE name = 'isRelativeDate' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Batch size used when reading data. Allows you to optimize performance based on database volume.'
+WHERE name = 'fetchLimit' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+
+UPDATE meta_field
+SET description = 'Can be used in order to keep a fixed reference to update the current existing database. Not required for loading into another database.'
+WHERE name = 'updateImportId' AND meta_model IN (SELECT id FROM meta_model WHERE name = 'DataBackup');
+```
+
+#### Account
+
+Changed the AccountService.computeBalance method parameter. Now using a list of account types instead of an account type.
+
+---
+
+Added AnalyticDistributionTemplateRepository and AnalyticMoveLineService in AnalyticAttrsServiceImpl.
+Added AnalyticAttrsService in MoveLineAttrsServiceImpl.
+Added parameter 'moveline' in MoveLineAttrsServiceImpl.addAnalyticDistributionTemplateDomain.
+Added parameter 'moveLine' in MoveLineGroupServiceImpl.getAnalyticDistributionTemplateOnSelectAttrsMap.
+
+DELETE FROM meta_action WHERE name LIKE 'action-purchase-order-line-attrs-set-domain-analytic-distribution-template';
+
+#### Human Resource
+
+`TimesheetProjectPlanningTimeServiceImpl` now has two new constructor parameters to support `UnitConversions`.
+
 ## [8.1.27] (2025-06-26)
 
 ### Fixes
@@ -1581,6 +1663,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.28]: https://github.com/axelor/axelor-open-suite/compare/v8.1.27...v8.1.28
 [8.1.27]: https://github.com/axelor/axelor-open-suite/compare/v8.1.26...v8.1.27
 [8.1.26]: https://github.com/axelor/axelor-open-suite/compare/v8.1.25...v8.1.26
 [8.1.25]: https://github.com/axelor/axelor-open-suite/compare/v8.1.24...v8.1.25

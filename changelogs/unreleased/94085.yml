@@ -1,3 +1,0 @@
----
-title: "Equipment: removed the default value on 'customerWarrantyOnPartEndDate' to keep it empty on new."
-module: axelor-intervention
