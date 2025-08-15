@@ -19,18 +19,20 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.sale.db.ComplementaryProduct;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
@@ -175,15 +177,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
     }
 
-    BigDecimal conversionRate = BigDecimal.valueOf(1.00);
-    if (pack.getCurrency() != null
-        && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
-      conversionRate =
-          Beans.get(CurrencyConversionFactory.class)
-              .getCurrencyConversionService()
-              .convert(pack.getCurrency(), saleOrder.getCurrency());
-    }
-
     if (Boolean.FALSE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
       if (saleOrderLinePackService.getPackLineTypes(packLineList) == null
           || !saleOrderLinePackService
@@ -207,7 +200,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
       soLine =
           saleOrderLineCreateService.createSaleOrderLine(
-              packLine, saleOrder, packQty, conversionRate, ++sequence);
+              packLine, saleOrder, packQty, BigDecimal.ONE, ++sequence);
       if (soLine != null) {
         soLine.setSaleOrder(saleOrder);
         soLines.add(soLine);
@@ -367,5 +360,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrder);
       }
     }
+  }
+
+  @Override
+  public boolean getInAti(SaleOrder saleOrder, Company company) throws AxelorException {
+    if (company == null) {
+      return false;
+    }
+    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
+    int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
+    return saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
+        || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
   }
 }

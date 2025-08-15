@@ -18,17 +18,24 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.common.ObjectUtils;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +52,8 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
   protected AnalyticLineService analyticLineService;
   protected AnalyticToolService analyticToolService;
   protected AnalyticAccountService analyticAccountService;
+  protected AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository;
+  protected AnalyticMoveLineService analyticMoveLineService;
 
   @Inject
   public AnalyticAttrsServiceImpl(
@@ -52,12 +61,16 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AnalyticLineService analyticLineService,
       AnalyticToolService analyticToolService,
-      AnalyticAccountService analyticAccountService) {
+      AnalyticAccountService analyticAccountService,
+      AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository,
+      AnalyticMoveLineService analyticMoveLineService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticLineService = analyticLineService;
     this.analyticToolService = analyticToolService;
     this.analyticAccountService = analyticAccountService;
+    this.analyticDistributionTemplateRepository = analyticDistributionTemplateRepository;
+    this.analyticMoveLineService = analyticMoveLineService;
   }
 
   protected void addAttr(
@@ -154,5 +167,30 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         }
       }
     }
+  }
+
+  @Override
+  public String getAnalyticDistributionTemplateDomain(
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Account account,
+      boolean isPurchase)
+      throws AxelorException {
+    if (company == null) {
+      return "self.id IN (0)";
+    }
+
+    List<AnalyticDistributionTemplate> analyticDistributionTemplateList =
+        analyticDistributionTemplateRepository
+            .all()
+            .filter("self.company.id = ?1 AND self.isSpecific ='false'", company.getId())
+            .fetch();
+    analyticDistributionTemplateList.add(
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            partner, product, company, tradingName, account, isPurchase));
+
+    return "self.id IN (" + StringHelper.getIdListString(analyticDistributionTemplateList) + ")";
   }
 }

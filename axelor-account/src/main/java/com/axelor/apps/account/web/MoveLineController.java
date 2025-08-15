@@ -574,7 +574,7 @@ public class MoveLineController {
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class)
-              .getAnalyticDistributionTemplateOnSelectAttrsMap(move));
+              .getAnalyticDistributionTemplateOnSelectAttrsMap(move, moveLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -681,6 +681,19 @@ public class MoveLineController {
       response.setAttrs(moveLineGroupService.getAnalyticMoveLineOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void computeInvoiceTermsDueDates(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    try {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      invoiceTermService.computeInvoiceTermsDueDates(moveLine, move);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -79,7 +79,7 @@
     <column name="newBtn" type="button"/>
     <column name="deleteBtn" type="button"/>
     <node model="com.axelor.apps.intervention.db.Equipment"
-      onClick="action-equipment-view-equipment-from-tree">
+      onClick="action-equipment-view-equipment-from-tree" domain="self.parentEquipment is null">
       <field as="sequence" name="sequence"/>
       <field as="partner" name="partner"/>
       <field as="code" name="code"/>

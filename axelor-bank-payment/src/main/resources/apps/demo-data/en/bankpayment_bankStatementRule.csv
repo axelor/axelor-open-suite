@@ -1,14 +1,14 @@
 "importId";"accountManagement.importId";"ruleTypeSelect";"partner.importId";"counterpartAccount.code";"bankStatementQuery.importId";"searchLabel";"entryOriginComputation";"entryDescriptionComputation";"moveLineBankStatementQuery.importId";"letterToInvoice";"partnerFetchMethodSelect"
-10;25;0;20;"401100";10;"CHEQUE";;;;;
-20;27;0;20;"401100";11;"DEC_AUTRES";;;;;
-30;24;0;20;"401100";12;"DEC_CB";;;;;
-40;25;0;20;"401100";13;"DEC_CHEQUE";;;;;
-50;21;0;20;"401100";30;"2456525";"Spl. I. $reference";"${def lines = name.split('\n');;;;
-(lines.size() > 0 ? lines[0] : '') + (lines.size() > 1 ? ' ' + lines[1] : '') + (lines.size() > 3 ? ' - Contract N°' + lines[3] : '')}"
-60;12;0;20;"401100";31;"ENC_Autres";;;;;
-70;16;0;20;"401100";32;"ENC_CB";;;;;
-80;17;0;20;"401100";20;"ENC_CHQ";;;;;
-90;18;0;20;"401100";21;"ENC_WEB";;;;;
-100;13;0;20;"401100";22;"ENC_PRE";;;;;
-110;19;0;20;"401100";11;"ENC_VIR";;;;;
+10;25;0;20;"401100";10;"CHEQUE";;;;;1
+20;27;0;20;"401100";11;"DEC_AUTRES";;;;;1
+30;24;0;20;"401100";12;"DEC_CB";;;;;1
+40;25;0;20;"401100";13;"DEC_CHEQUE";;;;;1
+50;21;0;20;"401100";30;"2456525";"Spl. I. $reference";"${def lines = name.split('\n');
+(lines.size() > 0 ? lines[0] : '') + (lines.size() > 1 ? ' ' + lines[1] : '') + (lines.size() > 3 ? ' - Contract N°' + lines[3] : '')}";;;1
+60;12;0;20;"401100";31;"ENC_Autres";;;;;1
+70;16;0;20;"401100";32;"ENC_CB";;;;;1
+80;17;0;20;"401100";20;"ENC_CHQ";;;;;1
+90;18;0;20;"401100";21;"ENC_WEB";;;;;1
+100;13;0;20;"401100";22;"ENC_PRE";;;;;1
+110;19;0;20;"401100";11;"ENC_VIR";;;;;1
 120;21;3;;;;;;;48;true;3

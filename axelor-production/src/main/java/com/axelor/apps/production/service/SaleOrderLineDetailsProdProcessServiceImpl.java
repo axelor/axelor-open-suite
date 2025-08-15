@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineDetailsProdProcessServiceImpl
     implements SaleOrderLineDetailsProdProcessService {
@@ -64,15 +63,6 @@ public class SaleOrderLineDetailsProdProcessServiceImpl
       return List.of();
     }
     Objects.requireNonNull(prodProcess);
-    List<SaleOrderLineDetails> originSaleOrderLineDetailsList =
-        saleOrderLine.getSaleOrderLineDetailsList();
-
-    if (CollectionUtils.isNotEmpty(originSaleOrderLineDetailsList)) {
-      originSaleOrderLineDetailsList.removeAll(
-          originSaleOrderLineDetailsList.stream()
-              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
-              .collect(Collectors.toList()));
-    }
 
     var saleOrderLinesDetailsList = new ArrayList<SaleOrderLineDetails>();
 
@@ -86,5 +76,20 @@ public class SaleOrderLineDetailsProdProcessServiceImpl
     }
 
     return saleOrderLinesDetailsList;
+  }
+
+  @Override
+  public List<SaleOrderLineDetails> getUpdatedSaleOrderLineDetailsFromProdProcess(
+      ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+
+    List<SaleOrderLineDetails> componentSolDetailsLineList =
+        saleOrderLine.getSaleOrderLineDetailsList().stream()
+            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT)
+            .collect(Collectors.toList());
+    List<SaleOrderLineDetails> updatedSolDetailsLineList =
+        createSaleOrderLineDetailsFromProdProcess(prodProcess, saleOrder, saleOrderLine);
+    updatedSolDetailsLineList.addAll(componentSolDetailsLineList);
+    return updatedSolDetailsLineList;
   }
 }

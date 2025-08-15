@@ -440,10 +440,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
   @Override
   public Map<String, Map<String, Object>> getAnalyticDistributionTemplateOnSelectAttrsMap(
-      Move move) {
+      Move move, MoveLine moveLine) throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveLineAttrsService.addAnalyticDistributionTemplateDomain(move, attrsMap);
+    moveLineAttrsService.addAnalyticDistributionTemplateDomain(move, moveLine, attrsMap);
 
     return attrsMap;
   }

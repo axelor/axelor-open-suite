@@ -34,4 +34,8 @@ public interface SaleOrderLineDetailsProdProcessService {
   void addSaleOrderLineDetailsFromProdProcess(
       ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
+
+  List<SaleOrderLineDetails> getUpdatedSaleOrderLineDetailsFromProdProcess(
+      ProdProcess prodProcess, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }
