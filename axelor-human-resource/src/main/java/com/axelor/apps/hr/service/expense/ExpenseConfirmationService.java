@@ -21,14 +21,11 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.message.db.Message;
-import java.io.IOException;
-import wslite.json.JSONException;
 
 public interface ExpenseConfirmationService {
   public void confirm(Expense expense) throws AxelorException;
 
-  public Message sendConfirmationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+  public Message sendConfirmationEmail(Expense expense) throws AxelorException;
 
   boolean checkAllLineHaveFile(Expense expense);
 }
