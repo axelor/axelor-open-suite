@@ -212,8 +212,9 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     PaymentMode paymentMode;
     Partner clientPartner = saleOrder.getClientPartner();
     Company company = saleOrder.getCompany();
-    if (clientPartner != null && clientPartner.getPaymentCondition() != null) {
-      paymentMode = clientPartner.getInPaymentMode();
+    PaymentMode inPaymentMode = clientPartner.getInPaymentMode();
+    if (clientPartner != null && inPaymentMode != null) {
+      paymentMode = inPaymentMode;
     } else {
       paymentMode = accountConfigService.getAccountConfig(company).getInPaymentMode();
     }
