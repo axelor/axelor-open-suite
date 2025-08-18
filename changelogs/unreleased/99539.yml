@@ -1,0 +1,3 @@
+---
+title: "SaleOrderOnChangeSupplychainServiceImpl: fixed wrong check on payment condition in get payment mode method."
+module: axelor-supplychain
