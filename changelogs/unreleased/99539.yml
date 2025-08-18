@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed wrong check on payment mode when changing partner."
+module: axelor-supplychain
