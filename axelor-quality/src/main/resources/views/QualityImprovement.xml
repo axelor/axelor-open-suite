@@ -84,6 +84,14 @@
                 onChange="action-quality-improvement-group-supplier-purchase-order-line-on-change"
                 domain="self.purchaseOrder = :supplierPurchaseOrder"/>
             </panel>
+            <panel name="controlPanel" title="Control" colSpan="12">
+              <field name="qualityControl" hideIf="$get('qi.type') == 2"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
+              <field name="controlEntry" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+            </panel>
             <panel title="Interne" name="intPanel" colSpan="12">
               <field name="detectedByInternal"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"
@@ -113,10 +121,6 @@
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="nonConformingQuantity" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="qualityControl" hideIf="$get('qi.type') == 2"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
             </panel>
             <panel name="hiddenPanel" hidden="true">
               <field name="qi"/>
