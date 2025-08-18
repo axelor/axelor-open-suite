@@ -36,15 +36,18 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
   protected BudgetLevelResetToolService budgetLevelResetToolService;
   protected BudgetResetToolService budgetResetToolService;
   protected CurrencyScaleService currencyScaleService;
+  protected GlobalBudgetToolsService globalBudgetToolsService;
 
   @Inject
   public GlobalBudgetResetToolServiceImpl(
       BudgetLevelResetToolService budgetLevelResetToolService,
       CurrencyScaleService currencyScaleService,
-      BudgetResetToolService budgetResetToolService) {
+      BudgetResetToolService budgetResetToolService,
+      GlobalBudgetToolsService globalBudgetToolsService) {
     this.budgetLevelResetToolService = budgetLevelResetToolService;
     this.currencyScaleService = currencyScaleService;
     this.budgetResetToolService = budgetResetToolService;
+    this.globalBudgetToolsService = globalBudgetToolsService;
   }
 
   public void resetGlobalBudget(GlobalBudget globalBudget) {
@@ -74,6 +77,24 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
       budgetLevelList.forEach(budgetLevelResetToolService::resetBudgetLevel);
     } else if (ObjectUtils.isEmpty(budgetList)) {
       budgetList.forEach(budgetResetToolService::resetBudget);
+    }
+  }
+
+  @Override
+  public void clearBudgetList(GlobalBudget globalBudget) {
+    if (globalBudget == null) {
+      return;
+    }
+
+    List<BudgetLevel> budgetLevelList = globalBudgetToolsService.getAllBudgetLevels(globalBudget);
+    if (ObjectUtils.isEmpty(budgetLevelList)) {
+      globalBudget.clearBudgetList();
+    } else if (ObjectUtils.notEmpty(globalBudget.getBudgetList())) {
+      for (Budget budget : globalBudget.getBudgetList()) {
+        if (!budgetLevelList.contains(budget.getBudgetLevel())) {
+          globalBudget.removeBudgetListItem(budget);
+        }
+      }
     }
   }
 }

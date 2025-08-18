@@ -1,0 +1,3 @@
+---
+title: "GlobalBudget: fixed the remove of budget level when it is containing budget"
+module: axelor-budget
