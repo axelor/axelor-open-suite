@@ -1,0 +1,15 @@
+---
+name: Construction
+code: construction
+typeSelect: others
+installOrder: 3060
+description: |
+   construction
+image: app-construction.png
+modules:
+   axelor-construction
+dependsOn:
+   - business-project
+   - budget
+sequence:
+   101
