@@ -102,10 +102,11 @@
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
-	<menuitem title="Timesheet editor" name="my-hr-root-timesheet-editor" action="my.hr.root.timesheet.editor" parent="my-hr-root" order="420"/>
-	<action-view name="my.hr.root.timesheet.editor" title="Timesheet editor">
-		<view type="html" name="hr/timesheet"/>
-	</action-view>
+  <menuitem title="Timesheet editor" name="my-hr-root-timesheet-editor"
+    action="my.hr.root.timesheet.editor" parent="my-hr-root" order="420"/>
+  <action-view name="my.hr.root.timesheet.editor" title="Timesheet editor">
+    <view type="html" name="hr/timesheet"/>
+  </action-view>
 
   <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="my-hr-root"
     action="time.sheet.timer" order="450"

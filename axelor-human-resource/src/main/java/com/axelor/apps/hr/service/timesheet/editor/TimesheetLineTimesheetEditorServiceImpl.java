@@ -29,8 +29,12 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.rest.dto.TimesheetLineCount;
 import com.axelor.apps.hr.rest.dto.TimesheetLineEditorResponse;
+import com.axelor.apps.hr.rest.dto.TimesheetLinePostRequest;
+import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursService;
@@ -45,8 +49,11 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseConstructor;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -54,6 +61,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.Response;
@@ -72,6 +80,8 @@ public class TimesheetLineTimesheetEditorServiceImpl
   protected LeaveRequestService leaveRequestService;
   protected LeaveRequestComputeLeaveDaysService leaveRequestComputeLeaveDaysService;
   protected LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService;
+  protected AllocationLineComputeService allocationLineComputeService;
+  protected AppHumanResourceService appHumanResourceService;
 
   @Inject
   public TimesheetLineTimesheetEditorServiceImpl(
@@ -85,7 +95,9 @@ public class TimesheetLineTimesheetEditorServiceImpl
       LeaveRequestService leaveRequestService,
       PublicHolidayService publicHolidayService,
       LeaveRequestComputeLeaveDaysService leaveRequestComputeLeaveDaysService,
-      LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService) {
+      LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService,
+      AllocationLineComputeService allocationLineComputeService,
+      AppHumanResourceService appHumanResourceService) {
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineCheckService = timesheetLineCheckService;
     this.timesheetLineCreateService = timesheetLineCreateService;
@@ -97,6 +109,8 @@ public class TimesheetLineTimesheetEditorServiceImpl
     this.publicHolidayService = publicHolidayService;
     this.leaveRequestComputeLeaveDaysService = leaveRequestComputeLeaveDaysService;
     this.leaveRequestComputeLeaveHoursService = leaveRequestComputeLeaveHoursService;
+    this.allocationLineComputeService = allocationLineComputeService;
+    this.appHumanResourceService = appHumanResourceService;
   }
 
   @Override
@@ -326,5 +340,63 @@ public class TimesheetLineTimesheetEditorServiceImpl
       }
     }
     return leaveDayCount.setScale(2, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public int updateToInvoice(TimesheetLinePostRequest timesheetLinePostRequest) {
+    int count = 0;
+
+    if (appHumanResourceService.getAppTimesheet().getEnableActivity()) {
+      Long timesheetId = timesheetLinePostRequest.getTimesheetId();
+      LocalDate date = timesheetLinePostRequest.getDate();
+
+      Preconditions.checkNotNull(
+          timesheetId,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_EDITOR_TIMESHEET_ID_IS_REQUIRED));
+      Preconditions.checkNotNull(
+          date, I18n.get(HumanResourceExceptionMessage.TIMESHEET_EDITOR_DATE_IS_REQUIRED));
+
+      Timesheet timesheet =
+          ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
+
+      Project project =
+          Optional.ofNullable(timesheetLinePostRequest.getProjectId())
+              .map(
+                  x ->
+                      ObjectFinder.find(
+                          Project.class,
+                          timesheetLinePostRequest.getProjectId(),
+                          ObjectFinder.NO_VERSION))
+              .orElse(null);
+
+      ProjectTask projectTask =
+          Optional.ofNullable(timesheetLinePostRequest.getProjectTaskId())
+              .map(
+                  x ->
+                      ObjectFinder.find(
+                          ProjectTask.class,
+                          timesheetLinePostRequest.getProjectTaskId(),
+                          ObjectFinder.NO_VERSION))
+              .orElse(null);
+
+      List<TimesheetLine> timesheetLineList =
+          timesheetLineService.getTimesheetLines(timesheet, date, project, projectTask);
+
+      boolean toInvoice = timesheetLinePostRequest.isToInvoice();
+
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        if (timesheetLine.getProduct() != null) {
+          updateTSLToInvoice(timesheetLine, toInvoice);
+          count++;
+        }
+      }
+    }
+
+    return count;
+  }
+
+  @Transactional
+  protected void updateTSLToInvoice(TimesheetLine timesheetLine, boolean toInvoice) {
+    timesheetLine.setToInvoice(toInvoice);
   }
 }
