@@ -36,4 +36,6 @@ public interface MoveLineInvoiceTermService {
   void recreateInvoiceTerms(Move move, MoveLine moveLine) throws AxelorException;
 
   void setDueDateFromInvoiceTerms(MoveLine moveLine);
+
+  void manageFinancialDiscount(Move move) throws AxelorException;
 }
