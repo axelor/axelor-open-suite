@@ -36,7 +36,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="lastReminderDate"/>
     <field name="lastReminderComments"/>
     <button name="printBtn" title="Print" icon="fa-print"
@@ -79,7 +79,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="deliveryState" if="__config__.app.isApp('supplychain')"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="salespersonUser"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
@@ -110,7 +110,7 @@
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -132,7 +132,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotalRemainingToOrder" aggregate="sum"
       x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -152,7 +152,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -1167,7 +1167,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
   </grid>
