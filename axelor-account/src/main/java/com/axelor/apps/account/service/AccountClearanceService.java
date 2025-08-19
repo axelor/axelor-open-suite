@@ -59,10 +59,10 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,11 +121,11 @@ public class AccountClearanceService {
     this.moveLineToolService = moveLineToolService;
   }
 
-  public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
+  protected List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
       throws AxelorException {
-
     Company company = accountClearance.getCompany();
 
+    this.testAccountClearanceFields(accountClearance);
     this.testCompanyField(company);
 
     List<? extends MoveLine> moveLineList =
@@ -139,7 +139,7 @@ public class AccountClearanceService {
                 MoveRepository.STATUS_ACCOUNTED,
                 MoveRepository.STATUS_DAYBOOK,
                 accountClearance.getAmountThreshold(),
-                company.getAccountConfig().getClearanceAccountSet(),
+                accountClearance.getClearanceAccountSet(),
                 accountClearance.getDateThreshold())
             .fetch();
 
@@ -151,7 +151,7 @@ public class AccountClearanceService {
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   public void setExcessPayment(AccountClearance accountClearance) throws AxelorException {
-    accountClearance.setMoveLineSet(new HashSet<MoveLine>());
+    accountClearance.setMoveLineSet(new HashSet<>());
     List<MoveLine> moveLineList = (List<MoveLine>) this.getExcessPayment(accountClearance);
     if (moveLineList != null && moveLineList.size() != 0) {
       accountClearance.getMoveLineSet().addAll(moveLineList);
@@ -162,31 +162,23 @@ public class AccountClearanceService {
   @Transactional(rollbackOn = {Exception.class})
   public void validateAccountClearance(AccountClearance accountClearance) throws AxelorException {
     Company company = accountClearance.getCompany();
-    AccountConfig accountConfig = company.getAccountConfig();
-
-    Tax tax = accountConfig.getStandardRateTax();
-    Account profitAccount = accountConfig.getProfitAccount();
-    Journal journal = accountConfig.getAccountClearanceJournal();
+    Tax tax = accountClearance.getStandardRateTax();
+    Account profitAccount = accountClearance.getProfitAccount();
+    Journal journal = company.getAccountConfig().getAccountClearanceJournal();
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
+      int vatSystemSelect;
       AccountingSituation accountingSituation =
           accountingSituationRepo.findByCompanyAndPartner(company, moveLine.getPartner());
 
-      if (accountingSituation == null
-          || accountingSituation.getVatSystemSelect() == null
-          || accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_SYSTEM_DEFAULT) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
-            moveLine.getPartner().getFullName(),
-            company.getCode());
+      try {
+        vatSystemSelect =
+            accountingSituationService.determineVatSystemSelect(accountingSituation, profitAccount);
+      } catch (AxelorException e) {
+        vatSystemSelect = accountClearance.getVatSystemSelect();
       }
-
-      int vatSystemSelect =
-          accountingSituationService.determineVatSystemSelect(accountingSituation, profitAccount);
 
       Account taxAccount =
           taxAccountService.getAccount(
@@ -222,7 +214,7 @@ public class AccountClearanceService {
     accountClearanceRepo.save(accountClearance);
   }
 
-  public Move createAccountClearanceMove(
+  protected Move createAccountClearanceMove(
       MoveLine moveLine,
       Tax tax,
       Account taxAccount,
@@ -328,22 +320,35 @@ public class AccountClearanceService {
     moveLine.setVatSystemSelect(vatSystemSelect);
   }
 
-  public AccountClearance createAccountClearance(
-      Company company,
-      String name,
-      BigDecimal amountThreshold,
-      LocalDate dateThreshold,
-      List<MoveLine> moveLineSet) {
-    AccountClearance accountClearance = new AccountClearance();
-    accountClearance.setAmountThreshold(amountThreshold);
-    accountClearance.setCompany(company);
-    accountClearance.setDateThreshold(dateThreshold);
-    accountClearance.getMoveLineSet().addAll(moveLineSet);
-    accountClearance.setName(name);
-    accountClearance.setDateTime(appBaseService.getTodayDateTime());
-    accountClearance.setUser(this.user);
-    accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
-    return accountClearance;
+  protected void testAccountClearanceFields(AccountClearance accountClearance)
+      throws AxelorException {
+    if (accountClearance.getProfitAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
+    }
+
+    if (accountClearance.getStandardRateTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
+    }
+
+    if (accountClearance.getVatSystemSelect() == AccountingSituationRepository.VAT_SYSTEM_DEFAULT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_7),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
+    }
+
+    if (CollectionUtils.isEmpty(accountClearance.getClearanceAccountSet())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
+    }
   }
 
   /**
@@ -352,7 +357,7 @@ public class AccountClearanceService {
    * @param company Une société
    * @throws AxelorException
    */
-  public void testCompanyField(Company company) throws AxelorException {
+  protected void testCompanyField(Company company) throws AxelorException {
 
     AccountConfig accountConfig = company.getAccountConfig();
 
@@ -360,31 +365,6 @@ public class AccountClearanceService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_1),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
-          company.getName());
-    }
-
-    if (accountConfig.getProfitAccount() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_2),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
-          company.getName());
-    }
-
-    if (accountConfig.getStandardRateTax() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_3),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
-          company.getName());
-    }
-
-    if (accountConfig.getClearanceAccountSet() == null
-        || accountConfig.getClearanceAccountSet().size() == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_4),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
