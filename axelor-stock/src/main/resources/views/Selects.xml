@@ -76,9 +76,9 @@
   </selection>
 
   <selection name="logistical.form.status.select">
-    <option value="1">Provision</option>
-    <option value="2">Carrier validated</option>
-    <option value="3">Collected</option>
+    <option value="1" color="blue">Provision</option>
+    <option value="2" color="green">Carrier validated</option>
+    <option value="3" color="purple">Collected</option>
   </selection>
 
   <selection name="logistical.form.account.to.carrier.select">
