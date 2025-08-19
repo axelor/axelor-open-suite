@@ -16,6 +16,7 @@
     <many-to-one name="expectedValue"
       ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Expected value"/>
     <string name="productComment" large="true" title="Comment"/>
+    <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"/>
 
   </entity>
 

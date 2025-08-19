@@ -570,6 +570,16 @@
         <panel-related field="hazardPhraseSet" colSpan="12"
           form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-grid" canSelect="true"
           title="Hazard phrases" showIf="isClp"/>
+        <panel title="Characteristics" name="characteristicsPanel" colSpan="12"
+          if="__config__.app.isApp('quality')">
+          <field name="density" x-scale="3"/>
+          <field name="isVoc"/>
+          <field name="vocValue" requiredIf="isVoc" x-scale="2"/>
+          <field name="carbonFootprint" x-scale="3"/>
+          <panel-related field="productCharacteristicSet"
+            form-view="product-characteristic-form" grid-view="product-characteristic-grid"
+            colSpan="12" canNew="true" domain="self.product.id = :id"/>
+        </panel>
       </panel>
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
 
