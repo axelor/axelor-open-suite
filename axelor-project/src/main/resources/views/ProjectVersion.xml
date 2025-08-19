@@ -6,7 +6,7 @@
   <grid name="project-version-grid" title="Project.version"
     model="com.axelor.apps.project.db.ProjectVersion">
     <field name="title"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="testingServerDate"/>
   </grid>
 
@@ -16,7 +16,7 @@
     onSave="action-project-version-method-check-if-project-or-version-conflicts">
     <panel name="mainPanel">
       <field name="title" required="true"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="testingServerDate"/>
       <field name="productionServerDate"/>
       <field name="content" widget="HTML" colSpan="12"/>

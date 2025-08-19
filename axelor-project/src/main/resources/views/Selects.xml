@@ -79,10 +79,10 @@
   </selection>
 
   <selection name="project.version.status.select">
-    <option value="1">On hold</option>
-    <option value="2">In progress</option>
-    <option value="3">In test</option>
-    <option value="4">In production</option>
+    <option value="1" color="yellow">On hold</option>
+    <option value="2" color="orange">In progress</option>
+    <option value="3" color="purple">In test</option>
+    <option value="4" color="green">In production</option>
   </selection>
 
   <selection name="project.sprint.management.select">
