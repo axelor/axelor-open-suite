@@ -215,7 +215,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
             && (move.getStatusSelect() == MoveRepository.STATUS_NEW
                 || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED))) {
       return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
-    } else if (move.getMoveLineList().stream()
+    } else if (CollectionUtils.isNotEmpty(move.getMoveLineList()) && move.getMoveLineList().stream()
         .anyMatch(
             ml -> {
               try {
