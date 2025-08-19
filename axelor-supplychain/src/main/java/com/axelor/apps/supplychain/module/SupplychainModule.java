@@ -273,6 +273,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainSer
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderDummySupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderGeneratorSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderGeneratorSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInitValueSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderIntercoService;
@@ -551,5 +552,7 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineViewServiceSupplychainImpl.class);
     bind(SaleOrderGeneratorServiceImpl.class).to(SaleOrderGeneratorSupplychainServiceImpl.class);
     bind(PartnerCreationServiceImpl.class).to(PartnerCreationServiceSupplychainImpl.class);
+    bind(SaleOrderGeneratorSupplychainService.class)
+        .to(SaleOrderGeneratorSupplychainServiceImpl.class);
   }
 }
