@@ -113,8 +113,8 @@
   </selection>
 
   <selection name="stock.correction.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
   <selection name="abc.analysis.type.select" id="stock.abc.analysis.type.select">
