@@ -156,11 +156,11 @@
   </selection>
 
   <selection name="production.order.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">Started</option>
-    <option value="4">Canceled</option>
-    <option value="5">Completed</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="purple">Planned</option>
+    <option value="3" color="green">Started</option>
+    <option value="4" color="red">Canceled</option>
+    <option value="5" color="teal">Completed</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="production.batch.batch.type.select">
