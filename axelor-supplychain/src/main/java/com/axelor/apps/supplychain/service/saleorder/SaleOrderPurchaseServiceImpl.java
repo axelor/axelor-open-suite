@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -35,11 +34,9 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -67,8 +64,6 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   protected AppBaseService appBaseService;
   protected PartnerPriceListService partnerPriceListService;
   protected SupplierCatalogService supplierCatalogService;
-  protected AppSupplychainService appSupplychainService;
-  protected IntercoService intercoService;
 
   @Inject
   public SaleOrderPurchaseServiceImpl(
@@ -80,9 +75,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       PurchaseConfigService purchaseConfigService,
       AppBaseService appBaseService,
       PartnerPriceListService partnerPriceListService,
-      SupplierCatalogService supplierCatalogService,
-      AppSupplychainService appSupplychainService,
-      IntercoService intercoService) {
+      SupplierCatalogService supplierCatalogService) {
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
     this.purchaseOrderCreateSupplychainService = purchaseOrderCreateSupplychainService;
     this.purchaseOrderLineServiceSupplychain = purchaseOrderLineServiceSupplychain;
@@ -92,8 +85,6 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     this.appBaseService = appBaseService;
     this.partnerPriceListService = partnerPriceListService;
     this.supplierCatalogService = supplierCatalogService;
-    this.appSupplychainService = appSupplychainService;
-    this.intercoService = intercoService;
   }
 
   @Override
@@ -200,12 +191,6 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       purchaseOrder.setInAti(true);
     } else {
       purchaseOrder.setInAti(false);
-    }
-
-    if (appSupplychainService.getAppSupplychain().getIntercoFromPurchase()) {
-      Company intercoCompany = intercoService.findIntercoCompany(supplierPartner);
-      boolean isInterco = intercoCompany != null;
-      purchaseOrder.setInterco(isInterco);
     }
 
     purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
