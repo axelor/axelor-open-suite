@@ -25,9 +25,12 @@ import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.rest.dto.TimesheetLineCount;
 import com.axelor.apps.hr.rest.dto.TimesheetLineEditorResponse;
+import com.axelor.apps.hr.rest.dto.TimesheetLinePostRequest;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
@@ -38,14 +41,18 @@ import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseConstructor;
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.core.Response;
@@ -61,6 +68,7 @@ public class TimesheetLineTimesheetEditorServiceImpl
   protected TimesheetPeriodComputationService timesheetPeriodComputationService;
   protected WeeklyPlanningService weeklyPlanningService;
   protected AllocationLineComputeService allocationLineComputeService;
+  protected AppHumanResourceService appHumanResourceService;
 
   @Inject
   public TimesheetLineTimesheetEditorServiceImpl(
@@ -71,7 +79,8 @@ public class TimesheetLineTimesheetEditorServiceImpl
       TimesheetLineRemoveService timesheetLineRemoveService,
       TimesheetPeriodComputationService timesheetPeriodComputationService,
       WeeklyPlanningService weeklyPlanningService,
-      AllocationLineComputeService allocationLineComputeService) {
+      AllocationLineComputeService allocationLineComputeService,
+      AppHumanResourceService appHumanResourceService) {
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineCheckService = timesheetLineCheckService;
     this.timesheetLineCreateService = timesheetLineCreateService;
@@ -80,6 +89,7 @@ public class TimesheetLineTimesheetEditorServiceImpl
     this.timesheetPeriodComputationService = timesheetPeriodComputationService;
     this.weeklyPlanningService = weeklyPlanningService;
     this.allocationLineComputeService = allocationLineComputeService;
+    this.appHumanResourceService = appHumanResourceService;
   }
 
   @Override
@@ -260,5 +270,63 @@ public class TimesheetLineTimesheetEditorServiceImpl
             weeklyPlanningDuration,
             weeklyPlanningHoursDuration,
             leavesDuration));
+  }
+
+  @Override
+  public int updateToInvoice(TimesheetLinePostRequest timesheetLinePostRequest) {
+    int count = 0;
+
+    if (appHumanResourceService.getAppTimesheet().getEnableActivity()) {
+      Long timesheetId = timesheetLinePostRequest.getTimesheetId();
+      LocalDate date = timesheetLinePostRequest.getDate();
+
+      Preconditions.checkNotNull(
+          timesheetId,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_EDITOR_TIMESHEET_ID_IS_REQUIRED));
+      Preconditions.checkNotNull(
+          date, I18n.get(HumanResourceExceptionMessage.TIMESHEET_EDITOR_DATE_IS_REQUIRED));
+
+      Timesheet timesheet =
+          ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
+
+      Project project =
+          Optional.ofNullable(timesheetLinePostRequest.getProjectId())
+              .map(
+                  x ->
+                      ObjectFinder.find(
+                          Project.class,
+                          timesheetLinePostRequest.getProjectId(),
+                          ObjectFinder.NO_VERSION))
+              .orElse(null);
+
+      ProjectTask projectTask =
+          Optional.ofNullable(timesheetLinePostRequest.getProjectTaskId())
+              .map(
+                  x ->
+                      ObjectFinder.find(
+                          ProjectTask.class,
+                          timesheetLinePostRequest.getProjectTaskId(),
+                          ObjectFinder.NO_VERSION))
+              .orElse(null);
+
+      List<TimesheetLine> timesheetLineList =
+          timesheetLineService.getTimesheetLines(timesheet, date, project, projectTask);
+
+      boolean toInvoice = timesheetLinePostRequest.isToInvoice();
+
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        if (timesheetLine.getProduct() != null) {
+          updateTSLToInvoice(timesheetLine, toInvoice);
+          count++;
+        }
+      }
+    }
+
+    return count;
+  }
+
+  @Transactional
+  protected void updateTSLToInvoice(TimesheetLine timesheetLine, boolean toInvoice) {
+    timesheetLine.setToInvoice(toInvoice);
   }
 }
