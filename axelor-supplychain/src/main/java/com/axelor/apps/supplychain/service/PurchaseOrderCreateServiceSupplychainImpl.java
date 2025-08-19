@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderTaxService;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -45,15 +46,20 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountConfigService accountConfigService;
+  protected final AppSupplychainService appSupplychainService;
+  protected final IntercoService intercoService;
 
   @Inject
   public PurchaseOrderCreateServiceSupplychainImpl(
       PurchaseConfigService purchaseConfigService,
+      AccountConfigService accountConfigService,
       PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
-      PurchaseOrderTaxService purchaseOrderTaxService,
-      AccountConfigService accountConfigService) {
-    super(purchaseConfigService, purchaseOrderTypeSelectService, purchaseOrderTaxService);
+      AppSupplychainService appSupplychainService,
+      IntercoService intercoService) {
+    super(purchaseConfigService, purchaseOrderTypeSelectService);
     this.accountConfigService = accountConfigService;
+    this.appSupplychainService = appSupplychainService;
+    this.intercoService = intercoService;
   }
 
   @Override
@@ -141,6 +147,12 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
     }
 
     purchaseOrder.setTradingName(tradingName);
+
+    if (appSupplychainService.getAppSupplychain().getIntercoFromPurchase()) {
+      Company intercoCompany = intercoService.findIntercoCompany(supplierPartner);
+      boolean isInterco = intercoCompany != null;
+      purchaseOrder.setInterco(isInterco);
+    }
 
     return purchaseOrder;
   }
