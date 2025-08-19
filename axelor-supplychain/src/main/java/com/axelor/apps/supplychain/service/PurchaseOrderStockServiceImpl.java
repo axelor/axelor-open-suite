@@ -41,11 +41,10 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -56,6 +55,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
@@ -95,6 +95,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected ProductCompanyService productCompanyService;
   protected TaxService taxService;
   protected AppStockService appStockService;
+  protected StockLocationFetchService stockLocationFetchService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -109,7 +110,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockConfigService stockConfigService,
       ProductCompanyService productCompanyService,
       TaxService taxService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      StockLocationFetchService stockLocationFetchService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -123,6 +125,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.productCompanyService = productCompanyService;
     this.taxService = taxService;
     this.appStockService = appStockService;
+    this.stockLocationFetchService = stockLocationFetchService;
   }
 
   /**
@@ -640,31 +643,40 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
-    String query =
-        "self.product.id = "
-            + productId
-            + " AND self.receiptState != "
-            + PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED
-            + " AND self.purchaseOrder.statusSelect IN ("
-            + statusListQuery
-            + ")";
-    if (companyId != 0L) {
-      query += " AND self.purchaseOrder.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        StockLocation stockLocation =
-            Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
-            Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
-          query +=
-              " AND self.purchaseOrder.stockLocation.id IN ("
-                  + StringHelper.getIdListString(stockLocationList)
-                  + ") ";
-        }
-      }
+
+    StringBuilder query = new StringBuilder();
+    query
+        .append("self.product.id = ")
+        .append(productId)
+        .append(" AND self.receiptState != ")
+        .append(PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
+        .append(" AND self.purchaseOrder.statusSelect IN (")
+        .append(statusListQuery)
+        .append(")");
+
+    if (companyId == 0L) {
+      return query.toString();
     }
-    return query;
+    query.append(" AND self.purchaseOrder.company.id = ").append(companyId);
+
+    StockLocation stockLocation = JPA.find(StockLocation.class, stockLocationId);
+    if (stockLocation == null || !stockLocation.getCompany().getId().equals(companyId)) {
+      return query.toString();
+    }
+
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllContentLocationAndSubLocation(stockLocationId);
+
+    if (CollectionUtils.isEmpty(stockLocationList)) {
+      return query.toString();
+    }
+
+    query.append(
+        stockLocationList.stream()
+            .map(String::valueOf)
+            .collect(
+                Collectors.joining(",", " AND self.purchaseOrder.stockLocation.id IN (", ")")));
+    return query.toString();
   }
 
   @Override

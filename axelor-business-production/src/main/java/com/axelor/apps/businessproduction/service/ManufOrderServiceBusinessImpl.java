@@ -43,6 +43,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.google.inject.Inject;
@@ -77,7 +78,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      StockLocationFetchService stockLocationFetchService) {
     super(
         sequenceService,
         operationOrderService,
@@ -97,7 +99,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         manufOrderOutgoingStockMoveService,
         manufOrderStockMoveService,
         manufOrderGetStockMoveService,
-        manufOrderCreateStockMoveLineService);
+        manufOrderCreateStockMoveLineService,
+        stockLocationFetchService);
   }
 
   @Transactional
