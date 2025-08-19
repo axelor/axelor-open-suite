@@ -202,6 +202,12 @@
         if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
         if-module="axelor-business-production"
         onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
+      <field name="timesheetProjectSet" colSpan="12"
+        domain=":user MEMBER OF self.membersUserSet" widget="TagSelect" canEdit="false"
+        canNew="false" form-view="project-form" grid-view="project-grid"/>
+      <field name="timesheetProjectTaskSet" colSpan="12"
+        domain="self.project IN :timesheetProjectSet" widget="TagSelect" canEdit="false"
+        canNew="false" form-view="project-task-form" grid-view="project-task-grid"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
 
@@ -475,6 +481,13 @@
           if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
           if-module="axelor-business-production"
           onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
+
+        <field name="timesheetProjectSet" colSpan="12"
+          domain=":user MEMBER OF self.membersUserSet" widget="TagSelect" canEdit="false"
+          canNew="false" form-view="project-form" grid-view="project-grid"/>
+        <field name="timesheetProjectTaskSet" colSpan="12"
+          domain="self.project IN :timesheetProjectSet" widget="TagSelect" canEdit="false"
+          canNew="false" form-view="project-task-form" grid-view="project-task-grid"/>
 
         <panel-dashlet name="employeeUserTimesheetsPanel"
           action="action-employee-view-user-timesheets" colSpan="12"/>
