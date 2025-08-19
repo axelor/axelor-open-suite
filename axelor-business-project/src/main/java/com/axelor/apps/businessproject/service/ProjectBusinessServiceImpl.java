@@ -24,6 +24,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -72,6 +74,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -249,18 +252,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     project.setCompany(projectTemplate.getCompany());
     if (projectTemplate.getIsBusinessProject()) {
-      project.setCurrency(clientPartner.getCurrency());
-      if (clientPartner.getPartnerAddressList() != null
-          && !clientPartner.getPartnerAddressList().isEmpty()) {
-        project.setCustomerAddress(
-            clientPartner.getPartnerAddressList().iterator().next().getAddress());
-      }
-      if (clientPartner.getSalePartnerPriceList() != null
-          && clientPartner.getSalePartnerPriceList().getPriceListSet() != null
-          && !clientPartner.getSalePartnerPriceList().getPriceListSet().isEmpty()) {
-        project.setPriceList(
-            clientPartner.getSalePartnerPriceList().getPriceListSet().iterator().next());
-      }
       project.setIsInvoicingExpenses(projectTemplate.getIsInvoicingExpenses());
       project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
       project.setInvoicingComment(projectTemplate.getInvoicingComment());
@@ -829,5 +820,23 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                         == 0)
         .map(ProjectTask::getName)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public void setPartnerData(Project project, Partner clientPartner) {
+    super.setPartnerData(project, clientPartner);
+    if (!appBusinessProjectService.isApp("business-project")) {
+      return;
+    }
+    project.setCurrency(clientPartner.getCurrency());
+    List<PartnerAddress> partnerAddressList = clientPartner.getPartnerAddressList();
+    if (CollectionUtils.isNotEmpty(partnerAddressList)) {
+      project.setCustomerAddress(partnerAddressList.iterator().next().getAddress());
+    }
+    PartnerPriceList salePartnerPriceList = clientPartner.getSalePartnerPriceList();
+    if (salePartnerPriceList != null
+        && CollectionUtils.isNotEmpty(salePartnerPriceList.getPriceListSet())) {
+      project.setPriceList(salePartnerPriceList.getPriceListSet().iterator().next());
+    }
   }
 }
