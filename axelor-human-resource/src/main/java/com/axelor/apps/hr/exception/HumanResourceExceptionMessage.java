@@ -450,4 +450,9 @@ public final class HumanResourceExceptionMessage {
       "There is already a project planning time in these dates." /*)*/;
   public static final String PROJECT_PLANNING_TIME_UPDATE = /*$$(*/
       "A project planning time already exists. Do you want to update it?" /*)*/;
+
+  // Timesheet editor
+  public static final String TIMESHEET_EDITOR_DATE_IS_REQUIRED = /*$$(*/ "Date is required!" /*)*/;
+  public static final String TIMESHEET_EDITOR_TIMESHEET_ID_IS_REQUIRED = /*$$(*/
+      "Timesheet id is required!" /*)*/;
 }

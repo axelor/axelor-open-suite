@@ -38,6 +38,7 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -192,5 +193,21 @@ public class TimesheetLineRestController {
 
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
     return Beans.get(TimesheetLineTimesheetEditorService.class).getTimesheetLineCount(timesheet);
+  }
+
+  @Operation(
+      summary = "Update toInvoice",
+      tags = {"Timesheet line"})
+  @Path("/update-to-invoice")
+  @POST
+  @HttpExceptionHandler
+  public Response updateToInvoice(TimesheetLinePostRequest timesheetLinePostRequest) {
+    new SecurityCheck().writeAccess(TimesheetLine.class);
+
+    int count =
+        Beans.get(TimesheetLineTimesheetEditorService.class)
+            .updateToInvoice(timesheetLinePostRequest);
+
+    return ResponseConstructor.build(Response.Status.OK, Map.of("count", count));
   }
 }
