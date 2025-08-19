@@ -57,8 +57,8 @@
   </selection>
 
   <selection name="quality.control.points.status.select">
-    <option value="1">On hold</option>
-    <option value="2">Done</option>
+    <option value="1" color="yellow">On hold</option>
+    <option value="2" color="green">Done</option>
   </selection>
 
   <selection name="quality.control.point.model.period">
