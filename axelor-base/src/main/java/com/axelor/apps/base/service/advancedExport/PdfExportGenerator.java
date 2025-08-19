@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
@@ -69,7 +70,11 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
   public void generateHeader() throws AxelorException {
     Font font = getFont(8);
     for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
-      PdfPCell cell = getHeaderCell(font, advancedExportLine.getTitle());
+      String header =
+          advancedExport.getUseTechnicalFieldName()
+              ? advancedExportLine.getTargetField()
+              : I18n.get(advancedExportLine.getTitle());
+      PdfPCell cell = getHeaderCell(font, header);
       table.addCell(cell);
     }
   }
