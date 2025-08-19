@@ -6,6 +6,7 @@
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="PlannedTimeValue" cacheable="true">
+    <integer name="sequence" title="Sequence"/>
     <string name="name" unique="true">
       <![CDATA[
 		        return plannedTime != null ? plannedTime.toString() : "";
