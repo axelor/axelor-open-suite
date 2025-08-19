@@ -55,7 +55,7 @@ public class AccountAccountRepository extends AccountRepository {
         if (account.getCompatibleAccountSet() != null) {
           for (Account acc : account.getCompatibleAccountSet()) {
             acc.removeCompatibleAccountSetItem(account);
-            if (acc.getCompatibleAccountSet().size() == 0) {
+            if (acc.getCompatibleAccountSet().isEmpty()) {
               acc.setReconcileOk(false);
             }
             JPA.save(acc);
