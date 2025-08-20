@@ -106,15 +106,17 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
   }
 
   @Override
-  public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+  public Message sendValidationEmail(Expense expense) throws AxelorException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
-    if (hrConfig.getExpenseMailNotification()) {
-
-      return templateMessageService.generateAndSendMessage(
-          expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
+    try {
+      if (hrConfig.getExpenseMailNotification()) {
+        return templateMessageService.generateAndSendMessage(
+            expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
+      }
+    } catch (JSONException | IOException | ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
     return null;
   }

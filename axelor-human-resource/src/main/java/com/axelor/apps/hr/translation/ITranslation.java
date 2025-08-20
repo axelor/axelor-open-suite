@@ -82,4 +82,7 @@ public interface ITranslation {
       "The total tax has been set to zero since the expense type blocks taxes."; /*)*/
 
   String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
+
+  public static final String EXPENSE_UPDATED_NO_MAIL = /*$$(*/
+      "Expense successfully updated. An error occurred while sending the mail." /*)*/;
 }

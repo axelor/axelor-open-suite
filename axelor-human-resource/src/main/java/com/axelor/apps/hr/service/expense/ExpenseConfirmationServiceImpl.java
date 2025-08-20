@@ -122,15 +122,17 @@ public class ExpenseConfirmationServiceImpl implements ExpenseConfirmationServic
   }
 
   @Override
-  public Message sendConfirmationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+  public Message sendConfirmationEmail(Expense expense) throws AxelorException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
-    if (hrConfig.getExpenseMailNotification()) {
-
-      return templateMessageService.generateAndSendMessage(
-          expense, hrConfigService.getSentExpenseTemplate(hrConfig));
+    try {
+      if (hrConfig.getExpenseMailNotification()) {
+        return templateMessageService.generateAndSendMessage(
+            expense, hrConfigService.getSentExpenseTemplate(hrConfig));
+      }
+    } catch (JSONException | IOException | ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
 
     return null;

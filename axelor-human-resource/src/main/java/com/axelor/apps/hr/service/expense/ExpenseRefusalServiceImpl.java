@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -72,15 +73,17 @@ public class ExpenseRefusalServiceImpl implements ExpenseRefusalService {
   }
 
   @Override
-  public Message sendRefusalEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+  public Message sendRefusalEmail(Expense expense) throws AxelorException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
-    if (hrConfig.getExpenseMailNotification()) {
-
-      return templateMessageService.generateAndSendMessage(
-          expense, hrConfigService.getRefusedExpenseTemplate(hrConfig));
+    try {
+      if (hrConfig.getExpenseMailNotification()) {
+        return templateMessageService.generateAndSendMessage(
+            expense, hrConfigService.getRefusedExpenseTemplate(hrConfig));
+      }
+    } catch (JSONException | IOException | ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
 
     return null;
