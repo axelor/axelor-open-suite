@@ -608,27 +608,7 @@
     <call class="com.axelor.apps.budget.web.BudgetLevelController" method="computeChildrenKey"/>
   </action-method>
 
-<<<<<<< HEAD
   <action-view name="action-view-budget-budget-level-export" title="Budget level export"
-=======
-  <action-method name="action-budget-level-method-validate">
-    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="validate"/>
-  </action-method>
-
-  <action-method name="action-budget-level-method-show-validate-fields">
-    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="showButtonFields"/>
-  </action-method>
-
-  <action-method name="action-budget-level-method-draft">
-    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="draft"/>
-  </action-method>
-
-  <action-method name="action-budget-level-change-compute-level-amounts">
-    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="computeLevelAmounts"/>
-  </action-method>
-
-  <action-view name="action-budget-view-budget-level" title="Sections"
->>>>>>> 3153a2d524 (99128 GlobalBudget/BudgetLevel/Budget : update amounts when updating budget lines values (#14783))
     model="com.axelor.apps.budget.db.BudgetLevel">
     <view type="form" name="budget-budget-level-export-wizard-form"/>
     <view-param name="popup" value="reload"/>
