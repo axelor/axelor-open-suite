@@ -217,26 +217,12 @@
           <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12"
             form-view="currency-form" grid-view="currency-grid"
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'saleCurrency'})"/>
+          <field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6"
+            form-view="unit-form" grid-view="unit-grid"
+            if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
           <field name="saleSupplySelect" colSpan="12"
             onChange="action-product-validate-sale-supply-select"
             hideIf="isShippingCostsProduct || !sellable"/>
-          <panel name="unitsPanel" title="Units" colSpan="12">
-            <field name="unit" canEdit="false" colSpan="6" form-view="unit-form"
-              grid-view="unit-grid" onChange="action-product-method-update-cost-price"
-              requiredIf="stockManaged"/>
-            <button name="updateUnitBtn" title="Update stock location" colSpan="6"
-              showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
-              onClick="save,action-product-method-update-stock-location" if-module="axelor-stock"
-              if="__config__.app.isApp('stock')"/>
-            <field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6"
-              form-view="unit-form" grid-view="unit-grid"
-              if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
-            <spacer colSpan="6"/>
-            <field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6"
-              form-view="unit-form" grid-view="unit-grid"
-              if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"
-              onChange="action-product-method-update-cost-price"/>
-          </panel>
           <panel name="configuratorPanel" title="Configurator" colSpan="12"
             showIf="configurator" if-module="axelor-sale"
             if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableConfigurator()">
@@ -283,6 +269,10 @@
           <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6"
             form-view="currency-form" grid-view="currency-grid"
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchaseCurrency'})"/>
+          <field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6"
+            form-view="unit-form" grid-view="unit-grid"
+            if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"
+            onChange="action-product-method-update-cost-price"/>
           <field name="lastPurchaseDate" showIf="purchasable" colSpan="6" readonly="true"/>
           <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'lastPurchasePrice'})"/>
@@ -334,10 +324,13 @@
         if="__config__.app.isApp('stock')">
         <panel name="procurementSettingsPanel" title="Procurement settings" colSpan="12"
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-          <field name="excludeFromMrp"
-            showIf="productTypeSelect == 'storable' &amp;&amp; stockManaged" colSpan="6"/>
           <field name="stockManaged"
             onChange="action-stock-product-record-stock-managed-onchange"/>
+          <field name="unit" canEdit="false" colSpan="6" form-view="unit-form"
+            grid-view="unit-grid" onChange="action-product-method-update-cost-price"
+            requiredIf="stockManaged"/>
+          <field name="excludeFromMrp"
+            showIf="productTypeSelect == 'storable' &amp;&amp; stockManaged" colSpan="6"/>
           <field name="mrpFamily"
             showIf="productTypeSelect == 'storable' &amp;&amp; !excludeFromMrp" colSpan="6"
             canNew="true"/>
@@ -357,6 +350,9 @@
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'controlOnReceipt'})"/>
           <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
             onClick="action-product-view-stock-move-line"/>
+          <button name="updateUnitBtn" title="Update stock location" colSpan="6"
+            showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
+            onClick="save,action-product-method-update-stock-location"/>
           <field name="avgPrice" hideIf="!stockManaged"
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
           <spacer name="avgPriceSpacer"/>
