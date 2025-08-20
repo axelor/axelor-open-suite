@@ -90,4 +90,11 @@ public class BudgetLevelController {
     boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(budgetLevel);
     response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
+
+  public void computeLevelAmounts(ActionRequest request, ActionResponse response) {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    Beans.get(BudgetLevelService.class).computeTotals(budgetLevel);
+    response.setValue("totalAmountExpected", budgetLevel.getTotalAmountExpected());
+    response.setValue("totalAmountAvailable", budgetLevel.getTotalAmountAvailable());
+  }
 }
