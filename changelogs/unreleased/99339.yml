@@ -1,6 +1,6 @@
 ---
 title: "TimesheetLine : Manage extra hours within the Timesheet lines."
-module: axelor-human-resource, axelor-business-project
+module: axelor-human-resource
 developer: |
   New fields have been added to the TimesheetLine domain
   Customize 'timesheet-line-timesheet-form' to add those new fields to the timesheetLine form
