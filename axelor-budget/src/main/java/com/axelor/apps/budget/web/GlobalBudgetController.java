@@ -177,9 +177,12 @@ public class GlobalBudgetController {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       globalBudget.setBudgetList(new ArrayList<>());
-      Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
-      response.setValues(globalBudget);
+      response.setValue("budgetList", globalBudget.getBudgetList());
     }
+
+    Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+    response.setValue("totalAmountExpected", globalBudget.getTotalAmountExpected());
+    response.setValue("totalAmountAvailable", globalBudget.getTotalAmountAvailable());
   }
 
   @ErrorException
@@ -275,5 +278,12 @@ public class GlobalBudgetController {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(globalBudget);
     response.setAttr("updateDatesBtn", "hidden", isHidden);
+  }
+
+  public void computeAmounts(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+    response.setValue("totalAmountExpected", globalBudget.getTotalAmountExpected());
+    response.setValue("totalAmountAvailable", globalBudget.getTotalAmountAvailable());
   }
 }
