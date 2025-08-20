@@ -1,0 +1,9 @@
+---
+title: "TimesheetLine : Manage extra hours within the Timesheet lines."
+module: axelor-human-resource, axelor-business-project
+developer: |
+  New fields have been added to the TimesheetLine domain
+  Customize 'timesheet-line-timesheet-form' to add those new fields to the timesheetLine form
+  Update the 'save' method of TimesheetHRRepository to copy the value of timesheetLine.adjustedOvertimeDuration into timesheetLine.durationForCustomer when saving the timesheet, only if timesheetLine.isExtraHours is true
+  Edit 'InvoicingProjectAnnex.rptdesign' to add another data set 'TimeSheetLines ExtraHours DS' that selects only timesheetLines with isExtraHours = true and display this data in a new table
+  Update the existed data set 'TimeSheetLines DS' to retrieve only timesheetLines with isExtraHours != true

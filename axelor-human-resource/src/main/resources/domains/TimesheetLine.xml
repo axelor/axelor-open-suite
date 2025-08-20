@@ -32,6 +32,10 @@
       title="Task"/>
     <many-to-one name="timer" ref="com.axelor.apps.hr.db.TSTimer" title="Timer"/>
     <boolean name="isAutomaticallyGenerated" title="Automatically generated"/>
+    <boolean name="isExtraHours" title="Extra Hours"/>
+    <time name="startTime" title="Start time"/>
+    <time name="endTime" title="End time"/>
+    <decimal name="adjustedOvertimeDuration" title="Adjusted Overtime Duration"/>
     <unique-constraint
       columns="timesheet,project,product,date,enableEditor,projectTask"/>
     <finder-method name="findByEmployeeProjectAndPeriod"

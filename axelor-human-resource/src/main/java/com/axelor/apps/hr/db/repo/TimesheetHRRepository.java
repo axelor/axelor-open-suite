@@ -46,6 +46,9 @@ public class TimesheetHRRepository extends TimesheetRepository {
     if (timesheet.getTimesheetLineList() != null) {
       for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
         timesheetLineComputeNameService.computeFullName(timesheetLine);
+        if (timesheetLine.getIsExtraHours()) {
+          timesheetLine.setDurationForCustomer(timesheetLine.getAdjustedOvertimeDuration());
+        }
       }
     }
 

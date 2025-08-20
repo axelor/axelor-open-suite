@@ -228,4 +228,6 @@ public interface ITranslation {
   public static final String INVOICE_EXPENSE_COMMENTS = /*$$(*/ "InvoiceExpense.comments"; /*)*/
   public static final String INVOICE_EXPENSE_EMPLOYEE = /*$$(*/ "InvoiceExpense.employee"; /*)*/
   public static final String GROUPING_PERIOD_WEEK = /*$$(*/ "week"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE__EXTRA_TIME_SPENT = /*$$(*/
+      "InvoicingProjectAnnex.extraTimeSpent"; /*)*/
 }
