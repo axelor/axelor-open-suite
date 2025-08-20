@@ -133,7 +133,8 @@
       <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Sections"
         form-view="budget-level-node-form" grid-view="budget-level-node-grid" colSpan="12"
         canEdit="globalBudget.statusSelect == 0" canNew="globalBudget.statusSelect == 0"
-        canRemove="globalBudget.statusSelect == 0" onChange="action-budget-level-change-compute-level-amounts"/>
+        canRemove="globalBudget.statusSelect == 0"
+        onChange="action-budget-level-change-compute-level-amounts"/>
     </panel>
   </form>
 
@@ -283,7 +284,8 @@
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy"
       readonlyIf="globalBudget.statusSelect &gt;= 1">
       <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Sections"
-        colSpan="12" form-view="budget-level-node-form" grid-view="budget-level-node-grid" onChange="action-budget-level-change-compute-level-amounts"/>
+        colSpan="12" form-view="budget-level-node-form" grid-view="budget-level-node-grid"
+        onChange="action-budget-level-change-compute-level-amounts"/>
     </panel>
   </form>
 
