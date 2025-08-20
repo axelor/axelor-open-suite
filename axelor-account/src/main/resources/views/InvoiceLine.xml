@@ -346,6 +346,7 @@
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
     <action name="action-invoice-line-attrs-compute-is-global-discount"/>
+    <action name="action-invoice-line-method-set-required-analytic-account"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -362,6 +363,7 @@
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
+    <action name="action-invoice-line-method-set-required-analytic-account"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -389,6 +391,7 @@
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-record-set-tax"/>
+    <action name="action-invoice-line-method-set-required-analytic-account"/>
   </action-group>
 
   <action-group
@@ -397,12 +400,14 @@
     <action name="action-invoice-line-method-check-analytic-on-invoice-line"/>
     <action name="action-invoice-line-method-create-distribution"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
+    <action name="action-invoice-line-method-set-required-analytic-account"/>
   </action-group>
 
   <action-group name="action-invoice-line-group-analytic-move-line-onchange">
     <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+    <action name="action-invoice-line-method-set-required-analytic-account"/>
   </action-group>
 
   <action-group name="action-invoice-line-group-taxline-onchange">
@@ -578,6 +583,11 @@
     name="action-invoice-line-method-set-domain-analytic-distribution-template">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-set-required-analytic-account">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="setRequiredAnalyticAccount"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
