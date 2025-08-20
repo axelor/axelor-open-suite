@@ -131,7 +131,8 @@
       <field name="budgetLevelList" widget="MasterDetail" summary-view="true" title="Groups"
         colSpan="12" form-view="budget-level-intermediate-form"
         grid-view="budget-level-included-grid" canEdit="statusSelect == 0"
-        canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
+        canNew="statusSelect == 0" canRemove="statusSelect == 0"
+        onChange="action-global-budget-method-compute-amounts"/>
     </panel>
   </form>
 
@@ -375,6 +376,10 @@
       name="_isReadOnly" expr="true"/>
     <context name="_typeSelect" expr="eval: 'budget'"/>
   </action-view>
+
+  <action-method name="action-global-budget-method-compute-amounts">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="computeAmounts"/>
+  </action-method>
 
   <action-view name="action-global-budget-view-group-lines" title="Groups"
     model="com.axelor.apps.budget.db.BudgetLevel">

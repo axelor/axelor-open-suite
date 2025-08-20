@@ -167,4 +167,11 @@ public class GlobalBudgetController {
     }
     response.setAttr("$budgetVersion", "domain", domain);
   }
+
+  public void computeAmounts(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+    response.setValue("totalAmountExpected", globalBudget.getTotalAmountExpected());
+    response.setValue("totalAmountAvailable", globalBudget.getTotalAmountAvailable());
+  }
 }
