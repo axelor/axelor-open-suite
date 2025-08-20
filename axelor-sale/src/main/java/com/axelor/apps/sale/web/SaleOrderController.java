@@ -59,6 +59,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderPackagingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
@@ -896,5 +897,18 @@ public class SaleOrderController {
             .param("forceTitle", "true")
             .context("_showRecord", String.valueOf(copySaleOrder.getId()))
             .map());
+  }
+
+  public void estimatePackaging(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String message = Beans.get(SaleOrderPackagingService.class).estimatePackaging(saleOrder);
+      if (StringUtils.isEmpty(message)) {
+        return;
+      }
+      response.setInfo(message);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -279,6 +279,9 @@
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
+      <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
+        onClick="save,action-sale-order-method-estimate-packaging"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button name="recomputePricesBtn" title="Recompute prices"
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
@@ -2383,5 +2386,9 @@
     <view type="form" name="sale-order-form"/>
     <domain>self.originSaleQuotation.id = :id</domain>
   </action-view>
+
+  <action-method name="action-sale-order-method-estimate-packaging">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="estimatePackaging"/>
+  </action-method>
 
 </object-views>
