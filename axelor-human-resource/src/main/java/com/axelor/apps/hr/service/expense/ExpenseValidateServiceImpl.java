@@ -39,7 +39,6 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
-import wslite.json.JSONException;
 
 @Singleton
 public class ExpenseValidateServiceImpl implements ExpenseValidateService {
@@ -106,15 +105,17 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
   }
 
   @Override
-  public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+  public Message sendValidationEmail(Expense expense) throws AxelorException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
-    if (hrConfig.getExpenseMailNotification()) {
-
-      return templateMessageService.generateAndSendMessage(
-          expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
+    try {
+      if (hrConfig.getExpenseMailNotification()) {
+        return templateMessageService.generateAndSendMessage(
+            expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
+      }
+    } catch (IOException | ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
     return null;
   }
