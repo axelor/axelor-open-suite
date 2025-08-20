@@ -155,8 +155,12 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     this.computeResidualProduct(billOfMaterial);
 
-    billOfMaterial.setCostPrice(this.computeCostPrice(costSheet));
-
+    BigDecimal qtyRatio = getQtyRatio(billOfMaterial);
+    BigDecimal costPrice =
+        this.computeCostPrice(costSheet)
+            .divide(qtyRatio, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    costSheet.setCostPrice(costPrice);
+    billOfMaterial.setCostPrice(costPrice);
     billOfMaterialRepo.save(billOfMaterial);
 
     return costSheet;
@@ -221,8 +225,9 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     this.computeRealResidualProduct(manufOrder);
 
-    this.computeCostPrice(costSheet);
-    manufOrder.setCostPrice(costSheet.getCostPrice());
+    BigDecimal costPrice = this.computeCostPrice(costSheet);
+    costSheet.setCostPrice(costPrice);
+    manufOrder.setCostPrice(costPrice);
     Beans.get(ManufOrderRepository.class).save(manufOrder);
 
     return costSheet;
@@ -265,8 +270,6 @@ public class CostSheetServiceImpl implements CostSheetService {
         }
       }
     }
-
-    costSheet.setCostPrice(costPrice);
 
     return costPrice;
   }
