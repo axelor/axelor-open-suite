@@ -274,4 +274,11 @@ public class GlobalBudgetController {
     boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(globalBudget);
     response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
+
+  public void computeAmounts(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+    response.setValue("totalAmountExpected", globalBudget.getTotalAmountExpected());
+    response.setValue("totalAmountAvailable", globalBudget.getTotalAmountAvailable());
+  }
 }
