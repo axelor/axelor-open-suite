@@ -29,6 +29,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolService {
@@ -90,8 +91,15 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     if (ObjectUtils.isEmpty(budgetLevelList)) {
       globalBudget.clearBudgetList();
     } else if (ObjectUtils.notEmpty(globalBudget.getBudgetList())) {
+      List<Budget> budgetToRemoveList = new ArrayList<>();
       for (Budget budget : globalBudget.getBudgetList()) {
         if (!budgetLevelList.contains(budget.getBudgetLevel())) {
+          budgetToRemoveList.add(budget);
+        }
+      }
+
+      if (ObjectUtils.notEmpty(budgetToRemoveList)) {
+        for (Budget budget : budgetToRemoveList) {
           globalBudget.removeBudgetListItem(budget);
         }
       }
