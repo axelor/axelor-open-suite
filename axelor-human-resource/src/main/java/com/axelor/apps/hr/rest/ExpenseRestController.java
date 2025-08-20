@@ -129,7 +129,18 @@ public class ExpenseRestController {
     new SecurityCheck().writeAccess(Expense.class, expenseId).check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
-    Beans.get(ExpenseConfirmationService.class).confirm(expense);
+    ExpenseConfirmationService expenseConfirmationService =
+        Beans.get(ExpenseConfirmationService.class);
+    expenseConfirmationService.confirm(expense);
+
+    try {
+      expenseConfirmationService.sendConfirmationEmail(expense);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(com.axelor.apps.hr.translation.ITranslation.EXPENSE_UPDATED_NO_MAIL),
+          new ExpenseResponse(expense));
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
@@ -148,7 +159,17 @@ public class ExpenseRestController {
     new SecurityCheck().writeAccess(Expense.class, expenseId).check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
-    Beans.get(ExpenseValidateService.class).validate(expense);
+    ExpenseValidateService expenseValidateService = Beans.get(ExpenseValidateService.class);
+    expenseValidateService.validate(expense);
+
+    try {
+      expenseValidateService.sendValidationEmail(expense);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(com.axelor.apps.hr.translation.ITranslation.EXPENSE_UPDATED_NO_MAIL),
+          new ExpenseResponse(expense));
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
@@ -167,8 +188,17 @@ public class ExpenseRestController {
     new SecurityCheck().writeAccess(Expense.class, expenseId).check();
 
     Expense expense = ObjectFinder.find(Expense.class, expenseId, requestBody.getVersion());
-    Beans.get(ExpenseRefusalService.class)
-        .refuseWithReason(expense, requestBody.getGroundForRefusal());
+    ExpenseRefusalService expenseRefusalService = Beans.get(ExpenseRefusalService.class);
+    expenseRefusalService.refuseWithReason(expense, requestBody.getGroundForRefusal());
+
+    try {
+      expenseRefusalService.sendRefusalEmail(expense);
+    } catch (AxelorException e) {
+      return ResponseConstructor.build(
+          Response.Status.OK,
+          I18n.get(com.axelor.apps.hr.translation.ITranslation.EXPENSE_UPDATED_NO_MAIL),
+          new ExpenseResponse(expense));
+    }
 
     return ResponseConstructor.build(
         Response.Status.OK, "Expense successfully updated.", new ExpenseResponse(expense));
