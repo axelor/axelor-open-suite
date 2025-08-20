@@ -315,6 +315,8 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
+import com.axelor.apps.base.service.theme.MetaThemeFetchService;
+import com.axelor.apps.base.service.theme.MetaThemeFetchServiceImpl;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeService;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
@@ -557,5 +559,6 @@ public class BaseModule extends AxelorModule {
     bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
     bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
+    bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
   }
 }

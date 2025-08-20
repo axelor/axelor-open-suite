@@ -51,7 +51,10 @@ public class InvoiceLineCheckServiceImpl implements InvoiceLineCheckService {
     // split in for loop, catch the exception, and throw another exception with the specific account
     taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(
         invoiceLineList.stream()
-            .filter(invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
+            .filter(
+                invoiceLine ->
+                    ObjectUtils.notEmpty(invoiceLine.getTaxLineSet())
+                        && invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
             .map(InvoiceLine::getTaxLineSet)
             .flatMap(Set::stream)
             .collect(Collectors.toSet()));
@@ -65,7 +68,10 @@ public class InvoiceLineCheckServiceImpl implements InvoiceLineCheckService {
 
     taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(
         invoiceLineList.stream()
-            .filter(invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
+            .filter(
+                invoiceLine ->
+                    ObjectUtils.notEmpty(invoiceLine.getTaxLineSet())
+                        && invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
             .map(InvoiceLine::getTaxLineSet)
             .flatMap(Set::stream)
             .collect(Collectors.toSet()));

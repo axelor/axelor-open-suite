@@ -58,7 +58,7 @@ public class DuplicateObjectsService {
         metaFieldRepo
             .all()
             .filter(
-                "(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",
+                "((relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))) AND metaModel.tableName IS NOT NULL",
                 modelName)
             .fetch();
     for (MetaField metaField : allField) {

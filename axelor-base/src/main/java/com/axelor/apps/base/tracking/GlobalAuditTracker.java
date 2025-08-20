@@ -32,11 +32,15 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -50,6 +54,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Transaction;
@@ -60,6 +66,28 @@ import org.hibernate.collection.internal.PersistentSet;
 public class GlobalAuditTracker {
 
   private static final ThreadLocal<List<GlobalTrackingLog>> LOGS = new ThreadLocal<>();
+
+  private final Cache<String, List<GlobalTrackingConfigurationLine>>
+      globalTrackingConfigurationLineCache =
+          CacheBuilder.newBuilder()
+              .expireAfterWrite(10, TimeUnit.MINUTES)
+              .maximumSize(100)
+              .recordStats()
+              .build();
+
+  private final Cache<String, MetaModel> metaModelCache =
+      CacheBuilder.newBuilder()
+          .expireAfterWrite(10, TimeUnit.MINUTES)
+          .maximumSize(100)
+          .recordStats()
+          .build();
+
+  private final Cache<String, MetaField> metaFieldCache =
+      CacheBuilder.newBuilder()
+          .expireAfterWrite(10, TimeUnit.MINUTES)
+          .maximumSize(1000)
+          .recordStats()
+          .build();
 
   /**
    * This method should be called from {@link
@@ -76,25 +104,19 @@ public class GlobalAuditTracker {
       return;
     }
 
-    MetaModelRepository modelRepo = Beans.get(MetaModelRepository.class);
-    MetaFieldRepository fieldRepo = Beans.get(MetaFieldRepository.class);
     GlobalTrackingLogRepository logRepo = Beans.get(GlobalTrackingLogRepository.class);
-    GlobalTrackingConfigurationLineRepository configLineRepo =
-        Beans.get(GlobalTrackingConfigurationLineRepository.class);
     GlobalTrackingConfigurationLine configLine;
     List<GlobalTrackingConfigurationLine> configLineList;
     ScriptBindings bindings;
 
     for (GlobalTrackingLog log : logList) {
 
-      configLineList =
-          configLineRepo.all().filter("self.metaModel.name = ?", log.getMetaModelName()).fetch();
-
+      configLineList = getByModelName(log.getMetaModelName());
       if (configLineList.isEmpty()) {
         continue;
       }
 
-      log.setMetaModel(modelRepo.findByName(log.getMetaModelName()));
+      log.setMetaModel(getMetaModel(log.getMetaModelName()));
 
       List<GlobalTrackingLogLine> logLinesToSave = new ArrayList<>();
 
@@ -110,7 +132,6 @@ public class GlobalAuditTracker {
           continue;
         }
         for (GlobalTrackingLogLine line : log.getGlobalTrackingLogLineList()) {
-
           configLine =
               configLineList.stream()
                   .filter(l -> l.getMetaField().getName().equals(line.getMetaFieldName()))
@@ -124,15 +145,7 @@ public class GlobalAuditTracker {
                       new GroovyScriptHelper(bindings).eval(configLine.getTrackingCondition())))) {
             continue;
           }
-
-          line.setMetaField(
-              fieldRepo
-                  .all()
-                  .filter(
-                      "self.metaModel.id = ? AND self.name = ?",
-                      log.getMetaModel().getId(),
-                      line.getMetaFieldName())
-                  .fetchOne());
+          line.setMetaField(getMetaField(log.getMetaModel().getId(), line.getMetaFieldName()));
           logLinesToSave.add(line);
         }
       }
@@ -146,6 +159,7 @@ public class GlobalAuditTracker {
         logRepo.save(log);
       }
     }
+    invalidateAll();
   }
 
   protected boolean canTrack(GlobalTrackingConfigurationLine confLine, int typeSelect) {
@@ -306,5 +320,50 @@ public class GlobalAuditTracker {
           String.format(
               "[%s]", newIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
     }
+  }
+
+  protected List<GlobalTrackingConfigurationLine> getByModelName(String modelName) {
+    try {
+      return globalTrackingConfigurationLineCache.get(
+          modelName,
+          () ->
+              Beans.get(GlobalTrackingConfigurationLineRepository.class)
+                  .all()
+                  .filter("self.metaModel.name = ?", modelName)
+                  .fetch());
+    } catch (ExecutionException e) {
+      throw new RuntimeException("Failed to load config lines", e);
+    }
+  }
+
+  protected MetaModel getMetaModel(String modelName) {
+    try {
+      return metaModelCache.get(
+          modelName, () -> Beans.get(MetaModelRepository.class).findByName(modelName));
+    } catch (ExecutionException e) {
+      throw new RuntimeException("Failed to load MetaModel for " + modelName, e);
+    }
+  }
+
+  protected MetaField getMetaField(Long metaModelId, String fieldName) {
+    String key = metaModelId + "::" + fieldName;
+    try {
+      return metaFieldCache.get(
+          key,
+          () ->
+              Beans.get(MetaFieldRepository.class)
+                  .all()
+                  .filter("self.metaModel.id = ? AND self.name = ?", metaModelId, fieldName)
+                  .fetchOne());
+    } catch (ExecutionException e) {
+      throw new RuntimeException(
+          "Failed to load MetaField " + fieldName + " for model " + metaModelId, e);
+    }
+  }
+
+  protected void invalidateAll() {
+    globalTrackingConfigurationLineCache.invalidateAll();
+    metaModelCache.invalidateAll();
+    metaFieldCache.invalidateAll();
   }
 }

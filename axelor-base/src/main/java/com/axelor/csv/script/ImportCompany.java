@@ -41,22 +41,37 @@ public class ImportCompany {
     assert bean instanceof Company;
 
     Company company = (Company) bean;
-    String fileName = (String) values.get("logo_fileName");
+    Path path = (Path) values.get("__path__");
 
-    if (!StringUtils.isEmpty(fileName)) {
-      final Path path = (Path) values.get("__path__");
+    String logoFileName = (String) values.get("logo_fileName");
+    MetaFile logoMetaFile = importMetaFile(logoFileName, path);
+    if (logoMetaFile != null) {
+      company.setLogo(logoMetaFile);
+    }
 
-      try {
-        final File image = path.resolve(fileName).toFile();
-        if (image != null && image.isFile()) {
-          final MetaFile metaFile = metaFiles.upload(image);
-          company.setLogo(metaFile);
-        }
-      } catch (Exception e) {
-        LOG.error("Error when importing company : {}", e);
-      }
+    String darkLogoFileName = (String) values.get("dark_logo_fileName");
+    MetaFile darkLogoMetaFile = importMetaFile(darkLogoFileName, path);
+    if (darkLogoMetaFile != null) {
+      company.setDarkLogo(darkLogoMetaFile);
     }
 
     return company;
+  }
+
+  protected MetaFile importMetaFile(String fileName, Path path) {
+    if (StringUtils.isEmpty(fileName)) {
+      return null;
+    }
+
+    try {
+      File image = path.resolve(fileName).toFile();
+      if (image != null && image.isFile()) {
+        return metaFiles.upload(image);
+      }
+    } catch (Exception e) {
+      LOG.error("Error importing file '{}': {}", fileName, e.getMessage(), e);
+    }
+
+    return null;
   }
 }

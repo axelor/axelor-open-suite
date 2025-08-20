@@ -32,11 +32,13 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public class ClosureAssistantLineController {
@@ -123,28 +125,28 @@ public class ClosureAssistantLineController {
       }
 
       AccountTypeRepository accountTypeRepo = Beans.get(AccountTypeRepository.class);
-      AccountType incomeType =
+      List<AccountType> incomeTypeList =
           accountTypeRepo
               .all()
               .filter("self.technicalTypeSelect = ?", AccountTypeRepository.TYPE_INCOME)
-              .fetchOne();
-      AccountType chargeType =
+              .fetch();
+      List<AccountType> chargeTypeList =
           accountTypeRepo
               .all()
               .filter("self.technicalTypeSelect = ?", AccountTypeRepository.TYPE_CHARGE)
-              .fetchOne();
+              .fetch();
 
-      if (incomeType == null || chargeType == null) {
+      if (ObjectUtils.isEmpty(incomeTypeList) || ObjectUtils.isEmpty(chargeTypeList)) {
         return;
       }
 
       AccountService accountService = Beans.get(AccountService.class);
       BigDecimal income =
           accountService.computeBalance(
-              incomeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
+              incomeTypeList, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
       BigDecimal charge =
           accountService.computeBalance(
-              chargeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+              chargeTypeList, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
       BigDecimal profit = income.subtract(charge);
 
       response.setAttr("year", "value", year);

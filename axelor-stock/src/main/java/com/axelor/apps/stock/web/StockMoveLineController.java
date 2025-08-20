@@ -323,11 +323,17 @@ public class StockMoveLineController {
       map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());
       map.put("counter", BigDecimal.ZERO);
       map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
+
       map.put("$availableQty", availableQty);
       map.put("$moveTypeSelect", stockMove.getTypeSelect());
       map.put("origin", trackingNumber.getOrigin());
       map.put("note", trackingNumber.getNote());
-
+      map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
+      map.put("isPerishable", trackingNumber.getIsPerishable());
+      map.put("hasWarranty", trackingNumber.getHasWarranty());
+      map.put(
+          "checkExpirationDateAtStockMoveRealization",
+          trackingNumber.getCheckExpirationDateAtStockMoveRealization());
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);

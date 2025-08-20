@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -260,6 +261,13 @@ public class AnalyticMoveLineQueryController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void refreshAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+    Beans.get(AnalyticMoveLineParentService.class).refreshAxisOnParent(analyticMoveLine);
+    response.setReload(true);
   }
 
   public void initPercentage(ActionRequest request, ActionResponse response) {

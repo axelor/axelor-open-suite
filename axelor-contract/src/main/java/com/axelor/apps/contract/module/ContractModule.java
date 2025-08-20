@@ -33,6 +33,7 @@ import com.axelor.apps.contract.service.AccountManagementContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractService;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl;
+import com.axelor.apps.contract.service.AnalyticMoveLineParentContractServiceImpl;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractFileService;
@@ -77,6 +78,7 @@ import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
@@ -124,5 +126,7 @@ public class ContractModule extends AxelorModule {
         .to(InvoicePaymentToolServiceContractImpl.class);
     bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceContractServiceImpl.class);
     bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceContractServiceImpl.class);
+    bind(AnalyticMoveLineParentSupplychainServiceImpl.class)
+        .to(AnalyticMoveLineParentContractServiceImpl.class);
   }
 }

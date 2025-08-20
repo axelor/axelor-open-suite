@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="call-tender-grid" title="Call for tenders"
-    model="com.axelor.apps.purchase.db.CallTender">
+    model="com.axelor.apps.purchase.db.CallTender" orderBy="-createdOn">
     <field name="name"/>
     <field name="description"/>
   </grid>

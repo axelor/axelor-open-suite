@@ -213,7 +213,7 @@
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
-      onChange="action-move-line-method-analytic-distribution-template-onchange-light"/>
+      onChange="action-move-line-method-analytic-move-line-onchange"/>
     <field name="reconcileGroup" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
@@ -456,7 +456,8 @@
         requiredIf="account.useForPartnerBalance"/>
       <panel name="datesPanel" colSpan="12" itemSpan="3">
         <field name="date" onChange="account-move-line-method-date-onchange"/>
-        <field name="dueDate" showIf="dueDate"/>
+        <field name="dueDate" showIf="dueDate"
+          onChange="action-move-line-method-compute-invoice-terms-due-dates"/>
         <field name="accountingDate" showIf="accountingDate"/>
       </panel>
       <panel name="amountPanel" colSpan="12" itemSpan="3">
@@ -868,12 +869,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxEquiv"/>
   </action-method>
 
-  <action-method
-    name="action-move-line-method-analytic-distribution-template-onchange-light">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="analyticDistributionTemplateOnChangeLight"/>
-  </action-method>
-
   <action-method name="action-move-line-method-analytic-move-line-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="analyticMoveLineOnChange"/>
@@ -908,6 +903,11 @@
     name="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups">
     <call class="com.axelor.apps.account.web.BatchAccountController"
       method="partialReconcileSelectedMoveLines"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-compute-invoice-terms-due-dates">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="computeInvoiceTermsDueDates"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

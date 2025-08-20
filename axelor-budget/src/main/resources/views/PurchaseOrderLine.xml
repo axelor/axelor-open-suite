@@ -12,6 +12,10 @@
           if="__config__.app.getApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
         <field name="budget"
           if="__config__.app.getApp('budget') &amp;&amp; !__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -22,6 +26,10 @@
     <extend target="//field[@name='estimatedReceiptDate']">
       <insert position="after">
         <field name="budget" if="__config__.app.getApp('budget')"/>
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -61,13 +69,7 @@
           </field>
           <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="budgetRemainingAmountToAllocate">
-              <![CDATA[
-				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
-              ]]>
-            </viewer>
-          </field>
+            x-scale="$nbDecimalDigitForUnitPrice"/>
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
             onChange="action-reset-budget-method"/>
@@ -90,6 +92,7 @@
           <field name="$currencySymbol" hidden="true"/>
           <field name="$companyCurrencyScale" hidden="true"/>
           <field name="purchaseOrder.statusSelect" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
       </insert>
     </extend>

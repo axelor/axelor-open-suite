@@ -146,13 +146,9 @@
       if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
     <field name="humanDuration" expr="eval: workCenter?.hrDurationPerCycle"
       if="workCenter?.workCenterTypeSelect == 1 || workCenter?.workCenterTypeSelect == 3"/>
-    <field name="product" expr="eval: workCenter?.product"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costAmount" expr="eval: workCenter?.costAmount"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <field name="hrProduct" expr="eval: workCenter?.hrProduct"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="hrCostTypeSelect" expr="eval: workCenter?.hrCostTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>

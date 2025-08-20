@@ -651,7 +651,7 @@
     <attribute name="value" for="fromDate" expr="eval: __datetime__"/>
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
-    <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+    <attribute name="value:add" for="membersUserSet" expr="eval: [id:__user__.id]"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-invoicing-sequence">

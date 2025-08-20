@@ -297,7 +297,9 @@ public class MoveLineMassEntryController {
     String domain =
         Beans.get(BankDetailsDomainServiceAccount.class)
             .createDomainForBankDetails(
-                moveLineMassEntry.getPartner(), move.getPaymentMode(), move.getCompany());
+                moveLineMassEntry.getPartner(),
+                moveLineMassEntry.getMovePaymentMode(),
+                move.getCompany());
 
     response.setAttr("movePartnerBankDetails", "domain", domain);
   }

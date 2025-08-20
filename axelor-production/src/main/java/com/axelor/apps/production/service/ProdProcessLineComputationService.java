@@ -79,8 +79,10 @@ public interface ProdProcessLineComputationService {
    * @param prodProcessLine
    * @param nbCycles
    * @return human duration
+   * @throws AxelorException
    */
-  BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles);
+  BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
 
   /**
    * Convert the result of {@link ProdProcessLineComputationService#getHumanDuration} in hour. The
@@ -89,8 +91,10 @@ public interface ProdProcessLineComputationService {
    * @param prodProcessLine
    * @param nbCycles
    * @return human duration in hour
+   * @throws AxelorException
    */
-  BigDecimal getHourHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles);
+  BigDecimal getHourHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
 
   /**
    * Compute the total duration for a given nbCycles

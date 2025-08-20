@@ -178,7 +178,8 @@
   </action-view>
 
   <menuitem name="purchase-root-call-for-tenders" title="Call for tenders" order="1200"
-    action="purchase.root.call.for.tenders" parent="sc-root-purchase"/>
+    action="purchase.root.call.for.tenders" parent="sc-root-purchase"
+    if="__config__.app.getApp('purchase')?.manageCallForTender"/>
 
   <action-view name="purchase.root.call.for.tenders" title="Call for tenders"
     model="com.axelor.apps.purchase.db.CallTender">
