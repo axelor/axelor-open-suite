@@ -29,11 +29,13 @@ import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -42,7 +44,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +56,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   protected TimesheetService timesheetService;
   protected EmployeeRepository employeeRepository;
   protected TimesheetRepository timesheetRepo;
+  protected TimesheetLineRepository timesheetLineRepo;
   protected AppHumanResourceService appHumanResourceService;
   protected UserHrService userHrService;
   protected DateService dateService;
@@ -61,12 +66,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetService timesheetService,
       EmployeeRepository employeeRepository,
       TimesheetRepository timesheetRepo,
+      TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
       DateService dateService) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
     this.timesheetRepo = timesheetRepo;
+    this.timesheetLineRepo = timesheetLineRepo;
     this.appHumanResourceService = appHumanResourceService;
     this.userHrService = userHrService;
     this.dateService = dateService;
@@ -274,5 +281,31 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     if (timesheetLine != null) {
       timesheetLine.setTimer(null);
     }
+  }
+
+  @Override
+  public List<TimesheetLine> getTimesheetLines(
+      Timesheet timesheet, LocalDate date, Project project, ProjectTask projectTask) {
+    StringBuilder filter = new StringBuilder("self.timesheet = :timesheet AND self.date = :date");
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("timesheet", timesheet);
+    params.put("date", date);
+
+    if (project != null) {
+      filter.append(" AND self.project = :project");
+      params.put("project", project);
+    } else {
+      filter.append(" AND self.project IS NULL");
+    }
+
+    if (projectTask != null) {
+      filter.append(" AND self.projectTask = :projectTask");
+      params.put("projectTask", projectTask);
+    } else {
+      filter.append(" AND self.projectTask IS NULL");
+    }
+
+    return timesheetLineRepo.all().filter(filter.toString()).bind(params).fetch();
   }
 }
