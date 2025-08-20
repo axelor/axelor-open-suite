@@ -215,20 +215,21 @@ public class MoveCheckServiceImpl implements MoveCheckService {
             && (move.getStatusSelect() == MoveRepository.STATUS_NEW
                 || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED))) {
       return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
-    } else if (CollectionUtils.isNotEmpty(move.getMoveLineList()) && move.getMoveLineList().stream()
-        .anyMatch(
-            ml -> {
-              try {
-                return ml.getMove() != null
-                    && invoiceTermService.getPfpValidatorUserCondition(
-                        ml.getMove().getInvoice(), ml)
-                    && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
-                    && ml.getInvoiceTermList().stream()
-                        .anyMatch(it -> it.getPfpValidatorUser() == null);
-              } catch (AxelorException e) {
-                throw new RuntimeException(e);
-              }
-            })) {
+    } else if (CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && move.getMoveLineList().stream()
+            .anyMatch(
+                ml -> {
+                  try {
+                    return ml.getMove() != null
+                        && invoiceTermService.getPfpValidatorUserCondition(
+                            ml.getMove().getInvoice(), ml)
+                        && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
+                        && ml.getInvoiceTermList().stream()
+                            .anyMatch(it -> it.getPfpValidatorUser() == null);
+                  } catch (AxelorException e) {
+                    throw new RuntimeException(e);
+                  }
+                })) {
       return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
     }
 
