@@ -400,6 +400,9 @@
           onClick="save,action-manuf-order-view-add-control-entry" colOffset="6"/>
         <panel-dashlet action="action-manuf-order-view-control-entry" colSpan="12"/>
       </panel>
+      <panel name="printingPanel" title="Printing">
+        <field name="hideReportDetails"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
