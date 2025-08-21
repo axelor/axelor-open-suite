@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed an issue where an outsourced product's price from purchase order was not correctly priced in cost sheets."
+module: axelor-production

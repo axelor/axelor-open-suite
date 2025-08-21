@@ -595,7 +595,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           key.getProductCode(),
           bomLevel,
           qty,
-          key.getPrice(),
+          qty.multiply(key.getPrice()),
           null,
           null,
           CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
