@@ -1,3 +1,0 @@
----
-title: "Manufacturing order: fixed an issue where the outsource virtual stock location was requested even when not needed."
-module: axelor-production
