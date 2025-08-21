@@ -275,7 +275,7 @@
   </action-view>
 
   <menuitem name="quality-characteristic-type" title="Characteristics types"
-    parent="referential-root-product-root" action="quality.characteristic.type" order="500"
+    parent="base-referential-root-product-settings" action="quality.characteristic.type" order="500"
     if="__config__.app.isApp('quality')"/>
 
   <action-view name="quality.characteristic.type" title="Characteristics types"
@@ -285,8 +285,8 @@
   </action-view>
 
   <menuitem name="quality-characteristic-property" title="Characteristics properties"
-    parent="referential-root-product-root" action="quality.characteristic.property" order="510"
-    if="__config__.app.isApp('quality')"/>
+    parent="base-referential-root-product-settings" action="quality.characteristic.property"
+    order="510" if="__config__.app.isApp('quality')"/>
 
   <action-view name="quality.characteristic.property" title="Characteristics properties"
     model="com.axelor.apps.quality.db.CharacteristicProperty">
@@ -295,8 +295,8 @@
   </action-view>
 
   <menuitem name="quality-product-characteristic" title="Product characteristics"
-    parent="referential-root-product-root" action="quality.product.characteristic" order="490"
-    if="__config__.app.isApp('quality')"/>
+    parent="base-referential-root-product-settings" action="quality.product.characteristic"
+    order="490" if="__config__.app.isApp('quality')"/>
 
   <action-view name="quality.product.characteristic" title="Product characteristics"
     model="com.axelor.apps.quality.db.ProductCharacteristic">
