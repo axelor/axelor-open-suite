@@ -63,7 +63,7 @@
             widget="boolean-switch"/>
           <panel colSpan="12" showIf="change || !id" name="passwordPanel">
             <field name="newPassword" title="Password" placeholder="new password"
-              requiredIf="change || password==null"
+              requiredIf="change || password IS null"
               validIf="(!change &amp;&amp; id) || confirm == newPassword" widget="password"/>
             <field name="confirm" title="Confirm" placeholder="confirm password"
               widget="password"/>

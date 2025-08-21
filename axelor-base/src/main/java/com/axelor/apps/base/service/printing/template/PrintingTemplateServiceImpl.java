@@ -68,11 +68,11 @@ public class PrintingTemplateServiceImpl implements PrintingTemplateService {
     return printingTemplateRepository
         .all()
         .filter(
-            "self.metaModel.fullName = :modelName AND (:statusSelects0 IS NULL OR self.statusSelect IN :statusSelects1)")
+            "self.metaModel.fullName = :modelName AND (:areStatusEmpty IS TRUE OR self.statusSelect IN :statusSelects)")
         .bind("modelName", modelName)
-        .bind("statusSelects0", statusSelects)
+        .bind("areStatusEmpty", statusSelects.isEmpty())
         .bind(
-            "statsSelects1",
+            "statusSelects",
             statusSelects) // Fix for type resolution, TODO: Find maybe another workaround
         .cacheable()
         .fetch();

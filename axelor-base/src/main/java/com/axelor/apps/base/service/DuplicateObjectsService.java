@@ -301,7 +301,7 @@ public class DuplicateObjectsService {
     Query finalQuery = JPA.em().createQuery(query);
 
     for (int i = 0; i < params.length; i++) {
-      finalQuery.setParameter(i, params[i]);
+      finalQuery.setParameter(i + 1, params[i]);
     }
 
     return finalQuery.getResultList();

@@ -244,12 +244,13 @@ public class AdvancedExportController {
         Filter filter =
             Beans.get(AdvancedExportService.class)
                 .getJpaSecurityFilter(advancedExport.getMetaModel());
-        Stream<? extends Model> listObj =
+        try (Stream<? extends Model> listObj =
             parentRequest
                 .getCriteria()
                 .createQuery(klass, filter)
-                .fetchStream(advancedExport.getMaxExportLimit());
-        return listObj.map(it -> it.getId()).collect(Collectors.toList());
+                .fetchStream(advancedExport.getMaxExportLimit())) {
+          return listObj.map(it -> it.getId()).collect(Collectors.toList());
+        }
       }
     }
     return null;
