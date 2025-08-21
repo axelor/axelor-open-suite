@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed an error where a LazyInitializationException occurred during partial finish."
+module: axelor-production
