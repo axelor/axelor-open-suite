@@ -303,17 +303,42 @@ public class CostSheetServiceImpl implements CostSheetService {
       int origin,
       UnitCostCalculation unitCostCalculation)
       throws AxelorException {
+    _computeCostPrice(
+        company,
+        billOfMaterial,
+        bomLevel,
+        parentCostSheetLine,
+        origin,
+        unitCostCalculation,
+        billOfMaterial.getCalculationQty());
+  }
+
+  protected void _computeCostPrice(
+      Company company,
+      BillOfMaterial billOfMaterial,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      BigDecimal calculationQty)
+      throws AxelorException {
 
     bomLevel++;
 
     // Cout des composants
     this._computeToConsumeProduct(
-        company, billOfMaterial, bomLevel, parentCostSheetLine, origin, unitCostCalculation);
+        company,
+        billOfMaterial,
+        bomLevel,
+        parentCostSheetLine,
+        origin,
+        unitCostCalculation,
+        getQtyRatio(billOfMaterial, billOfMaterial.getQty(), calculationQty));
 
     // Cout des operations
     this._computeProcess(
         billOfMaterial.getProdProcess(),
-        billOfMaterial.getCalculationQty(),
+        calculationQty,
         billOfMaterial.getProduct().getUnit(),
         bomLevel,
         parentCostSheetLine);
@@ -325,12 +350,11 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       int origin,
-      UnitCostCalculation unitCostCalculation)
+      UnitCostCalculation unitCostCalculation,
+      BigDecimal qtyRatio)
       throws AxelorException {
 
     if (billOfMaterial.getBillOfMaterialLineList() != null) {
-
-      BigDecimal qtyRatio = getQtyRatio(billOfMaterial);
 
       for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
@@ -371,7 +395,8 @@ public class CostSheetServiceImpl implements CostSheetService {
                 bomLevel,
                 costSheetLine,
                 origin,
-                unitCostCalculation);
+                unitCostCalculation,
+                qty);
           }
         }
       }
@@ -1058,11 +1083,17 @@ public class CostSheetServiceImpl implements CostSheetService {
   @Override
   public BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) throws AxelorException {
     BigDecimal bomQty = billOfMaterial.getQty();
+    BigDecimal calculationQty = billOfMaterial.getCalculationQty();
+    return getQtyRatio(billOfMaterial, bomQty, calculationQty);
+  }
+
+  @Override
+  public BigDecimal getQtyRatio(
+      BillOfMaterial billOfMaterial, BigDecimal bomQty, BigDecimal calculationQty)
+      throws AxelorException {
     if (bomQty.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
-
-    BigDecimal calculationQty = billOfMaterial.getCalculationQty();
     if (calculationQty.compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
