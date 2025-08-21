@@ -746,25 +746,25 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   @Transactional(rollbackOn = {Exception.class})
   public void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException {
 
+    Company company = manufOrder.getCompany();
     PurchaseOrder purchaseOrder =
         purchaseOrderService.createPurchaseOrder(
             null,
-            manufOrder.getCompany(),
+            company,
             null,
             null,
             null,
             null,
             null,
-            null,
+            appBaseService.getTodayDate(company),
             null,
             manufOrder.getProdProcess().getSubcontractor(),
             null);
 
     purchaseOrder.setOutsourcingOrder(true);
 
-    if (manufOrder.getCompany() != null && manufOrder.getCompany().getStockConfig() != null) {
-      purchaseOrder.setStockLocation(
-          manufOrder.getCompany().getStockConfig().getOutsourcingReceiptStockLocation());
+    if (company != null && company.getStockConfig() != null) {
+      purchaseOrder.setStockLocation(company.getStockConfig().getOutsourcingReceiptStockLocation());
     }
 
     this.setPurchaseOrderSupplierDetails(purchaseOrder);
