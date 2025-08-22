@@ -493,7 +493,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct"
         if-module="axelor-business-project">
         <field name="taskTemplateSet" widget="TagSelect" colSpan="12"
-          domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
+          domain="self.parentTaskTemplate IS null or self.parentTaskTemplate in :taskTemplateSet"/>
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
         if="__config__.app.isApp('stock')" hidden="true"

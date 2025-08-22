@@ -197,7 +197,7 @@ public class DataBackupServiceImpl implements DataBackupService {
                 + metaModel.getName()
                 + " self SET self.importId = CONCAT(CAST(self.id as text),"
                 + currentDateTimeStr
-                + ") WHERE self.importId=null";
+                + ") WHERE self.importId IS null";
         JPA.execute(query);
       } catch (ClassNotFoundException e) {
         TraceBackService.trace(e);

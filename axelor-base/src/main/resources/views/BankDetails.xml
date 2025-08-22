@@ -53,7 +53,7 @@
     <panel name="ibanPanel" title="IBAN / BBAN">
       <field name="bank.bankDetailsTypeSelect" readonly="true"/>
       <panel name="ibanPanel">
-        <field name="iban" readonlyIf="bank==null"
+        <field name="iban" readonlyIf="bank IS null"
           onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"/>
         <static name="invalidIbanText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>

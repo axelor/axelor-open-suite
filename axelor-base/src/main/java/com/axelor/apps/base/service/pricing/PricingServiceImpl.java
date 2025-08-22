@@ -145,7 +145,7 @@ public class PricingServiceImpl implements PricingService {
     LOG.debug("Fetching pricings");
 
     filter.append("self.startDate <= :todayDate ");
-    filter.append("AND (self.endDate > :todayDate OR self.endDate = NULL) ");
+    filter.append("AND (self.endDate > :todayDate OR self.endDate IS NULL) ");
     bindings.put("todayDate", appBaseService.getTodayDate(company));
 
     if (company != null) {

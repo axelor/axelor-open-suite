@@ -74,7 +74,7 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_metaModel"
       expr="eval:__repo__(MetaModel).find(__parent__.metaModel.id).fullName"
-      if="__parent__.metaModel!=null"/>
+      if="__parent__.metaModel IS NOT null"/>
     <context name="_printTemplateLine" expr="eval: __self__.id"/>
   </action-view>
 

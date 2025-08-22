@@ -137,7 +137,8 @@ public class ExportDbObjectService {
       List<? extends MetaMenu> menuList =
           Beans.get(MetaMenuRepository.class)
               .all()
-              .filter("self.parent = null AND self.left = true AND ?1 MEMBER OF self.groups", group)
+              .filter(
+                  "self.parent IS null AND self.left = true AND ?1 MEMBER OF self.groups", group)
               .order("-priority")
               .order("id")
               .fetch();

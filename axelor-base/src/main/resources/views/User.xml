@@ -85,7 +85,7 @@
             showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0"
             onClick="save,action-user-view-user-partner-type-wizard,action-user-attrs"/>
           <field name="partner" showTitle="false" colSpan="12" canNew="true"
-            domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
+            domain="self.linkedUser IS null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
             form-view="partner-employee-form" grid-view="partner-employee-grid"
             onChange="action-user-attrs-remove-linked-employee">
             <editor x-viewer="true">
@@ -237,7 +237,7 @@
           showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0"
           onClick="action-user-view-user-partner-type-wizard,action-user-attrs"/>
         <field name="partner" showTitle="false" colSpan="12" canNew="true"
-          domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
+          domain="self.linkedUser IS null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
           form-view="partner-employee-form" grid-view="partner-employee-grid"
           onChange="action-user-attrs-remove-linked-employee">
           <editor x-viewer="true">
@@ -392,7 +392,7 @@
 
   <action-attrs name="action-user-attrs-domain-active-company">
     <attribute name="domain"
-      expr="eval:companySet?.size() > 0 ? &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; : &quot;self = null&quot; "
+      expr="eval:companySet?.size() > 0 ? &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; : &quot;self IS null&quot; "
       for="activeCompany"/>
   </action-attrs>
 
@@ -555,10 +555,10 @@
   </action-attrs>
 
   <action-attrs name="action-user-attrs-change-employee-domain">
-    <attribute for="employee" name="domain" expr="self.user = null"
+    <attribute for="employee" name="domain" expr="self.user IS null"
       if="partner == null || partner != null"/>
     <attribute for="employee" name="domain"
-      expr="self.user = null AND self.contactPartner = :partner"
+      expr="self.user IS null AND self.contactPartner = :partner"
       if="partner != null &amp;&amp; partner.employee != null"/>
   </action-attrs>
 
