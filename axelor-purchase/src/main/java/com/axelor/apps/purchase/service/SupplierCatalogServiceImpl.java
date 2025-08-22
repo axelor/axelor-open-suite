@@ -324,8 +324,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
     Unit purchaseUnit = (Unit) productCompanyService.get(product, "purchasesUnit", company);
     Unit productUnit = (Unit) productCompanyService.get(product, "unit", company);
-    Unit baseUnit =
-            purchaseUnit == null ? productUnit : purchaseUnit;
+    Unit baseUnit = purchaseUnit == null ? productUnit : purchaseUnit;
     if (supplierCatalog == null) {
       return baseUnit;
     }
