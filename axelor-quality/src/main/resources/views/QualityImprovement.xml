@@ -268,6 +268,21 @@
     </panel>
   </form>
 
+  <form name="qi-create-wizard-form" title="Create quality improvement"
+    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false" canDelete="false"
+    canArchive="false">
+    <panel name="mainPanel" colSpan="12">
+      <field name="type" type="integer" title="Type" selection="quality.qi.type.select"
+        required="true" x-dirty="false"/>
+      <field name="qiDetection" title="Detection"
+        target="com.axelor.apps.quality.db.QIDetection" type="many-to-one"
+        form-view="qi-detection-form" grid-view="qi-detection-grid" showIf="type" required="true"/>
+      <spacer colSpan="6" x-dirty="false"/>
+      <button name="createQiBtn" title="Create quality improvement"
+        onClick="action-method-quality-improvement-create-qi" showIf="type &amp;&amp; qiDetection"/>
+    </panel>
+  </form>
+
   <kanban name="quality-improvement-kanban" title="Quality improvement"
     model="com.axelor.apps.quality.db.QualityImprovement" columnBy="qiStatus"
     sequenceBy="technicalSeq" draggable="true" limit="10">
@@ -875,6 +890,11 @@
     name="action-quality-improvement-method-generate-qi-decision-distributions">
     <call class="com.axelor.apps.quality.web.QIResolutionController"
       method="generateQIDecisionDistributions"/>
+  </action-method>
+
+  <action-method name="action-method-quality-improvement-create-qi">
+    <call class="com.axelor.apps.quality.web.QualityImprovementController"
+      method="createQualityImprovement"/>
   </action-method>
 
   <action-validate
