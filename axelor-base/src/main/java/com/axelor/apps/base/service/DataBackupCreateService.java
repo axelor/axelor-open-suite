@@ -103,7 +103,6 @@ public class DataBackupCreateService {
   protected List<String> fileNameList;
   protected static Set<String> exceptColumnNameList =
       ImmutableSet.of(
-          "importOrigin",
           "importId",
           "updatedBy",
           "createdBy",
@@ -115,7 +114,8 @@ public class DataBackupCreateService {
 
   StringBuilder sb = new StringBuilder();
 
-  protected static List<String> headerList = Arrays.asList("importId", "code", "name");
+  protected static List<String> headerList =
+      Arrays.asList("importId", "importOrigin", "code", "name");
 
   protected static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
