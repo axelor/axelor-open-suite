@@ -52,6 +52,19 @@
     </extend>
   </form>
 
+  <form id="business-timesheet-line-timesheet-form" name="timesheet-line-timesheet-form"
+    title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+    <extend target="//field[@name='enableEditor']">
+      <insert position="after">
+        <field name="isExtraHours"/>
+        <field name="adjustedOvertimeDuration" showIf="isExtraHours"/>
+        <field name="startTime" showIf="isExtraHours"/>
+        <field name="endTime" showIf="isExtraHours"/>
+      </insert>
+    </extend>
+
+  </form>
+
   <action-group name="action-timesheet-line-group-business-project-task-form-on-new">
     <action name="action-timesheet-line-group-project-task-form-on-new"/>
     <action name="action-timesheet-line-attrs-manage-business-fields"/>

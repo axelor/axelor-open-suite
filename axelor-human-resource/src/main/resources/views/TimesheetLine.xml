@@ -250,10 +250,6 @@
       <field name="toInvoice" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
-      <field name="isExtraHours"/>
-      <field name="adjustedOvertimeDuration" showIf="isExtraHours"/>
-      <field name="startTime" showIf="isExtraHours"/>
-      <field name="endTime" showIf="isExtraHours"/>
       <field name="comments"/>
       <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"
         canNew="false" canEdit="false" canView="false"/>
