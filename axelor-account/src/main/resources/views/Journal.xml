@@ -137,7 +137,7 @@
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-journal-grid"/>
     <view type="form" name="move-line-form"/>
-    <domain>self.move.journal.id = :id and self.move.ignoreInAccountingOk IN ('false', null) and
+    <domain>self.move.journal.id = :id and self.move.ignoreInAccountingOk IN (false, null) and
       self.move.period.year.fromDate &lt; :todayDate and self.move.period.year.toDate &gt;
       :todayDate
     </domain>

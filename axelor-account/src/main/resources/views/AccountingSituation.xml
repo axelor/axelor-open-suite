@@ -205,9 +205,10 @@
     <view type="grid" name="move-line-accounting-situation-grid"/>
     <view type="form" name="move-line-form"/>
     <domain>self.partner = :partner AND self.move.company = :company AND
-      self.move.ignoreInAccountingOk IN ('false', null)
+      self.move.ignoreInAccountingOk IN (false, null)
       AND self.account.useForPartnerBalance =
-      'true' AND (self.move.statusSelect = 2 OR
+      true AND
+      (self.move.statusSelect = 2 OR
       self.move.statusSelect = 3)</domain>
   </action-view>
 

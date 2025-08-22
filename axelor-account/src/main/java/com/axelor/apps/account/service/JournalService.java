@@ -53,7 +53,7 @@ public class JournalService {
     String query =
         "select sum(self.debit),sum(self.credit)"
             + " from MoveLine self where self.move.journal.id = :journal "
-            + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (:statusDaybook, :statusValidated) and self.account.accountType MEMBER OF self.move.journal.journalType.accountTypeSet";
+            + "and self.move.ignoreInAccountingOk IN (false, null) and self.move.statusSelect IN (:statusDaybook, :statusValidated) and self.account.accountType MEMBER OF self.move.journal.journalType.accountTypeSet";
 
     Query resultQuery = JPA.em().createQuery(query);
 

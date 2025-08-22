@@ -502,7 +502,7 @@
           grid-view="account-grid" form-view="account-form"/>
         <field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
         <panel-related field="clearanceAccountSet"
-          domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
+          domain="self.useForPartnerBalance = true AND self.company = :company" colSpan="12"
           grid-view="account-grid" form-view="account-form"/>
       </panel>
       <panel name="analyticPanel"

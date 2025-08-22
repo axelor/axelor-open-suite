@@ -141,11 +141,11 @@ public class BatchAccountCustomer extends BatchStrategy {
       accountingSituationList =
           accountingSituationRepo
               .all()
-              .filter("self.company = ?1 and self.custAccountMustBeUpdateOk = 'true'", company)
+              .filter("self.company = ?1 and self.custAccountMustBeUpdateOk = true", company)
               .fetch();
     } else {
       accountingSituationList =
-          accountingSituationRepo.all().filter("self.custAccountMustBeUpdateOk = 'true'").fetch();
+          accountingSituationRepo.all().filter("self.custAccountMustBeUpdateOk = true").fetch();
     }
 
     int i = 0;

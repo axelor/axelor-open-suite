@@ -103,11 +103,11 @@ public class PaymentVoucherLoadService {
         "(self.moveLine.partner = :partner OR self.invoice.partner = :partner) "
             + "and (self.isPaid = FALSE OR self.amountRemaining != 0) "
             + "and (self.moveLine.move.company = :company OR self.invoice.company = :company) "
-            + "and self.moveLine.account.useForPartnerBalance = 't' "
-            + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
+            + "and self.moveLine.account.useForPartnerBalance = true "
+            + "and self.moveLine.move.ignoreInDebtRecoveryOk = true "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
-            + "and (:tradingName = NULL OR self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName) "
-            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
+            + "and (:tradingName IS NULL OR self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName) "
+            + "and (self.invoice IS null or self.invoice.operationTypeSelect = :operationTypeSelect) "
             + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency)";
 
     if (pfpService.isManagePassedForPayment(paymentVoucher.getCompany())

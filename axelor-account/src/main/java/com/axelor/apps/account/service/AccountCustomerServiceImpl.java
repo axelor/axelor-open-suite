@@ -95,7 +95,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN account_move AS move ON (ml.move = move.id) "
                     + "WHERE ml.partner = :partner AND move.company = :company "
-                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
+                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance IS TRUE "
                     + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ABS(ml.amount_remaining) > 0 ")
             .setParameter("partner", partner)
             .setParameter("company", company)
@@ -140,7 +140,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "WHERE term.due_date IS NOT NULL AND term.due_date <= :todayDate "
                     + "AND ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
-                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
+                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance IS TRUE "
                     + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ABS(ml.amount_remaining) > 0 ")
             .setParameter(
                 "todayDate",
@@ -238,9 +238,9 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT JOIN account_invoice AS invoice ON (move.invoice = invoice.id) "
                     + "WHERE ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
-                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
+                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance = true"
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ABS(ml.amount_remaining) > 0 "
-                    + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN ('false', null)) ")
+                    + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN (false, null)) ")
             .setParameter("mailTransitTime", mailTransitTime)
             .setParameter(
                 "todayDate",

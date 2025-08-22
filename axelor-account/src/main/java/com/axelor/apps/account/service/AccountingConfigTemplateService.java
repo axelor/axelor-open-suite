@@ -76,7 +76,7 @@ public class AccountingConfigTemplateService {
     long accountCounter =
         accountRepository
             .all()
-            .filter("self.company.id = ?1 AND self.parentAccount != null", company.getId())
+            .filter("self.company.id = ?1 AND self.parentAccount IS NOT null", company.getId())
             .count();
 
     if (accountCounter > 0) {
