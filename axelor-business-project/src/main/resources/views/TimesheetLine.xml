@@ -54,13 +54,20 @@
 
   <form id="business-timesheet-line-timesheet-form" name="timesheet-line-timesheet-form"
     title="Timesheet Line" model="com.axelor.apps.hr.db.TimesheetLine" extension="true">
+
     <extend target="//field[@name='enableEditor']">
       <insert position="after">
         <field name="isExtraHours"/>
-        <field name="adjustedOvertimeDuration" showIf="isExtraHours"/>
-        <field name="startTime" showIf="isExtraHours"/>
-        <field name="endTime" showIf="isExtraHours"/>
+        <field name="adjustedOvertimeDuration" showIf="isExtraHours" readonly="true"/>
+        <field name="startTime" showIf="isExtraHours" requiredIf="isExtraHours"
+          onChange="action-timesheet-line-method-compute-duration-onchange"/>
+        <field name="endTime" showIf="isExtraHours" requiredIf="isExtraHours"
+          onChange="action-timesheet-line-method-compute-duration-onchange"/>
       </insert>
+    </extend>
+
+    <extend target="//field[@name='duration']">
+      <attribute name="readonlyIf" value="isExtraHours"/>
     </extend>
 
   </form>
@@ -80,5 +87,9 @@
       for="toInvoice"/>
   </action-attrs>
 
+  <action-method name="action-timesheet-line-method-compute-duration-onchange">
+    <call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController"
+      method="computeDuration"/>
+  </action-method>
 
 </object-views>
