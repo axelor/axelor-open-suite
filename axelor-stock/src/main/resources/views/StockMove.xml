@@ -273,61 +273,37 @@
     </menubar>
 
     <panel name="mainPanel">
-      <panel name="typeSelectPanel" colSpan="9">
-        <panel name="statusPanel" colSpan="12">
-          <field name="statusSelect" showTitle="false" colSpan="7" widget="NavSelect"/>
-          <field name="stockMoveSeq" showTitle="false" colSpan="1" css="label-bold bold large">
-            <viewer>
+      <panel name="detailsPanel" colSpan="9">
+        <panel name="typeSelectPanel" colSpan="12">
+          <panel name="statusPanel" colSpan="12">
+            <field name="statusSelect" showTitle="false" colSpan="6" widget="NavSelect"/>
+            <field name="stockMoveSeq" showTitle="false" colSpan="2"
+              css="label-bold bold large">
+              <viewer>
 						<![CDATA[
 							<>
-								<dl>
-									<dd>{stockMoveSeq}</dd>
-								</dl>
+								<h3>
+									{stockMoveSeq}
+								</h3>
 							</>
 						]]>
-            </viewer>
-          </field>
-          <panel name="typeFieldAndTagPanel" colSpan="2" itemSpan="12" stacked="true">
-            <field name="typeSelect" title="Type" showIf="!$readonly()"
-              readonlyIf="statusSelect != 1" onChange="action-stock-move-group-type-select-onchange"/>
-            <field name="$typeTags" showTitle="false" hidden="true" showIf="$readonly()"
-              readonlyIf="statusSelect != 1">
-              <viewer depends="typeSelect"><![CDATA[
+              </viewer>
+            </field>
+            <panel name="typeFieldAndTagPanel" colSpan="2" itemSpan="12" stacked="true">
+              <field name="typeSelect" title="Type" showIf="!$readonly()"
+                readonlyIf="statusSelect != 1"
+                onChange="action-stock-move-group-type-select-onchange"/>
+              <field name="$typeTags" showTitle="false" hidden="true" showIf="$readonly()"
+                readonlyIf="statusSelect != 1">
+                <viewer depends="typeSelect"><![CDATA[
 			                  <>
 			                      {typeSelect == 1 && <Badge bg="info">{_t('Internal move')}</Badge>}
 			                      {typeSelect == 2 && <Badge bg="info">{_t('Outgoing move')}</Badge>}
 			                      {typeSelect == 3 && <Badge bg="info">{_t('Incoming move')}</Badge>}
 			                  </>
 			                ]]></viewer>
-            </field>
-          </panel>
-          <panel name="subTypeSelectPanel" colSpan="2" itemSpan="4" stacked="true">
-            <panel name="conformityFieldAndTagPanel" stacked="true">
-              <field name="conformitySelect"
-                showIf="!$readonly() &amp;&amp; statusSelect == 2 &amp;&amp; toStockLocation != null &amp;&amp; toStockLocation.typeSelect != 3"
-                onChange="action-stock-move-method-change-conformity"/>
-              <field name="$compliantTags" showTitle="false" hidden="true"
-                showIf="$readonly()" readonlyIf="statusSelect &gt; 2" colSpan="2">
-                <viewer depends="conformitySelect, statusSelect"><![CDATA[
-							<>
-								{conformitySelect == 2 && statusSelect != 1 && <Badge bg="success">{_t('Compliant')}</Badge>}
-								{conformitySelect == 3 && statusSelect != 1 && <Badge bg="danger">{_t('Non-compliant')}</Badge>}
-							</>
-					]]></viewer>
               </field>
             </panel>
-            <field name="cancelReason" readonly="true" showIf="cancelReason != null"
-              canView="false"/>
-            <field name="isReversion" hidden="true"/>
-            <field name="company.accountConfig" hidden="true" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')"/>
-            <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
-              if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-            <field name="toStockLocation.typeSelect" hidden="true"/>
-          </panel>
-        </panel>
-        <panel colSpan="9">
-          <panel name="tagsPanel" colSpan="12">
             <panel name="availableStatusAndInvoiceStatusTagsPanel" colSpan="2" stacked="true"
               itemSpan="12">
               <field name="availableStatusSelect" showTitle="false" showIf="statusSelect == 2"
@@ -355,8 +331,32 @@
                 </viewer>
               </field>
             </panel>
+          </panel>
+          <panel name="tagsPanel" colSpan="12">
+            <panel name="subTypeSelectPanel" colSpan="3" itemSpan="4" stacked="true">
+              <panel name="conformityFieldAndTagPanel" stacked="true">
+                <field name="conformitySelect"
+                  showIf="!$readonly() &amp;&amp; statusSelect == 2 &amp;&amp; toStockLocation != null &amp;&amp; toStockLocation.typeSelect != 3"
+                  onChange="action-stock-move-method-change-conformity"/>
+                <field name="$compliantTags" showTitle="false" hidden="true"
+                  showIf="$readonly()" readonlyIf="statusSelect &gt; 2" colSpan="2">
+                  <viewer depends="conformitySelect, statusSelect"><![CDATA[
+							<>
+								{conformitySelect == 2 && statusSelect != 1 && <Badge bg="success">{_t('Compliant')}</Badge>}
+								{conformitySelect == 3 && statusSelect != 1 && <Badge bg="danger">{_t('Non-compliant')}</Badge>}
+							</>
+					]]></viewer>
+                </field>
+              </panel>
+              <field name="isReversion" hidden="true"/>
+              <field name="company.accountConfig" hidden="true" if-module="axelor-supplychain"
+                if="__config__.app.isApp('supplychain')"/>
+              <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
+                if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+              <field name="toStockLocation.typeSelect" hidden="true"/>
+            </panel>
             <field name="$availabilityRequestTags" showTitle="false" readonly="true"
-              showIf="$readonly()" colSpan="2">
+              showIf="$readonly()" colSpan="3">
               <viewer depends="pickingIsEdited,availabilityRequest,statusSelect"><![CDATA[
 								<>
 									{pickingIsEdited && statusSelect == 2 && <Badge bg="warning">{_t('Picking printed')}</Badge>}
@@ -364,7 +364,7 @@
 								</>
 							]]></viewer>
             </field>
-            <field name="$pfpValidationTags" showTitle="false" colSpan="2" readonly="true"
+            <field name="$pfpValidationTags" showTitle="false" colSpan="3" readonly="true"
               showIf="$readonly()" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')">
               <viewer depends="pfpValidateStatusSelect"><![CDATA[
@@ -375,7 +375,171 @@
 							]]>
               </viewer>
             </field>
+            <field name="cancelReason" readonly="true" showIf="cancelReason != null"
+              canView="false" colSpan="3"/>
             <field name="invoicingStatusSelect" hidden="true" colSpan="12"/>
+          </panel>
+        </panel>
+
+        <panel name="internalMovePanel" showIf="typeSelect == 1" colSpan="12" itemSpan="3">
+          <field name="company" readonlyIf="statusSelect != 1"
+            onChange="action-stock-move-group-onchange-company" canEdit="false"
+            grid-view="company-grid" form-view="company-form"/>
+          <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
+            name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
+            onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
+            domain="self.company = :company" form-view="trading-name-form"
+            grid-view="trading-name-grid"/>
+          <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
+            onChange="action-stock-move-group-from-location-onchange"
+            grid-view="stock-location-grid" form-view="stock-location-form"/>
+          <field name="toStockLocation" canEdit="false" domain="self.company = :company"
+            onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
+            form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
+            onChange="action-stock-move-method-update-stock-move-line"/>
+          <field name="estimatedDate"
+            readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
+          <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
+            onChange="action-stock-move-method-set-addresses-str"
+            readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
+          <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
+            onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
+            readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
+          <static name="deliveryAddressText" hidden="true" colSpan="12">
+	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
+          </static>
+          <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
+            showTitle="false">
+            <viewer><![CDATA[
+						<>
+							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+								<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+							</Box>
+						</>
+	                    ]]>
+            </viewer>
+          </field>
+
+          <field name="fromAddressStr" hideIf="statusSelect &gt; 2" colOffset="3"
+            readonlyIf="statusSelect &gt; 2" height="3">
+            <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
+          </field>
+          <field name="toAddressStr" hideIf="statusSelect &gt; 2"
+            readonlyIf="statusSelect &gt; 2" height="3">
+            <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="outgoingMovePanel" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
+          <field name="company" readonlyIf="statusSelect != 1"
+            onChange="action-stock-move-group-onchange-company" canEdit="false"
+            grid-view="company-grid" form-view="company-form"/>
+          <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
+            name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
+            onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
+            domain="self.company = :company" form-view="trading-name-form"
+            grid-view="trading-name-grid" colSpan="3"/>
+          <field name="partner" canEdit="false" x-image-field="picture"
+            domain="self.isContact = false AND :company member of self.companySet"
+            readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
+            grid-view="partner-grid" form-view="partner-form"/>
+          <field name="invoicedPartner" canEdit="false" readonlyIf="statusSelect != 1"
+            onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
+            grid-view="partner-grid" form-view="partner-form" x-image-field="picture"/>
+          <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
+            onChange="action-stock-move-group-from-location-onchange"
+            grid-view="stock-location-grid" form-view="stock-location-form"/>
+          <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
+            onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
+            readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
+          <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
+            canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
+            onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
+            form-view="stock-location-form"/>
+          <static name="deliveryAddressText" hidden="true" colSpan="12">
+	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
+          </static>
+          <field name="estimatedDate"
+            readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
+          <panel stacked="true">
+            <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
+              onChange="action-stock-move-method-update-stock-move-line"/>
+            <field name="availabilityRequest" hidden="true" widget="boolean-switch"
+              if="__config__.app.getApp('stock')?.isSeparateShipmentOperations"
+              showIf="!isReversion &amp;&amp; statusSelect == 2"
+              readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)"
+              onChange="action-stock-move-group-available-qty-onchange"/>
+          </panel>
+          <field name="pickingIsNotEditedSpacer" hidden="true"
+            if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
+          <field name="pickingIsEdited" hidden="true" widget="boolean-switch"
+            if="__config__.app.getApp('stock')?.isSeparateShipmentOperations"
+            showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2"
+            readonlyIf="_userType == null || _userType == 'Salesperson'"
+            onChange="action-stock-move-picking-is-edited-onchange, action-stock-move-group-save-and-update-stocks"/>
+
+          <panel name="addressStringPanel" stacked="true" itemSpan="12">
+            <field name="toAddressStr" height="3" hideIf="statusSelect &gt; 2">
+              <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
+            </field>
+
+            <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
+              showTitle="false">
+              <viewer>
+                          <![CDATA[
+							<>
+								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+								</Box>
+							</>
+                          ]]>
+              </viewer>
+            </field>
+          </panel>
+        </panel>
+
+        <panel name="incomingMovePanel" showIf="typeSelect == 3" itemSpan="3" colSpan="12">
+          <field name="company" readonlyIf="statusSelect != 1"
+            onChange="action-stock-move-group-onchange-company" canEdit="false"
+            grid-view="company-grid" form-view="company-form"/>
+          <field name="partner" canEdit="false" x-image-field="picture"
+            domain="self.isContact = false AND :company member of self.companySet"
+            readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
+            grid-view="partner-grid" form-view="partner-form"/>
+          <field name="toStockLocation" canEdit="false" domain="self.company = :company"
+            onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
+            form-view="stock-location-form"/>
+          <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
+            onChange="action-stock-move-method-set-addresses-str"
+            readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
+          <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
+            name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
+            onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
+            domain="self.company = :company" form-view="trading-name-form"
+            grid-view="trading-name-grid"/>
+          <field name="estimatedDate"
+            readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
+          <field name="supplierShipmentDate" showIf="!isReversion"/>
+          <field name="supplierShipmentRef" showIf="!isReversion"/>
+          <panel stacked="true" itemSpan="12">
+            <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2">
+              <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
+            </field>
+            <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
+              showTitle="false">
+              <viewer><![CDATA[
+							<>
+								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+								</Box>
+							</>
+                          ]]>
+              </viewer>
+            </field>
           </panel>
         </panel>
       </panel>
@@ -421,168 +585,6 @@
           onClick="action-group-stock-stockmove-cancel-click"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
           onClick="action-stock-move-method-draft"/>
-      </panel>
-
-      <panel name="internalMovePanel" showIf="typeSelect == 1" colSpan="12" itemSpan="3">
-        <field name="company" readonlyIf="statusSelect != 1"
-          onChange="action-stock-move-group-onchange-company" canEdit="false"
-          grid-view="company-grid" form-view="company-form"/>
-        <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
-          name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
-          onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain="self.company = :company" form-view="trading-name-form"
-          grid-view="trading-name-grid"/>
-        <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form"/>
-        <field name="toStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
-        <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
-          onChange="action-stock-move-method-update-stock-move-line"/>
-        <field name="estimatedDate"
-          readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
-        <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
-          onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
-        <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
-          onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
-        <static name="deliveryAddressText" hidden="true" colSpan="12">
-	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
-        </static>
-        <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-          showTitle="false">
-          <viewer><![CDATA[
-						<>
-							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
-								<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
-								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
-							</Box>
-						</>
-	                    ]]>
-          </viewer>
-        </field>
-
-        <field name="fromAddressStr" hideIf="statusSelect &gt; 2" colOffset="3"
-          readonlyIf="statusSelect &gt; 2" height="3">
-          <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
-        </field>
-        <field name="toAddressStr" hideIf="statusSelect &gt; 2"
-          readonlyIf="statusSelect &gt; 2" height="3">
-          <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
-        </field>
-      </panel>
-
-      <panel name="outgoingMovePanel" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
-        <field name="company" readonlyIf="statusSelect != 1"
-          onChange="action-stock-move-group-onchange-company" canEdit="false"
-          grid-view="company-grid" form-view="company-form"/>
-        <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
-          name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
-          onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain="self.company = :company" form-view="trading-name-form"
-          grid-view="trading-name-grid" colSpan="3"/>
-        <field name="partner" canEdit="false" x-image-field="picture"
-          domain="self.isContact = false AND :company member of self.companySet"
-          readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
-          grid-view="partner-grid" form-view="partner-form"/>
-        <field name="invoicedPartner" canEdit="false" readonlyIf="statusSelect != 1"
-          onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
-          grid-view="partner-grid" form-view="partner-form" x-image-field="picture"/>
-        <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form"/>
-        <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
-          onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
-          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
-        <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
-          canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
-          onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form"/>
-        <static name="deliveryAddressText" hidden="true" colSpan="12">
-	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
-        </static>
-        <field name="estimatedDate"
-          readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
-        <panel stacked="true">
-          <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
-            onChange="action-stock-move-method-update-stock-move-line"/>
-          <field name="availabilityRequest" hidden="true" widget="boolean-switch"
-            if="__config__.app.getApp('stock')?.isSeparateShipmentOperations"
-            showIf="!isReversion &amp;&amp; statusSelect == 2"
-            readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)"
-            onChange="action-stock-move-group-available-qty-onchange"/>
-        </panel>
-        <field name="pickingIsNotEditedSpacer" hidden="true"
-          if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
-        <field name="pickingIsEdited" hidden="true" widget="boolean-switch"
-          if="__config__.app.getApp('stock')?.isSeparateShipmentOperations"
-          showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2"
-          readonlyIf="_userType == null || _userType == 'Salesperson'"
-          onChange="action-stock-move-picking-is-edited-onchange, action-stock-move-group-save-and-update-stocks"/>
-
-        <panel name="addressStringPanel" stacked="true" itemSpan="12">
-          <field name="toAddressStr" height="3" hideIf="statusSelect &gt; 2">
-            <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
-          </field>
-
-          <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-            showTitle="false">
-            <viewer>
-                          <![CDATA[
-							<>
-								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
-									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
-									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
-								</Box>
-							</>
-                          ]]>
-            </viewer>
-          </field>
-        </panel>
-      </panel>
-
-      <panel name="incomingMovePanel" showIf="typeSelect == 3" itemSpan="3" colSpan="12">
-        <field name="company" readonlyIf="statusSelect != 1"
-          onChange="action-stock-move-group-onchange-company" canEdit="false"
-          grid-view="company-grid" form-view="company-form"/>
-        <field name="partner" canEdit="false" x-image-field="picture"
-          domain="self.isContact = false AND :company member of self.companySet"
-          readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
-          grid-view="partner-grid" form-view="partner-form"/>
-        <field name="toStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form"/>
-        <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
-          onChange="action-stock-move-method-set-addresses-str"
-          readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-form"/>
-        <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
-          name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false"
-          onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
-          domain="self.company = :company" form-view="trading-name-form"
-          grid-view="trading-name-grid"/>
-        <field name="estimatedDate"
-          readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
-        <field name="supplierShipmentDate" showIf="!isReversion"/>
-        <field name="supplierShipmentRef" showIf="!isReversion"/>
-        <panel stacked="true" itemSpan="12">
-          <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2">
-            <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
-          </field>
-          <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-            showTitle="false">
-            <viewer><![CDATA[
-							<>
-								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
-									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
-									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
-								</Box>
-							</>
-                          ]]>
-            </viewer>
-          </field>
-        </panel>
       </panel>
     </panel>
 
