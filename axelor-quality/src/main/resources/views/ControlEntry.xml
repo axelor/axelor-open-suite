@@ -38,6 +38,8 @@
         title="Finish" showIf="statusSelect == 2"/>
       <button name="cancelBtn" onClick="action-record-quality-control-cancel,save"
         title="Cancel" showIf="statusSelect == 2"/>
+      <button onClick="save,action-view-quality-control-create-qi"
+        name="addQualityImprovement" title="Add a quality improvement"/>
     </panel>
     <panel name="relatedPanel" sidebar="true">
       <field name="relatedToSelect"
@@ -80,4 +82,14 @@
   <action-method name="action-method-quality-control-entry-create-samples">
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="createSamples"/>
   </action-method>
+
+  <action-view name="action-view-quality-control-create-qi" title="Control entry"
+    model="com.axelor.utils.db.Wizard">
+    <view name="qi-create-wizard-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_controlEntryId" expr="eval: id"/>
+  </action-view>
+
 </object-views>
