@@ -13,9 +13,8 @@
     title="Supplier" width="large">
     <panel name="mainPanel" showTitle="false">
       <field name="supplierPartner"
-        onSelect="action-call-tender-supplier-method-set-supplier-domain"
-        domain="self.isSupplier IS true" form-view="partner-form" grid-view="partner-grid"
-        onChange="action-call-tender-supplier-method-clear-contact-set"/>
+        onSelect="action-call-tender-supplier-method-set-supplier-domain" form-view="partner-form"
+        grid-view="partner-grid" onChange="action-call-tender-supplier-method-clear-contact-set"/>
     </panel>
     <panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
       form-view="partner-contact-form" grid-view="partner-contact-grid" canNew="false"

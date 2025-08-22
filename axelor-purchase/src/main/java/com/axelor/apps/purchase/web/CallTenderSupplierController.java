@@ -22,7 +22,6 @@ import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderSupplier;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.helpers.StringHelper;
 
 public class CallTenderSupplierController {
 
