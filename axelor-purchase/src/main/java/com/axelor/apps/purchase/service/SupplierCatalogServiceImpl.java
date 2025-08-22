@@ -322,8 +322,10 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public Unit getUnit(Product product, Partner supplierPartner, Company company)
       throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
+    Unit purchaseUnit = (Unit) productCompanyService.get(product, "purchasesUnit", company);
+    Unit productUnit = (Unit) productCompanyService.get(product, "unit", company);
     Unit baseUnit =
-        product.getPurchasesUnit() == null ? product.getUnit() : product.getPurchasesUnit();
+            purchaseUnit == null ? productUnit : purchaseUnit;
     if (supplierCatalog == null) {
       return baseUnit;
     }
