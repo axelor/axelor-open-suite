@@ -67,11 +67,12 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
 
     Company accountingReportCompany = accountingReport.getCompany();
 
-    if(accountingReportCompany != null){
+    if (accountingReportCompany != null) {
       queryStr += " AND self.company.code = :companyCode";
     }
 
-    Query<AccountingReportType> query = accountingReportTypeRepository
+    Query<AccountingReportType> query =
+        accountingReportTypeRepository
             .all()
             .filter(queryStr)
             .bind("reportType", AccountingReportTypeRepository.REPORT)
