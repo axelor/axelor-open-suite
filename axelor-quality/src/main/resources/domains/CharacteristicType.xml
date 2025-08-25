@@ -14,6 +14,15 @@
     <many-to-many name="characteristicSet"
       ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Characteristics properties"/>
 
+    <extra-code>
+			<![CDATA[
+				public static final int TYPE_MEASURABLE = 1;
+				public static final int TYPE_LIST = 2;
+				public static final int TYPE_COMMENT = 3;
+			]]>
+    </extra-code>
+
+
   </entity>
 
 </domain-models>

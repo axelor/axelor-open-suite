@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="TrackingNumberCharacteristic">
+
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="Tracking number" required="true"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <many-to-one name="characteristic"
+      ref="com.axelor.apps.quality.db.CharacteristicType" title="Characteristic" required="true"/>
+    <many-to-one name="observedValue" title="Observed value"
+      ref="com.axelor.apps.quality.db.CharacteristicProperty"/>
+    <decimal name="measuredValue" title="Measured value" precision="20" scale="10"/>
+    <string name="trackingNumberComment" large="true" title="Comment"/>
+    <boolean name="conforms" title="Conforms"/>
+
+  </entity>
+
+</domain-models>
