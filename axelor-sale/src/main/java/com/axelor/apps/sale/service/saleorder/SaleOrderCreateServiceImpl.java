@@ -41,6 +41,7 @@ import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComput
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
@@ -49,6 +50,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,8 +233,11 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
           if (!saleOrder.getTemplate()) {
             saleOrderLinePriceService.resetPrice(saleOrderLine);
           }
-          if (appSaleService.getAppSale().getListDisplayTypeSelect()
-              == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+          AppSale appSale = appSaleService.getAppSale();
+          if (appSale.getIsSOLPriceTotalOfSubLines()
+              && appSale.getListDisplayTypeSelect()
+                  == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+              && CollectionUtils.isNotEmpty(saleOrderLine.getSubSaleOrderLineList())) {
             subSaleOrderLineComputeService.computeSumSubLineList(saleOrderLine, saleOrder);
           } else {
             saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
