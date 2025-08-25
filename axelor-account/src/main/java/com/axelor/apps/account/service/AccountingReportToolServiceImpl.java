@@ -83,6 +83,10 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
                 }
                 return true;
               });
+    } else {
+      accountingReportTypeStream =
+          accountingReportTypeStream.filter(
+              it -> accountingReport.getCompany().equals(it.getCompany()));
     }
 
     return accountingReportTypeStream
