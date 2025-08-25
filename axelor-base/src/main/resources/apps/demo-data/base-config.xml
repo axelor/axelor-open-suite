@@ -367,7 +367,7 @@
     <bind column="Export" to="trackExport" adapter="Boolean"/>
     <bind column="Reading" to="trackReading" adapter="Boolean"/>
     <bind column="Condition" to="trackingCondition"/>
-    <bind to="appBase" search="self.id = '1'"/>
+    <bind to="appBase" search="self.id = 1"/>
   </input>
 
   <input file="base_mailBatch.csv" separator=";" type="com.axelor.apps.base.db.MailBatch"
