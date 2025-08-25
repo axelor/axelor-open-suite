@@ -547,7 +547,7 @@
 
   <action-record name="action-accounting-report-record-empty-report-type"
     model="com.axelor.apps.account.db.AccountingReport">
-    <field name="reportType" expr="eval: null"/>
+    <field name="reportType" expr="eval: null" if="company != null &amp;&amp; reportType.company.code != company.code"/>
   </action-record>
 
   <!-- ACTION METHOD -->
