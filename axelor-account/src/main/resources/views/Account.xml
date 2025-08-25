@@ -73,7 +73,7 @@
       </panel>
     </panel>
     <panel-tabs name="mainPaneltab">
-      <panel name="generalPanel" title="General" hideIf="$popup()"
+      <panel name="generalPanel" title="General" hideIf="$popup()">
         <panel-dashlet name="viewMoveLinePanel" colSpan="12" title="General"
           hideIf="$popup() || reconcileOk" height="450" action="action-account-view-show-move-lines"
           canSearch="true"/>
