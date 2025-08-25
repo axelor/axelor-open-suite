@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -44,6 +45,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -329,5 +331,17 @@ public class AccountingReportController {
         String.format(
             "self.id IN (%s)",
             StringUtils.notEmpty(accountingReportTypeIds) ? accountingReportTypeIds : "0"));
+  }
+
+  public void fillPartnerMetaModelField(ActionRequest request, ActionResponse response) {
+    Map<String, Object> valuesMap = new HashMap<>();
+    Beans.get(TagService.class).fillMetaModelField("Partner", valuesMap);
+    response.setValues(valuesMap);
+  }
+
+  public void fillAccountMetaModelField(ActionRequest request, ActionResponse response) {
+    Map<String, Object> valuesMap = new HashMap<>();
+    Beans.get(TagService.class).fillMetaModelField("Account", valuesMap);
+    response.setValues(valuesMap);
   }
 }

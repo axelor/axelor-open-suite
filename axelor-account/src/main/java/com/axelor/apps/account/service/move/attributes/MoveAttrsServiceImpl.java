@@ -171,7 +171,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
 
     String domain =
         String.format(
-            "self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
+            "self IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
             move.getCompany().getId());
 
     this.addAttr("paymentMode", "domain", domain, attrsMap);

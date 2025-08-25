@@ -25,6 +25,8 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TagController {
 
@@ -61,5 +63,13 @@ public class TagController {
     }
 
     response.setValues(tagService.getOnNewValuesMap(tag, fullNameModel, fieldModel));
+  }
+
+  public void fillMetaModelField(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Map<String, Object> valuesMap = new HashMap<>();
+    Beans.get(TagService.class)
+        .fillMetaModelField(context.getContextClass().getSimpleName(), valuesMap);
+    response.setValues(valuesMap);
   }
 }
