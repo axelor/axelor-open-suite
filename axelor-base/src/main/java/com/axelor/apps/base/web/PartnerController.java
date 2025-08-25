@@ -63,6 +63,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBaseRepository;
+import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -488,6 +489,28 @@ public class PartnerController {
                   .map(String::valueOf)
                   .collect(Collectors.joining(","))));
     }
+  }
+
+  public void setContactPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setAttr(
+        "contactPartner",
+        "domain",
+        String.format(
+            "self.id IN (%s)",
+            StringHelper.getIdListString(
+                Beans.get(PartnerService.class).getContactFilteredPartners(partner))));
+  }
+
+  public void setMainPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setAttr(
+        "mainPartner",
+        "domain",
+        String.format(
+            "self.id IN (%s)",
+            StringHelper.getIdListString(
+                Beans.get(PartnerService.class).getFilteredPartners(partner))));
   }
 
   public void checkIfRegistrationCodeExists(ActionRequest request, ActionResponse response) {

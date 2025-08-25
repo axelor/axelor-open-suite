@@ -115,7 +115,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
             + StockLocationRepository.TYPE_VIRTUAL;
 
     if (company != null) {
-      query += " AND self.stockLocation.company = " + company.getId();
+      query += " AND self.stockLocation.company.id = " + company.getId();
     }
 
     int scale = appBaseService.getNbDecimalDigitForUnitPrice();

@@ -301,7 +301,7 @@
     title="LCR accounted invoices" model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.lcrAccounted = 'true' AND :batch MEMBER OF self.batchSet</domain>
+    <domain>self.lcrAccounted = true AND :batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>
 
