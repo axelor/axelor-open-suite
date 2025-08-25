@@ -154,7 +154,7 @@ public class RejectImportService {
         return interbankCodeLineRepo
             .all()
             .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'",
+                "self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = true",
                 reasonCode,
                 appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
             .fetchOne();
@@ -162,7 +162,7 @@ public class RejectImportService {
         return interbankCodeLineRepo
             .all()
             .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'",
+                "self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = true",
                 reasonCode,
                 appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
             .fetchOne();
@@ -170,7 +170,7 @@ public class RejectImportService {
         return interbankCodeLineRepo
             .all()
             .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'",
+                "self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = true",
                 reasonCode,
                 appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
             .fetchOne();
@@ -178,7 +178,7 @@ public class RejectImportService {
         return interbankCodeLineRepo
             .all()
             .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'",
+                "self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = true",
                 reasonCode,
                 appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
             .fetchOne();
@@ -186,7 +186,7 @@ public class RejectImportService {
         return interbankCodeLineRepo
             .all()
             .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'",
+                "self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = true",
                 reasonCode,
                 appAccountService.getAppAccount().getChequeInterbankCode())
             .fetchOne();

@@ -25,4 +25,6 @@ public interface TagService {
   void addMetaModelToTag(Tag tag, String fullName);
 
   Map<String, Object> getOnNewValuesMap(Tag tag, String fullNameModel, String fieldModel);
+
+  Map<String, Object> fillMetaModelField(String metaModelName, Map<String, Object> valuesMap);
 }

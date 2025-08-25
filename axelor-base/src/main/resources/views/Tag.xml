@@ -47,4 +47,8 @@
     <call class="com.axelor.apps.base.web.TagController" method="onNew"/>
   </action-method>
 
+  <action-method name="action-method-init-meta-model-field">
+    <call class="com.axelor.apps.base.web.TagController" method="fillMetaModelField"/>
+  </action-method>
+
 </object-views>

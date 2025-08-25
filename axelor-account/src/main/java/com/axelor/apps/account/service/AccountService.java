@@ -102,7 +102,7 @@ public class AccountService {
             .createQuery(
                 String.format(
                     "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
-                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN ("
+                        + "and self.move.ignoreInAccountingOk IN (false, null) and self.move.statusSelect IN ("
                         + Joiner.on(',')
                             .join(
                                 Lists.newArrayList(

@@ -99,7 +99,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
         && move.getId() != null
         && moveRepository
                 .all()
-                .filter("self.cutOffOriginMove = :id")
+                .filter("self.cutOffOriginMove.id = :id")
                 .bind("id", move.getId())
                 .count()
             > 0;
