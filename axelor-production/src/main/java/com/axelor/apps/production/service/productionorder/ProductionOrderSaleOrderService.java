@@ -29,6 +29,8 @@ public interface ProductionOrderSaleOrderService {
   String generateProductionOrder(SaleOrder saleOrder, List<SaleOrderLine> selectedSaleOrderLine)
       throws AxelorException;
 
+  boolean areAllBlocked(List<SaleOrderLine> saleOrderLineList);
+
   ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
   List<ProductionOrder> getLinkedProductionOrders(SaleOrder saleOrder) throws AxelorException;

@@ -1,0 +1,6 @@
+---
+title: "Cost calculation: fixed an issue where the cost price was not divided by the calculation quantity when the BOM quantity was greater than 1."
+module: axelor-production
+developer: |
+  Method signature change: the `qtyRatio` parameter was removed from the 
+  `createUnitCostCalcLine` method in `UnitCostCalcLineServiceImpl`. 

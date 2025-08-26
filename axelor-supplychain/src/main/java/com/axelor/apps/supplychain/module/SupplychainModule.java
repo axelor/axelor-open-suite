@@ -264,6 +264,8 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetc
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainServiceImpl;
@@ -545,5 +547,7 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineSupplychainOnNewServiceImpl.class);
     bind(SaleOrderLineViewServiceSupplychain.class)
         .to(SaleOrderLineViewServiceSupplychainImpl.class);
+    bind(SaleOrderCheckBlockingSupplychainService.class)
+        .to(SaleOrderCheckBlockingSupplychainServiceImpl.class);
   }
 }

@@ -441,4 +441,7 @@ public final class ProductionExceptionMessage {
 
   public static final String SALE_ORDER_SELECT_WRONG_LINE = /*$$(*/
       "There is no production or manufacturing order to generate for one of the selected lines." /*)*/;
+
+  public static final String SALE_ORDER_LINES_CANNOT_PRODUCT = /*$$(*/
+      "Warning : One or more lines are blocked for production" /*)*/;
 }
