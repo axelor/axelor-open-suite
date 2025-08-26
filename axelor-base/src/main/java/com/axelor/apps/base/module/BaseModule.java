@@ -305,6 +305,8 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateServiceImpl;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.signature.SignatureService;
@@ -563,5 +565,6 @@ public class BaseModule extends AxelorModule {
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
     bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
     bind(PartnerCreationService.class).to(PartnerCreationServiceImpl.class);
+    bind(PublicHolidayService.class).to(PublicHolidayServiceImpl.class);
   }
 }

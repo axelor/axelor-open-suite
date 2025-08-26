@@ -249,6 +249,10 @@
             <field name="startDate" colSpan="12"/>
             <field name="endDate" colSpan="12"
               onChange="action-group-base-product-enddate-onchange"/>
+            <panel name="shippingPanel" if-module="axelor-supplychain"
+              if="__config__.app.isApp('supplychain')" showTitle="false" colSpan="12">
+              <field name="availabilityMeanTime" colSpan="6"/>
+            </panel>
           </panel>
           <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
           <field name="isUnrenewed"/>
