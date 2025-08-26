@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.IndicatorConfig;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -34,7 +35,11 @@ public class BirtPrinintingWizardController {
   @SuppressWarnings("unchecked")
   public void onChangeMetaModel(ActionRequest request, ActionResponse response) {
     try {
-      MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
+      String key = request.getBeanClass() == IndicatorConfig.class ? "targetModel" : "metaModel";
+      MetaModel metaModel =
+          Optional.ofNullable(request.getContext().get(key))
+              .map(MetaModel.class::cast)
+              .orElse(null);
       String metaModelTargetName = null;
       if (metaModel != null) {
         Class<? extends Model> klass =

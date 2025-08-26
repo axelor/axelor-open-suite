@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="indicator-result-grid" title="Indicator results"
+    model="com.axelor.apps.base.db.IndicatorResult" orderBy="-dateT">
+    <field name="dateT"/>
+    <field name="queryLog"/>
+  </grid>
+
+  <form name="indicator-result-form" title="Indicator result"
+    model="com.axelor.apps.base.db.IndicatorResult">
+    <panel name="mainPanel">
+      <field name="dateT"/>
+      <field name="queryLog" showIf="queryLog"/>
+    </panel>
+    <panel-dashlet name="resultLinePanel"
+      action="action-indicator-result-view-indicator-result-line" colSpan="12"/>
+  </form>
+
+  <action-view name="action-indicator-result-view-indicator-result-line"
+    title="Indicator result line" model="com.axelor.apps.base.db.IndicatorResultLine">
+    <view type="grid" name="indicator-result-line-indicator-result-grid"/>
+    <view type="form" name="indicator-result-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.indicatorResult.id = :_indicatorResultId</domain>
+    <context name="_indicatorResultId" expr="eval: id"/>
+  </action-view>
+
+</object-views>
