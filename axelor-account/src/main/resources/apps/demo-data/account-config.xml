@@ -194,10 +194,10 @@
       check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.PaymentMode', 'accountingMethodSelect', accountingMethodSelect)"
       check-message="Invalid accountingMethodSelect"/>
     <bind column="accountingTriggerSelect" to="accountingTriggerSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.PaymentMode', 'accountingTriggerSelect'', accountingTriggerSelect)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.PaymentMode', 'accountingTriggerSelect', accountingTriggerSelect)"
       check-message="Invalid accountingTriggerSelect"/>
     <bind column="moveAccountingDateSelect" to="moveAccountingDateSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.PaymentMode', 'moveAccountingDateSelect'', moveAccountingDateSelect)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.PaymentMode', 'moveAccountingDateSelect', moveAccountingDateSelect)"
       check-message="Invalid moveAccountingDateSelect"/>
     <bind column="generateBankOrder" to="generateBankOrder" adapter="Boolean"/>
     <bind column="consoBankOrderLinePerPartner" to="consoBankOrderLinePerPartner"
