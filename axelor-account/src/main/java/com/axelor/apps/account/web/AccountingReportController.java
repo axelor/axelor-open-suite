@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -362,7 +361,7 @@ public class AccountingReportController {
     }
 
     boolean isCustom =
-            Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
+        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
     String reportTypeCompanyCode = reportType.getCompany().getCode();
 
     if (!isCustom) {
@@ -370,10 +369,10 @@ public class AccountingReportController {
         return;
       }
     } else {
-      if (accountingReport.getCompanySet() != null &&
-              accountingReport.getCompanySet().stream()
-                      .map(Company::getCode)
-                      .anyMatch(reportTypeCompanyCode::equals)) {
+      if (accountingReport.getCompanySet() != null
+          && accountingReport.getCompanySet().stream()
+              .map(Company::getCode)
+              .anyMatch(reportTypeCompanyCode::equals)) {
         return;
       }
     }
