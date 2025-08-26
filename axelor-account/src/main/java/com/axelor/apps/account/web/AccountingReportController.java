@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -50,7 +52,9 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -347,5 +351,33 @@ public class AccountingReportController {
         Beans.get(AnalyticAttrsService.class)
             .getAnalyticDistributionTemplateDomain(
                 null, null, accountingReport.getCompany(), null, null, false));
+  }
+
+  public void emptyReportTypeField(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    AccountingReportType reportType = accountingReport.getReportType();
+
+    if (reportType == null) {
+      return;
+    }
+
+    boolean isCustom =
+            Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
+    String reportTypeCompanyCode = reportType.getCompany().getCode();
+
+    if (!isCustom) {
+      if (Objects.equals(accountingReport.getCompany().getCode(), reportTypeCompanyCode)) {
+        return;
+      }
+    } else {
+      if (accountingReport.getCompanySet() != null &&
+              accountingReport.getCompanySet().stream()
+                      .map(Company::getCode)
+                      .anyMatch(reportTypeCompanyCode::equals)) {
+        return;
+      }
+    }
+
+    response.setValue("reportType", null);
   }
 }
