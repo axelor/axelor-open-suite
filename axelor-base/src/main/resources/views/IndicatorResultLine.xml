@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <cards name="indicator-result-line-card" model="com.axelor.apps.base.db.IndicatorResultLine"
+    title="Indicators" width="mid" canNew="false" canEdit="false" canDelete="false"
+    orderBy="indicatorResult.date">
+
+    <field name="indicator"/>
+    <field name="target"/>
+    <field name="relatedId"/>
+    <field name="indicatorResult"/>
+    <field name="indicatorResult.date"/>
+
+    <template><![CDATA[
+    <>
+      <Box>
+        { target && (<Box fontSize="sm" color="gray">
+          {_t('Target')}: {target}
+        </Box>)
+        }
+        <Box fontSize="sm" color="gray">
+          {_t('Indicator')}: {indicator || 0}
+        </Box>
+        {indicatorResult?.date && (
+          <Box fontSize="sm" color="gray">
+            <Icon icon="calendar" /> {$fmt('indicatorResult.date')}
+          </Box>
+        )}
+      </Box>
+    </>
+  ]]></template>
+  </cards>
+
+  <grid name="indicator-result-line-grid" title="Indicator result lines"
+    model="com.axelor.apps.base.db.IndicatorResultLine" orderBy="indicatorResult.date">
+    <field name="target"/>
+    <field name="indicator"/>
+    <field name="relatedId"/>
+  </grid>
+
+  <form name="indicator-result-line-form" title="Indicator result line"
+    model="com.axelor.apps.base.db.IndicatorResultLine">
+    <panel name="mainPanel">
+      <field name="target" colSpan="4"/>
+      <field name="indicator" colSpan="4"/>
+      <field name="relatedId" colSpan="4"/>
+      <field name="expressionLog" showIf="expressionLog" colSpan="12"/>
+      <field name="targetExpressionLog" showIf="targetExpressionLog" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-view name="action-indicator-result-line-view-indicator-result-line"
+    title="Indicators" model="com.axelor.apps.base.db.IndicatorResultLine">
+    <view type="cards" name="indicator-result-line-card"/>
+    <view type="form" name="indicator-result-line-form"/>
+    <domain>self.relatedId = :_relatedId</domain>
+    <context name="_relatedId" expr="eval: id"/>
+    <context name="_metaModel" expr="eval: __this__.getClass().getName()"/>
+  </action-view>
+
+</object-views>
