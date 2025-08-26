@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,14 +19,15 @@
         </structure>
     </list-property>
     <property name="units">in</property>
-    <method name="initialize"><![CDATA[function formatNumber(number) {
+    <method name="initialize"><![CDATA[
+function getNumberFormatPattern() {
 	var exportTypeSelect = params["ExportTypeSelect"];
 	var numberOfDecimals = vars["numberOfDecimals"];
 	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
 	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
-	var formatPattern = basePart + decimalPart;
-	return Formatter.format(number, formatPattern);
-}]]></method>
+	return basePart + decimalPart;
+}
+	]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -1750,8 +1751,9 @@ this.height=row["logo_height"];]]></method>
                     <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
                     <table id="4051">
+                        <property name="numberAlign">right</property>
                         <property name="pageBreakBefore">auto</property>
-                        <property name="width">11in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -1889,6 +1891,76 @@ else  {  0.00 }</expression>
                                 <text-property name="displayName">number_of_decimals</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
                                 <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding</property>
+                                <text-property name="displayName">debit</text-property>
+                                <expression name="expression" type="javascript">row["debit"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_1</property>
+                                <text-property name="displayName">credit</text-property>
+                                <expression name="expression" type="javascript">row["credit"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">debitBalance_1</property>
+                                <text-property name="displayName">debitBalance</text-property>
+                                <expression name="expression" type="javascript">row["debitBalance"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_2</property>
+                                <text-property name="displayName">creditBalance</text-property>
+                                <expression name="expression" type="javascript">row["creditBalance"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_3</property>
+                                <text-property name="displayName">sumDebit</text-property>
+                                <expression name="expression" type="javascript">row["sumDebit"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_4</property>
+                                <text-property name="displayName">sumCredit</text-property>
+                                <expression name="expression" type="javascript">row["sumCredit"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_5</property>
+                                <text-property name="displayName">sumDebitBalance</text-property>
+                                <expression name="expression" type="javascript">row["sumDebitBalance"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_6</property>
+                                <text-property name="displayName">sumCreditBalance</text-property>
+                                <expression name="expression" type="javascript">row["sumCreditBalance"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_7</property>
+                                <text-property name="displayName">generalDebitBalance</text-property>
+                                <expression name="expression" type="javascript">row["generalDebitBalance"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_8</property>
+                                <text-property name="displayName">generalCreditBalance</text-property>
+                                <expression name="expression" type="javascript">row["generalCreditBalance"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
@@ -2206,38 +2278,30 @@ else  {  0.00 }</expression>
                                     </data>
                                 </cell>
                                 <cell id="4070">
-                                    <text id="5331">
-                                        <property name="textAlign">right</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debit"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6296">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding</property>
+                                    </data>
                                 </cell>
                                 <cell id="4072">
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
-                                    <text id="5332">
-                                        <property name="textAlign">right</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["credit"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6297">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_1</property>
+                                    </data>
                                 </cell>
                                 <cell id="4078">
-                                    <text id="6292">
-                                        <property name="textAlign">right</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["debitBalance"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6299">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">debitBalance_1</property>
+                                    </data>
                                 </cell>
                                 <cell id="4080">
-                                    <text id="6291">
-                                        <property name="textAlign">right</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["creditBalance"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6302">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_2</property>
+                                    </data>
                                 </cell>
                             </row>
                         </detail>
@@ -2248,64 +2312,28 @@ else  {  0.00 }</expression>
                                 <cell id="4146"/>
                                 <cell id="4083"/>
                                 <cell id="4084">
-                                    <text id="6287">
-                                        <property name="fontWeight">bold</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["sumDebit"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sumDebit"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6303">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_3</property>
+                                    </data>
                                 </cell>
                                 <cell id="4085">
-                                    <text id="6288">
-                                        <property name="fontWeight">bold</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["sumCredit"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sumCredit"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6304">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_4</property>
+                                    </data>
                                 </cell>
                                 <cell id="4088">
-                                    <text id="6289">
-                                        <property name="fontWeight">bold</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["sumDebitBalance"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sumDebitBalance"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6305">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_5</property>
+                                    </data>
                                 </cell>
                                 <cell id="4089">
-                                    <text id="6290">
-                                        <property name="fontWeight">bold</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["sumCreditBalance"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["sumCreditBalance"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6306">
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_6</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="4180">
@@ -2360,24 +2388,20 @@ else  {  0.00 }</expression>
                                     </text>
                                 </cell>
                                 <cell id="4185">
-                                    <text id="6293">
+                                    <data id="6307">
                                         <property name="fontWeight">bold</property>
                                         <property name="color">red</property>
-                                        <property name="textAlign">right</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["generalDebitBalance"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_7</property>
+                                    </data>
                                 </cell>
                                 <cell id="4186">
-                                    <text id="6294">
+                                    <data id="6308">
                                         <property name="fontWeight">bold</property>
                                         <property name="color">red</property>
-                                        <property name="textAlign">right</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["generalCreditBalance"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding_8</property>
+                                    </data>
                                 </cell>
                             </row>
                         </footer>
