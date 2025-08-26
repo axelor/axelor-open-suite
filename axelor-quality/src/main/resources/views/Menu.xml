@@ -304,4 +304,15 @@
     <view type="form" name="product-characteristic-form"/>
   </action-view>
 
+  <menuitem name="quality-tracking-numbers-characteristic" parent="stock-root-conf"
+    title="Tracking number characteristics"
+    action="stock.root.conf.stock.tracking.number.characteristics" order="301"/>
+
+  <action-view name="quality.tracking.number.characteristics"
+    title="Tracking number characteristics"
+    model="com.axelor.apps.quality.db.TrackingNumberCharacteristic">
+    <view type="grid" name="tracking-number-characteristic-grid"/>
+    <view type="form" name="tracking-number-characteristic-form"/>
+  </action-view>
+
 </object-views>

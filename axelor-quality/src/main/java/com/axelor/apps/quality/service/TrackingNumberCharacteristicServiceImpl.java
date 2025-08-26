@@ -35,35 +35,43 @@ public class TrackingNumberCharacteristicServiceImpl
 
     int characteristicTypeSelect =
         trackingNumberCharacteristic.getCharacteristic().getCharacteristicTypeSelect();
-    if (characteristicTypeSelect == CharacteristicTypeRepository.TYPE_COMMENT) {
+    if (characteristicTypeSelect == CharacteristicTypeRepository.TYPE_COMMENT
+        && ObjectUtils.notEmpty(trackingNumberCharacteristic.getTrackingNumberComment())) {
       return true;
     }
 
     if (characteristicTypeSelect == CharacteristicTypeRepository.TYPE_MEASURABLE) {
-      return trackingNumberCharacteristic.getProduct().getProductCharacteristicSet().stream()
-          .anyMatch(
-              c ->
-                  (c.getCharacteristic().equals(trackingNumberCharacteristic.getCharacteristic())
-                          || c.getCharacteristic().getCharacteristicTypeSelect()
-                              == CharacteristicTypeRepository.TYPE_MEASURABLE)
-                      && (trackingNumberCharacteristic.getMeasuredValue().compareTo(c.getMinValue())
-                              >= 0
-                          && trackingNumberCharacteristic
-                                  .getMeasuredValue()
-                                  .compareTo(c.getMaxValue())
-                              <= 0));
+      return trackingNumberCharacteristic.getProduct() != null
+          && trackingNumberCharacteristic.getProduct().getProductCharacteristicSet().stream()
+              .anyMatch(
+                  c ->
+                      (c.getCharacteristic()
+                                  .equals(trackingNumberCharacteristic.getCharacteristic())
+                              || c.getCharacteristic().getCharacteristicTypeSelect()
+                                  == CharacteristicTypeRepository.TYPE_MEASURABLE)
+                          && (trackingNumberCharacteristic
+                                      .getMeasuredValue()
+                                      .compareTo(c.getMinValue())
+                                  >= 0
+                              && trackingNumberCharacteristic
+                                      .getMeasuredValue()
+                                      .compareTo(c.getMaxValue())
+                                  <= 0));
     }
 
     if (characteristicTypeSelect == CharacteristicTypeRepository.TYPE_LIST) {
-      return trackingNumberCharacteristic.getProduct().getProductCharacteristicSet().stream()
-          .anyMatch(
-              c ->
-                  (c.getCharacteristic().equals(trackingNumberCharacteristic.getCharacteristic())
-                          || c.getCharacteristic().getCharacteristicTypeSelect()
-                              == CharacteristicTypeRepository.TYPE_LIST)
-                      && trackingNumberCharacteristic
-                          .getObservedValue()
-                          .equals(c.getExpectedValue()));
+      return trackingNumberCharacteristic.getProduct() != null
+          && trackingNumberCharacteristic.getProduct().getProductCharacteristicSet().stream()
+              .anyMatch(
+                  c ->
+                      (c.getCharacteristic()
+                                  .equals(trackingNumberCharacteristic.getCharacteristic())
+                              || c.getCharacteristic().getCharacteristicTypeSelect()
+                                  == CharacteristicTypeRepository.TYPE_LIST)
+                          && trackingNumberCharacteristic.getObservedValue() != null
+                          && trackingNumberCharacteristic
+                              .getObservedValue()
+                              .equals(c.getExpectedValue()));
     }
 
     return false;
