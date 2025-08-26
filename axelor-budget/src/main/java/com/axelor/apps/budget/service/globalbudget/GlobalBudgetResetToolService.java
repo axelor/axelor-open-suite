@@ -23,4 +23,6 @@ import com.axelor.apps.budget.db.GlobalBudget;
 public interface GlobalBudgetResetToolService {
 
   void resetGlobalBudget(GlobalBudget globalBudget);
+
+  void clearBudgetList(GlobalBudget globalBudget);
 }
