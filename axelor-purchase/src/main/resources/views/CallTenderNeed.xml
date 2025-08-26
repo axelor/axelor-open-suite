@@ -18,7 +18,7 @@
     title="Call for tender" width="large" onNew="action-call-tender-need-record-init-dummy-fields">
     <panel name="mainPanel" showTitle="false">
       <field name="product" colSpan="12" domain="self.purchasable is true"
-        onChange="action-call-tender-need-method-set-unit"/>
+        onChange="action-call-tender-need-record-set-unit"/>
       <field name="requestedQty" colSpan="6" x-scale="$nbDecimalDigitForQty"/>
       <field name="unit" colSpan="6"/>
       <field name="requestedDate"/>
@@ -41,7 +41,4 @@
     <field name="unit" expr="eval: product?.purchasesUnit"
       if="product &amp;&amp; product?.purchasable"/>
   </action-record>
-  <action-method name="action-call-tender-need-method-set-unit">
-    <call class="com.axelor.apps.purchase.web.CallTenderNeedController" method="setUnit"/>
-  </action-method>
 </object-views>
