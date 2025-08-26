@@ -176,4 +176,10 @@
     <option value="3">Comment</option>
   </selection>
 
+  <selection name="quality.tracking.number.conformity.select">
+    <option value="1">Compliant</option>
+    <option value="2">Non-compliant</option>
+    <option value="3">Not assessed</option>
+  </selection>
+
 </object-views>

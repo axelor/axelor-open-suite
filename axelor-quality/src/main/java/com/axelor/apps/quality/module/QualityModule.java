@@ -87,6 +87,8 @@ import com.axelor.apps.quality.service.RequiredDocumentVersionService;
 import com.axelor.apps.quality.service.RequiredDocumentVersionServiceImpl;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicService;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicServiceImpl;
+import com.axelor.apps.quality.service.TrackingNumberQualityService;
+import com.axelor.apps.quality.service.TrackingNumberQualityServiceImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
 import com.axelor.apps.quality.service.app.QIActionDistributionService;
@@ -137,5 +139,6 @@ public class QualityModule extends AxelorModule {
     bind(CharacteristicPropertyService.class).to(CharacteristicPropertyServiceImpl.class);
     bind(TrackingNumberCharacteristicService.class)
         .to(TrackingNumberCharacteristicServiceImpl.class);
+    bind(TrackingNumberQualityService.class).to(TrackingNumberQualityServiceImpl.class);
   }
 }
