@@ -7,7 +7,7 @@
 
   <entity name="CallTender">
 
-    <string name="callTenderSeq" title="Sequence"/>
+    <string name="callTenderSeq" title="Sequence" unique="true"/>
     <string name="name" title="Call tender name"/>
     <string name="description" title="Description" large="true"/>
     <one-to-many name="callTenderNeedList"
