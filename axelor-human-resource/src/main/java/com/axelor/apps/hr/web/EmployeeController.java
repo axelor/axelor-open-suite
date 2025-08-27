@@ -45,8 +45,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
-
-import org.apache.http.annotation.Contract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -164,18 +162,13 @@ public class EmployeeController {
 
     EmploymentContract mainContract = employee.getMainEmploymentContract();
 
-    if(mainContract != null){
+    if (mainContract != null) {
       response.setAttr(
-              "analyticDistributionTemplate",
-              "domain",
-              Beans.get(AnalyticAttrsService.class)
-                      .getAnalyticDistributionTemplateDomain(
-                              null,
-                              employee.getProduct(),
-                              mainContract.getPayCompany(),
-                              null,
-                              null,
-                              false));
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomain(
+                  null, employee.getProduct(), mainContract.getPayCompany(), null, null, false));
     }
   }
 }
