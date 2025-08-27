@@ -107,7 +107,7 @@ public class BankStatementLineCreateCAMT53ServiceImpl
    * @param stmt the input AccountStatement2 object from the file
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void fillBankStatement(AccountStatement2 stmt, BankStatement bankStatement)
       throws AxelorException {
     CashAccount20 acct = stmt.getAcct();
@@ -133,6 +133,31 @@ public class BankStatementLineCreateCAMT53ServiceImpl
       }
     }
 
+    sequence =
+        createBalBalanceLine(
+            stmt,
+            bankDetails,
+            sequence,
+            currencyCodeFromStmt,
+            BankStatementFileFormatRepository.CAMT_BALANCE_TYPE_INITIAL_BALANCE);
+
+    sequence = createReportEntry2BalanceLine(stmt, bankDetails, sequence, currencyCodeFromStmt);
+
+    sequence =
+        createBalBalanceLine(
+            stmt,
+            bankDetails,
+            sequence,
+            currencyCodeFromStmt,
+            BankStatementFileFormatRepository.CAMT_BALANCE_TYPE_FINAL_BALANCE);
+  }
+
+  protected int createBalBalanceLine(
+      AccountStatement2 stmt,
+      BankDetails bankDetails,
+      int sequence,
+      String currencyCodeFromStmt,
+      String balanceType) {
     List<CashBalance3> balList = stmt.getBal();
     if (balList != null && !balList.isEmpty()) {
       for (CashBalance3 balanceEntry : balList) {
@@ -142,7 +167,7 @@ public class BankStatementLineCreateCAMT53ServiceImpl
                 bankDetails,
                 balanceEntry,
                 sequence,
-                BankStatementFileFormatRepository.CAMT_BALANCE_TYPE_INITIAL_BALANCE,
+                balanceType,
                 currencyCodeFromStmt);
         if (sequence % 10 == 0) {
           JPA.clear();
@@ -151,6 +176,11 @@ public class BankStatementLineCreateCAMT53ServiceImpl
       }
     }
 
+    return sequence;
+  }
+
+  protected int createReportEntry2BalanceLine(
+      AccountStatement2 stmt, BankDetails bankDetails, int sequence, String currencyCodeFromStmt) {
     List<ReportEntry2> ntryList = stmt.getNtry();
     if (ntryList != null && !ntryList.isEmpty()) {
       for (ReportEntry2 ntry : ntryList) {
@@ -164,22 +194,7 @@ public class BankStatementLineCreateCAMT53ServiceImpl
       }
     }
 
-    if (balList != null && !balList.isEmpty()) {
-      for (CashBalance3 balanceEntry : balList) {
-        sequence =
-            bankStatementLineCreationCAMT53Service.createBalanceLine(
-                bankStatement,
-                bankDetails,
-                balanceEntry,
-                sequence,
-                BankStatementFileFormatRepository.CAMT_BALANCE_TYPE_FINAL_BALANCE,
-                currencyCodeFromStmt);
-        if (sequence % 10 == 0) {
-          JPA.clear();
-          findBankStatement();
-        }
-      }
-    }
+    return sequence;
   }
 
   protected BankStatement findBankStatement() {

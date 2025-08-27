@@ -111,9 +111,7 @@ public class BankStatementLineCreationCAMT53ServiceImpl
       bankDetails = bankDetailsRepository.find(bankDetails.getId());
     }
 
-    if (description != null
-        && !description.isEmpty()
-        && description.charAt(description.length() - 1) == ';') {
+    if (description != null && description.endsWith(";")) {
       description = description.substring(0, description.length() - 1);
     }
 
