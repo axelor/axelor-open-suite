@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.fixedasset.attributes;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.base.db.Company;
 import java.math.BigDecimal;
@@ -38,4 +39,7 @@ public interface FixedAssetAttrsService {
   void addSplitTypeSelectReadonly(BigDecimal qty, Map<String, Map<String, Object>> attrsMap);
 
   void addGrossValueScale(Company company, Map<String, Map<String, Object>> attrsMap);
+
+  String addCurrentAnalyticDistributionTemplateInDomain(
+      String domain, AnalyticDistributionTemplate analyticDistributionTemplate);
 }

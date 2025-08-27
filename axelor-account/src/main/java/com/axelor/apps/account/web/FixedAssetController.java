@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
@@ -38,6 +39,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGroupService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -617,5 +619,33 @@ public class FixedAssetController {
     }
     fieldMap.put("saleTaxLineSet", saleTaxLineSet);
     return fieldMap;
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    FixedAsset fixedAsset = context.asType(FixedAsset.class);
+
+    String domain =
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                fixedAsset.getPartner(),
+                null,
+                fixedAsset.getCompany(),
+                null,
+                fixedAsset.getPurchaseAccount(),
+                false);
+
+    AnalyticDistributionTemplate currentAnalyticDistributionTemplate =
+        fixedAsset.getAnalyticDistributionTemplate();
+    if (currentAnalyticDistributionTemplate != null) {
+      domain =
+          Beans.get(FixedAssetAttrsService.class)
+              .addCurrentAnalyticDistributionTemplateInDomain(
+                  domain, currentAnalyticDistributionTemplate);
+    }
+
+    response.setAttr("analyticDistributionTemplate", "domain", domain);
   }
 }

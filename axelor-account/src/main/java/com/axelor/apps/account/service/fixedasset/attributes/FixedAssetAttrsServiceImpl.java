@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.fixedasset.attributes;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.db.Company;
@@ -100,5 +101,11 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
   public void addGrossValueScale(Company company, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
         "grossValue", "scale", currencyScaleService.getCompanyCurrencyScale(company), attrsMap);
+  }
+
+  @Override
+  public String addCurrentAnalyticDistributionTemplateInDomain(
+      String domain, AnalyticDistributionTemplate analyticDistributionTemplate) {
+    return domain + " OR self.id IN (" + analyticDistributionTemplate.getId() + ")";
   }
 }

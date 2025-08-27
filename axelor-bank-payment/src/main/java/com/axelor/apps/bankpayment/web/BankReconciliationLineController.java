@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -142,6 +143,30 @@ public class BankReconciliationLineController {
                   false);
 
       response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+    }
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    BankReconciliationLine bankReconciliationLine = context.asType(BankReconciliationLine.class);
+
+    if (request.getContext().getParent() != null) {
+      BankReconciliation bankReconciliation =
+          request.getContext().getParent().asType(BankReconciliation.class);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomain(
+                  bankReconciliationLine.getPartner(),
+                  null,
+                  bankReconciliation.getCompany(),
+                  null,
+                  bankReconciliationLine.getAccount(),
+                  false));
     }
   }
 }
