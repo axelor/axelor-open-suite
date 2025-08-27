@@ -248,7 +248,8 @@
         <item name="shipReceiveAllProductsItem" title="Ship/Receive all products"
           action="action-stock-move-group-save-and-update-stocks,action-stock-move-ship-recieve-all-products"/>
         <item name="refreshProductNetMassItem" showIf="typeSelect == 2 &amp;&amp; !isReversion"
-          title="Refresh the products net mass" action="action-stock-move-method-refresh-net-mass"/>
+          title="Refresh the products net mass"
+          action="save,action-stock-move-method-refresh-net-mass"/>
       </menu>
     </menubar>
 
