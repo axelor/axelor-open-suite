@@ -146,7 +146,7 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
                     + "ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
                     + "LEFT JOIN StockLocation AS location "
-                    + "ON location.id= self.stockLocation "
+                    + "ON location= self.stockLocation "
                     + "WHERE self.stockLocation.id =:id");
     query.setParameter("id", stockLocation.getId());
 

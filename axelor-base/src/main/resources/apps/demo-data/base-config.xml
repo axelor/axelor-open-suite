@@ -164,7 +164,7 @@
     </bind>
     <bind to="partnerAddressList"
       search="self.address.importId = :address AND self.partner.importId = :importId"
-      if="address != null &amp;&amp; isContact == 'false'">
+      if="address != null &amp;&amp; isContact == false">
       <bind to="address" search="self.importId = :address" update="true"/>
       <bind to="isInvoicingAddr" eval="true"/>
       <bind to="isDeliveryAddr" eval="true"/>
@@ -367,7 +367,7 @@
     <bind column="Export" to="trackExport" adapter="Boolean"/>
     <bind column="Reading" to="trackReading" adapter="Boolean"/>
     <bind column="Condition" to="trackingCondition"/>
-    <bind to="appBase" search="self.id = '1'"/>
+    <bind to="appBase" search="self.id = 1"/>
   </input>
 
   <input file="base_mailBatch.csv" separator=";" type="com.axelor.apps.base.db.MailBatch"

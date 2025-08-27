@@ -162,7 +162,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         .filter(
             "self.productVariantAttr1 = ?1 AND self.productVariantAttr2 = ?2 AND self.productVariantAttr3 = ?3 AND "
                 + "self.productVariantAttr4 = ?4 AND self.productVariantAttr5 = ?5 AND self.productVariantValue1 = ?6 AND self.productVariantValue2 = ?7 AND self.productVariantValue3 = ?8 AND "
-                + "self.productVariantValue4 = ?9 AND self.productVariantValue5 = ?10 AND self.usedForStock = 'true' ",
+                + "self.productVariantValue4 = ?9 AND self.productVariantValue5 = ?10 AND self.usedForStock = true ",
             productVariantAttr1,
             productVariantAttr2,
             productVariantAttr3,

@@ -329,9 +329,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         (!Strings.isNullOrEmpty(selectionJoinField)) ? selectionJoinField + " " : "");
     queryBuilder.append((!Strings.isNullOrEmpty(criteria)) ? criteria : "");
     if (!advancedExport.getIncludeArchivedRecords() && Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append("WHERE self.archived = 'f' OR self.archived IS NULL");
+      queryBuilder.append("WHERE self.archived = false OR self.archived IS NULL");
     } else if (!advancedExport.getIncludeArchivedRecords() && !Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append(" AND (self.archived = 'f' OR self.archived IS NULL)");
+      queryBuilder.append(" AND (self.archived = false OR self.archived IS NULL)");
     }
     queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
 

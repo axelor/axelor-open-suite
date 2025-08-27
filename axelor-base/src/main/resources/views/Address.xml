@@ -181,11 +181,11 @@
 
   <action-attrs name="action-address-attrs-update-domain-street">
     <attribute name="domain" for="street" if="country &amp;&amp; zip"
-      expr="eval: &quot;self.city IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}' AND country = ${country.id})&quot;"/>
+      expr="eval: &quot;self.city.id IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}' AND country.id = ${country.id})&quot;"/>
     <attribute name="domain" for="street" if="!country &amp;&amp; zip"
-      expr="eval: &quot;self.city IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}')&quot;"/>
+      expr="eval: &quot;self.city.id IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}')&quot;"/>
     <attribute name="domain" for="street" if="country &amp;&amp; !zip"
-      expr="eval: &quot;self.city IN (SELECT id FROM City WHERE country = ${country.id})&quot;"/>
+      expr="eval: &quot;self.city.id IN (SELECT id FROM City WHERE country.id = ${country.id})&quot;"/>
     <attribute name="domain" for="street" if="!country &amp;&amp; !zip" expr="eval: null"/>
   </action-attrs>
 

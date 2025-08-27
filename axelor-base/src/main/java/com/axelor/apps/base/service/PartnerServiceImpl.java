@@ -217,7 +217,7 @@ public class PartnerServiceImpl implements PartnerService {
     } else if (address == null) {
       partner.removePartnerAddressListItem(
           JPA.all(PartnerAddress.class)
-              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
+              .filter("self.partner.id = :partnerId AND self.isDefaultAddr = true")
               .bind("partnerId", partner.getId())
               .fetchOne());
 
@@ -659,7 +659,8 @@ public class PartnerServiceImpl implements PartnerService {
     return parentPartnerList;
   }
 
-  protected List<Partner> getFilteredPartners(Partner partner) {
+  @Override
+  public List<Partner> getFilteredPartners(Partner partner) {
     List<Long> companySet =
         ObjectUtils.notEmpty(partner.getCompanySet())
             ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
@@ -671,6 +672,21 @@ public class PartnerServiceImpl implements PartnerService {
                 + "AND self.partnerTypeSelect = :partnerType "
                 + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
         .bind("partnerType", PartnerRepository.PARTNER_TYPE_COMPANY)
+        .bind("companySet", companySet)
+        .fetch();
+  }
+
+  @Override
+  public List<Partner> getContactFilteredPartners(Partner partner) {
+    List<Long> companySet =
+        ObjectUtils.notEmpty(partner.getCompanySet())
+            ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
+            : List.of(0l);
+    return partnerRepo
+        .all()
+        .filter(
+            "self.isContact = true "
+                + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
         .bind("companySet", companySet)
         .fetch();
   }

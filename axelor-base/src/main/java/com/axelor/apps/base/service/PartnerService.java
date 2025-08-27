@@ -147,5 +147,9 @@ public interface PartnerService {
 
   public List<Partner> getParentPartnerList(Partner partner);
 
+  List<Partner> getFilteredPartners(Partner partner);
+
+  List<Partner> getContactFilteredPartners(Partner partner);
+
   String checkIfRegistrationCodeExists(Partner partner);
 }
