@@ -305,8 +305,8 @@
   </action-view>
 
   <menuitem name="quality-tracking-numbers-characteristic" parent="stock-root-conf"
-    title="Tracking number characteristics"
-    action="stock.root.conf.stock.tracking.number.characteristics" order="301"/>
+    title="Tracking number characteristics" action="quality.tracking.number.characteristics"
+    order="301"/>
 
   <action-view name="quality.tracking.number.characteristics"
     title="Tracking number characteristics"
