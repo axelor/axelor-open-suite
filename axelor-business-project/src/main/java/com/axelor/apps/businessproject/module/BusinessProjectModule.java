@@ -23,11 +23,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeServiceImpl
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
-import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
-import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
-import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
-import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
+import com.axelor.apps.businessproject.db.repo.*;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServiceImpl;
 import com.axelor.apps.businessproject.service.BusinessProjectService;
@@ -127,6 +123,7 @@ import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
@@ -245,5 +242,6 @@ public class BusinessProjectModule extends AxelorModule {
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
     bind(SaleOrderCopyProjectService.class).to(SaleOrderCopyProjectServiceImpl.class);
     bind(SaleOrderProjectObserver.class);
+    bind(TimesheetHRRepository.class).to(TimesheetBusinessProjectRepository.class);
   }
 }
