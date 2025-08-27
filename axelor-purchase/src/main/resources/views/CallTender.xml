@@ -15,6 +15,7 @@
     <panel name="headerPanel" showTitle="false">
 
       <field name="name" colSpan="6"/>
+      <field name="company" colSpan="6"/>
       <field name="callForTenderMailTemplate" colSpan="6"
         domain="self.metaModel.name='CallTenderOffer'"/>
       <field name="description" colSpan="12"/>

@@ -48,7 +48,7 @@ public class CallTenderManagementRepository extends CallTenderRepository {
           String seq =
               sequenceService.getSequenceNumber(
                   SequenceRepository.CALL_FOR_TENDER,
-                  null,
+                  entity.getCompany(),
                   CallTender.class,
                   "callTenderSeq",
                   entity);
