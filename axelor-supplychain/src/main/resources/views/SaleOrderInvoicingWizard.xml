@@ -46,10 +46,11 @@
     <field name="price" readonly="true"/>
     <field name="exTaxTotal" readonly="true" aggregate="sum"/>
     <field name="amountInvoiced" readonly="true"/>
-    <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll"
-      min="0" x-scale="2"/>
+    <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
+      readonlyIf="invoiceAll || amountInvoiced == exTaxTotal" min="0" x-scale="2"/>
     <field name="invoiceAll" title="Invoice all" type="boolean"
-      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"
+      readonlyIf="amountInvoiced == exTaxTotal"/>
   </grid>
 
   <grid name="invoicing-wizard-timetable-grid" title="Select timetables to invoice"
