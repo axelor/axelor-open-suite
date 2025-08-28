@@ -1,3 +1,75 @@
+## [8.2.23] (2025-08-28)
+
+### Fixes
+#### Account
+
+* Accounting report Analytic balance: fixed issues in Excel export.
+* Move : fix technical error when accounting an empty move
+* Accounting report Partner balance: fixed issues in Excel export.
+* Accounting report Aged Balance: fixed issues in Excel export.
+* Accounting report VAT Statement on amount received: fixed issues in Excel export.
+* Accounting report Invoices which are due and unpaid: fixed issues in Excel export.
+* Accounting report Payment differences: fixed issues in Excel export.
+* Accounting report VAT Statement on invoices: fixed issues in Excel export.
+* Accounting report Fees declaration supporting file: fixed issues in Excel export.
+* Accounting report Detailed customers balance: fixed issues in Excel export.
+* Accounting report General balance: fixed issues in the Excel export.
+* Accounting report Analytic general ledger: fixed issues in Excel export.
+* Accounting report Cash payments summary: fixed issues in Excel export.
+* Accounting report Preparatory declaration DGI 2055 and Invoices with payment delay: fixed issues in Excel export.
+* Accounting report : fixed domain on report type by adding company information.
+* Accounting report General ledger: fixed issues in Excel export.
+* AnalyticDistributionTemplate : Remove the possibility of selecting duplicate on analytic distribution template fields.
+* Accounting report Partner general ledger: fixed issues in Excel export.
+* Accounting report Preparatory Process for fees declaration: fixed issues in Excel export.
+* Accounting report Custom state: fixed issues in Excel export.
+* Accounting report Summary of gross values and depreciation: fixed issues in Excel export.
+* Accounting report Acquisitions: fixed issues in Excel export.
+* Accounting report Cheque deposit slip: fixed issues in Excel export.
+* Accounting report General ledger (old presentation): fixed issues in Excel export.
+* Accounting report Preparatory declaration DGI 2054: fixed issues in Excel export.
+* Accounting report Journal: fixed issues in Excel export.
+
+#### Budget
+
+* GlobalBudget: fixed the remove of budget level when it is containing budget
+* GlobalBudget/BudgetLevel/Budget : update amounts when updating budget lines values
+
+#### CRM
+
+* Lead: lead partner are now always prospect when converted.
+
+#### Human Resource
+
+* Expense: mail notification are now correctly sent when sending, validating or refusing an expense from API.
+
+#### Production
+
+* Manuf Order: fixed an issue that occured when manually removing a produced product with a tracking number.
+* Manufacturing order: fixed an issue where the purchase order date was not set when generated automatically during planning.
+
+#### Sale
+
+* Sales order: fixed status filter on 'My Sales Orders' dashboard.
+
+#### Stock
+
+* Stock move: fixed an error when clicking 'Refresh the products net mass' without saving the record.
+
+#### Supply Chain
+
+* PurchaseOrderLine/Analytic: fixed an issue where the analytic was required on a title line.
+* Sale order: fixed wrong check on payment mode when changing partner.
+* Sale order: prevent already invoiced lines to be invoiced again.
+* Stock move: removed the toolbar from the 'Mass Stock Move Invoicing' wizard views.
+
+
+### Developer
+
+#### Account
+
+DELETE FROM meta_action where name = 'action-accounting-report-record-empty-report-type';
+
 ## [8.2.22] (2025-08-14)
 
 ### Fixes
@@ -1609,6 +1681,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.23]: https://github.com/axelor/axelor-open-suite/compare/v8.2.22...v8.2.23
 [8.2.22]: https://github.com/axelor/axelor-open-suite/compare/v8.2.21...v8.2.22
 [8.2.21]: https://github.com/axelor/axelor-open-suite/compare/v8.2.20...v8.2.21
 [8.2.20]: https://github.com/axelor/axelor-open-suite/compare/v8.2.19...v8.2.20
