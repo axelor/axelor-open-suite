@@ -1,3 +1,14 @@
+## [8.1.29] (2025-08-28)
+
+### Fixes
+#### CRM
+
+* Lead: lead partner are now always prospect when converted.
+
+#### Human Resource
+
+* Expense: mail notification are now correctly sent when sending, validating or refusing an expense from API.
+
 ## [8.1.28] (2025-08-14)
 
 ### Fixes
@@ -1663,6 +1674,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.29]: https://github.com/axelor/axelor-open-suite/compare/v8.1.28...v8.1.29
 [8.1.28]: https://github.com/axelor/axelor-open-suite/compare/v8.1.27...v8.1.28
 [8.1.27]: https://github.com/axelor/axelor-open-suite/compare/v8.1.26...v8.1.27
 [8.1.26]: https://github.com/axelor/axelor-open-suite/compare/v8.1.25...v8.1.26
