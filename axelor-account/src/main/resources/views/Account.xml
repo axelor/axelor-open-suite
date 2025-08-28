@@ -137,7 +137,7 @@
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
             canEdit="false" canNew="false"
             onChange="action-account-group-analytic-distribution-onChange"
-            domain="self.company = :company AND self.isSpecific = false"/>
+            onSelect="action-account-method-set-domain-analytic-distribution-template"/>
           <button name="personalizeBtn" title="Create personalized analytic template"
             colSpan="3"
             showIf="analyticDistributionAuthorized &amp;&amp; !analyticDistributionTemplate.isSpecific"
@@ -565,6 +565,12 @@
   <action-method name="action-account-method-show-origin-analytic-template">
     <call class="com.axelor.apps.account.web.AccountController"
       method="originAnalyticDistTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-account-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
 </object-views>

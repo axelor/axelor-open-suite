@@ -298,7 +298,7 @@
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
-          domain="self.company = :company AND self.isSpecific = false"/>
+          onSelect="action-business-project-method-set-domain-analytic-distribution-template"/>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel">
@@ -495,7 +495,7 @@
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
-            domain="self.company = :company AND self.isSpecific = false"/>
+            onSelect="action-business-project-method-set-domain-analytic-distribution-template"/>
           <panel-dashlet name="analyticDashletPanel" canSearch="true" height="200%"
             action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
         </panel>
@@ -1350,6 +1350,12 @@
     name="action-business-project-method-get-analytic-distribution-template">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="getAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-business-project-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.expense.ProjectController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
 </object-views>

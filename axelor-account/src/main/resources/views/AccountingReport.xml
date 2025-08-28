@@ -153,7 +153,8 @@
           collapseIf="true" showIf="reportType.typeSelect == 17">
           <field name="analyticDistributionTemplate" showIf="reportType.typeSelect == 17"
             form-view="analytic-distribution-template-form"
-            grid-view="analytic-distribution-template-grid"/>
+            grid-view="analytic-distribution-template-grid"
+            onSelect="action-accounting-report-method-set-domain-analytic-distribution-template"/>
           <field name="fixedAssetLineTypeSelect" requiredIf="reportType.typeSelect == 17"/>
         </panel>
         <panel name="analyticPanel" title="Analytic" colSpan="12" canCollapse="true"
@@ -597,6 +598,12 @@
   <action-method name="action-accounting-report-method-set-report-type-domain">
     <call class="com.axelor.apps.account.web.AccountingReportController"
       method="setAccountingReportTypeDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-accounting-report-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountingReportController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
   <action-validate name="action-accounting-report-date-change-validate">
