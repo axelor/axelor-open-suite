@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -972,5 +973,31 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
     }
+  }
+
+  @Override
+  public AccountingReportType resolveReportTypeForCompany(
+      AccountingReport accountingReport, boolean isCustom) {
+    AccountingReportType reportType = accountingReport.getReportType();
+    if (reportType == null) {
+      return null;
+    }
+
+    String reportCompanyCode = reportType.getCompany().getCode();
+
+    if (!isCustom) {
+      Company company = accountingReport.getCompany();
+      if (company != null && !Objects.equals(company.getCode(), reportCompanyCode)) {
+        return null;
+      }
+    } else {
+      if (accountingReport.getCompanySet() != null
+          && accountingReport.getCompanySet().stream()
+              .map(Company::getCode)
+              .noneMatch(reportCompanyCode::equals)) {
+        return null;
+      }
+    }
+    return reportType;
   }
 }

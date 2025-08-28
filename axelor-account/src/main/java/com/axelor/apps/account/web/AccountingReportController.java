@@ -20,7 +20,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
@@ -52,7 +51,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -354,29 +352,12 @@ public class AccountingReportController {
 
   public void emptyReportTypeField(ActionRequest request, ActionResponse response) {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    AccountingReportType reportType = accountingReport.getReportType();
-
-    if (reportType == null) {
-      return;
-    }
-
     boolean isCustom =
         Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
-    String reportTypeCompanyCode = reportType.getCompany().getCode();
 
-    if (!isCustom) {
-      if (Objects.equals(accountingReport.getCompany().getCode(), reportTypeCompanyCode)) {
-        return;
-      }
-    } else {
-      if (accountingReport.getCompanySet() != null
-          && accountingReport.getCompanySet().stream()
-              .map(Company::getCode)
-              .anyMatch(reportTypeCompanyCode::equals)) {
-        return;
-      }
-    }
-
-    response.setValue("reportType", null);
+    response.setValue(
+        "reportType",
+        Beans.get(AccountingReportService.class)
+            .resolveReportTypeForCompany(accountingReport, isCustom));
   }
 }
