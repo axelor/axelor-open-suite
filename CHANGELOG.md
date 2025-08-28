@@ -1,3 +1,99 @@
+## [8.4.5] (2025-08-28)
+
+### Fixes
+#### Base
+
+* Data backup : fixed wrong title display for integer and long fields.
+
+#### Account
+
+* Accounting report Analytic balance: fixed issues in Excel export.
+* Move : fix technical error when accounting an empty move
+* Accounting report Partner balance: fixed issues in Excel export.
+* Accounting report Aged Balance: fixed issues in Excel export.
+* Accounting report VAT Statement on amount received: fixed issues in Excel export.
+* Accounting report Invoices which are due and unpaid: fixed issues in Excel export.
+* Accounting report Payment differences: fixed issues in Excel export.
+* Accounting report VAT Statement on invoices: fixed issues in Excel export.
+* Accounting report Fees declaration supporting file: fixed issues in Excel export.
+* Accounting report Detailed customers balance: fixed issues in Excel export.
+* Accounting report General balance: fixed issues in the Excel export.
+* Accounting report Analytic general ledger: fixed issues in Excel export.
+* Accounting report Cash payments summary: fixed issues in Excel export.
+* Accounting report Preparatory declaration DGI 2055 and Invoices with payment delay: fixed issues in Excel export.
+* Accounting report : fixed domain on report type by adding company information.
+* Accounting report General ledger: fixed issues in Excel export.
+* AnalyticDistributionTemplate : Remove the possibility of selecting duplicate on analytic distribution template fields.
+* AnalyticAccount/MoveLine/InvoiceLine: fixed wrong required condition on the analytic axis accounts in free distribution.
+* Accounting report Partner general ledger: fixed issues in Excel export.
+* Accounting report Preparatory Process for fees declaration: fixed issues in Excel export.
+* Accounting report Custom state: fixed issues in Excel export.
+* Accounting report Summary of gross values and depreciation: fixed issues in Excel export.
+* Accounting report Acquisitions: fixed issues in Excel export.
+* Accounting report Cheque deposit slip: fixed issues in Excel export.
+* Accounting report General ledger (old presentation): fixed issues in Excel export.
+* Accounting report Preparatory declaration DGI 2054: fixed issues in Excel export.
+* Accounting report Journal: fixed issues in Excel export.
+
+#### Budget
+
+* GlobalBudget: fixed the remove of budget level when it is containing budget
+* GlobalBudget/BudgetLevel/Budget : update amounts when updating budget lines values
+
+#### CRM
+
+* Lead: lead partner are now always prospect when converted.
+
+#### Human Resource
+
+* Expense: mail notification are now correctly sent when sending, validating or refusing an expense from API.
+
+#### Production
+
+* Manuf Order: fixed an issue that occured when manually removing a produced product with a tracking number.
+* Sale order line: fixed a message notifying that no manufacturing order have been generated when all lines are blocked.
+* Manufacturing order: fixed an issue where the purchase order date was not set when generated automatically during planning.
+* Cost calculation: fixed an issue where the cost price was not divided by the calculation quantity when the BOM quantity was greater than 1.
+* Manufacturing order: fixed an issue where an outsourced product's price from purchase order was not correctly priced in cost sheets.
+* Manufacturing order: fixed an error where a LazyInitializationException occurred during partial finish.
+* Cost calculation: fixed an issue where the child BOM quantity was not correctly multiplied when the BOM calculation quantity was greater than 1.
+
+#### Purchase
+
+* Call tender need: now set unit of the need when possible
+
+#### Sale
+
+* Sales order: fixed status filter on 'My Sales Orders' dashboard.
+* Sale order: fixed price recomputation when editable tree is enabled.
+
+#### Stock
+
+* Stock move: fixed an error when clicking 'Refresh the products net mass' without saving the record.
+
+#### Supply Chain
+
+* PurchaseOrderLine/Analytic: fixed an issue where the analytic was required on a title line.
+* Sale order: fixed wrong check on payment mode when changing partner.
+* Sale order: prevent already invoiced lines to be invoiced again.
+* Stock move: removed the toolbar from the 'Mass Stock Move Invoicing' wizard views.
+
+
+### Developer
+
+#### Account
+
+DELETE FROM meta_action where name = 'action-accounting-report-record-empty-report-type';
+
+#### Production
+
+Method signature change: the `qtyRatio` parameter was removed from the 
+`createUnitCostCalcLine` method in `UnitCostCalcLineServiceImpl`.
+
+#### Sale
+
+Added SubSaleOrderLineComputeService to SaleOrderCreateServiceImpl constructor.
+
 ## [8.4.4] (2025-08-14)
 
 ### Fixes
@@ -531,6 +627,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.5]: https://github.com/axelor/axelor-open-suite/compare/v8.4.4...v8.4.5
 [8.4.4]: https://github.com/axelor/axelor-open-suite/compare/v8.4.3...v8.4.4
 [8.4.3]: https://github.com/axelor/axelor-open-suite/compare/v8.4.2...v8.4.3
 [8.4.2]: https://github.com/axelor/axelor-open-suite/compare/v8.4.1...v8.4.2
