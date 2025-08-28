@@ -1,0 +1,3 @@
+---
+title: "PurchaseOrderLine/Analytic: fixed an issue where the analytic was required on a title line."
+module: axelor-supplychain
