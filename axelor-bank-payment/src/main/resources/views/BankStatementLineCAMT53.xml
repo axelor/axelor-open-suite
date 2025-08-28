@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <grid name="bank-statement-line-camt-053-grid" title="Bank Statement lines"
+    model="com.axelor.apps.bankpayment.db.BankStatementLineCAMT53"
+    orderBy="-bankStatement.toDate,bankDetails,-sequence" edit-icon="true">
+    <toolbar>
+      <button name="printBankStatementLinesBtn" title="Print bank statement lines"
+        onClick="action-view-bankpayment-bank-statement-line-print-wizard"/>
+    </toolbar>
+    <hilite color="info" if="lineTypeSelect == 1"/>
+    <hilite color="primary" if="lineTypeSelect == 3"/>
+    <hilite color="danger"
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(debit) &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(credit)"/>
+    <hilite color="warning"
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &lt; $number(debit) &amp;&amp; $number(amountRemainToReconcile) &lt; $number(credit)"/>
+    <hilite color="success" if="amountRemainToReconcile == 0"/>
+    <field name="sequence" width="50"/>
+    <field name="lineTypeSelect" width="90"/>
+    <field name="operationDate" width="90"/>
+    <field name="valueDate" width="90"/>
+    <field name="debit" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="credit" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="currency" width="60" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="bankDetails" width="375" form-view="bank-details-form"
+      grid-view="bank-details-grid"/>
+    <field name="bankDetails.code" width="50"/>
+    <field name="origin" width="70"/>
+    <field name="reference" width="100"/>
+    <field name="description" width="200"/>
+    <field name="amountRemainToReconcile" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
+  </grid>
+
+  <grid name="bank-statement-line-camt-053-grid-dashlet" title="Bank Statement lines"
+    model="com.axelor.apps.bankpayment.db.BankStatementLineCAMT53"
+    orderBy="-bankStatement.toDate,bankDetails,-sequence" edit-icon="true">
+    <hilite color="info" if="lineTypeSelect == 1"/>
+    <hilite color="primary" if="lineTypeSelect == 3"/>
+    <hilite color="danger"
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(debit) &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(credit)"/>
+    <hilite color="warning"
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &lt; $number(debit) &amp;&amp; $number(amountRemainToReconcile) &lt; $number(credit)"/>
+    <hilite color="success" if="amountRemainToReconcile == 0"/>
+    <field name="sequence" width="50"/>
+    <field name="lineTypeSelect" width="90"/>
+    <field name="operationDate" width="90"/>
+    <field name="valueDate" width="90"/>
+    <field name="debit" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="credit" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="currency" width="60" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="bankDetails" width="375" form-view="bank-details-form"
+      grid-view="bank-details-grid"/>
+    <field name="bankDetails.code" width="50"/>
+    <field name="origin" width="70"/>
+    <field name="reference" width="100"/>
+    <field name="description" width="200"/>
+    <field name="amountRemainToReconcile" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
+  </grid>
+
+  <form name="bank-statement-line-camt-053-form" title="Bank Statement line"
+    model="com.axelor.apps.bankpayment.db.BankStatementLineCAMT53" readonlyIf="true">
+    <panel name="mainPanel" colSpan="12">
+      <field name="sequence"/>
+      <field name="lineTypeSelect"/>
+      <field name="operationDate"/>
+      <field name="valueDate"/>
+      <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+      <field name="credit" x-scale="$currencyNumberOfDecimals"/>
+      <field name="currency" grid-view="currency-grid" form-view="currency-form"/>
+      <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
+      <field name="operationInterbankCodeLine" grid-view="interbank-code-line-grid"
+        form-view="interbank-code-line-form"/>
+      <field name="rejectInterbankCodeLine" grid-view="interbank-code-line-grid"
+        form-view="interbank-code-line-form"/>
+      <field name="origin"/>
+      <field name="reference"/>
+      <field name="commissionExemptionIndexSelect"/>
+      <field name="description" colSpan="12"/>
+      <field name="$currencyNumberOfDecimals" hidden="true"/>
+    </panel>
+  </form>
+
+</object-views>
