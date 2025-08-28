@@ -348,4 +348,15 @@ public class AccountingReportController {
             .getAnalyticDistributionTemplateDomain(
                 null, null, accountingReport.getCompany(), null, null, false));
   }
+
+  public void emptyReportTypeField(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    boolean isCustom =
+        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
+
+    response.setValue(
+        "reportType",
+        Beans.get(AccountingReportService.class)
+            .resolveReportTypeForCompany(accountingReport, isCustom));
+  }
 }
