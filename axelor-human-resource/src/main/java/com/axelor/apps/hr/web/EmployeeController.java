@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web;
 
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -45,6 +46,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -160,15 +162,17 @@ public class EmployeeController {
     Context context = request.getContext();
     Employee employee = context.asType(Employee.class);
 
-    EmploymentContract mainContract = employee.getMainEmploymentContract();
+    Company payCompany =
+        Optional.of(employee)
+            .map(Employee::getMainEmploymentContract)
+            .map(EmploymentContract::getPayCompany)
+            .orElse(null);
 
-    if (mainContract != null) {
-      response.setAttr(
-          "analyticDistributionTemplate",
-          "domain",
-          Beans.get(AnalyticAttrsService.class)
-              .getAnalyticDistributionTemplateDomain(
-                  null, employee.getProduct(), mainContract.getPayCompany(), null, null, false));
-    }
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                null, employee.getProduct(), payCompany, null, null, false));
   }
 }
