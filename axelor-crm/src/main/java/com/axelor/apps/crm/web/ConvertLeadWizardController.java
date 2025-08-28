@@ -172,6 +172,7 @@ public class ConvertLeadWizardController {
                 .context("_partnerMap", partnerMap)
                 .context("_contactPartnerList", contactPartnerList)
                 .context("_contactPartnerMap", contactPartnerMap)
+                .context("_isProspect", true)
                 .map());
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         response.setView(
