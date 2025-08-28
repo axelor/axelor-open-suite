@@ -193,6 +193,7 @@
   <action-view name="stock.root.multi.purchase.invoicing"
     title="Mass Suppl. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
     <view type="form" name="stock-move-multi-purchase-invoicing-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="800"
@@ -202,6 +203,7 @@
   <action-view name="stock.root.multi.sale.invoicing"
     title="Mass Cust. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
     <view type="form" name="stock-move-multi-sale-invoicing-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="900"
