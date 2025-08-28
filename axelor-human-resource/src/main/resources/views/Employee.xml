@@ -462,7 +462,8 @@
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form"
-            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+            onSelect="action-employee-method-set-domain-analytic-distribution-template"/>
           <panel-related name="expenseLimitListPanel" title="Expense limits"
             field="expenseLimitList" colSpan="12" form-view="expense-limit-form"
             grid-view="expense-limit-grid"/>
@@ -819,6 +820,12 @@
     name="action-employee-method-update-employee-files-with-medical-visit">
     <call class="com.axelor.apps.hr.web.EmployeeController"
       method="updateEmployeeFilesWithMedicalVisit"/>
+  </action-method>
+
+  <action-method
+    name="action-employee-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.EmployeeController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"

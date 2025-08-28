@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
@@ -38,6 +39,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -486,5 +488,29 @@ public class FixedAssetController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    FixedAsset fixedAsset = context.asType(FixedAsset.class);
+
+    String domain =
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                fixedAsset.getPartner(),
+                null,
+                fixedAsset.getCompany(),
+                null,
+                fixedAsset.getPurchaseAccount(),
+                false);
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        fixedAsset.getAnalyticDistributionTemplate();
+
+    if (analyticDistributionTemplate != null) {
+      domain += " OR self.id IN (" + analyticDistributionTemplate.getId() + ")";
+    }
+    response.setAttr("analyticDistributionTemplate", "domain", domain);
   }
 }

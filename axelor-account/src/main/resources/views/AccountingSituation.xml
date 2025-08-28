@@ -88,7 +88,8 @@
       showIf="__parent != null &amp;&amp; __parent._model == 'com.axelor.apps.base.db.Partner' &amp;&amp; company.accountConfig.analyticDistributionTypeSelect == 2">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form" domain="self.company = :company"/>
+        form-view="analytic-distribution-template-form"
+        onSelect="action-accounting-situation-method-set-domain-analytic-distribution-template"/>
       <field name="company.accountConfig" hidden="true"/>
       <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
     </panel>
@@ -329,5 +330,11 @@
       method="setHoldBackAccounts"/>
   </action-method>
 
+
+  <action-method
+    name="action-accounting-situation-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountingSituationController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

@@ -16,50 +16,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.web;
+package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.account.db.FixedAssetCategory;
-import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
+import com.axelor.apps.bankpayment.db.BankStatementRule;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
-import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Singleton;
 
-public class FixedAssetCategoryController {
-  public void setDepreciationPlanSelectToNone(ActionRequest request, ActionResponse response) {
-    try {
-      FixedAssetCategory fixedAssetCategory = request.getContext().asType(FixedAssetCategory.class);
-      FixedAssetCategoryService fixedAssetCategoryService =
-          Beans.get(FixedAssetCategoryService.class);
-      fixedAssetCategoryService.setDepreciationPlanSelectToNone(
-          fixedAssetCategory,
-          FixedAssetTypeRepository.FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET);
-
-      if (StringUtils.notEmpty(fixedAssetCategory.getDepreciationPlanSelect())) {
-        response.setValue("depreciationPlanSelect", fixedAssetCategory.getDepreciationPlanSelect());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
+@Singleton
+public class BankStatementRuleController {
 
   @ErrorException
   public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Context context = request.getContext();
-    FixedAssetCategory fixedAssetCategory = context.asType(FixedAssetCategory.class);
+    BankStatementRule bankStatementRule = context.asType(BankStatementRule.class);
 
     response.setAttr(
         "analyticDistributionTemplate",
         "domain",
         Beans.get(AnalyticAttrsService.class)
             .getAnalyticDistributionTemplateDomain(
-                null, null, fixedAssetCategory.getCompany(), null, null, false));
+                bankStatementRule.getPartner(),
+                null,
+                bankStatementRule.getCounterpartAccount().getCompany(),
+                null,
+                bankStatementRule.getCounterpartAccount(),
+                false));
   }
 }
