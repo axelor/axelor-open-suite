@@ -18,14 +18,18 @@
  */
 package com.axelor.apps.hr.web;
 
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
@@ -38,9 +42,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -148,5 +154,25 @@ public class EmployeeController {
     Employee employee = request.getContext().asType(Employee.class);
     response.setValue(
         "employeeFileList", Beans.get(MedicalVisitService.class).addToEmployeeFiles(employee));
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    Employee employee = context.asType(Employee.class);
+
+    Company payCompany =
+        Optional.of(employee)
+            .map(Employee::getMainEmploymentContract)
+            .map(EmploymentContract::getPayCompany)
+            .orElse(null);
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                null, employee.getProduct(), payCompany, null, null, false));
   }
 }

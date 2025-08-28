@@ -1,3 +1,0 @@
----
-title: "AnalyticAccount/MoveLine/InvoiceLine: fixed wrong required condition on the analytic axis accounts in free distribution."
-module: axelor-account

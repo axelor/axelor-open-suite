@@ -1,3 +1,0 @@
----
-title: "Sale order line: fixed a message notifying that no manufacturing order have been generated when all lines are blocked."
-module: axelor-production

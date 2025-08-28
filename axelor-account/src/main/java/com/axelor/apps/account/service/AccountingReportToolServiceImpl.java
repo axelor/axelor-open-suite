@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
+import com.axelor.apps.base.db.Company;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -63,14 +65,24 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
             "self.reportExportTypeSelect = :reportType AND self.typeSelect %s :typeCustom",
             isCustom ? "=" : "<>");
 
-    Stream<AccountingReportType> accountingReportTypeStream =
+    Company accountingReportCompany = accountingReport.getCompany();
+
+    if (accountingReportCompany != null) {
+      queryStr += " AND self.company.code = :companyCode";
+    }
+
+    Query<AccountingReportType> query =
         accountingReportTypeRepository
             .all()
             .filter(queryStr)
             .bind("reportType", AccountingReportTypeRepository.REPORT)
-            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE)
-            .fetch()
-            .stream();
+            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE);
+
+    if (accountingReportCompany != null) {
+      query = query.bind("companyCode", accountingReportCompany.getCode());
+    }
+
+    Stream<AccountingReportType> accountingReportTypeStream = query.fetch().stream();
 
     if (isCustom) {
       accountingReportTypeStream =
