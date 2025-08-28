@@ -47,6 +47,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -979,7 +980,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public AccountingReportType resolveReportTypeForCompany(
       AccountingReport accountingReport, boolean isCustom) {
     AccountingReportType reportType = accountingReport.getReportType();
-    if (reportType == null) {
+    if (reportType == null || reportType.getCompany() == null) {
       return null;
     }
 
@@ -991,7 +992,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         return null;
       }
     } else {
-      if (accountingReport.getCompanySet() != null
+      if (ObjectUtils.notEmpty(accountingReport.getCompanySet())
           && accountingReport.getCompanySet().stream()
               .map(Company::getCode)
               .noneMatch(reportCompanyCode::equals)) {
