@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -27,6 +28,7 @@ import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.Optional;
 import javax.persistence.PersistenceException;
 
 public class CallTenderManagementRepository extends CallTenderRepository {
@@ -56,7 +58,7 @@ public class CallTenderManagementRepository extends CallTenderRepository {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_NO_SEQ),
-              entity.getCompany());
+              Optional.ofNullable(entity.getCompany()).map(Company::getName).orElse(""));
         }
         entity.setCallTenderSeq(seq);
       }
