@@ -1,3 +1,42 @@
+## [7.2.47] (2025-08-28)
+
+### Fixes
+#### Account
+
+* Move : fix technical error when accounting an empty move
+* Accounting report: fixed missing assets with none depreciation plan and net carrying amount on 'Gross value and depreciations' report.
+* AnalyticDistributionTemplate : Remove the possibility of selecting duplicate on analytic distribution template fields.
+
+#### Budget
+
+* GlobalBudget/BudgetLevel/Budget : update amounts when updating budget lines values
+
+#### CRM
+
+* Lead: lead partner are now always prospect when converted.
+
+#### Human Resource
+
+* Expense: mail notification are now correctly sent when sending, validating or refusing an expense from API.
+
+#### Production
+
+* Manufacturing order: fixed an issue where the purchase order date was not set when generated automatically during planning.
+
+#### Sale
+
+* Sales order: fixed status filter on 'My Sales Orders' dashboard.
+
+#### Stock
+
+* Stock move: fixed an error when clicking 'Refresh the products net mass' without saving the record.
+
+#### Supply Chain
+
+* PurchaseOrderLine/Analytic: fixed an issue where the analytic was required on a title line.
+* Sale order: prevent already invoiced lines to be invoiced again.
+* Stock move: removed the toolbar from the 'Mass Stock Move Invoicing' wizard views.
+
 ## [7.2.46] (2025-08-14)
 
 ### Fixes
@@ -1994,6 +2033,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.47]: https://github.com/axelor/axelor-open-suite/compare/v7.2.46...v7.2.47
 [7.2.46]: https://github.com/axelor/axelor-open-suite/compare/v7.2.45...v7.2.46
 [7.2.45]: https://github.com/axelor/axelor-open-suite/compare/v7.2.44...v7.2.45
 [7.2.44]: https://github.com/axelor/axelor-open-suite/compare/v7.2.43...v7.2.44
