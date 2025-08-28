@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
