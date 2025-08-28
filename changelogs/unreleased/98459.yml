@@ -1,5 +1,0 @@
----
-title: "Accounting report : fixed domain on report type by adding company information."
-module: axelor-account
-developer: |
-  DELETE FROM meta_action where name = 'action-accounting-report-record-empty-report-type';

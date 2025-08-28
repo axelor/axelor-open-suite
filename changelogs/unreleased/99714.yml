@@ -1,3 +1,0 @@
----
-title: "Manuf Order: fixed an issue that occured when manually removing a produced product with a tracking number."
-module: axelor-production
