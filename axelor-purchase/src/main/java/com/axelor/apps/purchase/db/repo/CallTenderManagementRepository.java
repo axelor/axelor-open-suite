@@ -44,22 +44,22 @@ public class CallTenderManagementRepository extends CallTenderRepository {
     try {
 
       if (entity.getCallTenderSeq() == null) {
-        try {
-          String seq =
-              sequenceService.getSequenceNumber(
-                  SequenceRepository.CALL_FOR_TENDER,
-                  entity.getCompany(),
-                  CallTender.class,
-                  "callTenderSeq",
-                  entity);
-          entity.setCallTenderSeq(seq);
-        } catch (AxelorException e) {
+        String seq =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.CALL_FOR_TENDER,
+                entity.getCompany(),
+                CallTender.class,
+                "callTenderSeq",
+                entity);
+
+        if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_NO_SEQ));
+              I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_NO_SEQ),
+              entity.getCompany());
         }
+        entity.setCallTenderSeq(seq);
       }
-
       return super.save(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

@@ -104,6 +104,6 @@ public final class PurchaseExceptionMessage {
   public static final String CALL_FOR_TENDER_MISSING_TEMPLATE = /*$$(*/
       "A message template is needed to send a mail" /*)*/;
   public static final String CALL_FOR_TENDER_NO_SEQ = /*$$(*/
-      "A sequence is missing for call for tender" /*)*/;
+      "The company %s doesn't have any configured sequence for the call for tenders" /*)*/;
   ;
 }
