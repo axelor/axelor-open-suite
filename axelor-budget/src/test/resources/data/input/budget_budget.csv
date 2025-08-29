@@ -1,5 +1,0 @@
-"importId";"budgetLevel.importId";"globalBudget.importId";"code";"name";"totalAmountExpected";"availableAmount";"availableAmountWithSimulated";"fromDate";"toDate";"typeSelect";"statusSelect"
-1011;1014;1011;"WEBSITE";"SITE WEB";400;400;400;"2023-01-01";"2024-12-31";"budget";1
-1012;1014;1011;"RADIO";"RADIO";500;500;500;"2023-01-01";"2024-12-31";"budget";1
-1013;1015;1011;"OFFICE";"OFFICE";1600;1600;1600;"2023-01-01";"2024-12-31";"budget";1
-1014;1015;1011;"COMPUTER";"COMPUTER";1800;1800;1800;"2023-01-01";"2024-12-31";"budget";1

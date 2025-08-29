@@ -1,4 +1,0 @@
-"importId";"birtTemplate.importId";"name";"value";"type"
-701;201;"Timezone";"$BudgetScenario.company?.timezone";"string"
-702;201;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
-703;201;"BudgetScenarioId";"$BudgetScenario.id";"decimal"

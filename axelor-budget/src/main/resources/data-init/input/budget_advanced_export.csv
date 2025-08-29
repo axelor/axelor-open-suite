@@ -1,5 +1,0 @@
-"importId";"name";"metaModel.name";"maxExportLimit";"queryFetchSize";"includeArchivedRecords"
-100;"Budget";"Budget";1000;100;"true"
-1000;"BudgetLevel";"BudgetLevel";1000;100;"true"
-2000;"GlobalBudget";"GlobalBudget";1000;100;"true"
-3000;"BudgetLine";"BudgetLine";1000;100;"true"
