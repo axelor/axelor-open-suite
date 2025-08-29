@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="indicator-config-grid" title="Indicator configs"
+    model="com.axelor.apps.base.db.IndicatorConfig">
+    <field name="targetModel"/>
+    <field name="cron"/>
+    <field name="displayBarChart"/>
+    <field name="displayInRecordViewTypeSelect"/>
+  </grid>
+
+  <form name="indicator-config-form" title="Indicator config"
+    model="com.axelor.apps.base.db.IndicatorConfig" width="large">
+    <toolbar>
+      <button name="generateResultBtn" title="Generate indicators"
+        onClick="save,action-indicator-config-method-generate-result"/>
+    </toolbar>
+
+    <panel name="generalPanel" colSpan="12">
+      <panel name="queryPanel" colSpan="12">
+        <field name="recordQuery" widget="CodeEditor" x-code-syntax="sql" height="100"
+          colSpan="12"/>
+      </panel>
+
+      <panel name="targetModelPanel" colSpan="12">
+        <field name="targetModel" canView="false"
+          onChange="action-birt-printing-wizard-method-model-on-change"/>
+        <field name="cron"/>
+        <!-- To DISPLAY HELP ON CRON AND SIMILIFY periodicity -->
+      </panel>
+
+      <panel name="expressionPanel" colSpan="12">
+        <field name="expressionTypeSelect" colSpan="6"/>
+        <field name="expression" widget="CodeEditor" x-code-syntax="groovy"
+          showIf="expressionTypeSelect == 1" colSpan="12" height="100"/>
+        <field name="expression" widget="CodeEditor" x-code-syntax="sql"
+          showIf="expressionTypeSelect == 2" colSpan="12" height="100"/>
+      </panel>
+    </panel>
+
+    <panel name="testingExprPanel" title="Testing expression" colSpan="12" canCollapse="true"
+      collapseIf="!$testResult">
+      <field name="recordValue" widget="EvalRefSelect" title="Select record"
+        x-eval-target="targetModel.fullName" x-eval-target-name="metaModelTargetName"
+        x-eval-value="recordValue" x-eval-title="recordTitle"/>
+      <button name="checkExprValueBtn" title="Check value"
+        onClick="save,action-indicator-config-method-test-expression"
+        readonlyIf="!targetModel || !recordValue"/>
+      <field name="$testResult" type="decimal" title="Testing result" readonly="true"
+        showIf="$testResult"/>
+    </panel>
+
+    <panel name="testingQueryPanel" title="Testing query" colSpan="12" canCollapse="true"
+      collapseIf="true">
+      <button name="checkQueryValueBtn" readonlyIf="!recordQuery" title="Check value"
+        onClick="save,action-indicator-config-method-test-query" colOffset="6"/>
+      <field name="queryResult" colSpan="12" showIf="queryResult" readonly="true">
+        <viewer><![CDATA[
+        <>
+          {(() => {
+            const data = queryResult;
+            const [header, ...rows] = data.split("\n");
+            const columns = header.split(",");
+            return (
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            {columns.map((col, ind) => <TableCell key={ind} as="th">{col}</TableCell>)}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row, ind) => (
+                            <TableRow key={ind}>
+                                {row.split(",").map((col, ind) => <TableCell key={ind}>{col}</TableCell>)}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            )
+          })()}
+        </>
+        ]]></viewer>
+      </field>
+    </panel>
+
+    <panel name="displayConfigPanel" title="Display config.">
+      <field name="displayInRecordViewTypeSelect" colSpan="4"/>
+      <field name="displayBarChart" colSpan="4"/>
+      <field name="forLastNResults" colSpan="4"/>
+      <field name="targetExpression" widget="CodeEditor" x-code-syntax="groovy" colSpan="12"
+        height="60" title="Indicator target"/>
+    </panel>
+
+    <panel-dashlet name="resultPanel"
+      action="action-indicator-config-view-indicator-result" colSpan="12"/>
+
+    <panel name="hiddenFieldsPanel" hidden="true">
+      <field name="targetModel.fullName"/>
+      <field name="metaModelTargetName"/>
+      <field name="recordTitle"/>
+      <field name="recordValue"/>
+    </panel>
+  </form>
+
+  <action-method name="action-indicator-config-method-test-query">
+    <call class="com.axelor.apps.base.web.IndicatorController" method="testQuery"/>
+  </action-method>
+
+  <action-method name="action-indicator-config-method-test-expression">
+    <call class="com.axelor.apps.base.web.IndicatorController" method="testExpression"/>
+  </action-method>
+
+  <action-method name="action-indicator-config-method-generate-result">
+    <call class="com.axelor.apps.base.web.IndicatorController" method="generateResults"/>
+  </action-method>
+
+  <action-view name="action-indicator-config-view-indicator-result"
+    title="Indicator result" model="com.axelor.apps.base.db.IndicatorResult">
+    <view type="grid" name="indicator-result-grid"/>
+    <view type="form" name="indicator-result-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.indicatorConfig.id = :_indicatorConfigId</domain>
+    <context name="_indicatorConfigId" expr="eval: id"/>
+  </action-view>
+
+</object-views>

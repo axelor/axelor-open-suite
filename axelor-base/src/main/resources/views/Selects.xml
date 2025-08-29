@@ -826,4 +826,15 @@
     <option value="4">Powder retention</option>
   </selection>
 
+  <selection name="base.indicator.config.expression.type.select">
+    <option value="1">Groovy</option>
+    <option value="2">Jpql</option>
+  </selection>
+
+  <selection name="base.indicator.config.display.in.rec.view.type.select">
+    <option value="0">None</option>
+    <option value="1">Button in top menu</option>
+    <option value="2">Panel at the end of view</option>
+  </selection>
+
 </object-views>
