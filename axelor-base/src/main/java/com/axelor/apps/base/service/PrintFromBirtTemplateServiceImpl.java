@@ -32,7 +32,6 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.file.PdfHelper;
@@ -165,7 +164,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   }
 
   protected void moveToExportDir(String fileName, Path filePath) throws IOException {
-    Path exportDirPath = Paths.get(ActionExport.getExportPath().getAbsolutePath(), fileName);
+    Path exportDirPath = Paths.get(TempFiles.getTempPath().toFile().getAbsolutePath(), fileName);
     Files.move(filePath, exportDirPath, StandardCopyOption.REPLACE_EXISTING);
   }
 
