@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TimerRepository;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -289,7 +290,7 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     response.setAttr(
-        "tagSet", "domain", Beans.get(ProjectTaskAttrsService.class).getTagDomain(projectTask));
+        "tagSet", "domain", Beans.get(TagService.class).getTagDomain("ProjectTask", Optional.of(projectTask).map(ProjectTask::getProject).map(Project::getCompany).orElse(null)));
   }
 
   @ErrorException

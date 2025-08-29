@@ -18,14 +18,22 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Tag;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
+import jakarta.persistence.Query;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TagServiceImpl implements TagService {
 
@@ -76,5 +84,26 @@ public class TagServiceImpl implements TagService {
     MetaModel metaModel = metaModelRepository.findByName(metaModelName);
     valuesMap.put("$metaModel", metaModel);
     return valuesMap;
+  }
+
+  @Override
+  public String getTagDomain(String metaModelName, Company company){
+    if (StringUtils.isEmpty(metaModelName)){
+      return "self.id = 0";
+    }
+
+    MetaModel metaModel = metaModelRepository.findByName(metaModelName);
+    Query resultQuery =
+            JPA.em()
+                    .createQuery(
+                            "SELECT self.id FROM Tag self WHERE (self.concernedModelSet IS EMPTY OR :metaModel MEMBER OF self.concernedModelSet) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)");
+    resultQuery.setParameter("metaModel", metaModel);
+    resultQuery.setParameter("company", company);
+
+    if (ObjectUtils.isEmpty(resultQuery.getResultList())) {
+      return "self.id = 0";
+    }
+
+    return String.format("self.id IN (%s)",resultQuery.getResultList().stream().map(Object::toString).collect(Collectors.joining(",")));
   }
 }
