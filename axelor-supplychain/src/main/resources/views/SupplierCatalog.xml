@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid id="supplychain-supplier-catalog-grid" name="supplier-catalog-grid"
+    title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog" extension="true">
+    <extend target="//field[@name='price']">
+      <insert position="after">
+        <field name="supplierDeliveryTime" if-module="axelor-supplychain"
+          if="__config__.app.isApp('supplychain')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="supplychain-supplier-catalog-partner-grid" name="supplier-catalog-partner-grid"
+    title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog" extension="true">
+    <extend target="//field[@name='price']">
+      <insert position="after">
+        <field name="supplierDeliveryTime" if-module="axelor-supplychain"
+          if="__config__.app.isApp('supplychain')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="supplychain-supplier-catalog-form" name="supplier-catalog-form"
+    title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog" extension="true">
+    <extend target="//panel[@name='mainPanel']">
+      <insert position="after">
+        <panel name="deliveryPanel" if-module="axelor-supplychain"
+          if="__config__.app.isApp('supplychain')" showTitle="false" colSpan="12">
+          <field name="supplierDeliveryTime" colSpan="6"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form id="supplychain-supplier-catalog-partner-form" name="supplier-catalog-partner-form"
+    title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog" extension="true">
+    <extend target="//panel[@name='mainPanel']">
+      <insert position="after">
+        <panel name="deliveryPanel" if-module="axelor-supplychain"
+          if="__config__.app.isApp('supplychain')" showTitle="false" colSpan="12">
+          <field name="supplierDeliveryTime" colSpan="6"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>
