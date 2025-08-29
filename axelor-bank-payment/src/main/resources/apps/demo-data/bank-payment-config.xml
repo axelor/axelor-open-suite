@@ -6,7 +6,7 @@
   <input file="bankpayment_bankOrderEconomicReason.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind to="name" eval="label != null &amp;&amp; label != '' ? code + ' - ' + label : code"/>
   </input>
