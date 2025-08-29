@@ -23,14 +23,14 @@
     <field name="durationForCustomer" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor" hidden="true"/>
     <field name="invoiced"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine()"/>
     <field name="finalInvoice"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine()"/>
     <field name="project" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
@@ -58,14 +58,14 @@
     <field name="durationForCustomer" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor" hidden="true"/>
     <field name="invoiced"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine()"/>
     <field name="finalInvoice"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine()"/>
     <field name="project" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
@@ -101,9 +101,9 @@
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
     <field name="toInvoice" width="100" readonly="true" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" width="100" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor" hidden="true"/>
     <field name="comments"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"/>
@@ -126,9 +126,9 @@
     <field name="hoursDuration"/>
     <field name="durationForCustomer"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor"/>
     <field name="comments"/>
     <field name="timesheet.statusSelect"
@@ -156,9 +156,9 @@
     <field name="hoursDuration" hidden="true"/>
     <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="enableEditor" hidden="true"/>
     <field name="comments"/>
     <field name="projectTask.frameworkCustomerContract" hidden="true"/>
@@ -185,7 +185,7 @@
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
     <field name="toInvoice" width="88%" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine()"/>
     <field name="comments"/>
     <field name="enableEditor" hidden="true"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"/>
@@ -215,9 +215,9 @@
       <field name="hoursDuration" hidden="true"/>
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="toInvoice" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="comments"/>
     </panel>
@@ -253,9 +253,9 @@
       <field name="hoursDuration" hidden="true"/>
       <field name="timer" form-view="ts-timer-form" grid-view="ts-timer-grid" showIf="timer"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="toInvoice" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="comments"/>
       <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"
@@ -306,9 +306,9 @@
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
       <field name="timer" form-view="ts-timer-form" grid-view="ts-timer-grid" showIf="timer"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="toInvoice" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine() &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="comments"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="hoursDuration" hidden="true"/>
@@ -459,7 +459,7 @@
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="toInvoice"
       expr="eval: __parent__?.project?.isInvoicingTimesheet || __parent__?.parentProject?.parentProject?.isInvoicingTimesheet"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceablTimesheetLine()"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.getIsReinvoiceableTimesheetLine()"/>
   </action-record>
 
   <action-record name="action-hr-timesheet-line-record-empty-product"
