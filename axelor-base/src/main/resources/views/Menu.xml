@@ -207,6 +207,15 @@
     <view type="form" name="import-export-translation-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-map-configurator" title="Map configurators"
+    parent="admin-root-general" action="admin.root.general.map.configurator" order="1200"/>
+
+  <action-view name="admin.root.general.map.configurator" title="Map configurators"
+    model="com.axelor.apps.base.db.MapView">
+    <view type="grid" name="map-view-grid"/>
+    <view type="form" name="map-view-form"/>
+  </action-view>
+
   <menuitem name="referential-root" title="Referential" order="300" parent="admin-root"
     if="__config__.app.isApp('base')"/>
   <menuitem name="referential-root-partners" parent="referential-root" title="Partners"
