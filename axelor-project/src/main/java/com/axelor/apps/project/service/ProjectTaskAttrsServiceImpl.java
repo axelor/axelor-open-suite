@@ -32,36 +32,11 @@ import java.util.Optional;
 public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
 
   protected AppBaseService appBaseService;
-  protected MetaModelRepository metaModelRepository;
 
   @Inject
   public ProjectTaskAttrsServiceImpl(
-      AppBaseService appBaseService, MetaModelRepository metaModelRepository) {
+      AppBaseService appBaseService) {
     this.appBaseService = appBaseService;
-    this.metaModelRepository = metaModelRepository;
-  }
-
-  @Override
-  public String getTagDomain(ProjectTask projectTask) {
-    Company company =
-        Optional.ofNullable(projectTask)
-            .map(ProjectTask::getProject)
-            .map(Project::getCompany)
-            .orElse(null);
-    String domain =
-        String.format(
-            "(self.concernedModelSet IS EMPTY OR %s member of self.concernedModelSet)",
-            metaModelRepository.findByName("ProjectTask").getId());
-
-    if (company != null) {
-      domain =
-          domain.concat(
-              String.format(
-                  " AND (self.companySet IS EMPTY OR %s member of self.companySet)",
-                  company.getId()));
-    }
-
-    return domain;
   }
 
   @Override
@@ -87,7 +62,7 @@ public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
     domain =
         domain.concat(
             String.format(
-                " AND self.toDate > '%s')",
+                " AND self.toDate > CAST('%s' AS date))",
                 appBaseService.getTodayDate(
                     Optional.of(projectTask)
                         .map(ProjectTask::getProject)

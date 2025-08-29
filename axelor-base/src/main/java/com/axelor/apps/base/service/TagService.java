@@ -18,7 +18,10 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Tag;
+
+import java.util.List;
 import java.util.Map;
 
 public interface TagService {
@@ -27,4 +30,6 @@ public interface TagService {
   Map<String, Object> getOnNewValuesMap(Tag tag, String fullNameModel, String fieldModel);
 
   Map<String, Object> fillMetaModelField(String metaModelName, Map<String, Object> valuesMap);
+
+    String getTagDomain(String metaModelName, Company company);
 }
