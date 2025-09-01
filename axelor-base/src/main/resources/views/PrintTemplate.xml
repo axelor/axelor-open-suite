@@ -118,8 +118,7 @@
     <call class="com.axelor.apps.base.web.PrintTemplateController" method="openPrint"/>
   </action-method>
 
-  <action-export name="action-export-print-template" output="${date}${time}"
-    download="true">
+  <action-export name="action-export-print-template">
     <export
       name="PrintTemplate-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
       template="data-export/export-print-template.txt" engine="groovy"/>

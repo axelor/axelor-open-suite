@@ -143,8 +143,7 @@
       if="!employmentContractTemplate"/>
   </action-validate>
 
-  <action-export output="/home/employment_contracts" download="true"
-    name="action-employment-contract-export-word">
+  <action-export name="action-employment-contract-export-word">
     <export
       template="eval: com.axelor.meta.MetaFiles.getPath(employmentContractTemplate.metaFile).toString()"
       name="${fullName}.xml" engine="groovy"/>
