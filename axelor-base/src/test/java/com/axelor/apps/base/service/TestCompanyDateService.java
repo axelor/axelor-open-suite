@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 class TestCompanyDateService {
 
   private static final String DD_MM_YYYY_HH_MM = "dd/MM/yyyy HH:mm";
-  private static final String M_D_YYYY_H_MM_A = "M/d/yyyy, h:mm a";
+  private static final String M_D_YYYY_H_MM_A = "M/d/yyyy, h:mm a";
   private static final String DD_MM_YYYY = "dd/MM/yyyy";
   private static final String M_D_YYYY = "M/d/yyyy";
 
