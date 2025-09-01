@@ -327,8 +327,11 @@
     <bind to="name" column="name"/>
     <bind to="reportExportTypeSelect" eval="'1'"/>
     <bind to="reportTitle" column="name"/>
-    <bind to="company" column="company" search="self.importId = :company"/>
+    <bind to="company" column="company" search="self.importId = :company"
+      if="typeSelect != '3000'"/>
     <bind to="comparison" eval="typeSelect == '3000' ? '1' : '0'"/>
+    <bind to="companySet" column="companySet" search="self.importId in :companySet"
+      eval="companySet.split('\\|') as List" if="typeSelect == '3000'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"
