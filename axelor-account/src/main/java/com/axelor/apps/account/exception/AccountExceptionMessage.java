@@ -1456,6 +1456,9 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_JOURNAL_NOT_FOUND = /*$$(*/
       "The journal with the code %s cannot be found. The move cannot be created." /*)*/;
 
+  public static final String IMPORT_FEC_COMPANY_NOT_FOUND = /*$$(*/
+      "No company found. The move cannot be created." /*)*/;
+
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 

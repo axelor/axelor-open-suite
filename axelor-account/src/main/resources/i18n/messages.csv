@@ -2358,6 +2358,7 @@
 "No Lines selected",,,
 "No PFP",,,
 "No account found for Tax: %s (company: %s)",,,
+"No company found. The move cannot be created.",,,
 "No comparison",,,
 "No computation method is defined.",,,
 "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line.",,,
