@@ -36,6 +36,7 @@ dependencies {
 	implementation libs.iban4j
 
 	implementation libs.jaxb_bind_api
+	testImplementation libs.mockito
 }
 
 license {
