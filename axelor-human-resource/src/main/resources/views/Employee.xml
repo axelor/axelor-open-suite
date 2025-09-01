@@ -118,6 +118,9 @@
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
       <field name="$employeeStatus" hidden="true"/>
+      <!-- KAPSIKI Customization: Displaying address in the personal information view -->
+      <field name="address" canNew="true" colSpan="6" form-view="address-form"
+        grid-view="address-grid"/>
     </panel>
 
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency"

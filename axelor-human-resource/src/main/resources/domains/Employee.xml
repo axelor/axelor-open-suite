@@ -132,6 +132,8 @@
 
     <one-to-many name="bankCardList" ref="com.axelor.apps.hr.db.BankCard"
       title="Bank cards" mappedBy="employee"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"
+      massUpdate="true"/>
 
     <extra-code>
    		<![CDATA[
@@ -161,6 +163,7 @@
       <field name="negativeValueLeave" on="UPDATE"/>
       <field name="lunchVoucherFormatSelect" on="UPDATE"/>
       <field name="companyCbSelect" on="UPDATE"/>
+      <field name="address" on="UPDATE"/>
     </track>
 
   </entity>
