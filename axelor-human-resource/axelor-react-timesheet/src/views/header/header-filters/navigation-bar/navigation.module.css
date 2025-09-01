@@ -1,0 +1,30 @@
+.container {
+  border: 1px solid var(--palettes-neutral-400);
+  display: flex;
+  align-items: center;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  height: 36px;
+}
+
+.container button {
+  margin: 0.1rem;
+  all: unset;
+  width: 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--palettes-neutral-0);
+  padding: 0.2rem 0.5rem;
+  color: var(--palettes-neutral-700);
+}
+
+.container button:hover {
+  background-color: var(--palettes-neutral-50);
+}
+
+.container button {
+  border-left: 1px solid var(--palettes-neutral-400);
+  margin-left: -1px;
+}

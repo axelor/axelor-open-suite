@@ -1,0 +1,33 @@
+.daySummaryContainer {
+  padding: 10px;
+}
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  place-self: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.dateLabel {
+  color: var(--palettes-neutral-600);
+}
+.timeLabel {
+  font-size: 1.2rem;
+  color: var(--palettes-neutral-800);
+  font-weight: 600;
+}
+.workSummaryContainer {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid var(--palettes-neutral-200);
+  border-radius: 0.5rem;
+}
+
+/* Responsive CSS */
+@media (max-width: 768px) {
+  .summaryHeader {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}

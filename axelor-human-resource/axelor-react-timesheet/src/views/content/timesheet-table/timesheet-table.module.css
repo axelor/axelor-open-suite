@@ -1,0 +1,134 @@
+.timesheetTableScrollContainer {
+  width: 100%;
+  max-width: 100vw;
+  background: #f6f8fc;
+  padding: 8px;
+  padding-bottom: 5rem;
+}
+
+.timesheetTable {
+  border: 0 solid var(--palettes-neutral-100);
+  border-width: 0 1px 1px;
+  border-radius: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.stickyTable {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow-x: hidden;
+}
+
+.tr {
+  display: grid;
+  grid-template-columns: 3fr repeat(7, 1fr);
+  align-items: center;
+  border-bottom: 1px solid var(--palettes-neutral-100);
+}
+
+.td {
+  height: 100%;
+  border-right: 1px solid var(--palettes-neutral-100);
+  position: relative;
+}
+
+.stickyHeaderRow {
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  box-sizing: content-box;
+}
+
+.rowNameCell {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  min-width: 18.75rem;
+}
+
+.truncateText {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.875rem;
+  margin-left: 10px;
+}
+.timesheetCell,
+.projectHeader,
+.timeEntryPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projectHeader {
+  border-top: 1px solid var(--palettes-neutral-100);
+  font: 700 1.2rem/1 inherit;
+  min-width: 18.75rem;
+}
+
+.timeEntryPlaceholder {
+  width: 100%;
+  height: 100%;
+  min-width: 6.25rem;
+}
+.reactWindowList,
+.stickyDate {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  box-sizing: content-box;
+  position: relative;
+}
+
+.stickyDate {
+  position: relative;
+  overflow-y: visible;
+  min-width: 6.25rem;
+}
+.duration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid #c3c3c3;
+  border-radius: 8px;
+  padding: 0.3em 1em;
+  background: #fff;
+  min-width: 120px;
+}
+
+.durationInput {
+  text-align: center;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.1em;
+  width: 2.2em;
+  margin: 0 0.1em;
+}
+
+.durationInput:focus {
+  outline: none;
+  border: none;
+  background: transparent;
+}
+
+.duration span {
+  font-size: 1.1em;
+  color: #3d3d6b;
+  font-weight: 500;
+  margin: 0 0.2em;
+}
+
+.listWrapperContainer {
+  flex: 1;
+  min-height: 0;
+}

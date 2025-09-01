@@ -1,0 +1,38 @@
+.timesheetLabel {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.summaryInfo {
+  color: gray;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--palettes-primary-200);
+  border-radius: 0.3rem;
+  display: flex;
+  flex-direction: column;
+}
+.summaryInfoWrapper {
+  display: flex;
+  gap: 10px;
+}
+.actualTime {
+  color: var(--palettes-primary-700);
+}
+
+.separator {
+  width: 100%;
+  height: 0.1px;
+  background-color: var(--palettes-neutral-200);
+  margin: 0.5rem 0;
+}
+
+.diff {
+  color: var(--palettes-neutral-800);
+  font-weight: 600;
+}

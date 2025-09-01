@@ -1,0 +1,57 @@
+.workDescContainer {
+  padding: 10px 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding-left: 30px;
+  row-gap: 8px;
+  color: var(--palettes-neutral-700);
+  font-size: 0.8rem;
+}
+
+.workDescContainer > *:nth-child(even) {
+  text-align: right;
+}
+
+.positiveIndicator,
+.NegativeIndicator,
+.equalIndicator {
+  position: relative;
+}
+
+.positiveIndicator::before,
+.NegativeIndicator::before,
+.equalIndicator::before {
+  position: absolute;
+  left: -35px;
+  top: 0px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--palettes-neutral-200);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.positiveIndicator::before {
+  content: "+";
+}
+
+.NegativeIndicator::before {
+  content: "-";
+}
+
+.equalIndicator::before {
+  content: "=";
+  top: 15px;
+  font-weight: 500;
+}
+
+.difference {
+  padding-top: 15px;
+  border-top: 1px solid var(--palettes-neutral-200);
+  color: var(--palettes-neutral-900);
+  font-weight: 600;
+}

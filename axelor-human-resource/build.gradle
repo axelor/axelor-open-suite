@@ -1,27 +1,27 @@
 plugins {
-	id 'com.axelor.app'
-	id "com.github.node-gradle.node"
+  id 'com.axelor.app'
+  id "com.github.node-gradle.node"
 }
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
-	version = openSuiteVersion
+  version = openSuiteVersion
 }
 
 axelor {
-	title "Axelor Human Resource"
-	description "Axelor Human Resource Module"
+  title "Axelor Human Resource"
+  description "Axelor Human Resource Module"
 }
 
 dependencies {
-	api project(":modules:axelor-project")
-	api project(":modules:axelor-bank-payment")
+  api project(":modules:axelor-project")
+  api project(":modules:axelor-bank-payment")
 
-	implementation libs.commons_lang3
-	implementation libs.commons_collections4
-	testImplementation libs.mockito
+  implementation libs.commons_lang3
+  implementation libs.commons_collections4
+  testImplementation libs.mockito
     implementation libs.swagger_jaxrs
     implementation libs.jaxb_bind_api
 }
@@ -31,28 +31,27 @@ ext {
 }
 
 node {
-	version = '16.17.0'
-	yarnVersion = '1.22.19'
+  version = '18.12.0'
+  yarnVersion = '1.22.19'
+  pnpmVersion = '9.15.9'
     download = true
     distBaseUrl = null
     nodeModulesDir = file(reactDir)
 }
 
-task buildFront(type: YarnTask) {
+task buildFront(type: PnpmTask) {
     group = 'axelor'
     description = 'Build Front-end'
 
-    inputs.files("${reactDir}/package.json", "${reactDir}/yarn.lock")
+    inputs.files("${reactDir}/package.json", "${reactDir}/package-lock.yaml")
     inputs.dir("${reactDir}/src")
-    inputs.dir("${reactDir}/public")
-    inputs.dir(fileTree("${reactDir}/.yarn"))
-    outputs.dir("${reactDir}/build")
+    outputs.dir("${reactDir}/dist")
 
-	dependsOn 'installFrontDeps'
+  dependsOn 'installFrontDeps'
     args = ["run", "build"]
 }
 
-task installFrontDeps(type: YarnTask) {
+task installFrontDeps(type: PnpmTask) {
     group = 'axelor'
     description = 'Install Front-end dependencies'
 
@@ -61,20 +60,19 @@ task installFrontDeps(type: YarnTask) {
 
 
 task copyReactWebapp(type: Copy) {
-	destinationDir = file("$rootProject.buildDir/webapp")
-	into("hr/timesheet") {
-		from "${reactDir}/build"
-	}
-	
-	dependsOn 'buildFront'
+  destinationDir = file("$rootProject.buildDir/webapp")
+  into("hr/timesheet") {
+    from "${reactDir}/dist"
+  }
+   into("/assets") {
+        from "${reactDir}/dist/assets"
+    }
+  dependsOn 'buildFront'
 }
 
 
 clean {
-  delete "${reactDir}/.yarn/cache",
-         "${reactDir}/.yarn/unplugged",
-         "${reactDir}/.yarn/install-state.gz",
-         "${reactDir}/dist",
+  delete "${reactDir}/dist",
          "${reactDir}/node_modules",
          "${reactDir}/build"
 }
@@ -82,7 +80,7 @@ clean {
 jar {
   dependsOn 'buildFront'
   into('webapp/hr/timesheet') {
-    from "${reactDir}/build"
+    from "${reactDir}/dist"
     duplicatesStrategy 'exclude'
   }
 }
