@@ -1,0 +1,9 @@
+:global(.react-mobile-picker-wheel-item-selected) {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+:global(.react-mobile-picker-wheel-item) {
+  color: #9ca3af;
+}

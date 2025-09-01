@@ -1,0 +1,50 @@
+.container {
+  border: 1px solid var(--palettes-neutral-400);
+  display: flex;
+  align-items: center;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  height: 36px;
+}
+
+.todayButton {
+  all: unset;
+  width: fit-content;
+  padding: 0.2rem 0.5rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--palettes-neutral-0);
+  cursor: pointer;
+  color: var(--palettes-neutral-700);
+  font-size: 0.9;
+  border-right: 1px solid var(--palettes-neutral-400);
+  margin-right: 1px;
+}
+
+.datePickerWrapper {
+  background-color: var(--palettes-neutral-0);
+  border: none;
+  padding: 0 6px;
+  cursor: pointer;
+  display: flex;
+}
+
+.calendarIcon {
+  cursor: pointer;
+  position: relative;
+  top: 3px;
+}
+
+.todayButton:hover,
+.datePickerWrapper:hover {
+  background-color: var(--palettes-primary-50);
+}
+
+/* RESPONSIVE CSS */
+@media (max-width: 768px) {
+  .todayButton {
+    display: none;
+  }
+}

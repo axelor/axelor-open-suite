@@ -1,0 +1,107 @@
+.timePickerContainer {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 300px;
+  justify-content: center;
+}
+
+.pickerActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+.cancelBtn,
+.confirmBtn {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelBtn {
+  background: var(--palettes-neutral-200);
+  color: var(--palettes-neutral-700);
+}
+
+.confirmBtn {
+  background: var(--palettes-primary-600);
+  color: white;
+}
+
+.confirmBtn:hover {
+  background: var(--palettes-primary-700);
+}
+
+.bottomSheetHeader {
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+}
+
+.bottomSheetHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--palettes-neutral-800);
+}
+.bottomSheetHeader .cancelBtn {
+  all: unset;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--palettes-neutral-800);
+}
+
+.pickerSeparator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--palettes-neutral-600);
+  padding: 0 0.5rem;
+  height: 40px;
+  width: 10px;
+  position: relative;
+  top: 39%;
+}
+.pickerItem {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--palettes-neutral-700);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.dayInputContainer {
+  display: flex;
+  gap: 16px;
+  width: 50%;
+  margin-inline: auto;
+  align-items: center;
+}
+
+.mobileTimePickerInput {
+  background-color: white;
+  color: black;
+  border: none;
+  border-color: #eeee;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.dayInputLabel {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--palettes-neutral-600);
+}

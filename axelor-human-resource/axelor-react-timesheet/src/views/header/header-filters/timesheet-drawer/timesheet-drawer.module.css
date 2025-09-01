@@ -1,0 +1,83 @@
+.drawerContainer {
+  min-width: 100vw;
+  height: 100%;
+  background: var(--palettes-neutral-0);
+}
+
+.drawerHeader {
+  box-shadow: var(--pr-t-elevation-shadow-raised);
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+.drawerHeader > span {
+  flex: 1;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--palettes-neutral-800);
+  position: relative;
+  left: -15px;
+}
+
+.backBtn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  color: var(--palettes-neutral-800);
+  font-size: 1.2rem;
+}
+.dateRange {
+  font-size: 1.2rem;
+  color: var(--palettes-neutral-800);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.drawerContent {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.markCompleteBtn {
+  all: unset;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: var(--palettes-primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--palettes-neutral-0);
+  border: 1px solid var(--palettes-primary-300);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 90%;
+}
+
+.markCompleteBtn:hover {
+  background-color: var(--palettes-primary-300);
+}
+
+.buttonContainer {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  margin: 10px;
+  border-top: 1px solid var(--palettes-neutral-200);
+}
+
+.badgeWrapper {
+  display: flex;
+  align-items: center;
+}
+.inProgressLabel {
+  font-size: 0.9rem;
+  margin: 0 auto;
+}

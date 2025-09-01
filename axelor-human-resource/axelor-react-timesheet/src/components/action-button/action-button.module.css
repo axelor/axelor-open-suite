@@ -1,0 +1,13 @@
+.actionBtn {
+  border: 1px solid var(--palettes-neutral-200);
+  border-radius: 0.3rem;
+  padding: 0.3rem;
+  cursor: pointer;
+  color: var(--palettes-neutral-600);
+}
+
+.actionBtn:hover {
+  background-color: var(--palettes-neutral-100);
+  color: var(--palettes-neutral-700);
+  border-color: var(--palettes-neutral-400);
+}

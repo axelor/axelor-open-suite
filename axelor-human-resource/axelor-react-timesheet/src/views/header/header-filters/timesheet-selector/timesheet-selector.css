@@ -1,0 +1,131 @@
+.selector-container {
+  width: 280px;
+  display: block;
+}
+
+.timesheet-selector {
+  width: 100%;
+}
+
+.timesheet-selector .react-select__control:focus,
+.timesheet-selector .react-select__control--is-focused {
+  outline: none !important;
+  border-color: var(--palettes-neutral-500) !important;
+  box-shadow: none !important;
+}
+
+.timesheet-selector .react-select__control {
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--palettes-neutral-400);
+  background-color: var(--palettes-neutral-0);
+  color: var(--palettes-neutral-700);
+  font-weight: 500;
+  cursor: default;
+}
+
+.timesheet-selector .react-select__control:hover {
+  border-color: var(--palettes-neutral-500);
+}
+
+.timesheet-selector .react-select__control--is-focused {
+  border: 1px solid #5027a5;
+}
+
+.timesheet-selector .react-select__menu {
+  position: absolute;
+  max-height: 300px;
+  width: 100%;
+  overflow: auto;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  transform-origin: top;
+  animation: dropdownOpen 0.25s ease-in-out;
+  z-index: 999;
+}
+
+.timesheet-selector .react-select__menu-list {
+  position: relative;
+  width: 100%;
+  background-color: var(--bs-body-bg);
+  padding: 2px;
+}
+
+.optionList {
+  font-size: 0.8rem;
+  color: var(--palettes-grey-900);
+  cursor: pointer;
+  padding: 3px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timesheet-selector .react-select__option {
+  padding: 3px 4px;
+  min-height: 2rem;
+}
+
+.timesheet-selector .react-select__option:hover,
+.timesheet-selector .react-select__option--is-focused {
+  background-color: var(--palettes-neutral-50);
+  border-radius: 4px;
+}
+
+.timesheet-selector .react-select__group-heading {
+  position: sticky;
+  top: 0px;
+  color: var(--palettes-neutral-600);
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: #fff;
+  padding: 2px 4px;
+  margin: 0;
+}
+
+.timesheet-selector .react-select__option--is-selected {
+  background-color: var(--palettes-secondary-400) !important;
+  color: var(--palettes-neutral-0) !important;
+  border-radius: 0px 4px 4px 0;
+  margin-left: 1px;
+  position: relative;
+}
+
+.timesheet-selector .react-select__option--is-selected::before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: -3px;
+  width: 1.5px;
+  background-color: var(--palettes-secondary-700) !important;
+}
+
+.groupStyles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--palettes-neutral-0);
+}
+.timesheet-selector .badge {
+  margin-left: 10px;
+}
+
+@keyframes dropdownOpen {
+  from {
+    opacity: 0;
+    transform: scaleY(0.8) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+  }
+}
+/* RESPONSIVE DESIGN */
+@media (max-width: 540px) {
+  .selector-container {
+    width: 230px;
+  }
+}

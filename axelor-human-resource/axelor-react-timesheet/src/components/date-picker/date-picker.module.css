@@ -1,0 +1,26 @@
+.datePickerWrapper {
+  background-color: var(--palettes-neutral-0);
+  border: none;
+  padding: 0 6px;
+  cursor: pointer;
+  display: flex;
+  width: 36px;
+}
+
+.calendarIcon {
+  cursor: pointer;
+  position: relative;
+  top: 3px;
+}
+
+.todayButton:hover,
+.datePickerWrapper:hover {
+  background-color: var(--palettes-primary-50);
+}
+/* RESPONSIVE CSS */
+@media (max-width: 768px) {
+  .datePickerWrapper {
+    padding: 0 2px;
+    width: 35px;
+  }
+}

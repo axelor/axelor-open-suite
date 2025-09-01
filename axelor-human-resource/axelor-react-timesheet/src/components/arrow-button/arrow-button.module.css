@@ -1,0 +1,13 @@
+.arrowIcon {
+  cursor: pointer;
+  color: var(--palettes-neutral-900);
+  font-size: 0.8rem;
+  display: block;
+  margin-left: 1rem;
+}
+
+.arrowIcon:hover {
+  background-color: var(--palettes-neutral-200);
+  border-radius: 0.2rem;
+  color: var(--palettes-neutral-800);
+}

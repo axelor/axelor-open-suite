@@ -1,0 +1,124 @@
+.headerContainer {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.headerUserSelection {
+  float: right;
+}
+.headerFilters {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.markCompleteBtn {
+  all: unset;
+  padding: 6px;
+  border-radius: 0.2rem;
+  background-color: var(--palettes-primary-200);
+  width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--palettes-primary-800);
+  border: 1px solid var(--palettes-primary-300);
+}
+.markCompleteBtn:hover {
+  background-color: var(--palettes-primary-200);
+  color: var(--palettes-primary-800);
+}
+
+.completedBadge {
+  background-color: #dcfce7;
+  color: var(--palettes-success-800);
+  border: 1px solid var(--palettes-success-300);
+}
+
+.sendBtn {
+  all: unset;
+  transform: rotate(-30deg);
+  transform-origin: center;
+  color: var(--palettes-primary-800);
+  background-color: var(--palettes-primary-50);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.rightBar {
+  background-color: var(--palettes-neutral-0);
+  z-index: 2;
+  width: 100vw;
+  height: 100vh;
+}
+
+.completeIndicator,
+.markCompleteIndicator {
+  position: relative;
+}
+
+.completeIndicator::before,
+.markCompleteIndicator::before {
+  content: " ";
+  border: 4px solid var(--palettes-success-700);
+  border-radius: 50%;
+  position: absolute;
+  top: 8px;
+  right: -2px;
+  outline: 1.5px solid white;
+}
+.markCompleteIndicator::before {
+  border-color: var(--palettes-primary-800) !important;
+}
+
+/* RESPONSIVE CSS */
+@media (max-width: 768px) {
+  .headerContainer {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .headerUserSelection {
+    width: 100%;
+  }
+  .headerFilters {
+    gap: 6px;
+  }
+  .controlsWrapper {
+    position: absolute;
+    top: 15px;
+    right: 10px;
+  }
+  .markCompleteBtn,
+  .completedBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .markCompleteBtn .btnLabel,
+  .completedBtn .btnLabel {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1084px) {
+  .controlsWrapper {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+  }
+}

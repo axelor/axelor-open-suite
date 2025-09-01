@@ -1,0 +1,67 @@
+.container {
+  width: 100%;
+  margin: auto;
+  position: relative;
+}
+
+.content {
+  margin: auto;
+  width: fit-content;
+}
+
+.iputWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  border: 1px solid var(--palettes-neutral-300);
+  border-radius: 8px;
+  padding: 0.08em 0.4em;
+  background: var(--palettes-neutral-0);
+  width: fit-content;
+  margin: 0 auto;
+  box-sizing: border-box;
+  font-size: 0.92em;
+}
+
+.durationInput {
+  all: unset;
+  width: 3.3rem;
+  height: 1.2rem;
+  outline: none;
+  border: none;
+  border-radius: 0.1rem;
+  padding: 1px !important;
+  background-color: var(--palettes-neutral-0);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--palettes-neutral-800);
+}
+.durationInput:focus {
+  outline: none;
+  border: none;
+}
+
+.mobileTimePickerInput {
+  background-color: white;
+  color: black;
+  border: none;
+  border-color: #eeee;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.arrowButton {
+  width: fit-content;
+  margin-left: 1.2rem;
+}
+
+.activeInputWrapper {
+  cursor: text;
+}
+
+.inactiveInputWrapper {
+  cursor: unset;
+  border: none;
+}

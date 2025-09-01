@@ -1,0 +1,60 @@
+.timesheet-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+
+.timesheet-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  font-size: 1rem;
+}
+
+.timesheet-table th,
+.timesheet-table td {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.timesheet-table th {
+  background: #f6f8fc;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+
+.project-name-cell {
+  text-align: left;
+  font-weight: 500;
+  background: #f6f8fc;
+  min-width: 180px;
+  border-right: 1px solid #e5e7eb;
+}
+
+.timesheet-cell {
+  min-width: 120px;
+  background: #fafbfc;
+  border-radius: 6px;
+}
+
+.time-entry-placeholder {
+  color: #b0b0b0;
+  font-size: 1.1em;
+  padding: 0.5rem 0;
+}
+
+.week-group {
+  background: #e9eef7;
+  color: #5a5a5a;
+  font-size: 0.95em;
+  border-bottom: none;
+}
+
+.desktop-content {
+  flex: 1;
+  min-height: 0;
+}
