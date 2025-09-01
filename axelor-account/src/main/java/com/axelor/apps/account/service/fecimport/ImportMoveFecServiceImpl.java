@@ -23,7 +23,6 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -41,16 +40,26 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
   protected MoveLineToolService moveLineToolService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
+  protected CurrencyRepository currencyRepository;
+  protected JournalRepository journalRepository;
+  protected AccountRepository accountRepository;
 
   @Inject
   public ImportMoveFecServiceImpl(
       PeriodService periodService,
       MoveLineToolService moveLineToolService,
       MoveRepository moveRepository,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      CurrencyRepository currencyRepository,
+      JournalRepository journalRepository,
+      AccountRepository accountRepository) {
     this.periodService = periodService;
+    this.moveLineToolService = moveLineToolService;
     this.moveRepository = moveRepository;
     this.moveLineRepository = moveLineRepository;
+    this.currencyRepository = currencyRepository;
+    this.journalRepository = journalRepository;
+    this.accountRepository = accountRepository;
   }
 
   @Override
@@ -100,15 +109,14 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
       move.setPeriod(period);
 
       if (values.get("Idevise") != null) {
-        move.setCurrency(
-            Beans.get(CurrencyRepository.class).findByCode(values.get("Idevise").toString()));
+        move.setCurrency(currencyRepository.findByCode(values.get("Idevise").toString()));
         move.setCurrencyCode(values.get("Idevise").toString());
       }
 
       Journal journal = null;
       if (values.get("JournalCode") != null) {
         journal =
-            Beans.get(JournalRepository.class)
+            journalRepository
                 .all()
                 .filter(
                     "self.code = ?1 AND self.company.id = ?2",
@@ -164,7 +172,7 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
 
     if (values.get("CompteNum") != null) {
       Account account =
-          Beans.get(AccountRepository.class)
+          accountRepository
               .all()
               .filter(
                   "self.code = ?1 AND self.company.id = ?2",
