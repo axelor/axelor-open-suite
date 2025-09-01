@@ -324,6 +324,21 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
+import com.axelor.apps.base.tracking.GlobalAuditCollectionUpdateService;
+import com.axelor.apps.base.tracking.GlobalAuditCollectionUpdateServiceImpl;
+import com.axelor.apps.base.tracking.GlobalAuditConfigurator;
+import com.axelor.apps.base.tracking.GlobalAuditCreateService;
+import com.axelor.apps.base.tracking.GlobalAuditCreateServiceImpl;
+import com.axelor.apps.base.tracking.GlobalAuditObserver;
+import com.axelor.apps.base.tracking.GlobalAuditService;
+import com.axelor.apps.base.tracking.GlobalAuditServiceImpl;
+import com.axelor.apps.base.tracking.GlobalAuditTracker;
+import com.axelor.apps.base.tracking.GlobalAuditUpdateService;
+import com.axelor.apps.base.tracking.GlobalAuditUpdateServiceImpl;
+import com.axelor.apps.base.tracking.GlobalTrackingConfigurationLineFetchService;
+import com.axelor.apps.base.tracking.GlobalTrackingConfigurationLineFetchServiceImpl;
+import com.axelor.apps.base.tracking.GlobalTrackingLogCreateService;
+import com.axelor.apps.base.tracking.GlobalTrackingLogCreateServiceImpl;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
@@ -332,6 +347,7 @@ import com.axelor.auth.service.PermissionService;
 import com.axelor.auth.service.PermissionServiceImpl;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
+import com.axelor.db.audit.AuditTracker;
 import com.axelor.message.service.MailAccountServiceImpl;
 import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.MessageServiceImpl;
@@ -560,5 +576,15 @@ public class BaseModule extends AxelorModule {
         .equals(GlobalAuditInterceptor.class.getName())) {
       bind(ExportObserver.class);
     }*/
+    bind(GlobalAuditObserver.class);
+    bind(GlobalAuditService.class).to(GlobalAuditServiceImpl.class);
+    bind(GlobalAuditCreateService.class).to(GlobalAuditCreateServiceImpl.class);
+    bind(GlobalAuditUpdateService.class).to(GlobalAuditUpdateServiceImpl.class);
+    bind(GlobalAuditCollectionUpdateService.class).to(GlobalAuditCollectionUpdateServiceImpl.class);
+    bind(GlobalTrackingConfigurationLineFetchService.class)
+        .to(GlobalTrackingConfigurationLineFetchServiceImpl.class);
+    bind(GlobalTrackingLogCreateService.class).to(GlobalTrackingLogCreateServiceImpl.class);
+    bind(AuditTracker.class).to(GlobalAuditTracker.class);
+    addHibernateListenerConfigurator(GlobalAuditConfigurator.class);
   }
 }
