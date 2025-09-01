@@ -27,6 +27,7 @@ import com.axelor.apps.stock.db.MassStockMoveNeed;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -79,14 +80,12 @@ public class MassStockMoveNeedToPickedProductServiceImpl
 
     var product = massStockMoveNeed.getProductToMove();
     var massStockMove = massStockMoveNeed.getMassStockMove();
+    var trackingNumber = massStockMoveNeed.getTrackingNumber();
     var commonFromStockLocation = massStockMove.getCommonFromStockLocation();
     var commonToStockLocation = massStockMove.getCommonToStockLocation();
-    var trackingNumberConfiguration =
-        productCompanyService.get(
-            product, "trackingNumberConfiguration", massStockMove.getCompany());
 
     // No tracking number involved
-    if (trackingNumberConfiguration == null) {
+    if (trackingNumber == null) {
       generateWithNoTrackingNumber(
           massStockMoveNeed,
           commonFromStockLocation,
@@ -101,7 +100,8 @@ public class MassStockMoveNeedToPickedProductServiceImpl
           commonFromStockLocation,
           commonToStockLocation,
           product,
-          massStockMove);
+          massStockMove,
+          trackingNumber);
     }
   }
 
@@ -111,7 +111,8 @@ public class MassStockMoveNeedToPickedProductServiceImpl
       StockLocation commonFromStockLocation,
       StockLocation commonToStockLocation,
       Product product,
-      MassStockMove massStockMove)
+      MassStockMove massStockMove,
+      TrackingNumber trackingNumber)
       throws AxelorException {
 
     List<StockLocationLine> stockLocationLineList = null;
@@ -123,10 +124,11 @@ public class MassStockMoveNeedToPickedProductServiceImpl
           stockLocationLineRepository
               .all()
               .filter(
-                  "self.product = :product AND self.detailsStockLocation = :stockLocation AND self.currentQty > 0 AND self.detailsStockLocation.company = :company")
+                  "self.product = :product AND self.detailsStockLocation = :stockLocation AND self.currentQty > 0 AND self.detailsStockLocation.company = :company AND self.trackingNumber = :trackingNumber")
               .bind("product", product)
               .bind("stockLocation", commonFromStockLocation)
               .bind("company", massStockMove.getCompany())
+              .bind("trackingNumber", trackingNumber)
               .fetch();
 
       if (stockLocationLineList == null || stockLocationLineList.isEmpty()) {
@@ -135,7 +137,7 @@ public class MassStockMoveNeedToPickedProductServiceImpl
         if (commonToStockLocation != null) {
           stockLocationLineList =
               getStockLocationLinesFromAllStockLocations(
-                  commonToStockLocation, product, massStockMove);
+                  commonToStockLocation, product, massStockMove, trackingNumber);
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -150,7 +152,8 @@ public class MassStockMoveNeedToPickedProductServiceImpl
       // This case will fetch from all stock locations
       // It will create a picked product until qty requirement is met
       stockLocationLineList =
-          getStockLocationLinesFromAllStockLocations(commonToStockLocation, product, massStockMove);
+          getStockLocationLinesFromAllStockLocations(
+              commonToStockLocation, product, massStockMove, trackingNumber);
     }
 
     if (stockLocationLineList == null || stockLocationLineList.isEmpty()) {
@@ -161,14 +164,20 @@ public class MassStockMoveNeedToPickedProductServiceImpl
           massStockMove.getCompany().getName());
     }
     createPickedProductsFromDetailStockLocationLineList(
-        stockLocationLineList, massStockMove, massStockMoveNeed.getQtyToMove());
+        stockLocationLineList,
+        massStockMove,
+        massStockMoveNeed.getQtyToMove(),
+        massStockMoveNeed.getTrackingNumber());
   }
 
   protected List<StockLocationLine> getStockLocationLinesFromAllStockLocations(
-      StockLocation commonToStockLocation, Product product, MassStockMove massStockMove) {
+      StockLocation commonToStockLocation,
+      Product product,
+      MassStockMove massStockMove,
+      TrackingNumber trackingNumber) {
     List<StockLocationLine> stockLocationLineList;
     String stockLocationLineDomain =
-        "self.product = :product AND self.detailsStockLocation.typeSelect != :virtualType AND self.detailsStockLocation != :cartStockLocation AND self.currentQty > 0 AND self.detailsStockLocation.company = :company";
+        "self.product = :product AND self.detailsStockLocation.typeSelect != :virtualType AND self.detailsStockLocation != :cartStockLocation AND self.currentQty > 0 AND self.detailsStockLocation.company = :company AND self.trackingNumber = :trackingNumber";
 
     stockLocationLineList =
         stockLocationLineRepository
@@ -178,6 +187,7 @@ public class MassStockMoveNeedToPickedProductServiceImpl
             .bind("virtualType", StockLocationRepository.TYPE_VIRTUAL)
             .bind("cartStockLocation", massStockMove.getCartStockLocation())
             .bind("company", massStockMove.getCompany())
+            .bind("trackingNumber", trackingNumber)
             .fetch();
     return stockLocationLineList;
   }
@@ -288,7 +298,10 @@ public class MassStockMoveNeedToPickedProductServiceImpl
   }
 
   protected void createPickedProductsFromDetailStockLocationLineList(
-      List<StockLocationLine> sllList, MassStockMove massStockMove, BigDecimal qtyRequired) {
+      List<StockLocationLine> sllList,
+      MassStockMove massStockMove,
+      BigDecimal qtyRequired,
+      TrackingNumber trackingNumber) {
 
     var fetchQty = BigDecimal.ZERO;
 
@@ -314,9 +327,7 @@ public class MassStockMoveNeedToPickedProductServiceImpl
                 stockLocationLine.getProduct(),
                 stockLocationLine.getDetailsStockLocation(),
                 maximumPickableQty,
-                null);
-
-        createdPickedProduct.setTrackingNumber(stockLocationLine.getTrackingNumber());
+                trackingNumber);
 
         fetchQty = fetchQty.add(maximumPickableQty);
         pickedProductRepository.save(createdPickedProduct);
@@ -326,8 +337,9 @@ public class MassStockMoveNeedToPickedProductServiceImpl
 
   protected boolean isAlreadyStockLocationAlreadyUsed(
       PickedProduct pickedProduct, StockLocationLine stockLocationLine) {
-    return pickedProduct.getPickedProduct().equals(stockLocationLine.getProduct())
-        && pickedProduct.getFromStockLocation().equals(stockLocationLine.getDetailsStockLocation())
-        && pickedProduct.getTrackingNumber().equals(stockLocationLine.getTrackingNumber());
+    return Objects.equals(pickedProduct.getPickedProduct(), stockLocationLine.getProduct())
+        && Objects.equals(
+            pickedProduct.getFromStockLocation(), stockLocationLine.getDetailsStockLocation())
+        && Objects.equals(pickedProduct.getTrackingNumber(), stockLocationLine.getTrackingNumber());
   }
 }
