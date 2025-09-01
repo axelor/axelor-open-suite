@@ -114,6 +114,8 @@
       <field name="maritalName" colSpan="4"/>
       <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
+      <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
+      <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
       <field name="$employeeStatus" hidden="true"/>
     </panel>
@@ -397,6 +399,8 @@
       <field name="maritalName" colSpan="4"/>
       <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
+      <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
+      <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
       <field name="bankDetails" colSpan="4" form-view="bank-details-form"
         grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
@@ -871,6 +875,8 @@
       title="Pay company main employment contract"/>
     <field name="mainEmploymentContract.executiveStatusSelect"
       title="Main employment contract status"/>
+    <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
+    <field name="personalNumber" title="Personal number" hidden="true"/>
     <field name="socialSecurityNumber" title="Social security number" hidden="true"/>
     <field name="contactPartner.firstName" title="First name"/>
     <filter name="employee-filters-new-employees" title="New employees">
