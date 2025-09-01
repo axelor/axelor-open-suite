@@ -1,0 +1,74 @@
+.headerContainer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(transparent, var(--palettes-neutral-25));
+  backdrop-filter: blur(0.8px);
+}
+.removeBackdrop {
+  background: transparent;
+  backdrop-filter: none;
+  align-items: end;
+}
+
+.headerWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.headerAddBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  height: 32px;
+  margin-top: 10px;
+  padding: 0;
+  gap: 10px;
+  border: 1px solid var(--palettes-primary-200);
+  border-radius: 4px;
+  background: var(--palettes-neutral-0);
+  color: var(--palettes-neutral-800);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.headerAddBtn:hover {
+  background: var(--palettes-neutral-0);
+  border-color: var(--palettes-primary-400);
+}
+
+.summary {
+  color: var(--palettes-primary-800);
+  font-size: 0.7rem;
+  border-bottom: 1px solid var(--palettes-primary-800);
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.daySummaryWrapper {
+  background-color: var(--palettes-neutral-0);
+  width: 20rem;
+  height: fit-content;
+  background-color: var(--palettes-neutral-0);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--pr-t-elevation-shadow-raised);
+}
+
+/* RESPONSIVE CSS */
+@media (max-width: 1280px) {
+  .headerAddBtn span:nth-child(1) {
+    display: none;
+  }
+}

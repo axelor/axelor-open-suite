@@ -1,0 +1,182 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(400px, 1fr));
+  gap: 1rem;
+}
+.label {
+  font-weight: 700;
+  color: var(--palettes-neutral-700);
+}
+.selection {
+  border: none !important;
+  border-bottom: 0.1rem solid var(--palettes-neutral-300) !important;
+  background-color: transparent;
+  border-radius: 0px;
+  box-shadow: none !important;
+  color: var(--palettes-neutral-700) !important;
+  font-weight: 700 !important;
+  padding-left: 0.2rem;
+}
+.durationInput {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.durationInputWrapper {
+  flex: 1;
+  border-bottom: 0.1rem solid var(--palettes-neutral-300) !important;
+}
+.durationInput input {
+  min-width: 1.5rem;
+  background: transparent;
+  margin-left: 0.2rem;
+  font-weight: 700;
+  color: var(--palettes-neutral-700) !important;
+}
+.checkboxContainer {
+  margin-top: 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: start;
+  gap: 1rem;
+}
+.checkbox {
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
+}
+
+.description {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--palettes-neutral-300);
+  border-radius: 0.3rem;
+  min-height: 5rem;
+  padding: 0.4rem;
+  color: var(--palettes-neutral-700);
+  font-weight: 500;
+}
+
+.description:focus {
+  outline-color: var(--palettes-neutral-300);
+}
+.dateContainer {
+  position: relative;
+}
+.dateContainer:hover .enableDateSelection {
+  display: block;
+  cursor: pointer;
+}
+.dateWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+.calender {
+  border: none !important;
+  border-bottom: 1px solid var(--palettes-neutral-300) !important;
+  border-radius: 0px !important;
+  min-width: 50px;
+
+  gap: 20px;
+}
+.calender button,
+.calender div {
+  color: var(--palettes-neutral-600) !important;
+  border: none;
+  cursor: pointer;
+}
+.calender button:hover {
+  color: var(--palettes-neutral-800) !important;
+}
+
+.enableDateSelection {
+  position: absolute;
+  right: 0px;
+  top: 2px;
+  font-weight: 500;
+  color: var(--palettes-neutral-700);
+  display: none;
+  cursor: pointer;
+}
+.dateField {
+  border: none !important;
+  background-color: transparent;
+  outline: none !important;
+  border-radius: 0px !important;
+  border-bottom: 0.1rem solid var(--palettes-neutral-300) !important;
+  color: var(--palettes-neutral-600) !important;
+}
+.dateField:focus {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+.actionBtn {
+  position: absolute;
+  bottom: 1.2rem;
+  right: 1.2rem;
+}
+
+.saveBtn {
+  background-color: #22c55e;
+  color: var(--palettes-neutral-25) !important;
+  min-width: 4rem;
+}
+
+.saveBtn:hover {
+  background-color: #47cb77e4;
+}
+
+.closeBtn {
+  margin-left: 1rem;
+  background-color: #fee2e2;
+  color: #991b1b;
+  min-width: 4rem;
+}
+
+.closeBtn:hover {
+  background-color: #ef4444;
+  color: var(--palettes-neutral-25) !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .actionBtn {
+    position: static;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .checkboxContainer {
+    flex-direction: row-reverse;
+    gap: 0.5rem;
+  }
+
+  .dateContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 0.5rem;
+  }
+
+  .description {
+    min-height: 4rem;
+  }
+  .durationInput {
+    flex-direction: row;
+    border-bottom: none !important;
+    margin-top: 20px;
+  }
+  .label {
+    width: 70px;
+    position: relative;
+  }
+}

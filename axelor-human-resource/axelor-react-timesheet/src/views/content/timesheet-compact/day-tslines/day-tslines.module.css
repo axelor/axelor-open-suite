@@ -1,0 +1,152 @@
+.container {
+  margin-top: 10px;
+}
+
+.dateTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--palettes-neutral-800);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.tslinesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tslineCard {
+  position: relative;
+  background: var(--palettes-neutral-0);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: var(--pr-t-elevation-shadow-raised);
+  transition: all 0.2s ease;
+  min-height: 4rem;
+}
+
+.tslineCard.active .actionWrapper {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+.multilineIndicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--palettes-primary-600);
+  color: white;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.projectInfo {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.duration {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  place-self: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--palettes-neutral-700);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  word-spacing: 8px;
+  cursor: pointer;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--palettes-neutral-500);
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.seperator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--palettes-neutral-200);
+  margin: 0.75rem 0;
+}
+.actionWrapper {
+  margin-top: 10px;
+  display: none;
+  gap: 10px;
+  justify-content: flex-end;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.actionWrapper .invoiceBtn:hover,
+.actionWrapper .invoiceBtn {
+  color: #92400e;
+  border: 1px solid #f59e0b;
+  background-color: #fef3c7;
+}
+
+.actionWrapper .activateToInvoice {
+  background-color: #dcfce7 !important;
+  color: #24954f !important;
+  border-color: #22c55e !important;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownArrow {
+  font-size: 1.2rem;
+  margin-left: 0;
+  transition: transform 0.3s ease;
+  transform-origin: center;
+  height: fit-content;
+}
+
+.activeArrow {
+  transform: rotate(180deg);
+}
+
+.dropdownArrow:hover {
+  background-color: transparent;
+}
+
+.autoCursor {
+  cursor: auto;
+}
