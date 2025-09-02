@@ -44,6 +44,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -67,6 +68,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   protected BudgetToolsService budgetToolsService;
   protected CurrencyScaleService currencyScaleService;
 
+  @Inject
   public PurchaseOrderBudgetServiceImpl(
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepo,

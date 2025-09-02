@@ -3,6 +3,35 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
+  <form name="sale-order-form" id="business-project-sale-order-form" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+
+    <extend target="/field[@name='companyDepartment']">
+      <insert position="before">
+        <field name="project" colSpan="3"
+          onChange="action-business-project-purchase-order-method-update-lines"
+          hideIf="orderTypeSelect == 4"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='deliveryPanel']">
+      <insert position="after">
+        <panel name="projectPanel"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
+          title="Business project" colSpan="12" if-module="axelor-business-project">
+          <field name="contract" readonly="true" hidden="true" showIf="contract"
+            form-view="contract-form" grid-view="contract-grid"/>
+          <field name="project" domain="self.isBusinessProject = true"
+            form-view="business-project-form" grid-view="project-grid" colSpan="6"
+            onChange="action-business-project-purchase-order-method-update-lines"/>
+          <field name="projectTask" domain="self.project = :project"
+            form-view="business-project-task-form" grid-view="business-project-task-grid"
+            colSpan="6"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
   <action-method name="action-business-project-purchase-order-method-update-lines">
     <call class="com.axelor.apps.businessproject.web.PurchaseOrderProjectController"
       method="updateLines"/>
