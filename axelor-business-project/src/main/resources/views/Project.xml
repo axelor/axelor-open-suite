@@ -263,12 +263,6 @@
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
-      <panel title="Technical case" name="saleOrderPanel" hidden="true">
-        <button name="openLines" title="Open lines"
-          onClick="action-project-dashlet-sale-order-line"/>
-        <panel-dashlet name="saleOrderLinePanelDashlet"
-          action="action-project-dashlet-sale-order-line" colSpan="12"/>
-      </panel>
       <panel-include view="incl-wiki-panel-form"/>
 
       <panel-include view="incl-checklist-panel-form"/>
@@ -463,15 +457,6 @@
           height="200%" action="action-project-dashlet-contract-invoices" colSpan="12"/>
       </panel>
 
-      <panel title="Production" name="productionPanel" if-module="axelor-business-production"
-        if="__config__.app.isApp('business-project')
-				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
-        <button name="showProductionOrdersBtn" title="Show production orders"
-          css="btn-custom text-left" icon="fa-cogs"
-          onClick="action-project-view-show-production-orders"/>
-        <panel-related colSpan="12" field="productionOrderList" canSelect="true"
-          canNew="false" canEdit="false" canSearch="true" name="productionOrderList"/>
-      </panel>
       <panel title="Invoicing" name="invoicingPanel">
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
@@ -772,14 +757,7 @@
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
   </action-view>
 
-  <action-view name="action-project-dashlet-sale-order-line" title="Sale order lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <view type="grid" name="business-production-sale-order-line-editable-grid"/>
-    <view type="form" name="sale-order-line-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.project = :projectId AND self.saleOrder.statusSelect in (2,3)</domain>
-    <context name="projectId" expr="eval: id"/>
-  </action-view>
+
 
   <action-view name="action-project-view-show-sale-order-lines" title="Sale Order Lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">

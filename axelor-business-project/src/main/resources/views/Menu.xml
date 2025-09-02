@@ -52,7 +52,6 @@
     model="com.axelor.apps.businessproject.db.InvoicingProject">
     <view type="grid" name="invoicing-project-grid"/>
     <view type="form" name="invoicing-project-form"/>
-    <view-param name="search-filters" value="invoicing-project-filters"/>
   </action-view>
 
   <!-- ADMINISTRATION -->

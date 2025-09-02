@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form id="business-production-invoicing-project-form" name="invoicing-project-form"
+    title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject"
+    extension="true">
+
+    <extend target="//panel-related[@name='expenseLineSet']">
+      <insert position="after">
+        <panel-related title="Production" field="manufOrderSet" colSpan="12"
+          canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production"
+          grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form"
+          showIf="manufOrderSet &amp;&amp; manufOrderSet.length &gt; 0" readonlyIf="invoice"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction()"
+          name="manufOrderSetPanel"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <search-filters name="invoicing-project-filters"
+    model="com.axelor.apps.businessproject.db.InvoicingProject" title="Invoicing project filters">
+    <field name="manufOrderSet" hidden="true"
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
+  </search-filters>
+
+</object-views>

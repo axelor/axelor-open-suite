@@ -198,10 +198,6 @@
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
         grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
-      <field name="timesheetImputationSelect" colSpan="3"
-        if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-        if-module="axelor-business-production"
-        onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
 
@@ -471,10 +467,6 @@
           domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
           grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
-        <field name="timesheetImputationSelect" colSpan="3"
-          if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-          if-module="axelor-business-production"
-          onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
 
         <panel-dashlet name="employeeUserTimesheetsPanel"
           action="action-employee-view-user-timesheets" colSpan="12"/>
@@ -858,8 +850,6 @@
     title="Employee filters">
     <field name="bankDetails" hidden="true"
       if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
-    <field name="timesheetImputationSelect" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
     <field name="lunchVoucherFormatSelect" hidden="true"
       if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
     <field name="lunchVoucherAdvanceList" hidden="true"

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid id="business-production-production-order-grid" name="production-order-grid"
+    title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" extension="true">
+    <extend target="//field[@name='saleOrder']">
+      <insert position="after">
+        <field name="project" if-module="axelor-business-production"
+          form-view="business-project-form" grid-view="project-grid"
+          if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
+      </insert>
+    </extend>
+
+  </grid>
+
+  <form id="business-production-production-order-form" name="production-order-form"
+    title="Production order" model="com.axelor.apps.production.db.ProductionOrder" extension="true">
+
+    <extend target="/">
+      <attribute name="onLoad" value="action-production-order-attrs-title-project"/>
+      <attribute name="onNew" value="action-production-order-attrs-title-project"/>
+    </extend>
+
+    <extend target="//field[@name='saleOrder']">
+      <insert position="after">
+        <field name="project" if-module="axelor-business-production"
+          form-view="business-project-form" grid-view="project-grid"
+          if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='createdOn']">
+      <insert position="after">
+        <field name="project" if-module="axelor-business-production"
+          form-view="business-project-form" grid-view="project-grid"
+          if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs if-module="axelor-business-production"
+    name="action-production-order-attrs-title-project">
+    <attribute name="title" for="project"
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
+  </action-attrs>
+
+  <search-filters id="business-production-production-order-filters"
+    name="production-order-filters" model="com.axelor.apps.production.db.ProductionOrder"
+    title="Production order filters">
+    <field name="project" hidden="true"
+      if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
+    <filter name="production-order-filters-production-orders-closed"
+      title="Production orders closed">
+      <domain>self.isClosed = true</domain>
+    </filter>
+  </search-filters>
+
+</object-views>

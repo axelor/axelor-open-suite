@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form id="business-production-app-production-config-form" name="app-production-config-form"
+    title="App manufacturing" model="com.axelor.studio.db.AppProduction" extension="true">
+
+    <extend target="//field[@name='isInputInHundredthHours']">
+      <insert position="after">
+        <field name="manageBusinessProduction"
+          onChange="action-app-production-record-manage-business-production-onchange"
+          title="Manage business production" if-module="axelor-business-production"
+          widget="boolean-switch"/>
+        <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
+          if-module="axelor-business-production" showIf="manageBusinessProduction"/>
+        <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
+          widget="boolean-switch"
+          showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='operationContinuitySelect']">
+      <insert position="after">
+        <field name="updateProjectSolDetailsLineTypeSelect"
+          if="__config__.app.getApp('sale')?.allowPendingOrderModification &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
+          if-module="axelor-business-production"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <action-record
+    name="action-app-production-record-manage-business-production-onchange"
+    model="com.axelor.studio.db.AppProduction">
+    <field name="enableTimesheetOnManufOrder" expr="eval: false"/>
+  </action-record>
+
+
+</object-views>
