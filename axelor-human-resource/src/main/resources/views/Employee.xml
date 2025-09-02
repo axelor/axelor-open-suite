@@ -118,9 +118,15 @@
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
       <field name="$employeeStatus" hidden="true"/>
-      <!-- KAPSIKI Customization: Displaying address in the personal information view -->
-      <field name="address" canNew="true" colSpan="6" form-view="address-form"
-        grid-view="address-grid"/>
+
+      <panel colSpan="12" style="margin: 0; padding: 0;">
+        <!-- KAPSIKI Customization: Displaying address in the personal information view -->
+        <field name="address" canNew="true" canEdit="true" colSpan="6"
+          form-view="address-form" grid-view="address-grid"/>
+        <field name="bankDetails" colSpan="6" form-view="bank-details-form"
+          grid-view="bank-details-grid" widget="SuggestBox" canNew="true" canEdit="true"
+          title="Bank Account"/>
+      </panel>
     </panel>
 
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency"
@@ -176,10 +182,6 @@
             grid-view="company-department-grid"/>
         </editor>
       </field>
-      <field name="bankDetails" colSpan="3" form-view="bank-details-form"
-        grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
-        showIf="mainEmploymentContract.payCompany" if-module="axelor-cash-management"
-        widget="SuggestBox" onSelect="action-employee-attrs-bank-details-on-select"/>
     </panel>
 
     <panel-related name="employmentContractsSBSPanel" field="employmentContractList"
@@ -405,10 +407,6 @@
       <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
-      <field name="bankDetails" colSpan="4" form-view="bank-details-form"
-        grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
-        if-module="axelor-cash-management" widget="SuggestBox"
-        onSelect="action-employee-attrs-bank-details-on-select"/>
 
       <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
         <field name="emergencyContact" colSpan="4"/>
@@ -644,13 +642,6 @@
     <attribute name="value" for="cityOfBirth" expr="eval: null"/>
   </action-attrs>
 
-  <action-attrs name="action-employee-attrs-bank-details-on-select">
-    <attribute name="domain" expr="eval: &quot;self = null&quot;" for="bankDetails"/>
-    <attribute if="!mainEmploymentContract?.payCompany?.bankDetailsList?.isEmpty()"
-      name="domain"
-      expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true&quot;"
-      for="bankDetails"/>
-  </action-attrs>
 
   <form name="employee-annual-report-form" title="Annual report"
     model="com.axelor.apps.hr.db.Employee">
@@ -856,8 +847,7 @@
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
     title="Employee filters">
-    <field name="bankDetails" hidden="true"
-      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
+    <field name="bankDetails" title="Bank Account Details"/>
     <field name="timesheetImputationSelect" hidden="true"
       if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
     <field name="lunchVoucherFormatSelect" hidden="true"
@@ -878,8 +868,6 @@
       title="Pay company main employment contract"/>
     <field name="mainEmploymentContract.executiveStatusSelect"
       title="Main employment contract status"/>
-    <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
-    <field name="personalNumber" title="Personal number" hidden="true"/>
     <field name="socialSecurityNumber" title="Social security number" hidden="true"/>
     <field name="contactPartner.firstName" title="First name"/>
     <filter name="employee-filters-new-employees" title="New employees">
