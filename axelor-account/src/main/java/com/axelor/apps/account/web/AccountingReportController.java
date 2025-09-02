@@ -319,14 +319,9 @@ public class AccountingReportController {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
     boolean isCustom =
         Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
-    String accountingReportTypeIds = "0";
-
-    if (!isCustom || CollectionUtils.isNotEmpty(accountingReport.getCompanySet())) {
-      accountingReportTypeIds =
-          Beans.get(AccountingReportToolService.class)
-              .getAccountingReportTypeIds(accountingReport, isCustom);
-    }
-
+    String accountingReportTypeIds =
+        Beans.get(AccountingReportToolService.class)
+            .getAccountingReportTypeIds(accountingReport, isCustom);
     response.setAttr(
         "reportType",
         "domain",
