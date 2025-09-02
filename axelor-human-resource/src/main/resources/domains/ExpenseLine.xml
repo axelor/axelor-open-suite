@@ -20,8 +20,6 @@
     <string name="comments" title="Comments" large="true"/>
     <boolean name="toInvoice"/>
     <boolean name="invoiced" readonly="true"/>
-    <many-to-one name="finalInvoice" title="Final invoice"
-      ref="com.axelor.apps.account.db.Invoice" readonly="true"/>
     <many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense"/>
     <many-to-one name="generalExpense" ref="com.axelor.apps.hr.db.Expense"
       title="General Expense"/>
