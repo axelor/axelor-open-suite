@@ -1,0 +1,14 @@
+"importId";"project.importId";"product.importId";"employee_importId";"date";"timesheet.importId";"hoursDuration";"projectTask_importId"
+4;demo_project_13;;19;"TODAY[-1d]";3;7;demo_project_task_13_0
+5;demo_project_13;;5;"TODAY[-1d]";5;3;demo_project_task_13_1
+6;demo_project_13;;4;"TODAY[-1d]";4;7;demo_project_task_13_2
+7;demo_project_13;;5;"TODAY[-1d]";5;4;demo_project_task_13_3
+8;demo_project_14;;1;"TODAY[-1d]";6;4;demo_project_task_14_0_sub_0
+9;demo_project_14;;1;"TODAY[-1d]";6;3;demo_project_task_14_0_sub_1
+10;demo_project_14;;13;"TODAY[-1d]";8;6;demo_project_task_14_1_sub_0
+11;demo_project_14;;13;"TODAY[-1d]";8;1;demo_project_task_14_1_sub_1
+12;demo_project_14;;12;"TODAY[-1d]";7;2;demo_project_task_14_2_sub_0
+13;demo_project_14;;12;"TODAY[-1d]";7;5;demo_project_task_14_2_sub_1
+14;demo_project_14;;10;"TODAY[-1d]";9;2;demo_project_task_14_3_sub_0
+15;demo_project_14;;10;"TODAY[-1d]";9;4;demo_project_task_14_3_sub_1
+16;demo_project_14;;10;"TODAY[-1d]";9;1;demo_project_task_14_3_sub_2

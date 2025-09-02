@@ -1,0 +1,11 @@
+"importId";"saleOrder.importId";"sequence";"product.importId";"productName";"qty";"unit.importId";"price";"inTaxPrice";"exTaxTotal";"hasToCreateTask";"isOrdered";"saleSupplySelect"
+31;13;1;410;"Project Manager";15;103;1000;1200;15000;"true";"true";3
+32;13;2;411;"Quality Control Consultant";15;103;800;960;12000;"true";"true";3
+33;13;3;412;"Installation Technician";20;101;60;72;1200;"true";"true";3
+34;13;4;110;"Classic Servers";2;1;1500;1800;3000;"true";"true";1
+35;13;5;411;"Software Developer";15;103;800;960;12000;"true";"true";3
+36;14;1;410;"Project Manager";15;103;1000;1200;15000;"true";"true";3
+37;14;2;411;"Quality Control Consultant";15;103;800;960;12000;"true";"true";3
+38;14;3;412;"Installation Technician";20;101;60;72;1200;"true";"true";3
+39;14;4;110;"Classic Servers";2;1;1500;1800;3000;"true";"true";1
+40;14;5;413;"Software Developer";15;103;800;960;12000;"true";"true";3
