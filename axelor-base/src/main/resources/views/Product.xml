@@ -553,6 +553,9 @@
             <field name="outerLength" requiredIf="isPackaging"/>
             <field name="outerWidth" requiredIf="isPackaging"/>
             <field name="outerHeight" requiredIf="isPackaging"/>
+            <field name="minWeight"/>
+            <field name="maxWeight"/>
+            <field name="packagingLevelSelect"/>
           </panel>
           <panel-dashlet name="productPackagingPanel" colSpan="12" hidden="true"
             showIf="!isPackaging" action="action-product-view-product-packaging" canNew="true"
