@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -31,7 +30,6 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -40,12 +38,12 @@ import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -57,7 +55,7 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
-public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowServiceProjectImpl
+public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowServiceSupplychainImpl
     implements PurchaseOrderBudgetService {
   protected BudgetRepository budgetRepository;
   protected PurchaseOrderLineBudgetService purchaseOrderLineBudgetService;
@@ -69,7 +67,6 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   protected BudgetToolsService budgetToolsService;
   protected CurrencyScaleService currencyScaleService;
 
-  @Inject
   public PurchaseOrderBudgetServiceImpl(
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -78,16 +75,15 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
       BudgetRepository budgetRepository,
-      BudgetDistributionService budgetDistributionService,
       PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
+      BudgetDistributionService budgetDistributionService,
       BudgetService budgetService,
       BudgetDistributionRepository budgetDistributionRepository,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleService currencyScaleService,
-      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
+      CurrencyScaleService currencyScaleService) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -96,11 +92,10 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
         purchaseOrderStockService,
         appAccountService,
         purchaseOrderSupplychainService,
-        analyticMoveLineRepository,
         purchaseOrderTypeSelectService);
     this.budgetRepository = budgetRepository;
-    this.budgetDistributionService = budgetDistributionService;
     this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;
+    this.budgetDistributionService = budgetDistributionService;
     this.budgetService = budgetService;
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.appBudgetService = appBudgetService;

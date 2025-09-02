@@ -137,18 +137,18 @@ import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetServiceIm
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineComputeBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineViewBudgetServiceImpl;
-import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
-import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
-import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
-import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
-import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
-import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
-import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
+import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
+import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
+import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineComputeSupplychainServiceImpl;
 import java.util.concurrent.Callable;
@@ -168,7 +168,7 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLineService.class).to(BudgetLineServiceImpl.class);
     bind(BudgetToolsService.class).to(BudgetToolsServiceImpl.class);
     bind(BudgetAccountConfigService.class).to(BudgetAccountConfigServiceImpl.class);
-    bind(InvoiceProjectRepository.class).to(BudgetInvoiceRepository.class);
+    bind(InvoiceSupplychainRepository.class).to(BudgetInvoiceRepository.class);
     bind(MoveBankPaymentRepository.class).to(MoveBudgetManagementRepository.class);
     bind(BudgetAccountService.class).to(BudgetAccountServiceImpl.class);
     bind(BudgetService.class).to(BudgetServiceImpl.class);
@@ -184,19 +184,20 @@ public class BudgetModule extends AxelorModule {
 
     bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);
     bind(PurchaseOrderBudgetService.class).to(PurchaseOrderBudgetServiceImpl.class);
-    bind(PurchaseOrderLineServiceProjectImpl.class)
+    bind(PurchaseOrderLineServiceSupplyChainImpl.class)
         .to(PurchaseOrderLineGroupBudgetServiceImpl.class);
     bind(BudgetInvoiceLineService.class).to(BudgetInvoiceLineServiceImpl.class);
     bind(BudgetInvoiceService.class).to(BudgetInvoiceServiceImpl.class);
     bind(InvoiceToolBudgetService.class).to(InvoiceToolBudgetServiceImpl.class);
-    bind(InvoiceLineProjectServiceImpl.class).to(BudgetInvoiceLineComputeServiceImpl.class);
+    bind(InvoiceLineSupplychainService.class).to(BudgetInvoiceLineComputeServiceImpl.class);
     bind(BudgetLevelService.class).to(BudgetLevelServiceImpl.class);
-    bind(PurchaseOrderWorkflowServiceProjectImpl.class).to(PurchaseOrderBudgetServiceImpl.class);
+    bind(PurchaseOrderWorkflowServiceSupplychainImpl.class)
+        .to(PurchaseOrderBudgetServiceImpl.class);
     bind(SaleOrderLineBudgetService.class).to(SaleOrderLineBudgetServiceImpl.class);
     bind(SaleOrderBudgetService.class).to(SaleOrderBudgetServiceImpl.class);
-    bind(SaleOrderInvoiceProjectServiceImpl.class).to(SaleOrderBudgetServiceImpl.class);
-    bind(ProjectStockMoveInvoiceServiceImpl.class).to(StockMoveInvoiceBudgetServiceImpl.class);
-    bind(PurchaseOrderInvoiceProjectServiceImpl.class)
+    bind(SaleOrderInvoiceContractServiceImpl.class).to(SaleOrderBudgetServiceImpl.class);
+    bind(StockMoveInvoiceServiceImpl.class).to(StockMoveInvoiceBudgetServiceImpl.class);
+    bind(PurchaseOrderInvoiceContractServiceImpl.class)
         .to(PurchaseOrderInvoiceBudgetServiceImpl.class);
     bind(BudgetScenarioLineService.class).to(BudgetScenarioLineServiceImpl.class);
     bind(BudgetVersionService.class).to(BudgetVersionServiceImpl.class);

@@ -23,6 +23,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeServiceImpl
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.*;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServiceImpl;
@@ -64,6 +66,7 @@ import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImp
 import com.axelor.apps.businessproject.service.ProjectTemplateBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectToolBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
+import com.axelor.apps.businessproject.service.PurchaseOrderLineBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
@@ -72,6 +75,7 @@ import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProje
 import com.axelor.apps.businessproject.service.SaleOrderCopyProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderCopyProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
+import com.axelor.apps.businessproject.service.SaleOrderLineBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderLineDomainProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineDomainProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderLineInitValueProjectServiceImpl;
@@ -243,5 +247,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(SaleOrderCopyProjectService.class).to(SaleOrderCopyProjectServiceImpl.class);
     bind(SaleOrderProjectObserver.class);
     bind(TimesheetHRRepository.class).to(TimesheetBusinessProjectRepository.class);
+    bind(PurchaseOrderLineBudgetServiceImpl.class)
+        .to(PurchaseOrderLineBusinessProjectServiceImpl.class);
+    bind(SaleOrderLineBudgetServiceImpl.class).to(SaleOrderLineBusinessProjectServiceImpl.class);
   }
 }

@@ -15,7 +15,8 @@ axelor {
 }
 
 dependencies {
-  api project(":modules:axelor-business-project")
+  api project(":modules:axelor-contract")
+  api project(":modules:axelor-human-resource")
 
   implementation libs.jdom
   implementation libs.xalan
