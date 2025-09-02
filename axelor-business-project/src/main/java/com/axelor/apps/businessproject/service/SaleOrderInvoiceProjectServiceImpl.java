@@ -33,8 +33,14 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
+import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetServiceImpl;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -58,7 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContractServiceImpl {
+public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderBudgetServiceImpl {
 
   protected AppBusinessProjectService appBusinessProjectService;
 
@@ -80,6 +86,12 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContract
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      AppBudgetService appBudgetService,
+      BudgetDistributionService budgetDistributionService,
+      SaleOrderLineBudgetService saleOrderLineBudgetService,
+      BudgetService budgetService,
+      BudgetToolsService budgetToolsService,
+      InvoiceToolBudgetService invoiceToolBudgetService,
       AppBusinessProjectService appBusinessProjectService) {
     super(
         appBaseService,
@@ -97,7 +109,13 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContract
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        saleOrderDeliveryAddressService);
+        saleOrderDeliveryAddressService,
+        appBudgetService,
+        budgetDistributionService,
+        saleOrderLineBudgetService,
+        budgetService,
+        budgetToolsService,
+        invoiceToolBudgetService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

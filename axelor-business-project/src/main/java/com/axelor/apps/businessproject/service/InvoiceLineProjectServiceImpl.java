@@ -36,15 +36,17 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineComputeServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
-import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
-public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
+public class InvoiceLineProjectServiceImpl extends BudgetInvoiceLineComputeServiceImpl
     implements InvoiceLineProjectService {
 
   @Inject
@@ -66,7 +68,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       ProductPriceService productPriceService,
       FiscalPositionService fiscalPositionService,
       InvoiceLineCheckService invoiceLineCheckService,
-      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService) {
+      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService,
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService) {
     super(
         currencyService,
         priceListService,
@@ -85,7 +89,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         productPriceService,
         fiscalPositionService,
         invoiceLineCheckService,
-        invoiceLineSupplierCatalogService);
+        invoiceLineSupplierCatalogService,
+        budgetToolsService,
+        appBudgetService);
   }
 
   @Transactional

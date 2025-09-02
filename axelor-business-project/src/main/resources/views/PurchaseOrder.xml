@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <form name="sale-order-form" id="business-project-sale-order-form" title="Sale order"
-    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+  <form name="purchase-order-form" id="business-project-purchase-order-form" title="Sale order"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
 
-    <extend target="/field[@name='companyDepartment']">
+    <extend target="//field[@name='companyDepartment']">
       <insert position="before">
         <field name="project" colSpan="3"
           onChange="action-business-project-purchase-order-method-update-lines"

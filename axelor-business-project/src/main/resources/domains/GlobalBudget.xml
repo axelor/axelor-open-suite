@@ -9,7 +9,7 @@
     implements="com.axelor.apps.base.interfaces.LocalDateInterval,com.axelor.apps.base.interfaces.Currenciable">
 
     <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
-                  title="Projects" mappedBy="globalBudgetSet"/>
+      title="Projects" mappedBy="globalBudgetSet"/>
 
   </entity>
 

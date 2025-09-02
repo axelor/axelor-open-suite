@@ -25,6 +25,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineGroupBudgetServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -33,14 +36,13 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
-public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplyChainImpl
+public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineGroupBudgetServiceImpl
     implements PurchaseOrderLineProjectService {
 
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
@@ -52,15 +54,19 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       AnalyticLineModelService analyticLineModelService,
-      PurchaseOrderLineRepository purchaseOrderLineRepo,
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService,
       PublicHolidayService publicHolidayService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      PurchaseOrderLineRepository purchaseOrderLineRepo) {
     super(
         analyticMoveLineService,
         unitConversionService,
         appAccountService,
         accountConfigService,
         analyticLineModelService,
+        budgetToolsService,
+        appBudgetService,
         publicHolidayService,
         appSupplychainService);
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;

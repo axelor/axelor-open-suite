@@ -22,6 +22,9 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderWorkflowBudgetServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -30,13 +33,12 @@ import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderWorkflowServiceProjectImpl
-    extends PurchaseOrderWorkflowServiceSupplychainImpl {
+    extends PurchaseOrderWorkflowBudgetServiceImpl {
 
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
@@ -49,8 +51,10 @@ public class PurchaseOrderWorkflowServiceProjectImpl
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      AppBudgetService appBudgetService,
+      PurchaseOrderBudgetService purchaseOrderBudgetService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -59,7 +63,9 @@ public class PurchaseOrderWorkflowServiceProjectImpl
         purchaseOrderStockService,
         appAccountService,
         purchaseOrderSupplychainService,
-        purchaseOrderTypeSelectService);
+        purchaseOrderTypeSelectService,
+        appBudgetService,
+        purchaseOrderBudgetService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 

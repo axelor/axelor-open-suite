@@ -25,6 +25,12 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
+import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
+import com.axelor.apps.budget.service.invoice.StockMoveInvoiceBudgetServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -39,7 +45,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
-import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
@@ -50,7 +55,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
+public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceBudgetServiceImpl {
 
   @Inject
   public ProjectStockMoveInvoiceServiceImpl(
@@ -67,7 +72,12 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      BudgetInvoiceService budgetInvoiceService,
+      AppBudgetService appBudgetService,
+      InvoiceToolBudgetService invoiceToolBudgetService,
+      BudgetInvoiceLineService budgetInvoiceLineService,
+      BudgetToolsService budgetToolsService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -82,7 +92,12 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         appStockService,
         saleOrderMergingServiceSupplyChain,
         purchaseOrderMergingSupplychainService,
-        unitConversionService);
+        unitConversionService,
+        budgetInvoiceService,
+        appBudgetService,
+        invoiceToolBudgetService,
+        budgetInvoiceLineService,
+        budgetToolsService);
   }
 
   @Override

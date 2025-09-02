@@ -44,7 +44,6 @@ import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBudget;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -53,9 +52,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetDistributionServiceImpl implements BudgetDistributionService {
@@ -335,21 +332,6 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
     if (account != null && budgetToolsService.checkBudgetKeyInConfig(company)) {
       query = query.concat(String.format(" AND %d MEMBER OF self.accountSet ", account.getId()));
-    }
-
-    if (!ObjectUtils.isEmpty(globalBudgetSet)) {
-      AppBudget appBudget = appBudgetService.getAppBudget();
-      if (appBudget != null && appBudget.getEnableProject()) {
-        query =
-            query.concat(
-                String.format(
-                    " AND %s.id IN (%s)",
-                    budget,
-                    globalBudgetSet.stream()
-                        .map(GlobalBudget::getId)
-                        .map(Objects::toString)
-                        .collect(Collectors.joining(","))));
-      }
     }
 
     return query;
