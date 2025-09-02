@@ -25,8 +25,14 @@
         onSelect="action-partner-price-list-method-compute-price-list-domain" colSpan="12"
         showIf="currency"/>
     </panel>
-    <panel-dashlet name="partnersDashletPanel" title="Partners"
-      action="action-partner-price-list-view-dashlet-partners" colSpan="12"/>
+    <panel-related name="customersPanel" field="salePartnerList"
+      grid-view="partner-customer-grid" form-view="partner-customer-form" colSpan="12" hidden="true"
+      showIf="typeSelect == 1" canSelect="true"
+      domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true) AND self.salePartnerPriceList IS NULL"/>
+    <panel-related name="suppliersPanel" field="purchasePartnerList"
+      grid-view="partner-supplier-grid" form-view="partner-supplier-form" colSpan="12" hidden="true"
+      showIf="typeSelect == 2" canSelect="true"
+      domain="self.isContact = false AND self.isSupplier = true AND self.purchasePartnerPriceList IS NULL"/>
   </form>
 
   <action-record name="action-record-partner-price-list-record-on-new"
@@ -42,19 +48,6 @@
     <call class="com.axelor.apps.base.web.PartnerPriceListController"
       method="computePriceListDomain"/>
   </action-method>
-
-  <action-view name="action-partner-price-list-view-dashlet-partners" title="Partners"
-    model="com.axelor.apps.base.db.Partner">
-    <view type="grid" name="partner-customer-grid" if="typeSelect == 1"/>
-    <view type="form" name="partner-customer-form" if="typeSelect == 1"/>
-    <view type="grid" name="partner-supplier-grid" if="typeSelect == 2"/>
-    <view type="form" name="partner-supplier-form" if="typeSelect == 2"/>
-    <domain>(self.purchasePartnerPriceList = :partnerPriceListId AND
-      self.purchasePartnerPriceList.typeSelect = :typeSelect) OR (self.salePartnerPriceList =
-      :partnerPriceListId AND self.salePartnerPriceList.typeSelect = :typeSelect)</domain>
-    <context name="partnerPriceListId" expr="eval: id"/>
-    <context name="typeSelect" expr="eval: typeSelect"/>
-  </action-view>
 
   <action-attrs name="action-partner-price-list-attrs-set-currency-readonly">
     <attribute name="readonly" for="currency"
