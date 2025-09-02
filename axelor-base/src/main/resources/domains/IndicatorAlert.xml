@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="IndicatorAlert">
+
+    <integer name="statusSelect" default="1" readonly="true"
+      selection="base.indicator.alert.status.select" title="Status"/>
+    <many-to-one name="resultLine" title="Result" required="true"
+      ref="com.axelor.apps.base.db.IndicatorResultLine"/>
+
+    <extra-code><![CDATA[
+
+		public static final int STATUS_NEW = 1;
+		public static final int STATUS_CHECKED = 2;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>
