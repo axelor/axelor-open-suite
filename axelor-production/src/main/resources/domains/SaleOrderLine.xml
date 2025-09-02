@@ -37,6 +37,9 @@
     <string name="commentProductionBlocking" title="Blocking comment for production"
       large="true"/>
 
+    <entity-listener
+      class="com.axelor.apps.production.db.repo.SaleOrderLineProductionListener"/>
+
   </entity>
 
 </domain-models>
