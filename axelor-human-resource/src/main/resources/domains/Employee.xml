@@ -64,7 +64,7 @@
       ref="com.axelor.apps.base.db.EventsPlanning" title="Imposed holidays planning"
       massUpdate="true"/>
     <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
-    <decimal name="personalNumber" title="Personal number" required="true" unique="true"  scale="0" precision="20"/>
+    <long name="personalNumber" title="Personal Number" required="true" unique="true" massUpdate="true"/>
     <string name="socialSecurityNumber" title="Social security number" encrypted="true"/>
     <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance"
       title="Employee advances" readonly="true" mappedBy="employee"/>
