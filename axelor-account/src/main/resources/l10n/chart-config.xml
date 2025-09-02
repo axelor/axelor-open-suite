@@ -151,8 +151,10 @@
     <bind to="name" column="name"/>
     <bind to="reportExportTypeSelect" column="reportExportTypeSelect"/>
     <bind to="reportTitle" column="name"/>
-    <bind to="company" search="self.id = :_companyId"/>
+    <bind to="company" search="self.id = :_companyId" if="typeSelect != '3000'"/>
     <bind to="comparison" eval="typeSelect == '3000' ? '1' : '0'"/>
+    <bind to="companySet" search="self.id in :_companyId"
+      eval="_companyId?.split('\\|') as List" if="typeSelect == '3000'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"
