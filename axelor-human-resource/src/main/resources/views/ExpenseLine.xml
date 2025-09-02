@@ -39,8 +39,7 @@
       aggregate="sum"
       readonlyIf="expenseProduct.blockExpenseTax || $get('expense.statusSelect') &gt; 1" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
-    <field name="toInvoice" readonlyIf="$get('expense.statusSelect') &gt; 1"
-      if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
+    <field name="toInvoice" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="justificationMetaFile" widget="binary-link"
       onChange="action-expense-line-group-justification-line-onchange"
       readonlyIf="$get('expense.statusSelect') &gt; 1"/>
@@ -97,8 +96,7 @@
       readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct" hidden="true"/>
-    <field name="toInvoice" readonlyIf="$get('expense.statusSelect') &gt; 1"
-      if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
+    <field name="toInvoice" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="expense.statusSelect" hidden="true"/>
   </grid>
 
@@ -119,8 +117,7 @@
     <field name="employee" hidden="true"/>
     <field name="totalAmount"/>
     <field name="totalTax"/>
-    <field name="toInvoice"
-      if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
+    <field name="toInvoice"/>
     <field name="justificationMetaFile"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct.blockExpenseTax" hidden="true"/>
@@ -164,10 +161,8 @@
           onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
           readonlyIf="expenseProduct.blockExpenseTax"/>
         <field name="untaxedAmount"/>
-        <field name="toInvoice" colSpan="3"
-          if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"/>
+        <field name="toInvoice" colSpan="3"/>
         <field name="invoiced" colSpan="3"
-          if="__config__.app.getApp('business-project')?.getIsReinvoiceablExpenseLine()"
           showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
           <viewer>
             <![CDATA[<><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
