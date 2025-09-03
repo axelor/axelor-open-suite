@@ -73,13 +73,6 @@
           showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0" readonlyIf="invoice"
           name="expenseLineSetPanel"/>
 
-        <panel-related title="Production" field="manufOrderSet" colSpan="12"
-          canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production"
-          grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form"
-          showIf="manufOrderSet &amp;&amp; manufOrderSet.length &gt; 0" readonlyIf="invoice"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction()"
-          name="manufOrderSetPanel"/>
-
         <panel-related field="projectTaskSet" colSpan="12" canNew="false"
           canEdit="false" canSelect="false" form-view="business-project-task-form"
           grid-view="project-task-invoicing-project-grid"
@@ -149,9 +142,4 @@
     <context name="list" expr="eval: logTimesSet.collect{it.id}"/>
   </action-view>
 
-  <search-filters name="invoicing-project-filters"
-    model="com.axelor.apps.businessproject.db.InvoicingProject" title="Invoicing project filters">
-    <field name="manufOrderSet" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
-  </search-filters>
 </object-views>

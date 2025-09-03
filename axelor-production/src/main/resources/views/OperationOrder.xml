@@ -221,14 +221,8 @@
 
     <panel-related name="operationOrderDurationListPanel"
       field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false"
-      sidebar="true" showIf="id"
-      if="!__config__.app.getApp('production') || !__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
+      sidebar="true" showIf="id"/>
 
-    <panel-related name="operationOrderDurationListPanel" field="timesheetLineList"
-      grid-view="timesheet-line-timesheet-operation-order-grid"
-      form-view="timesheet-line-timesheet-manuf-order-form" colSpan="12" canNew="false"
-      canEdit="false" canRemove="false" if-module="axelor-business-production"
-      if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
   </form>
 
   <action-record name="action-operation-order-default-record"
@@ -394,10 +388,6 @@
 
   <search-filters name="operation-order-filters"
     model="com.axelor.apps.production.db.OperationOrder" title="Manufacturing order filters">
-    <field name="operationOrderDurationList" hidden="true"
-      if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
-    <field name="timesheetLineList" hidden="true"
-      if="!__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <filter name="operation-order-filters-draft-operations" title="Draft Operations">
       <domain>self.statusSelect = 1</domain>
     </filter>
