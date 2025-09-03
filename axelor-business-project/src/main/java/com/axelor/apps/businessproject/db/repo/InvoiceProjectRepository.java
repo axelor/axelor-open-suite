@@ -19,17 +19,17 @@
 package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.budget.db.repo.BudgetInvoiceRepository;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
-public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
+public class InvoiceProjectRepository extends BudgetInvoiceRepository {
 
   protected AppBusinessProjectService appBusinessProjectService;
 

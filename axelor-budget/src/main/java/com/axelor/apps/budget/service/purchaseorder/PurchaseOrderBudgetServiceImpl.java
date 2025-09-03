@@ -18,11 +18,14 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
@@ -31,16 +34,17 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
+import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
-import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
-import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
@@ -57,7 +61,7 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
-public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowServiceProjectImpl
+public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderInvoiceContractServiceImpl
     implements PurchaseOrderBudgetService {
   protected BudgetRepository budgetRepository;
   protected PurchaseOrderLineBudgetService purchaseOrderLineBudgetService;
@@ -68,44 +72,55 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
   protected CurrencyScaleService currencyScaleService;
+  protected final PurchaseOrderRepository purchaseOrderRepo;
 
   @Inject
   public PurchaseOrderBudgetServiceImpl(
-      PurchaseOrderService purchaseOrderService,
-      PurchaseOrderRepository purchaseOrderRepo,
-      AppPurchaseService appPurchaseService,
+      InvoiceServiceSupplychain invoiceServiceSupplychain,
+      InvoiceService invoiceService,
+      InvoiceRepository invoiceRepo,
+      TimetableRepository timetableRepo,
       AppSupplychainService appSupplychainService,
-      PurchaseOrderStockService purchaseOrderStockService,
-      AppAccountService appAccountService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
+      AccountConfigService accountConfigService,
+      CommonInvoiceService commonInvoiceService,
+      AddressService addressService,
+      InvoiceLineOrderService invoiceLineOrderService,
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
+      InvoiceTaxService invoiceTaxService,
       BudgetRepository budgetRepository,
-      BudgetDistributionService budgetDistributionService,
       PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
+      BudgetDistributionService budgetDistributionService,
       BudgetService budgetService,
       BudgetDistributionRepository budgetDistributionRepository,
       AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleService currencyScaleService,
-      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
+      CurrencyScaleService currencyScaleService1,
+      PurchaseOrderRepository purchaseOrderRepo) {
     super(
-        purchaseOrderService,
-        purchaseOrderRepo,
-        appPurchaseService,
+        invoiceServiceSupplychain,
+        invoiceService,
+        invoiceRepo,
+        timetableRepo,
         appSupplychainService,
-        purchaseOrderStockService,
-        appAccountService,
-        purchaseOrderSupplychainService,
-        analyticMoveLineRepository,
-        purchaseOrderTypeSelectService);
+        accountConfigService,
+        commonInvoiceService,
+        addressService,
+        invoiceLineOrderService,
+        currencyService,
+        currencyScaleService,
+        orderInvoiceService,
+        invoiceTaxService);
     this.budgetRepository = budgetRepository;
-    this.budgetDistributionService = budgetDistributionService;
     this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;
+    this.budgetDistributionService = budgetDistributionService;
     this.budgetService = budgetService;
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
-    this.currencyScaleService = currencyScaleService;
+    this.currencyScaleService = currencyScaleService1;
+    this.purchaseOrderRepo = purchaseOrderRepo;
   }
 
   @Override
@@ -294,22 +309,6 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     }
   }
 
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-    super.validatePurchaseOrder(purchaseOrder);
-
-    if (!appBudgetService.isApp("budget")) {
-      return;
-    }
-
-    if (!appBudgetService.getAppBudget().getManageMultiBudget()) {
-      generateBudgetDistribution(purchaseOrder);
-    }
-
-    updateBudgetLinesFromPurchaseOrder(purchaseOrder);
-  }
-
   @Transactional
   @Override
   public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder) {
@@ -326,25 +325,6 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
                     budget, purchaseOrder.getOrderDate()));
           }
         }
-      }
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-    super.cancelPurchaseOrder(purchaseOrder);
-
-    if (appBudgetService.getAppBudget() != null) {
-      updateBudgetLinesFromPurchaseOrder(purchaseOrder);
-
-      if (purchaseOrder.getPurchaseOrderLineList() != null) {
-        purchaseOrder.getPurchaseOrderLineList().stream()
-            .forEach(
-                poLine -> {
-                  poLine.clearBudgetDistributionList();
-                  poLine.setBudget(null);
-                });
       }
     }
   }

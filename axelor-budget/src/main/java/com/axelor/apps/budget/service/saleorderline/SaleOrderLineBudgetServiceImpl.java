@@ -36,7 +36,6 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -136,11 +135,6 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       }
       date =
           saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
-
-      if (saleOrder.getProject() != null
-          && !ObjectUtils.isEmpty(saleOrder.getProject().getGlobalBudgetSet())) {
-        globalBudgetSet = saleOrder.getProject().getGlobalBudgetSet();
-      }
     }
 
     return budgetDistributionService.getBudgetDomain(

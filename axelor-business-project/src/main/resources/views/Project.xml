@@ -309,6 +309,11 @@
           <field name="numberHoursADay"/>
           <field name="spentTimeCostComputationMethod"/>
           <field name="allowToGetPricesFromFrameworkContract"/>
+          <field name="globalBudgetSet" widget="TagSelect"
+            if="__config__.app.getApp('budget')?.getEnableProject()" form-view="global-budget-form"
+            grid-view="global-budget-grid"
+            domain="self.company = :company AND self.statusSelect = 2" canNew="false"
+            canEdit="false"/>
         </panel>
         <panel-include view="incl-project-config-panel-form"/>
       </panel>

@@ -39,13 +39,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.google.inject.Inject;
 import java.util.Map;
 
-public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineProjectServiceImpl {
+public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainService {
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;

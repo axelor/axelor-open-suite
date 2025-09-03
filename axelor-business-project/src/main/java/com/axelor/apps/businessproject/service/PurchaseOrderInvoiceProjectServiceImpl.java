@@ -44,11 +44,17 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
@@ -68,8 +74,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PurchaseOrderInvoiceProjectServiceImpl
-    extends PurchaseOrderInvoiceContractServiceImpl {
+public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderBudgetServiceImpl {
 
   private PriceListService priceListService;
 
@@ -94,6 +99,15 @@ public class PurchaseOrderInvoiceProjectServiceImpl
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
+      com.axelor.apps.budget.db.repo.BudgetRepository budgetRepository,
+      PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
+      BudgetDistributionService budgetDistributionService,
+      BudgetService budgetService,
+      com.axelor.apps.budget.db.repo.BudgetDistributionRepository budgetDistributionRepository,
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleService currencyScaleService1,
+      PurchaseOrderRepository purchaseOrderRepo,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
@@ -111,7 +125,16 @@ public class PurchaseOrderInvoiceProjectServiceImpl
         currencyService,
         currencyScaleService,
         orderInvoiceService,
-        invoiceTaxService);
+        invoiceTaxService,
+        budgetRepository,
+        purchaseOrderLineBudgetService,
+        budgetDistributionService,
+        budgetService,
+        budgetDistributionRepository,
+        appBudgetService,
+        budgetToolsService,
+        currencyScaleService1,
+        purchaseOrderRepo);
     this.priceListService = priceListService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.appBusinessProjectService = appBusinessProjectService;

@@ -124,6 +124,9 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <many-to-many name="globalBudgetSet" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global budgets"/>
+
     <extra-code><![CDATA[
 
 		   	// TYPE SELECT
