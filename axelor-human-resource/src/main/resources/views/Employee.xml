@@ -192,8 +192,7 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')"
       showIf="stepByStepSelect == 3">
-      <field name="timeLoggingPreferenceSelect" colSpan="3"
-        validIf="(timesheetImputationSelect == 2 &amp;&amp; timeLoggingPreferenceSelect != 'days') || timesheetImputationSelect != 2"/>
+      <field name="timeLoggingPreferenceSelect" colSpan="3"/>
       <field name="product" canEdit="false" colSpan="3"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
         grid-view="product-grid"/>
