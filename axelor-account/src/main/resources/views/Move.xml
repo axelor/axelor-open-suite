@@ -544,6 +544,7 @@
   </action-group>
 
   <action-group name="action-move-group-generate-counterpart">
+    <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-generate-counterpart"/>
     <action name="save" if="statusSelect != 4 &amp;&amp; statusSelect &gt;= 2"/>
   </action-group>
