@@ -46,7 +46,6 @@
 171;"analyticReport";"Rapport Analytique";"NUMBERS";"UPPERCASE";1;4;"ANAREP_%YY_";;1;1
 170;"depositSlip";"Bordereau de remise";"NUMBERS";"UPPERCASE";1;4;"BR%YY%FM";;1;1
 169;"subrogationRelease";"Quittance subrogative";"NUMBERS";"UPPERCASE";1;4;"QS%YY%FM";;1;1
-107;"debitReject";"Rejet des prélèvements";"NUMBERS";"UPPERCASE";1;4;"PRLREJ%YY";;1;1
 181;"move";"Ecriture des à nouveaux";"NUMBERS";"UPPERCASE";1;4;"ANV%YY%FM";;1;1
 182;"fixedAsset";"N° Immobilisations";"NUMBERS";"UPPERCASE";1;3;"IMMO%YYYY";;1;1
 183;"paymentSession";"N° Session paiement";"NUMBERS";"UPPERCASE";1;3;"PMTS%YYYY";;1;1
