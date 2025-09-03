@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,11 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 public interface FixedAssetService {
 
@@ -32,8 +30,16 @@ public interface FixedAssetService {
 
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
+  List<FixedAsset> splitFixedAsset(
+      FixedAsset fixedAsset,
+      int splitType,
+      BigDecimal amount,
+      LocalDate splittingDate,
+      String comments)
+      throws AxelorException;
+
   /**
-   * Call splitFixedAsset and save both fixed asset. (Original and created)
+   * Call splitFixedAsset and save both fixed asset. (Original and all created)
    *
    * @param fixedAsset
    * @param splitType
@@ -43,7 +49,7 @@ public interface FixedAssetService {
    * @return
    * @throws AxelorException
    */
-  FixedAsset splitAndSaveFixedAsset(
+  List<FixedAsset> splitAndSaveFixedAsset(
       FixedAsset fixedAsset,
       int splitType,
       BigDecimal amount,
@@ -54,49 +60,7 @@ public interface FixedAssetService {
   void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
       throws AxelorException;
 
-  void checkFixedAssetBeforeDisposal(
-      FixedAsset fixedAsset,
-      LocalDate disposalDate,
-      int disposalQtySelect,
-      BigDecimal disposalQty,
-      Boolean generateSaleMove,
-      Set<TaxLine> saleTaxLineSet)
-      throws AxelorException;
-
-  int computeTransferredReason(
-      Integer disposalTypeSelect,
-      Integer disposalQtySelect,
-      BigDecimal disposalQty,
-      FixedAsset fixedAsset);
-
-  /**
-   * Method that manage disposal action. The process will be different depending on the
-   * transferredReason.
-   */
-  FixedAsset computeDisposal(
-      FixedAsset fixedAsset,
-      LocalDate disposalDate,
-      BigDecimal disposalQty,
-      BigDecimal disposalAmount,
-      int transferredReason,
-      AssetDisposalReason assetDisposalReason,
-      String comments)
-      throws AxelorException;
-
   void onChangeDepreciationPlan(FixedAsset fixedAsset) throws AxelorException;
 
   public boolean checkDepreciationPlans(FixedAsset fixedAsset);
-
-  public FixedAsset fullDisposal(
-      FixedAsset fixedAsset,
-      LocalDate disposalDate,
-      int disposalQtySelect,
-      BigDecimal disposalQty,
-      Boolean generateSaleMove,
-      Set<TaxLine> saleTaxLineSet,
-      Integer disposalTypeSelect,
-      BigDecimal disposalAmount,
-      AssetDisposalReason assetDisposalReason,
-      String comments)
-      throws AxelorException;
 }

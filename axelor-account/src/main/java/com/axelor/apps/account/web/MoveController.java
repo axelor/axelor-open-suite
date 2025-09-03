@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,18 +25,21 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MovePfpService;
+import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.record.MoveGroupOnChangeService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
@@ -353,11 +356,18 @@ public class MoveController {
 
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
       User user = request.getUser();
-      boolean isMassEntryMove =
-          "move-mass-entry-form".equals(request.getContext().get("_viewName").toString());
+      boolean isMassEntryMove = "move-mass-entry-form".equals(context.get("_viewName").toString());
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      JournalRepository journalRepository = Beans.get(JournalRepository.class);
+      move.setJournal(
+          Optional.ofNullable(context.get("_journalId"))
+              .map(Object::toString)
+              .map(Long::valueOf)
+              .map(journalRepository::find)
+              .orElse(null));
 
       response.setValues(moveGroupService.getOnNewValuesMap(move, isMassEntryMove));
       response.setAttrs(moveGroupService.getOnNewAttrsMap(move, user));
@@ -588,10 +598,10 @@ public class MoveController {
   public void onChangePaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      MoveGroupOnChangeService movePaymentModeService = Beans.get(MoveGroupOnChangeService.class);
 
-      response.setValues(moveGroupService.getPaymentModeOnChangeValuesMap(move));
-      response.setAttrs(moveGroupService.getHeaderChangeAttrsMap());
+      response.setValues(movePaymentModeService.getPaymentModeOnChangeValuesMap(move));
+      response.setAttrs(movePaymentModeService.getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -710,7 +720,7 @@ public class MoveController {
 
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
+      response.setAttrs(Beans.get(MoveGroupOnChangeService.class).getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -827,7 +837,7 @@ public class MoveController {
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MovePfpService.class).validatePfp(move.getId());
+      Beans.get(MovePfpValidateService.class).validatePfp(move.getId());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -938,5 +948,11 @@ public class MoveController {
     actionViewBuilder.context("_moveId", move.getId());
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void moveCompanyBankDetailsDomain(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    response.setAttrs(
+        Beans.get(MoveGroupService.class).getCompanyBankDetailsOnSelectAttrsMap(move));
   }
 }

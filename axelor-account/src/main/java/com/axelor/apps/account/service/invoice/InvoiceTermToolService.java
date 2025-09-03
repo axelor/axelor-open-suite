@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,11 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,4 +40,13 @@ public interface InvoiceTermToolService {
 
   boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
+
+  BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
+
+  BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
+
+  List<InvoiceTerm> getInvoiceTerms(List<Long> invoiceTermIds);
+
+  List<InvoiceTerm> getPaymentVoucherInvoiceTerms(InvoicePayment invoicePayment, Invoice invoice)
+      throws AxelorException;
 }

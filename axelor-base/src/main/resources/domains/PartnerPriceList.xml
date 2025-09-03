@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -12,6 +12,8 @@
     <many-to-many name="priceListSet" title="Price lists"
       ref="com.axelor.apps.base.db.PriceList"/>
     <boolean name="isExclusive" title="Exclusive" default="false"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"
+      title="PartnerPriceList.currency" required="true"/>
   </entity>
 
 </domain-models>

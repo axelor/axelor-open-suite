@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,7 @@ import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoiceTermService {
@@ -98,7 +99,8 @@ public interface InvoiceTermService {
   public void updateInvoiceTermsPaidAmount(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      InvoiceTermPayment invoiceTermPayment)
+      InvoiceTermPayment invoiceTermPayment,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 
   /**
@@ -115,10 +117,10 @@ public interface InvoiceTermService {
   /**
    * Check if invoice term were customized
    *
-   * @param invoice
+   * @param invoiceTermList
    * @return
    */
-  public boolean checkIfCustomizedInvoiceTerms(Invoice invoice);
+  public boolean checkIfCustomizedInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
   /**
    * Check if the sum of invoice terms amounts equals invoice inTaxTotal
@@ -143,6 +145,8 @@ public interface InvoiceTermService {
    * @throws AxelorException
    */
   public BigDecimal computePercentageSum(Invoice invoice);
+
+  MoveLine recomputeFreeDueDates(MoveLine moveLine, LocalDate dueDate);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -222,8 +226,6 @@ public interface InvoiceTermService {
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
 
-  public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
-
   void setCustomizedAmounts(InvoiceTerm invoiceTerm);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
@@ -234,10 +236,6 @@ public interface InvoiceTermService {
   InvoiceTerm updateInvoiceTermsAmountsSessionPart(InvoiceTerm invoiceTerm, boolean isRefund);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
-
-  public User getPfpValidatorUser(Partner partner, Company company);
-
-  boolean checkPfpValidatorUser(InvoiceTerm invoiceTerm);
 
   public String getPfpValidatorUserDomain(Partner partner, Company company);
 
@@ -263,7 +261,8 @@ public interface InvoiceTermService {
       List<InvoiceTerm> invoiceTermList,
       InvoicePayment invoicePayment,
       BigDecimal amount,
-      Reconcile reconcile)
+      Reconcile reconcile,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
@@ -281,15 +280,14 @@ public interface InvoiceTermService {
 
   void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
 
-  BigDecimal adjustAmountInCompanyCurrency(
-      List<InvoiceTerm> invoiceTermList,
-      BigDecimal companyAmountRemaining,
-      BigDecimal amountToPayInCompanyCurrency,
-      BigDecimal amountToPay,
-      BigDecimal currencyRate,
-      Company company);
-
   void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
 
+  void computeInvoiceTermsDueDates(MoveLine moveLine, Move move);
+
   void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException;
+
+  List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList);
+
+  void updateInvoiceTermsAmountRemainingWithoutPayment(Reconcile reconcile, MoveLine moveLine)
+      throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,17 +23,18 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
+import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +42,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
+import javax.persistence.TypedQuery;
 
 public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQueryService {
 
@@ -49,17 +50,23 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   protected AppBaseService appBaseService;
   protected AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository;
   protected AnalyticAxisRepository analyticAxisRepo;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService;
 
   @Inject
   public AnalyticMoveLineQueryServiceImpl(
       AnalyticMoveLineService analyticMoveLineService,
       AppBaseService appBaseService,
       AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository,
-      AnalyticAxisRepository analyticAxisRepo) {
+      AnalyticAxisRepository analyticAxisRepo,
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.appBaseService = appBaseService;
     this.analyticMoveLineQueryRepository = analyticMoveLineQueryRepository;
     this.analyticAxisRepo = analyticAxisRepo;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
+    this.analyticMoveLineQueryPercentageService = analyticMoveLineQueryPercentageService;
   }
 
   @Override
@@ -71,12 +78,8 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
             + AnalyticMoveLineRepository.SUB_TYPE_ORIGINAL
             + " AND ";
 
-    String idList = this.filterReversedLines();
-
-    if (!Strings.isNullOrEmpty(idList)) {
-      query += "self.id not in (" + idList + ") AND ";
-    }
-
+    query +=
+        "NOT EXISTS (SELECT 1 FROM AnalyticMoveLine l WHERE l.originAnalyticMoveLine = self.id) AND ";
     query += "self.moveLine.move.company.id = " + analyticMoveLineQuery.getCompany().getId();
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
@@ -108,79 +111,51 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
     return query;
   }
 
-  protected String filterReversedLines() {
-    return Beans.get(AnalyticMoveLineRepository.class).all().fetch().stream()
-        .map(l -> l.getOriginAnalyticMoveLine())
-        .filter(Objects::nonNull)
-        .map(aml -> String.valueOf(aml.getId()))
-        .collect(Collectors.joining(","));
-  }
-
   protected String getOrQuery(
       List<AnalyticMoveLineQueryParameter> searchAnalyticMoveLineQueryParameterList) {
-
-    List<String> paramFilter = new ArrayList<>();
-    for (AnalyticMoveLineQueryParameter parameter : searchAnalyticMoveLineQueryParameterList) {
-      String q = " (self.analyticAxis.id = " + parameter.getAnalyticAxis().getId();
-      q +=
-          " AND self.analyticAccount.id IN ("
-              + parameter.getAnalyticAccountSet().stream()
-                  .map(AnalyticAccount::getId)
-                  .map(String::valueOf)
-                  .collect(Collectors.joining(","))
-              + "))";
-
-      paramFilter.add(q);
-    }
-    return paramFilter.stream().collect(Collectors.joining(" OR "));
+    return searchAnalyticMoveLineQueryParameterList.stream()
+        .map(
+            parameter ->
+                String.format(
+                    " (self.analyticAxis.id = %d AND self.analyticAccount.id IN (%s))",
+                    parameter.getAnalyticAxis().getId(),
+                    parameter.getAnalyticAccountSet().stream()
+                        .map(AnalyticAccount::getId)
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(","))))
+        .collect(Collectors.joining(" OR "));
   }
 
   protected String getAndQuery(
       String query, List<AnalyticMoveLineQueryParameter> searchAnalyticMoveLineQueryParameterList) {
-    Map<MoveLine, List<AnalyticMoveLine>> analyticMoveLineList =
-        Beans.get(AnalyticMoveLineRepository.class).all().filter("self.moveLine is not null")
-            .fetch().stream()
-            .collect(Collectors.groupingBy(AnalyticMoveLine::getMoveLine, Collectors.toList()));
-
     Map<AnalyticAxis, Set<AnalyticAccount>> paramMap =
         searchAnalyticMoveLineQueryParameterList.stream()
+            .filter(queryParam -> ObjectUtils.notEmpty(queryParam.getAnalyticAccountSet()))
             .collect(
                 Collectors.toMap(
                     AnalyticMoveLineQueryParameter::getAnalyticAxis,
                     AnalyticMoveLineQueryParameter::getAnalyticAccountSet));
 
-    List<Long> filteredList = new ArrayList<>();
-    filteredList.add(0l);
+    StringBuilder queryString =
+        new StringBuilder(
+            "SELECT DISTINCT aml.moveLine.id FROM AnalyticMoveLine aml WHERE aml.moveLine IS NOT NULL");
 
-    for (Map.Entry<MoveLine, List<AnalyticMoveLine>> entry : analyticMoveLineList.entrySet()) {
-      Map<AnalyticAxis, List<AnalyticMoveLine>> val =
-          entry.getValue().stream()
-              .collect(Collectors.groupingBy(AnalyticMoveLine::getAnalyticAxis));
-      Boolean allCondition = true;
-      for (Map.Entry<AnalyticAxis, List<AnalyticMoveLine>> entry2 : val.entrySet()) {
-
-        Set<AnalyticAccount> analyticAccountSet = paramMap.get(entry2.getKey());
-
-        if (analyticAccountSet == null) {
-          continue;
-        }
-
-        if (entry2.getValue().stream()
-            .noneMatch(a -> analyticAccountSet.contains(a.getAnalyticAccount()))) {
-          allCondition = false;
-          break;
-        }
-      }
-      if (allCondition) {
-        filteredList.add(entry.getKey().getId());
-      }
+    for (Map.Entry<AnalyticAxis, Set<AnalyticAccount>> entry : paramMap.entrySet()) {
+      queryString
+          .append(
+              " AND EXISTS (SELECT 1 FROM AnalyticMoveLine aml_sub WHERE aml_sub.moveLine = aml.moveLine")
+          .append(" AND aml_sub.analyticAxis = ")
+          .append(entry.getKey().getId())
+          .append(" AND aml_sub.analyticAccount IN ")
+          .append("(" + StringHelper.getIdListString(entry.getValue()) + "))");
     }
+    TypedQuery<Long> amlQuery = JPA.em().createQuery(queryString.toString(), Long.class);
+    List<Long> moveLineIds = amlQuery.getResultList();
+    String filteredIds = moveLineIds.stream().map(String::valueOf).collect(Collectors.joining(","));
 
     return String.format(
-        "%s AND self.moveLine.id in (%s) AND (%s)",
-        query,
-        StringUtils.join(filteredList, ","),
-        getOrQuery(searchAnalyticMoveLineQueryParameterList));
+        "%s AND self.moveLine.id in (%s)",
+        query, StringUtils.isEmpty(filteredIds) ? "0" : filteredIds);
   }
 
   protected String getStatusQuery(AnalyticMoveLineQuery analyticMoveLineQuery, String query) {
@@ -221,21 +196,26 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   @Override
   public Set<AnalyticMoveLine> analyticMoveLineReverses(
       AnalyticMoveLineQuery analyticMoveLineQuery, List<AnalyticMoveLine> analyticMoveLines) {
-
-    Map<AnalyticAxis, AnalyticAccount> reverseRules = getReverseRules(analyticMoveLineQuery);
-
     Set<AnalyticMoveLine> reverseAnalyticMoveLines = new HashSet<AnalyticMoveLine>();
-    for (AnalyticAxis analyticAxis : reverseRules.keySet()) {
-      AnalyticAccount analyticAccount = reverseRules.get(analyticAxis);
+    List<AnalyticMoveLineQueryParameter> reverseRuleList = getReverseRules(analyticMoveLineQuery);
+
+    if (ObjectUtils.isEmpty(reverseRuleList)) {
+      return reverseAnalyticMoveLines;
+    }
+
+    List<AnalyticAxis> analyticAxisToReverseList =
+        reverseRuleList.stream()
+            .map(AnalyticMoveLineQueryParameter::getAnalyticAxis)
+            .distinct()
+            .collect(Collectors.toList());
+
+    for (AnalyticAxis axis : analyticAxisToReverseList) {
       List<AnalyticMoveLine> analyticMoveLinesToReverse =
           analyticMoveLines.stream()
-              .filter(
-                  analyticMoveLine ->
-                      Objects.equals(analyticMoveLine.getAnalyticAxis(), analyticAxis))
+              .filter(analyticMoveLine -> Objects.equals(analyticMoveLine.getAnalyticAxis(), axis))
               .collect(Collectors.toList());
 
-      reverseAnalyticMoveLines.addAll(
-          analyticMoveLineReverses(analyticAccount, analyticMoveLinesToReverse));
+      reverseAnalyticMoveLines.addAll(analyticMoveLineReverses(analyticMoveLinesToReverse));
     }
 
     return reverseAnalyticMoveLines;
@@ -243,33 +223,33 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
 
   @Transactional
   protected Set<AnalyticMoveLine> analyticMoveLineReverses(
-      AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLines) {
+      List<AnalyticMoveLine> analyticMoveLines) {
 
     return analyticMoveLines.stream()
-        .map(
-            analyticMoveLine ->
-                analyticMoveLineService.reverseAndPersist(analyticMoveLine, analyticAccount))
+        .map(analyticMoveLine -> analyticMoveLineService.reverseAndPersist(analyticMoveLine))
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Set<AnalyticMoveLine> createAnalyticaMoveLines(
+  public Set<AnalyticMoveLine> createAnalyticMoveLines(
       AnalyticMoveLineQuery analyticMoveLineQuery, List<AnalyticMoveLine> analyticMoveLines) {
 
-    Map<AnalyticAxis, AnalyticAccount> reverseRules = getReverseRules(analyticMoveLineQuery);
+    List<AnalyticMoveLineQueryParameter> reverseRules = getReverseRules(analyticMoveLineQuery);
 
     Set<AnalyticMoveLine> newAnalyticaMoveLines = new HashSet<AnalyticMoveLine>();
-    for (AnalyticAxis analyticAxis : reverseRules.keySet()) {
-      AnalyticAccount analyticAccount = reverseRules.get(analyticAxis);
+    for (AnalyticMoveLineQueryParameter parameter : reverseRules) {
+      AnalyticAccount analyticAccount = parameter.getAnalyticAccount();
       List<AnalyticMoveLine> analyticMoveLinesToCreate =
           analyticMoveLines.stream()
               .filter(
                   analyticMoveLine ->
-                      Objects.equals(analyticMoveLine.getAnalyticAxis(), analyticAxis))
+                      Objects.equals(
+                          analyticMoveLine.getAnalyticAxis(), parameter.getAnalyticAxis()))
               .collect(Collectors.toList());
 
       newAnalyticaMoveLines.addAll(
-          createAnalyticMoveLine(analyticAccount, analyticMoveLinesToCreate));
+          createAnalyticMoveLine(
+              analyticAccount, analyticMoveLinesToCreate, parameter.getPercentage()));
     }
 
     return newAnalyticaMoveLines;
@@ -277,28 +257,27 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
 
   @Transactional
   protected Set<AnalyticMoveLine> createAnalyticMoveLine(
-      AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLines) {
+      AnalyticAccount analyticAccount,
+      List<AnalyticMoveLine> analyticMoveLines,
+      BigDecimal percentage) {
 
     return analyticMoveLines.stream()
         .map(
             analyticMoveLine ->
-                analyticMoveLineService.generateAnalyticMoveLine(analyticMoveLine, analyticAccount))
+                analyticMoveLineService.generateAnalyticMoveLine(
+                    analyticMoveLine, analyticAccount, percentage))
         .collect(Collectors.toSet());
   }
 
   @Override
-  public Map<AnalyticAxis, AnalyticAccount> getReverseRules(
+  public List<AnalyticMoveLineQueryParameter> getReverseRules(
       AnalyticMoveLineQuery analyticMoveLineQuery) {
-    List<AnalyticMoveLineQueryParameter> reverseAnalyticMoveLineQueryParameterList =
-        analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList().stream()
-            .filter(l -> ObjectUtils.notEmpty(l.getAnalyticAccount()))
-            .collect(Collectors.toList());
-
-    return reverseAnalyticMoveLineQueryParameterList.stream()
-        .collect(
-            Collectors.toMap(
-                AnalyticMoveLineQueryParameter::getAnalyticAxis,
-                AnalyticMoveLineQueryParameter::getAnalyticAccount));
+    return analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList().stream()
+        .filter(
+            l ->
+                ObjectUtils.notEmpty(l.getAnalyticAxis())
+                    && ObjectUtils.notEmpty(l.getAnalyticAccount()))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -330,13 +309,22 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
 
   protected List<Long> getAlreadyPresentAnalyticAxesIds(
       List<AnalyticMoveLineQueryParameter> analyticMoveLineQueryParameterList) {
-    List<Long> alreadyPresentAnalyticAxesIds =
-        analyticMoveLineQueryParameterList.stream()
-            .map(AnalyticMoveLineQueryParameter::getAnalyticAxis)
-            .filter(Objects::nonNull)
-            .map(AnalyticAxis::getId)
-            .collect(Collectors.toList());
+    List<Long> alreadyPresentAnalyticAxesIds = new ArrayList<>();
     alreadyPresentAnalyticAxesIds.add(0L);
+    if (ObjectUtils.isEmpty(analyticMoveLineQueryParameterList)) {
+      return alreadyPresentAnalyticAxesIds;
+    }
+
+    Map<AnalyticAxis, BigDecimal> percentageAxisMap =
+        analyticMoveLineQueryPercentageService.buildPercentageAxisMap(
+            analyticMoveLineQueryParameterList);
+
+    alreadyPresentAnalyticAxesIds.addAll(
+        percentageAxisMap.entrySet().stream()
+            .filter(it -> it.getValue().compareTo(new BigDecimal(100)) >= 0)
+            .map(Map.Entry::getKey)
+            .map(AnalyticAxis::getId)
+            .collect(Collectors.toList()));
     return alreadyPresentAnalyticAxesIds;
   }
 }

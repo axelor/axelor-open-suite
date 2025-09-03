@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,8 @@ import com.axelor.apps.intervention.rest.dto.InterventionEquipmentPutRequest;
 import com.axelor.apps.intervention.rest.dto.InterventionResponse;
 import com.axelor.apps.intervention.rest.dto.InterventionStatusPutRequest;
 import com.axelor.apps.intervention.service.InterventionRestService;
+import com.axelor.apps.intervention.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -62,7 +64,7 @@ public class InterventionRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Intervention status successfully updated.",
+        I18n.get(ITranslation.INTERVENTION_STATUS_UPDATED),
         new InterventionResponse(intervention));
   }
 
@@ -86,7 +88,7 @@ public class InterventionRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Equipment successfully added.",
+        I18n.get(ITranslation.EQUIPMENT_ADDED),
         new InterventionResponse(intervention));
   }
 
@@ -110,7 +112,7 @@ public class InterventionRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Equipment successfully removed.",
+        I18n.get(ITranslation.EQUIPMENT_REMOVED),
         new InterventionResponse(intervention));
   }
 }

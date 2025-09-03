@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,6 @@ import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -61,13 +60,18 @@ public class BatchAccountingCutOff extends PreviewBatch {
 
   @Override
   protected void process() {
-    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    try {
+      AccountingBatch accountingBatch = batch.getAccountingBatch();
 
-    LocalDate moveDate = accountingBatch.getMoveDate();
-    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-    this.updateBatch(moveDate, accountingCutOffTypeSelect);
+      LocalDate moveDate = accountingBatch.getMoveDate();
+      int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
+      this.updateBatch(moveDate, accountingCutOffTypeSelect);
 
-    super.process();
+      super.process();
+    } catch (Exception e) {
+      TraceBackService.trace(e, null, batch.getId());
+      incrementAnomaly();
+    }
   }
 
   @Override
@@ -82,9 +86,8 @@ public class BatchAccountingCutOff extends PreviewBatch {
     Query<Move> moveQuery =
         cutOffService.getMoves(company, journalSet, moveDate, accountingCutOffTypeSelect);
 
-    while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(moveList = moveQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
 
-      findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
       journalSet = accountingBatch.getJournalSet();
@@ -99,6 +102,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
       }
 
       JPA.clear();
+      findBatch();
     }
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,8 @@ import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardManagementRepository;
+import com.axelor.apps.base.db.repo.DataSharingProductWizardRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
@@ -44,6 +46,8 @@ import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.db.repo.LanguageBaseRepository;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationBaseRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -52,6 +56,8 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -63,10 +69,15 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
+import com.axelor.apps.base.quickmenu.TradingNameUpdateQuickMenuCreator;
+import com.axelor.apps.base.rest.PartnerRestService;
+import com.axelor.apps.base.rest.PartnerRestServiceImpl;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AlternativeBarcodeService;
+import com.axelor.apps.base.service.AlternativeBarcodeServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.AnonymizerLineService;
@@ -96,6 +107,10 @@ import com.axelor.apps.base.service.DataBackupAnonymizeService;
 import com.axelor.apps.base.service.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.DataBackupService;
 import com.axelor.apps.base.service.DataBackupServiceImpl;
+import com.axelor.apps.base.service.DataSharingProductWizardService;
+import com.axelor.apps.base.service.DataSharingProductWizardServiceImpl;
+import com.axelor.apps.base.service.DataSharingReferentialLineService;
+import com.axelor.apps.base.service.DataSharingReferentialLineServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FakerService;
@@ -108,17 +123,21 @@ import com.axelor.apps.base.service.ImportExportTranslationService;
 import com.axelor.apps.base.service.ImportExportTranslationServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
-import com.axelor.apps.base.service.LanguageService;
-import com.axelor.apps.base.service.LanguageServiceImpl;
-import com.axelor.apps.base.service.LocalizationService;
-import com.axelor.apps.base.service.LocalizationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.MetaFileService;
+import com.axelor.apps.base.service.MetaFileServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerConvertService;
+import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerMailQueryService;
+import com.axelor.apps.base.service.PartnerMailQueryServiceImpl;
+import com.axelor.apps.base.service.PartnerPriceListDomainService;
+import com.axelor.apps.base.service.PartnerPriceListDomainServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -127,6 +146,8 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PfxCertificateCheckService;
+import com.axelor.apps.base.service.PfxCertificateCheckServiceImpl;
 import com.axelor.apps.base.service.PfxCertificateService;
 import com.axelor.apps.base.service.PfxCertificateServiceImpl;
 import com.axelor.apps.base.service.PricedOrderDomainService;
@@ -143,12 +164,18 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPriceListService;
+import com.axelor.apps.base.service.ProductPriceListServiceImpl;
+import com.axelor.apps.base.service.ProductPriceService;
+import com.axelor.apps.base.service.ProductPriceServiceImpl;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.ProductUpdateServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
+import com.axelor.apps.base.service.TagService;
+import com.axelor.apps.base.service.TagServiceImpl;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -159,8 +186,10 @@ import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
 import com.axelor.apps.base.service.address.AddressAttrsServiceImpl;
-import com.axelor.apps.base.service.address.AddressExportService;
-import com.axelor.apps.base.service.address.AddressExportServiceImpl;
+import com.axelor.apps.base.service.address.AddressCreationService;
+import com.axelor.apps.base.service.address.AddressCreationServiceImpl;
+import com.axelor.apps.base.service.address.AddressFetchService;
+import com.axelor.apps.base.service.address.AddressFetchServiceImpl;
 import com.axelor.apps.base.service.address.AddressMetaService;
 import com.axelor.apps.base.service.address.AddressMetaServiceImpl;
 import com.axelor.apps.base.service.address.AddressService;
@@ -169,6 +198,10 @@ import com.axelor.apps.base.service.address.AddressTemplateLineViewService;
 import com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.address.AddressTemplateServiceImpl;
+import com.axelor.apps.base.service.address.CityService;
+import com.axelor.apps.base.service.address.CityServiceImpl;
+import com.axelor.apps.base.service.address.CountryService;
+import com.axelor.apps.base.service.address.CountryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryService;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorService;
@@ -191,10 +224,16 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
-import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
@@ -205,11 +244,27 @@ import com.axelor.apps.base.service.imports.ImportConfigurationService;
 import com.axelor.apps.base.service.imports.ImportConfigurationServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
+import com.axelor.apps.base.service.language.LanguageCheckerService;
+import com.axelor.apps.base.service.language.LanguageCheckerServiceImpl;
+import com.axelor.apps.base.service.language.LanguageService;
+import com.axelor.apps.base.service.language.LanguageServiceImpl;
+import com.axelor.apps.base.service.localization.LocalizationService;
+import com.axelor.apps.base.service.localization.LocalizationServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.meta.MetaViewService;
+import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
+import com.axelor.apps.base.service.observer.ProductFireService;
+import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.PartnerCreationService;
+import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateService;
@@ -242,12 +297,16 @@ import com.axelor.apps.base.service.print.PrintTemplateService;
 import com.axelor.apps.base.service.print.PrintTemplateServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProvider;
 import com.axelor.apps.base.service.printing.template.PrintingGeneratorFactoryProviderImpl;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateServiceImpl;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.signature.SignatureService;
@@ -260,6 +319,8 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
+import com.axelor.apps.base.service.theme.MetaThemeFetchService;
+import com.axelor.apps.base.service.theme.MetaThemeFetchServiceImpl;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeService;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
@@ -288,11 +349,11 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
-import com.axelor.utils.service.TranslationBaseService;
-import com.axelor.utils.service.TranslationBaseServiceImpl;
+import com.axelor.utils.service.translation.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.matcher.Matchers;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -301,10 +362,6 @@ public class BaseModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bindInterceptor(
-        Matchers.any(),
-        Matchers.annotatedWith(HandleExceptionResponse.class),
-        new HandleExceptionResponseImpl());
 
     bindInterceptor(
         new AbstractMatcher<>() {
@@ -312,7 +369,7 @@ public class BaseModule extends AxelorModule {
           public boolean matches(Class<?> aClass) {
             return aClass.getSimpleName().endsWith("Controller")
                 && aClass.getPackageName().startsWith("com.axelor.apps")
-                && aClass.getPackageName().endsWith("web");
+                && aClass.getPackageName().contains(".web");
           }
         },
         new AbstractMatcher<>() {
@@ -323,13 +380,16 @@ public class BaseModule extends AxelorModule {
                 && parameters.stream()
                     .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
                 && parameters.stream()
-                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()));
+                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()))
+                && Modifier.isPublic(method.getModifiers())
+                && method.getReturnType().equals(Void.TYPE);
           }
         },
         new ControllerMethodInterceptor());
 
     addQuickMenu(InstanceInfoQuickMenuCreator.class);
     addQuickMenu(ActiveCompanyUpdateQuickMenuCreator.class);
+    addQuickMenu(TradingNameUpdateQuickMenuCreator.class);
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
@@ -388,6 +448,7 @@ public class BaseModule extends AxelorModule {
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(PartnerMailQueryService.class).to(PartnerMailQueryServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
     bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
@@ -455,7 +516,7 @@ public class BaseModule extends AxelorModule {
     bind(AddressTemplateLineViewService.class).to(AddressTemplateLineViewServiceImpl.class);
     bind(AddressMetaService.class).to(AddressMetaServiceImpl.class);
     bind(AddressTemplateService.class).to(AddressTemplateServiceImpl.class);
-    bind(AddressExportService.class).to(AddressExportServiceImpl.class);
+    bind(AddressFetchService.class).to(AddressFetchServiceImpl.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
@@ -474,5 +535,36 @@ public class BaseModule extends AxelorModule {
     bind(TranslationBaseService.class).to(TranslationBaseServiceImpl.class);
     bind(UserPermissionResponseComputeService.class)
         .to(UserPermissionResponseComputeServiceImpl.class);
+    bind(MetaFileService.class).to(MetaFileServiceImpl.class);
+    bind(PrintingTemplateComputeNameService.class).to(PrintingTemplateComputeNameServiceImpl.class);
+    bind(ProductFireService.class).to(ProductFireServiceImpl.class);
+    bind(ProductPriceService.class).to(ProductPriceServiceImpl.class);
+    bind(DataSharingReferentialLineService.class).to(DataSharingReferentialLineServiceImpl.class);
+    bind(MetaViewService.class).to(MetaViewServiceImpl.class);
+    bind(DataSharingProductWizardService.class).to(DataSharingProductWizardServiceImpl.class);
+    bind(TagService.class).to(TagServiceImpl.class);
+    bind(AddressCreationService.class).to(AddressCreationServiceImpl.class);
+    bind(CityService.class).to(CityServiceImpl.class);
+    bind(CountryService.class).to(CountryServiceImpl.class);
+    bind(DataSharingProductWizardRepository.class)
+        .to(DataSharingProductWizardManagementRepository.class);
+    bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(ConnectorMapperCreateService.class).to(ConnectorMapperCreateServiceImpl.class);
+    bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
+    bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
+    bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
+    bind(PartnerGenerateService.class).to(PartnerGenerateServiceImpl.class);
+    bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
+    bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
+    bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
+    bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
+    bind(PartnerPriceListDomainService.class).to(PartnerPriceListDomainServiceImpl.class);
+    bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
+    bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
+    bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
+    bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
+    bind(PartnerCreationService.class).to(PartnerCreationServiceImpl.class);
+    bind(PublicHolidayService.class).to(PublicHolidayServiceImpl.class);
   }
 }

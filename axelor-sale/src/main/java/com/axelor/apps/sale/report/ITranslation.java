@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -73,18 +73,25 @@ public interface ITranslation {
   public static final String SALES_ORDER_SUBSCRIPTION_PERIODICITY = /*$$(*/
       "SaleOrder.periodicity"; /*)*/
 
-  public static final String SALES_ORDER_DURATION = /*$$(*/ "SaleOrder.duration"; /*)*/;
-  public static final String SALES_ORDER_VALIDITY_DATE = /*$$(*/ "SaleOrder.validityDate"; /*)*/;
+  public static final String SALES_ORDER_DURATION = /*$$(*/ "SaleOrder.duration"; /*)*/
+  ;
+  public static final String SALES_ORDER_VALIDITY_DATE = /*$$(*/ "SaleOrder.validityDate"; /*)*/
+  ;
   public static final String SALES_ORDER_ESTIMATED_DELIVERY_DATE = /*$$(*/
-      "SaleOrder.estimatedDeliveryDate"; /*)*/;
+      "SaleOrder.estimatedDeliveryDate"; /*)*/
+  ;
   public static final String SALES_ORDER_IS_ISPM_REQUIRED = /*$$(*/
-      "SaleOrder.isIspmRequired"; /*)*/;
+      "SaleOrder.isIspmRequired"; /*)*/
+  ;
 
   public static final String SALES_ORDER_PRODUCT_SEQUENCE = /*$$(*/
       "SaleOrder.productSequence"; /*)*/
 
-  public static final String SALES_ORDER_TYPE = /*$$(*/ "SaleOrder.type"; /*)*/;
+  public static final String SALES_ORDER_TYPE = /*$$(*/ "SaleOrder.type"; /*)*/
+  ;
   public static final String SALES_ORDER_TAXES = /*$$(*/ "SaleOrder.taxes"; /*)*/
-  public static final String SALES_ORDER_TAX_CODE = /*$$(*/ "SaleOrder.taxCode"; /*)*/;
-  public static final String SALES_ORDER_TOTAL_TAXES = /*$$(*/ "SaleOrder.totalTaxes"; /*)*/;
+  public static final String SALES_ORDER_TAX_CODE = /*$$(*/ "SaleOrder.taxCode"; /*)*/
+  ;
+  public static final String SALES_ORDER_TOTAL_TAXES = /*$$(*/ "SaleOrder.totalTaxes"; /*)*/
+  ;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,20 +20,18 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -41,21 +39,25 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
-import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
+import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectCreateTaskService;
+import com.axelor.apps.project.service.ProjectNameComputeService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTimeUnitService;
+import com.axelor.apps.project.service.ResourceBookingService;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppSupplychain;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -81,6 +83,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
   protected AppBaseService appBaseService;
   protected InvoiceRepository invoiceRepository;
+  protected UnitConversionForProjectService unitConversionForProjectService;
+  protected SaleOrderStockLocationService saleOrderStockLocationService;
+  protected ProjectTimeUnitService projectTimeUnitService;
+  protected SaleOrderGeneratorService saleOrderGeneratorService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -91,8 +97,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   public ProjectBusinessServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      ProjectTemplateRepository projTemplateRepo,
       AppProjectService appProjectService,
+      ProjectCreateTaskService projectCreateTaskService,
+      WikiRepository wikiRepo,
+      ResourceBookingService resourceBookingService,
+      ProjectNameComputeService projectNameComputeService,
       PartnerService partnerService,
       AddressService addressService,
       AppBusinessProjectService appBusinessProjectService,
@@ -100,13 +109,18 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository,
-      ProjectCreateTaskService projectCreateTaskService) {
+      UnitConversionForProjectService unitConversionForProjectService,
+      SaleOrderStockLocationService saleOrderStockLocationService,
+      ProjectTimeUnitService projectTimeUnitService,
+      SaleOrderGeneratorService saleOrderGeneratorService) {
     super(
         projectRepository,
         projectStatusRepository,
         appProjectService,
-        projTemplateRepo,
-        projectCreateTaskService);
+        projectCreateTaskService,
+        wikiRepo,
+        resourceBookingService,
+        projectNameComputeService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
@@ -114,12 +128,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
     this.appBaseService = appBaseService;
     this.invoiceRepository = invoiceRepository;
+    this.unitConversionForProjectService = unitConversionForProjectService;
+    this.saleOrderStockLocationService = saleOrderStockLocationService;
+    this.projectTimeUnitService = projectTimeUnitService;
+    this.saleOrderGeneratorService = saleOrderGeneratorService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateQuotation(Project project) throws AxelorException {
-    SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 
     Partner clientPartner = project.getClientPartner();
     Partner contactPartner = project.getContactPartner();
@@ -129,82 +146,35 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     Company company = project.getCompany();
 
+    Currency currency = getCurrency(project, clientPartner, company);
+
+    SaleOrder order =
+        saleOrderGeneratorService.createSaleOrder(
+            clientPartner, null, company, contactPartner, currency, null);
+
     order.setProject(projectRepository.find(project.getId()));
-    order.setClientPartner(clientPartner);
-    order.setContactPartner(contactPartner);
-    order.setCompany(company);
-
-    order.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
-    order.setMainInvoicingAddressStr(
-        addressService.computeAddressStr(order.getMainInvoicingAddress()));
-    order.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
-    order.setDeliveryAddressStr(addressService.computeAddressStr(order.getDeliveryAddress()));
-    order.setIsNeedingConformityCertificate(clientPartner.getIsNeedingConformityCertificate());
-    order.setCompanyBankDetails(
-        Beans.get(AccountingSituationService.class)
-            .getCompanySalesBankDetails(company, clientPartner));
-
-    if (project.getCurrency() != null) {
-      order.setCurrency(project.getCurrency());
-    } else if (clientPartner.getCurrency() != null) {
-      order.setCurrency(clientPartner.getCurrency());
-    } else {
-      order.setCurrency(company.getCurrency());
-    }
 
     if (project.getPriceList() != null) {
       order.setPriceList(project.getPriceList());
-    } else {
-      order.setPriceList(
-          Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE));
     }
 
     if (order.getPriceList() != null) {
       order.setHideDiscount(order.getPriceList().getHideDiscount());
     }
 
-    if (clientPartner.getPaymentCondition() != null) {
-      order.setPaymentCondition(clientPartner.getPaymentCondition());
-    } else {
-      if (company != null && company.getAccountConfig() != null) {
-        order.setPaymentCondition(company.getAccountConfig().getDefPaymentCondition());
-      }
-    }
-
-    if (clientPartner.getInPaymentMode() != null) {
-      order.setPaymentMode(clientPartner.getInPaymentMode());
-    } else {
-      if (company != null && company.getAccountConfig() != null) {
-        order.setPaymentMode(company.getAccountConfig().getInPaymentMode());
-      }
-    }
-
-    AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
-    if (appSupplychain != null) {
-      order.setShipmentMode(clientPartner.getShipmentMode());
-      order.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
-      if (clientPartner.getFreightCarrierMode() != null) {
-        order.setCarrierPartner(clientPartner.getFreightCarrierMode().getCarrierPartner());
-      }
-      Boolean interco =
-          appSupplychain.getIntercoFromSale()
-              && !order.getCreatedByInterco()
-              && clientPartner != null
-              && Beans.get(CompanyRepository.class)
-                      .all()
-                      .filter("self.partner = ?", clientPartner)
-                      .fetchOne()
-                  != null;
-      order.setInterco(interco);
-
-      // Automatic invoiced and delivered partners set in case of partner delegations
-      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
-        Beans.get(SaleOrderSupplychainService.class)
-            .setDefaultInvoicedAndDeliveredPartnersAndAddresses(order);
-      }
-    }
     return Beans.get(SaleOrderRepository.class).save(order);
+  }
+
+  protected Currency getCurrency(Project project, Partner clientPartner, Company company) {
+    Currency currency;
+    if (project.getCurrency() != null) {
+      currency = project.getCurrency();
+    } else if (clientPartner.getCurrency() != null) {
+      currency = clientPartner.getCurrency();
+    } else {
+      currency = company.getCurrency();
+    }
+    return currency;
   }
 
   /**
@@ -214,7 +184,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
    * @return The project generated.
    */
   @Override
-  public Project generateProject(SaleOrder saleOrder) {
+  public Project generateProject(SaleOrder saleOrder) throws AxelorException {
     Project project = projectRepository.findByName(saleOrder.getFullName() + "_project");
     project =
         project == null
@@ -236,7 +206,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner clientPartner)
+      throws AxelorException {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
 
@@ -247,21 +218,22 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (assignedTo != null) {
       project.addMembersUserSetItem(assignedTo);
     }
-
-    project.setImputable(true);
+    if (parentProject != null) {
+      project.setManageTimeSpent(parentProject.getManageTimeSpent());
+    }
     project.setCompany(company);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
     }
 
-    project.setNumberHoursADay(
-        appBusinessProjectService.getAppBusinessProject().getDefaultHoursADay());
-    project.setProjectTimeUnit(appBusinessProjectService.getAppBusinessProject().getDaysUnit());
+    project.setNumberHoursADay(appBaseService.getDailyWorkHours());
+    project.setProjectTimeUnit(appBaseService.getUnitDays());
     return project;
   }
 
   @Override
-  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) {
+  public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent)
+      throws AxelorException {
     return generateProject(
         parent,
         saleOrderLine.getFullName(),
@@ -275,6 +247,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
     Project project = super.generateProject(projectTemplate, projectCode, clientPartner);
 
+    project.setCompany(projectTemplate.getCompany());
     if (projectTemplate.getIsBusinessProject()) {
       project.setCurrency(clientPartner.getCurrency());
       if (clientPartner.getPartnerAddressList() != null
@@ -292,9 +265,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
       project.setInvoicingComment(projectTemplate.getInvoicingComment());
       project.setIsBusinessProject(projectTemplate.getIsBusinessProject());
+
+      if (projectTemplate.getCompany() == null
+          && !ObjectUtils.isEmpty(clientPartner.getCompanySet())
+          && clientPartner.getCompanySet().size() == 1) {
+        project.setCompany(clientPartner.getCompanySet().iterator().next());
+      }
     }
     project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
-    project.setCompany(projectTemplate.getCompany());
 
     return project;
   }
@@ -330,44 +308,46 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     BigDecimal totalPlannedTime = BigDecimal.ZERO;
     BigDecimal totalSpentTime = BigDecimal.ZERO;
 
-    Unit projectUnit = project.getProjectTimeUnit();
-    BigDecimal numberHoursADay = project.getNumberHoursADay();
-
-    if (numberHoursADay.signum() <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
-    }
+    Unit projectUnit = projectTimeUnitService.getProjectDefaultHoursTimeUnit(project);
 
     for (ProjectTask projectTask : projectTaskList) {
-      Unit projectTaskUnit = projectTask.getTimeUnit();
+      Unit projectTaskUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
+
       if (!projectTaskBusinessProjectService.isTimeUnitValid(projectTaskUnit)) {
         continue;
       }
       totalSoldTime =
-          totalSoldTime
-              .add(
-                  getConvertedTime(
-                      projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalSoldTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getSoldTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalUpdatedTime =
-          totalUpdatedTime
-              .add(
-                  getConvertedTime(
-                      projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalUpdatedTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getUpdatedTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalPlannedTime =
-          totalPlannedTime
-              .add(
-                  getConvertedTime(
-                      projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalPlannedTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getPlannedTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
       totalSpentTime =
-          totalSpentTime
-              .add(
-                  getConvertedTime(
-                      projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay))
-              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+          totalSpentTime.add(
+              unitConversionForProjectService.convert(
+                  projectTaskUnit,
+                  projectUnit,
+                  projectTask.getSpentTime(),
+                  BIG_DECIMAL_SCALE,
+                  project));
     }
 
     project.setSoldTime(totalSoldTime);
@@ -375,24 +355,32 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     project.setPlannedTime(totalPlannedTime);
     project.setSpentTime(totalSpentTime);
 
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+
     if (totalUpdatedTime.signum() > 0) {
       project.setPercentageOfProgress(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     if (totalSoldTime.signum() > 0) {
       project.setPercentageOfConsumption(
-          totalSpentTime
-              .multiply(new BigDecimal("100"))
-              .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+          projectTaskBusinessProjectService.verifiedLimitFollowUp(
+              totalSpentTime
+                  .multiply(new BigDecimal("100"))
+                  .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+              percentageLimit));
     }
 
     project.setRemainingAmountToDo(
-        totalUpdatedTime
-            .subtract(totalSpentTime)
-            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
+        projectTaskBusinessProjectService.verifiedLimitFollowUp(
+            totalUpdatedTime
+                .subtract(totalSpentTime)
+                .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP),
+            BigDecimal.valueOf(9999.99)));
   }
 
   protected void computeFinancialFollowUp(Project project, List<ProjectTask> projectTaskList) {
@@ -561,24 +549,26 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     return date.getMonthValue() == 12 && date.getYear() == today.getYear() - 1;
   }
 
-  protected BigDecimal getConvertedTime(
-      BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
-      throws AxelorException {
-    if (appBusinessProjectService.getDaysUnit().equals(fromUnit)
-        && appBusinessProjectService.getHoursUnit().equals(toUnit)) {
-      return duration.multiply(numberHoursADay);
-    } else if (appBusinessProjectService.getHoursUnit().equals(fromUnit)
-        && appBusinessProjectService.getDaysUnit().equals(toUnit)) {
-      return duration.divide(numberHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
-    } else {
-      return duration;
-    }
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void backupToProjectHistory(Project project) {
+
+    project.addProjectHistoryLineListItem(createProjectHistoryLine(project));
+
+    projectRepository.save(project);
+  }
+
+  protected ProjectHistoryLine createProjectHistoryLine(Project project) {
     ProjectHistoryLine projectHistoryLine = new ProjectHistoryLine();
+
+    computeTimeFields(projectHistoryLine, project);
+    computeFinancialFields(projectHistoryLine, project);
+    computeInvoiceFields(projectHistoryLine, project);
+
+    return projectHistoryLine;
+  }
+
+  protected void computeTimeFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setSoldTime(project.getSoldTime());
     projectHistoryLine.setUpdatedTime(project.getUpdatedTime());
     projectHistoryLine.setPlannedTime(project.getPlannedTime());
@@ -586,7 +576,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setPercentageOfProgress(project.getPercentageOfProgress());
     projectHistoryLine.setPercentageOfConsumption(project.getPercentageOfConsumption());
     projectHistoryLine.setRemainingAmountToDo(project.getRemainingAmountToDo());
+  }
 
+  protected void computeFinancialFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setTurnover(project.getTurnover());
     projectHistoryLine.setInitialCosts(project.getInitialCosts());
     projectHistoryLine.setInitialMargin(project.getInitialMargin());
@@ -601,15 +593,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     projectHistoryLine.setLandingCosts(project.getLandingCosts());
     projectHistoryLine.setLandingMargin(project.getLandingMargin());
     projectHistoryLine.setLandingMarkup(project.getLandingMarkup());
+  }
 
+  protected void computeInvoiceFields(ProjectHistoryLine projectHistoryLine, Project project) {
     projectHistoryLine.setTotalInvoiced(project.getTotalInvoiced());
     projectHistoryLine.setInvoicedThisMonth(project.getInvoicedThisMonth());
     projectHistoryLine.setInvoicedLastMonth(project.getInvoicedLastMonth());
     projectHistoryLine.setTotalPaid(project.getTotalPaid());
-
-    project.addProjectHistoryLineListItem(projectHistoryLine);
-
-    projectRepository.save(project);
   }
 
   @Override
@@ -790,5 +780,54 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         project.setProjectStatus(completedStatus);
       }
     }
+  }
+
+  @Override
+  public Map<String, Object> getTaskView(
+      Project project, String title, String domain, Map<String, Object> context) {
+    String gridName = "project-task-grid";
+    String formName = "project-task-form";
+
+    if (project.getIsBusinessProject()) {
+      gridName = "business-project-task-grid";
+      formName = "business-project-task-form";
+      domain = domain.concat(" AND self.project.isBusinessProject = true");
+    } else {
+      domain = domain.concat(" AND self.project.isBusinessProject = false");
+    }
+
+    ActionView.ActionViewBuilder builder =
+        ActionView.define(I18n.get(title))
+            .model(ProjectTask.class.getName())
+            .add("grid", gridName)
+            .add("form", formName)
+            .domain(domain)
+            .param("details-view", "true");
+
+    if (project.getIsShowKanbanPerCategory() && project.getIsShowCalendarPerCategory()) {
+      builder.add("kanban", "task-per-category-kanban");
+      builder.add("calendar", "project-task-per-category-calendar");
+    } else {
+      builder.add("kanban", "project-task-kanban");
+      builder.add("calendar", "project-task-per-status-calendar");
+    }
+
+    if (ObjectUtils.notEmpty(context)) {
+      context.forEach(builder::context);
+    }
+    return builder.map();
+  }
+
+  public List<String> checkPercentagesOver1000OnTasks(Project project) {
+    BigDecimal percentageLimit = BigDecimal.valueOf(999.99);
+    return project.getProjectTaskList().stream()
+        .filter(
+            projectTask ->
+                projectTask.getPercentageOfProgress().compareTo(percentageLimit) == 0
+                    || projectTask.getPercentageOfConsumption().compareTo(percentageLimit) == 0
+                    || projectTask.getRemainingAmountToDo().compareTo(BigDecimal.valueOf(9999.99))
+                        == 0)
+        .map(ProjectTask::getName)
+        .collect(Collectors.toList());
   }
 }

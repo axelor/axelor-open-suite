@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="app-production-config-form" title="App manufacturing"
     model="com.axelor.studio.db.AppProduction" canDelete="false" canNew="false" width="large"
-    onSave="action-app-production-method-check-outsourcing-disabled-onsave">
+    onSave="action-app-production-method-check-outsourcing-disabled-onsave"
+    onLoad="action-app-production-attrs-so-bom-line-generation-readonly">
     <panel name="productionConfigurationPanel" colSpan="12">
       <panel name="firstConfigurationPanel" colSpan="6" itemSpan="12">
         <panel name="productionAndManufOrdersPanel"
@@ -24,23 +25,16 @@
           <field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
           <field name="manageResidualProductOnBom" widget="boolean-switch"/>
           <field name="allowPersonalizedBOM" widget="boolean-switch"/>
+          <field name="isBomLineGenerationInSODisabled" widget="boolean-switch"/>
           <field name="nbDecimalDigitForBomQty"/>
         </panel>
         <panel name="prodProcessPanel" title="Production process">
           <field name="manageProdProcessVersion" widget="boolean-switch"/>
           <field name="manageWorkCenterGroup" widget="boolean-switch"/>
           <field name="isInputInHundredthHours" widget="boolean-switch"/>
-          <field name="manageBusinessProduction"
-            onChange="action-app-production-manage-business-production-record-onchange"
-            title="Manage business production" if-module="axelor-business-production"
-            widget="boolean-switch"/>
-          <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
-            if-module="axelor-business-production" showIf="manageBusinessProduction"/>
-          <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
-            widget="boolean-switch"
-            showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
           <field name="allowPersonalizedProdProcess" widget="boolean-switch"/>
           <field name="operationContinuitySelect"/>
+          <field name="isProdProcessLineGenerationInSODisabled" widget="boolean-switch"/>
         </panel>
 
       </panel>
@@ -107,12 +101,6 @@
     <view type="form" name="production-config-form"/>
   </action-view>
 
-  <action-record
-    name="action-app-production-record-manage-business-production-onchange"
-    model="com.axelor.studio.db.AppProduction">
-    <field name="enableTimesheetOnManufOrder" expr="eval: false"/>
-  </action-record>
-
   <action-method name="action-app-production-method-check-outsourcing-disabled-onsave"
     model="com.axelor.studio.db.AppProduction">
     <call class="com.axelor.apps.production.web.AppProductionController"
@@ -125,5 +113,11 @@
       if="__config__.app.getApp('production')?.getManageOutsourcing() &amp;&amp; !this.manageOutsourcing"
       message="It will remove subcontractor tag from all partners. This change is irreversible"/>
   </action-validate>
+
+  <action-attrs name="action-app-production-attrs-so-bom-line-generation-readonly">
+    <attribute
+      for="isBomLineGenerationInSODisabled, isProdProcessLineGenerationInSODisabled" name="readonly"
+      expr="eval: __config__.app.getApp('sale')?.getListDisplayTypeSelect() != __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"/>
+  </action-attrs>
 
 </object-views>

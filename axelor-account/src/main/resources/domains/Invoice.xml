@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Invoice"
-    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.GlobalDiscounter">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -43,11 +43,17 @@
 
     <string name="addressStr" title="Address" large="true" multiline="true"/>
     <string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
-    <string name="internalReference" title="Internal Ref."/>
-    <string name="externalReference" title="External Ref."/>
+    <string name="internalReference" title="Internal Ref." large="true"/>
+    <string name="externalReference" title="External Ref." large="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
+
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="priceBeforeGlobalDiscount" title="Total W.T. before discount"
+      precision="20" scale="10"/>
 
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice date"/>
@@ -80,7 +86,7 @@
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
       title="Invoice Lines"/>
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice"
-      title="Tax Lines" readonly="true"/>
+      title="Tax Lines"/>
 
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>
@@ -145,6 +151,8 @@
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
     <string name="invoiceProductStatement" title="Print statement for products"/>
+    <one-to-many name="invoiceNoteList" ref="InvoiceNote" mappedBy="invoice"
+      title="Invoice note list"/>
 
     <!-- Totals & Status -->
 
@@ -180,6 +188,9 @@
 
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Company bank"/>
+
+    <many-to-one name="companyTaxNumber" ref="com.axelor.apps.account.db.TaxNumber"
+      title="Company tax number"/>
 
     <!-- Invoice mail -->
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
@@ -248,6 +259,8 @@
 	      id]]>
     </integer>
 
+    <many-to-one name="latePaymentInterestSourceInvoice"
+      ref="com.axelor.apps.account.db.Invoice" title="Late payment interest source invoice"/>
 
     <!-- Invoice terms -->
     <integer name="paymentProgress" title="Payment progress" default="0"/>
@@ -260,6 +273,9 @@
       return company != null ? company.getCurrency() : null;
 	    ]]>
     </many-to-one>
+
+    <date name="cutOffStartDate" title="From"/>
+    <date name="cutOffEndDate" title="To"/>
 
     <unique-constraint columns="invoiceId,company"/>
 
@@ -292,6 +308,7 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+	    public static final int OPERATION_SUB_TYPE_LATE_PAYMENT = 9;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;
@@ -351,6 +368,7 @@
       <field name="pfpValidateStatusSelect" on="UPDATE"/>
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
+      <field name="companyTaxNumber" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.service.analytic;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -48,7 +49,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
       PurchaseConfigService purchaseConfigService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      AnalyticAxisService analyticAxisService) {
     super(
         appBaseService,
         appAccountService,
@@ -57,7 +59,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
         analyticToolService,
         saleConfigService,
         purchaseConfigService,
-        currencyScaleService);
+        currencyScaleService,
+        analyticAxisService);
   }
 
   @Override

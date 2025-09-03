@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,9 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.LocalTime;
 
 public class TimesheetProjectServiceImpl implements TimesheetProjectService {
   protected TimesheetLineService timesheetLineService;
@@ -36,5 +39,25 @@ public class TimesheetProjectServiceImpl implements TimesheetProjectService {
   public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException {
     return timesheetLineService.computeHoursDuration(
         timesheetLine.getTimesheet(), timesheetLine.getDurationForCustomer(), true);
+  }
+
+  @Override
+  public BigDecimal computeDuration(TimesheetLine timesheetLine) {
+    LocalTime startTime = timesheetLine.getStartTime();
+    LocalTime endTime = timesheetLine.getEndTime();
+    BigDecimal duration = BigDecimal.ZERO;
+    if (startTime != null && endTime != null) {
+      duration = this.computeDuration(startTime, endTime);
+    }
+    return duration;
+  }
+
+  public BigDecimal computeDuration(LocalTime startTime, LocalTime endTime) {
+    long minutes = Duration.between(startTime, endTime).toMinutes();
+    if (minutes < 0) {
+      // after midnight -> add 24h in minutes to prevent negative duration
+      minutes += 24 * 60;
+    }
+    return BigDecimal.valueOf(minutes).divide(BigDecimal.valueOf(60), 4, RoundingMode.HALF_UP);
   }
 }

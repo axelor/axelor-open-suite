@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,43 +20,45 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class TimesheetContextProjectServiceImpl implements TimesheetContextProjectService {
 
   protected ProjectRepository projectRepository;
-  protected ProjectService projectService;
+  protected ProjectToolService projectToolService;
 
   @Inject
   public TimesheetContextProjectServiceImpl(
-      ProjectRepository projectRepository, ProjectService projectService) {
+      ProjectRepository projectRepository, ProjectToolService projectToolService) {
     this.projectRepository = projectRepository;
-    this.projectService = projectService;
+    this.projectToolService = projectToolService;
   }
 
   @Override
-  public Set<Long> getContextProjectIds() {
+  public Set<Long> getActiveProjectIds() {
     User currentUser = AuthUtils.getUser();
-    Project contextProject = currentUser.getContextProject();
+    Project contextProject =
+        Optional.ofNullable(currentUser).map(User::getActiveProject).orElse(null);
     Set<Long> projectIdsSet = new HashSet<>();
     if (contextProject == null) {
       List<Project> allTimeSpentProjectList =
-          projectRepository.all().filter("self.isShowTimeSpent = true").fetch();
+          projectRepository.all().filter("self.manageTimeSpent = true").fetch();
       for (Project timeSpentProject : allTimeSpentProjectList) {
-        projectService.getChildProjectIds(projectIdsSet, timeSpentProject);
+        projectToolService.getChildProjectIds(projectIdsSet, timeSpentProject);
       }
     } else {
-      if (!currentUser.getIsIncludeSubContextProjects()) {
+      if (!currentUser.getIsIncludeSubProjects()) {
         projectIdsSet.add(contextProject.getId());
         return projectIdsSet;
       }
-      projectService.getChildProjectIds(projectIdsSet, contextProject);
+      projectToolService.getChildProjectIds(projectIdsSet, contextProject);
     }
     return projectIdsSet;
   }

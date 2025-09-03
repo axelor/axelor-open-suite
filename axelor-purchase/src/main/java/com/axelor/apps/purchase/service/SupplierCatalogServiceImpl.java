@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -42,10 +44,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
@@ -55,6 +60,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   protected ProductCompanyService productCompanyService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected TaxService taxService;
+  protected ProductPriceService productPriceService;
 
   @Inject
   public SupplierCatalogServiceImpl(
@@ -63,13 +69,15 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
       PurchaseOrderLineService purchaseOrderLineService,
-      TaxService taxService) {
+      TaxService taxService,
+      ProductPriceService productPriceService) {
     this.appBaseService = appBaseService;
     this.appPurchaseService = appPurchaseService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.taxService = taxService;
+    this.productPriceService = productPriceService;
   }
 
   @SuppressWarnings("unchecked")
@@ -125,29 +133,27 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
 
-    if (product == null) {
+    if (product == null || supplierPartner == null) {
       return null;
     }
 
-    @SuppressWarnings("unchecked")
     List<SupplierCatalog> supplierCatalogList =
-        (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
+        supplierPartner.getSupplierCatalogList().stream()
+            .filter(catalog -> catalog.getProduct().equals(product))
+            .collect(Collectors.toList());
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
-        && supplierCatalogList != null) {
-      SupplierCatalog resSupplierCatalog = null;
-
-      for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-        if (supplierCatalog.getSupplierPartner().equals(supplierPartner)) {
-          resSupplierCatalog =
-              (resSupplierCatalog == null
-                      || resSupplierCatalog.getMinQty().compareTo(supplierCatalog.getMinQty()) > 0)
-                  ? supplierCatalog
-                  : resSupplierCatalog;
-        }
+        && CollectionUtils.isNotEmpty(supplierCatalogList)) {
+      if (supplierCatalogList.stream().anyMatch(catalog -> catalog.getUpdateDate() != null)) {
+        return supplierCatalogList.stream()
+            .filter(catalog -> catalog.getUpdateDate() != null)
+            .max(Comparator.comparing(SupplierCatalog::getUpdateDate))
+            .orElse(null);
+      } else {
+        return supplierCatalogList.stream()
+            .min(Comparator.comparing(SupplierCatalog::getMinQty))
+            .orElse(null);
       }
-
-      return resSupplierCatalog;
     }
     return null;
   }
@@ -202,22 +208,20 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
     } else {
       if (product != null) {
-        purchasePrice = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
-        purchaseCurrency =
-            (Currency) productCompanyService.get(product, "purchaseCurrency", company);
+        return productPriceService.getPurchaseUnitPrice(
+            company, product, taxLineSet, resultInAti, localDate, currency);
       }
     }
 
-    Boolean inAti = (Boolean) productCompanyService.get(product, "inAti", company);
-    BigDecimal price =
-        (inAti == resultInAti)
-            ? purchasePrice
-            : taxService.convertUnitPrice(
-                inAti, taxLineSet, purchasePrice, AppBaseService.COMPUTATION_SCALING);
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(purchaseCurrency, currency, price, localDate)
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return productPriceService.getConvertedPrice(
+        company,
+        product,
+        taxLineSet,
+        resultInAti,
+        localDate,
+        purchasePrice,
+        purchaseCurrency,
+        currency);
   }
 
   @Override
@@ -312,5 +316,24 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     } else {
       response.setAttr("qtyLimitNotRespectedLabel", "hidden", true);
     }
+  }
+
+  @Override
+  public Unit getUnit(Product product, Partner supplierPartner, Company company)
+      throws AxelorException {
+    SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
+    Unit purchaseUnit = (Unit) productCompanyService.get(product, "purchasesUnit", company);
+    Unit productUnit = (Unit) productCompanyService.get(product, "unit", company);
+    Unit baseUnit = purchaseUnit == null ? productUnit : purchaseUnit;
+    if (supplierCatalog == null) {
+      return baseUnit;
+    }
+
+    Unit supplierUnit = supplierCatalog.getUnit();
+    if (supplierUnit != null) {
+      return supplierUnit;
+    }
+
+    return baseUnit;
   }
 }

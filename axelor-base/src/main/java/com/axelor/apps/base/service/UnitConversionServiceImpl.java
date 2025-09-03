@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,14 +34,20 @@ import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.template.TemplateMaker;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.inject.Inject;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -50,6 +56,13 @@ public class UnitConversionServiceImpl implements UnitConversionService {
 
   private static final char TEMPLATE_DELIMITER = '$';
   private static final int DEFAULT_COEFFICIENT_SCALE = 12;
+
+  private final Cache<String, List<UnitConversion>> unitConversionCache =
+      CacheBuilder.newBuilder()
+          .expireAfterWrite(10, TimeUnit.MINUTES)
+          .maximumSize(100)
+          .recordStats()
+          .build();
 
   protected AppBaseService appBaseService;
 
@@ -77,7 +90,10 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   public BigDecimal convert(
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
-    List<UnitConversion> unitConversionList = fetchUnitConversionList();
+    List<UnitConversion> unitConversionList = new ArrayList<>();
+    if (startUnit != null && endUnit != null && startUnit != endUnit) {
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit);
+    }
     return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
 
@@ -114,6 +130,13 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         BigDecimal coefficient =
             this.getCoefficient(unitConversionList, startUnit, endUnit, model, nameInContext);
 
+        if (coefficient.signum() == 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.COEFFICIENT_SHOULD_NOT_BE_ZERO),
+              startUnit.getName(),
+              endUnit.getName());
+        }
         return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_UP);
       } catch (IOException | ClassNotFoundException e) {
         TraceBackService.trace(e);
@@ -139,7 +162,10 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   @Override
   public BigDecimal getCoefficient(Unit startUnit, Unit endUnit, Product product)
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
-    List<UnitConversion> unitConversionList = fetchUnitConversionList();
+    List<UnitConversion> unitConversionList = new ArrayList<>();
+    if (startUnit != null && endUnit != null && startUnit != endUnit) {
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit);
+    }
     return getCoefficient(unitConversionList, startUnit, endUnit, product, "Product");
   }
 
@@ -219,11 +245,29 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         endUnit.getName());
   }
 
-  protected List<UnitConversion> fetchUnitConversionList() {
-    return unitConversionRepo
-        .all()
-        .filter("self.entitySelect = :entitySelect")
-        .bind("entitySelect", UnitConversionRepository.ENTITY_ALL)
-        .fetch();
+  protected List<UnitConversion> fetchUnitConversionList(Unit startUnit, Unit endUnit) {
+    String key = getKey(startUnit, endUnit);
+    List<UnitConversion> unitConversionList = unitConversionCache.getIfPresent(key);
+    if (unitConversionList != null) {
+      return unitConversionList;
+    }
+    unitConversionList =
+        unitConversionRepo
+            .all()
+            .filter(
+                "self.entitySelect = :entitySelect AND ((self.startUnit = :startUnit AND self.endUnit = :endUnit) OR (self.startUnit = :endUnit AND self.endUnit = :startUnit))")
+            .bind("entitySelect", UnitConversionRepository.ENTITY_ALL)
+            .bind("startUnit", startUnit)
+            .bind("endUnit", endUnit)
+            .fetch();
+    unitConversionCache.put(key, unitConversionList);
+    return unitConversionList;
+  }
+
+  protected String getKey(Unit startUnit, Unit endUnit) {
+    return Stream.of(startUnit.getId(), endUnit.getId())
+        .sorted()
+        .map(String::valueOf)
+        .collect(Collectors.joining("::"));
   }
 }

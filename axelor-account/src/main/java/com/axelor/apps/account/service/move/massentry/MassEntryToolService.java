@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,4 +42,6 @@ public interface MassEntryToolService {
   void fillMassEntryLinesFields(Move parentMove, Move move, Integer newStatusSelect);
 
   boolean verifyJournalAuthorizeNewMove(List<MoveLineMassEntry> moveLineList, Journal journal);
+
+  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList);
 }

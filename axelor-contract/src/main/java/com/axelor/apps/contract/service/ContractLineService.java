@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -97,4 +97,6 @@ public interface ContractLineService {
   PriceListLine getPriceListLine(ContractLine contractLine, PriceList priceList, BigDecimal price);
 
   String computeProductDomain(Contract contract);
+
+  void checkAnalyticAxisByCompany(Contract contract) throws AxelorException;
 }

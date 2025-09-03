@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
+import com.axelor.apps.base.db.Company;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -63,17 +65,36 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
             "self.reportExportTypeSelect = :reportType AND self.typeSelect %s :typeCustom",
             isCustom ? "=" : "<>");
 
-    Stream<AccountingReportType> accountingReportTypeStream =
-        accountingReportTypeRepository.all().filter(queryStr)
+    Company accountingReportCompany = accountingReport.getCompany();
+
+    if (accountingReportCompany != null) {
+      queryStr += " AND self.company.code = :companyCode";
+    }
+
+    Query<AccountingReportType> query =
+        accountingReportTypeRepository
+            .all()
+            .filter(queryStr)
             .bind("reportType", AccountingReportTypeRepository.REPORT)
-            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE).fetch().stream();
+            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE);
+
+    if (accountingReportCompany != null) {
+      query = query.bind("companyCode", accountingReportCompany.getCode());
+    }
+
+    Stream<AccountingReportType> accountingReportTypeStream = query.fetch().stream();
 
     if (isCustom) {
       accountingReportTypeStream =
           accountingReportTypeStream.filter(
-              it ->
-                  CollectionUtils.isEmpty(it.getCompanySet())
-                      || it.getCompanySet().equals(accountingReport.getCompanySet()));
+              it -> {
+                if (CollectionUtils.isNotEmpty(it.getCompanySet())) {
+                  return it.getCompanySet().equals(accountingReport.getCompanySet());
+                } else if (it.getCompany() != null) {
+                  return accountingReport.getCompanySet().contains(it.getCompany());
+                }
+                return true;
+              });
     }
 
     return accountingReportTypeStream

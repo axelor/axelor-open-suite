@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -122,6 +122,21 @@ public final class ProductionExceptionMessage {
 
   public static final String PROD_PROCESS_LINE_MISSING_WORK_CENTER = /*$$(*/
       "Work center is missing from prod process line %s-%s." /*)*/;
+
+  public static final String PROD_PROCESS_NULL_STATUS = /*$$(*/
+      "Prod process currently has no status" /*)*/;
+
+  public static final String PROD_PROCESS_ALREADY_DRAFT_STATUS = /*$$(*/
+      "Prod process is already on draft status" /*)*/;
+
+  public static final String PROD_PROCESS_VALIDATED_WRONG_STATUS = /*$$(*/
+      "Cannot validate prod process that is not draft" /*)*/;
+
+  public static final String PROD_PROCESS_APPLICABLE_WRONG_STATUS = /*$$(*/
+      "Cannot make prod process applicable that is not validated" /*)*/;
+
+  public static final String PROD_PROCESS_OBSOLETE_WRONG_STATUS = /*$$(*/
+      "Cannot make prod process obsolete that is not applicable" /*)*/;
 
   /** Bill of materials service */
   public static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/
@@ -365,6 +380,68 @@ public final class ProductionExceptionMessage {
   public static final String TOO_MANY_CALL_GETTING_END_DATE = /*$$(*/
       "Max loop call reached when trying to compute end date." /*)*/;
 
+  public static final String TOO_MANY_CALL_GETTING_TIME_SLOT = /*$$(*/
+      "Max call reached when trying to find a time slot for operation %s." /*)*/;
+  public static final String MANUF_ORDER_CANT_COMPUTE_NEXT_SLOT_WITH_CURRENT_CONFIG = /*$$(*/
+      "Current production configuration does not permit to have operation orders with no duration nor interoperation time on the same machine and at the same time. (Operation: %s)" /*)*/;
+
   public static final String MANUF_ORDER_MISSING_COMPONENTS = /*$$(*/
       "<b>Missing components</b> :<br/>%s" /*)*/;
+
+  public static final String MANUF_ORDER_WASTE_DECLARATION_IN_PRODUCED_LIST = /*$$(*/
+      "Warning: The current product exists in produced products of the manuf order." /*)*/;
+
+  public static final String CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER = /*$$(*/
+      "This stock move is linked to a manufacturing order and can't be canceled." /*)*/;
+
+  public static final String CAN_NOT_RENGENERATE_PRODUCT_LINKED_TO_MO = /*$$(*/
+      "Cannot regenerate because the product is already in production (one manuf order exist)" /*)*/;
+
+  public static final String CAN_NOT_REGENERATE_BOM_AS_ALREADY_IN_PRODUCTION = /*$$(*/
+      "Cannot regenerate because the bill of material is in use in production (one manuf order exist)" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY = /*$$(*/
+      "Calculation quantity should not be zero." /*)*/;
+
+  public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY_WITH_NAME = /*$$(*/
+      "The Calculation quantity of the bill of material %s is equal to zero." /*)*/;
+
+  public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s" /*)*/;
+
+  public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more" /*)*/;
+
+  public static final String MRP_PROD_PROCESS_REQUIRED = /*$$(*/
+      "The manufacturing order for %s could not be generated because the bill of material has no production process." /*)*/;
+
+  public static final String SOL_LINKED_TO_MO_DELETE_ERROR = /*$$(*/
+      "The line with the product %s can not be deleted as it is referenced in manufacturing order(s): <br> %s" /*)*/;
+
+  public static final String SALE_ORDER_EVERY_PO_ALREADY_GENERATED = /*$$(*/
+      "Every sale order lines have already generated a production order." /*)*/;
+
+  public static final String SALE_ORDER_EVERY_PO_ALREADY_GENERATED_FOR_SELECTED = /*$$(*/
+      "Every selected sale order lines have already generated a production order." /*)*/;
+
+  public static final String SALE_ORDER_MO_ADDED_TO_EXISTENT_PO = /*$$(*/
+      "Manufacturing orders have been added to the existent production order." /*)*/;
+
+  public static final String SALE_ORDER_MO_ALREADY_GENERATED = /*$$(*/
+      "Every manufacturing orders have already been generated." /*)*/;
+
+  public static final String SALE_ORDER_MO_ALREADY_GENERATED_SELECTED = /*$$(*/
+      "Every manufacturing orders have already been generated for selected lines." /*)*/;
+
+  public static final String SALE_ORDER_NEW_PO_GENERATED = /*$$(*/
+      "New production order(s) have been created." /*)*/;
+
+  public static final String SALE_ORDER_NEW_PO_GENERATED_SELECTED = /*$$(*/
+      "New production order(s) have been created for selected lines." /*)*/;
+
+  public static final String SALE_ORDER_SELECT_WRONG_LINE = /*$$(*/
+      "There is no production or manufacturing order to generate for one of the selected lines." /*)*/;
+
+  public static final String SALE_ORDER_LINES_CANNOT_PRODUCT = /*$$(*/
+      "Warning : One or more lines are blocked for production" /*)*/;
 }

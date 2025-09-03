@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,13 +20,16 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.service.MetaFileService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
 import java.util.List;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PartnerBaseRepository extends PartnerRepository {
 
@@ -34,6 +37,13 @@ public class PartnerBaseRepository extends PartnerRepository {
   public Partner save(Partner partner) {
     try {
       Beans.get(PartnerService.class).onSave(partner);
+      List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+      if (CollectionUtils.isNotEmpty(partnerAddressList) && partnerAddressList.size() == 1) {
+        PartnerAddress partnerAddress = partnerAddressList.get(0);
+        partnerAddress.setIsDefaultAddr(true);
+        partnerAddress.setIsDeliveryAddr(true);
+        partnerAddress.setIsInvoicingAddr(true);
+      }
       return super.save(partner);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -49,17 +59,17 @@ public class PartnerBaseRepository extends PartnerRepository {
     copy.setPartnerSeq(null);
     copy.setEmailAddress(null);
 
-    PartnerAddressRepository partnerAddressRepository = Beans.get(PartnerAddressRepository.class);
-
-    List<PartnerAddress> partnerAddressList = Lists.newArrayList();
-
-    if (deep && copy.getPartnerAddressList() != null) {
-      for (PartnerAddress partnerAddress : copy.getPartnerAddressList()) {
-
-        partnerAddressList.add(partnerAddressRepository.copy(partnerAddress, deep));
+    try {
+      MetaFile picture = copy.getPicture();
+      if (picture != null) {
+        MetaFile pictureCopy = Beans.get(MetaFileService.class).copyMetaFile(picture);
+        copy.setPicture(pictureCopy);
       }
+    } catch (Exception e) {
+      throw new PersistenceException(e);
     }
-    copy.setPartnerAddressList(partnerAddressList);
+
+    copy.setPartnerAddressList(Lists.newArrayList());
     copy.setBlockingList(null);
     copy.setBankDetailsList(null);
 

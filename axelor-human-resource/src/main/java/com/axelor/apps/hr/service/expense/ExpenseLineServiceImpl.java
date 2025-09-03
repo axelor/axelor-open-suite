@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -160,7 +160,9 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
   public String computeProjectTaskDomain(ExpenseLine expenseLine) {
     Project project = expenseLine.getProject();
     if (project != null) {
-      return "self.id IN (" + StringHelper.getIdListString(project.getProjectTaskList()) + ")";
+      return "self.id IN ("
+          + StringHelper.getIdListString(project.getProjectTaskList())
+          + ") AND self.imputable IS TRUE";
     }
     List<Project> projectList =
         projectRepository
@@ -173,6 +175,7 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
             projectList.stream()
                 .map(Project::getProjectTaskList)
                 .flatMap(Collection::stream)
+                .filter(x -> x.getImputable())
                 .collect(Collectors.toList()))
         + ")";
   }

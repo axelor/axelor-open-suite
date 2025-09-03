@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,6 @@ import javax.validation.constraints.NotNull;
 
 public class TimesheetLinePostRequest extends RequestPostStructure {
 
-  @NotNull
   @Min(0)
   private Long timesheetId;
 
@@ -46,9 +45,11 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
 
   @NotNull private LocalDate date;
 
-  @NotNull
   @Min(0)
   private BigDecimal duration;
+
+  @Min(0)
+  private BigDecimal hoursDuration;
 
   private String comments;
 
@@ -100,6 +101,14 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
 
   public void setDuration(BigDecimal duration) {
     this.duration = duration;
+  }
+
+  public BigDecimal getHoursDuration() {
+    return hoursDuration;
+  }
+
+  public void setHoursDuration(BigDecimal hoursDuration) {
+    this.hoursDuration = hoursDuration;
   }
 
   public String getComments() {

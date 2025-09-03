@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,11 @@
  */
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBase;
 import java.math.BigDecimal;
@@ -82,6 +85,8 @@ public interface AppBaseService extends AppService {
 
   // Conversion de devise
 
+  AddressTemplate getDefaultAddressTemplate() throws AxelorException;
+
   /**
    * Get 0% vat
    *
@@ -92,6 +97,14 @@ public interface AppBaseService extends AppService {
   public BigDecimal getDurationHours(BigDecimal duration);
 
   public BigDecimal getGeneralDuration(BigDecimal duration);
+
+  Unit getUnitDays() throws AxelorException;
+
+  Unit getUnitHours() throws AxelorException;
+
+  Unit getUnitMinutes() throws AxelorException;
+
+  BigDecimal getDailyWorkHours() throws AxelorException;
 
   /**
    * Set the manageMultiBanks boolean in the general object.
@@ -105,4 +118,12 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  String getSireneTokenGeneratorUrl() throws AxelorException;
+
+  String getSireneUrl() throws AxelorException;
+
+  String getSireneKey() throws AxelorException;
+
+  String getSireneSecret() throws AxelorException;
 }

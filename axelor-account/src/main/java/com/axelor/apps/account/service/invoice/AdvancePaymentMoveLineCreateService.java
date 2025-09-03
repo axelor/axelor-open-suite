@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,12 +20,22 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface AdvancePaymentMoveLineCreateService {
   void manageAdvancePaymentInvoiceTaxMoveLines(
-      Move move, MoveLine defaultMoveLine, BigDecimal prorata, LocalDate paymentDate)
+      Move move,
+      MoveLine defaultMoveLine,
+      BigDecimal prorata,
+      LocalDate paymentDate,
+      Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap);
+
+  void fillMoveWithTaxMoveLines(
+      Move move, Map<TaxConfiguration, Pair<BigDecimal, BigDecimal>> taxConfigurationAmountMap)
       throws AxelorException;
 }

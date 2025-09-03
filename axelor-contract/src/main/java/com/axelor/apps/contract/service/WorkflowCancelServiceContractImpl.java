@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,8 @@ import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.google.inject.Inject;
 
@@ -39,12 +40,14 @@ public class WorkflowCancelServiceContractImpl extends WorkflowCancelServiceSupp
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
+      SaleInvoicingStateService saleInvoicingStateService,
       ConsumptionLineRepository consumptionLineRepo) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         saleOrderRepository,
-        purchaseOrderRepository);
+        purchaseOrderRepository,
+        saleInvoicingStateService);
     this.consumptionLineRepo = consumptionLineRepo;
   }
 

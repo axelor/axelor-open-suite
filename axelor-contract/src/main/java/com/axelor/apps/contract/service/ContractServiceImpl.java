@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,6 +47,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -152,6 +153,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     checkInvoicedConsumptionLines(contract);
     checkInvoicedAdditionalContractLine(contract);
+    contractLineService.checkAnalyticAxisByCompany(contract);
   }
 
   protected void checkInvoicedConsumptionLines(Contract contract) throws AxelorException {
@@ -404,7 +406,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setName(template.getName());
     contract.setNote(template.getNote());
 
-    ContractVersion version = new ContractVersion();
+    ContractVersion version =
+        Optional.ofNullable(contract.getCurrentContractVersion()).orElse(new ContractVersion());
 
     if (template.getContractLineList() != null && !template.getContractLineList().isEmpty()) {
 
@@ -452,8 +455,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     Contract nextContract = newVersion.getNextContract();
     LocalDate todayDate = appBaseService.getTodayDate(contract.getCompany());
     waitingNextVersion(nextContract, todayDate);
-    activeNextVersion(nextContract, todayDate);
-    return newVersion.getContract();
+    return nextContract;
   }
 
   @Override

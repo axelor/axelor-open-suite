@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
   <entity name="BankStatementQuery">
 
-    <string name="name" required="true" title="Name"/>
+    <string name="name" required="true" title="Name" translatable="true"/>
     <string name="query" title="Test function" required="true" large="true"
       help="Legend for dynamic parameter manage in bank payment config : %amt+ for a tolerance of +X% on amount, %amt- for -X%, %date for a tolerance of + or - X days"/>
     <integer name="ruleTypeSelect" title="Rule type"

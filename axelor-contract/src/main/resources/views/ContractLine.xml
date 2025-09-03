@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="contract-line-grid" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
@@ -104,7 +104,7 @@
             showIf="priceDiscounted != 0 &amp;&amp; discountTypeSelect != 0"
             x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
         <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"
           required="true"/>
@@ -187,7 +187,7 @@
           onChange="action-method-contract-line-compute-total"/>
         <field name="price" x-scale="$nbDecimalDigitForUnitPrice"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="taxLineSet" canEdit="false"
+        <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
         <field name="unit" canEdit="false" required="true"/>
         <field name="exTaxTotal" readonly="true"/>
@@ -240,7 +240,7 @@
       <field name="productName"/>
       <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
-      <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
+      <field name="taxLineSet" canEdit="false" widget="TagSelect" canNew="false"/>
       <field name="unit" canEdit="false" required="true"/>
       <field name="isConsumptionLine"
         onChange="action-method-contract-line-change-is-consumption-line"/>
@@ -259,7 +259,7 @@
       <field name="productName"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
-      <field name="taxLineSet" canEdit="false" widget="TagSelect"/>
+      <field name="taxLineSet" canEdit="false" widget="TagSelect" canNew="false"/>
       <field name="unit" canEdit="false" required="true"/>
       <field name="description" colSpan="12" widget="html"/>
     </panel>
@@ -276,7 +276,7 @@
             onChange="action-contract-template-method-change-product"
             domain="self.dtype = 'Product'"/>
           <field name="productName"/>
-          <field name="taxLineSet" canEdit="false" colSpan="12"/>
+          <field name="taxLineSet" canEdit="false" colSpan="12" canNew="false"/>
         </panel>
         <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
           <field name="pricing" canNew="true" canEdit="true"
@@ -298,7 +298,7 @@
             onSelect="action-contract-line-method-domain-product"
             onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
           <field name="productName"/>
-          <field name="taxLineSet" canEdit="false"
+          <field name="taxLineSet" canEdit="false" canNew="false"
             onChange="action-method-contract-line-compute-total" colSpan="12"/>
         </panel>
         <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
@@ -335,7 +335,6 @@
 
   <action-group name="action-contract-line-group-edit-view">
     <action name="action-contract-line-attrs-hide-consumption-line"/>
-    <action name="action-contract-line-group-manage-analytic"/>
     <action name="action-contract-line-method-scale-and-precision"/>
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
@@ -367,8 +366,7 @@
     <action name="action-contract-line-method-hide-axis-analytic-account"/>
     <action name="action-contract-line-method-print-analytic-account"/>
     <action name="action-contract-line-attrs-read-only-distribution-lines"/>
-    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"
-      if="eval: __parent__?.targetTypeSelect == 1 || __parent__?.targetTypeSelect == 2"/>
+    <action name="action-contract-line-method-set-analytic-distribution-panel-hidden"/>
   </action-group>
 
   <action-group name="action-contract-line-group-product-onchange">

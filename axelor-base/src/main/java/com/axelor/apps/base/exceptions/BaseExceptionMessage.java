@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -75,6 +75,9 @@ public final class BaseExceptionMessage {
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
+  public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
+      "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
+
   public static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/
@@ -130,6 +133,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/
       "Error while creating the file" /*)*/;
   public static final String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
+
   /** Indicator generator service */
   public static final String INDICATOR_GENERATOR_1 = /*$$(*/
       "Error : a request has to be set for the indicatior generator %s" /*)*/;
@@ -137,6 +141,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_2 = /*$$(*/
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
+
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 
@@ -330,7 +335,8 @@ public final class BaseExceptionMessage {
       "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
   public static final String BARCODE_GENERATOR_9 = /*$$(*/ "Barcode format not supported" /*)*/;
 
-  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
+  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;
+  ;
   public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/
       "Google Maps API key is missing in configuration." /*)*/;
 
@@ -352,6 +358,8 @@ public final class BaseExceptionMessage {
       "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
   public static final String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
       "Password doesn't match with configured pattern." /*)*/;
+  public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
+      "Code length should be greater than 2." /*)*/;
 
   /** Convert demo data file */
   public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
@@ -613,8 +621,7 @@ public final class BaseExceptionMessage {
   public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
       "Error while accessing certificate information." /*)*/;
 
-  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
-      "No view configured for model %s." /*)*/;
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
@@ -652,4 +659,94 @@ public final class BaseExceptionMessage {
 
   public static final String FACTORY_NO_FOUND = /*$$(*/
       "Factory not found this type of generator" /*)*/;
+
+  public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
+
+  public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
+      "Error when computing the printing filename, using template %s: %s" /*)*/;
+
+  public static final String NO_QUANTITY_PROVIDED = /*$$(*/
+      "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
+
+  public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
+      "The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+
+  public static final String NO_DEFAULT_ADDRESS_TEMPLATE = /*$$(*/
+      "Please fill the default address template." /*)*/;
+
+  public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
+  public static final String CITY_AND_ZIP_BOTH_EMPTY = /*$$(*/
+      "The city and postcode cannot be empty at the same time." /*)*/;
+  public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
+  public static final String NO_ZIP_FOUND = /*$$(*/
+      "No zip found in request body or in the found city" /*)*/;
+  public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
+      "No address found with this country, zip and street name. City name is required to create a new city." /*)*/;
+
+  public static final String DATA_SHARING_MISSING_ELEMENTS = /*$$(*/
+      "Please fill in or modify some elements to be able to register" /*)*/;
+
+  public static final String LOCALIZATION_EMPTY = /*$$(*/ "Localization is empty" /*)*/;
+
+  public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
+      "Language is empty for the localization %s" /*)*/;
+
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_WRONG = /*$$(*/
+      "Wrong JPQL syntax : %s" /*)*/;
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_CORRECT = /*$$(*/
+      "The syntax of the script is correct." /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAYS = /*$$(*/
+      "There is no configured unit days in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_HOURS = /*$$(*/
+      "There is no configured unit hours in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_MINUTES = /*$$(*/
+      "There is no configured unit minutes in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
+      "There is no configured daily work hours in the app base config" /*)*/;
+
+  public static final String API_BAD_REQUEST = /*$$(*/
+      "Bad request please check api configuration information." /*)*/;
+
+  public static final String API_WRONG_CREDENTIALS = /*$$(*/
+      "Bad request please check credentials." /*)*/;
+
+  public static final String API_WRONG_SIRET_NUMBER = /*$$(*/
+      "Cannot get information with siret: %s ." /*)*/;
+
+  public static final String API_INVALID_SIRET_NUMBER = /*$$(*/
+      "Invalid SIRET number. It must contain exactly 14 digits." /*)*/;
+
+  public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
+      "Registration number already exists for partner %s." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING = /*$$(*/
+      "Please fill API Sirene token generator url in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_URL_MISSING = /*$$(*/
+      "Please fill API Sirene url in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_KEY_MISSING = /*$$(*/
+      "Please fill API Sirene key in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_SECRET_MISSING = /*$$(*/
+      "Please fill API Sirene secret in app base." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_ACCESS_TOKEN_MISSING = /*$$(*/
+      "Please fill API Sirene access token in app base." /*)*/;
+
+  public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
+      "Signature certificate is expired. Please change to a new certificate." /*)*/;
+
+  public static final String PARTNER_BOOLEAN_MISSING = /*$$(*/
+      "At least one of isContact, isCustomer, isSupplier or isProspect must be true." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_1 = /*$$(*/
+      "A partner cannot be both a contact and a customer, supplier, or prospect." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_2 = /*$$(*/
+      "A partner cannot be both a customer and a prospect." /*)*/;
 }

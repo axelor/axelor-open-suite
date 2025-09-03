@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="cost-sheet-grid" title="Cost sheet"
     model="com.axelor.apps.production.db.CostSheet" orderBy="-createdOn">
@@ -39,6 +39,7 @@
       <field name="costPrice"/>
       <field name="calculationTypeSelect"/>
       <field name="calculationDate"/>
+      <field name="calculationQty"/>
       <field name="currency" readonly="true" grid-view="currency-grid"
         form-view="currency-form"/>
       <panel-dashlet name="costSheetLineTreePanel"
@@ -54,6 +55,7 @@
       <field name="costPrice" readonly="true"/>
       <field name="calculationTypeSelect" readonly="true"/>
       <field name="calculationDate" readonly="true"/>
+      <field name="calculationQty" readonly="true"/>
       <field name="manufOrderProducedRatio" readonly="true"/>
       <field name="currency" readonly="true" grid-view="currency-grid"
         form-view="currency-form"/>

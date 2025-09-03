@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,4 +28,9 @@ public interface ITranslation {
 
   public static final String EXPENSE_LINE_CREATION_WITH_PROJECT = /*$$(*/
       "Expense line successfully created. The project is configured as billable, so the charge has been marked as billable by default."; /*)*/
+  public static final String PROJECT_TASK_FOLLOW_UP_VALUES_TOO_HIGH = /*$$(*/
+      "These following tasks have follow-up percentages above 1000%% or remaining amount over 10000 %s. <br>" /*)*/;
+
+  public static final String REPORTING_VALUES_FOR_PROJECT = /*$$(*/
+      "Reporting values for project with id %s." /*)*/;
 }

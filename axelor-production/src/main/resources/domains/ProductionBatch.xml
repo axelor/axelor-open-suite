@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -15,6 +15,7 @@
     <many-to-one name="workshopStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
     <!-- OTHERS INFORMATION -->
+    <integer name="fetchLimit" title="Fetch limit" min="0"/>
     <string name="description" title="Description" large="true"/>
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="productionBatch" title="Batchs"/>
@@ -29,6 +30,7 @@
 	   	// ACTION TYPE
 		public static final int ACTION_COMPUTE_WORK_IN_PROGRESS_VALUATION = 1;
 		public static final int ACTION_FILL_SOP_REAL_VALUES = 2;
+        public static final int ACTION_GENERATE_PO_FOR_SO = 3;
 
 	]]></extra-code>
 

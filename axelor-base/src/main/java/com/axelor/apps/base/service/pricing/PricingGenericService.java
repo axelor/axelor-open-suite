@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.db.Model;
 import java.util.List;
+import java.util.Map;
 
 public interface PricingGenericService {
   <T extends Model> void usePricings(Company company, Class<?> modelClass, Long modelId)
@@ -31,15 +32,21 @@ public interface PricingGenericService {
   <T extends Model> void usePricings(Company company, Class<?> modelClass, List<Integer> idList)
       throws AxelorException;
 
-  void usePricings(Company company, Model model) throws AxelorException;
+  void usePricings(Company company, Model model, String typeSelect) throws AxelorException;
 
-  void computePricingsOnModel(Company company, Model model) throws AxelorException;
+  void computePricingsOnModel(Company company, Model model, String typeSelect)
+      throws AxelorException;
 
-  List<Pricing> getPricings(Company company, Model model);
+  List<Pricing> getPricings(Company company, Model model, String typeSelect);
 
-  void computePricingsOnChildren(Company company, Model model) throws AxelorException;
+  void computePricingsOnChildren(Company company, Model model, String typeSelect)
+      throws AxelorException;
 
   String updatePricingScaleLogs(List<StringBuilder> logsList, Model model);
 
   List<String> getUnavailableModels();
+
+  List<StringBuilder> computePricingProcess(
+      Company company, Model model, String typeSelect, Map<String, Object> contextMap)
+      throws AxelorException;
 }

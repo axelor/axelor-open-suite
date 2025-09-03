@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,15 +24,18 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.web.UserController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
@@ -54,12 +57,21 @@ public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
       return null;
     }
 
-    return new QuickMenu(I18n.get("Active company"), 1, true, getItems());
+    return new QuickMenu(
+        Optional.ofNullable(AuthUtils.getUser())
+            .map(User::getActiveCompany)
+            .map(Company::getName)
+            .orElse(I18n.get("Active company")),
+        1,
+        true,
+        getItems());
   }
 
   protected boolean hasConfigEnabled() {
     AppBase appBase = appBaseService.getAppBase();
-    return !appBase.getIsActivateCompanyChangeShortcut() || !appBase.getEnableMultiCompany();
+    return !appBase.getEnableMultiCompany()
+        || StringUtils.isBlank(appBase.getShortcutMultiSelect())
+        || !appBase.getShortcutMultiSelect().contains(AppBaseRepository.SHORTCUT_ACTIVE_COMPANY);
   }
 
   protected List<QuickMenuItem> getItems() {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
@@ -129,7 +130,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       BankDetailsService bankDetailsService,
       MoveLineRepository moveLineRepository,
       CurrencyScaleService currencyScaleService,
-      TaxService taxService) {
+      TaxService taxService,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
 
     super(
         moveCreateService,
@@ -152,7 +154,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         currencyService,
         taxAccountToolService,
         moveLineRepository,
-        currencyScaleService);
+        currencyScaleService,
+        moveLineMassEntryRecordService);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.saleOrderRepository = saleOrderRepository;

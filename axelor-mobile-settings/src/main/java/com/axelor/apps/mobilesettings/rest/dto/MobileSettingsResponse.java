@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.mobilesettings.rest.dto;
 
+import com.axelor.dms.db.DMSFile;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.api.ResponseStructure;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -27,6 +29,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final List<MobileConfigResponse> apps;
   protected final Boolean isLoginUserQrcodeEnabled;
   protected final Boolean isTrackerMessageEnabled;
+  protected final Boolean isInboxAccessEnabled;
   protected final Boolean isInventoryValidationEnabled;
   protected final Boolean isStockCorrectionValidationEnabled;
   protected final Boolean isCustomerDeliveryLineAdditionEnabled;
@@ -50,12 +53,26 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final List<String> fieldsToShowOnTimesheet;
   protected final List<Long> dashboardIdList;
   protected final List<MobileShortcutResponse> mobileShortcutList;
+  protected final Boolean isGenericProductShown;
+  protected final Boolean isConfiguratorProductShown;
+  protected final List<String> productTypesToDisplay;
+  protected final List<String> reportingTypesToDisplay;
+  protected final MetaFile currentApkFile;
+  protected final DMSFile defaultDmsRoot;
+  protected final Boolean isFavoritesManagementEnabled;
+  protected final Boolean isDownloadAllowed;
+  protected final Boolean isRenamingAllowed;
+  protected final Boolean isFolderCreationAllowed;
+  protected final Boolean isFileCreationAllowed;
+  protected final Boolean isFileDeletionAllowed;
+  protected final Long defaultQiDetectionId;
 
   public MobileSettingsResponse(
       Integer version,
       List<MobileConfigResponse> apps,
       Boolean isLoginUserQrcodeEnabled,
       Boolean isTrackerMessageEnabled,
+      Boolean isInboxAccessEnabled,
       Boolean isInventoryValidationEnabled,
       Boolean isStockCorrectionValidationEnabled,
       Boolean isCustomerDeliveryLineAdditionEnabled,
@@ -78,11 +95,25 @@ public class MobileSettingsResponse extends ResponseStructure {
       String minimalRequiredMobileAppVersion,
       List<String> fieldsToShowOnTimesheet,
       List<Long> dashboardIdList,
-      List<MobileShortcutResponse> mobileShortcutList) {
+      List<MobileShortcutResponse> mobileShortcutList,
+      Boolean isGenericProductShown,
+      Boolean isConfiguratorProductShown,
+      List<String> productTypesToDisplay,
+      List<String> reportingTypesToDisplay,
+      MetaFile currentApkFile,
+      DMSFile defaultDmsRoot,
+      Boolean isFavoritesManagementEnabled,
+      Boolean isDownloadAllowed,
+      Boolean isRenamingAllowed,
+      Boolean isFolderCreationAllowed,
+      Boolean isFileCreationAllowed,
+      Boolean isFileDeletionAllowed,
+      Long defaultQiDetectionId) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
     this.isTrackerMessageEnabled = isTrackerMessageEnabled;
+    this.isInboxAccessEnabled = isInboxAccessEnabled;
     this.isInventoryValidationEnabled = isInventoryValidationEnabled;
     this.isStockCorrectionValidationEnabled = isStockCorrectionValidationEnabled;
     this.isCustomerDeliveryLineAdditionEnabled = isCustomerDeliveryLineAdditionEnabled;
@@ -106,6 +137,19 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
     this.dashboardIdList = dashboardIdList;
     this.mobileShortcutList = mobileShortcutList;
+    this.isGenericProductShown = isGenericProductShown;
+    this.isConfiguratorProductShown = isConfiguratorProductShown;
+    this.productTypesToDisplay = productTypesToDisplay;
+    this.reportingTypesToDisplay = reportingTypesToDisplay;
+    this.currentApkFile = currentApkFile;
+    this.defaultDmsRoot = defaultDmsRoot;
+    this.isFavoritesManagementEnabled = isFavoritesManagementEnabled;
+    this.isDownloadAllowed = isDownloadAllowed;
+    this.isRenamingAllowed = isRenamingAllowed;
+    this.isFolderCreationAllowed = isFolderCreationAllowed;
+    this.isFileCreationAllowed = isFileCreationAllowed;
+    this.isFileDeletionAllowed = isFileDeletionAllowed;
+    this.defaultQiDetectionId = defaultQiDetectionId;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -120,6 +164,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isTrackerMessageEnabled")
   public Boolean getTrackerMessageEnabled() {
     return isTrackerMessageEnabled;
+  }
+
+  @JsonProperty(value = "isInboxAccessEnabled")
+  public Boolean getInboxAccessEnabled() {
+    return isInboxAccessEnabled;
   }
 
   @JsonProperty(value = "isInventoryValidationEnabled")
@@ -233,5 +282,70 @@ public class MobileSettingsResponse extends ResponseStructure {
 
   public List<MobileShortcutResponse> getMobileShortcutList() {
     return mobileShortcutList;
+  }
+
+  @JsonProperty(value = "isGenericProductShown")
+  public Boolean getGenericProductShown() {
+    return isGenericProductShown;
+  }
+
+  @JsonProperty(value = "isConfiguratorProductShown")
+  public Boolean getConfiguratorProductShown() {
+    return isConfiguratorProductShown;
+  }
+
+  @JsonProperty(value = "productTypesToDisplay")
+  public List<String> getProductTypesToDisplay() {
+    return productTypesToDisplay;
+  }
+
+  @JsonProperty(value = "reportingTypesToDisplay")
+  public List<String> getReportingTypesToDisplay() {
+    return reportingTypesToDisplay;
+  }
+
+  @JsonProperty(value = "currentApkFile")
+  public MetaFile getCurrentApkFile() {
+    return currentApkFile;
+  }
+
+  @JsonProperty(value = "defaultDmsRoot")
+  public DMSFile getDefaultDmsRoot() {
+    return defaultDmsRoot;
+  }
+
+  @JsonProperty(value = "isFavoritesManagementEnabled")
+  public Boolean getIsFavoritesManagementEnabled() {
+    return isFavoritesManagementEnabled;
+  }
+
+  @JsonProperty(value = "isDownloadAllowed")
+  public Boolean getIsDownloadAllowed() {
+    return isDownloadAllowed;
+  }
+
+  @JsonProperty(value = "isRenamingAllowed")
+  public Boolean getIsRenamingAllowed() {
+    return isRenamingAllowed;
+  }
+
+  @JsonProperty(value = "isFolderCreationAllowed")
+  public Boolean getIsFolderCreationAllowed() {
+    return isFolderCreationAllowed;
+  }
+
+  @JsonProperty(value = "isFileCreationAllowed")
+  public Boolean getIsFileCreationAllowed() {
+    return isFileCreationAllowed;
+  }
+
+  @JsonProperty(value = "isFileDeletionAllowed")
+  public Boolean getIsFileDeletionAllowed() {
+    return isFileDeletionAllowed;
+  }
+
+  @JsonProperty(value = "defaultQiDetectionId")
+  public Long getDefaultQiDetectionId() {
+    return defaultQiDetectionId;
   }
 }

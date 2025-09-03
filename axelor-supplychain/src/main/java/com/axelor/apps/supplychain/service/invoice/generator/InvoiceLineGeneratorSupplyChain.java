@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -49,6 +50,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /** Classe de création de ligne de facture abstraite. */
@@ -234,9 +236,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
         invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
-    }
-
-    if (stockMoveLine != null) {
+    } else if (stockMoveLine != null) {
       this.price = stockMoveLine.getUnitPriceUntaxed();
       this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
 
@@ -258,9 +258,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
 
-      analyticMoveLineList =
-          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+      invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
@@ -281,12 +279,16 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
 
     // Determine and set the taxEquiv for the line
-    if (product != null) {
-      TaxEquiv taxEquiv =
-          Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, invoice.getCompany(), fiscalPosition, isPurchase);
+    TaxEquiv taxEquiv =
+        Beans.get(FiscalPositionServiceImpl.class)
+            .getTaxEquivFromOrToTaxSet(invoice.getFiscalPosition(), taxLineSet);
 
-      invoiceLine.setTaxEquiv(taxEquiv);
+    invoiceLine.setTaxEquiv(taxEquiv);
+
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
+    if (purchaseOrder != null) {
+      computeCompanyTotal(
+          invoiceLine, Optional.ofNullable(purchaseOrder.getOrderDate()).orElse(today));
     }
 
     return invoiceLine;

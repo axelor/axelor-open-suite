@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,8 +42,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -53,7 +51,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +72,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
 
+  protected StockLocationLineFetchService stockLocationLineFetchService;
+
   @Inject
   public StockLocationLineServiceImpl(
       StockLocationLineRepository stockLocationLineRepo,
@@ -82,13 +81,15 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       UnitConversionService unitConversionService,
-      StockLocationLineHistoryService stockLocationLineHistoryService) {
+      StockLocationLineHistoryService stockLocationLineHistoryService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.stockLocationLineRepo = stockLocationLineRepo;
     this.stockRulesService = stockRulesService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.unitConversionService = unitConversionService;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -333,7 +334,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       BigDecimal qty) {
 
     StockLocationLine detailLocationLine =
-        this.getDetailLocationLine(detailLocation, product, trackingNumber);
+        stockLocationLineFetchService.getDetailLocationLine(
+            detailLocation, product, trackingNumber);
 
     if (detailLocationLine == null) {
       if (qty == null) {
@@ -403,7 +405,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       return;
     }
 
-    StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
+    StockLocationLine stockLocationLine =
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
     if (stockLocationLine == null) {
       return;
     }
@@ -455,7 +458,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       return null;
     }
 
-    StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
+    StockLocationLine stockLocationLine =
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
 
     if (stockLocationLine == null) {
       stockLocationLine = this.createLocationLine(stockLocation, product);
@@ -477,65 +481,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocation detailLocation, Product product, TrackingNumber trackingNumber) {
 
     return this.getOrCreateDetailLocationLineWithQty(detailLocation, product, trackingNumber, null);
-  }
-
-  @Override
-  public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product) {
-
-    if (product == null || !product.getStockManaged() || stockLocation == null) {
-      return null;
-    }
-
-    return stockLocationLineRepo
-        .all()
-        .filter("self.stockLocation.id = :_stockLocationId " + "AND self.product.id = :_productId")
-        .bind("_stockLocationId", stockLocation.getId())
-        .bind("_productId", product.getId())
-        .fetchOne();
-  }
-
-  @Override
-  public List<StockLocationLine> getStockLocationLines(Product product) {
-
-    if (product != null && !product.getStockManaged()) {
-      return null;
-    }
-
-    return stockLocationLineRepo
-        .all()
-        .filter("self.product.id = :_productId")
-        .bind("_productId", product.getId())
-        .fetch();
-  }
-
-  @Override
-  public StockLocationLine getDetailLocationLine(
-      StockLocation stockLocation, Product product, TrackingNumber trackingNumber) {
-    return stockLocationLineRepo
-        .all()
-        .filter(
-            "self.detailsStockLocation.id = :_stockLocationId "
-                + "AND self.product.id = :_productId "
-                + "AND self.trackingNumber.id = :_trackingNumberId")
-        .bind("_stockLocationId", stockLocation.getId())
-        .bind("_productId", product.getId())
-        .bind("_trackingNumberId", trackingNumber.getId())
-        .fetchOne();
-  }
-
-  @Override
-  public List<StockLocationLine> getDetailLocationLines(
-      Product product, TrackingNumber trackingNumber) {
-    return stockLocationLineRepo
-        .all()
-        .filter(
-            "self.product.id = :_productId "
-                + "AND self.trackingNumber.id = :_trackingNumberId "
-                + "AND self.detailsStockLocation.typeSelect = :internalType")
-        .bind("_productId", product.getId())
-        .bind("_trackingNumberId", trackingNumber.getId())
-        .bind("internalType", StockLocationRepository.TYPE_INTERNAL)
-        .fetch();
   }
 
   @Override
@@ -586,47 +531,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     detailLocationLine.setTrackingNumber(trackingNumber);
 
     return detailLocationLine;
-  }
-
-  @Override
-  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product) {
-    StockLocationLine stockLocationLine = getStockLocationLine(stockLocation, product);
-    BigDecimal availableQty = BigDecimal.ZERO;
-    if (stockLocationLine != null) {
-      availableQty = stockLocationLine.getCurrentQty();
-    }
-    return availableQty;
-  }
-
-  @Override
-  public BigDecimal getTrackingNumberAvailableQty(
-      StockLocation stockLocation, TrackingNumber trackingNumber) {
-    StockLocationLine detailStockLocationLine =
-        getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
-
-    BigDecimal availableQty = BigDecimal.ZERO;
-
-    if (detailStockLocationLine != null) {
-      availableQty = detailStockLocationLine.getCurrentQty();
-    }
-    return availableQty;
-  }
-
-  @Override
-  public BigDecimal getTrackingNumberAvailableQty(TrackingNumber trackingNumber) {
-    List<StockLocationLine> detailStockLocationLines =
-        getDetailLocationLines(trackingNumber.getProduct(), trackingNumber);
-
-    BigDecimal availableQty = BigDecimal.ZERO;
-
-    if (detailStockLocationLines != null) {
-      availableQty =
-          detailStockLocationLines.stream()
-              .map(StockLocationLine::getCurrentQty)
-              .filter(Objects::nonNull)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-    return availableQty;
   }
 
   @Override
@@ -779,52 +683,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
     }
     return stockMoveLineQuery.fetch();
-  }
-
-  @Override
-  public String getStockLocationLineListForAProduct(
-      Long productId, Long companyId, Long stockLocationId) {
-
-    String query =
-        "self.product.id = "
-            + productId
-            + " AND self.stockLocation.typeSelect != "
-            + StockLocationRepository.TYPE_VIRTUAL;
-
-    if (companyId != 0L) {
-      query += " AND self.stockLocation.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        StockLocation stockLocation =
-            Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
-            Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
-          query +=
-              " AND self.stockLocation.id IN ("
-                  + StringHelper.getIdListString(stockLocationList)
-                  + ") ";
-        }
-      }
-    }
-    return query;
-  }
-
-  @Override
-  public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId) {
-    String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
-    query +=
-        " AND (self.currentQty != 0 OR self.futureQty != 0) "
-            + " AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)";
-    return query;
-  }
-
-  @Override
-  public String getRequestedReservedQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId) {
-    String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
-    query += " AND self.requestedReservedQty > 0";
-    return query;
   }
 
   @Override

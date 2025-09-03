@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="sale-order-line-details-grid" title="Sale order lines details"
+    model="com.axelor.apps.production.db.SaleOrderLineDetails">
+    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
+      widget="ImageSelect" title=""/>
+    <field name="product" form-view="product-form" grid-view="product-grid"
+      onChange="action-sale-order-line-details-method-product-onchange" showIf="!$readonly()"
+      readonlyIf="typeSelect != 1"/>
+    <field name="title"/>
+    <field name="unit" readonlyIf="typeSelect == 3"/>
+    <field name="qty" min="0" onChange="action-sale-order-line-details-method-qty-onchange"
+      x-scale="$nbDecimalDigitForQty" readonlyIf="typeSelect == 3"/>
+    <field name="costPrice" x-scale="$nbDecimalDigitForUnitPrice"
+      onChange="action-sale-order-line-details-method-compute-price" readonlyIf="typeSelect == 3"/>
+    <field name="marginCoefficient" x-scale="$nbDecimalDigitForUnitPrice"
+      onChange="action-sale-order-line-details-method-margin-coef-onchange"/>
+    <field name="price" onChange="action-sale-order-line-details-method-price-onchange"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="description"/>
+  </grid>
+
+  <grid name="sale-order-line-details-readonly-grid" title="Sale order lines details"
+    model="com.axelor.apps.production.db.SaleOrderLineDetails">
+    <field name="typeSelect" onChange="action-sale-order-line-details-group-type-onchange"
+      widget="ImageSelect"/>
+    <field name="title"/>
+    <field name="unit" readonlyIf="typeSelect == 3"/>
+    <field name="qty" min="0" onChange="action-sale-order-line-details-method-qty-onchange"
+      x-scale="$nbDecimalDigitForQty" readonlyIf="typeSelect == 3"/>
+    <field name="costPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="price" onChange="action-sale-order-line-details-method-price-onchange"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="totalPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="sale-order-line-details-form" title="Sale order line details"
+    model="com.axelor.apps.production.db.SaleOrderLineDetails"
+    onNew="action-sale-order-line-details-group-onnew"
+    onLoad="action-sale-order-line-details-group-onload">
+    <panel-tabs name="mainPanelTabs" colSpan="12">
+      <panel name="mainPanel" title="Information">
+        <field name="typeSelect" colSpan="6"
+          onChange="action-sale-order-line-details-group-type-onchange"/>
+        <field name="title" colSpan="6"/>
+        <field name="product" form-view="product-form" grid-view="product-grid"
+          onChange="action-sale-order-line-details-method-product-onchange" colSpan="6"
+          showIf="typeSelect == 1"/>
+        <field name="unit" colSpan="6" showIf="typeSelect == 1"/>
+        <spacer colSpan="6"/>
+        <field name="qty" min="0"
+          onChange="action-sale-order-line-details-method-qty-onchange" colSpan="4"
+          showIf="typeSelect &amp;&amp; (typeSelect == 1 || typeSelect == 3)"
+          readonlyIf="typeSelect == 3"/>
+        <spacer colSpan="8"/>
+        <field name="costPrice" colSpan="6"
+          onChange="action-sale-order-line-details-method-compute-price"
+          readonlyIf="typeSelect == 3"/>
+        <field name="marginCoefficient" x-scale="$nbDecimalDigitForUnitPrice"
+          onChange="action-sale-order-line-details-method-margin-coef-onchange"/>
+        <field name="price" colSpan="6"
+          onChange="action-sale-order-line-details-method-price-onchange"/>
+        <field name="totalPrice" colSpan="6"/>
+        <field name="description" colSpan="12"/>
+      </panel>
+      <panel name="marginPanel" title="Margin">
+        <field name="subTotalCostPrice" x-scale="$nbDecimalDigitForUnitPrice" readonly="true"/>
+        <field name="subTotalGrossMargin" readonly="true"
+          x-scale="$nbDecimalDigitForUnitPrice"/>
+        <field name="subMarginRate" readonly="true"/>
+        <field name="subTotalMarkup" readonly="true"/>
+      </panel>
+      <panel name="prodProcessLinePanel" title="Prod process line" showIf="typeSelect == 3">
+        <panel name="capacityPanel" title="Capacity settings" colSpan="12">
+          <field name="minCapacityPerCycle" colSpan="4"/>
+          <field name="maxCapacityPerCycle" colSpan="4"/>
+        </panel>
+        <panel name="machineTimesPanel" title="Machine times" colSpan="12"
+          showIf="prodProcessLine.workCenter.workCenterTypeSelect == 2 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
+          <field name="durationPerCycle" colSpan="4" widget="duration" x-big="true"
+            x-seconds="true" onChange="action-sale-order-line-details-method-compute-total-duration"/>
+          <field name="setupDuration" widget="duration"
+            help="Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle."
+            colSpan="6" x-big="true" x-seconds="true"
+            onChange="action-sale-order-line-details-method-compute-total-duration"/>
+          <field name="startingDuration" widget="duration"
+            help="The time the machine starts before it can be used." colSpan="4" x-big="true"
+            x-seconds="true" onChange="action-sale-order-line-details-method-compute-total-duration"/>
+          <field name="endingDuration" widget="duration"
+            help="Ending duration of the machine." colSpan="4" x-big="true" x-seconds="true"
+            onChange="action-sale-order-line-details-method-compute-total-duration"/>
+          <field name="$totalDuration" title="Total duration in hours" type="decimal"
+            readonly="true"/>
+        </panel>
+        <panel name="humanTimesPanel" title="Human times"
+          showIf="prodProcessLine.workCenter.workCenterTypeSelect == 1 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
+          <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
+            x-seconds="true"/>
+        </panel>
+        <panel name="costSettingPanel" colSpan="12" itemSpan="12">
+          <panel name="generalCostSettingsPanel" title="Costing settings"
+            showIf="prodProcessLine.workCenter.workCenterTypeSelect == 2 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
+            <field name="costTypeSelect" colSpan="3"/>
+            <field name="costAmount" colSpan="3"/>
+          </panel>
+          <panel name="hrCostSettings" title="HR Cost Settings"
+            showIf="prodProcessLine.workCenter.workCenterTypeSelect == 1 || prodProcessLine.workCenter.workCenterTypeSelect == 3">
+            <field name="hrCostTypeSelect" colSpan="3" selection-in="[1,3]"/>
+            <field name="hrCostAmount" colSpan="3"/>
+          </panel>
+        </panel>
+        <field name="prodProcessLine.workCenter.workCenterTypeSelect" hidden="true"/>
+        <field name="prodProcessLine" hidden="true"/>
+        <field name="prodProcessLine.prodProcess" hidden="true"/>
+      </panel>
+
+    </panel-tabs>
+  </form>
+
+  <action-group name="action-sale-order-line-details-group-onnew">
+    <action name="action-sale-order-line-details-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-details-attrs-default-value"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-details-group-onload">
+    <action name="action-sale-order-line-details-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-details-method-compute-total-duration"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-line-details-attrs-scale-and-precision">
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="totalPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="costPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-group name="action-sale-order-line-details-group-type-onchange">
+    <action name="action-sale-order-line-details-attrs-reset"/>
+    <action name="action-sale-order-line-details-attrs-focus"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-line-details-attrs-reset">
+    <attribute for="title" name="value" expr="eval: null"/>
+    <attribute for="product" name="value" expr="eval: null"/>
+    <attribute for="unit" name="value" expr="eval: null"/>
+    <attribute for="qty" name="value" expr="eval: 1"/>
+    <attribute for="price" name="value" expr="eval: 0"/>
+    <attribute for="totalPrice" name="value" expr="eval: 0"/>
+    <attribute for="subTotalCostPrice" name="value" expr="eval: 0"/>
+    <attribute for="subTotalGrossMargin" name="value" expr="eval: 0"/>
+    <attribute for="subMarginRate" name="value" expr="eval: 0"/>
+    <attribute for="subTotalMarkup" name="value" expr="eval: 0"/>
+    <attribute for="costPrice" name="value" expr="eval: 0"/>
+    <attribute for="marginCoefficient" name="value" expr="eval: 1"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-details-attrs-default-value">
+    <attribute for="marginCoefficient" name="value" expr="1"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-details-attrs-focus">
+    <attribute for="product" name="focus" expr="true" if="typeSelect == 1"/>
+  </action-attrs>
+
+  <action-method name="action-sale-order-line-details-method-product-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="productOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-details-method-compute-price">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="computePrices"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-details-method-price-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="priceOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-details-method-margin-coef-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="marginCoefOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-details-method-qty-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="qtyOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-details-method-compute-total-duration">
+    <call class="com.axelor.apps.production.web.SaleOrderLineDetailsController"
+      method="computeTotalDuration"/>
+  </action-method>
+
+</object-views>

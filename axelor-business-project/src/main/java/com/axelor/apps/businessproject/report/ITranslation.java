@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -228,4 +228,6 @@ public interface ITranslation {
   public static final String INVOICE_EXPENSE_COMMENTS = /*$$(*/ "InvoiceExpense.comments"; /*)*/
   public static final String INVOICE_EXPENSE_EMPLOYEE = /*$$(*/ "InvoiceExpense.employee"; /*)*/
   public static final String GROUPING_PERIOD_WEEK = /*$$(*/ "week"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE__EXTRA_TIME_SPENT = /*$$(*/
+      "InvoicingProjectAnnex.extraTimeSpent"; /*)*/
 }

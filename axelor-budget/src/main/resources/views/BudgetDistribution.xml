@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="budget-distribution-grid" title="Budget distributions"
     model="com.axelor.apps.budget.db.BudgetDistribution">
@@ -170,8 +170,8 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget" canNew="false"
     canArchive="false" canDelete="false" canEdit="false">
     <field name="budget"/>
-    <field name="invoiceLine"/>
     <field name="moveLine"/>
+    <field name="moveLine.move.invoice"/>
     <field name="imputationDate"/>
     <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -212,6 +212,7 @@
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="amount" validIf="amount &gt; 0"
         x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="purchaseOrderLine" readonly="true" showIf="_purchaseOrderId"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
       <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -225,6 +226,7 @@
       <field name="budget" readonly="true"/>
       <field name="purchaseOrderLine.product" readonly="true"/>
       <field name="purchaseOrderLine.purchaseOrder" readonly="true"/>
+      <field name="purchaseOrderLine" readonly="true"/>
       <field name="purchaseOrderLine.purchaseOrder.validationDateTime" readonly="true"/>
       <field name="budgetAmountAvailable" readonly="true"
         if="__config__.app.getApp('budget')?.getManageMultiBudget()"
@@ -260,6 +262,7 @@
       <field name="budgetAmountAvailable" readonly="true"
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="amount" readonly="true" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="invoiceLine" readonly="true" showIf="_invoiceId"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
       <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -270,6 +273,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" width="large">
     <panel name="mainPanel" readonly="true">
       <field name="invoiceLine.invoice"/>
+      <field name="invoiceLine" readonly="true"/>
       <field name="invoiceLine.invoice.invoiceDate"/>
       <field name="invoiceLine.product" domain="self.dtype = 'Product'"/>
       <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
@@ -283,6 +287,7 @@
     canEdit="false">
     <panel name="mainPanel" readonly="true">
       <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
+      <field name="purchaseOrderLine"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
       <field name="budget.globalBudget" title="Global budget"/>
       <field name="budget.budgetLevel" title="Section line"/>
@@ -355,6 +360,7 @@
         name="budgetAmountAvailable" readonly="true"
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="amount" readonly="false" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="saleOrderLine" readonly="true" showIf="_globalId"/>
       <field name="saleOrderLine.saleOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
       <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -434,6 +440,20 @@
     <attribute name="value" for="$fromGroup" expr="eval:_fromGroup"/>
     <attribute name="value" for="$fromSection" expr="eval:_fromSection"/>
     <attribute name="value" for="$fromBudget" expr="eval:_fromBudget"/>
+  </action-attrs>
+
+  <action-method name="action-budget-method-manage-budget-date-label">
+    <call class="com.axelor.apps.budget.web.BudgetDateController"
+      method="manageBudgetDateLabel"/>
+  </action-method>
+
+  <action-method name="action-budget-validate-budget-dates">
+    <call class="com.axelor.apps.budget.web.BudgetDateController" method="checkBudgetDates"/>
+  </action-method>
+
+  <action-attrs name="action-budget-dates-attrs-initialize-budget-dates">
+    <attribute for="budgetFromDate" name="value" expr="eval: __parent__?.budgetFromDate"/>
+    <attribute for="budgetToDate" name="value" expr="eval: __parent__?.budgetToDate"/>
   </action-attrs>
 
 </object-views>

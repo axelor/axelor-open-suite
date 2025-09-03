@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,22 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -80,15 +87,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   }
 
   @Override
-  public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
-
-    LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
-    LocalDateTime beginDate = leaveRequest.getFromDateT();
-
-    int interval =
-        (beginDate.getYear() - todayDate.getYear()) * 12
-            + beginDate.getMonthValue()
-            - todayDate.getMonthValue();
+  public boolean willHaveEnoughDays(LeaveRequest leaveRequest) throws AxelorException {
     LeaveLine leaveLine =
         leaveLineRepository
             .all()
@@ -101,18 +100,73 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
           && leaveReasonService.isExceptionalDaysReason(leaveRequest.getLeaveReason());
     }
 
-    BigDecimal num =
-        leaveLine
-            .getQuantity()
-            .add(
-                leaveRequest
-                    .getEmployee()
-                    .getWeeklyPlanning()
-                    .getLeaveCoef()
-                    .multiply(leaveRequest.getLeaveReason().getDefaultDayNumberGain())
-                    .multiply(BigDecimal.valueOf(interval)));
+    BigDecimal num = getLeaveDaysToDate(leaveRequest);
 
     return leaveRequest.getDuration().compareTo(num) <= 0;
+  }
+
+  @Override
+  public BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) throws AxelorException {
+
+    return getLeaveDaysToDate(
+        leaveRequest.getToDateT(), leaveRequest.getEmployee(), leaveRequest.getLeaveReason());
+  }
+
+  @Override
+  public BigDecimal getLeaveDaysToDate(
+      LocalDateTime toDateT, Employee employee, LeaveReason leaveReason) throws AxelorException {
+    LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
+
+    if (todayDate == null || toDateT == null) {
+      return BigDecimal.ZERO;
+    }
+
+    LeaveLine leaveLine =
+        leaveLineRepository
+            .all()
+            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
+            .bind("leaveReason", leaveReason)
+            .bind("employee", employee)
+            .fetchOne();
+
+    if (leaveReason == null || leaveLine == null) {
+      return BigDecimal.ZERO;
+    }
+
+    int leaveReasonTypeSelect = leaveReason.getLeaveReasonTypeSelect();
+
+    int interval = getInterval(leaveReasonTypeSelect, toDateT, todayDate);
+    WeeklyPlanning planning = employee.getWeeklyPlanning();
+    if (planning == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
+          employee.getName());
+    }
+    return leaveLine
+        .getQuantity()
+        .add(
+            planning
+                .getLeaveCoef()
+                .multiply(leaveReason.getDefaultDayNumberGain())
+                .multiply(BigDecimal.valueOf(interval)));
+  }
+
+  protected int getInterval(
+      int leaveReasonTypeSelect, LocalDateTime endDate, LocalDateTime todayDate) {
+    int interval = 0;
+
+    if (leaveReasonTypeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH) {
+      interval =
+          (endDate.getYear() - todayDate.getYear()) * 12
+              + endDate.getMonthValue()
+              - todayDate.getMonthValue();
+    }
+
+    if (leaveReasonTypeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR) {
+      interval = endDate.getYear() - todayDate.getYear();
+    }
+    return interval;
   }
 
   @Override

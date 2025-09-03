@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,6 +48,8 @@ public final class SaleExceptionMessage {
       "The fiscal position must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_TAX_NUMBER = /*$$(*/
       "The tax number must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_ATI_CONFIG = /*$$(*/
+      "The ATI configuration must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
       "List of sale orders to merge is empty" /*)*/;
 
@@ -116,4 +118,95 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_CANNOT_DELETE_COMFIRMED_ORDER = /*$$(*/
       "It is not possible to delete a confirmed order." /*)*/;
+
+  public static final String SALE_ORDER_FINALIZE_EMPTY_LIST = /*$$(*/
+      "Please enter at least one detail line." /*)*/;
+
+  public static final String SALE_ORDER_FINALIZE_PRODUCT_SOLD_AT_LOSS = /*$$(*/
+      "One product is sold at loss, are you sure you want to finalize the quotation ?" /*)*/;
+
+  public static final String SALE_ORDER_FINALIZE_PRICE_LIST_NOT_VALID = /*$$(*/
+      "The selected price list is no longer valid, do you still want to continue?" /*)*/;
+
+  public static final String SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO = /*$$(*/
+      "The total amount of quotation is zero." /*)*/;
+
+  public static final String PRODUCT_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
+      "You can not choose this product for this order: %s" /*)*/;
+
+  public static final String EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL = /*$$(*/
+      "Either the sale order or the product is null." /*)*/;
+  public static final String CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
+      "The client provided is not a customer of the given company: %s." /*)*/;
+  public static final String SALE_ORDER_NOT_DRAFT = /*$$(*/
+      "You can only add a line to a draft sale order." /*)*/;
+
+  public static final String ATI_CHANGE_NOT_ALLOWED = /*$$(*/
+      "The company configuration doesn't allow you to manage the exclusion or inclusion of taxes." /*)*/;
+
+  public static final String PRODUCT_CURRENCY_IS_NULL = /*$$(*/
+      "This product currency is empty: %s" /*)*/;
+
+  public static final String NO_PRODUCT_FAMILY =
+      /*$$(*/ "No product family is set for this product: %s" /*)*/;
+  public static final String PRODUCT_IS_NULL = /*$$(*/ "Product should not be null" /*)*/;
+
+  public static final String PRODUCT_ADDED_TO_CART = /*$$(*/
+      "%s has been added to your cart." /*)*/;
+
+  public static final String CONTACT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
+      "The contact provided is not a contact partner of the client." /*)*/;
+
+  public static final String MISSING_PRODUCT_VARIANTS = /*$$(*/
+      "Please select product variant for following product(s) :" /*)*/;
+
+  public static final String BLOCK_ORDER_CREATION = /*$$(*/
+      "You can not create sale order as some products are not in stock." /*)*/;
+
+  public static final String PRODUCT_UNIT_IS_NULL = /*$$(*/
+      "No unit is set for this product: %s" /*)*/;
+
+  public static final String NO_ORDER_LINE_NEEDS_TO_BE_GENERATED = /*$$(*/
+      "No order line needs to be generated for this cart." /*)*/;
+
+  public static final String SALE_ORDER_LINE_PARENT_WRONG_TYPE = /*$$(*/
+      "Title type line can not have sublines." /*)*/;
+
+  public static final String ERROR_DURING_DUPLICATION_SALE_ORDER_LINE = /*$$(*/
+      "An error occurred during the duplication of sale order line. Therefore, only a simple copy has been made, please see tracebacks for more details." /*)*/;
+
+  public static final String DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES = /*$$(*/
+      "You cannot bill together lines that do not have the same delivery address. Please use partial billing for lines with the same delivery address." /*)*/;
+
+  public static final String SALE_ORDER_DO_NOT_HAVE_CONFIGURATOR = /*$$(*/
+      "Sale order does not have configurator to duplicate." /*)*/;
+  public static final String CONFIGURATOR_VERSION_IS_DIFFERENT = /*$$(*/
+      "Configurator version is different than its configurator creator." /*)*/;
+
+  public static final String CONFIGURATOR_PRODUCT_GENERATION_ERROR = /*$$(*/
+      "An error occurred during the generation of the product with configurator, please see tracebacks for more details." /*)*/;
+
+  public static final String CONFIGURATOR_IS_NOT_ACTIVATED = /*$$(*/
+      "Configurator is not activated." /*)*/;
+
+  public static final String SALE_ORDER_DO_YOU_WANT_TO_PROCEED = /*$$(*/
+      "Do you want to proceed ?" /*)*/;
+
+  public static final String SALE_QUOTATION_ALL_ALREADY_ORDERED = /*$$(*/
+      "Every lines have been completely ordered." /*)*/;
+
+  public static final String SALE_QUOTATION_WRONG_ORDER_QTY = /*$$(*/
+      "You can not order more than %s for the line with the product %s." /*)*/;
+
+  public static final String SALE_QUOTATION_NO_LINE_GENERATED = /*$$(*/
+      "No lines were generated. Please check that at least one line has a quantity to order." /*)*/;
+
+  public static final String SALE_QUOTATION_CHECK_ORDERED_QTY = /*$$(*/
+      "Quantity should not be less than the ordered quantity." /*)*/;
+
+  public static final String SALE_QUOTATION_CONFIRM_CHECK_ORDERED_QTY = /*$$(*/
+      "One of the lines has its quantity inferior to its ordered quantity." /*)*/;
+
+  public static final String SALE_QUOTATION_DELETE_LINE_WITH_ORDERED_QTY_ERROR = /*$$(*/
+      "You can not delete lines with an ordered quantity superior to 0." /*)*/;
 }

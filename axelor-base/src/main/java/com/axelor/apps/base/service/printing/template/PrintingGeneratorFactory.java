@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.common.FileUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.service.TranslationBaseService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,14 +19,17 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 
@@ -36,8 +39,17 @@ public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTime
   public TimesheetProjectPPTServiceImpl(
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TimesheetLineService timesheetLineService,
-      AppBaseService appBaseService) {
-    super(projectPlanningTimeRepository, timesheetLineService, appBaseService);
+      AppBaseService appBaseService,
+      UserHrService userHrService,
+      UnitConversionRepository unitConversionRepository,
+      UnitConversionForProjectService unitConversionForProjectService) {
+    super(
+        projectPlanningTimeRepository,
+        timesheetLineService,
+        appBaseService,
+        userHrService,
+        unitConversionRepository,
+        unitConversionForProjectService);
   }
 
   @Override

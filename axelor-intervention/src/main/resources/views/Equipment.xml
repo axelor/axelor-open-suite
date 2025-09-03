@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
     name="equipment-grid">
@@ -17,8 +17,6 @@
     <field name="equipmentFamily"/>
     <field name="indicatorSelect" widget="single-select"/>
     <field name="contract" massUpdate="true" hidden="true"/>
-    <field name="partner.tradingName.name" title="Partner trading name"
-      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </grid>
 
   <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
@@ -34,8 +32,6 @@
     <field name="equipmentFamily"/>
     <field name="indicatorSelect" widget="single-select"/>
     <field name="contract" massUpdate="true" hidden="true"/>
-    <field name="partner.tradingName.name" title="Partner trading name"
-      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </grid>
 
   <form name="equipment-tree-partner-filter-form" width="large" title="Equipments tree"
@@ -83,7 +79,7 @@
     <column name="newBtn" type="button"/>
     <column name="deleteBtn" type="button"/>
     <node model="com.axelor.apps.intervention.db.Equipment"
-      onClick="action-equipment-view-equipment-from-tree">
+      onClick="action-equipment-view-equipment-from-tree" domain="self.parentEquipment is null">
       <field as="sequence" name="sequence"/>
       <field as="partner" name="partner"/>
       <field as="code" name="code"/>
@@ -154,7 +150,7 @@
       <field name="scheduleOfOperation" hidden="true" showIf="typeSelect != 'place'"/>
       <field name="specificAccessSchedule" hidden="true" showIf="typeSelect != 'place'"/>
       <field name="contract" form-view="contract-form" hidden="true" canNew="false"
-        domain="self.partner = :partner AND self.currentContractVersion.statusSelect = 3"
+        domain="self.partner = :partner AND self.currentContractVersion.statusSelect = 3  AND self.contractTypeSelect = 1"
         showIf="typeSelect != 'place'"/>
       <field name="comments" colSpan="12"/>
     </panel>
@@ -266,7 +262,7 @@
 
   <search-filters name="equipment-filters"
     model="com.axelor.apps.intervention.db.Equipment" title="Equipment filters">
-    <field name="partner.tradingName.name" title="Partner trading name"
+    <field name="partner.tradingNameSet.name" title="Partner trading name"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </search-filters>
 

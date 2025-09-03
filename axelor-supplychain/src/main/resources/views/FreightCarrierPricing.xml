@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="freight-carrier-pricing-grid" title="Transport rates"
+    model="com.axelor.apps.supplychain.db.FreightCarrierPricing" x-selector="none">
+    <field name="freightCarrierMode.name"/>
+    <field name="carrierPartner"/>
+    <field name="pricing"/>
+    <field name="pricingAmount"/>
+    <field name="delay"/>
+  </grid>
+
+  <form name="freight-carrier-pricing-form"
+    model="com.axelor.apps.supplychain.db.FreightCarrierPricing" title="Freight carrier pricing"
+    onLoad="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
+    <panel name="mainPanel">
+      <field name="freightCarrierMode.name"/>
+      <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="pricing" form-view="freight-carrier-mode-pricing-form"
+        grid-view="freight-carrier-mode-pricing-grid"/>
+      <field name="pricingAmount"/>
+      <field name="delay"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-freight-carrier-pricing-set-freight-carrier-mode-readonly">
+    <attribute for="freightCarrierMode" name="readonly" expr="eval: freightCarrierMode"/>
+  </action-attrs>
+
+</object-views>

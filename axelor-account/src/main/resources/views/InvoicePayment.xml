@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="invoice-payment-grid" title="Payments"
     model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
@@ -15,7 +15,7 @@
       grid-view="bank-details-grid"/>
     <field name="typeSelect"/>
     <field name="move" width="120" form-view="move-form" grid-view="move-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="cancelBtn" icon="fa-times-circle"
       onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
   </grid>
@@ -36,7 +36,7 @@
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
       <field name="amount" onChange="action-invoice-payment-group-change-amounts"
-        x-scale="$currencyScale"/>
+        x-scale="$currencyScale" validIf="amount &gt; 0"/>
       <field name="currency" canEdit="false" readonlyIf="$isMultiCurrency"
         form-view="currency-form" grid-view="currency-grid"
         onChange="action-invoice-payment-group-change-amounts"/>
@@ -94,9 +94,9 @@
       <field name="move" form-view="move-form" grid-view="move-grid"/>
       <field name="bankOrder" if-module="axelor-bank-payment" showIf="bankOrder"
         form-view="bank-order-form" grid-view="bank-order-grid"/>
-      <field name="statusSelect"
+      <field name="statusSelect" widget="single-select"
         showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
-      <field name="statusSelect"
+      <field name="statusSelect" widget="single-select"
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
       <button name="cancelBtn" title="Cancel"
@@ -176,7 +176,7 @@
   <action-group name="action-invoice-payment-group-apply-financial-discount-on-change">
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-attrs-currency-scale"/>
-    <action name="action-invoice-payment-method-new-discount"/>
+    <action name="action-invoice-payment-method-apply-financial-discount-fields"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-payment-date-onchange">
@@ -198,7 +198,9 @@
     <field name="paymentMode"
       expr="eval: __repo__(PaymentMode).find(_invoice?.paymentMode.id)"
       if="_invoice?.paymentMode != null"/>
-    <field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
+    <field name="companyBankDetails"
+      expr="eval: __repo__(BankDetails).find(_invoice?.companyBankDetails.id)"
+      if="_invoice?.companyBankDetails != null"/>
     <field name="invoice" expr="eval: _invoice"/>
     <field name="typeSelect" expr="2"/>
   </action-record>
@@ -230,7 +232,7 @@
 
   <action-attrs name="action-invoice-payment-attrs-set-is-partial-payment">
     <attribute name="value" for="$isPartialPayment"
-      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService:isPartialPayment(__this__)"/>
+      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentToolService:isPartialPayment(__this__)"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-payment-attrs-currency-scale">
@@ -245,6 +247,11 @@
   <action-method name="action-invoice-payment-method-new-discount">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="computeDatasForFinancialDiscount"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-apply-financial-discount-fields">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="applyFinancialDiscountFields"/>
   </action-method>
 
   <action-method name="action-invoice-payment-method-apply-financial-discount">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.base.interfaces.PricedOrderLine;
+import java.math.BigDecimal;
 import java.util.Set;
 
 public interface OrderLineTaxService {
@@ -38,4 +39,8 @@ public interface OrderLineTaxService {
 
   void addTaxEquivSpecificNote(
       PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes);
+
+  boolean isManageByAmount(OrderLineTax orderLineTax);
+
+  BigDecimal computeInTaxTotal(OrderLineTax orderLineTax, Currency currency);
 }

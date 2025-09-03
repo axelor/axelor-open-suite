@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,20 +20,24 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class BankStatementLineManagementRepository extends BankStatementLineRepository {
 
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public BankStatementLineManagementRepository(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     Long bankStatementLineId = (Long) json.get("id");
-    BankStatementLine bankStatementLine =
-        Beans.get(BankStatementLineRepository.class).find(bankStatementLineId);
+    BankStatementLine bankStatementLine = find(bankStatementLineId);
 
-    json.put(
-        "$currencyNumberOfDecimals",
-        Beans.get(CurrencyScaleService.class).getScale(bankStatementLine));
+    json.put("$currencyNumberOfDecimals", currencyScaleService.getScale(bankStatementLine));
 
     return super.populate(json, context);
   }

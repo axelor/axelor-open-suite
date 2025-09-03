@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,8 +52,7 @@ public class ContractRevaluationServiceImpl implements ContractRevaluationServic
 
   public Contract applyFormula(Contract contract) throws AxelorException, ScriptException {
     contract = contractRepository.find(contract.getId());
-    List<ContractLine> contractLineList =
-        contract.getCurrentContractVersion().getContractLineList();
+    List<ContractLine> contractLineList = contract.getNextVersion().getContractLineList();
     StringJoiner newUnitPrices = new StringJoiner(", ");
     StringJoiner allP0 = new StringJoiner(", ");
     StringJoiner allPf = new StringJoiner(", ");

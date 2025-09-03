@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -161,12 +161,11 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         .bind("model", depositSlip.getClass().getName())
         .bind("filename", filename + ".pdf")
         .fetchStream()
-        .forEach(dmsFile -> metaFiles.delete(dmsFile));
+        .forEach(metaFiles::delete);
   }
 
   public String getFilename(
-      DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDueDate)
-      throws AxelorException {
+      DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDueDate) {
 
     StringBuilder stringBuilder = new StringBuilder(depositSlip.getDepositNumber());
     stringBuilder = stringBuilder.append('-').append(bankDetails.getBankCode());
@@ -293,11 +292,11 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   }
 
   @Override
-  public List<Integer> getSelectedPaymentVoucherDueIdList(
+  public List<PaymentVoucher> getSelectedPaymentVoucherDueList(
       List<Map<String, Object>> paymentVoucherDueList) {
     return paymentVoucherDueList.stream()
         .filter(o -> ObjectUtils.notEmpty(o.get("selected")) && (Boolean) o.get("selected"))
-        .map(o -> (Integer) o.get("id"))
+        .map(it -> paymentVoucherRepository.find(((Integer) it.get("id")).longValue()))
         .collect(Collectors.toList());
   }
 

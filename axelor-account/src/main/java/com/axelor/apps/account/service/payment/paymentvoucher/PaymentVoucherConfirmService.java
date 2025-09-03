@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,8 +19,11 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -28,6 +31,8 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
@@ -46,6 +51,7 @@ import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -55,6 +61,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -68,6 +75,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +103,9 @@ public class PaymentVoucherConfirmService {
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
   protected CurrencyScaleService currencyScaleService;
+  protected InvoicePaymentRepository invoicePaymentRepository;
+  protected ForeignExchangeGapToolService foreignExchangeGapToolService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -116,7 +127,10 @@ public class PaymentVoucherConfirmService {
       InvoiceTermRepository invoiceTermRepository,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      InvoicePaymentRepository invoicePaymentRepository,
+      ForeignExchangeGapToolService foreignExchangeGapToolService,
+      AppBaseService appBaseService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -137,6 +151,9 @@ public class PaymentVoucherConfirmService {
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
     this.currencyScaleService = currencyScaleService;
+    this.invoicePaymentRepository = invoicePaymentRepository;
+    this.foreignExchangeGapToolService = foreignExchangeGapToolService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -297,11 +314,15 @@ public class PaymentVoucherConfirmService {
     Partner payerPartner = paymentVoucher.getPartner();
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();
     Company company = paymentVoucher.getCompany();
-    BankDetails companyBankDetails = paymentVoucher.getCompanyBankDetails();
+    // use depositBankDetails if not null
+    BankDetails bankDetails =
+        paymentVoucher.getDepositBankDetails() != null
+            ? paymentVoucher.getDepositBankDetails()
+            : paymentVoucher.getCompanyBankDetails();
     Journal journal =
-        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails, false);
+        paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails, false);
     Account paymentModeAccount =
-        paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails, false);
+        paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails, false);
 
     Move move =
         moveCreateService.createMoveWithPaymentVoucher(
@@ -316,7 +337,7 @@ public class PaymentVoucherConfirmService {
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             paymentVoucher.getRef(),
             journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null,
-            companyBankDetails);
+            bankDetails);
 
     move.setPaymentVoucher(paymentVoucher);
     move.setTradingName(paymentVoucher.getTradingName());
@@ -381,10 +402,21 @@ public class PaymentVoucherConfirmService {
 
   protected Optional<MoveLine> extractMoveLineFromValueForCollectionMove(
       Move move, Account account) {
-
-    return move.getMoveLineList().stream()
-        .filter(moveLine -> Objects.equals(account, moveLine.getAccount()))
-        .findFirst();
+    Predicate<? super MoveLine> filter;
+    if (account == null) {
+      filter =
+          moveLine ->
+              Objects.equals(
+                  AccountTypeRepository.TYPE_CASH,
+                  Optional.ofNullable(moveLine)
+                      .map(MoveLine::getAccount)
+                      .map(Account::getAccountType)
+                      .map(AccountType::getTechnicalTypeSelect)
+                      .orElse(""));
+    } else {
+      filter = moveLine -> Objects.equals(account, moveLine.getAccount());
+    }
+    return move.getMoveLineList().stream().filter(filter).findFirst();
   }
 
   /**
@@ -467,11 +499,13 @@ public class PaymentVoucherConfirmService {
         log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
         log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
 
-        BigDecimal amountToPay =
-            payVoucherElementToPay
-                .getAmountToPayCurrency()
-                .add(payVoucherElementToPay.getFinancialDiscountAmount())
-                .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
+        BigDecimal amountToPay = payVoucherElementToPay.getAmountToPayCurrency();
+        if (payVoucherElementToPay.getApplyFinancialDiscount()) {
+          amountToPay =
+              amountToPay
+                  .add(payVoucherElementToPay.getFinancialDiscountAmount())
+                  .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
+        }
 
         if (amountToPay.compareTo(BigDecimal.ZERO) > 0) {
           paidLineTotal = paidLineTotal.add(amountToPay);
@@ -526,7 +560,9 @@ public class PaymentVoucherConfirmService {
       BigDecimal currencyRate =
           ObjectUtils.isEmpty(move.getMoveLineList())
               ? currencyService.getCurrencyConversionRate(
-                  paymentVoucher.getCurrency(), company.getCurrency())
+                  paymentVoucher.getCurrency(),
+                  company.getCurrency(),
+                  appBaseService.getTodayDate(company))
               : move.getMoveLineList().get(0).getCurrencyRate();
       // cancelling the moveLine (excess payment) by creating the balance of all the
       // payments
@@ -812,24 +848,26 @@ public class PaymentVoucherConfirmService {
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
 
     InvoiceTerm invoiceTerm = payVoucherElementToPay.getInvoiceTerm();
-    BigDecimal ratio =
-        currencyService.computeScaledExchangeRate(
-            invoiceTerm.getCompanyAmount(), invoiceTerm.getAmount());
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            invoiceTerm.getCurrency(), invoiceTerm.getCompanyCurrency(), paymentDate);
+    BigDecimal currencyAmount = payVoucherElementToPay.getAmountToPayCurrency();
+
+    if (payVoucherElementToPay.getApplyFinancialDiscount()) {
+      currencyAmount = currencyAmount.add(payVoucherElementToPay.getFinancialDiscountTotalAmount());
+    }
+
+    BigDecimal invoiceTermCurrencyRate =
+        currencyService.getCurrencyConversionRate(
+            invoiceTerm.getCurrency(),
+            invoiceTerm.getCompanyCurrency(),
+            Optional.of(invoiceTerm)
+                .map(InvoiceTerm::getInvoice)
+                .map(Invoice::getInvoiceDate)
+                .orElse(Optional.ofNullable(moveLineToPay).map(MoveLine::getDate).orElse(null)));
     BigDecimal companyAmountToPay =
         currencyScaleService.getCompanyScaledValue(
-            payVoucherElementToPay.getPaymentVoucher(),
-            payVoucherElementToPay.getAmountToPayCurrency().multiply(ratio));
-
-    BigDecimal currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
-
-    companyAmountToPay =
-        invoiceTermService.adjustAmountInCompanyCurrency(
-            moveLineToPay.getInvoiceTermList(),
-            moveLineToPay.getAmountRemaining(),
-            companyAmountToPay,
-            amountToPay,
-            moveLineToPay.getCurrencyRate(),
-            moveLineToPay.getMove().getCompany());
+            payVoucherElementToPay.getPaymentVoucher(), currencyAmount.multiply(currencyRate));
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
@@ -852,12 +890,27 @@ public class PaymentVoucherConfirmService {
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(
         paymentMove, moveLine, paymentDate, false);
 
+    companyAmountToPay =
+        this.computeForeignExchangeCompanyAmount(
+            currencyRate,
+            invoiceTermCurrencyRate,
+            companyAmountToPay,
+            currencyAmount,
+            invoiceTerm,
+            moveLineToPay.getMove().getCompany());
+
     Reconcile reconcile =
         reconcileService.createReconcile(moveLineToPay, moveLine, companyAmountToPay, true);
     if (reconcile != null) {
       log.debug("Reconcile : : : {}", reconcile);
       reconcileService.confirmReconcile(reconcile, true, true);
+
+      manageFinancialDiscountOnInvoicePayment(
+          reconcile,
+          Optional.of(moveLineToPay).map(MoveLine::getMove).map(Move::getInvoice).orElse(null),
+          payVoucherElementToPay);
     }
+
     return moveLine;
   }
 
@@ -868,5 +921,62 @@ public class PaymentVoucherConfirmService {
     } else {
       return payVoucherElementToPay.getPaymentVoucher().getRef();
     }
+  }
+
+  protected void manageFinancialDiscountOnInvoicePayment(
+      Reconcile reconcile, Invoice invoice, PayVoucherElementToPay payVoucherElementToPay) {
+    if (invoice == null
+        || payVoucherElementToPay == null
+        || !payVoucherElementToPay.getApplyFinancialDiscount()) {
+      return;
+    }
+
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository.findByReconcileAndInvoice(reconcile, invoice);
+    if (invoicePayment == null) {
+      return;
+    }
+
+    invoicePayment.setApplyFinancialDiscount(true);
+    invoicePayment.setFinancialDiscount(payVoucherElementToPay.getFinancialDiscount());
+    invoicePayment.setFinancialDiscountTotalAmount(
+        payVoucherElementToPay.getFinancialDiscountTotalAmount());
+    invoicePayment.setFinancialDiscountTaxAmount(
+        payVoucherElementToPay.getFinancialDiscountTaxAmount());
+    invoicePayment.setFinancialDiscountAmount(payVoucherElementToPay.getFinancialDiscountAmount());
+    invoicePayment.setAmount(
+        invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
+
+    if (ObjectUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+      return;
+    }
+
+    LocalDate deadlineDate =
+        invoicePayment.getInvoiceTermPaymentList().stream()
+            .map(InvoiceTermPayment::getInvoiceTerm)
+            .map(InvoiceTerm::getFinancialDiscountDeadlineDate)
+            .min(LocalDate::compareTo)
+            .orElse(null);
+    invoicePayment.setFinancialDiscountDeadlineDate(deadlineDate);
+  }
+
+  protected BigDecimal computeForeignExchangeCompanyAmount(
+      BigDecimal paymentCurrencyRate,
+      BigDecimal invoiceTermCurrencyRate,
+      BigDecimal companyAmount,
+      BigDecimal currencyAmount,
+      InvoiceTerm invoiceTerm,
+      Company company)
+      throws AxelorException {
+    if (paymentCurrencyRate.compareTo(invoiceTermCurrencyRate) > 0
+        && !foreignExchangeGapToolService.checkForeignExchangeAccounts(company)) {
+      return currencyService.getAmountCurrencyConvertedAtDate(
+          invoiceTerm.getCurrency(),
+          invoiceTerm.getCompanyCurrency(),
+          currencyAmount,
+          invoiceTerm.getInvoice().getInvoiceDate());
+    }
+
+    return companyAmount;
   }
 }

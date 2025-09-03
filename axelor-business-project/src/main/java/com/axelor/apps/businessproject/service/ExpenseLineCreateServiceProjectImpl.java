@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
@@ -52,7 +53,8 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
       ExpenseLineToolService expenseLineToolService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      EmployeeFetchService employeeFetchService) {
     super(
         expenseLineRepository,
         appHumanResourceService,
@@ -60,7 +62,8 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
         hrConfigService,
         appBaseService,
         expenseProofFileService,
-        expenseLineToolService);
+        expenseLineToolService,
+        employeeFetchService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -182,7 +182,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
 
     Optional<GDPRErasureLog> gdprErasureLogOpt =
         Optional.ofNullable(gdprResponse.getResponseErasureLogList())
-            .orElse(Collections.emptyList()).stream()
+            .orElse(Collections.emptyList())
+            .stream()
             .filter(erasureLog -> erasureLog.getModelLog().equals(metaModel))
             .findFirst();
 
@@ -412,7 +413,9 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
   protected List<AnonymizerLine> getMetaModelAnonymizerLines(MetaModel metaModel) {
 
     return Optional.ofNullable(appGDPRService.getAppGDPR().getAnonymizer())
-        .map(Anonymizer::getAnonymizerLineList).orElse(Collections.emptyList()).stream()
+        .map(Anonymizer::getAnonymizerLineList)
+        .orElse(Collections.emptyList())
+        .stream()
         .filter(anonymizerLine -> anonymizerLine.getMetaModel().equals(metaModel))
         .collect(Collectors.toList());
   }

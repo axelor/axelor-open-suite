@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
@@ -113,10 +113,9 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
 
     SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
     Set<Long> treatedSet = new HashSet<>();
+    List<SaleOrder> saleOrderList;
 
-    for (List<SaleOrder> saleOrderList;
-        !(saleOrderList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+    while (!(saleOrderList = query.fetch(getFetchLimit())).isEmpty()) {
       for (SaleOrder saleOrder : saleOrderList) {
         if (treatedSet.contains(saleOrder.getId())) {
           throw new IllegalArgumentException("Invoice generation error");
@@ -136,6 +135,8 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
           break;
         }
       }
+      JPA.clear();
+      findBatch();
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,9 +37,9 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -310,28 +310,11 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
             .map(InvoiceTermPayment::getCompanyPaidAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
-    if (maxAmount != null) {
-      companyPaymentAmount = companyPaymentAmount.min(maxAmount);
-    }
 
     companyPaymentAmount =
         companyPaymentAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount());
     BigDecimal currencyRate =
-        this.computeCurrencyRate(
-            companyPaymentAmount,
-            paymentAmount,
-            invoice.getCurrency(),
-            invoicePayment.getCurrency(),
-            invoice.getCompany().getCurrency(),
-            invoice.getMove());
-    companyPaymentAmount =
-        invoiceTermService.adjustAmountInCompanyCurrency(
-            invoice.getInvoiceTermList(),
-            invoice.getCompanyInTaxTotalRemaining(),
-            companyPaymentAmount,
-            paymentAmount,
-            currencyRate,
-            company);
+        this.computeCurrencyRate(invoice, invoicePayment, companyPaymentAmount, paymentAmount);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -411,22 +394,25 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   }
 
   protected BigDecimal computeCurrencyRate(
+      Invoice invoice,
+      InvoicePayment invoicePayment,
       BigDecimal companyPaymentAmount,
-      BigDecimal paymentAmount,
-      Currency invoiceCurrency,
-      Currency paymentCurrency,
-      Currency companyCurrency,
-      Move invoiceMove) {
+      BigDecimal paymentAmount)
+      throws AxelorException {
+    Currency invoiceCurrency = invoice.getCurrency();
+    Currency paymentCurrency = invoicePayment.getCurrency();
+    Currency companyCurrency = invoice.getCompanyCurrency();
+
     BigDecimal currencyRate =
         currencyService.computeScaledExchangeRate(companyPaymentAmount, paymentAmount);
 
     if (!paymentCurrency.equals(companyCurrency) && paymentCurrency.equals(invoiceCurrency)) {
-      return invoiceMove != null
-          ? invoiceMove.getMoveLineList().stream()
-              .map(MoveLine::getCurrencyRate)
-              .findAny()
-              .orElse(currencyRate)
-          : currencyRate;
+      return currencyService.getCurrencyRate(
+          invoice.getInvoiceDate(),
+          invoicePayment.getPaymentDate(),
+          paymentCurrency,
+          companyCurrency,
+          currencyRate);
     }
 
     return currencyRate;

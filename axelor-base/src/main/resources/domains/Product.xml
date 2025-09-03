@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -93,6 +93,8 @@
     <many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="barcodeTypeConfig" title="Barcode Type"
       ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
+    <one-to-many name="alternativeBarcodeList" title="Alternative barcodes"
+      ref="com.axelor.apps.base.db.AlternativeBarcode" mappedBy="product"/>
     <string name="fullName" title="Full name" namecolumn="true" translatable="true"/>
 
 
@@ -134,10 +136,34 @@
 
     <string name="dtype" insertable="false" updatable="false"/>
 
+    <boolean name="isPackaging" title="This product is a packaging ?" default="false"/>
+    <decimal name="innerLength" title="Inner length (mm)" default="0" scale="3"
+      precision="20"/>
+    <decimal name="innerWidth" title="Inner width (mm)" default="0" scale="3" precision="20"/>
+    <decimal name="innerHeight" title="Inner height (mm)" default="0" scale="3"
+      precision="20"/>
+    <decimal name="outerLength" title="Outer length (mm)" default="0" scale="3"
+      precision="20"/>
+    <decimal name="outerWidth" title="Outer width (mm)" default="0" scale="3" precision="20"/>
+    <decimal name="outerHeight" title="Outer height (mm)" default="0" scale="3"
+      precision="20"/>
+
     <!-- Json field -->
     <string name="productAttrs" title="Fields" json="true"/>
 
     <boolean name="expense" title="Expense"/>
+
+
+    <many-to-one name="safetyLabel" ref="com.axelor.meta.db.MetaFile" title="Label"/>
+    <boolean name="isClp" title="CLP"/>
+    <many-to-many name="icpeSet" ref="com.axelor.apps.base.db.Icpe"
+      mappedBy="productSet"/>
+    <many-to-many name="hazardPictogramSet"
+      ref="com.axelor.apps.base.db.HazardPictogram" mappedBy="productSet"/>
+    <integer name="retentionTypeSelect" selection="base.product.retention.type.select"
+      title="Retention type"/>
+    <many-to-many name="hazardPhraseSet" ref="com.axelor.apps.base.db.HazardPhrase"
+      mappedBy="productSet"/>
 
     <unique-constraint columns="product,company"/>
 

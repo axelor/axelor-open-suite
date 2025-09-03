@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,4 @@ public interface ResearchRequestService {
   public String getStringResearchKeyDomain(ResearchRequest researchRequest);
 
   public String getDateResearchKeyDomain(ResearchRequest researchRequest);
-
-  Map<String, Object> getResultObjectView(ResearchResultLine researchResultLine)
-      throws AxelorException;
 }

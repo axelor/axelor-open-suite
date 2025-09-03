@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
@@ -80,6 +81,10 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       bankReconciliation.setBankDetails(bankDetails);
       bankReconciliation.setCashAccount(bankDetails.getBankAccount());
       bankReconciliation.setJournal(bankDetails.getJournal());
+      Currency currency = bankDetails.getCurrency();
+      if (currency != null) {
+        bankReconciliation.setCurrency(currency);
+      }
     } else {
       bankReconciliation.setBankDetails(null);
     }

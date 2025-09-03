@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -38,6 +38,9 @@
 				public static final int ANOMALY_UNAVAILABLE_FOR_SALE = 1;
 				public static final int ANOMALY_NOT_RENEWED = 2;
 				public static final int ANOMALY_UNAVAILABLE_FOR_PURCHASE = 3;
+
+				// DISCOUNTED AMOUNT AND PRICE SCALE
+				public static final int DISCOUNT_SCALE = 20;
 			]]>
     </extra-code>
   </entity>

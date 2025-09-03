@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,13 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface ProductService {
 
@@ -60,4 +62,6 @@ public interface ProductService {
       ProductVariantValue productVariantValue5);
 
   public void copyProduct(Product product, Product copy);
+
+  public void copyProductCompanies(List<ProductCompany> productCompanyList, Product copy);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,19 +24,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
-import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BudgetInvoiceRepository extends InvoiceProjectRepository {
-
-  @Inject
-  public BudgetInvoiceRepository(AppBusinessProjectService appBusinessProjectService) {
-    super(appBusinessProjectService);
-  }
+public class BudgetInvoiceRepository extends InvoiceSupplychainRepository {
 
   @Override
   public Invoice copy(Invoice entity, boolean deep) {

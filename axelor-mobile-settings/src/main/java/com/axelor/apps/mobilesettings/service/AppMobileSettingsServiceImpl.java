@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -68,5 +68,16 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
     updateMobileConfig(
         appMobileSettings.getIsInterventionAppEnabled(),
         MobileConfigRepository.APP_SEQUENCE_INTERVENTION);
+    updateMobileConfig(
+        appMobileSettings.getIsSaleAppEnabled(), MobileConfigRepository.APP_SEQUENCE_SALE);
+    updateMobileConfig(
+        appMobileSettings.getIsProjectAppEnabled(), MobileConfigRepository.APP_SEQUENCE_PROJECT);
+    updateMobileConfig(
+        appMobileSettings.getIsDMSAppEnabled(), MobileConfigRepository.APP_SEQUENCE_DMS);
+    updateMobileConfig(
+        appMobileSettings.getIsPurchaseAppEnabled(), MobileConfigRepository.APP_SEQUENCE_PURCHASE);
+    updateMobileConfig(
+        appMobileSettings.getIsMaintenanceAppEnabled(),
+        MobileConfigRepository.APP_SEQUENCE_MAINTENANCE);
   }
 }

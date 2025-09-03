@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList">
@@ -23,7 +23,8 @@
   </grid>
 
   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-    onNew="action-group-base-pricelist-onnew" onSave="action-price-list-method-check-anomaly"
+    onNew="action-group-base-pricelist-onnew" onLoad="action-price-list-attrs-set-currency-readonly"
+    onSave="action-price-list-method-check-anomaly,action-price-list-method-check-dates"
     width="large">
     <panel name="mainPanel">
       <field name="title"/>
@@ -33,6 +34,7 @@
       <field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
       <field name="nonNegotiable" showIf="typeSelect == 1"/>
       <field name="hideDiscount"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     </panel>
     <panel name="priceListLinePanel" title="Price list lines">
       <field name="generalDiscount"/>
@@ -57,6 +59,7 @@
     <action name="action-price-list-record-default"/>
     <action name="action-price-list-record-on-new"/>
     <action name="action-price-list-attrs-readonly-type-select-true"/>
+    <action name="action-price-list-attrs-set-currency-readonly"/>
   </action-group>
 
   <action-record name="action-price-list-record-default"
@@ -81,6 +84,9 @@
     model="com.axelor.apps.base.db.PriceList">
     <field name="typeSelect" expr="eval: _typeSelect" if="!__parent__"/>
     <field name="typeSelect" expr="eval: __parent__?.typeSelect" if="__parent__"/>
+    <field name="currency" expr="eval: __parent__?.currency" if="__parent__"/>
+    <field name="currency" expr="eval: __user__.activeCompany.currency"
+      if="__parent__==null  &amp;&amp; __user__.activeCompany!=null &amp;&amp; __user__.activeCompany.currency!=null"/>
   </action-record>
 
   <action-attrs name="action-price-list-attrs-readonly-type-select">
@@ -107,6 +113,14 @@
     <domain>:priceList MEMBER OF self.priceListSet</domain>
     <context name="priceList" expr="eval: __self__"/>
   </action-view>
+
+  <action-attrs name="action-price-list-attrs-set-currency-readonly">
+    <attribute name="readonly" for="currency"
+      expr="eval: __repo__(PartnerPriceList).all().filter('? MEMBER OF self.priceListSet',id).count() > 0"
+      if="!__parent__ &amp;&amp; id"/>
+    <attribute name="readonly" for="currency" expr="eval: true"
+      if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.PartnerPriceList'"/>
+  </action-attrs>
 
 </object-views>
 

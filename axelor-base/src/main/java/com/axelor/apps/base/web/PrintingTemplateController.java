@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.PrintingTemplateWizard;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
@@ -40,15 +39,16 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.axelor.utils.service.TranslationBaseService;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 @Singleton
 public class PrintingTemplateController {
@@ -200,13 +200,16 @@ public class PrintingTemplateController {
 
   protected void print(
       ActionResponse response, PrintingTemplate printingTemplate, String outputLink) {
-
-    ZonedDateTime todayDateTime = Beans.get(AppBaseService.class).getTodayDateTime();
+    List<NameValuePair> list =
+        URLEncodedUtils.parse(StringUtils.substringAfter(outputLink, "?"), StandardCharsets.UTF_8);
     String title =
-        Beans.get(TranslationBaseService.class)
-            .getValueTranslation(printingTemplate.getName())
-            .replace("${date}", todayDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-            .replace("${time}", todayDateTime.format(DateTimeFormatter.ofPattern("HHmmss")));
+        list.stream()
+            .filter(l -> "name".equals(l.getName()))
+            .map(NameValuePair::getValue)
+            .map(value -> StringUtils.substringBeforeLast(value, "."))
+            .findFirst()
+            .orElse(printingTemplate.getName());
+
     response.setView(ActionView.define(title).add("html", outputLink).map());
   }
 }

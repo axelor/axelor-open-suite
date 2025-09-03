@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="invoicing-project-grid" title="Invoicing business projects"
     model="com.axelor.apps.businessproject.db.InvoicingProject">
@@ -14,7 +14,7 @@
       </menu>
     </menubar>
     <field name="invoice" width="120"/>
-    <field name="project" form-view="project-form" grid-view="project-grid"/>
+    <field name="project" form-view="business-project-form" grid-view="project-grid"/>
     <field name="deadlineDate" massUpdate="true"/>
     <field name="createdOn"/>
     <field name="comments"/>
@@ -28,8 +28,8 @@
     <panel name="mainPanel">
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"
         readonly="true"/>
-      <field name="project" domain="self.isBusinessProject = true" form-view="project-form"
-        grid-view="project-grid"
+      <field name="project" domain="self.isBusinessProject = true"
+        form-view="business-project-form" grid-view="project-grid"
         onChange="action-invoicing-project-record-set-consolidate-phase-when-invoicing,action-invoicing-project-method-fill-in"/>
       <field name="deadlineDate" readonlyIf="invoice"
         onChange="action-invoicing-project-method-fill-in"/>
@@ -73,15 +73,8 @@
           showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0" readonlyIf="invoice"
           name="expenseLineSetPanel"/>
 
-        <panel-related title="Production" field="manufOrderSet" colSpan="12"
-          canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production"
-          grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form"
-          showIf="manufOrderSet &amp;&amp; manufOrderSet.length &gt; 0" readonlyIf="invoice"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction()"
-          name="manufOrderSetPanel"/>
-
         <panel-related field="projectTaskSet" colSpan="12" canNew="false"
-          canEdit="false" canSelect="false" form-view="project-task-form"
+          canEdit="false" canSelect="false" form-view="business-project-task-form"
           grid-view="project-task-invoicing-project-grid"
           showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0" readonlyIf="invoice"
           name="ProjectTaskSetPanel"/>
@@ -149,9 +142,4 @@
     <context name="list" expr="eval: logTimesSet.collect{it.id}"/>
   </action-view>
 
-  <search-filters name="invoicing-project-filters"
-    model="com.axelor.apps.businessproject.db.InvoicingProject" title="Invoicing project filters">
-    <field name="manufOrderSet" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
-  </search-filters>
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.DPAE;
@@ -36,7 +37,6 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -50,17 +50,25 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
   protected WeeklyPlanningService weeklyPlanningService;
   protected HRConfigService hrConfigService;
+  protected AppBaseService appBaseService;
+  protected EmployeeRepository employeeRepository;
 
   @Inject
   public EmployeeServiceImpl(
-      WeeklyPlanningService weeklyPlanningService, HRConfigService hrConfigService) {
+      WeeklyPlanningService weeklyPlanningService,
+      HRConfigService hrConfigService,
+      AppBaseService appBaseService,
+      EmployeeRepository employeeRepository) {
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
+    this.appBaseService = appBaseService;
+    this.employeeRepository = employeeRepository;
   }
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
@@ -71,16 +79,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
           employee.getName());
     }
-
-    Period period =
-        Period.between(
-            employee.getSeniorityDate(),
-            refDate == null
-                ? Beans.get(AppBaseService.class)
-                    .getTodayDate(
-                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                : refDate);
-    return period.getYears();
+    return getYears(employee.getUser(), employee.getSeniorityDate(), refDate);
   }
 
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
@@ -91,46 +90,31 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
           employee.getName());
     }
+    return getYears(employee.getUser(), employee.getBirthDate(), refDate);
+  }
 
-    if (employee.getUser() == null) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_USER),
-          employee.getName());
+  protected int getYears(User user, LocalDate fromDate, LocalDate toDate) {
+    if (toDate == null) {
+      toDate =
+          appBaseService.getTodayDate(
+              Optional.ofNullable(user).map(User::getActiveCompany).orElse(null));
     }
-
-    if (employee.getUser().getActiveCompany() == null) {
-      throw new AxelorException(
-          employee,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_ACTIVE_COMPANY),
-          employee.getName());
-    }
-
-    Period period =
-        Period.between(
-            employee.getBirthDate(),
-            refDate == null
-                ? Beans.get(AppBaseService.class)
-                    .getTodayDate(
-                        employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
-                : refDate);
-    return period.getYears();
+    return Period.between(fromDate, toDate).getYears();
   }
 
   @Override
   public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
-    Company company = employee.getMainEmploymentContract().getPayCompany();
     BigDecimal duration = BigDecimal.ZERO;
 
+    Company company =
+        Optional.ofNullable(employee.getMainEmploymentContract())
+            .map(EmploymentContract::getPayCompany)
+            .orElse(null);
+
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
-    if (weeklyPlanning == null) {
-      HRConfig conf = company.getHrConfig();
-      if (conf != null) {
-        weeklyPlanning = conf.getWeeklyPlanning();
-      }
+    if (weeklyPlanning == null && company != null) {
+      weeklyPlanning = company.getWeeklyPlanning();
     }
 
     if (weeklyPlanning == null) {
@@ -142,11 +126,8 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     }
 
     EventsPlanning publicHolidayPlanning = employee.getPublicHolidayEventsPlanning();
-    if (publicHolidayPlanning == null) {
-      HRConfig conf = company.getHrConfig();
-      if (conf != null) {
-        publicHolidayPlanning = conf.getPublicHolidayEventsPlanning();
-      }
+    if (publicHolidayPlanning == null && company != null) {
+      publicHolidayPlanning = company.getPublicHolidayEventsPlanning();
     }
 
     if (publicHolidayPlanning == null) {
@@ -168,7 +149,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
     duration =
         duration.subtract(
-            Beans.get(PublicHolidayHrService.class)
+            Beans.get(PublicHolidayService.class)
                 .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
@@ -324,5 +305,18 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return employeePhoneBookPrintTemplate;
+  }
+
+  @Override
+  public Company getDefaultCompany(Employee employee) {
+    if (employee != null) {
+      employee = employeeRepository.find(employee.getId());
+      if (employee.getMainEmploymentContract() != null) {
+        return employee.getMainEmploymentContract().getPayCompany();
+      } else if (employee.getUser() != null) {
+        return employee.getUser().getActiveCompany();
+      }
+    }
+    return null;
   }
 }

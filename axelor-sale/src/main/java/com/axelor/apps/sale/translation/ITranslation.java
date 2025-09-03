@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,4 +32,6 @@ public interface ITranslation {
   public static final String PRICING_CUSTOM_TITLE_PREVIOUS_PRICING = /*$$(*/
       "Previous pricing"; /*)*/
   public static final String PRICING_CUSTOM_TITLE_NEXT_PRICING = /*$$(*/ "Next pricing"; /*)*/
+  public static final String CONFIGURATOR_VERSION_IS_DIFFERENT =
+      /*$$(*/ "Configurator version is different than the version of its configurator creator, therefore only a simple duplicate will be created, proceed ?"; /*)*/
 }

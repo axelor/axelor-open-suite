@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,15 +26,15 @@ public interface ITranslation {
 
   public static final String INVOICING = /*$$(*/ "Invoicing"; /*)*/
 
-  public static final String INVOICE_FOR = /*$$(*/ "value:Invoice for"; /*)*/
+  public static final String INVOICED_INSTEAD_OF = /*$$(*/ "value:Invoiced instead of"; /*)*/
 
-  public static final String DELIVER_FOR = /*$$(*/ "value:Deliver for"; /*)*/
+  public static final String DELIVERED_INSTEAD_OF = /*$$(*/ "value:Delivered instead of"; /*)*/
 
   public static final String ORDER_FOR = /*$$(*/ "value:Order for"; /*)*/
 
-  public static final String INVOICED_BY = /*$$(*/ "value:Invoiced by"; /*)*/
+  public static final String INVOICED_TO = /*$$(*/ "value:Invoiced to"; /*)*/
 
-  public static final String DELIVERED_BY = /*$$(*/ "value:Delivered by"; /*)*/
+  public static final String DELIVERED_TO = /*$$(*/ "value:Delivered to"; /*)*/
 
   public static final String ORDERED_BY = /*$$(*/ "value:Ordered by"; /*)*/
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,12 +31,14 @@ import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -61,6 +63,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected TaxAccountService taxAccountService;
   protected TaxAccountToolService taxAccountToolService;
   protected InvoiceJournalService invoiceJournalService;
+  protected InvoiceLineTaxToolService invoiceLineTaxToolService;
 
   public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
     super(invoice, invoiceLines);
@@ -69,6 +72,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     this.taxAccountService = Beans.get(TaxAccountService.class);
     this.taxAccountToolService = Beans.get(TaxAccountToolService.class);
     this.invoiceJournalService = Beans.get(InvoiceJournalService.class);
+    this.invoiceLineTaxToolService = Beans.get(InvoiceLineTaxToolService.class);
   }
 
   /**
@@ -82,6 +86,10 @@ public class TaxInvoiceLine extends TaxGenerator {
   public List<InvoiceLineTax> creates() throws AxelorException {
 
     Map<TaxConfiguration, InvoiceLineTax> map = new HashMap<>();
+
+    List<InvoiceLineTax> updatedInvoiceLineTaxList =
+        new ArrayList<>(invoice.getInvoiceLineTaxList());
+    invoice.getInvoiceLineTaxList().clear();
 
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
@@ -110,7 +118,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       invoice.setSpecificNotes(invoice.getPartner().getSpecificTaxNote());
     }
 
-    return finalizeInvoiceLineTaxes(map);
+    return finalizeInvoiceLineTaxes(map, updatedInvoiceLineTaxList);
   }
 
   protected void createInvoiceLineTaxes(
@@ -137,6 +145,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
           imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
         } else {
+          vatSystem = 0;
           imputedAccount = null;
         }
 
@@ -252,58 +261,137 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected List<InvoiceLineTax> finalizeInvoiceLineTaxes(
-      Map<TaxConfiguration, InvoiceLineTax> map) {
+      Map<TaxConfiguration, InvoiceLineTax> map, List<InvoiceLineTax> updatedInvoiceLineTaxList) {
     List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
 
-    for (InvoiceLineTax invoiceLineTax : map.values()) {
-      BigDecimal taxValue =
-          invoiceLineTax
-              .getTaxLine()
-              .getValue()
-              .divide(
-                  BigDecimal.valueOf(100),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
+    List<InvoiceLineTax> deductibleTaxList =
+        map.values().stream()
+            .filter(it -> !this.isNonDeductibleTax(it))
+            .collect(Collectors.toList());
+    List<InvoiceLineTax> nonDeductibleTaxList =
+        map.values().stream().filter(this::isNonDeductibleTax).collect(Collectors.toList());
 
-      // Dans la devise de la facture
-      BigDecimal exTaxBase =
-          (invoiceLineTax.getReverseCharged())
-              ? invoiceLineTax.getExTaxBase().negate()
-              : invoiceLineTax.getExTaxBase();
-      BigDecimal taxTotal =
-          computeAmount(
-              exTaxBase,
-              taxValue,
-              currencyScaleService.getScale(invoiceLineTax.getInvoice()),
-              null);
-
-      invoiceLineTax.setTaxTotal(taxTotal);
-      invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
-
-      // Dans la devise de la société
-      BigDecimal companyExTaxBase =
-          (invoiceLineTax.getReverseCharged())
-              ? invoiceLineTax.getCompanyExTaxBase().negate()
-              : invoiceLineTax.getCompanyExTaxBase();
-      BigDecimal companyTaxTotal =
-          computeAmount(
-              companyExTaxBase,
-              taxValue,
-              currencyScaleService.getCompanyScale(invoiceLineTax.getInvoice()),
-              null);
-
-      invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
-      invoiceLineTax.setCompanyInTaxTotal(
-          invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
-
-      invoiceLineTaxList.add(invoiceLineTax);
-
-      LOG.debug(
-          "Tax line : Tax total => {}, Total W.T. => {}",
-          invoiceLineTax.getTaxTotal(),
-          invoiceLineTax.getInTaxTotal());
-    }
+    nonDeductibleTaxList.forEach(
+        it ->
+            computeAndAddInvoiceLineTax(
+                it, updatedInvoiceLineTaxList, invoiceLineTaxList, deductibleTaxList));
+    deductibleTaxList.forEach(
+        it ->
+            computeAndAddInvoiceLineTax(
+                it, updatedInvoiceLineTaxList, invoiceLineTaxList, nonDeductibleTaxList));
 
     return invoiceLineTaxList;
+  }
+
+  protected void computeAndAddInvoiceLineTax(
+      InvoiceLineTax invoiceLineTax,
+      List<InvoiceLineTax> updatedInvoiceLineTaxList,
+      List<InvoiceLineTax> invoiceLineTaxList,
+      List<InvoiceLineTax> nonDeductibleTaxList) {
+    TaxLine taxLine = invoiceLineTax.getTaxLine();
+    BigDecimal taxValue =
+        taxLine
+            .getValue()
+            .divide(
+                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+    if (taxLine.getTax().getIsNonDeductibleTax()) {
+      taxValue = this.getAdjustedNonDeductibleTaxValue(taxValue, nonDeductibleTaxList);
+    } else {
+      taxValue = this.getAdjustedTaxValue(taxValue, nonDeductibleTaxList);
+    }
+
+    // Dans la devise de la facture
+    BigDecimal exTaxBase =
+        (invoiceLineTax.getReverseCharged())
+            ? invoiceLineTax.getExTaxBase().negate()
+            : invoiceLineTax.getExTaxBase();
+    BigDecimal taxTotal =
+        computeAmount(
+            exTaxBase, taxValue, currencyScaleService.getScale(invoiceLineTax.getInvoice()), null);
+
+    if (!ObjectUtils.isEmpty(updatedInvoiceLineTaxList)) {
+      for (InvoiceLineTax updatedInvoiceLineTax : updatedInvoiceLineTaxList) {
+        if (invoiceLineTaxToolService.isManageByAmount(invoiceLineTax)
+            && Objects.equals(
+                updatedInvoiceLineTax.getVatSystemSelect(), invoiceLineTax.getVatSystemSelect())
+            && updatedInvoiceLineTax.getImputedAccount() == invoiceLineTax.getImputedAccount()
+            && updatedInvoiceLineTax.getPercentageTaxTotal().compareTo(taxTotal) == 0
+            && updatedInvoiceLineTax.getExTaxBase().compareTo(invoiceLineTax.getExTaxBase()) == 0) {
+          invoiceLineTaxList.add(updatedInvoiceLineTax);
+
+          LOG.debug(
+              "Tax line : Tax total => {}, Total W.T. => {}",
+              invoiceLineTax.getTaxTotal(),
+              invoiceLineTax.getInTaxTotal());
+          return;
+        }
+      }
+    }
+
+    invoiceLineTax.setTaxTotal(taxTotal);
+    invoiceLineTax.setPercentageTaxTotal(taxTotal);
+    invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
+
+    // Dans la devise de la société
+    BigDecimal companyExTaxBase =
+        (invoiceLineTax.getReverseCharged())
+            ? invoiceLineTax.getCompanyExTaxBase().negate()
+            : invoiceLineTax.getCompanyExTaxBase();
+    BigDecimal companyTaxTotal =
+        computeAmount(
+            companyExTaxBase,
+            taxValue,
+            currencyScaleService.getCompanyScale(invoiceLineTax.getInvoice()),
+            null);
+
+    invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
+    invoiceLineTax.setCompanyInTaxTotal(invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
+
+    invoiceLineTaxList.add(invoiceLineTax);
+
+    LOG.debug(
+        "Tax line : Tax total => {}, Total W.T. => {}",
+        invoiceLineTax.getTaxTotal(),
+        invoiceLineTax.getInTaxTotal());
+  }
+
+  protected boolean isNonDeductibleTax(InvoiceLineTax invoiceLineTax) {
+    return Optional.of(invoiceLineTax.getTaxLine().getTax().getIsNonDeductibleTax()).orElse(false);
+  }
+
+  protected BigDecimal getAdjustedTaxValue(
+      BigDecimal taxValue, List<InvoiceLineTax> nonDeductibleTaxList) {
+    BigDecimal deductibleTaxValue =
+        nonDeductibleTaxList.stream()
+            .map(InvoiceLineTax::getTaxLine)
+            .map(TaxLine::getValue)
+            .reduce(BigDecimal::multiply)
+            .orElse(BigDecimal.ZERO)
+            .divide(
+                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+    return BigDecimal.ONE
+        .subtract(deductibleTaxValue)
+        .multiply(taxValue)
+        .setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getAdjustedNonDeductibleTaxValue(
+      BigDecimal taxValue, List<InvoiceLineTax> deductibleTaxList) {
+    BigDecimal nonDeductibleTaxValue = BigDecimal.ZERO;
+
+    for (InvoiceLineTax invoiceLineTax : deductibleTaxList) {
+      nonDeductibleTaxValue =
+          nonDeductibleTaxValue.add(
+              taxValue.multiply(
+                  invoiceLineTax
+                      .getTaxLine()
+                      .getValue()
+                      .divide(
+                          BigDecimal.valueOf(100),
+                          AppBaseService.COMPUTATION_SCALING,
+                          RoundingMode.HALF_UP)));
+    }
+    return nonDeductibleTaxValue.setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 }

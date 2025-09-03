@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -80,10 +80,6 @@ public interface MoveGroupService {
 
   Map<String, Map<String, Object>> getCompanyOnChangeAttrsMap(Move move) throws AxelorException;
 
-  Map<String, Object> getPaymentModeOnChangeValuesMap(Move move) throws AxelorException;
-
-  Map<String, Map<String, Object>> getHeaderChangeAttrsMap();
-
   Map<String, Object> getCurrencyOnChangeValuesMap(Move move);
 
   Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException;
@@ -118,4 +114,6 @@ public interface MoveGroupService {
   Map<String, Map<String, Object>> getMassEntryAttrsMap(Move move) throws AxelorException;
 
   Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move);
+
+  Map<String, Map<String, Object>> getCompanyBankDetailsOnSelectAttrsMap(Move move);
 }

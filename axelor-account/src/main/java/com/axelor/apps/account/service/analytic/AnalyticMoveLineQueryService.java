@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,11 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
+import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface AnalyticMoveLineQueryService {
@@ -33,10 +32,10 @@ public interface AnalyticMoveLineQueryService {
   public Set<AnalyticMoveLine> analyticMoveLineReverses(
       AnalyticMoveLineQuery analyticMoveLineQuery, List<AnalyticMoveLine> analyticMoveLines);
 
-  public Set<AnalyticMoveLine> createAnalyticaMoveLines(
+  public Set<AnalyticMoveLine> createAnalyticMoveLines(
       AnalyticMoveLineQuery analyticMoveLineQuery, List<AnalyticMoveLine> analyticMoveLines);
 
-  public Map<AnalyticAxis, AnalyticAccount> getReverseRules(
+  public List<AnalyticMoveLineQueryParameter> getReverseRules(
       AnalyticMoveLineQuery analyticMoveLineQuery);
 
   List<AnalyticAxis> getAvailableAnalyticAxes(

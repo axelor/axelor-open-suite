@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.lunch.voucher;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
@@ -38,6 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
@@ -77,8 +79,9 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
       Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine) {
     Integer lineStatus = LunchVoucherMgtLineRepository.STATUS_CALCULATED;
     try {
-      lunchVoucherMgtLine.setRestaurant(computeRestaurant(employee));
-      lunchVoucherMgtLine.setInvitation(computeInvitation(employee));
+      Period payPeriod = lunchVoucherMgt.getPayPeriod();
+      lunchVoucherMgtLine.setRestaurant(computeRestaurant(employee, payPeriod));
+      lunchVoucherMgtLine.setInvitation(computeInvitation(employee, payPeriod));
       lunchVoucherMgtLine.setInAdvanceNbr(computeEmployeeLunchVoucherAdvance(employee));
       lunchVoucherMgtLine.setDaysWorkedNbr(
           employeeComputeDaysLeaveLunchVoucherService
@@ -176,26 +179,44 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
   }
 
   @Override
-  public int computeRestaurant(Employee employee) {
+  public int computeRestaurant(Employee employee, Period payPeriod) {
+    LocalDate fromDate = payPeriod.getFromDate();
+    LocalDate toDate = payPeriod.getToDate();
     return (int)
         expenseLineRepository
             .all()
             .filter(
-                "self.expenseProduct.deductLunchVoucher = true AND self.expense.employee = :employee AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
+                "self.expenseProduct.deductLunchVoucher = true "
+                    + "AND self.expense.employee = :employee "
+                    + "AND self.expense.statusSelect = :statusSelect "
+                    + "AND self.expense.ventilated = false "
+                    + "AND self.expense.period.fromDate >= :fromDate "
+                    + "AND self.expense.period.toDate <= :toDate")
             .bind("employee", employee)
             .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
+            .bind("fromDate", fromDate)
+            .bind("toDate", toDate)
             .count();
   }
 
   @Override
-  public int computeInvitation(Employee employee) {
+  public int computeInvitation(Employee employee, Period payPeriod) {
+    LocalDate fromDate = payPeriod.getFromDate();
+    LocalDate toDate = payPeriod.getToDate();
     return (int)
         expenseLineRepository
             .all()
             .filter(
-                "self.expenseProduct.deductLunchVoucher = true AND :employee MEMBER OF self.invitedCollaboratorSet AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
+                "self.expenseProduct.deductLunchVoucher = true "
+                    + "AND :employee MEMBER OF self.invitedCollaboratorSet "
+                    + "AND self.expense.statusSelect = :statusSelect "
+                    + "AND self.expense.ventilated = false "
+                    + "AND self.expense.period.fromDate >= :fromDate "
+                    + "AND self.expense.period.toDate <= :toDate")
             .bind("employee", employee)
             .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
+            .bind("fromDate", fromDate)
+            .bind("toDate", toDate)
             .count();
   }
 

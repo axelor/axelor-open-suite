@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.Inventory;
@@ -46,6 +47,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   protected StockLocationLineService stockLocationLineService;
   protected ProductCompanyService productCompanyService;
   protected StockLocationRepository stockLocationRepository;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public InventoryLineServiceImpl(
@@ -53,12 +55,14 @@ public class InventoryLineServiceImpl implements InventoryLineService {
       InventoryLineRepository inventoryLineRepository,
       StockLocationLineService stockLocationLineService,
       ProductCompanyService productCompanyService,
-      StockLocationRepository stockLocationRepository) {
+      StockLocationRepository stockLocationRepository,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.stockConfigService = stockConfigService;
     this.inventoryLineRepository = inventoryLineRepository;
     this.stockLocationLineService = stockLocationLineService;
     this.productCompanyService = productCompanyService;
     this.stockLocationRepository = stockLocationRepository;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -111,6 +115,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     Product product = inventoryLine.getProduct();
 
     if (product != null) {
+      inventoryLine.setPrice(BigDecimal.ZERO);
       StockLocationLine stockLocationLine =
           stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 
@@ -146,7 +151,8 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
     StockLocationLine stockLocationLine =
-        stockLocationLineService.getStockLocationLine(stockLocation, product);
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
+    Company company = stockLocation.getCompany();
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -162,27 +168,23 @@ public class InventoryLineServiceImpl implements InventoryLineService {
 
       BigDecimal price;
       int inventoryValuationTypeSelect =
-          stockConfigService
-              .getStockConfig(stockLocation.getCompany())
-              .getInventoryValuationTypeSelect();
+          stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect();
 
       BigDecimal productAvgPrice =
-          (BigDecimal)
-              productCompanyService.get(
-                  product, "avgPrice", inventory.getStockLocation().getCompany());
+          (BigDecimal) productCompanyService.get(product, "avgPrice", company);
 
       switch (inventoryValuationTypeSelect) {
         case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
           price = productAvgPrice;
           break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
-          price = product.getCostPrice();
+          price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
           break;
         case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
-          price = product.getSalePrice();
+          price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
           break;
         case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
-          price = product.getPurchasePrice();
+          price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
           break;
         case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
           if (stockLocationLine != null) {
@@ -212,7 +214,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
 
     if (stockLocation != null && product != null) {
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(stockLocation, product);
+          stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null) {
         currentQty = stockLocationLine.getCurrentQty();
       }
@@ -223,12 +225,22 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateInventoryLine(
-      InventoryLine inventoryLine, BigDecimal realQty, String description) throws AxelorException {
+      InventoryLine inventoryLine,
+      BigDecimal realQty,
+      String description,
+      StockLocation stockLocation)
+      throws AxelorException {
     inventoryLine.setRealQty(realQty);
     if (description != null) {
       inventoryLine.setDescription(description);
     }
-    this.compute(inventoryLine, inventoryLine.getInventory());
+    if (stockLocation != null) {
+      inventoryLine.setStockLocation(stockLocation);
+    }
+
+    Inventory inventory = inventoryLine.getInventory();
+    updateInventoryLine(inventoryLine, inventory);
+    this.compute(inventoryLine, inventory);
     inventoryLineRepository.save(inventoryLine);
   }
 
@@ -239,20 +251,25 @@ public class InventoryLineServiceImpl implements InventoryLineService {
       Product product,
       TrackingNumber trackingNumber,
       String rack,
-      BigDecimal realQty)
+      BigDecimal realQty,
+      StockLocation stockLocation)
       throws AxelorException {
+
+    StockLocation finalStockLocation =
+        stockLocation != null ? stockLocation : inventory.getStockLocation();
+
     InventoryLine inventoryLine =
         createInventoryLine(
             inventory,
             product,
-            getCurrentQty(inventory.getStockLocation(), product),
+            getCurrentQty(finalStockLocation, product),
             rack,
             trackingNumber,
             null,
             null,
-            inventory.getStockLocation(),
+            finalStockLocation,
             null);
-    updateInventoryLine(inventoryLine, realQty, null);
+    updateInventoryLine(inventoryLine, realQty, null, null);
     return inventoryLine;
   }
 
@@ -267,10 +284,8 @@ public class InventoryLineServiceImpl implements InventoryLineService {
       return false;
     }
 
-    StockLocation stockLocation =
-        stockLocationRepository.find(inventoryLine.getStockLocation().getId());
-    return stockLocation.getStockLocationLineList().stream()
-        .map(StockLocationLine::getProduct)
-        .anyMatch(product -> inventoryLine.getProduct().equals(product));
+    return stockLocationLineFetchService.getStockLocationLine(
+            inventoryLine.getStockLocation(), inventoryLine.getProduct())
+        != null;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,7 @@ public class ImportInvoice {
     if (invoice.getStatusSelect() < InvoiceRepository.STATUS_VENTILATED
         && invoice.getPaymentMode() != null
         && invoice.getInTaxTotal() != null
-        && !invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        && !invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
     }
 

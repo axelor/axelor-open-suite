@@ -10,7 +10,7 @@
 102;29;"TimesheetId";"$Timesheet.id";"decimal"
 301;41;"EmployeeId";"$Employee.id";"decimal"
 302;41;"Timezone";"$Employee.user?.activeCompany?.timezone";"string"
-303;41;"YearId";"$YearId";"decimal"
+303;41;"YearId";"${hasVariable('YearId')?YearId:0}";"decimal"
 304;41;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
 305;42;"EmployeeBonusMgtId";"$EmployeeBonusMgt.id";"decimal"
 306;42;"Timezone";"$EmployeeBonusMgt.company?.timezone";"string"

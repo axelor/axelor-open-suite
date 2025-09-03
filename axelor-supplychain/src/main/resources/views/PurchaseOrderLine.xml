@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid id="purchase-order-line-purchase-order-supplychain-grid"
+    name="purchase-order-line-purchase-order-grid" title="PO lines"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" extension="true">
+    <extend target="//field[@name='sequence']">
+      <insert position="after">
+        <button name="addToCartBtn" title="Add to cart"
+          onClick="action-purchase-order-line-method-add-to-cart" icon="cart-plus-fill"
+          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"
+          readonlyIf="!product || isTitleLine"/>
+        <field name="product" hidden="true"/>
+      </insert>
+    </extend>
+  </grid>
 
   <form name="purchase-order-line-form" title="PO line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine" id="purchase-order-line-supplychain-form"
@@ -16,6 +30,11 @@
         value="supplychain-action-purchase-purchase-order-line-group-product-onchange"/>
     </extend>
 
+    <extend target="//field[@name='taxLineSet']">
+      <attribute name="onChange"
+        value="supplychain-action-group-purchase-purchase-orderline-taxline-onchange"/>
+    </extend>
+
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
       <insert position="after">
         <panel name="analyticDistributionPanel" title="Analytics"
@@ -24,7 +43,7 @@
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form" canEdit="false"
             onChange="action-purchase-order-line-group-analytic-distribution-template-onchange"
-            onSelect="action-purchase-order-line-attrs-set-domain-analytic-distribution-template"/>
+            onSelect="action-purchase-order-line-method-set-domain-analytic-distribution-template"/>
           <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
             form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
             onSelect="action-purchase-order-line-method-set-axis-domain"
@@ -79,6 +98,7 @@
   <action-group
     name="supplychain-action-purchase-purchase-order-line-group-product-onchange">
     <action name="action-group-purchase-purchase-orderline-product-onchange"/>
+    <action name="action-purchase-order-line-method-check-tax-line-set"/>
     <action name="action-purchase-order-line-group-manage-analytic"/>
   </action-group>
 
@@ -94,6 +114,12 @@
     <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
   </action-group>
 
+  <action-group
+    name="supplychain-action-group-purchase-purchase-orderline-taxline-onchange">
+    <action name="action-group-purchase-purchase-orderline-taxline-onchange"/>
+    <action name="action-purchase-order-line-method-check-tax-line-set"/>
+  </action-group>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-purchase-order-line-attrs-read-only-distribution-lines">
@@ -101,11 +127,11 @@
       expr="eval: !__config__.app.isApp('supplychain') || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
-  <action-attrs
-    name="action-purchase-order-line-attrs-set-domain-analytic-distribution-template">
-    <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
-  </action-attrs>
+  <action-method
+    name="action-purchase-order-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
   <!-- ACTION METHOD -->
 
@@ -139,5 +165,24 @@
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="createAnalyticDistributionWithTemplate"/>
   </action-method>
+
+  <action-method name="action-purchase-order-line-method-add-to-cart">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="addToCart"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-line-method-check-tax-line-set">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="checkTaxLineSet"/>
+  </action-method>
+
+  <action-attrs name="action-purchase-order-line-attrs-set-stock-location-domain">
+    <attribute name="domain" for="stockLocation"
+      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(__parent__?.tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <attribute name="domain" for="stockLocation"
+      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;"
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+  </action-attrs>
 
 </object-views>

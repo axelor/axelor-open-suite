@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,17 +30,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/** @author axelor */
+/**
+ * @author axelor
+ */
 public interface LogisticalFormService {
 
   /**
-   * Add detail lines from the stock move. If there were no lines, add a parcel line first.
+   * Add all or only concerned detail lines from the stock move. If there were no lines, add a
+   * parcel line first.
    *
    * @param logisticalForm
    * @param stockMove
+   * @param includeConcernedLinesOnly
    * @throws AxelorException
    */
-  void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove) throws AxelorException;
+  void addDetailLines(
+      LogisticalForm logisticalForm, StockMove stockMove, boolean includeConcernedLinesOnly)
+      throws AxelorException;
 
   /**
    * Add parcel or pallet line.

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -87,7 +87,8 @@ public class ProductController {
       Product newProduct = request.getContext().asType(Product.class);
       // Set anomaly when a product exists in list Price
       if (newProduct.getId() != null) {
-        Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+        Beans.get(PriceListService.class)
+            .setPriceListLineAnomaly(Beans.get(ProductRepository.class).find(newProduct.getId()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -123,8 +124,7 @@ public class ProductController {
             .getPrintLink(
                 productCatalogPGQLPrintTemplate,
                 new PrintingGenFactoryContext(
-                    Map.of("ProductIds", getSelectedOrAllRecordIds(request))),
-                name + "-${date}");
+                    Map.of("ProductIds", getSelectedOrAllRecordIds(request))));
     logger.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,10 +30,12 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseServiceImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,7 +53,9 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
       PurchaseConfigService purchaseConfigService,
       AppBaseService appBaseService,
       PartnerPriceListService partnerPriceListService,
-      SupplierCatalogService supplierCatalogService) {
+      SupplierCatalogService supplierCatalogService,
+      AppSupplychainService appSupplychainService,
+      IntercoService intercoService) {
     super(
         purchaseOrderSupplychainService,
         purchaseOrderCreateSupplychainService,
@@ -61,7 +65,9 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
         purchaseConfigService,
         appBaseService,
         partnerPriceListService,
-        supplierCatalogService);
+        supplierCatalogService,
+        appSupplychainService,
+        intercoService);
   }
 
   @Override

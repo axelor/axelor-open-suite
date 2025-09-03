@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
+import com.axelor.common.csv.CSVFile;
 import com.axelor.data.Listener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
@@ -35,26 +36,34 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DataBackupRestoreService {
 
+  protected static final char SEPARATOR = ',';
+
   /* Restore the Data using provided zip File and prepare Log File and Return it*/
-  public File restore(MetaFile zipedBackupFile) {
+  public File restore(MetaFile zipedBackupFile, boolean isTemplateWithDescription) {
     Logger LOG = LoggerFactory.getLogger(getClass());
     File tempDir = Files.createTempDir();
     String dirPath = tempDir.getAbsolutePath();
     StringBuilder sb = new StringBuilder();
     try {
-      unZip(zipedBackupFile, dirPath);
+      unZip(zipedBackupFile, dirPath, isTemplateWithDescription);
       String configFName =
           tempDir.getAbsolutePath() + File.separator + DataBackupServiceImpl.CONFIG_FILE_NAME;
 
@@ -109,7 +118,8 @@ public class DataBackupRestoreService {
     }
   }
 
-  protected boolean unZip(MetaFile zipMetaFile, String destinationDirectoryPath)
+  protected boolean unZip(
+      MetaFile zipMetaFile, String destinationDirectoryPath, boolean isTemplateWithDescription)
       throws IOException {
     File zipFile = MetaFiles.getPath(zipMetaFile).toFile();
     try (ZipInputStream zis =
@@ -118,11 +128,14 @@ public class DataBackupRestoreService {
       byte[] buffer = new byte[1024];
       int count;
       while ((ze = zis.getNextEntry()) != null) {
-        try (FileOutputStream fout =
-            new FileOutputStream(new File(destinationDirectoryPath, ze.getName()))) {
+        File file = new File(destinationDirectoryPath, ze.getName());
+        try (FileOutputStream fout = new FileOutputStream(file)) {
           while ((count = zis.read(buffer)) != -1) {
             fout.write(buffer, 0, count);
           }
+        }
+        if (isTemplateWithDescription && ze.getName().toLowerCase().endsWith(".csv")) {
+          processCsv(file);
         }
         zis.closeEntry();
       }
@@ -159,5 +172,24 @@ public class DataBackupRestoreService {
       }
     }
     return bean;
+  }
+
+  protected void processCsv(File file) throws IOException {
+    CSVFile csvFormat = CSVFile.EXCEL.withDelimiter(SEPARATOR).withQuoteAll();
+    List<CSVRecord> records;
+    try (CSVParser parser = csvFormat.parse(file, StandardCharsets.UTF_8)) {
+      records = parser.getRecords();
+      if (CollectionUtils.isEmpty(records)) {
+        return;
+      }
+      if (records.size() > 4) {
+        records = records.subList(0, records.size() - 4);
+      }
+    }
+    try (CSVPrinter printer = csvFormat.write(file)) {
+      for (CSVRecord record : records) {
+        printer.printRecord(record);
+      }
+    }
   }
 }

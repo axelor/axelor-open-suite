@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,14 +22,19 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -48,6 +53,8 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
 
   protected AccountConfigService accountConfigService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected final PublicHolidayService publicHolidayService;
+  protected final AppSupplychainService appSupplychainService;
 
   @Inject
   public PurchaseOrderLineServiceSupplyChainImpl(
@@ -55,12 +62,16 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
       UnitConversionService unitConversionService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      PublicHolidayService publicHolidayService,
+      AppSupplychainService appSupplychainService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.unitConversionService = unitConversionService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
     this.analyticLineModelService = analyticLineModelService;
+    this.publicHolidayService = publicHolidayService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -70,10 +81,42 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
 
     purchaseOrderLine = super.fill(purchaseOrderLine, purchaseOrder);
 
+    if (!appSupplychainService.isApp("supplychain")) {
+      return purchaseOrderLine;
+    }
+
+    var company = purchaseOrder.getCompany();
+    var product = purchaseOrderLine.getProduct();
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
+    var supplierDeliveryTime =
+        getSupplierDeliveryTime(product, purchaseOrder.getSupplierPartner(), company);
+    if (purchaseOrder.getEstimatedReceiptDate() == null && supplierDeliveryTime != null) {
+
+      var todayDate = appBaseService.getTodayDate(company);
+      var freeDateDay =
+          publicHolidayService.getFreeDay(todayDate.plusDays(supplierDeliveryTime), company);
+      purchaseOrderLine.setEstimatedReceiptDate(freeDateDay);
+    }
+
     return purchaseOrderLine;
+  }
+
+  protected Integer getSupplierDeliveryTime(
+      Product product, Partner supplierPartner, Company company) throws AxelorException {
+
+    if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
+      var supplierCatalog =
+          supplierCatalogService.getSupplierCatalog(product, supplierPartner, company);
+      if (supplierCatalog != null) {
+        return supplierCatalog.getSupplierDeliveryTime();
+      } else if (product.getSupplierDeliveryTime() != null) {
+        return product.getSupplierDeliveryTime();
+      }
+    }
+
+    return null;
   }
 
   @Override
@@ -86,7 +129,8 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     Unit unit = null;
     BigDecimal qty = BigDecimal.ZERO;
 
-    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+    boolean isNormalLine = saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
+    if (isNormalLine) {
 
       if (saleOrderLine.getProduct() != null) {
         unit = saleOrderLine.getProduct().getPurchasesUnit();
@@ -103,10 +147,14 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
 
     PurchaseOrderLine purchaseOrderLine =
         super.createPurchaseOrderLine(
-            purchaseOrder, saleOrderLine.getProduct(), null, null, qty, unit);
+            purchaseOrder,
+            saleOrderLine.getProduct(),
+            isNormalLine ? null : saleOrderLine.getProductName(),
+            null,
+            qty,
+            unit);
 
-    purchaseOrderLine.setIsTitleLine(
-        !(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL));
+    purchaseOrderLine.setIsTitleLine(!isNormalLine);
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);

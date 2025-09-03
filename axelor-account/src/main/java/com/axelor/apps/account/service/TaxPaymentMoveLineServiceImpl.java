@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,21 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService {
 
@@ -34,7 +44,22 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
     taxPaymentMoveLine.setTaxAmount(
         base.multiply(taxRate)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
+    if (isReverseTax(taxPaymentMoveLine)) {
+      taxPaymentMoveLine.setTaxAmount(taxPaymentMoveLine.getTaxAmount().negate());
+    }
     return taxPaymentMoveLine;
+  }
+
+  protected boolean isReverseTax(TaxPaymentMoveLine taxPaymentMoveLine) {
+    return taxPaymentMoveLine.getFiscalPosition() != null
+        && taxPaymentMoveLine.getFiscalPosition().getTaxEquivList().stream()
+            .anyMatch(
+                taxEquiv ->
+                    CollectionUtils.isNotEmpty(taxEquiv.getReverseChargeTaxSet())
+                        && taxEquiv
+                            .getReverseChargeTaxSet()
+                            .contains(taxPaymentMoveLine.getOriginTaxLine().getTax()));
   }
 
   @Override
@@ -48,10 +73,67 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
             taxPaymentMoveLine.getTaxRate(),
             taxPaymentMoveLine.getDetailPaymentAmount().negate(),
             taxPaymentMoveLine.getDate());
-    reversetaxPaymentMoveLine = this.computeTaxAmount(reversetaxPaymentMoveLine);
+    reversetaxPaymentMoveLine.setTaxAmount(taxPaymentMoveLine.getTaxAmount().negate());
     reversetaxPaymentMoveLine.setIsAlreadyReverse(true);
     reversetaxPaymentMoveLine.setVatSystemSelect(taxPaymentMoveLine.getVatSystemSelect());
     taxPaymentMoveLine.setIsAlreadyReverse(true);
     return reversetaxPaymentMoveLine;
+  }
+
+  @Override
+  public TaxPaymentMoveLine createTaxPaymentMoveLineWithFixedAmount(
+      Invoice invoice,
+      BigDecimal paymentRatio,
+      int vatSystemSelect,
+      MoveLine invoiceMoveLine,
+      TaxLine taxLine,
+      MoveLine customerPaymentMoveLine,
+      Reconcile reconcile) {
+    if (invoice == null
+        || paymentRatio == null
+        || reconcile == null
+        || invoiceMoveLine == null
+        || ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())
+        || !Optional.ofNullable(taxLine)
+            .map(TaxLine::getTax)
+            .map(Tax::getManageByAmount)
+            .orElse(false)) {
+      return null;
+    }
+
+    InvoiceLineTax invoiceLineTax =
+        invoice.getInvoiceLineTaxList().stream()
+            .filter(
+                tax ->
+                    tax.getVatSystemSelect() == vatSystemSelect
+                        && Objects.equals(invoiceMoveLine.getAccount(), tax.getImputedAccount())
+                        && Objects.equals(taxLine, tax.getTaxLine()))
+            .findFirst()
+            .orElse(null);
+
+    if (invoiceLineTax == null
+        || invoiceLineTax.getTaxTotal().compareTo(invoiceLineTax.getPercentageTaxTotal()) == 0) {
+      return null;
+    }
+
+    TaxPaymentMoveLine taxPaymentMoveLine =
+        new TaxPaymentMoveLine(
+            customerPaymentMoveLine,
+            taxLine,
+            reconcile,
+            taxLine.getValue(),
+            invoiceLineTax
+                .getCompanyExTaxBase()
+                .multiply(paymentRatio)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+            reconcile.getEffectiveDate());
+
+    taxPaymentMoveLine.setTaxAmount(
+        invoiceLineTax
+            .getCompanyTaxTotal()
+            .multiply(paymentRatio)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+
+    return taxPaymentMoveLine;
   }
 }

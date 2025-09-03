@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,18 +18,30 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
     implements LogisticalFormSupplychainService {
+
+  @Inject
+  public LogisticalFormSupplychainServiceImpl(
+      ProductRepository productRepository,
+      UnitConversionService unitConversionService,
+      AppStockService appStockService) {
+    super(productRepository, unitConversionService, appStockService);
+  }
 
   @Override
   protected boolean testForDetailLine(StockMoveLine stockMoveLine) {

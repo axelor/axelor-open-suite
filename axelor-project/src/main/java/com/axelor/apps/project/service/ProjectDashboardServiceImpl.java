@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,15 +21,12 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -38,8 +35,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.ObjectUtils;
 import org.jsoup.Jsoup;
 
 public class ProjectDashboardServiceImpl implements ProjectDashboardService {
@@ -47,11 +46,13 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   @Inject protected ProjectRepository projectRepo;
   @Inject protected ProjectTaskRepository projectTaskRepo;
   @Inject protected ProjectTaskCategoryRepository taskCategoryRepo;
-  @Inject protected ProjectService projectService;
+  @Inject protected ProjectToolService projectToolService;
 
   @Override
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = new HashMap<>();
+    dataMap.put("$projectId", project.getId());
+
     if (StringUtils.notEmpty(project.getDescription())) {
       dataMap.put("$description", Jsoup.parse(project.getDescription()).text());
     }
@@ -64,16 +65,17 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected List<Map<String, Object>> getIssueTrackingData(Project project) {
-    User currentUser = AuthUtils.getUser();
 
     List<Map<String, Object>> categoryList = new ArrayList<>();
 
     Map<ProjectTaskCategory, List<ProjectTask>> categoryTaskMap =
-        projectTaskRepo.all()
+        projectTaskRepo
+            .all()
             .filter("self.typeSelect = :_typeSelect AND self.project.id IN :_projectIds")
             .bind("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .bind("_project", currentUser.getContextProject())
-            .bind("_projectIds", projectService.getContextProjectIds()).fetch().stream()
+            .bind("_projectIds", projectToolService.getRelatedProjectIds(project))
+            .fetch()
+            .stream()
             .sorted(getTaskComparator())
             .collect(
                 Collectors.toMap(
@@ -95,20 +97,31 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
       ProjectTaskCategory category = entry.getKey();
       int totalCount = projectTaskList.size();
       long closedCount =
-          projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
+          projectTaskList.stream()
+              .filter(
+                  task ->
+                      Optional.ofNullable(task)
+                          .map(ProjectTask::getStatus)
+                          .map(TaskStatus::getIsCompleted)
+                          .orElse(false))
+              .count();
 
-      if (category == null) {
-        categoryMap.put("categoryId", 0);
-        categoryMap.put("categoryName", "Others");
-      } else {
-        categoryMap.put("categoryId", category.getId());
-        categoryMap.put("categoryName", category.getName());
-      }
+      categoryMap.put(
+          "categoryId", Optional.ofNullable(category).map(ProjectTaskCategory::getId).orElse(0L));
+      categoryMap.put(
+          "categoryName",
+          Optional.ofNullable(category).map(ProjectTaskCategory::getName).orElse("Others"));
       categoryMap.put("open", totalCount - closedCount);
       categoryMap.put("closed", closedCount);
       categoryMap.put("total", totalCount);
+      categoryMap.put("projectId", project.getId());
 
       categoryList.add(categoryMap);
+    }
+
+    if (!ObjectUtils.isEmpty(categoryList)) {
+      categoryList =
+          categoryList.stream().sorted(this::compareCategoryMap).collect(Collectors.toList());
     }
 
     return categoryList;
@@ -116,79 +129,23 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
 
   protected Set<User> getMembers(Project project) {
     Set<User> membersSet = new HashSet<>();
-    projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
+    projectRepo
+        .all()
+        .filter("self.id IN ?1", projectToolService.getRelatedProjectIds(project))
+        .fetch()
         .stream()
         .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
     return membersSet;
   }
 
   protected List<Project> getSubprojects(Project project) {
-    Set<Long> contextProjectIds = projectService.getContextProjectIds();
-    contextProjectIds.remove(project.getId());
-    if (contextProjectIds.isEmpty()) {
+    Set<Long> projectIdsSet = new HashSet<>();
+    projectToolService.getChildProjectIds(projectIdsSet, project);
+    projectIdsSet.remove(project.getId());
+    if (projectIdsSet.isEmpty()) {
       return new ArrayList<>();
     }
-    return projectRepo.all().filter("self.id IN ?1", contextProjectIds).fetch();
-  }
-
-  @Override
-  public ActionResponse getTasksPerCategoryView(Long id) {
-    User currentUser = AuthUtils.getUser();
-    ActionResponse response = new ActionResponse();
-    response.setView(
-        ActionView.define(I18n.get("Project Tasks"))
-            .model(ProjectTask.class.getName())
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
-            .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getContextProject())
-            .context("projectIds", projectService.getContextProjectIds())
-            .context("taskCategory", taskCategoryRepo.find(id))
-            .param("search-filters", "project-task-filters")
-            .map());
-    return response;
-  }
-
-  @Override
-  public ActionResponse getTasksOpenedPerCategoryView(Long id) {
-    User currentUser = AuthUtils.getUser();
-    ActionResponse response = new ActionResponse();
-    response.setView(
-        ActionView.define(I18n.get("Project Tasks"))
-            .model(ProjectTask.class.getName())
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND self.status.isCompleted = false AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
-            .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getContextProject())
-            .context("projectIds", projectService.getContextProjectIds())
-            .context("taskCategory", taskCategoryRepo.find(id))
-            .param("search-filters", "project-task-filters")
-            .map());
-    return response;
-  }
-
-  @Override
-  public ActionResponse getTasksClosedPerCategoryView(Long id) {
-    User currentUser = AuthUtils.getUser();
-    ActionResponse response = new ActionResponse();
-    response.setView(
-        ActionView.define(I18n.get("Project Tasks"))
-            .model(ProjectTask.class.getName())
-            .add("grid", "project-task-grid")
-            .add("form", "project-task-form")
-            .domain(
-                "self.typeSelect = :typeSelect AND self.project.id IN :projectIds AND self.status.isCompleted = true AND (self.projectTaskCategory = :taskCategory OR (self.projectTaskCategory is null AND :taskCategory is null))")
-            .context("typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .context("_project", currentUser.getContextProject())
-            .context("projectIds", projectService.getContextProjectIds())
-            .context("taskCategory", taskCategoryRepo.find(id))
-            .param("search-filters", "project-task-filters")
-            .map());
-    return response;
+    return projectRepo.all().filter("self.id IN ?1", projectIdsSet).fetch();
   }
 
   protected Comparator<ProjectTask> getTaskComparator() {
@@ -202,5 +159,19 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
         return 0;
       }
     };
+  }
+
+  protected int compareCategoryMap(Map<String, Object> map1, Map<String, Object> map2) {
+    Long id1 = (Long) map1.get("categoryId");
+    Long id2 = (Long) map2.get("categoryId");
+
+    if (id1 == 0L) {
+      return 1;
+    }
+    if (id2 == 0L) {
+      return -1;
+    }
+
+    return id1.compareTo(id2);
   }
 }

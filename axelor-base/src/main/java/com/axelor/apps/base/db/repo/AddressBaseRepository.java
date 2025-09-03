@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,6 @@ public class AddressBaseRepository extends AddressRepository {
   @Override
   public Address save(Address entity) {
 
-    entity.setFullName(addressService.computeFullName(entity));
     try {
       EntityManager em = JPA.em().getEntityManagerFactory().createEntityManager();
       Address oldAddressObject =
@@ -47,6 +46,7 @@ public class AddressBaseRepository extends AddressRepository {
       }
       AddressTemplateService addressTemplateService = Beans.get(AddressTemplateService.class);
       addressTemplateService.setFormattedFullName(entity);
+      entity.setFullName(addressService.computeFullName(entity).toUpperCase());
       addressTemplateService.checkRequiredAddressFields(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

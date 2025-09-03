@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="production-batch-grid" title="Production batches"
     model="com.axelor.apps.production.db.ProductionBatch">
@@ -24,6 +24,8 @@
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid"/>
+      <field name="fetchLimit"
+        help="Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used."/>
       <field name="workshopStockLocation"
         onSelect="action-production-batch-attrs-domain-stock-location"
         onChange="action-production-batch-record-set-company" form-view="stock-location-form"
@@ -42,8 +44,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" showTitle="false" colSpan="12"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-batch-method-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true" title="Actions" itemSpan="12">
@@ -52,6 +54,8 @@
       <button name="fillSopRealValuesBtn" title="Fill SOP real values"
         onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 2"
         readonlyIf="!sopSet || sopSet.length == 0"/>
+      <button name="generatePoBtn" title="Generate production orders"
+        onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 3"/>
       <button name="printBtn" title="Work in progress valuation"
         showIf="actionSelect == 1 &amp;&amp; batchList &amp;&amp; batchList.length &gt; 0"
         onClick="save,action-method-print-template"/>

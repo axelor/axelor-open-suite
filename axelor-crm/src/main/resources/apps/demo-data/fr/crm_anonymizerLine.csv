@@ -9,7 +9,5 @@
 "Lead";"firstName";"2";"true";"name.firstName"
 "Lead";"mobilePhone";"2";"true";"phoneNumber.cellPhone"
 "Lead";"name";"2";"true";"name.lastName"
-"Lead";"primaryAddress";"2";"true";"address.streetAddress"
-"Lead";"primaryPostalCode";"2";"true";"address.zipCode"
 "Lead";"enterpriseName";"2";"true";"company.name"
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -48,7 +48,7 @@
     <string name="companyCurrencyCode" title="Company currency code"/>
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Company bank"
-      help="The reference to the bankDetails for moves is mainly destinated to be able to establish treasury forecasts and doesn't replace the move lines of payment on the treasury journals who are usually associated to treasury accounts which are linked to a real bank account. On purchase or sales accounting moves, those are purely indicative."/>
+      help="The reference to the bankDetails for moves is mainly destinated to be able to establish treasury forecasts and doesn't replace the move lines of payment on the treasury journals who are usually associated to treasury accounts which are linked to a real bank account. On purchase or sales accounting moves, those are purely indicative.&lt;br&gt;The bank details that can be selected here must have a corresponding accounting setting on the associated payment mode (if selected on the entry else any can be selected)."/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <string name="currencyCode" title="Currency code"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
@@ -86,7 +86,7 @@
       title="FEC Import"/>
     <integer name="massEntryStatusSelect" title="Status" default="0"
       selection="iaccount.move.mass.entry.status.select"/>
-    <string name="massEntryErrors" title="Error list"/>
+    <string name="massEntryErrors" title="Error list" large="true"/>
     <boolean name="massEntryManageCutOff" title="Manage Cut off period"/>
     <unique-constraint columns="reference,company"/>
 
@@ -125,6 +125,7 @@
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
 		public static final int FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER = 8;
 		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
+		public static final int FUNCTIONAL_ORIGIN_LATE_PAYMENT_INTEREST = 10;
 
 		// PFP VALIDATE STATUS SELECT
 	    public static final int PFP_NONE = 0;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuditableRunner;
 import com.axelor.db.JPA;
+import com.axelor.db.tenants.TenantAware;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -64,23 +65,19 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void createBackUp(DataBackup dataBackup) {
     DataBackup obj = setStatus(dataBackup);
     if (dataBackup.getUpdateImportId()) {
-      updateImportId();
+      updateImportId(dataBackup.getIsExportApp());
     }
-    try {
-      executor.submit(
-          new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-              RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
-              try (RequestScoper.CloseableScope ignored = scope.open()) {
-                startBackup(obj);
-              }
-              return true;
-            }
-          });
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+    executor.submit(
+        new TenantAware(
+                () -> {
+                  RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+                  try (RequestScoper.CloseableScope ignored = scope.open()) {
+                    startBackup(obj);
+                  } catch (Exception e) {
+                    TraceBackService.trace(e);
+                  }
+                })
+            .withTransaction(false));
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -117,18 +114,16 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void restoreBackUp(DataBackup dataBackup) {
     setStatus(dataBackup);
 
-    try {
-      executor.submit(
-          new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-              startRestore(dataBackup);
-              return true;
-            }
-          });
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+    executor.submit(
+        new TenantAware(
+                () -> {
+                  try {
+                    startRestore(dataBackup);
+                  } catch (Exception e) {
+                    TraceBackService.trace(e);
+                  }
+                })
+            .withTransaction(false));
   }
 
   protected void startRestore(DataBackup dataBackup) throws Exception {
@@ -139,7 +134,8 @@ public class DataBackupServiceImpl implements DataBackupService {
           public Boolean call() throws Exception {
             Logger LOG = LoggerFactory.getLogger(getClass());
             DataBackup obj = dataBackupRepository.find(dataBackup.getId());
-            File logFile = restoreService.restore(obj.getBackupMetaFile());
+            File logFile =
+                restoreService.restore(obj.getBackupMetaFile(), obj.getIsTemplateWithDescription());
             save(logFile, obj);
             LOG.info("Data Restore Saved");
             return true;
@@ -177,12 +173,18 @@ public class DataBackupServiceImpl implements DataBackupService {
   }
 
   @Transactional
-  public void updateImportId() {
+  public void updateImportId(boolean isExportApp) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyHHmm");
-    String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+    StringBuilder filter =
+        new StringBuilder(
+            "self.packageName NOT LIKE '%meta%' AND self.name != 'DataBackup' AND self.tableName IS NOT NULL");
+    filter.append(" AND (self.packageName != 'com.axelor.studio.db'");
+    if (isExportApp) {
+      filter.append(" OR self.name LIKE 'App%'");
+    }
+    filter.append(")");
 
-    List<MetaModel> metaModelList = metaModelRepo.all().filter(filterStr).fetch();
+    List<MetaModel> metaModelList = metaModelRepo.all().filter(filter.toString()).fetch();
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModelList.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
 

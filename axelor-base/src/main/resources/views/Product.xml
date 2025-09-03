@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product"
     orderBy="code,name" x-row-height="80">
@@ -170,7 +170,8 @@
             if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
           <field name="procurementMethodSelect" colSpan="6"
             onChange="action-product-record-tick-checkbox-purchasable"
-            hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
+            hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'procurementMethodSelect'})"/>
           <field name="standardDelay" colSpan="12"
             showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true"
             if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -208,11 +209,14 @@
           <field name="productSynchronizedInPrestashop" colSpan="6"
             if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
           <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"
-            onChange="action-product-record-compute-sale-price"/>
+            onChange="action-product-record-compute-sale-price"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'autoUpdateSalePrice'})"/>
           <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable"
-            colSpan="12"/>
+            colSpan="12"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'salePrice'})"/>
           <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12"
-            form-view="currency-form" grid-view="currency-grid"/>
+            form-view="currency-form" grid-view="currency-grid"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'saleCurrency'})"/>
           <field name="saleSupplySelect" colSpan="12"
             onChange="action-product-validate-sale-supply-select"
             hideIf="isShippingCostsProduct || !sellable"/>
@@ -245,6 +249,10 @@
             <field name="startDate" colSpan="12"/>
             <field name="endDate" colSpan="12"
               onChange="action-group-base-product-enddate-onchange"/>
+            <panel name="shippingPanel" if-module="axelor-supplychain"
+              if="__config__.app.isApp('supplychain')" showTitle="false" colSpan="12">
+              <field name="availabilityMeanTime" colSpan="6"/>
+            </panel>
           </panel>
           <field name="isPrototype" showIf="productTypeSelect =='storable'"/>
           <field name="isUnrenewed"/>
@@ -274,11 +282,14 @@
           <field name="tradingNameBuyerSet"
             if="__config__.app.getApp('purchase')?.getEnablePurchasesProductByTradName()"
             colSpan="12" showIf="purchasable" canSelect="true" canNew="false"/>
-          <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
+          <field name="purchasePrice" showIf="purchasable" colSpan="6"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchasePrice'})"/>
           <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6"
-            form-view="currency-form" grid-view="currency-grid"/>
+            form-view="currency-form" grid-view="currency-grid"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchaseCurrency'})"/>
           <field name="lastPurchaseDate" showIf="purchasable" colSpan="6" readonly="true"/>
-          <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
+          <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'lastPurchasePrice'})"/>
           <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable"
             colSpan="6" domain="self.isContact = false AND self.isSupplier = true"
             form-view="partner-form" grid-view="partner-grid"/>
@@ -293,11 +304,14 @@
         </panel>
         <panel name="costsPanel" title="Costs" colSpan="6">
           <field name="costPrice" colSpan="6" readonlyIf="costTypeSelect != 1"
-            onChange="action-product-record-compute-sale-price"/>
+            onChange="action-product-record-compute-sale-price"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'costPrice'})"/>
           <field name="costTypeSelect" colSpan="6"
-            onChange="action-product-group-cost-type-select-onchange"/>
+            onChange="action-product-group-cost-type-select-onchange"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'costTypeSelect'})"/>
           <field name="managPriceCoef" colSpan="12"
-            onChange="action-product-record-compute-sale-price"/>
+            onChange="action-product-record-compute-sale-price"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'managPriceCoef'})"/>
           <field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange"
             showIf="!defShipCoefByPartner &amp;&amp; purchasable" if-module="axelor-purchase"
             if="__config__.app.isApp('purchase')"/>
@@ -343,7 +357,8 @@
         </panel>
         <panel name="stockPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
-          <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
+          <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'controlOnReceipt'})"/>
           <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
             onClick="action-product-view-stock-move-line"/>
           <field name="avgPrice" hideIf="!stockManaged"
@@ -388,39 +403,39 @@
           <field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
             <editor x-show-titles="false">
               <field name="productVariantAttr1" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value1"
+                onChange="action-product-variant-config-record-reset-variant-value1"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr2" showIf="productVariantAttr1" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value2"
+                onChange="action-product-variant-config-record-reset-variant-value2"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr3" showIf="productVariantAttr2" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value3"
+                onChange="action-product-variant-config-record-reset-variant-value3"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value4"
+                onChange="action-product-variant-config-record-reset-variant-value4"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
               <field name="productVariantAttr5" showIf="productVariantAttr4" canNew="true"
-                onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value5"
+                onChange="action-product-variant-config-record-reset-variant-value5"
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue5Set" showIf="productVariantAttr5" colSpan="6"
                 widget="TagSelect" x-color-field="colorSelect" canNew="false"
-                onSelect="action-product-nested-product-variant-config-attrs-domain"
+                onSelect="action-product-variant-config-attrs-domain"
                 form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
             </editor>
           </field>
@@ -438,31 +453,36 @@
                 form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue1" showTitle="false"
                 showIf="productVariantAttr1" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr2" showTitle="false" readonly="true"
                 showIf="productVariantAttr1" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue2" showTitle="false"
                 showIf="productVariantAttr2" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr3" showTitle="false" readonly="true"
                 showIf="productVariantAttr2" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue3" showTitle="false"
                 showIf="productVariantAttr3" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr4" showTitle="false" readonly="true"
                 showIf="productVariantAttr3" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue4" showTitle="false"
                 showIf="productVariantAttr4" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
               <field name="productVariantAttr5" showTitle="false" readonly="true"
                 showIf="productVariantAttr4" form-view="product-variant-attr-form"
                 grid-view="product-variant-attr-grid"/>
               <field name="productVariantValue5" showTitle="false"
                 showIf="productVariantAttr5" widget="SuggestBox"
-                form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                form-view="product-variant-value-form" grid-view="product-variant-value-grid"
+                onSelect="action-product-variant-attrs-domain"/>
             </editor>
           </field>
           <field name="parentProduct" canEdit="false" form-view="product-form"
@@ -519,9 +539,65 @@
           <field name="usedInDEB" title="Used in DEB"/>
           <field name="customsCodeNomenclature"
             requiredIf="usedInDEB &amp;&amp; productTypeSelect !='service'"
-            showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"/>
+            showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'customsCodeNomenclature'})"/>
           <field name="countryOfOrigin" showIf="usedInDEB"/>
         </panel>
+        <panel name="packagingPanel" title="Packaging details" colSpan="12">
+          <field name="isPackaging" colSpan="12"/>
+          <panel name="dimensionPanel" colSpan="12" itemSpan="4" hidden="true"
+            showIf="isPackaging">
+            <field name="innerLength" requiredIf="isPackaging"/>
+            <field name="innerWidth" requiredIf="isPackaging"/>
+            <field name="innerHeight" requiredIf="isPackaging"/>
+            <field name="outerLength" requiredIf="isPackaging"/>
+            <field name="outerWidth" requiredIf="isPackaging"/>
+            <field name="outerHeight" requiredIf="isPackaging"/>
+          </panel>
+          <panel-dashlet name="productPackagingPanel" colSpan="12" hidden="true"
+            showIf="!isPackaging" action="action-product-view-product-packaging" canNew="true"
+            canDelete="true"/>
+        </panel>
+      </panel>
+      <panel-related field="alternativeBarcodeList" name="alternativeBarcodeListPanel"
+        grid-view="alternative-barcode-grid" form-view="alternative-barcode-form"
+        if="__config__.app.getApp('base')?.getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base')?.getEnableMultiBarcodeOnProducts()"/>
+      <panel name="safetyPanel" title="Safety">
+        <field name="safetyLabel" widget="image" title="Safety label" showTitle="false"/>
+        <field name="isClp"/>
+        <field name="retentionTypeSelect" showIf="isClp"/>
+        <panel-related field="icpeSet" colSpan="12" form-view="base-icpe-form"
+          grid-view="base-icpe-grid" canSelect="true" title="ICPE"/>
+        <panel-related field="hazardPictogramSet" colSpan="12"
+          form-view="base-hazard-pictogram-form" grid-view="base-hazard-pictogram-grid"
+          canSelect="true" title="Hazard pictograms" showIf="isClp"/>
+        <panel-related field="hazardPhraseSet" colSpan="12"
+          form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-grid" canSelect="true"
+          title="Hazard phrases" showIf="isClp"/>
+        <panel title="Characteristics" name="characteristicsPanel" colSpan="12"
+          if="__config__.app.isApp('quality')">
+          <field name="density" x-scale="3"/>
+          <field name="isVoc"/>
+          <field name="vocValue" requiredIf="isVoc" x-scale="2"/>
+          <field name="carbonFootprint" x-scale="3"/>
+          <panel-related field="productCharacteristicSet"
+            form-view="product-characteristic-form" grid-view="product-characteristic-grid"
+            colSpan="12" canNew="true" domain="self.product.id = :id"/>
+        </panel>
+      </panel>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
+
+        <panel-dashlet action="action-product-view-quality-improvements" colSpan="12"/>
+        <panel-dashlet action="action-product-view-quality-controls" colSpan="12"/>
+
+        <button name="addControlPlanBtn" title="Add a control plan"
+          onClick="save,action-product-view-add-control-plan" colOffset="6"/>
+        <panel-dashlet action="action-product-view-control-plan" colSpan="12"/>
+
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-product-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-product-view-control-entry" colSpan="12"/>
+
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -585,13 +661,11 @@
 
   <action-group name="action-group-base-product-onnew">
     <action name="action-product-attrs-scale-and-precision"/>
-    <action name="action-product-attrs-scale-and-precision-production"/>
     <action name="action-product-attrs-scale-and-precision-stock"/>
     <action name="action-product-group-default-new"/>
     <action name="action-product-record-sale-supply-select"/>
     <action name="action-product-record-in-ati"/>
     <action name="action-product-attrs-in-ati"/>
-    <action name="action-product-record-default-production"/>
     <action name="action-product-record-sellable"/>
     <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
     <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
@@ -631,7 +705,6 @@
 
   <action-group name="action-group-product-onload">
     <action name="action-product-attrs-scale-and-precision"/>
-    <action name="action-product-attrs-scale-and-precision-production"/>
     <action name="action-product-attrs-scale-and-precision-stock"/>
     <action name="action-product-attrs-title-unit"/>
     <action name="action-product-attrs-in-ati"/>
@@ -978,5 +1051,67 @@
     <attribute name="required" for="procurementMethodSelect"
       expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.isEmpty())"/>
   </action-attrs>
+
+  <action-view name="action-product-view-quality-improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Quality improvements">
+    <view type="grid" name="quality-improvement-partner-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.product = :product</domain>
+    <context name="product" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-product-view-quality-controls"
+    model="com.axelor.apps.quality.db.QualityControl" title="Quality audits">
+    <view type="grid" name="quality-control-grid"/>
+    <view type="form" name="quality-control-form"/>
+    <domain>self.relatedToSelectId = :productId AND self.relatedToSelect =
+      'com.axelor.apps.base.db.Product'</domain>
+    <context name="productId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-product-view-product-packaging" title="Product packaging"
+    model="com.axelor.apps.base.db.ProductPackaging">
+    <view type="grid" name="product-packaging-grid"/>
+    <view type="form" name="product-packaging-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.productToPackage.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-product-view-control-plan"
+    model="com.axelor.apps.quality.db.ControlPlan" title="Control plans">
+    <view type="grid" name="control-plan-grid"/>
+    <view type="form" name="control-plan-form"/>
+    <domain>self.relatedToSelectId = :productId AND self.relatedToSelect =
+      'com.axelor.apps.base.db.Product'</domain>
+    <context name="productId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-product-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :productId AND self.relatedToSelect =
+      'com.axelor.apps.base.db.Product'</domain>
+    <context name="productId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-product-view-add-control-plan"
+    model="com.axelor.apps.quality.db.ControlPlan" title="Control plans">
+    <view type="form" name="control-plan-form"/>
+    <view type="grid" name="control-plan-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.base.db.Product'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-product-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.base.db.Product'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
+  </action-view>
 
 </object-views>

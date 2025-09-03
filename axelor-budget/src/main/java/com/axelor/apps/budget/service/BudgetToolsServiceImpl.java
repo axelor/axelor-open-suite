@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -261,6 +261,10 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   @Override
   public void fillAmountPerBudgetMap(
       Budget budget, BigDecimal amount, Map<Budget, BigDecimal> amountPerBudgetMap) {
+    if (budget == null) {
+      return;
+    }
+
     if (!amountPerBudgetMap.containsKey(budget)) {
       amountPerBudgetMap.put(budget, amount);
     } else {

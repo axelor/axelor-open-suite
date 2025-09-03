@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -36,6 +35,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -172,8 +172,12 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   @Override
   public Set<BirtTemplate> getBirtTemplates(String modelName) throws AxelorException {
     Set<BirtTemplate> birtTemplatSet =
-        birtTemplateRepository.all().filter("self.metaModel.fullName = :metaModel")
-            .bind("metaModel", modelName).fetch().stream()
+        birtTemplateRepository
+            .all()
+            .filter("self.metaModel.fullName = :metaModel")
+            .bind("metaModel", modelName)
+            .fetch()
+            .stream()
             .collect(Collectors.toSet());
 
     if (CollectionUtils.isEmpty(birtTemplatSet)) {

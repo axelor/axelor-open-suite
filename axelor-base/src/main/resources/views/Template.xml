@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
     model="com.axelor.message.db.Template">
@@ -16,7 +16,8 @@
     onNew="action-template-record-new">
     <toolbar>
       <button name="testTemplateBtn" title="Test template"
-        onClick="save,action-template-view-test-template" readonlyIf="metaModel == null"/>
+        onClick="save,action-template-view-test-template"
+        readonlyIf="metaModel == null &amp;&amp; (!isJson || metaJsonModel == null)"/>
     </toolbar>
     <panel name="mainPanel" colSpan="12">
       <field name="name" showTitle="false" colSpan="12">
@@ -47,7 +48,7 @@
         grid-view="template-context-grid" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="contentPanel" title="Contenu">
+      <panel name="contentPanel" title="Content">
         <panel name="recipientAddressPanel" title="Recipient address"
           showIf="mediaTypeSelect == 1">
           <field name="addressBlock" showTitle="false" colSpan="12" height="5" widget="html"
@@ -99,8 +100,8 @@
 					<span>{_t('We can access direct/o2o/m2o fields of template model by specifying field path surrounded by')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$$</Box><Box/>
 					<span>{_t('Examples')}</span>:
 					<ul>
-						<li> <span>{_t('To access product\'s full name')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
-						<li> <span>{_t('To access product\'s ProductCategory')}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
+						<li> <span>{_t("To access product's full name")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.fullName$</Box> </li>
+						<li> <span>{_t("To access product's ProductCategory")}</span>: <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>$Product.productCategory.name$</Box> </li>
 					</ul>
 				</p>
 				<p>
@@ -184,5 +185,17 @@
   <action-method name="action-template-check-receptor">
     <call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
   </action-method>
+
+  <action-record id="action-base-template-record-new"
+    name="action-template-record-new" model="com.axelor.message.db.Template">
+    <field name="metaModel"
+      expr="eval: __parent__?.targetSelect == 1 ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (__parent__?.targetSelect == 2 ? __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)"
+      if="__parent__?.targetSelect"/>
+    <field name="metaModel" expr="eval: __parent__?.metaModel" if="__parent__?.metaModel"/>
+    <field name="metaModel" expr="eval: __parent__?.__parent__?.metaModel"
+      if="__parent__?.__parent__?.metaModel"/>
+    <field if="_mediaType != null" name="mediaTypeSelect" expr="eval:_mediaType"/>
+    <field name="mailAccount" expr="eval: null"/>
+  </action-record>
 
 </object-views>

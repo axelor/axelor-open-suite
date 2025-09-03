@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,6 +42,12 @@ public class PartnerLinkServiceImpl implements PartnerLinkService {
       partnerIds.add(partner.getId());
     }
     return "self.id IN (" + Joiner.on(",").join(partnerIds) + ")";
+  }
+
+  @Override
+  public boolean isDeliveredPartnerCompatible(
+      Partner deliveredPartner, Partner clientPartner, String strFilter) {
+    return getPartnerIds(clientPartner, strFilter).contains(deliveredPartner.getId());
   }
 
   public List<Long> getPartnerIds(Partner partner, String strFilter) {

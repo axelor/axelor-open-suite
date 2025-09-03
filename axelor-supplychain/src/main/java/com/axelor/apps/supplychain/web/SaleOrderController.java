@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -36,19 +37,23 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
-import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
-import com.axelor.apps.supplychain.service.SaleOrderStockService;
-import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderReservedQtyService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
@@ -70,14 +75,24 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
 public class SaleOrderController {
 
-  private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
+  private final String SO_LINES_WIZARD_PRICE_FIELD = "priceDiscounted";
   private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
+  private final String SO_LINES_WIZARD_INVOICE_ALL_FIELD = "invoiceAll";
+
+  public void checkBlocking(ActionRequest request, ActionResponse response) {
+    SaleOrder saleorder = request.getContext().asType(SaleOrder.class);
+
+    if (Beans.get(SaleOrderBlockingSupplychainService.class).hasOnGoingBlocking(saleorder)) {
+      response.setAlert(I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINES_CANNOT_DELIVER));
+    }
+  }
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -155,7 +170,7 @@ public class SaleOrderController {
     try {
       Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(SaleOrderSupplychainService.class)
+          Beans.get(SaleOrderStockLocationService.class)
               .getStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("stockLocation", stockLocation);
     } catch (Exception e) {
@@ -204,8 +219,8 @@ public class SaleOrderController {
 
   /**
    * Called from the sale order invoicing wizard. Call {@link
-   * com.axelor.apps.supplychain.service.SaleOrderInvoiceService#generateInvoice(SaleOrder, int,
-   * BigDecimal, boolean, Map)} } Return to the view the generated invoice.
+   * SaleOrderInvoiceService#generateInvoice(SaleOrder, int, BigDecimal, boolean, Map)} } Return to
+   * the view the generated invoice.
    *
    * @param request
    * @param response
@@ -231,19 +246,14 @@ public class SaleOrderController {
           (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineList");
       fillMaps(saleOrderLineListContext, qtyToInvoiceMap, priceMap, qtyMap);
 
-      // Re-compute amount to invoice if invoicing partially
-      amountToInvoice =
-          saleOrderInvoiceService.computeAmountToInvoice(
-              amountToInvoice,
-              operationSelect,
-              saleOrder,
-              qtyToInvoiceMap,
-              priceMap,
-              qtyMap,
-              isPercent);
-
       saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
-          saleOrder, amountToInvoice, isPercent);
+          saleOrder,
+          amountToInvoice,
+          operationSelect,
+          qtyToInvoiceMap,
+          priceMap,
+          qtyMap,
+          isPercent);
 
       // Information to send to the service to handle an invoicing on timetables
       List<Long> timetableIdList = new ArrayList<>();
@@ -301,7 +311,12 @@ public class SaleOrderController {
         BigDecimal qtyToInvoiceItem =
             new BigDecimal(
                 map.get(SaleOrderInvoiceService.SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
-        if (qtyToInvoiceItem.signum() != 0) {
+        boolean invoiceAllItem =
+            Boolean.parseBoolean(
+                map.getOrDefault(SO_LINES_WIZARD_INVOICE_ALL_FIELD, false).toString());
+        if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0
+            || (Objects.equals(SaleOrderLineRepository.TYPE_TITLE, map.get("typeSelect"))
+                && invoiceAllItem)) {
           Long soLineId = Long.valueOf((Integer) map.get("id"));
           qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
@@ -686,7 +701,24 @@ public class SaleOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      String message = Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder);
+      ShipmentMode shipmentMode = saleOrder.getShipmentMode();
+      String message =
+          Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder, shipmentMode);
+      if (message != null) {
+        response.setNotify(message);
+      }
+      response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateShipmentCostLine(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      ShipmentMode shipmentMode = saleOrder.getShipmentMode();
+      String message =
+          Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder, shipmentMode);
       if (message != null) {
         response.setInfo(message);
       }
@@ -695,6 +727,7 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
   /**
    * Called from sale order form view, on invoiced partner select. Call {@link
    * PartnerLinkService#computePartnerFilter}
@@ -708,7 +741,7 @@ public class SaleOrderController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -729,7 +762,7 @@ public class SaleOrderController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
+                  saleOrder.getClientPartner(), PartnerLinkTypeRepository.TYPE_SELECT_DELIVERED_TO);
 
       response.setAttr("deliveredPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -776,7 +809,7 @@ public class SaleOrderController {
     try {
       Company company = saleOrder.getCompany();
       StockLocation toStockLocation =
-          Beans.get(SaleOrderSupplychainService.class)
+          Beans.get(SaleOrderStockLocationService.class)
               .getToStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
@@ -790,7 +823,8 @@ public class SaleOrderController {
     response.setValues(saleOrder);
   }
 
-  public void updateTimetableAmounts(ActionRequest request, ActionResponse response) {
+  public void updateTimetableAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Beans.get(SaleOrderSupplychainService.class).updateTimetableAmounts(saleOrder);
     response.setValues(saleOrder);
@@ -808,6 +842,38 @@ public class SaleOrderController {
             isPercent
                 ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
                 : Beans.get(CurrencyScaleService.class).getScale(saleOrder));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateEstimatedDeliveryDateWithPricingDelay(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+
+      if (saleOrder != null) {
+        Beans.get(FreightCarrierPricingService.class)
+            .updateEstimatedDeliveryDateWithPricingDelay(saleOrder);
+        response.setValue("estimatedDeliveryDate", saleOrder.getEstimatedDeliveryDate());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void notifyEstimatedDeliveryDateUpdate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+
+      if (saleOrder != null) {
+        String message =
+            Beans.get(FreightCarrierPricingService.class)
+                .notifyEstimatedDeliveryDateUpdate(saleOrder);
+        if (message != null) {
+          response.setNotify(message);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

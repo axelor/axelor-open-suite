@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -92,6 +92,7 @@ public interface ReservedQtyService {
       int toStatus,
       BigDecimal requestedReservedQty)
       throws AxelorException;
+
   /**
    * Update location line, stock move line and sale order line with computed allocated quantity,
    * where the location is {@link com.axelor.apps.stock.db.StockMove#toStockLocation}.

@@ -1,0 +1,3 @@
+"importId";"name";"startDate";"company.importId";"concernedModel.name";"class1PricingRule.importId";"result1PricingRule.importId";"productCategory.code";"formula";"typeSelect"
+2;"Les tarifs Colissimo";"TODAY[-1M]";1;"FreightCarrierPricing";3;4;;"true";"FreightCarrierPricing"
+3;"Les delais Colissimo";"TODAY[-1M]";1;"FreightCarrierPricing";3;5;;"true";"FreightCarrierPricing"

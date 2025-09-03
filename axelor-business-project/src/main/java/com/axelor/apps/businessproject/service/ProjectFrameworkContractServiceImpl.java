@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -79,6 +79,9 @@ public class ProjectFrameworkContractServiceImpl implements ProjectFrameworkCont
     Contract frameworkCustomerContract = projectTask.getFrameworkCustomerContract();
 
     Map<String, Object> productMap = new HashMap<>();
+    if (projectTask.getProject() == null) {
+      return productMap;
+    }
 
     if (frameworkCustomerContract == null) {
       productMap.put(
@@ -129,6 +132,10 @@ public class ProjectFrameworkContractServiceImpl implements ProjectFrameworkCont
     Contract frameworkSupplierContract = projectTask.getFrameworkSupplierContract();
 
     Map<String, Object> productMap = new HashMap<>();
+
+    if (projectTask.getProject() == null) {
+      return productMap;
+    }
 
     if (frameworkSupplierContract == null) {
       productMap.put(

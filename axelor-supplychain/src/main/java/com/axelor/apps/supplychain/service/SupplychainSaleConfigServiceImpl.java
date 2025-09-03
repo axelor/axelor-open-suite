@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,43 +18,36 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
+import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
+import javax.persistence.Query;
 
 public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
     implements SupplychainSaleConfigService {
 
-  protected AccountingSituationRepository accountingSituationRepo;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
-  public SupplychainSaleConfigServiceImpl(
-      AccountingSituationRepository accountingSituationRepo,
-      CurrencyScaleService currencyScaleService) {
-    this.accountingSituationRepo = accountingSituationRepo;
+  public SupplychainSaleConfigServiceImpl(CurrencyScaleService currencyScaleService) {
     this.currencyScaleService = currencyScaleService;
   }
 
   @Transactional
   public void updateCustomerCredit(SaleConfig saleConfig) {
+    Query update =
+        JPA.em()
+            .createQuery(
+                "UPDATE AccountingSituation self SET self.acceptedCredit = :acceptedCredit WHERE self.company = :company AND self.partner.id IN (SELECT partner.id FROM Partner partner WHERE partner.isContact IS FALSE AND partner.isCustomer IS TRUE)");
 
-    List<AccountingSituation> accountingSituationList =
-        accountingSituationRepo
-            .all()
-            .filter("self.partner.isContact = false and self.partner.isCustomer = true")
-            .fetch();
-
-    for (AccountingSituation accountingSituation : accountingSituationList) {
-      accountingSituation.setAcceptedCredit(
-          currencyScaleService.getCompanyScaledValue(
-              accountingSituation.getCompany(), saleConfig.getAcceptedCredit()));
-      accountingSituationRepo.save(accountingSituation);
-    }
+    update.setParameter(
+        "acceptedCredit",
+        currencyScaleService.getCompanyScaledValue(
+            saleConfig.getCompany(), saleConfig.getAcceptedCredit()));
+    update.setParameter("company", saleConfig.getCompany());
+    update.executeUpdate();
   }
 }

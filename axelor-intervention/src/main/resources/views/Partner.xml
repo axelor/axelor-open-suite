@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="intervention-partner-from" title="Partner" name="partner-form"
     model="com.axelor.apps.base.db.Partner" extension="true">
@@ -9,8 +9,9 @@
       <insert position="before">
         <panel name="LinkPanel" title="Link" showIf="isContact != true &amp;&amp; isCustomer"
           colSpan="12">
-          <field name="tradingName" requiredIf="isContact != true &amp;&amp; isCustomer"
-            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+          <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
+            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            widget="TagSelect" onSelect="action-partner-attrs-set-trading-name-domain"/>
         </panel>
       </insert>
     </extend>
@@ -28,6 +29,10 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//field[@name='companySet']">
+      <attribute name="onChange" value="action-partner-record-change-trading-name-set"/>
+    </extend>
   </form>
 
   <action-view name="action-intervention-view-equipments"
@@ -43,5 +48,17 @@
     <view type="form" name="intervention-form"/>
     <domain>self.deliveredPartner = :id</domain>
   </action-view>
+
+  <action-record name="action-partner-record-change-trading-name-set"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="tradingNameSet"
+      expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
+      if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
+  </action-record>
+
+  <action-attrs name="action-partner-attrs-set-trading-name-domain">
+    <attribute name="domain" for="tradingNameSet"
+      expr="eval: &quot; self.company IS NULL OR self.company IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
+  </action-attrs>
 
 </object-views>

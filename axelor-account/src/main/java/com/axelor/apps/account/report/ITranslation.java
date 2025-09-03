@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,6 +58,8 @@ public interface ITranslation {
   public static final String INVOICE_INVOICE_NO = /*$$(*/ "Invoice.invoiceNo"; /*)*/
   public static final String INVOICE_INVOICE_ADV_PAYMENT_NO = /*$$(*/
       "Invoice.invoiceAdvPaymentNo"; /*)*/
+  public static final String INVOICE_INVOICE_CREDIT_ADV_PAYMENT_NO = /*$$(*/
+      "Invoice.invoiceCreditAdvPaymentNo"; /*)*/
   public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
   public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
   public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
@@ -767,6 +769,8 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.acquisition"; /*)*/
   public static final String ACCOUNTING_REPORT_17_ASSET_DISPOSAL =
       /*$$(*/ "AccountingReportType17.asset_disposal"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_ASSET_SCRAP =
+      /*$$(*/ "AccountingReportType17.asset_scrap"; /*)*/
   public static final String ACCOUNTING_REPORT_17_YEAR_END_VALUE =
       /*$$(*/ "AccountingReportType17.year_end_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION =
@@ -807,6 +811,8 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_19_TO = /*$$(*/ "AccountingReportType19.to"; /*)*/
   public static final String ACCOUNTING_REPORT_19_TOTAL_REPORT =
       /*$$(*/ "AccountingReportType19.total_report"; /*)*/
+  public static final String ACCOUNTING_REPORT_19_AMOUNT =
+      /*$$(*/ "AccountingReportType19.amount"; /*)*/
 
   public static final String ACCOUNTING_REPORT_20_ACCOUNT_CODE =
       /*$$(*/ "AccountingReportType20.accountCode"; /*)*/

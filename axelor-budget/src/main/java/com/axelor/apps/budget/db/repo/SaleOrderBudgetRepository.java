@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,12 +24,13 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
-import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
-import com.axelor.apps.businessproject.db.repo.SaleOrderProjectRepository;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
+import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -39,11 +40,13 @@ import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderBudgetRepository extends SaleOrderProjectRepository {
+public class SaleOrderBudgetRepository extends SaleOrderSupplychainRepository {
 
   @Inject
-  public SaleOrderBudgetRepository(AppBusinessProjectService appBusinessProjectService) {
-    super(appBusinessProjectService);
+  public SaleOrderBudgetRepository(
+      SaleOrderCopyService saleOrderCopyService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+    super(saleOrderCopyService, saleOrderOrderingStatusService);
   }
 
   @Override

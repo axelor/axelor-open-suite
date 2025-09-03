@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -86,25 +87,23 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
       }
       Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
       if (ObjectUtils.notEmpty(taxLineSet)) {
-        for (TaxLine taxLine : taxLineSet) {
-          PaymentMoveLineDistribution paymentMvlD =
-              new PaymentMoveLineDistribution(
-                  move.getPartner(), reconcile, moveLine, move, taxLine);
+        PaymentMoveLineDistribution paymentMvlD =
+            new PaymentMoveLineDistribution(
+                move.getPartner(), reconcile, moveLine, move, new HashSet<>(taxLineSet));
 
-          paymentMvlD.setOperationDate(
-              Optional.ofNullable(reconcile.getReconciliationDateTime())
-                  .map(LocalDateTime::toLocalDate)
-                  .orElse(null));
-          if (!moveLine.getAccount().getReconcileOk()) {
-            this.computeProratedAmounts(
-                paymentMvlD,
-                invoiceTotalAmount,
-                paymentAmount,
-                moveLine.getCredit().add(moveLine.getDebit()),
-                taxLine);
-          }
-          reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
+        paymentMvlD.setOperationDate(
+            Optional.ofNullable(reconcile.getReconciliationDateTime())
+                .map(LocalDateTime::toLocalDate)
+                .orElse(null));
+        if (!moveLine.getAccount().getReconcileOk()) {
+          this.computeProratedAmounts(
+              paymentMvlD,
+              invoiceTotalAmount,
+              paymentAmount,
+              moveLine.getCredit().add(moveLine.getDebit()),
+              taxLineSet);
         }
+        reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
       }
     }
 
@@ -125,7 +124,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
                 reconcile,
                 paymentMvlD.getMoveLine(),
                 paymentMvlD.getMove(),
-                paymentMvlD.getTaxLine());
+                new HashSet<>(paymentMvlD.getTaxLineSet()));
 
         reversePaymentMvlD.setIsAlreadyReverse(true);
         reversePaymentMvlD.setOperationDate(
@@ -148,7 +147,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
       BigDecimal invoiceTotalAmount,
       BigDecimal paymentAmount,
       BigDecimal moveLineAmount,
-      TaxLine taxLine) {
+      Set<TaxLine> taxLineSet) {
 
     BigDecimal exTaxProratedAmount =
         currencyService
@@ -156,13 +155,16 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal taxProratedAmount = BigDecimal.ZERO;
-    if (taxLine != null) {
+    if (ObjectUtils.notEmpty(taxLineSet)) {
+      BigDecimal globalRate =
+          taxLineSet.stream()
+              .map(TaxLine::getValue)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
       taxProratedAmount =
-          taxLine == null
-              ? BigDecimal.ZERO
-              : exTaxProratedAmount
-                  .multiply(taxLine.getValue().divide(new BigDecimal(100)))
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          exTaxProratedAmount
+              .multiply(globalRate.divide(new BigDecimal(100)))
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     paymentMvlD.setExTaxProratedAmount(exTaxProratedAmount);

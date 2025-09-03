@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
@@ -32,12 +34,15 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,17 +53,20 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected InvoiceTermToolService invoiceTermToolService;
   protected MoveLineToolService moveLineToolService;
+  protected CurrencyService currencyService;
 
   @Inject
   public ReconcileCheckServiceImpl(
       CurrencyScaleService currencyScaleService,
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermToolService invoiceTermToolService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      CurrencyService currencyService) {
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.invoiceTermToolService = invoiceTermToolService;
     this.moveLineToolService = moveLineToolService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -105,16 +113,10 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (currencyScaleService.isGreaterThan(
-            reconcile.getAmount(),
-            creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()),
-            creditMoveLine,
-            false)
-        || currencyScaleService.isGreaterThan(
-            reconcile.getAmount(),
-            debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()),
-            debitMoveLine,
-            false)) {
+    if (this.checkMoveLineAmount(
+            reconcile, creditMoveLine, debitMoveLine, creditMoveLine.getCredit())
+        || this.checkMoveLineAmount(
+            reconcile, debitMoveLine, creditMoveLine, debitMoveLine.getDebit())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_5)
@@ -131,9 +133,16 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()));
     }
 
-    // Check tax lines
-    this.taxLinePrecondition(creditMoveLine.getMove());
-    this.taxLinePrecondition(debitMoveLine.getMove());
+    if (!Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(creditMoveLine.getMove().getFunctionalOriginSelect())
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(debitMoveLine.getMove().getFunctionalOriginSelect())) {
+      // Check tax lines
+      this.taxLinePrecondition(creditMoveLine.getMove());
+      this.taxLinePrecondition(debitMoveLine.getMove());
+    }
 
     if (updateInvoiceTerms && updateInvoicePayments) {
       invoiceTermPfpService.validatePfpValidatedAmount(
@@ -194,7 +203,11 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
+    if (!Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(move.getFunctionalOriginSelect())
+        && !move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
+        && move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           AccountExceptionMessage.RECONCILE_MISSING_TAX,
@@ -206,5 +219,26 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
     return ObjectUtils.isEmpty(it.getTaxLineSet())
         && moveLineToolService.isMoveLineTaxAccount(it)
         && it.getAccount().getIsTaxAuthorizedOnMoveLine();
+  }
+
+  protected boolean hasPayableReceivableAccount(MoveLine it) {
+    return Lists.newArrayList(
+            AccountTypeRepository.TYPE_RECEIVABLE, AccountTypeRepository.TYPE_PAYABLE)
+        .contains(it.getAccount().getAccountType().getTechnicalTypeSelect());
+  }
+
+  protected boolean checkMoveLineAmount(
+      Reconcile reconcile, MoveLine moveLine, MoveLine otherMoveLine, BigDecimal moveLineAmount)
+      throws AxelorException {
+    if (currencyScaleService.isGreaterThan(
+        reconcile.getAmount(), moveLineAmount.subtract(moveLine.getAmountPaid()), moveLine, true)) {
+      return currencyService.isSameCurrencyRate(
+          moveLine.getDate(),
+          otherMoveLine.getDate(),
+          moveLine.getCurrency(),
+          reconcile.getCompany().getCurrency());
+    }
+
+    return false;
   }
 }

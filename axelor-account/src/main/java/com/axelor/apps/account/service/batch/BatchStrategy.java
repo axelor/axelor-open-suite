@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -204,7 +204,17 @@ public abstract class BatchStrategy extends AbstractBatch {
     this.cfonbExportService.testBankDetailsField(accountingBatch.getBankDetails());
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ACCOUNTING_BATCH);
+  }
+
+  @Override
+  protected Integer getFetchLimit() {
+    Integer batchFetchLimit = this.batch.getAccountingBatch().getFetchLimit();
+    if (batchFetchLimit == 0) {
+      batchFetchLimit = super.getFetchLimit();
+    }
+    return batchFetchLimit;
   }
 }

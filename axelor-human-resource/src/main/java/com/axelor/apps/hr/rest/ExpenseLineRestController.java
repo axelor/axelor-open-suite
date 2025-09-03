@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
+import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
@@ -37,7 +38,6 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.Operation;
 import java.time.LocalDate;
 import javax.ws.rs.Consumes;
@@ -74,7 +74,6 @@ public class ExpenseLineRestController {
     String expenseLineType = requestBody.getExpenseLineType();
     Boolean toInvoice = requestBody.getToInvoice();
     ProjectTask projectTask = requestBody.fetchProjectTask();
-
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_GENERAL.equals(expenseLineType)) {
       expenseLine =
           expenseLineCreateService.createGeneralExpenseLine(
@@ -88,7 +87,8 @@ public class ExpenseLineRestController {
               employee,
               requestBody.fetchCurrency(),
               toInvoice,
-              projectTask);
+              projectTask,
+              requestBody.getInvitedCollaboratorList());
     }
 
     if (ExpenseLinePostRequest.EXPENSE_LINE_TYPE_KILOMETRIC.equals(expenseLineType)) {
@@ -144,7 +144,6 @@ public class ExpenseLineRestController {
     RequestValidator.validateBody(requestBody);
     ExpenseLine expenseLine =
         ObjectFinder.find(ExpenseLine.class, expenseLineId, requestBody.getVersion());
-
     expenseLine =
         Beans.get(ExpenseLineUpdateService.class)
             .updateExpenseLine(
@@ -165,11 +164,12 @@ public class ExpenseLineRestController {
                 requestBody.fetchCurrency(),
                 requestBody.getToInvoice(),
                 requestBody.fetchExpense(),
-                requestBody.fetchProjectTask());
+                requestBody.fetchProjectTask(),
+                requestBody.getInvitedCollaboratorList());
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Expense line successfully updated.",
+        I18n.get(ITranslation.EXPENSE_LINE_UPDATED),
         new ExpenseLineResponse(expenseLine));
   }
 }

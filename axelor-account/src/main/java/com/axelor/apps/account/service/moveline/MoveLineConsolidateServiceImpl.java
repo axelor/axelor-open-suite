@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -38,13 +37,10 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveLineToolService moveLineToolService;
-  protected MoveToolService moveToolService;
 
   @Inject
-  public MoveLineConsolidateServiceImpl(
-      MoveLineToolService moveLineToolService, MoveToolService moveToolService) {
+  public MoveLineConsolidateServiceImpl(MoveLineToolService moveLineToolService) {
     this.moveLineToolService = moveLineToolService;
-    this.moveToolService = moveToolService;
   }
 
   @Override
@@ -154,7 +150,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
       boolean isDebit = debit.compareTo(credit) > 0;
       moveLine.setCurrencyAmount(
-          moveToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
+          moveLineToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
 
       if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
 
@@ -218,7 +214,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
     boolean isDebit = consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
 
     consolidateCurrencyAmount =
-        moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
+        moveLineToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
 
     consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
 

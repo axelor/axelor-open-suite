@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="tracking-number-grid" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber">
@@ -35,12 +35,12 @@
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
         domain="self.dtype = 'Product'" onChange="action-tracking-number-group-on-change-product"/>
-      <field name="product.trackingNumberConfiguration.hasWarranty" hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isPerishable" hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isDimensional" hidden="true"/>
-      <field name="hasWarranty" hideIf="!product.trackingNumberConfiguration.hasWarranty"/>
+      <field name="productTrackingNumberConfiguration.hasWarranty" hidden="true"/>
+      <field name="productTrackingNumberConfiguration.isPerishable" hidden="true"/>
+      <field name="productTrackingNumberConfiguration.isDimensional" hidden="true"/>
+      <field name="hasWarranty" hideIf="!productTrackingNumberConfiguration.hasWarranty"/>
       <field name="warrantyExpirationDate" readonly="false" hideIf="!hasWarranty"/>
-      <field name="isPerishable" hideIf="!product.trackingNumberConfiguration.isPerishable"/>
+      <field name="isPerishable" hideIf="!productTrackingNumberConfiguration.isPerishable"/>
       <field name="perishableExpirationDate" readonly="false" hideIf="!isPerishable"/>
       <field name="checkExpirationDateAtStockMoveRealization" hideIf="!isPerishable"/>
       <field name="origin"/>
@@ -48,6 +48,7 @@
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
       <field name="nbrOfPieces"/>
       <field name="note" colSpan="12"/>
+      <field name="productTrackingNumberConfiguration" hidden="true"/>
       <field name="originParentTrackingNumberSet" x-dirty="false" hidden="true"
         type="many-to-many" target="com.axelor.apps.stock.db.TrackingNumber"/>
     </panel>
@@ -68,39 +69,40 @@
         <panel-dashlet action="action-tracking-number-view-show-children" colSpan="12"/>
       </panel>
       <panel name="dimensionsAndMassPanels" title="Dimensions and masses"
-        showIf="product.trackingNumberConfiguration.isDimensional">
+        showIf="productTrackingNumberConfiguration.isDimensional">
         <panel name="dimensionsPanel" title="Dimensions"
-          showIf="product.trackingNumberConfiguration.isDimensional" colSpan="12">
+          showIf="productTrackingNumberConfiguration.isDimensional" colSpan="12">
           <field name="dimension0" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
           <field name="dimension1" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
           <field name="dimension2" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
           <field name="dimension3" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
-          <field name="product.trackingNumberConfiguration" hidden="true"/>
-          <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
+          <field name="productTrackingNumberConfiguration" x-dirty="false" type="many-to-one"
+            target="com.axelor.apps.stock.db.TrackingNumberConfiguration" hidden="true"/>
+          <field name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
             hidden="true"/>
         </panel>
-        <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional"
+        <panel name="massPanel" showIf="productTrackingNumberConfiguration.isDimensional"
           colSpan="12">
           <field name="unitMass"/>
           <field name="metricMass"/>
           <field name="mass"/>
-          <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensional"
+          <field name="volume" requiredIf="productTrackingNumberConfiguration.isDimensional"
             onChange="action-tracking-number-validate-volume-change"/>
           <button name="calculateBtn" title="Calculate"
             onClick="action-tracking-number-method-calculate-volume"/>
@@ -120,6 +122,12 @@
         <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
         <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
       </panel>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-tracking-number-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-tracking-number-view-control-entry" colSpan="12"/>
+      </panel>
     </panel-tabs>
 
   </form>
@@ -132,12 +140,12 @@
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
         domain="self.dtype = 'Product'" readonlyIf="$popup() || id != null"/>
-      <field name="product.trackingNumberConfiguration.hasWarranty" hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isPerishable" hidden="true"/>
-      <field name="product.trackingNumberConfiguration.isDimensional" hidden="true"/>
-      <field name="hasWarranty" hideIf="!product.trackingNumberConfiguration.hasWarranty"/>
+      <field name="productTrackingNumberConfiguration.hasWarranty" hidden="true"/>
+      <field name="productTrackingNumberConfiguration.isPerishable" hidden="true"/>
+      <field name="productTrackingNumberConfiguration.isDimensional" hidden="true"/>
+      <field name="hasWarranty" hideIf="!productTrackingNumberConfiguration.hasWarranty"/>
       <field name="warrantyExpirationDate" readonly="false" hideIf="!hasWarranty"/>
-      <field name="isPerishable" hideIf="!product.trackingNumberConfiguration.isPerishable"/>
+      <field name="isPerishable" hideIf="!productTrackingNumberConfiguration.isPerishable"/>
       <field name="perishableExpirationDate" readonly="false" hideIf="!isPerishable"/>
       <field name="checkExpirationDateAtStockMoveRealization" hideIf="!isPerishable"/>
       <field name="origin"/>
@@ -145,6 +153,8 @@
         grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
       <field name="nbrOfPieces"/>
       <field name="note" colSpan="12"/>
+      <field name="productTrackingNumberConfiguration" x-dirty="false" type="many-to-one"
+        target="com.axelor.apps.stock.db.TrackingNumberConfiguration" hidden="true"/>
       <field name="originParentTrackingNumberSet" x-dirty="false" hidden="true"
         type="many-to-many" target="com.axelor.apps.stock.db.TrackingNumber"/>
     </panel>
@@ -156,39 +166,39 @@
           colSpan="12"/>
       </panel>
       <panel name="dimensionsAndMassPanels" title="Dimensions and masses"
-        showIf="product.trackingNumberConfiguration.isDimensional">
+        showIf="productTrackingNumberConfiguration.isDimensional">
         <panel name="dimensionsPanel" title="Dimensions"
-          showIf="product.trackingNumberConfiguration.isDimensional" colSpan="12">
+          showIf="productTrackingNumberConfiguration.isDimensional" colSpan="12">
           <field name="dimension0" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"/>
           <field name="dimension1" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"/>
           <field name="dimension2" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"/>
           <field name="dimension3" colSpan="6"
-            showIf="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
-          <field name="product.trackingNumberConfiguration" hidden="true"/>
-          <field name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile"
+            showIf="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"/>
+          <field name="productTrackingNumberConfiguration" hidden="true"/>
+          <field name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension0"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension1"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension2"
             hidden="true"/>
           <field
-            name="product.trackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
+            name="productTrackingNumberConfiguration.trackingNumberConfigurationProfile.titleOfDimension3"
             hidden="true"/>
         </panel>
-        <panel name="massPanel" showIf="product.trackingNumberConfiguration.isDimensional"
+        <panel name="massPanel" showIf="productTrackingNumberConfiguration.isDimensional"
           colSpan="12">
           <field name="unitMass"/>
           <field name="metricMass"/>
           <field name="mass"/>
-          <field name="volume" requiredIf="product.trackingNumberConfiguration.isDimensionale"
+          <field name="volume" requiredIf="productTrackingNumberConfiguration.isDimensional"
             onChange="action-tracking-number-validate-volume-change"/>
           <button name="calculateBtn" title="Calculate"
             onClick="action-tracking-number-method-calculate-volume"/>
@@ -264,6 +274,7 @@
     <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-set-supplier"/>
     <action name="action-tracking-number-record-set-origin"/>
+    <action name="action-tracking-number-method-set-product-tracking-number-configuration"/>
   </action-group>
 
   <action-group name="action-tracking-number-group-on-change-product">
@@ -377,5 +388,29 @@
     <domain>self IN (:originParentsSet) </domain>
     <context name="originParentsSet" expr="eval: originParentTrackingNumberSet"/>
   </action-view>
+
+  <action-view name="action-tracking-number-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :trackingNumberId AND self.relatedToSelect =
+      'com.axelor.apps.stock.db.TrackingNumber'</domain>
+    <context name="trackingNumberId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-tracking-number-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.TrackingNumber'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-method
+    name="action-tracking-number-method-set-product-tracking-number-configuration">
+    <call class="com.axelor.apps.stock.web.TrackingNumberController"
+      method="setProductTrackingNumberConfiguration"/>
+  </action-method>
 
 </object-views>

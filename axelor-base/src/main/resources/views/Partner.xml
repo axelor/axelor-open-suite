@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -16,6 +16,8 @@
         onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
+      <button name="sirenApiBtn" title="Create from Sirene API"
+        onClick="action-partner-view-wizard-api-sirene-configuration"/>
     </toolbar>
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
@@ -156,6 +158,8 @@
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
+        <item name="sirenApiBtn" title="Fill from Sirene API"
+          action="save,action-partner-view-wizard-api-sirene-configuration"/>
       </menu>
     </menubar>
   </form>
@@ -164,6 +168,9 @@
     onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
     onSave="action-partner-group-onsave" width="large">
     <toolbar>
+      <button name="convertToContactPartnerBtn" title="Convert into a contact partner"
+        icon="fa-user" onClick="save,action-partner-method-change-employee-type"
+        showIf="id != null &amp;&amp; !isContact &amp;&amp; isEmployee &amp;&amp; partnerTypeSelect == 2"/>
       <button name="showMapBtn" title="Map" icon="fa-map-marker"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
     </toolbar>
@@ -341,12 +348,18 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
+        <field name="tagSet" widget="TagSelect" x-color-field="color"
+          grid-view="tag-simplified-grid" form-view="tag-form"
+          onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
           onChange="action-group-partner-registration-code-onChange"/>
         <field name="siren" colSpan="4" readonly="true" hidden="true"/>
         <field name="nic" colSpan="4" readonly="true" hidden="true"/>
+        <label name="isValidRegistrationCode" type="string" showTitle="false" x-dirty="false"
+          hidden="true" css="label-danger"/>
+        <spacer colSpan="8"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
@@ -354,9 +367,8 @@
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"
-          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()"
-          domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-          form-view="partner-form" grid-view="partner-grid"/>
+          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()" form-view="partner-form"
+          grid-view="partner-grid" onSelect="action-partner-method-set-parent-partner-domain"/>
         <field name="sellerCode" showIf="isFactor"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"
           if-module="axelor-account"/>
@@ -501,7 +513,8 @@
         <field name="saleOrderInformation"/>
         <field name="payerQuality" if-module="axelor-account"
           if="__config__.app.isApp('account')" hideIf="isEmployee"/>
-        <field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1"
+        <field name="salePartnerPriceList" canEdit="false"
+          onSelect="action-partner-method-sale-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')"/>
@@ -539,15 +552,17 @@
       <panel name="supplierPanel" title="Supplier" if-module="axelor-purchase"
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
-        <field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2"
+        <field name="purchasePartnerPriceList" canEdit="false"
+          onSelect="action-partner-method-purchase-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
           if-module="axelor-purchase"
           if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
         <field name="supplierQualityRating" hidden="true"/>
-        <field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false"
-          colSpan="3" onChange="action-record-set-supplier-quality-rating"/>
+        <field name="supplierQualityRatingSelect" widget="Rating"
+          x-rating-color="black,black,black,black,black" colSpan="3"
+          onChange="action-record-set-supplier-quality-rating"/>
         <field name="supplierArrivalProductQty" colSpan="3"/>
         <spacer name="supplierSpacer"/>
         <field name="partnerProductQualityRatingList" colSpan="12"
@@ -598,6 +613,22 @@
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
+      <panel name="projectPanel" title="Projects"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+        <panel-dashlet name="projectPanel" title="Projects"
+          action="action-partner-view-related-projects" colSpan="12"/>
+        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
+          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
+      </panel>
+      <panel name="qualityPanel" title="Quality" showIf="isSupplier || isCustomer"
+        if="__config__.app.isApp('quality')">
+        <panel-dashlet action="action-partner-view-supplier-quality-improvements"
+          showIf="isSupplier" colSpan="12"/>
+        <panel-dashlet action="action-partner-view-customer-quality-improvements"
+          showIf="isCustomer" colSpan="12"/>
+        <panel-dashlet action="action-partner-view-quality-controls"
+          showIf="isSupplier" colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="partnerAttrsPanel">
       <field name="partnerAttrs" colSpan="12"/>
@@ -614,7 +645,7 @@
     onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
     <toolbar>
       <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
-        icon="fa-user" onClick="action-convert-into-individual-partner,close"
+        icon="fa-user" onClick="save,action-convert-into-individual-partner,close"
         showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
     </toolbar>
     <menubar>
@@ -783,6 +814,8 @@
         onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       <button name="advancedExportBtn" title="Advanced export"
         onClick="action-method-advanced-export-wizard-view"/>
+      <button name="sirenApiBtn" title="Create from Sirene API"
+        onClick="action-partner-view-wizard-api-sirene-configuration"/>
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
@@ -1039,6 +1072,37 @@
     </panel>
   </form>
 
+  <form name="partner-api-sirene-configuration-wizard-form" title="Sirene API call"
+    model="com.axelor.utils.db.Wizard" onNew="action-api-sirene-configuration-group-on-new">
+    <panel name="mainPanel">
+      <field name="siretNumber" title="Siret number" type="string" required="true" colSpan="5"
+        readonlyIf="$parentSiret"/>
+      <button name="executeApiBtn" title="Fetch data"
+        onClick="action-api-sirene-configuration-method-fetch-data" colSpan="2"
+        readonlyIf="siretNumber == null"/>
+      <field name="$parentSiret" type="string" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-api-sirene-configuration-method-fetch-data">
+    <call class="com.axelor.apps.base.web.PartnerController" method="apiSireneFetchData"/>
+  </action-method>
+
+  <action-group name="action-api-sirene-configuration-group-on-new">
+    <action name="action-api-sirene-configuration-record-set-parent-siret"/>
+    <action name="action-api-sirene-configuration-record-set-siret-number" if="parentSiret"/>
+  </action-group>
+
+  <action-record name="action-api-sirene-configuration-record-set-parent-siret"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$parentSiret" expr="eval: _parentSiret"/>
+  </action-record>
+
+  <action-record name="action-api-sirene-configuration-record-set-siret-number"
+    model="com.axelor.utils.db.Wizard">
+    <field name="siretNumber" expr="eval: parentSiret"/>
+  </action-record>
+
   <action-group name="action-group-partner-onload">
     <action name="action-partner-attrs-change-name"/>
     <action name="action-partner-attrs-show-specific-tax-note"/>
@@ -1056,6 +1120,7 @@
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
     <action name="action-method-partner-siren-nic-onload"/>
+    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1087,7 +1152,6 @@
     <action name="action-partner-method-set-social-network-url"
       if="!__config__.app.isApp('crm')"/>
     <action name="action-partner-record-employee"/>
-    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-partner-group-check-can-change-factor"
@@ -1124,10 +1188,16 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
+    <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
-    <action name="action-method-partner-check-registration-code"/>
   </action-group>
+
+  <action-method
+    name="action-partner-method-check-if-registration-code-already-exists">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkIfRegistrationCodeExists"/>
+  </action-method>
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."
@@ -1237,6 +1307,9 @@
   <action-method name="action-partner-method-set-user-partner">
     <call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
   </action-method>
+  <action-method name="action-partner-method-set-parent-partner-domain">
+    <call class="com.axelor.apps.base.web.PartnerController" method="setParentPartnerDomain"/>
+  </action-method>
 
   <action-attrs name="action-partner-attrs-partner-seq-editable">
     <attribute name="readonly" for="partnerSeq"
@@ -1286,6 +1359,7 @@
   </action-group>
 
   <action-group name="action-group-partner-registration-code-onChange">
+    <action name="action-method-partner-check-registration-code"/>
     <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
@@ -1344,11 +1418,11 @@
   <action-record name="action-partner-record-set-balance"
     model="com.axelor.apps.base.db.Partner">
     <field name="$balance"
-      expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
-                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
-                    : (x -> x.balanceCustAccount)
-                ).sum()}"/>
+      expr="eval: accountingSituationList?.collect{
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? it.balanceDueDebtRecoveryCustAccount
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? it.balanceDueCustAccount
+                    : it.balanceCustAccount
+                }.sum()"/>
   </action-record>
 
   <action-record name="action-partner-record-employee"
@@ -1733,4 +1807,68 @@
       expr="eval: __repo__(Company).all().count() == 1"/>
   </action-attrs>
 
+  <action-attrs name="action-partner-attrs-set-partner-tag-domain">
+    <attribute name="domain" for="tagSet"
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+  </action-attrs>
+
+  <action-view name="action-partner-view-related-projects" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain>self.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-related-invoicing-projects"
+    title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+    <view type="grid" name="invoicing-project-grid"/>
+    <view type="form" name="invoicing-project-form"/>
+    <domain>self.project.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-wizard-api-sirene-configuration"
+    title="Sirene API call" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="partner-api-sirene-configuration-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_parentSiret" expr="eval: __this__.registrationCode"/>
+  </action-view>
+
+  <action-method name="action-partner-method-sale-partner-price-list-domain">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getSalePartnerPriceListDomain"/>
+  </action-method>
+
+  <action-method name="action-partner-method-purchase-partner-price-list-domain">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getPurchasePartnerPriceListDomain"/>
+  </action-method>
+
+  <action-view name="action-partner-view-supplier-quality-improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Supplier quality improvements">
+    <view type="grid" name="quality-improvement-partner-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.supplierPartner = :partner</domain>
+    <context name="partner" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-partner-view-customer-quality-improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Customer quality improvements">
+    <view type="grid" name="quality-improvement-partner-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.customerPartner = :partner</domain>
+    <context name="partner" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-partner-view-quality-controls"
+    model="com.axelor.apps.quality.db.QualityControl" title="Quality audits">
+    <view type="grid" name="quality-control-grid"/>
+    <view type="form" name="quality-control-form"/>
+    <domain>self.relatedToSelectId = :partnerId AND self.relatedToSelect =
+      'com.axelor.apps.base.db.Partner'</domain>
+    <context name="partnerId" expr="eval:__self__?.id"/>
+  </action-view>
 </object-views>

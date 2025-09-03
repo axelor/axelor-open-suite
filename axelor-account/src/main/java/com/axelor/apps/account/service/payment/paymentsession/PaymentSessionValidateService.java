@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -80,7 +80,7 @@ public interface PaymentSessionValidateService {
   boolean generatePaymentsFirst(PaymentSession paymentSession);
 
   InvoicePayment generatePendingPaymentFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm);
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException;
 
   BigDecimal getReconciledAmount(
       PaymentSession paymentSession,
@@ -124,6 +124,9 @@ public interface PaymentSessionValidateService {
   InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm);
 
   void updateStatus(PaymentSession paymentSession);
+
+  // Will be override in bank payment module
+  String getMoveOrigin(PaymentSession paymentSession);
 
   public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
 }

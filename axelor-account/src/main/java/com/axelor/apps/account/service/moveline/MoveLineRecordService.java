@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,4 +45,10 @@ public interface MoveLineRecordService {
   void resetPartnerFields(MoveLine moveLine);
 
   void setCounter(MoveLine moveLine, Move move);
+
+  void setMoveLineDates(Move move) throws AxelorException;
+
+  void setMoveLineOriginDates(Move move) throws AxelorException;
+
+  void computeDate(MoveLine moveLine, Move move) throws AxelorException;
 }

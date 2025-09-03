@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
@@ -34,11 +33,13 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -56,12 +57,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.AppBusinessProject;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -83,8 +84,6 @@ public class InvoicingProjectService {
   @Inject protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
 
   @Inject protected SaleOrderLineRepository saleOrderLineRepository;
-
-  protected static final String DATE_FORMAT_YYYYMMDDHHMM = "YYYYMMddHHmm";
 
   public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
@@ -136,10 +135,13 @@ public class InvoicingProjectService {
     polQueryMap.put("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED);
     polQueryMap.put("statusFinished", PurchaseOrderRepository.STATUS_FINISHED);
 
-    if (project.getIsShowTimeSpent()) {
+    if (project.getManageTimeSpent()) {
       StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
       Map<String, Object> logTimesQueryMap = new HashMap<>();
       logTimesQueryMap.put("project", project);
+
+      logTimesQueryBuilder.append(" AND self.timesheet.statusSelect = :statusValidated");
+      logTimesQueryMap.put("statusValidated", TimesheetRepository.STATUS_VALIDATED);
 
       if (invoicingProject.getDeadlineDate() != null) {
         logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");
@@ -282,22 +284,14 @@ public class InvoicingProjectService {
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    String title =
-        I18n.get("InvoicingProjectAnnex")
-            + "-"
-            + Beans.get(AppBaseService.class)
-                .getTodayDateTime()
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMM));
-
     File file =
         Beans.get(PrintingTemplatePrintService.class)
             .getPrintFile(
                 invoicingProjectAnnexPrintTemplate,
-                new PrintingGenFactoryContext(invoicingProject),
-                title,
-                false);
+                new PrintingGenFactoryContext(invoicingProject));
 
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
+    String fileName = file.getName();
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();
       Invoice invoice = invoicingProject.getInvoice();
@@ -309,10 +303,11 @@ public class InvoicingProjectService {
                   Beans.get(AccountConfigService.class)
                       .getInvoicePrintTemplate(invoice.getCompany()),
                   null));
+      metaFiles.attach(new FileInputStream(file), file.getName(), invoice);
       fileList.add(file);
-      file = PrintingTemplateHelper.mergeToFile(fileList, title);
+      file = PrintingTemplateHelper.mergeToFile(fileList, Files.getNameWithoutExtension(fileName));
     }
-    metaFiles.attach(new FileInputStream(file), file.getName(), invoicingProject);
+    metaFiles.attach(new FileInputStream(file), fileName, invoicingProject);
   }
 
   protected String getTimezone(InvoicingProject invoicingProject) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,10 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxNumberRepository;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
@@ -43,6 +46,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
@@ -80,6 +84,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected AppBusinessProjectService appBusinessProjectService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected AnalyticLineService analyticLineService;
+  protected PartnerAccountService partnerAccountService;
+  protected TaxNumberRepository taxNumberRepository;
 
   protected int sequence = 0;
 
@@ -99,7 +105,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       AppBusinessProjectService appBusinessProjectService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      PartnerAccountService partnerAccountService,
+      TaxNumberRepository taxNumberRepository) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -115,6 +123,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.appBusinessProjectService = appBusinessProjectService;
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
     this.analyticLineService = analyticLineService;
+    this.partnerAccountService = partnerAccountService;
+    this.taxNumberRepository = taxNumberRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -158,6 +168,15 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoice.setIsExpenseLineOnInvoiceGrouped(appBusinessProject.getIsExpenseLineOnInvoiceGrouped());
     invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
 
+    Partner companyPartner = company.getPartner();
+    if (companyPartner != null && companyPartner.getTaxNbr() != null) {
+      TaxNumber companyTaxNumber =
+          taxNumberRepository
+              .findByCompanyAndTaxNbr(company, companyPartner.getTaxNbr())
+              .fetchOne();
+      invoice.setCompanyTaxNumber(companyTaxNumber);
+    }
+
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
     invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     invoiceRepository.save(invoice);
@@ -192,6 +211,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         null,
         null,
         null,
+        null,
         null) {
 
       @Override
@@ -200,6 +220,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         Invoice invoice = super.createInvoiceHeader();
         invoice.setProject(project);
         invoice.setPriceList(project.getPriceList());
+        invoice.setFiscalPosition(invoicedPartner.getFiscalPosition());
+        invoice.setThirdPartyPayerPartner(partnerAccountService.getPayedByPartner(invoicedPartner));
         return invoice;
       }
     };

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -74,7 +74,8 @@ public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterSe
 
   @Override
   public BankOrderLineOrigin getAwaitingBankOrderLineOrigin(InvoiceTerm invoiceTerm) {
-    return bankOrderLineOriginRepository.all()
+    return bankOrderLineOriginRepository
+        .all()
         .filter(
             "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2 "
                 + "AND self.bankOrderLine.bankOrder IS NOT NULL "
@@ -88,7 +89,8 @@ public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterSe
             BankOrderRepository.STATUS_VALIDATED,
             BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT,
             BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT)
-        .fetch().stream()
+        .fetch()
+        .stream()
         .findAny()
         .orElse(null);
   }

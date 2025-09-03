@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -217,7 +218,7 @@ public class ContractLineServiceImpl implements ContractLineService {
               product,
               contract.getCompany(),
               contractLine.getFiscalPosition(),
-              false);
+              contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT);
     }
 
     return taxLineSet;
@@ -378,17 +379,43 @@ public class ContractLineServiceImpl implements ContractLineService {
             + " and (self.endDate = null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 
+    if (contract == null) {
+      return domain;
+    }
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
         && appSaleService.getAppSale().getEnableSalesProductByTradName()
-        && contract != null
         && contract.getTradingName() != null
         && contract.getCompany() != null
-        && contract.getCompany().getTradingNameSet() != null
-        && !contract.getCompany().getTradingNameSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(contract.getCompany().getTradingNameList())) {
       domain +=
           " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
     }
 
+    int targetTypeSelect = contract.getTargetTypeSelect();
+    if (targetTypeSelect == ContractRepository.CUSTOMER_CONTRACT
+        || targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
+      domain += " AND self.sellable = true";
+    } else if (targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT
+        || targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
+      domain += " AND self.purchasable = true";
+    }
+
     return domain;
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
+    if (contract.getCurrentContractVersion() == null) {
+      return;
+    }
+
+    if (!ObjectUtils.isEmpty(contract.getCurrentContractVersion().getContractLineList())) {
+      for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
+        AnalyticLineContractModel analyticLineModel =
+            new AnalyticLineContractModel(
+                contractLine, contract.getCurrentContractVersion(), contract);
+        analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
+      }
+    }
   }
 }

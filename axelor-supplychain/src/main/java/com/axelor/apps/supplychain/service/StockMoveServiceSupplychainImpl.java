@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -59,6 +60,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -96,8 +98,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected PartnerSupplychainService partnerSupplychainService;
   protected FixedAssetRepository fixedAssetRepository;
   protected PfpService pfpService;
-
-  @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+  protected SaleOrderConfirmService saleOrderConfirmService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
@@ -111,6 +113,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
+      ProductCompanyService productCompanyService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -119,9 +122,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       ReservedQtyService reservedQtyService,
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PfpService pfpService,
-      ProductCompanyService productCompanyService) {
+      SaleOrderConfirmService saleOrderConfirmService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -142,8 +145,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.reservedQtyService = reservedQtyService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.fixedAssetRepository = fixedAssetRepository;
-    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.pfpService = pfpService;
+    this.saleOrderConfirmService = saleOrderConfirmService;
+    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
   }
 
   @Override
@@ -332,7 +336,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
     } else if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      saleOrderWorkflowService.confirmSaleOrder(saleOrder);
+      saleOrderConfirmService.confirmSaleOrder(saleOrder);
     }
   }
 
@@ -477,11 +481,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public boolean splitStockMoveLines(
+  public void splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
       throws AxelorException {
     checkAssociatedInvoiceLine(stockMoveLines);
-    return super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
+    super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
   }
 
   /**
@@ -622,7 +626,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       if (partner != null) {
         if (!CollectionUtils.isEmpty(partner.getManagedByPartnerLinkList())) {
           List<PartnerLink> partnerLinkList = partner.getManagedByPartnerLinkList();
-          // Retrieve all Invoiced by Type
+          // Retrieve all Invoiced to Type
           List<PartnerLink> partnerLinkInvoicedByList =
               partnerLinkList.stream()
                   .filter(
@@ -630,7 +634,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                           partnerLink
                               .getPartnerLinkType()
                               .getTypeSelect()
-                              .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY))
+                              .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO))
                   .collect(Collectors.toList());
 
           // If there is only one, then it is the default one
@@ -729,9 +733,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Override
   public void fillRealQuantities(StockMove stockMove) {
     Objects.requireNonNull(stockMove);
-
-    if (stockMove.getStockMoveLineList() != null) {
-      stockMove.getStockMoveLineList().forEach(sml -> sml.setRealQty(sml.getQty()));
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (stockMoveLineList != null) {
+      for (StockMoveLine sml : stockMoveLineList) {
+        sml.setRealQty(sml.getQty());
+        sml.setTotalNetMass(sml.getQty().multiply(sml.getNetMass()));
+      }
     }
   }
 }

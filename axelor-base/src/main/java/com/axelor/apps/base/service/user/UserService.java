@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -77,18 +77,27 @@ public interface UserService {
   public Long getUserActiveCompanyId();
 
   /**
-   * Method that return the active team of the current connected user
+   * Retrieves the appropriate company logo for the currently authenticated user, based on the
+   * user's selected theme logo mode (dark or light).
    *
-   * @return Team the active team
+   * <p>If the user's theme specifies a dark or light logo mode, the corresponding logo is returned.
+   * If the selected logo is not available or the theme mode is invalid, the default company logo is
+   * returned as a fallback.
+   *
+   * @param mode an theme mode indicator (currently unused)
+   * @return the selected {@link MetaFile} logo, or the default company logo if none is set or
+   *     applicable
    */
-  public MetaFile getUserActiveCompanyLogo();
+  public MetaFile getUserActiveCompanyLogo(String mode);
 
   /**
-   * Method that return company logo link
+   * Returns the download URL for the current user’s company logo based on their theme, falling back
+   * to the default logo if the theme-specific one is unavailable.
    *
-   * @return the logo Link
+   * @param mode theme mode indicator (unused)
+   * @return the logo’s download URL, or null if no logo (or company) is available
    */
-  public String getUserActiveCompanyLogoLink();
+  public String getUserActiveCompanyLogoLink(String mode);
 
   /**
    * Method that return the active team of the current connected user
@@ -140,8 +149,12 @@ public interface UserService {
    * @throws AxelorException
    */
   User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException;
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          MessagingException,
+          IOException,
+          AxelorException;
 
   /**
    * Processs changed user password.
@@ -194,4 +207,6 @@ public interface UserService {
   List<MetaPermissionRule> getMetaPermissionRules(User user);
 
   void setActiveCompany(User user, Company company);
+
+  void setTradingName(User user, TradingName tradingName);
 }

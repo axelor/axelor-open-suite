@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
-    orderBy="-sentDateTime">
+    orderBy="-sentDateTime" groupBy="period">
     <hilite color="danger" if="statusSelect == 5"/>
     <hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -15,8 +15,9 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="inTaxTotal" aggregate="sum"/>
     <field name="currency" colSpan="2" required="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="ventilated"/>
   </grid>
 
@@ -44,12 +45,13 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
     onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
-    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
+    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
+    canCopy="false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"
@@ -117,11 +119,9 @@
             hidden="true"/>
           <button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse"
             hidden="true"/>
-          <button name="cancelBtn"
-            onClick="action-expense-validate-period,save,com.axelor.apps.hr.web.expense.ExpenseController:cancel,action-expense-attrs-hide-button-readonly-field"
-            hidden="true" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
-          <button name="draftBtn"
-            onClick="action-expense-record-draft,save,action-expense-attrs-hide-button-readonly-field"
+          <button name="cancelBtn" onClick="action-expense-group-cancel" hidden="true"
+            title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+          <button name="draftBtn" onClick="action-expense-method-draft"
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"
             onClick="save,action-expense-add-payment-form"
@@ -184,13 +184,12 @@
           <![CDATA[<><Badge bg="warning">At least one line of this expense exceeds the authorised amount for its type of expense.</Badge></>]]>
         </static>
         <panel-related name="generalExpenseLineListPanel"
-          field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1"
-          colSpan="12" editable="true" form-view="expense-line-form" grid-view="expense-line-grid"
+          field="generalExpenseLineList" title="General expenses" colSpan="12" editable="true"
+          form-view="expense-line-form" grid-view="expense-line-grid"
           onChange="action-expense-group-expense-line-on-change,action-expense-method-check-total-amount"/>
       </panel>
       <panel-related name="kilometricExpenseLineListPanel"
-        field="kilometricExpenseLineList" title="Kilometric Allowances"
-        readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
+        field="kilometricExpenseLineList" title="Kilometric Allowances" colSpan="12" editable="true"
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
@@ -206,7 +205,7 @@
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
-          <field name="paymentStatusSelect" colSpan="4"/>
+          <field name="paymentStatusSelect" colSpan="4" widget="single-select"/>
           <field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
           <field name="paymentDate" showIf="paymentDate" colSpan="4" readonly="true"/>
           <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
@@ -223,14 +222,15 @@
   </form>
 
   <form name="popup-expense-refusal-form" title="Ground for refusal"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="groundForRefusal" showTitle="false"/>
     </panel>
   </form>
 
   <form name="popup-expense-form" title="Select the expense you want to edit"
-    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select"
+    canCopy="false">
     <panel name="mainPanel">
       <field name="$expenseSelect" title="Select Expense" type="many-to-one"
         target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
@@ -240,7 +240,7 @@
   </form>
 
   <form name="popup-expense-add-payment-form" title="Choose payment mode"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="paymentMode" domain="self.inOutSelect = 2"/>
       <field name="paymentDate" colSpan="4" required="true"/>
@@ -249,11 +249,19 @@
     </panel>
   </form>
 
+  <form name="complete-my-expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense"
+    width="large" onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
+    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
+    canNew="false" canCopy="false">
+    <panel-include view="expense-form"/>
+  </form>
+
   <action-group name="action-expense-group-form-onNew">
     <action name="action-expense-record-default"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-validate-check-user-employee"/>
   </action-group>
 
   <action-group name="action-expense-group-form-onLoad">
@@ -285,10 +293,16 @@
     <action name="save"/>
   </action-group>
 
+  <action-group name="action-expense-group-cancel">
+    <action name="save"/>
+    <action name="action-expense-method-cancel"/>
+  </action-group>
+
   <action-group name="action-expense-group-expense-line-on-change">
     <action name="action-expense-method-compute"/>
     <action name="action-expense-method-update-moveDate-and-period"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-method-check-analytic-axis"/>
   </action-group>
 
   <action-record name="action-expense-record-default"
@@ -305,7 +319,7 @@
     <field name="bankDetails"
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
     <field name="currency"
-      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany.currency ?: __user__.activeCompany.currency"/>
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany?.currency ?: __user__.activeCompany?.currency"/>
     <field name="typeSelect"
       expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
   </action-record>
@@ -315,7 +329,7 @@
     <field name="bankDetails"
       expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
     <field name="currency"
-      expr="eval: employee?.mainEmploymentContract?.payCompany.currency ?: employee?.user?.activeCompany?.currency"/>
+      expr="eval: employee?.mainEmploymentContract?.payCompany?.currency ?: employee?.user?.activeCompany?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
@@ -377,8 +391,7 @@
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-    <attribute name="hidden" for="cancelBtn"
-      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || ventilated"/>
+    <attribute name="hidden" for="cancelBtn" expr="eval: statusSelect == 6 || ventilated"/>
     <attribute name="readonly" for="period" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="period" expr="eval: ventilated"
@@ -392,7 +405,7 @@
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
     <attribute name="readonly" for="employee"
-      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
+      expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0) || _isEmployeeReadOnly"/>
   </action-attrs>
 
   <action-attrs name="action-expense-attrs-expense-company-cb">
@@ -400,9 +413,9 @@
       expr="eval: companyCbSelect == 1"/>
   </action-attrs>
 
-  <action-validate name="action-expense-validate-period">
-    <error message="Period is closed"
-      if="period?.statusSelect == 2 || period?.statusSelect == 5"/>
+  <action-validate name="action-validate-check-user-employee">
+    <error message="Please create an employee for the user ${__user__.name}"
+      if="__user__.employee == null &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0"/>
   </action-validate>
 
   <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"
@@ -464,6 +477,18 @@
 
   <action-method name="action-expense-method-check-line-file">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkLineFile"/>
+  </action-method>
+
+  <action-method name="action-expense-method-cancel">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-expense-method-draft">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="backToDraft"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-analytic-axis">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkAnalyticAxis"/>
   </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"

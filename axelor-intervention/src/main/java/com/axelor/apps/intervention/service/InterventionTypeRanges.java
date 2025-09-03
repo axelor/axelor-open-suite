@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,7 +66,8 @@ public class InterventionTypeRanges {
         Optional.ofNullable(interventionType.getAdvancedStartupMonitoringRange())
             .map(Range::getId)
             .orElse(null),
-        Optional.ofNullable(interventionType.getHeaderRangeList()).orElse(Collections.emptyList())
+        Optional.ofNullable(interventionType.getHeaderRangeList())
+            .orElse(Collections.emptyList())
             .stream()
             .filter(Objects::nonNull)
             .map(OrderedRange::getRangeVal)
@@ -74,13 +75,15 @@ public class InterventionTypeRanges {
             .map(Range::getId)
             .collect(Collectors.toList()),
         Optional.ofNullable(interventionType.getEquipmentRangeList())
-            .orElse(Collections.emptyList()).stream()
+            .orElse(Collections.emptyList())
+            .stream()
             .filter(Objects::nonNull)
             .map(OrderedRange::getRangeVal)
             .filter(Objects::nonNull)
             .map(Range::getId)
             .collect(Collectors.toList()),
-        Optional.ofNullable(interventionType.getFooterRangeList()).orElse(Collections.emptyList())
+        Optional.ofNullable(interventionType.getFooterRangeList())
+            .orElse(Collections.emptyList())
             .stream()
             .filter(Objects::nonNull)
             .map(OrderedRange::getRangeVal)

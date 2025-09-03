@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,9 @@ public interface InvoiceLineTaxAttrsService {
   void addExTaxBaseScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 
   void addTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
+
+  void addPercentageTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 
   void addInTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);

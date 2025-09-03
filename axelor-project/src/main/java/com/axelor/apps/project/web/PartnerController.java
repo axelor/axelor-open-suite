@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ public class PartnerController {
               .model(Project.class.getName())
               .add("form", "project-form")
               .add("grid", "project-grid")
-              .param("search-filters", "project-filters")
+              .param("search-filters", "project-project-filters")
               .param("forceTitle", "true")
               .param("forceEdit", "true")
               .context("_showRecord", project.getId())

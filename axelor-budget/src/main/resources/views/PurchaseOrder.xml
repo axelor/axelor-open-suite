@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="purchase-order-grid" id="budget-purchase-order-grid" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
@@ -19,14 +19,8 @@
 
     <extend target="/">
       <attribute name="onSave" value="action-budget-purchase-order-group-on-save"/>
-      <attribute name="onNew" value="action-budget-group-purchase-order-on-new-actions"/>
       <attribute name="onLoad" value="action-budget-purchase-order-group-onload"/>
       <attribute name="width" value="large"/>
-    </extend>
-
-    <extend target="//field[@name='project']">
-      <attribute name="onChange"
-        value="budget-action-purchase-order-record-project-onchange"/>
     </extend>
 
     <extend target="//panel[@name='timetablePanel']">
@@ -34,12 +28,14 @@
         <panel name="budgetDistributionPanel" title="Budget distribution"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           showIf="statusSelect &lt;= 4">
-          <field name="project" colSpan="3"
-            onChange="budget-action-purchase-order-record-project-onchange"
-            hideIf="orderTypeSelect == 4"/>
+          <panel name="datesPanel" colSpan="12" itemSpan="4" readonlyIf="statusSelect &gt;= 3">
+            <field name="budgetFromDate" requiredIf="budgetToDate"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"/>
+            <button name="initBudgetDatesBtn" title="Init budget dates"
+              onClick="action-purchase-order-method-initialize-budget-dates"/>
+          </panel>
           <field name="companyDepartment" colSpan="3"
-            onChange="action-budget-purchase-order-attrs-company-dept-onchange"
-            requiredIf="$enableBudgetKey"/>
+            onChange="action-budget-purchase-order-attrs-company-dept-onchange"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
             domain="self.company = :company AND self.globalBudget.statusSelect = 2 AND ((:companyDepartment IS NOT NULL AND self.globalBudget.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL)"/>
           <button name="applyToAllBtn" title="Apply to all"
@@ -61,12 +57,14 @@
         value="action-budget-group-purchase-order-on-validate-actions"/>
     </extend>
 
-    <extend target="//button[@name='cancelBtn']">
+    <extend target="//button[@name='requestedBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           onClick="action-budget-group-purchase-order-compute-budget-distribution" hidden="true"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"
+          icon="clipboard2-data-fill"
+          readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       </insert>
     </extend>
 
@@ -74,7 +72,6 @@
       target="panel-tabs[@name='mainPanelTab']/panel[@name='budgetDistributionPanel']/*[last()]">
       <insert position="after">
         <field name="$budgetExceedAlert" type="string" hidden="true"/>
-        <field name="$enableBudgetKey" type="boolean" hidden="true"/>
         <field name="budgetDistributionGenerated" hidden="true"/>
         <field name="company.accountConfig.enableBudgetKey" hidden="true"/>
       </insert>
@@ -96,14 +93,9 @@
   <action-group name="action-budget-purchase-order-group-on-save">
     <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="save"/>
     <action name="action-budget-purchase-order-method-fill-budget-str"
-      if="__config__.app.isApp('budget')"/>
-  </action-group>
-
-  <action-group name="action-budget-group-purchase-order-on-new-actions">
-    <action name="action-supplychain-group-purchase-order-on-new-actions"/>
-    <action name="action-budget-purchase-order-record-load-budget-key-config"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
@@ -127,6 +119,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-budget-validate-request"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
@@ -139,6 +132,11 @@
 
   <action-method name="action-purchase-order-method-budget-validate-request">
     <call class="com.axelor.apps.budget.web.PurchaseOrderController" method="validateRequest"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="initializeBudgetDates"/>
   </action-method>
 
   <action-record name="action-budget-purchase-order-record-get-budget-balance"
@@ -159,22 +157,10 @@
 
   <action-group name="action-budget-purchase-order-group-onload">
     <action name="action-group-purchase-order-on-load-actions"/>
-    <action name="action-budget-purchase-order-record-load-budget-key-config"
-      if="__config__.app.isApp('budget')"/>
     <action
       name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
   </action-group>
-
-  <action-record name="action-budget-purchase-order-record-load-budget-key-config"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="$enableBudgetKey"
-      expr="eval:__user__.activeCompany.accountConfig.enableBudgetKey"
-      if="__user__.activeCompany != null"/>
-    <field name="$enableBudgetKey"
-      expr="eval:__repo__(Company).all().fetchOne().accountConfig.enableBudgetKey"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-  </action-record>
 
   <action-attrs name="action-budget-purchase-order-attrs-budget-level-domain">
     <attribute name="domain" for="globalBudget"
@@ -190,11 +176,6 @@
     <attribute name="value" for="globalBudget" expr="eval:null"
       if="__config__.app.isApp('budget')"/>
   </action-attrs>
-
-  <action-record name="budget-action-purchase-order-record-project-onchange"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="company" expr="eval: project ? project.company : null"/>
-  </action-record>
 
   <action-method
     name="action-method-budget-purchase-order-compute-budget-distribution">

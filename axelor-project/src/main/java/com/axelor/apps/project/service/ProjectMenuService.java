@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,9 @@ import java.util.Map;
 
 public interface ProjectMenuService {
 
-  public Map<String, Object> getAllOpenProjectTasks();
+  public Map<String, Object> getAllOpenProjectTasks(Project project);
 
-  public Map<String, Object> getAllOpenProjectTickets();
-
-  public Map<String, Object> getAllProjects();
+  public Map<String, Object> getAllProjects(Long projectId);
 
   public Map<String, Object> getAllProjectTasks();
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -140,8 +141,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     task.setTotalCosts(costPrice.multiply(qty).setScale(2, RoundingMode.HALF_UP));
     task.setInvoicingUnit(product.getUnit());
     task.setCurrency(product.getSaleCurrency());
-    task.setUnitPrice(
-        (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
+    task.setUnitPrice(saleOrderLine.getPrice());
 
     if (Objects.isNull(parent)) {
       task.setSaleOrderLine(saleOrderLine);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,18 +44,26 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
-import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
@@ -66,7 +74,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoiceServiceImpl {
+public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderBudgetServiceImpl {
 
   private PriceListService priceListService;
 
@@ -89,6 +97,17 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       InvoiceLineOrderService invoiceLineOrderService,
       CurrencyService currencyService,
       CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
+      InvoiceTaxService invoiceTaxService,
+      com.axelor.apps.budget.db.repo.BudgetRepository budgetRepository,
+      PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
+      BudgetDistributionService budgetDistributionService,
+      BudgetService budgetService,
+      com.axelor.apps.budget.db.repo.BudgetDistributionRepository budgetDistributionRepository,
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleService currencyScaleService1,
+      PurchaseOrderRepository purchaseOrderRepo,
       PriceListService priceListService,
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
@@ -104,7 +123,18 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
         addressService,
         invoiceLineOrderService,
         currencyService,
-        currencyScaleService);
+        currencyScaleService,
+        orderInvoiceService,
+        invoiceTaxService,
+        budgetRepository,
+        purchaseOrderLineBudgetService,
+        budgetDistributionService,
+        budgetService,
+        budgetDistributionRepository,
+        appBudgetService,
+        budgetToolsService,
+        currencyScaleService1,
+        purchaseOrderRepo);
     this.priceListService = priceListService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.appBusinessProjectService = appBusinessProjectService;

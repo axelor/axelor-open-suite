@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,9 +26,12 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderShipmentService;
+import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
@@ -170,10 +173,12 @@ public class PurchaseOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
       String message =
-          Beans.get(PurchaseOrderSupplychainService.class).createShipmentCostLine(purchaseOrder);
+          Beans.get(PurchaseOrderShipmentService.class)
+              .createShipmentCostLine(purchaseOrder, shipmentMode);
       if (message != null) {
-        response.setInfo(message);
+        response.setNotify(message);
       }
       response.setValues(purchaseOrder);
     } catch (Exception e) {
@@ -189,6 +194,24 @@ public class PurchaseOrderController {
           Beans.get(PurchaseOrderSupplychainService.class)
               .getFromStockLocation(purchaseOrder.getSupplierPartner(), company);
       response.setValue("fromStockLocation", fromStockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updatePurchaseOrderLinesStockLocation(
+      ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    List<PurchaseOrderLine> purchaseOrderLineList =
+        Beans.get(PurchaseOrderStockService.class)
+            .updatePurchaseOrderLinesStockLocation(purchaseOrder);
+    response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      Beans.get(PurchaseOrderSupplychainService.class).checkAnalyticAxisByCompany(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

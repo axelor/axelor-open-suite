@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,15 +20,29 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationComputeNameService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import javax.validation.ValidationException;
 
 public class BankReconciliationManagementRepository extends BankReconciliationRepository {
+
+  protected BankReconciliationComputeNameService bankReconciliationComputeNameService;
+  protected BankReconciliationLineUnreconciliationService
+      bankReconciliationLineUnreconciliationService;
+
+  @Inject
+  public BankReconciliationManagementRepository(
+      BankReconciliationComputeNameService bankReconciliationComputeNameService,
+      BankReconciliationLineUnreconciliationService bankReconciliationLineUnreconciliationService) {
+    this.bankReconciliationComputeNameService = bankReconciliationComputeNameService;
+    this.bankReconciliationLineUnreconciliationService =
+        bankReconciliationLineUnreconciliationService;
+  }
+
   @Override
   public BankReconciliation copy(BankReconciliation entity, boolean deep) {
     entity.setStatusSelect(STATUS_DRAFT);
@@ -47,7 +61,7 @@ public class BankReconciliationManagementRepository extends BankReconciliationRe
   public BankReconciliation save(BankReconciliation entity) {
 
     if (Strings.isNullOrEmpty(entity.getName())) {
-      entity.setName(Beans.get(BankReconciliationCreateService.class).computeName(entity));
+      entity.setName(bankReconciliationComputeNameService.computeName(entity));
     }
 
     return super.save(entity);
@@ -64,8 +78,8 @@ public class BankReconciliationManagementRepository extends BankReconciliationRe
       throw new ValidationException(
           I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION));
     } else {
-      Beans.get(BankReconciliationLineService.class)
-          .unreconcileLines(entity.getBankReconciliationLineList());
+      bankReconciliationLineUnreconciliationService.unreconcileLines(
+          entity.getBankReconciliationLineList());
       super.remove(entity);
     }
   }

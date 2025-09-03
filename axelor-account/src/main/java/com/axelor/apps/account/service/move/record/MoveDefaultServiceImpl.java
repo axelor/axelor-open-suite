@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -120,7 +120,7 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
       moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
 
       if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
-        taxEquiv = fiscalPositionService.getTaxEquivFromTaxLines(fiscalPosition, taxLineSet);
+        taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
 
         if (taxEquiv != null) {
           moveLine.setTaxLineBeforeReverseSet(taxLineSet);

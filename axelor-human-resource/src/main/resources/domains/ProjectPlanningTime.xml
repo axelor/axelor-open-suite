@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -41,6 +41,25 @@
 	  	]]>
     </string>
 
+    <finder-method name="findByEmployeeProjectAndPeriod"
+      using="employee,project,LocalDate:fromDate,LocalDate:toDate"
+      filter="self.employee = :employee AND ((self.project IS NOT NULL AND self.project = :project) OR (self.projectTask IS NOT NULL AND self.projectTask.project = :project))
+                   AND ((self.startDateTime BETWEEN :fromDate AND :toDate) OR (self.endDateTime BETWEEN :fromDate AND :toDate) OR (self.startDateTime &lt;
+                   :fromDate AND self.endDateTime &gt; :toDate))"
+      all="true"/>
+
+    <finder-method name="findByProjectAndPeriod"
+      using="project,LocalDate:fromDate,LocalDate:toDate"
+      filter="((self.project IS NOT NULL AND self.project = :project) OR (self.projectTask IS NOT NULL AND self.projectTask.project = :project))
+                   AND ((self.startDateTime BETWEEN :fromDate AND :toDate) OR (self.endDateTime BETWEEN :fromDate AND :toDate) OR (self.startDateTime &lt;
+                   :fromDate AND self.endDateTime &gt; :toDate))"
+      all="true"/>
+    <finder-method name="findByEmployeeAndPeriod"
+      using="employee,LocalDate:fromDate,LocalDate:toDate"
+      filter="(self.employee IS NOT NULL AND self.employee = :employee)
+                   AND ((self.startDateTime BETWEEN :fromDate AND :toDate) OR (self.endDateTime BETWEEN :fromDate AND :toDate) OR (self.startDateTime &lt;
+                   :fromDate AND self.endDateTime &gt; :toDate))"
+      all="true"/>
     <extra-imports>
       <![CDATA[
 	      import com.axelor.inject.Beans;

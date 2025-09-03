@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,11 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupBusinessService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -45,30 +47,15 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskController {
 
-  public void updateDiscount(ActionRequest request, ActionResponse response) {
-
-    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-
-    if (projectTask.getProduct() == null || projectTask.getProject() == null) {
-      return;
-    }
-
-    try {
-      projectTask = Beans.get(ProjectTaskBusinessProjectService.class).updateDiscount(projectTask);
-
-      response.setValue("discountTypeSelect", projectTask.getDiscountTypeSelect());
-      response.setValue("discountAmount", projectTask.getDiscountAmount());
-      response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void compute(ActionRequest request, ActionResponse response) {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     try {
+      projectTask = Beans.get(ProjectTaskBusinessProjectService.class).updateDiscount(projectTask);
       projectTask = Beans.get(ProjectTaskBusinessProjectService.class).compute(projectTask);
+      response.setValue("discountTypeSelect", projectTask.getDiscountTypeSelect());
+      response.setValue("discountAmount", projectTask.getDiscountAmount());
+      response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
       response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
       response.setValue("exTaxTotal", projectTask.getExTaxTotal());
       response.setValue("totalCosts", projectTask.getTotalCosts());
@@ -224,5 +211,42 @@ public class ProjectTaskController {
     String domain =
         Beans.get(ProjectFrameworkContractService.class).getSupplierContractDomain(projectTask);
     response.setAttr("frameworkSupplierContract", "domain", domain);
+  }
+
+  @ErrorException
+  public void updateSoldTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateSoldTime(projectTask));
+  }
+
+  @ErrorException
+  public void updateUpdatedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateUpdatedTime(projectTask));
+  }
+
+  @ErrorException
+  public void updateQuantity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class).updateQuantity(projectTask));
+  }
+
+  @ErrorException
+  public void updateFinancialDatas(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    response.setValues(
+        Beans.get(ProjectTaskGroupBusinessService.class)
+            .updateFinancialDatasWithoutPriceUnits(projectTask));
   }
 }

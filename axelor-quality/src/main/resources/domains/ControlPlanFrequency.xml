@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
   <entity name="ControlPlanFrequency" cacheable="true">
-    <string name="name" translatable="true">
-      <![CDATA[
-    	String fullName = "";
-    	if(sampleQty != null && sampleFrequency != null && sampleQtyUnit != null && sampleFrequencyUnit != null){
-    		return sampleQty.toString() + " (" + sampleQtyUnit.getName() + ") " + "each" + " " + sampleFrequency.toString() + " (" + sampleFrequencyUnit.getName() + ") ";
-    	}
-    	return "";
-    ]]>
-    </string>
+    <string name="name" translatable="true" readonly="true"/>
     <integer name="sampleTypeSelect" selection="quality.control.plan.frequency.type.select"
       title="Sample type"/>
     <decimal name="sampleQty" title="Sample quantity" required="true"/>

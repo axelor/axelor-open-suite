@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,8 +30,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class EquipmentController {
 
@@ -40,9 +38,6 @@ public class EquipmentController {
 
   public void fillDefaultValues(ActionRequest request, ActionResponse response) {
     try {
-      response.setValue(
-          "customerWarrantyOnPartEndDate",
-          LocalDate.parse("01/01/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
       if (request.getContext().get(FIELD_PARTNER_ID) != null) {
         response.setValue(
             "partner",

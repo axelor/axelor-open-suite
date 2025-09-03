@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -355,7 +355,8 @@ public class InterventionSurveyGeneratorImpl implements InterventionSurveyGenera
   protected void deleteOrphanInterventionRange(CriteriaQuery<InterventionRange> cr) {
     List<Long> interventionRangeIds =
         Optional.ofNullable(JPA.em().createQuery(cr).getResultList())
-            .orElse(Collections.emptyList()).stream()
+            .orElse(Collections.emptyList())
+            .stream()
             .map(InterventionRange::getId)
             .collect(Collectors.toList());
 

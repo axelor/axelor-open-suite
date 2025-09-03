@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -18,6 +18,9 @@
     <one-to-many name="controlEntrySamplesList"
       ref="com.axelor.apps.quality.db.ControlEntrySample" title="Control entry samples"
       mappedBy="controlEntry"/>
+    <string name="relatedToSelect" title="Related to"
+      selection="quality.control.entry.related.to.select"/>
+    <long name="relatedToSelectId"/>
 
     <extra-code>
 			<![CDATA[

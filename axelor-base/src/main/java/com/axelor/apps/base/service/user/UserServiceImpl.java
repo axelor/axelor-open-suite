@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.theme.MetaThemeFetchService;
 import com.axelor.auth.AuthService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
@@ -44,6 +45,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
+import com.axelor.meta.db.ThemeLogoMode;
 import com.axelor.studio.db.AppBase;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
@@ -76,6 +78,7 @@ public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;
   @Inject private MetaFiles metaFiles;
+  @Inject private MetaThemeFetchService metaThemeFetchService;
 
   public static final String DEFAULT_LOCALE = "en";
 
@@ -171,39 +174,40 @@ public class UserServiceImpl implements UserService {
     return company.getId();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team
-   */
   @Override
-  public MetaFile getUserActiveCompanyLogo() {
-
-    final Company company = this.getUserActiveCompany();
+  public MetaFile getUserActiveCompanyLogo(String mode) {
+    User user = AuthUtils.getUser();
+    Company company = user != null ? this.getUserActiveCompany() : null;
 
     if (company == null) {
       return null;
     }
-
-    return company.getLogo();
+    MetaFile logo = null;
+    ThemeLogoMode logoMode = metaThemeFetchService.getCurrentThemeLogoMode(user);
+    switch (logoMode) {
+      case DARK:
+        logo = company.getDarkLogo();
+        break;
+      case LIGHT:
+        logo = company.getLightLogo();
+        break;
+      case NONE:
+      default:
+        logo = company.getLogo();
+        break;
+    }
+    return Optional.ofNullable(logo).orElse(company.getLogo());
   }
 
   @Override
-  public String getUserActiveCompanyLogoLink() {
-
-    final Company company = this.getUserActiveCompany();
-
-    if (company == null) {
-      return null;
-    }
-
-    MetaFile logo = company.getLogo();
+  public String getUserActiveCompanyLogoLink(String mode) {
+    MetaFile logo = getUserActiveCompanyLogo(mode);
 
     if (logo == null) {
       return null;
     }
 
-    return metaFiles.getDownloadLink(logo, company);
+    return metaFiles.getDownloadLink(logo, getUserActiveCompany());
   }
 
   @Override
@@ -302,8 +306,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          MessagingException,
+          IOException,
+          AxelorException {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
     Preconditions.checkNotNull(values, I18n.get("User context cannot be null."));
 
@@ -521,6 +529,14 @@ public class UserServiceImpl implements UserService {
   @Transactional(rollbackOn = Exception.class)
   public void setActiveCompany(User user, Company company) {
     user.setActiveCompany(company);
+    user.setTradingName(null);
+    userRepo.save(user);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setTradingName(User user, TradingName tradingName) {
+    user.setTradingName(tradingName);
     userRepo.save(user);
   }
 }

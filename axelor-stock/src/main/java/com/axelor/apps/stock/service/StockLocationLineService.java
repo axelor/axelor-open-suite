@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,6 @@ import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface StockLocationLineService {
 
@@ -104,8 +103,6 @@ public interface StockLocationLineService {
       LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
-  BigDecimal getTrackingNumberAvailableQty(TrackingNumber trackingNumber);
-
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException;
 
@@ -137,37 +134,6 @@ public interface StockLocationLineService {
       StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
 
   /**
-   * Allow to get the location line of a given product in a given location.
-   *
-   * @param stockLocation A location
-   * @param product A product
-   * @return The stock location line if found, else null
-   */
-  public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product);
-
-  /**
-   * Allow to get the location lines of a given product.
-   *
-   * @param product
-   * @return
-   */
-  public List<StockLocationLine> getStockLocationLines(Product product);
-
-  /**
-   * Allow to get the detailed location line of a given product, product variant and tracking number
-   * in a given location.
-   *
-   * @param stockLocation A location
-   * @param product A product
-   * @param trackingNumber A tracking number
-   * @return The stock location line if found, else null
-   */
-  public StockLocationLine getDetailLocationLine(
-      StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
-
-  List<StockLocationLine> getDetailLocationLines(Product product, TrackingNumber trackingNumber);
-
-  /**
    * Allow the creation of a location line of a given product in a given location.
    *
    * @param stockLocation A location
@@ -189,25 +155,6 @@ public interface StockLocationLineService {
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
 
   /**
-   * Allow to get the available qty of product in a given location.
-   *
-   * @param stockLocation
-   * @param product
-   * @return
-   */
-  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
-
-  /**
-   * Allow to get the available qty of product for a given Tracking Number.
-   *
-   * @param stockLocation
-   * @param trackingNumber
-   * @return
-   */
-  public BigDecimal getTrackingNumberAvailableQty(
-      StockLocation stockLocation, TrackingNumber trackingNumber);
-
-  /**
    * For a given line, compute the future quantity of a stock location line from its current qty and
    * planned stock move lines with the same stock location and the same product.
    *
@@ -215,35 +162,6 @@ public interface StockLocationLineService {
    * @return the future quantity of the stock location line.
    */
   BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
-
-  /**
-   * Create a query to find stock location line of a product of a specific/all company and a
-   * specific/all stock location
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getStockLocationLineListForAProduct(
-      Long productId, Long companyId, Long stockLocationId);
-
-  /**
-   * Create a query to find product's available qty of a specific/all company and a specific/all
-   * stock location
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId);
-
-  /**
-   * Create a query to find product's requested reserved qty of a specific/all company and a
-   * specific/all stock location
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getRequestedReservedQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId);
 
   /**
    * Update avgPrice in stock location line and save wap history in the line.

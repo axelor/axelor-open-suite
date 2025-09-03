@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,28 +32,37 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.account.service.batch.AccountingBatchViewService;
 import com.axelor.apps.account.service.batch.BatchAutoMoveLettering;
+import com.axelor.apps.account.service.batch.BatchCloseAnnualAccounts;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Resource;
 import com.axelor.studio.db.App;
 import com.google.inject.Singleton;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -397,5 +406,104 @@ public class AccountingBatchController {
         "selection-in",
         Beans.get(MoveToolService.class)
             .getMoveStatusSelection(accountingBatch.getCompany(), journal));
+  }
+
+  @ErrorException
+  public void checkDaybookMovesOnFiscalYearLabel(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+
+    Integer daybookMoveCount =
+        Beans.get(BatchCloseAnnualAccounts.class).getDaybookMoveCount(accountingBatch);
+    String title = "";
+
+    if (daybookMoveCount > 0
+        && Optional.of(accountingBatch)
+            .map(AccountingBatch::getYear)
+            .map(Year::getName)
+            .isPresent()) {
+      title =
+          String.format(
+              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_LABEL),
+              accountingBatch.getYear().getName(),
+              daybookMoveCount);
+    }
+
+    response.setAttr("daybookRemainingLabel", "hidden", StringUtils.isEmpty(title));
+    response.setAttr("daybookRemainingLabel", "title", title);
+  }
+
+  public void checkDaybookMovesOnFiscalYearWarning(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+
+    if (AccountingBatchRepository.ACTION_CLOSE_OR_OPEN_THE_ANNUAL_ACCOUNTS
+            != accountingBatch.getActionSelect()
+        || accountingBatch.getYear() == null) {
+      return;
+    }
+
+    Integer daybookMoveCount =
+        Beans.get(BatchCloseAnnualAccounts.class).getDaybookMoveCount(accountingBatch);
+
+    if (daybookMoveCount > 0) {
+      response.setAlert(
+          String.format(
+              I18n.get(ITranslation.CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_ERROR_LABEL),
+              accountingBatch.getYear().getName(),
+              daybookMoveCount));
+    }
+  }
+
+  public void setClosureAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> closureAccountSet =
+        Beans.get(AccountingBatchViewService.class)
+            .getClosureAccountSet(
+                accountingBatch, (boolean) request.getContext().get("closeAllAccounts"));
+    response.setValue(
+        "closureAccountSet",
+        closureAccountSet.stream().map(Resource::toMapCompact).collect(Collectors.toList()));
+  }
+
+  public void setOpeningAccountSet(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    List<Account> openingAccountSet =
+        Beans.get(AccountingBatchViewService.class)
+            .getOpeningAccountSet(
+                accountingBatch, (boolean) request.getContext().get("openAllAccounts"));
+    response.setValue(
+        "openingAccountSet",
+        openingAccountSet.stream().map(Resource::toMapCompact).collect(Collectors.toList()));
+  }
+
+  public void setCloseAllAccounts(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    Set<Account> closureAccountSet = accountingBatch.getClosureAccountSet();
+    if (ObjectUtils.isEmpty(closureAccountSet)) {
+      response.setValue("$closeAllAccounts", false);
+      return;
+    }
+    response.setValue(
+        "$closeAllAccounts",
+        closureAccountSet.size()
+            == Beans.get(AccountingBatchViewService.class)
+                .countAllAvailableAccounts(accountingBatch, true)
+                .intValue());
+  }
+
+  public void setOpenAllAccounts(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    Set<Account> openingAccountSet = accountingBatch.getOpeningAccountSet();
+    if (ObjectUtils.isEmpty(openingAccountSet)) {
+      response.setValue("$openAllAccounts", false);
+      return;
+    }
+    response.setValue(
+        "$openAllAccounts",
+        openingAccountSet.size()
+            == Beans.get(AccountingBatchViewService.class)
+                .countAllAvailableAccounts(accountingBatch, false)
+                .intValue());
   }
 }

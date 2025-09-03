@@ -1,29 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid id="production-sale-order-line-editable-grid" name="sale-order-line-editable-grid"
+    title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence"
+    editable="true" extension="true">
+    <extend target="//field[@name='sequence']">
+      <insert position="before">
+        <hilite if="billOfMaterialLine &amp;&amp; saleSupplySelect == 3" color="blue"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='availableStatus']">
+      <insert position="after">
+        <field name="billOfMaterialLine" hidden="true"/>
+        <field name="saleSupplySelect" hidden="true"/>
+      </insert>
+    </extend>
+  </grid>
 
   <form name="sale-order-line-form" id="production-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
     <extend target="//field[@name='supplierPartner']">
       <insert position="after">
         <spacer colSpan="6"/>
-        <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
+        <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')" colSpan="4">
+          <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
-            colSpan="12"/>
+            colSpan="12" onChange="action-sale-order-line-method-bom-onchange"/>
           <button name="customizeBOMBtn" title="Customize BOM"
             if="__config__.app.getApp('production')?.allowPersonalizedBOM"
             onClick="action-production-method-customize-bill-of-material"/>
         </panel>
-        <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
+        <panel name="prodProcessPanel" if="__config__.app.isApp('production')" colSpan="4">
           <field name="prodProcess"
-            onSelect="action-sale-order-line-attrs-prod-process-domain"
-            form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
+            onSelect="action-sale-order-line-method-set-prod-process-domain"
+            form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"
+            onChange="action-sale-order-line-method-prod-process-onchange"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
             if="__config__.app.getApp('production')?.allowPersonalizedProdProcess"/>
+        </panel>
+        <panel name="qtyToProducePanel" colSpan="4"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI">
+          <field name="qtyToProduce" x-scale="$nbDecimalDigitForQty" readonly="true"
+            colSpan="12"/>
+        </panel>
+        <panel name="qtyProducedPanel" colSpan="4" if="__config__.app.isApp('production')"
+          hidden="true">
+          <field name="qtyProduced" x-scale="$nbDecimalDigitForQty" readonly="true"
+            colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//field[@name='isDeliveryBlocking']">
+      <insert position="after">
+        <field name="isProductionBlocking" colSpan="3"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='deliveryBlockingGroupPanel']">
+      <insert position="after">
+        <panel name="productionBlockingGroupPanel" title="Production blocking"
+          showIf="isProductionBlocking" colSpan="12">
+          <field name="productionBlockingByUser" canNew="false" canEdit="false"
+            canView="false" form-view="user-form" grid-view="user-grid"/>
+          <field name="productionBlockingToDate"/>
+          <field name="productionBlockingReason" form-view="stop-reason-form"
+            grid-view="stop-reason-grid"/>
+          <field name="commentProductionBlocking" widget="html" colSpan="12"/>
         </panel>
       </insert>
     </extend>
@@ -34,8 +78,7 @@
     <extend target="//field[@name='supplierPartner']">
       <insert position="after">
         <panel name="billOfMaterialPanel" if="__config__.app.isApp('production')">
-          <field name="billOfMaterial"
-            onSelect="action-sale-order-line-attrs-bill-of-material-domain"
+          <field name="billOfMaterial" onSelect="action-sale-order-line-method-set-bom-domain"
             form-view="bill-of-material-form" grid-view="bill-of-material-grid" canEdit="true"
             colSpan="12"/>
           <button name="customizeBOMBtn" title="Customize BOM"
@@ -44,7 +87,7 @@
         </panel>
         <panel name="prodProcessPanel" if="__config__.app.isApp('production')">
           <field name="prodProcess"
-            onSelect="action-sale-order-line-attrs-prod-process-domain"
+            onSelect="action-sale-order-line-method-set-prod-process-domain"
             form-view="prod-process-form" grid-view="prod-process-grid" canEdit="true" colSpan="12"/>
           <button name="customizeProdProcessBtn" title="Customize production process"
             onClick="action-production-method-customize-prod-process"
@@ -54,14 +97,49 @@
     </extend>
   </form>
 
+  <form name="sale-order-line-summary-form" title="Sale order line details"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <panel-related name="saleOrderLineDetailsEditablePanel"
+      field="saleOrderLineDetailsList" form-view="sale-order-line-details-form"
+      grid-view="sale-order-line-details-grid" editable="true"
+      showIf="!$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)"/>
+
+    <panel-related name="saleOrderLineDetailsReadonlyPanel"
+      field="saleOrderLineDetailsList" form-view="sale-order-line-details-form"
+      grid-view="sale-order-line-details-readonly-grid"
+      showIf="$readonly() &amp;&amp; ((saleSupplySelect == 3 || saleSupplySelect == 4) &amp;&amp; billOfMaterial != null)"/>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="saleSupplySelect" hidden="true"/>
+      <field name="billOfMaterial" hidden="true"/>
+    </panel>
+  </form>
+
   <action-method name="action-production-method-customize-bill-of-material">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="customizeBillOfMaterial"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-bom-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController" method="bomOnChange"/>
+  </action-method>
+
   <action-method name="action-production-method-customize-prod-process">
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="createCustomizedProdProcess"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-bom-domain">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController" method="setBomDomain"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-prod-process-domain">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="setProdProcessDomain"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-prod-process-onchange">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="prodProcessOnChange"/>
   </action-method>
 
 </object-views>

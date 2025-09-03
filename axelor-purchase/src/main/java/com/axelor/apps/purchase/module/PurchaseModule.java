@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,12 @@ package com.axelor.apps.purchase.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.purchase.db.repo.CallTenderManagementRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderNeedManagementRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderNeedRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderOfferManagementRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -27,6 +33,14 @@ import com.axelor.apps.purchase.db.repo.PurchaseRequestManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogManagementRepository;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.purchase.service.CallTenderCsvService;
+import com.axelor.apps.purchase.service.CallTenderCsvServiceImpl;
+import com.axelor.apps.purchase.service.CallTenderGenerateService;
+import com.axelor.apps.purchase.service.CallTenderGenerateServiceImpl;
+import com.axelor.apps.purchase.service.CallTenderMailService;
+import com.axelor.apps.purchase.service.CallTenderMailServiceImpl;
+import com.axelor.apps.purchase.service.CallTenderOfferService;
+import com.axelor.apps.purchase.service.CallTenderOfferServiceImpl;
 import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
@@ -35,8 +49,12 @@ import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLinePurchaseRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeService;
+import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineWarningService;
+import com.axelor.apps.purchase.service.PurchaseOrderLineWarningServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewService;
@@ -45,10 +63,16 @@ import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.PurchaseProductServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseRequestLineService;
+import com.axelor.apps.purchase.service.PurchaseRequestLineServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseRequestRestService;
+import com.axelor.apps.purchase.service.PurchaseRequestRestServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
@@ -61,6 +85,8 @@ import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsServiceImpl;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
+import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
+import com.axelor.apps.purchase.service.split.PurchaseOrderSplitServiceImpl;
 
 public class PurchaseModule extends AxelorModule {
 
@@ -87,5 +113,18 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseOrderAttrsService.class).to(PurchaseOrderAttrsServiceImpl.class);
     bind(PurchaseOrderCreateService.class).to(PurchaseOrderCreateServiceImpl.class);
     bind(PurchaseOrderSequenceService.class).to(PurchaseOrderSequenceServiceImpl.class);
+    bind(PurchaseOrderSplitService.class).to(PurchaseOrderSplitServiceImpl.class);
+    bind(PurchaseRequestLineService.class).to(PurchaseRequestLineServiceImpl.class);
+    bind(PurchaseRequestRestService.class).to(PurchaseRequestRestServiceImpl.class);
+    bind(PurchaseOrderTypeSelectService.class).to(PurchaseOrderTypeSelectServiceImpl.class);
+    bind(PurchaseOrderLineWarningService.class).to(PurchaseOrderLineWarningServiceImpl.class);
+    bind(PurchaseOrderLineTaxComputeService.class).to(PurchaseOrderLineTaxComputeServiceImpl.class);
+    bind(CallTenderGenerateService.class).to(CallTenderGenerateServiceImpl.class);
+    bind(CallTenderOfferService.class).to(CallTenderOfferServiceImpl.class);
+    bind(CallTenderMailService.class).to(CallTenderMailServiceImpl.class);
+    bind(CallTenderCsvService.class).to(CallTenderCsvServiceImpl.class);
+    bind(CallTenderNeedRepository.class).to(CallTenderNeedManagementRepository.class);
+    bind(CallTenderOfferRepository.class).to(CallTenderOfferManagementRepository.class);
+    bind(CallTenderRepository.class).to(CallTenderManagementRepository.class);
   }
 }

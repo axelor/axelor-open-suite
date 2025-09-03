@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,8 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.base.AxelorException;
@@ -51,6 +53,7 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Singleton
 public class ExpensePaymentServiceImpl implements ExpensePaymentService {
@@ -246,15 +249,16 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(Expense expense) throws AxelorException {
-    BankOrder bankOrder = expense.getBankOrder();
+    resetExpensePaymentAfterCancellation(expense);
 
+    BankOrder bankOrder = expense.getBankOrder();
     if (bankOrder != null) {
       if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));
       } else if (bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
-        bankOrderCancelService.cancelBankOrder(bankOrder);
+        cancelBankOrderPayment(bankOrder, expense);
       }
     }
 
@@ -265,7 +269,6 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
       }
       moveCancelService.cancel(paymentMove);
     }
-    resetExpensePaymentAfterCancellation(expense);
   }
 
   @Override
@@ -275,5 +278,52 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setPaymentDate(null);
     expense.setPaymentAmount(BigDecimal.ZERO);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void cancelBankOrderPayment(BankOrder bankOrder, Expense expense)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(bankOrder.getBankOrderLineList())
+        || bankOrder.getBankOrderLineList().size() == 1
+        || bankOrder.getAreMovesGenerated()
+        || bankOrder.getStatusSelect() != BankOrderRepository.STATUS_DRAFT) {
+      bankOrderCancelService.cancelBankOrder(bankOrder);
+      return;
+    }
+
+    BankOrderLine bankOrderLine = findBankOrderLineWithThisOrigin(bankOrder, expense);
+    if (bankOrderLine == null) {
+      bankOrderCancelService.cancelBankOrder(bankOrder);
+      return;
+    }
+
+    expense.setBankOrder(null);
+    bankOrder.removeBankOrderLineListItem(bankOrderLine);
+    bankOrderRepository.save(bankOrder);
+  }
+
+  protected BankOrderLine findBankOrderLineWithThisOrigin(BankOrder bankOrder, Expense expense) {
+    if (bankOrder == null
+        || ObjectUtils.isEmpty(bankOrder.getBankOrderLineList())
+        || expense == null) {
+      return null;
+    }
+
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+      if (ObjectUtils.isEmpty(bankOrderLine.getBankOrderLineOriginList())) {
+        continue;
+      }
+
+      if (bankOrderLine.getBankOrderLineOriginList().stream()
+          .anyMatch(
+              origin ->
+                  BankOrderLineOriginRepository.RELATED_TO_EXPENSE.equals(
+                          origin.getRelatedToSelect())
+                      && Objects.equals(expense.getId(), origin.getRelatedToSelectId()))) {
+        return bankOrderLine;
+      }
+    }
+
+    return null;
   }
 }

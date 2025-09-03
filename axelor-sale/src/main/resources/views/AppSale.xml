@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="app-sale-config-form" title="App sale" model="com.axelor.studio.db.AppSale"
     canDelete="false" canNew="false" width="large" onLoad="action-sale-attrs-set-hidden">
@@ -12,8 +12,11 @@
       <field name="printingOnSOFinalization" widget="boolean-switch"
         readonlyIf="manageSaleOrderVersion"/>
       <field name="isPastVersionRecovery" widget="boolean-switch"
-        readonlyIf="!manageSaleOrderVersion"/>
+        readonlyIf="!manageSaleOrderVersion || isQuotationAndOrderSplitEnabled"/>
       <field name="enableConfigurator" widget="boolean-switch"/>
+      <field name="enableConfiguratorEdition" widget="boolean-switch"
+        showIf="enableConfigurator"/>
+      <field name="enableLineDuplication" widget="boolean-switch"/>
       <field name="allowPendingOrderModification" widget="boolean-switch"/>
       <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
       <field name="printingConfigPerSaleOrder" widget="boolean-switch"/>
@@ -27,12 +30,20 @@
       <field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
-      <field name="isEditableGridEnabled" widget="boolean-switch"/>
+      <field name="isEnableCalculationEntireQuotation" widget="boolean-switch"/>
+      <field name="isCartManagementEnabled" widget="boolean-switch"/>
+      <field name="isQuotationAndOrderSplitEnabled" widget="boolean-switch"
+        onChange="action-app-sale-validate-split-onchange"/>
+
+    </panel>
+    <panel name="listDisplayPanel" itemSpan="12" colSpan="12">
+      <help><![CDATA[Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.]]></help>
+      <field name="listDisplayTypeSelect" colSpan="6"
+        onChange="action-app-sale-attrs-reset-discount-enabled"/>
       <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
-        showIf="isEditableGridEnabled"/>
-      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
-        hidden="true"/>
-      <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
+        showIf="listDisplayTypeSelect != 0" colSpan="6"/>
+      <field name="isSOLPriceTotalOfSubLines" title="Compute price with sublines" colSpan="6"
+        widget="boolean-switch" showIf="listDisplayTypeSelect == 2"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -65,8 +76,24 @@
     model="com.axelor.studio.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
       expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <attribute for="isEnableCalculationEntireQuotationUsingPricing" name="hidden"
-      expr="eval: !__config__.app.getApp('base')?.enablePricingScale"/>
   </action-attrs>
 
+  <action-attrs name="action-app-sale-attrs-reset-discount-enabled">
+    <attribute for="isDiscountEnabledOnEditableGrid" name="value" expr="eval: false"
+      if="eval: listDisplayTypeSelect == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
+  </action-attrs>
+
+  <action-validate name="action-app-sale-validate-split-onchange">
+    <error
+      message="If you want to enable this configuration, interco sale order can not be created at finalized quotation. Please change the configuration in supplychain application."
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.intercoSaleCreatingStatusSelect == __repo__(SaleOrder).STATUS_FINALIZED_QUOTATION"
+      action="action-app-sale-attrs-reset-split-enabled"/>
+    <error
+      message="You can not enable quotation and order split if past version recovery is enabled."
+      if="isPastVersionRecovery" action="action-app-sale-attrs-reset-split-enabled"/>
+  </action-validate>
+
+  <action-attrs name="action-app-sale-attrs-reset-split-enabled">
+    <attribute for="isQuotationAndOrderSplitEnabled" name="value" expr="eval: false"/>
+  </action-attrs>
 </object-views>

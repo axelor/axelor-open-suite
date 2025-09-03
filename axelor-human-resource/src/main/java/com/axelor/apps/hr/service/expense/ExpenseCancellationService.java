@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,9 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.message.db.Message;
-import java.io.IOException;
-import wslite.json.JSONException;
 
 public interface ExpenseCancellationService {
-  public void cancel(Expense expense) throws AxelorException;
+  void cancel(Expense expense) throws AxelorException;
 
-  public Message sendCancellationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+  Message sendCancellationEmail(Expense expense) throws AxelorException;
 }

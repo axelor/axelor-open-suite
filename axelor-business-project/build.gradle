@@ -15,10 +15,10 @@ axelor {
 }
 
 dependencies {
-	api project(":modules:axelor-human-resource")
-	api project(":modules:axelor-contract")
+	api project(":modules:axelor-budget")
 
 	implementation libs.commons_lang3
 	implementation libs.jaxb_bind_api
+	implementation libs.swagger_jaxrs
 
 }

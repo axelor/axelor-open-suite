@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,6 +107,7 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
     expense.setCompany(company);
     expense.setEmployee(employee);
     expense.setCompanyCbSelect(companyCbSelect);
+    expense.setTypeSelect(ExpenseRepository.TYPE_EXPENSE);
     setCurrency(company, currency, expense);
     setBankDetails(employee, bankDetails, expense);
     setPeriod(company, period, expense);
@@ -139,9 +140,16 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
 
   protected void setBankDetails(Employee employee, BankDetails bankDetails, Expense expense) {
     BankDetails payCompanyBankDetails =
-        employee.getMainEmploymentContract().getPayCompany().getDefaultBankDetails();
+        Optional.ofNullable(employee.getMainEmploymentContract())
+            .map(EmploymentContract::getPayCompany)
+            .map(Company::getDefaultBankDetails)
+            .orElse(null);
+
     BankDetails activeCompanyBankDetails =
-        employee.getUser().getActiveCompany().getDefaultBankDetails();
+        Optional.ofNullable(employee.getUser())
+            .map(User::getActiveCompany)
+            .map(Company::getDefaultBankDetails)
+            .orElse(null);
 
     if (bankDetails != null) {
       expense.setBankDetails(bankDetails);

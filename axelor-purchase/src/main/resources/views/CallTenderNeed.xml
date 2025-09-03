@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="call-tender-need-grid" title="Call for tenders"
+    model="com.axelor.apps.purchase.db.CallTenderNeed"
+    onNew="action-call-tender-need-record-init-dummy-fields">
+    <field name="product"/>
+    <field name="requestedQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unit"/>
+    <field name="requestedDate"/>
+    <field name="typeSelect"/>
+    <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+  </grid>
+
+  <form name="call-tender-need-form" model="com.axelor.apps.purchase.db.CallTenderNeed"
+    title="Call for tender" width="large" onNew="action-call-tender-need-record-init-dummy-fields">
+    <panel name="mainPanel" showTitle="false">
+      <field name="product" colSpan="12" domain="self.purchasable is true"
+        onChange="action-call-tender-need-method-set-unit"/>
+      <field name="requestedQty" colSpan="6" x-scale="$nbDecimalDigitForQty"/>
+      <field name="unit" colSpan="6"/>
+      <field name="requestedDate"/>
+      <field name="typeSelect"/>
+      <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+    </panel>
+  </form>
+
+
+  <action-record name="action-call-tender-need-record-init-dummy-fields"
+    model="com.axelor.apps.purchase.db.CallTenderNeed">
+    <field name="$nbDecimalDigitForQty"
+      expr="eval:  __config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
+  </action-record>
+
+  <action-record name="action-call-tender-need-record-set-unit"
+    model="com.axelor.apps.purchase.db.CallTenderNeed">
+    <field name="unit" expr="eval: null"/>
+    <field name="unit" expr="eval: product?.unit" if="product"/>
+    <field name="unit" expr="eval: product?.purchasesUnit"
+      if="product &amp;&amp; product?.purchasable"/>
+  </action-record>
+  <action-method name="action-call-tender-need-method-set-unit">
+    <call class="com.axelor.apps.purchase.web.CallTenderNeedController" method="setUnit"/>
+  </action-method>
+</object-views>

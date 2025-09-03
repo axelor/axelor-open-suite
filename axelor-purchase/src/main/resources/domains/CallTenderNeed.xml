@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="CallTenderNeed">
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <decimal name="requestedQty" default="1" required="true" title="Quantity" precision="20"
+      scale="10"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <date name="requestedDate" title="Date"/>
+    <integer name="typeSelect" selection="purchase.call.tender.need.type.select"
+      title="Type"/>
+    <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
+
+
+    <track on="UPDATE">
+      <field name="requestedQty"/>
+      <field name="requestedDate"/>
+      <field name="typeSelect"/>
+    </track>
+  </entity>
+
+</domain-models>

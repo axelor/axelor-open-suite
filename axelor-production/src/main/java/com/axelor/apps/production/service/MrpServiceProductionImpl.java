@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,6 +60,7 @@ import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.service.MrpLineSaleOrderService;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
@@ -97,6 +98,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected AppProductionService appProductionService;
 
   protected ProdProcessLineService prodProcessLineService;
+  protected final ProdProcessLineComputationService prodProcessLineComputationService;
+  protected final ProdProcessComputationService prodProcessComputationService;
   protected final BillOfMaterialMrpLineService billOfMaterialMrpLineService;
 
   @Inject
@@ -122,11 +125,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockHistoryLineRepository stockHistoryLineRepository,
       MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService,
       MrpLineTypeService mrpLineTypeService,
+      MrpLineSaleOrderService mrpLineSaleOrderService,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
       BillOfMaterialService billOfMaterialService,
       AppProductionService appProductionService,
       ProdProcessLineService prodProcessLineService,
+      ProdProcessLineComputationService prodProcessLineComputationService,
+      ProdProcessComputationService prodProcessComputationService,
       BillOfMaterialMrpLineService billOfMaterialMrpLineService) {
     super(
         mrpRepository,
@@ -149,12 +155,15 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         appPurchaseService,
         stockHistoryLineRepository,
         mrpSaleOrderCheckLateSaleService,
-        mrpLineTypeService);
+        mrpLineTypeService,
+        mrpLineSaleOrderService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialService = billOfMaterialService;
     this.appProductionService = appProductionService;
     this.prodProcessLineService = prodProcessLineService;
+    this.prodProcessLineComputationService = prodProcessLineComputationService;
+    this.prodProcessComputationService = prodProcessComputationService;
     this.billOfMaterialMrpLineService = billOfMaterialMrpLineService;
   }
 
@@ -486,7 +495,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           updateMaturityDate(maturityDate, billOfMaterial, reorderQty)
               .minusDays(mrpLineType.getSecurityDelay());
     }
-
     MrpLine mrpLine =
         super.createProposalMrpLine(
             mrp,
@@ -505,6 +513,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && billOfMaterial != null) {
+
+      if (maturityDate.isBefore(mrpLine.getMaturityDate())) {
+        mrpLine.setWarnDelayFromManufacturing(true);
+        mrpLine.setDeliveryDelayDate(maturityDate);
+      }
 
       MrpLineType manufProposalNeedMrpLineType =
           mrpLineTypeService.getMrpLineType(
@@ -537,7 +550,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       } else {
         for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
           Product subProduct = billOfMaterialLine.getProduct();
-          if (this.isMrpProduct(subProduct)) {
+          if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
             MrpLine subProductMrpLine =
                 super.createProposalMrpLine(
                     mrp,
@@ -586,7 +599,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
       long durationInDays =
           TimeUnit.SECONDS.toDays(
-              prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty));
+              prodProcessLineComputationService.computeEntireCycleDuration(
+                  null, prodProcessLine, reorderQty));
       calculatedMaturityDate = nextPriorityCalculatedMaturityDate.minusDays(durationInDays);
 
       LocalDate minMaturityDateOfPriority = minMaturityDateByPriority.get(priority);
@@ -631,7 +645,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     long totalDuration = 0;
     ProdProcess prodProcess = defaultBillOfMaterial.getProdProcess();
     if (prodProcess != null) {
-      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, reorderQty);
+      totalDuration = prodProcessComputationService.getLeadTime(prodProcess, reorderQty);
     }
     // If days should be rounded to a upper value
     if (totalDuration != 0 && totalDuration % TimeUnit.DAYS.toSeconds(1) != 0) {
@@ -764,7 +778,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct)) {
+        if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
           this.assignProductLevel(billOfMaterialLine, level);
 
           Company company = mrp.getStockLocation().getCompany();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -757,5 +757,29 @@ public class AccountConfigService {
           accountConfig.getCompany().getName());
     }
     return accountConfig.getBillOfExchReceivAccount();
+  }
+
+  public Account getForeignExchangeAccount(AccountConfig accountConfig, boolean isGainAccount)
+      throws AxelorException {
+    Account account =
+        isGainAccount
+            ? accountConfig.getForeignExchangeGainsAccount()
+            : accountConfig.getForeignExchangeLossesAccount();
+
+    if (account == null) {
+      String message =
+          isGainAccount
+              ? I18n.get(
+                  AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT)
+              : I18n.get(
+                  AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_LOSSES_ACCOUNT);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          message,
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+
+    return account;
   }
 }

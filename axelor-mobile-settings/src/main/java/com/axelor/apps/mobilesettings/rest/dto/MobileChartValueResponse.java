@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,9 @@ package com.axelor.apps.mobilesettings.rest.dto;
 
 public class MobileChartValueResponse {
   protected String label;
-  protected double value;
+  protected Object value;
 
-  public MobileChartValueResponse(String label, double value) {
+  public MobileChartValueResponse(String label, Object value) {
     this.label = label;
     this.value = value;
   }
@@ -31,7 +31,7 @@ public class MobileChartValueResponse {
     return label;
   }
 
-  public double getValue() {
+  public Object getValue() {
     return value;
   }
 }

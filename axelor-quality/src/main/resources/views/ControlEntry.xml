@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="control-entry-grid" title="Control entries"
     model="com.axelor.apps.quality.db.ControlEntry">
@@ -22,7 +22,8 @@
       <field name="entryDateTime" colSpan="6"/>
       <field name="inspector" colSpan="6"/>
       <field name="sampleCount" colSpan="6"/>
-      <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"/>
+      <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"
+        onChange="action-control-plan-attrs-control-plan-on-change"/>
     </panel>
     <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
@@ -37,6 +38,17 @@
         title="Finish" showIf="statusSelect == 2"/>
       <button name="cancelBtn" onClick="action-record-quality-control-cancel,save"
         title="Cancel" showIf="statusSelect == 2"/>
+      <button onClick="save,action-view-quality-control-create-qi"
+        name="addQualityImprovement" title="Add a quality improvement"/>
+    </panel>
+    <panel name="relatedPanel" sidebar="true">
+      <field name="relatedToSelect"
+        showIf="controlPlan.relatedToSelect != 'com.axelor.apps.production.db.ProdProcessLine'"
+        widget="RefSelect"/>
+      <field name="relatedToSelect"
+        showIf="controlPlan.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"
+        selection="quality.control.entry.operation.order.related.to.select" widget="RefSelect"/>
+      <field name="controlPlan.relatedToSelect" hidden="true"/>
     </panel>
   </form>
 
@@ -44,6 +56,8 @@
     model="com.axelor.apps.quality.db.ControlEntry">
     <field name="inspector" expr="eval: __user__"/>
     <field name="entryDateTime" expr="eval: __time__"/>
+    <field name="relatedToSelect" expr="eval: relatedTo" if="relatedTo"/>
+    <field name="relatedToSelectId" expr="eval: relatedToId" if="relatedToId"/>
   </action-record>
 
   <action-record name="action-record-quality-control-finish"
@@ -56,7 +70,26 @@
     <field name="statusSelect" expr="eval: 4"/>
   </action-record>
 
+  <action-attrs name="action-control-plan-attrs-control-plan-on-change">
+    <attribute name="value" for="relatedToSelect"
+      expr="eval: 'com.axelor.apps.production.db.OperationOrder'"
+      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"/>
+    <attribute name="value" for="relatedToSelectId" expr="eval: null"
+      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'
+      	    &amp;&amp; relatedToSelect != 'com.axelor.apps.production.db.OperationOrder'"/>
+  </action-attrs>
+
   <action-method name="action-method-quality-control-entry-create-samples">
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="createSamples"/>
   </action-method>
+
+  <action-view name="action-view-quality-control-create-qi" title="Control entry"
+    model="com.axelor.utils.db.Wizard">
+    <view name="qi-create-wizard-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_controlEntryId" expr="eval: id"/>
+  </action-view>
+
 </object-views>

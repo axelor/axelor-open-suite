@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -10,7 +10,7 @@
     <string name="name" title="Name" required="true"/>
     <many-to-one name="qiResolution" title="Resolution"
       ref="com.axelor.apps.quality.db.QIResolution" required="true" readonly="true"/>
-    <many-to-one name="qiDefault" title="Default"
+    <many-to-one name="qiDefault" title="Defect"
       ref="com.axelor.apps.quality.db.QIDefault" required="true"/>
     <string name="description" title="Description" large="true"/>
     <decimal name="quantity" title="Quantity"/>
@@ -20,6 +20,8 @@
     <string name="manualIdentification" title="Manual Identification"/>
     <many-to-many name="trackingNumbersSet" title="Tracking Numbers"
       ref="com.axelor.apps.stock.db.TrackingNumber"/>
+    <one-to-many name="metaFileList" title="Meta files" transient="true"
+      ref="com.axelor.meta.db.MetaFile"/>
 
     <extra-code><![CDATA[
 	    public static final int IDENTIFICATION_MANUAL = 1;

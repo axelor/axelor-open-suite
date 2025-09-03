@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -56,12 +57,13 @@ public class AccountingSituationRecordServiceImpl implements AccountingSituation
     }
 
     Company finalCompany = company;
-    if (company != null
-        && partner != null
-        && ObjectUtils.isEmpty(partner.getAccountingSituationList())
-        && partner.getAccountingSituationList().stream()
-            .noneMatch(as -> Objects.equals(finalCompany, as.getCompany()))) {
-      accountingSituation.setCompany(finalCompany);
+    if (company != null && partner != null) {
+      List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
+      if (ObjectUtils.isEmpty(accountingSituationList)
+          || accountingSituationList.stream()
+              .noneMatch(as -> Objects.equals(finalCompany, as.getCompany()))) {
+        accountingSituation.setCompany(finalCompany);
+      }
     }
   }
 }

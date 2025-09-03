@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,25 +21,36 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderSequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BankOrderManagementRepository extends BankOrderRepository {
+
+  protected BankOrderSequenceService bankOrderSequenceService;
+  protected BankOrderComputeService bankOrderComputeService;
+
+  @Inject
+  public BankOrderManagementRepository(
+      BankOrderSequenceService bankOrderSequenceService,
+      BankOrderComputeService bankOrderComputeService) {
+    this.bankOrderSequenceService = bankOrderSequenceService;
+    this.bankOrderComputeService = bankOrderComputeService;
+  }
 
   @Override
   public BankOrder save(BankOrder entity) {
 
     try {
 
-      BankOrderService bankOrderService = Beans.get(BankOrderService.class);
-      bankOrderService.generateSequence(entity);
-      bankOrderService.setSequenceOnBankOrderLines(entity);
+      bankOrderSequenceService.generateSequence(entity);
+      bankOrderSequenceService.setSequenceOnBankOrderLines(entity);
       if (entity.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
-        bankOrderService.updateTotalAmounts(entity);
+        bankOrderComputeService.updateTotalAmounts(entity);
       }
 
       return super.save(entity);

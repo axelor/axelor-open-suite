@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -82,8 +82,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
 
       int offset = 0;
 
-      while (!(productList = productQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
-
+      while (!(productList = productQuery.order("id").fetch(getFetchLimit(), offset)).isEmpty()) {
         for (Product product : productList) {
           ++offset;
           try {
@@ -102,6 +101,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
           }
         }
         JPA.clear();
+        findBatch();
       }
     } catch (AxelorException e) {
       TraceBackService.trace(

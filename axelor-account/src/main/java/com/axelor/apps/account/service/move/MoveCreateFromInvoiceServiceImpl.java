@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,15 +21,15 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -58,7 +58,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected AppAccountService appAccountService;
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveToolService moveToolService;
@@ -68,14 +67,12 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected PaymentService paymentService;
   protected ReconcileService reconcileService;
   protected MoveExcessPaymentService moveExcessPaymentService;
-  protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
   protected PaymentConditionService paymentConditionService;
   protected CurrencyService currencyService;
 
   @Inject
   public MoveCreateFromInvoiceServiceImpl(
-      AppAccountService appAccountService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveToolService moveToolService,
@@ -86,10 +83,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       ReconcileService reconcileService,
       MoveExcessPaymentService moveExcessPaymentService,
       AccountConfigService accountConfigService,
-      JournalRepository journalRepository,
       PaymentConditionService paymentConditionService,
       CurrencyService currencyService) {
-    this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveToolService = moveToolService;
@@ -100,7 +95,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.reconcileService = reconcileService;
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.accountConfigService = accountConfigService;
-    this.journalRepository = journalRepository;
     this.paymentConditionService = paymentConditionService;
     this.currencyService = currencyService;
   }
@@ -258,6 +252,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
    */
   @Override
   public Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException {
+    if (invoice.getInvoiceTermList().stream()
+        .allMatch(
+            it -> it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_LITIGATION)) {
+      return null;
+    }
 
     Company company = invoice.getCompany();
     Move move = null;
@@ -440,7 +439,17 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
-      BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit());
+      BigDecimal invoiceAmount =
+          invoiceCustomerMoveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      it.getPfpValidateStatusSelect()
+                          != InvoiceTermRepository.PFP_STATUS_LITIGATION)
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal::add)
+              .orElse(invoiceCustomerMoveLine.getCredit());
+
+      BigDecimal amount = totalDebitAmount.min(invoiceAmount);
 
       BigDecimal moveLineAmount =
           moveToolService

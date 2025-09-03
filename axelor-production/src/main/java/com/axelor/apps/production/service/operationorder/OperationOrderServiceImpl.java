@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,8 @@
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
@@ -33,6 +31,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
@@ -46,7 +45,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,7 +61,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
-  protected BarcodeGeneratorService barcodeGeneratorService;
 
   protected AppProductionService appProductionService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
@@ -73,10 +70,10 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   protected ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService;
   protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
   protected ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService;
+  protected final ProdProcessLineComputationService prodProcessLineComputationService;
 
   @Inject
   public OperationOrderServiceImpl(
-      BarcodeGeneratorService barcodeGeneratorService,
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
@@ -84,8 +81,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       OperationOrderOutsourceService operationOrderOutsourceService,
       ManufOrderCheckStockMoveLineService manufOrderCheckStockMoveLineService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
-    this.barcodeGeneratorService = barcodeGeneratorService;
+      ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService,
+      ProdProcessLineComputationService prodProcessLineComputationService) {
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.prodProcessLineService = prodProcessLineService;
@@ -94,6 +91,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     this.manufOrderCheckStockMoveLineService = manufOrderCheckStockMoveLineService;
     this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
     this.manufOrderUpdateStockMoveService = manufOrderUpdateStockMoveService;
+    this.prodProcessLineComputationService = prodProcessLineComputationService;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -280,31 +278,12 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  public void createBarcode(OperationOrder operationOrder) {
-    if (operationOrder != null && operationOrder.getId() != null) {
-      String serialNbr = operationOrder.getId().toString();
-      BarcodeTypeConfig barcodeTypeConfig =
-          appProductionService.getAppProduction().getBarcodeTypeConfig();
-      boolean addPadding = true;
-      MetaFile barcodeFile =
-          barcodeGeneratorService.createBarCode(
-              operationOrder.getId(),
-              "OppOrderBarcode%d.png",
-              serialNbr,
-              barcodeTypeConfig,
-              addPadding);
-      if (barcodeFile != null) {
-        operationOrder.setBarCode(barcodeFile);
-      }
-    }
-  }
-
-  @Override
   public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    return prodProcessLineService.computeEntireCycleDuration(operationOrder, prodProcessLine, qty);
+    return prodProcessLineComputationService.computeEntireCycleDuration(
+        operationOrder, prodProcessLine, qty);
   }
 
   /**

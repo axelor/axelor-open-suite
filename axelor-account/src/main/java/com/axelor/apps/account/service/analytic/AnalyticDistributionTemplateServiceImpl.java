@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,15 +44,18 @@ public class AnalyticDistributionTemplateServiceImpl
   protected AccountConfigService accountConfigService;
   protected AnalyticDistributionLineService analyticDistributionLineService;
   protected AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public AnalyticDistributionTemplateServiceImpl(
       AccountConfigService accountConfigService,
       AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository,
-      AnalyticDistributionLineService analyticDistributionLineService) {
+      AnalyticDistributionLineService analyticDistributionLineService,
+      AnalyticAxisService analyticAxisService) {
     this.accountConfigService = accountConfigService;
     this.analyticDistributionTemplateRepository = analyticDistributionTemplateRepository;
     this.analyticDistributionLineService = analyticDistributionLineService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   public BigDecimal getPercentage(
@@ -336,5 +339,17 @@ public class AnalyticDistributionTemplateServiceImpl
         }
       }
     }
+  }
+
+  @Override
+  public void checkRequiredAxisByCompany(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate == null) {
+      return;
+    }
+
+    analyticAxisService.checkAnalyticDistributionLinesRequiredAxisByCompany(
+        analyticDistributionTemplate.getCompany(),
+        analyticDistributionTemplate.getAnalyticDistributionLineList());
   }
 }

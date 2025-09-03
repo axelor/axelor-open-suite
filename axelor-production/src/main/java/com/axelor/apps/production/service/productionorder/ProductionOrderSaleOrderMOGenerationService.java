@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package com.axelor.apps.production.service.productionorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -36,18 +35,6 @@ public interface ProductionOrderSaleOrderMOGenerationService {
       SaleOrderLine saleOrderLine,
       Product product,
       BigDecimal qtyToProduce)
-      throws AxelorException;
-
-  ManufOrder generateManufOrder(
-      Product product,
-      BillOfMaterial billOfMaterial,
-      BigDecimal qtyRequested,
-      LocalDateTime startDate,
-      LocalDateTime endDate,
-      SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      ManufOrderService.ManufOrderOriginType manufOrderOriginType,
-      ManufOrder manufOrderParent)
       throws AxelorException;
 
   /**

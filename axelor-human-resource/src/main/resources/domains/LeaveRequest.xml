@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -37,7 +37,9 @@
       scale="4" precision="8"/>
     <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
     <boolean name="isPayrollInput" title="Payroll input" default="false" readonly="true"/>
-
+    <decimal name="leaveDaysToDate" title="Leave available to date" transient="true"
+      help="Number of days acquired at the end of the request. This takes into account the leave you earn each month, minus leave already validated."/>
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
       		if(this.getEmployee() != null && this.getCreatedOn() != null)

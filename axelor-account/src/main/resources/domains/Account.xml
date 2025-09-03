@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -59,10 +59,12 @@
     <boolean name="isRetrievedOnPaymentSession" title="Include on payment sessions ?"/>
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.select" default="0"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="tagSet" title="Tags"/>
 
     <unique-constraint columns="code,company"/>
 
     <finder-method name="findByAccountType" using="accountType" all="true"/>
+    <finder-method name="findByCodeAndCompany" using="code,company"/>
 
     <extra-code><![CDATA[
 
@@ -101,6 +103,8 @@
       <field name="vatSystemSelect"/>
     </track>
 
+    <entity-listener
+      class="com.axelor.apps.account.db.repo.listener.AccountListener"/>
   </entity>
 
 </domain-models>

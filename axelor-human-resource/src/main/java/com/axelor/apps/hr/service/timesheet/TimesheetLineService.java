@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
@@ -28,7 +29,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface TimesheetLineService {
 
@@ -77,15 +77,6 @@ public interface TimesheetLineService {
    */
   Duration computeTotalDuration(List<TimesheetLine> timesheetLineList);
 
-  /**
-   * Calculates time spent on the project base on timesheet lines for the validated {@link
-   * Timesheet}.
-   *
-   * @param timesheetLineList
-   * @return {@link Map}
-   */
-  Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList);
-
   public void checkDailyLimit(
       Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
       throws AxelorException;
@@ -96,4 +87,6 @@ public interface TimesheetLineService {
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit);
 
   Product getDefaultProduct(TimesheetLine timesheetLine);
+
+  void resetTimesheetLineTimer(TSTimer tsTimer);
 }

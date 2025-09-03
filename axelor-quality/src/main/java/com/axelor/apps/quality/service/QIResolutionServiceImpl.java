@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -150,8 +150,12 @@ public class QIResolutionServiceImpl implements QIResolutionService {
   public void sendQIDecisionDistributions(
       List<QIDecisionDistribution> qiDecisionDistributionList,
       Template qiDecisionDistributionMessageTemplate)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          IOException,
+          MessagingException {
     for (QIDecisionDistribution qiDecisionDistribution : qiDecisionDistributionList) {
       qiDecisionDistribution =
           qiDecisionDistributionRepository.find(qiDecisionDistribution.getId());
@@ -165,8 +169,12 @@ public class QIResolutionServiceImpl implements QIResolutionService {
   }
 
   public void sendEmail(Template template, QIDecisionDistribution qiDecisionDistribution)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          IOException,
+          MessagingException {
     Message message = templateMessageService.generateMessage(qiDecisionDistribution, template);
     message.addToEmailAddressSetItem(
         qiDecisionDistribution.getRecipientPartner().getEmailAddress());

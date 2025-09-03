@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.lunch.voucher;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
@@ -45,9 +46,9 @@ public interface LunchVoucherMgtLineService {
   public void computeAllAttrs(
       Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine);
 
-  public int computeRestaurant(Employee employee);
+  public int computeRestaurant(Employee employee, Period payPeriod);
 
-  public int computeInvitation(Employee employee);
+  public int computeInvitation(Employee employee, Period payPeriod);
 
   public void setStatusToCalculate(LunchVoucherMgtLine lunchVoucherMgtLine);
 }

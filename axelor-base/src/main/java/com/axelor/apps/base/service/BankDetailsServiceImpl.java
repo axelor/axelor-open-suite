@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.utils.helpers.StringHelper;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
@@ -126,12 +127,10 @@ public class BankDetailsServiceImpl implements BankDetailsService {
       Company company, PaymentMode paymentMode, Partner partner, Integer operationTypeSelect)
       throws AxelorException {
 
-    BankDetails bankDetails = company.getDefaultBankDetails();
-    if (bankDetails != null && bankDetails.getActive()) {
-      return company.getDefaultBankDetails();
-    } else {
-      return null;
-    }
+    return Optional.ofNullable(company)
+        .map(Company::getDefaultBankDetails)
+        .filter(bankDetails -> bankDetails.getActive())
+        .orElse(null);
   }
 
   /**

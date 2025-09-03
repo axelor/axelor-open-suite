@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="meta" package="com.axelor.meta.db"/>
+
+  <entity name="MetaTheme" table="META_THEME">
+    <enum name="logoMode" ref="ThemeLogoMode" title="Logo mode" default="NONE"/>
+  </entity>
+
+  <enum name="ThemeLogoMode">
+    <item name="NONE"/>
+    <item name="LIGHT"/>
+    <item name="DARK"/>
+  </enum>
+
+</domain-models>

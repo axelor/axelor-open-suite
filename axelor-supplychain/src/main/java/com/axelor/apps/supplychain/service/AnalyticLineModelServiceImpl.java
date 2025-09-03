@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,13 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -58,6 +60,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected SaleConfigService saleConfigService;
   protected PurchaseConfigService purchaseConfigService;
   protected CurrencyScaleService currencyScaleService;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -68,7 +71,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
       PurchaseConfigService purchaseConfigService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      AnalyticAxisService analyticAxisService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
@@ -77,6 +81,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     this.saleConfigService = saleConfigService;
     this.purchaseConfigService = purchaseConfigService;
     this.currencyScaleService = currencyScaleService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -132,8 +137,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
   public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    if (!productAccountManageAnalytic(analyticLineModel)
-        || isFreeAnalyticDistribution(analyticLineModel)) {
+    if (!productAccountManageAnalytic(analyticLineModel)) {
       return analyticLineModel;
     }
 
@@ -171,7 +175,6 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     Product product = analyticLineModel.getProduct();
     return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
         && product != null
-        && product.getProductFamily() != null
         && accountManagementAccountService
             .getProductAccount(
                 product,
@@ -266,5 +269,18 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
                     .getIsAnalyticDistributionRequired())
             || (!isPurchase
                 && saleConfigService.getSaleConfig(company).getIsAnalyticDistributionRequired()));
+  }
+
+  @Override
+  public void checkRequiredAxisByCompany(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    if (!CollectionUtils.isEmpty(analyticLineModel.getAnalyticMoveLineList())) {
+      Company company = analyticLineModel.getCompany();
+      List<AnalyticAxis> analyticAxisList =
+          analyticLineModel.getAnalyticMoveLineList().stream()
+              .map(AnalyticMoveLine::getAnalyticAxis)
+              .collect(Collectors.toList());
+      analyticAxisService.checkRequiredAxisByCompany(company, analyticAxisList);
+    }
   }
 }

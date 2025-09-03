@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineContextToolService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
+import com.axelor.apps.contract.service.ContractYearEndBonusService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
@@ -77,6 +78,7 @@ public class ContractLineController {
     try {
       Contract contract = this.getContractFromContext(request);
       contractLine = contractLineService.computeTotal(contractLine, contract);
+      contractLineService.computeAnalytic(contract, contractLine);
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
@@ -147,7 +149,8 @@ public class ContractLineController {
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
       Contract contract = this.getContractFromContext(request);
 
-      if (contract == null) {
+      if (contract == null
+          || Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
         return;
       }
 
@@ -168,6 +171,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
 
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
+
       response.setValues(
           Beans.get(AnalyticGroupService.class)
               .getAnalyticAccountValueMap(
@@ -186,6 +193,10 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+        return;
+      }
 
       Beans.get(AnalyticAttrsSupplychainService.class)
           .addAnalyticDistributionPanelHiddenAttrs(analyticLineContractModel, attrsMap);

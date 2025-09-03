@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -90,6 +91,15 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   private Boolean toInvoice;
 
   private Long projectTaskId;
+  private List<Long> invitedCollaboratorList;
+
+  public List<Long> getInvitedCollaboratorList() {
+    return invitedCollaboratorList;
+  }
+
+  public void setInvitedCollaboratorList(List<Long> invitedCollaboratorList) {
+    this.invitedCollaboratorList = invitedCollaboratorList;
+  }
 
   public Long getProjectId() {
     return projectId;

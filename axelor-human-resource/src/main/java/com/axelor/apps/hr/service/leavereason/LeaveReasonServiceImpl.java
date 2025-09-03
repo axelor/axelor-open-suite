@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,10 +44,12 @@ public class LeaveReasonServiceImpl implements LeaveReasonService {
 
   @Override
   public List<Integer> getIncrementLeaveReasonTypeSelects() {
-    return Beans.get(MetaSelectItemRepository.class).all()
+    return Beans.get(MetaSelectItemRepository.class)
+        .all()
         .filter("self.select.name = :selectName AND self.value != :exceptionalSelect")
         .bind("selectName", "hr.leave.reason.type.select")
-        .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS).fetch()
+        .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS)
+        .fetch()
         .stream()
         .map(MetaSelectItem::getValue)
         .collect(Collectors.toList())

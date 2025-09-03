@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,9 +56,7 @@ public class ProdProcessController {
       String fileLink =
           Beans.get(PrintingTemplatePrintService.class)
               .getPrintLink(
-                  maintenanceProdProcessPrintTemplate,
-                  new PrintingGenFactoryContext(prodProcess),
-                  title);
+                  maintenanceProdProcessPrintTemplate, new PrintingGenFactoryContext(prodProcess));
 
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {

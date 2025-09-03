@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,14 @@ import com.axelor.apps.sale.db.SaleOrder;
 
 public interface AccountingSituationSupplychainService extends AccountingSituationService {
 
-  public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
-
   public AccountingSituation computeUsedCredit(AccountingSituation accountingSituation)
       throws AxelorException;
 
   public void updateUsedCredit(Partner partner) throws AxelorException;
+
+  void checkExceededUsedCredit(SaleOrder saleOrder) throws AxelorException;
+
+  boolean isUsedCreditExceeded(SaleOrder saleOrder) throws AxelorException;
+
+  void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
 }

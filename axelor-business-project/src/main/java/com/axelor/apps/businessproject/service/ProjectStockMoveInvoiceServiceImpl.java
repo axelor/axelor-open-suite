@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
+import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
+import com.axelor.apps.budget.service.invoice.StockMoveInvoiceBudgetServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -37,19 +45,17 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderMergingServiceSupplyChain;
-import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
+public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceBudgetServiceImpl {
 
   @Inject
   public ProjectStockMoveInvoiceServiceImpl(
@@ -62,10 +68,16 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService,
+      AppBaseService appBaseService,
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
-      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
+      UnitConversionService unitConversionService,
+      BudgetInvoiceService budgetInvoiceService,
+      AppBudgetService appBudgetService,
+      InvoiceToolBudgetService invoiceToolBudgetService,
+      BudgetInvoiceLineService budgetInvoiceLineService,
+      BudgetToolsService budgetToolsService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -76,10 +88,16 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         stockMoveLineRepository,
         invoiceLineRepository,
         supplyChainConfigService,
-        appSupplychainService,
+        appBaseService,
         appStockService,
         saleOrderMergingServiceSupplyChain,
-        purchaseOrderMergingSupplychainService);
+        purchaseOrderMergingSupplychainService,
+        unitConversionService,
+        budgetInvoiceService,
+        appBudgetService,
+        invoiceToolBudgetService,
+        budgetInvoiceLineService,
+        budgetToolsService);
   }
 
   @Override

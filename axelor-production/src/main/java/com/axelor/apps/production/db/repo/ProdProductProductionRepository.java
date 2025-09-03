@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -36,10 +36,27 @@ import java.util.Optional;
 
 public class ProdProductProductionRepository extends ProdProductRepository {
 
+  protected AppProductionService appProductionService;
+  protected AppBaseService appBaseService;
+  protected UnitRepository unitRepository;
+  protected UnitConversionService unitConversionService;
+
+  @Inject
+  public ProdProductProductionRepository(
+      AppProductionService appProductionService,
+      AppBaseService appBaseService,
+      UnitRepository unitRepository,
+      UnitConversionService unitConversionService) {
+    this.appProductionService = appProductionService;
+    this.appBaseService = appBaseService;
+    this.unitRepository = unitRepository;
+    this.unitConversionService = unitConversionService;
+  }
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
-    if (!Beans.get(AppProductionService.class).isApp("production")) {
+    if (!appProductionService.isApp("production")) {
 
       return super.populate(json, context);
     }
@@ -78,7 +95,7 @@ public class ProdProductProductionRepository extends ProdProductRepository {
 
   public BigDecimal computeMissingQty(
       Long productId, BigDecimal qty, Long toProduceManufOrderId, Unit targetUnit) {
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
+    int scale = appBaseService.getNbDecimalDigitForQty();
     if (productId == null || qty == null || toProduceManufOrderId == null) {
       return BigDecimal.ZERO;
     }
@@ -106,14 +123,12 @@ public class ProdProductProductionRepository extends ProdProductRepository {
                 .orElse(BigDecimal.ZERO);
         Unit locationUnit =
             Optional.ofNullable(resultTab[1])
-                .map(
-                    unitObj ->
-                        Beans.get(UnitRepository.class).find(Long.valueOf(unitObj.toString())))
+                .map(unitObj -> unitRepository.find(Long.valueOf(unitObj.toString())))
                 .orElse(null);
         if (locationUnit != null) {
           availableQty =
-              Beans.get(UnitConversionService.class)
-                  .convert(locationUnit, targetUnit, availableQtyInLocationUnit, scale, null);
+              unitConversionService.convert(
+                  locationUnit, targetUnit, availableQtyInLocationUnit, scale, null);
         }
 
       } catch (Exception e) {

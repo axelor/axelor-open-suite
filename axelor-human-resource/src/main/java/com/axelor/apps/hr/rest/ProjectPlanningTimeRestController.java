@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,7 +47,7 @@ public class ProjectPlanningTimeRestController {
   @HttpExceptionHandler
   public Response getPlannedTimeValuesRestriction(@PathParam("companyId") Long companyId)
       throws AxelorException {
-    new SecurityCheck().readAccess(Company.class).check();
+    new SecurityCheck().readAccess(Company.class, companyId).check();
     Company company = ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
 
     return ResponseConstructor.build(

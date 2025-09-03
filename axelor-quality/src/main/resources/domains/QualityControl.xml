@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -17,7 +17,6 @@
     <date name="endDate" title="End date"/>
     <date name="deadLineDate" title="Deadline"/>
     <integer name="sequence" title="Sequence"/>
-    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <one-to-many name="optionalControlPointList" title="Optional control point list"
       ref="ControlPoint" mappedBy="optionalQualityControl"/>
     <one-to-many name="qualityCorrectiveActionList" title="Corrective actions list"
@@ -29,6 +28,9 @@
     <string name="name" title="Name"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"
       title="Printing settings"/>
+    <string name="relatedToSelect" title="Linked to"
+      selection="quality.control.origin.related.to.select"/>
+    <long name="relatedToSelectId"/>
 
     <extra-code><![CDATA[
 
@@ -39,6 +41,10 @@
 	    public static final int STATUS_IN_PROGRESS = 4;
 	    public static final int STATUS_STANDBY = 5;
 	    public static final int STATUS_FINISHED = 6;
+
+	    public static final String RELATED_TO_PRODUCT = "com.axelor.apps.base.db.Product";
+		public static final String RELATED_TO_PARTNER = "com.axelor.apps.base.db.Partner";
+		public static final String RELATED_TO_PROJECT = "com.axelor.apps.project.db.Project";
 
 	    ]]></extra-code>
   </entity>

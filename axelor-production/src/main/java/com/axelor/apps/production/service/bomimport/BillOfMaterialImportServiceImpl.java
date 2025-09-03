@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -197,7 +198,8 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
                         billOfMaterialImportLineChild.getQuantity(),
                         billOfMaterialImportLineChild.getUnit(),
                         null,
-                        false)));
+                        false,
+                        BigDecimal.ZERO)));
   }
 
   @Transactional(rollbackOn = {Exception.class})

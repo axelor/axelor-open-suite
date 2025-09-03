@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.Optional;
 import java.util.Set;
 
 @Singleton
@@ -58,6 +59,27 @@ public class FiscalPositionServiceImpl implements FiscalPositionService {
     }
 
     return null;
+  }
+
+  @Override
+  public TaxEquiv getTaxEquivFromOrToTaxSet(
+      FiscalPosition fiscalPosition, Set<TaxLine> taxLineSet) {
+    Set<Tax> taxSet = taxService.getTaxSet(taxLineSet);
+    if (fiscalPosition == null
+        || ObjectUtils.isEmpty(fiscalPosition.getTaxEquivList())
+        || ObjectUtils.isEmpty(taxSet)) {
+      return null;
+    }
+    return Optional.ofNullable(getTaxEquiv(fiscalPosition, taxSet))
+        .orElse(
+            fiscalPosition.getTaxEquivList().stream()
+                .filter(
+                    taxEquiv ->
+                        ObjectUtils.notEmpty(taxEquiv.getToTaxSet())
+                            && taxEquiv.getToTaxSet().equals(taxSet)
+                            && ObjectUtils.notEmpty(taxEquiv.getFromTaxSet()))
+                .findFirst()
+                .orElse(null));
   }
 
   @Override

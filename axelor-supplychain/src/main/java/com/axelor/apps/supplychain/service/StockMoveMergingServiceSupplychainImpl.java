@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -30,7 +32,6 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,13 +55,13 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   }
 
   @Override
-  protected void checkErrors(List<StockMove> stockMoveList, StringJoiner errors) {
+  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
     super.checkErrors(stockMoveList, errors);
     if (!checkAllSame(
         stockMoveList,
         stockMove ->
             stockMove.getSaleOrderSet().stream()
-                .map(saleOrder -> saleOrder.getFiscalPosition())
+                .map(SaleOrder::getFiscalPosition)
                 .collect(Collectors.toSet()))) {
       errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
     }
@@ -68,7 +69,7 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
         stockMoveList,
         stockMove ->
             stockMove.getPurchaseOrderSet().stream()
-                .map(purchaseOrder -> purchaseOrder.getFiscalPosition())
+                .map(PurchaseOrder::getFiscalPosition)
                 .collect(Collectors.toSet()))) {
       errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
     }

@@ -5,7 +5,7 @@ typeSelect: standard
 installOrder: 2360
 description: |
   Intervention configuration
-image:
+image: app-intervention.png
 modules:
   axelor-intervention
 dependsOn:

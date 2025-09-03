@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -76,7 +76,9 @@ public class AnalyticToolSupplychainServiceImpl implements AnalyticToolSupplycha
     List<String> productList =
         purchaseOrder.getPurchaseOrderLineList().stream()
             .filter(
-                purchaseOrderLine -> purchaseOrderLine.getAnalyticDistributionTemplate() == null)
+                purchaseOrderLine ->
+                    purchaseOrderLine.getAnalyticDistributionTemplate() == null
+                        && !purchaseOrderLine.getIsTitleLine())
             .map(PurchaseOrderLine::getProductName)
             .collect(Collectors.toList());
 

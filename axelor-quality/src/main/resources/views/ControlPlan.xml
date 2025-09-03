@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="control-plan-grid" title="Control plans"
     model="com.axelor.apps.quality.db.ControlPlan">
@@ -12,7 +12,7 @@
   </grid>
 
   <form name="control-plan-form" title="Control plan"
-    model="com.axelor.apps.quality.db.ControlPlan">
+    model="com.axelor.apps.quality.db.ControlPlan" onNew="action-control-plan-record-default">
     <panel name="mainPanel" colSpan="12">
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
       <field name="code" colSpan="6"/>
@@ -23,5 +23,15 @@
     <panel-related name="controlPlanLinesPanel" field="controlPlanLinesList"
       colSpan="12" grid-view="control-plan-line-grid" form-view="control-plan-line-form"
       canSelect="false"/>
+    <panel name="relatedPanel" sidebar="true">
+      <field name="relatedToSelect" widget="RefSelect"/>
+    </panel>
   </form>
+
+  <action-record name="action-control-plan-record-default"
+    model="com.axelor.apps.quality.db.ControlPlan">
+    <field name="relatedToSelect" expr="eval: relatedTo" if="relatedTo"/>
+    <field name="relatedToSelectId" expr="eval: relatedToId" if="relatedToId"/>
+  </action-record>
+
 </object-views>

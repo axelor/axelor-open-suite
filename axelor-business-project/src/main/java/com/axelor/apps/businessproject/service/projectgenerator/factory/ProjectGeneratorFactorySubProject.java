@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,14 @@ package com.axelor.apps.businessproject.service.projectgenerator.factory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -43,27 +46,42 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactory {
 
-  private ProjectBusinessService projectBusinessService;
-  private ProjectRepository projectRepository;
-  private SaleOrderLineRepository saleOrderLineRepository;
-  private ProductTaskTemplateService productTaskTemplateService;
+  protected ProjectBusinessService projectBusinessService;
+  protected ProjectRepository projectRepository;
+  protected SaleOrderLineRepository saleOrderLineRepository;
+  protected ProductTaskTemplateService productTaskTemplateService;
+  protected SequenceService sequenceService;
+  protected AppProjectService appProjectService;
 
   @Inject
   public ProjectGeneratorFactorySubProject(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
       SaleOrderLineRepository saleOrderLineRepository,
-      ProductTaskTemplateService productTaskTemplateService) {
+      ProductTaskTemplateService productTaskTemplateService,
+      SequenceService sequenceService,
+      AppProjectService appProjectService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.productTaskTemplateService = productTaskTemplateService;
+    this.sequenceService = sequenceService;
+    this.appProjectService = appProjectService;
   }
 
   @Override
-  public Project create(SaleOrder saleOrder) {
+  @Transactional(rollbackOn = Exception.class)
+  public Project create(SaleOrder saleOrder) throws AxelorException {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
+    project = projectRepository.save(project);
+    try {
+      if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
+        project.setCode(sequenceService.getDraftSequenceNumber(project));
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
     return project;
   }
 
@@ -110,7 +128,7 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
     return ActionView.define(String.format("Project%s generated", (projects.size() > 1 ? "s" : "")))
         .model(Project.class.getName())
         .add("grid", "project-grid")
-        .add("form", "project-form")
+        .add("form", "business-project-form")
         .param("search-filters", "project-filters")
         .domain(String.format("self.id in (%s)", StringHelper.getIdListString(projects)));
   }

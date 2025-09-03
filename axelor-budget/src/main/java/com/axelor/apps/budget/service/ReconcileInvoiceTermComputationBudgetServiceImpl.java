@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -57,6 +58,7 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
       InvoiceRepository invoiceRepository,
+      InvoiceTermPfpService invoiceTermPfpService,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService,
       ReconcileToolBudgetService reconcileToolBudgetService) {
@@ -70,7 +72,8 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
         currencyService,
         invoicePaymentRepository,
         invoiceTermPaymentRepository,
-        invoiceRepository);
+        invoiceRepository,
+        invoiceTermPfpService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
     this.reconcileToolBudgetService = reconcileToolBudgetService;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -103,12 +103,8 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
 
-    String title = getFileName(stockMove);
-
     return printingTemplatePrintService.getPrintFile(
-        pickingStockMovePrintTemplate,
-        new PrintingGenFactoryContext(stockMove),
-        title + " - ${date}");
+        pickingStockMovePrintTemplate, new PrintingGenFactoryContext(stockMove));
   }
 
   @Override

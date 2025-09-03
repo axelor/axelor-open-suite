@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TSTimer;
@@ -30,30 +31,42 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateService {
   protected TimesheetLineService timesheetLineService;
   protected TimesheetLineRepository timesheetLineRepository;
   protected UserHrService userHrService;
   protected TimesheetLineCheckService timesheetLineCheckService;
+  protected AppBaseService appBaseService;
+  protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
 
   @Inject
   public TimesheetLineCreateServiceImpl(
       TimesheetLineService timesheetLineService,
       TimesheetLineRepository timesheetLineRepository,
       UserHrService userHrService,
-      TimesheetLineCheckService timesheetLineCheckService) {
+      TimesheetLineCheckService timesheetLineCheckService,
+      AppBaseService appBaseService,
+      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.userHrService = userHrService;
     this.timesheetLineCheckService = timesheetLineCheckService;
+    this.appBaseService = appBaseService;
+    this.projectPlanningTimeRepository = projectPlanningTimeRepository;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -65,6 +78,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       String comments,
       boolean toInvoice)
       throws AxelorException {
@@ -76,13 +90,24 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
           HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE);
     }
     if (product == null) {
-      product = userHrService.getTimesheetProduct(employee);
+      product = userHrService.getTimesheetProduct(employee, projectTask);
+    }
+    if (hoursDuration == null && duration == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_LINE_GENERATED));
+    }
+    if (duration != null) {
+      hoursDuration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
     }
     timesheetLineCheckService.checkActivity(project, product);
     TimesheetLine timesheetLine =
-        createTimesheetLine(project, product, employee, date, timesheet, duration, comments);
+        createTimesheetLine(project, product, employee, date, timesheet, hoursDuration, comments);
     timesheetLine.setProjectTask(projectTask);
     timesheetLine.setToInvoice(toInvoice);
+    if (duration != null) {
+      timesheetLine.setDuration(duration);
+    }
     return timesheetLineRepository.save(timesheetLine);
   }
 
@@ -172,5 +197,36 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
     timesheetLine.setTimer(timer);
 
     return timesheetLine;
+  }
+
+  @Override
+  public void createTimesheetLinesUsingPlanning(
+      List<Pair<ProjectPlanningTime, BigDecimal>> projectPlanningTimeListWithDuration,
+      LocalDate date,
+      Timesheet timesheet)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(projectPlanningTimeListWithDuration)) {
+      return;
+    }
+
+    date = Optional.ofNullable(date).orElse(appBaseService.getTodayDate(timesheet.getCompany()));
+
+    for (Pair<ProjectPlanningTime, BigDecimal> projectPlanningTimePair :
+        projectPlanningTimeListWithDuration) {
+      BigDecimal duration = projectPlanningTimePair.getRight();
+      ProjectPlanningTime projectPlanningTime = projectPlanningTimePair.getLeft();
+      duration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
+      Employee employee = timesheet.getEmployee();
+      ProjectTask projectTask = projectPlanningTime.getProjectTask();
+      Product product = projectPlanningTime.getProduct();
+      if (product == null) {
+        product = userHrService.getTimesheetProduct(employee, projectTask);
+      }
+
+      TimesheetLine timesheetLine =
+          createTimesheetLine(
+              projectPlanningTime.getProject(), product, employee, date, timesheet, duration, "");
+      timesheetLine.setProjectTask(projectTask);
+    }
   }
 }

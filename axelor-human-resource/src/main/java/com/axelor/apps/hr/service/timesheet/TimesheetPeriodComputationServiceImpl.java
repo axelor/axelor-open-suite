@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,25 +20,16 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class TimesheetPeriodComputationServiceImpl implements TimesheetPeriodComputationService {
-  protected TimesheetRepository timesheetRepository;
-
-  @Inject
-  public TimesheetPeriodComputationServiceImpl(TimesheetRepository timesheetRepository) {
-    this.timesheetRepository = timesheetRepository;
-  }
 
   @Transactional
   @Override
   public void setComputedPeriodTotal(Timesheet timesheet) {
     timesheet.setPeriodTotal(computePeriodTotal(timesheet));
-    timesheetRepository.save(timesheet);
   }
 
   @Override

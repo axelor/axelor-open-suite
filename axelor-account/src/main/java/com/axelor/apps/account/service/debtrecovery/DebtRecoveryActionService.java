@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -191,8 +191,12 @@ public class DebtRecoveryActionService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void runManualAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException, JSONException {
+      throws AxelorException,
+          ClassNotFoundException,
+          IOException,
+          InstantiationException,
+          IllegalAccessException,
+          JSONException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -260,8 +264,12 @@ public class DebtRecoveryActionService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
-          IllegalAccessException, JSONException {
+      throws AxelorException,
+          ClassNotFoundException,
+          IOException,
+          InstantiationException,
+          IllegalAccessException,
+          JSONException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
 
     for (Message message : messageSet) {

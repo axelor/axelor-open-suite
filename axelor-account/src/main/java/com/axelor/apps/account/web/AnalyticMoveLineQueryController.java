@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,14 +21,18 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
+import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -56,11 +60,18 @@ public class AnalyticMoveLineQueryController {
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
-      List<AnalyticMoveLine> analyticMoveLineList =
-          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).fetch();
-      response.setValue(
-          "__analyticMoveLineList",
-          analyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+
+      List<Long> analyticMoveLineList =
+          Beans.get(AnalyticMoveLineRepository.class)
+              .all()
+              .filter(query)
+              .select("id")
+              .fetch(0, 0)
+              .stream()
+              .map(m -> (Long) m.get("id"))
+              .collect(Collectors.toList());
+
+      response.setValue("__analyticMoveLineList", analyticMoveLineList);
       response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -71,12 +82,15 @@ public class AnalyticMoveLineQueryController {
     try {
 
       Context context = request.getContext();
-      if (!context.containsKey("_ids") || ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+      AnalyticMoveLineQuery analyticMoveLineQuery =
+          context.getParent().asType(AnalyticMoveLineQuery.class);
+      if (!context.containsKey("_ids")
+          || ObjectUtils.isEmpty(request.getContext().get("_ids"))
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
         return;
       }
 
-      AnalyticMoveLineQuery analyticMoveLineQuery =
-          context.getParent().asType(AnalyticMoveLineQuery.class);
       List<AnalyticMoveLine> analyticMoveLines =
           Beans.get(AnalyticMoveLineRepository.class)
               .all()
@@ -96,7 +110,11 @@ public class AnalyticMoveLineQueryController {
 
       AnalyticMoveLineQuery analyticMoveLineQuery =
           request.getContext().getParent().asType(AnalyticMoveLineQuery.class);
-
+      if (ObjectUtils.isEmpty(analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList())
+          || ObjectUtils.isEmpty(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
+        return;
+      }
       String query =
           Beans.get(AnalyticMoveLineQueryService.class)
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
@@ -112,21 +130,26 @@ public class AnalyticMoveLineQueryController {
   protected void reverses(
       ActionResponse response,
       AnalyticMoveLineQuery analyticMoveLineQuery,
-      List<AnalyticMoveLine> analyticMoveLines) {
+      List<AnalyticMoveLine> analyticMoveLines)
+      throws AxelorException {
+    AnalyticMoveLineQueryService analyticMoveLineQueryService =
+        Beans.get(AnalyticMoveLineQueryService.class);
+
+    Beans.get(AnalyticMoveLineQueryPercentageService.class)
+        .validateReverseParameterAxisPercentage(
+            analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList());
 
     Set<AnalyticMoveLine> reverseAnalyticMoveLines =
-        Beans.get(AnalyticMoveLineQueryService.class)
-            .analyticMoveLineReverses(analyticMoveLineQuery, analyticMoveLines);
+        analyticMoveLineQueryService.analyticMoveLineReverses(
+            analyticMoveLineQuery, analyticMoveLines);
     Set<AnalyticMoveLine> newAnalyticMoveLines =
-        Beans.get(AnalyticMoveLineQueryService.class)
-            .createAnalyticaMoveLines(analyticMoveLineQuery, analyticMoveLines);
+        analyticMoveLineQueryService.createAnalyticMoveLines(
+            analyticMoveLineQuery, analyticMoveLines);
 
     List<AnalyticMoveLine> filteredAnalyticMoveLineList =
         Beans.get(AnalyticMoveLineRepository.class)
             .all()
-            .filter(
-                Beans.get(AnalyticMoveLineQueryService.class)
-                    .getAnalyticMoveLineQuery(analyticMoveLineQuery))
+            .filter(analyticMoveLineQueryService.getAnalyticMoveLineQuery(analyticMoveLineQuery))
             .fetch();
 
     response.setInfo(
@@ -238,5 +261,28 @@ public class AnalyticMoveLineQueryController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void refreshAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+    Beans.get(AnalyticMoveLineParentService.class).refreshAxisOnParent(analyticMoveLine);
+    response.setReload(true);
+  }
+
+  public void initPercentage(ActionRequest request, ActionResponse response) {
+    AnalyticMoveLineQueryParameter parameter =
+        request.getContext().asType(AnalyticMoveLineQueryParameter.class);
+    List<AnalyticMoveLineQueryParameter> reverseList =
+        request
+            .getContext()
+            .getParent()
+            .asType(AnalyticMoveLineQuery.class)
+            .getReverseAnalyticMoveLineQueryParameterList();
+
+    response.setValue(
+        "percentage",
+        Beans.get(AnalyticMoveLineQueryPercentageService.class)
+            .getMissingPercentageOnAxis(parameter, reverseList));
   }
 }

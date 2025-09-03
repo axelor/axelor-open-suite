@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form id="stock-call-tender-supplier-form" name="call-tender-supplier-form"
+    model="com.axelor.apps.purchase.db.CallTenderSupplier" title="Supplier" width="large"
+    extension="true">
+    <extend target="//field[@name='supplierPartner']">
+      <attribute name="domain" value="self.isSupplier IS true OR self.isCarrier IS true"/>
+    </extend>
+  </form>
+
+</object-views>

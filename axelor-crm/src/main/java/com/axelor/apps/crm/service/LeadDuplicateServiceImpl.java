@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.EmailAddress;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import java.util.List;
@@ -124,18 +125,13 @@ public class LeadDuplicateServiceImpl implements LeadDuplicateService {
     if (predicate == null) {
       predicate = t -> true;
     }
+    List<String> list =
+        modelList.stream().filter(predicate).map(mapper).collect(Collectors.toList());
 
-    htmlListStr =
-        modelList.stream()
-            .filter(predicate)
-            .map(mapper)
-            .map(item -> "<li>" + item + "</li>")
-            .collect(Collectors.joining());
-
-    if (StringUtils.isBlank(htmlListStr)) {
+    if (ObjectUtils.isEmpty(list)) {
       return htmlListStr;
     }
 
-    return String.format("<b>%s</b><ul>%s</ul>", title, htmlListStr);
+    return StringHtmlListBuilder.formatMessage(title, list);
   }
 }

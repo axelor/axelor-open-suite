@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -663,8 +663,14 @@ public class ICalendarService {
       CalDavCalendarCollection collection,
       LocalDateTime startDate,
       LocalDateTime endDate)
-      throws IOException, URISyntaxException, ParseException, ObjectStoreException,
-          ConstraintViolationException, DavException, ParserConfigurationException, ParserException,
+      throws IOException,
+          URISyntaxException,
+          ParseException,
+          ObjectStoreException,
+          ConstraintViolationException,
+          DavException,
+          ParserConfigurationException,
+          ParserException,
           AxelorException {
 
     final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;

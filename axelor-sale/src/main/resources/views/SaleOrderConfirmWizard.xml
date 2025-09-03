@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form name="sale-order-confirm-wizard-form" title="Confirm"
+    model="com.axelor.apps.sale.db.SaleOrder"
+    onLoad="action-sale-order-confirm-wizard-method-onload, action-sale-order-confirm-wizard-method-compute-current-total-ordered">
+    <help showIf="$isUsedCreditExceeded"> <![CDATA[
+      Used credit has been exceeded. The quotation must be manually unblocked to generate the order.
+    ]]></help>
+    <panel name="mainPanel">
+      <panel-related name="saleOrderLineListPanel" field="$saleOrderLineList"
+        title="Sale order lines" type="one-to-many" canNew="false" canRemove="false"
+        grid-view="confirm-wizard-sale-order-line-grid" editable="true" colSpan="12"
+        onChange="action-sale-order-confirm-wizard-method-compute-current-total-ordered"/>
+      <spacer colSpan="4"/>
+      <panel name="infoPanel" colSpan="8">
+        <field name="advanceTotal" title="Advance payment A.T.I. total" hidden="true"
+          x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+        <field name="inTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="inAti" hidden="true"/>
+        <field name="statusSelect" hidden="true"/>
+        <field name="$currentlyTotalOrdered" type="decimal" showTitle="false"
+          x-currency="currency.symbol" x-scale="currency.numberOfDecimals" hidden="true"/>
+
+        <field name="exTaxTotalOrdered" x-currency="currency.symbol"
+          x-scale="currency.numberOfDecimals" showTitle="false" readonly="true">
+          <viewer
+            depends="inAti,statusSelect,amountInvoiced,advanceTotal,exTaxTotalOrdered,inTaxTotalOrdered">
+            <![CDATA[
+	                  <>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         {(statusSelect >= 2 && inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Currently ordered A.T.I.')}</Box>}
+                             {(statusSelect >= 2 && inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('$currentlyTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Currently ordered W.T.')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('$currentlyTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered A.T.I.')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('inTaxTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered W.T.')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti) && <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotalOrdered')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
+	                     </Box>
+	                  </>
+                    ]]>
+          </viewer>
+        </field>
+      </panel>
+      <panel name="actionPanel" colSpan="12">
+        <button name="confirmBtn" title="Generate the order"
+          onClick="validate, save, action-sale-order-confirm-wizard-method-generate"
+          readonlyIf="$isUsedCreditExceeded &amp;&amp; !manualUnblock" colSpan="6"/>
+        <button name="orderAllBtn" title="Order all"
+          onClick="action-sale-order-confirm-wizard-method-order-all" colSpan="6"/>
+        <field name="manualUnblock" showIf="$isUsedCreditExceeded"/>
+        <field name="$isUsedCreditExceeded" hidden="true"/>
+      </panel>
+    </panel>
+  </form>
+
+  <grid name="confirm-wizard-sale-order-line-grid" title="Lines to confirm" edit-icon="false"
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
+    <field name="product.code" width="120"/>
+    <field name="productName" readonly="true"/>
+    <field name="qty" readonly="true" x-scale="$nbDecimalDigitForQty" type="decimal"/>
+    <field name="unit.name" title="Unit" readonly="true" form-view="unit-form"
+      grid-view="unit-grid"/>
+    <field name="price" readonly="true" x-scale="$nbDecimalDigitForUnitPrice" type="decimal"/>
+    <field name="exTaxTotal" title="Total W.T." readonly="true"
+      x-scale="$nbDecimalDigitForUnitPrice" type="decimal"/>
+    <field name="orderedQty" readonly="true" x-scale="$nbDecimalDigitForQty" type="decimal"/>
+    <field name="$qtyToOrder" title="Qty to order" type="decimal"
+      readonlyIf="$orderAll || (qty == orderedQty)" min="0" x-scale="$nbDecimalDigitForQty"
+      validIf="$number($qtyToOrder) &lt;= $number($qtyToOrderLeft)"
+      onChange="action-sale-order-line-confirm-validate-qty-to-order"/>
+    <field name="$orderAll" title="Order all" type="boolean"
+      onChange="action-attrs-sale-order-line-confirm-wizard-fill-qty" readonlyIf="qty == orderedQty"/>
+    <field name="$nbDecimalDigitForUnitPrice" type="decimal" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" type="decimal" hidden="true"/>
+    <field name="$qtyToOrderLeft" type="decimal" hidden="true"/>
+  </grid>
+
+  <action-attrs name="action-attrs-sale-order-line-confirm-wizard-fill-qty">
+    <attribute for="$qtyToOrder" name="value" expr="eval: qty - orderedQty" if="orderAll"/>
+  </action-attrs>
+
+  <action-method name="action-sale-order-confirm-wizard-method-open-wizard">
+    <call class="com.axelor.apps.sale.web.SaleOrderConfirmController"
+      method="showPopUpConfirmWizard"/>
+  </action-method>
+
+  <action-method name="action-sale-order-confirm-wizard-method-generate">
+    <call class="com.axelor.apps.sale.web.SaleOrderConfirmController"
+      method="generateConfirmedSaleOrder"/>
+  </action-method>
+
+  <action-validate name="action-sale-order-line-confirm-validate-qty-to-order">
+    <notify message="You can not order more than the quantity to order left."
+      if="eval: new BigDecimal(qtyToOrder).compareTo(qty - orderedQty) > 0"/>
+  </action-validate>
+
+  <action-method name="action-sale-order-confirm-wizard-method-onload">
+    <call class="com.axelor.apps.sale.web.SaleOrderConfirmController" method="onLoad"/>
+  </action-method>
+
+  <action-method name="action-sale-order-confirm-wizard-method-order-all">
+    <call class="com.axelor.apps.sale.web.SaleOrderConfirmController" method="orderAll"/>
+  </action-method>
+
+
+  <action-method
+    name="action-sale-order-confirm-wizard-method-compute-current-total-ordered">
+    <call class="com.axelor.apps.sale.web.SaleOrderConfirmController"
+      method="computeCurrentlyTotalOrdered"/>
+  </action-method>
+</object-views>

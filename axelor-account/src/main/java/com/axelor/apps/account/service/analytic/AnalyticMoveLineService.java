@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -78,13 +78,12 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
       throws AxelorException;
 
-  AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+  AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine);
 
-  AnalyticMoveLine reverseAndPersist(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+  AnalyticMoveLine reverseAndPersist(AnalyticMoveLine analyticMoveLine);
 
   AnalyticMoveLine generateAnalyticMoveLine(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount, BigDecimal percentage);
 
   String getAnalyticAxisDomain(Company company) throws AxelorException;
 

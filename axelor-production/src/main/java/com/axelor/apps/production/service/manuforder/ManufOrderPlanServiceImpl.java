@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -63,6 +63,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService;
   protected ManufOrderPlanStockMoveService manufOrderPlanStockMoveService;
   protected ManufOrderResidualProductService manufOrderResidualProductService;
+  protected ManufOrderCreateBarcodeService manufOrderCreateBarcodeService;
 
   @Inject
   public ManufOrderPlanServiceImpl(
@@ -80,7 +81,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       AppProductionService appProductionService,
       ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
       ManufOrderPlanStockMoveService manufOrderPlanStockMoveService,
-      ManufOrderResidualProductService manufOrderResidualProductService) {
+      ManufOrderResidualProductService manufOrderResidualProductService,
+      ManufOrderCreateBarcodeService manufOrderCreateBarcodeService) {
     this.manufOrderRepo = manufOrderRepo;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
@@ -96,6 +98,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.manufOrderCreatePurchaseOrderService = manufOrderCreatePurchaseOrderService;
     this.manufOrderPlanStockMoveService = manufOrderPlanStockMoveService;
     this.manufOrderResidualProductService = manufOrderResidualProductService;
+    this.manufOrderCreateBarcodeService = manufOrderCreateBarcodeService;
   }
 
   @Override
@@ -137,7 +140,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     if (sequenceService.isEmptyOrDraftSequenceNumber(manufOrder.getManufOrderSeq())) {
       manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
     }
-    manufOrderService.createBarcode(manufOrder);
+    manufOrderCreateBarcodeService.createBarcode(manufOrder);
     if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
       manufOrderService.preFillOperations(manufOrder);
     } else {

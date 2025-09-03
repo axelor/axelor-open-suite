@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -285,7 +285,7 @@ public class InterventionController {
 
       String strFilter =
           Beans.get(PartnerLinkService.class)
-              .computePartnerFilter(client, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+              .computePartnerFilter(client, PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
