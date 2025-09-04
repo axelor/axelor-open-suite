@@ -86,10 +86,10 @@
         <button name="exportMoveLinesBtn" title="Export Move lines" onClick="" colSpan="12"/>
         <panel-dashlet name="viewMoveLinePanel" colSpan="12" title="General"
           hideIf="$popup() || reconcileOk" height="450" action="action-account-view-show-move-lines"
-          canSearch="true"/>
+          canSearch="true" x-show-bars="true"/>
         <panel-dashlet name="viewMoveLineReconcileGroupPanel" colSpan="12"
           title="General" hideIf="$popup() || !reconcileOk" height="450"
-          action="action-account-view-show-move-lines" canSearch="true"/>
+          action="action-account-view-show-move-lines" canSearch="true" x-show-bars="true"/>
         <panel-dashlet name="relatedMoveTemplatePanel" title="Move templates"
           colSpan="12" height="450" hideIf="!id || accountType.technicalTypeSelect == 'view'"
           action="action-account-view-move-templates" canSearch="true"/>

@@ -514,4 +514,16 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(""));
   }
+
+  @Override
+  public List<MoveLine> getMoveLineList(Account account) {
+    if (account == null || account.getId() == null) {
+      return new ArrayList<>();
+    }
+
+    return moveLineRepository
+        .all()
+        .filter(String.format("self.account.id = %s AND self.move IS NOT NULL", account.getId()))
+        .fetch();
+  }
 }

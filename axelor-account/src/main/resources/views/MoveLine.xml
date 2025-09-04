@@ -53,6 +53,10 @@
 
   <grid name="move-line-account-grid" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
+    <toolbar>
+      <button name="exportMoveLineBtn" title="Export" colSpan="2" css="btn-custom text-left"
+        icon="printer" onClick="save,action-account-method-export-move-line"/>
+    </toolbar>
     <field name="name" title="Reference"/>
     <field name="date"/>
     <field name="move.period"/>
@@ -79,6 +83,8 @@
         onClick="action-method-accounting-reconcile"/>
       <button name="calculateBtn" title="Calculation of totals"
         onClick="action-account-move-line-method-calculate-balance"/>
+      <button name="exportMoveLineBtn" title="Export" colSpan="2" css="btn-custom text-left"
+        icon="printer" onClick="save,action-account-method-export-move-line"/>
     </toolbar>
     <field name="name"/>
     <field name="date"/>
@@ -908,6 +914,10 @@
   <action-method name="action-move-line-method-compute-invoice-terms-due-dates">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeInvoiceTermsDueDates"/>
+  </action-method>
+
+  <action-method name="action-account-method-export-move-line">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="exportMoveLineList"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"
