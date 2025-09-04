@@ -15,7 +15,7 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="currency" colSpan="2" required="true"/>
+    <field name="currency" colSpan="2"/>
     <field name="statusSelect"/>
     <field name="ventilated"/>
   </grid>
@@ -91,9 +91,7 @@
             canEdit="false" canView="false"
             onChange="action-expense-record-employee-onchange,action-expense-method-update-general-and-kilometric-expense-line-employee"
             required="true"/>
-          <field name="currency" canEdit="false" colSpan="6" required="true"
-            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
-            onChange="action-expense-attrs-kilometric-panel-visibility"/>
+          <field name="currency" canEdit="false" colSpan="6" readonly="true"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
@@ -250,14 +248,12 @@
     <action name="action-expense-record-default"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
-    <action name="action-expense-attrs-kilometric-panel-visibility"/>
   </action-group>
 
   <action-group name="action-expense-group-form-onLoad">
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-expense-company-cb"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
-    <action name="action-expense-attrs-kilometric-panel-visibility"/>
     <action name="action-expense-method-check-total-amount"/>
   </action-group>
 
@@ -442,11 +438,6 @@
   <action-attrs name="action-expense-attrs-set-total-to-refund">
     <attribute name="value" for="$totalToRefund"
       expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
-  </action-attrs>
-
-  <action-attrs name="action-expense-attrs-kilometric-panel-visibility">
-    <attribute for="kilometricExpenseLineList" name="hidden"
-      expr="eval: currency != company?.currency"/>
   </action-attrs>
 
   <action-method name="action-expense-method-print-report-and-proof-file">
