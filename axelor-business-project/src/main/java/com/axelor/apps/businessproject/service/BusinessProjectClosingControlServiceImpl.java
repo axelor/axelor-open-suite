@@ -29,7 +29,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Inject;
@@ -42,7 +42,7 @@ public class BusinessProjectClosingControlServiceImpl
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
-  protected SaleOrderRepository saleOrderRepository;
+  protected SaleOrderLineRepository saleOrderLineRepository;
   protected PurchaseOrderRepository purchaseOrderRepository;
   protected ContractRepository contractRepository;
   protected TimesheetLineRepository timesheetLineRepository;
@@ -54,7 +54,7 @@ public class BusinessProjectClosingControlServiceImpl
       AppBusinessProjectService appBusinessProjectService,
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      SaleOrderRepository saleOrderRepository,
+      SaleOrderLineRepository saleOrderLineRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       ContractRepository contractRepository,
       TimesheetLineRepository timesheetLineRepository,
@@ -63,7 +63,7 @@ public class BusinessProjectClosingControlServiceImpl
     this.appBusinessProjectService = appBusinessProjectService;
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
-    this.saleOrderRepository = saleOrderRepository;
+    this.saleOrderLineRepository = saleOrderLineRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.contractRepository = contractRepository;
     this.timesheetLineRepository = timesheetLineRepository;
@@ -81,11 +81,12 @@ public class BusinessProjectClosingControlServiceImpl
       return errorMessage.toString();
     }
 
-    if (!areSaleOrdersFinished(project)) {
+    if (!areSaleOrderLinesFinished(project)) {
       errorMessage
           .append("<br/>")
           .append(
-              I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_NOT_INVOICED));
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_LINE_NOT_INVOICED));
     }
 
     if (!arePurchaseOrdersInvoiced(project)) {
@@ -142,8 +143,8 @@ public class BusinessProjectClosingControlServiceImpl
     }
   }
 
-  protected boolean areSaleOrdersFinished(Project project) {
-    return saleOrderRepository
+  protected boolean areSaleOrderLinesFinished(Project project) {
+    return saleOrderLineRepository
             .all()
             .filter("self.project.id = :projectId AND self.amountInvoiced != self.exTaxTotal")
             .bind("projectId", project.getId())
