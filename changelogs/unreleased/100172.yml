@@ -1,0 +1,3 @@
+---
+title: "Fixed asset: apply full category configuration even if fiscal is missing in depreciation plan."
+module: axelor-account
