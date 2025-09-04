@@ -493,12 +493,6 @@
         <button name="updateProductsPricesBtn" title="Update products prices"
           onClick="save,action-product-method-update-products-prices"/>
       </panel>
-      <panel name="taskPanel" title="Task templates"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct"
-        if-module="axelor-business-project">
-        <field name="taskTemplateSet" widget="TagSelect" colSpan="12"
-          domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
-      </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
         if="__config__.app.isApp('stock')" hidden="true"
         showIf="id &amp;&amp; !isShippingCostsProduct &amp;&amp; stockManaged">
@@ -967,8 +961,6 @@
       if="!__config__.app.getApp('base')?.getManageProductVariants()"/>
     <field name="manageVariantPrice" hidden="true"
       if="!__config__.app.getApp('base')?.getManageProductVariants()"/>
-    <field name="taskTemplateSet" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct)"/>
     <field name="productSubTypeSelect" hidden="true" if="!__config__.app.isApp('production')"/>
     <field name="isActivity" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>

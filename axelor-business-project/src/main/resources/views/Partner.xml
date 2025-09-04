@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form id="business-project-partner-form" name="partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+
+    <extend target="//field[@name='salePartnerPriceList']">
+      <insert position="after">
+        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project')"/>
+        <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3"
+          if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='deliveryPanel']">
+      <insert position="after">
+        <panel name="projectPanel" title="Projects"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+          <panel-dashlet name="projectPanel" title="Projects"
+            action="action-partner-view-related-projects" colSpan="12"/>
+          <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
+            action="action-partner-view-related-invoicing-projects" colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="incl-event-actions-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" id="business-project-incl-event-actions-partner-form"
+    extension="true">
+
+    <extend target="//item[@name='sirenApiBtn']">
+      <insert position="after">
+        <item name="generateProjectItem" title="Generate Project"
+          action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1"
+          if-module="axelor-project"
+          if="__config__.app.isApp('project') &amp;&amp; __config__.app.isApp('business-project')"
+          hideIf="isContact"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view name="action-partner-view-related-projects" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain>self.clientPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-related-invoicing-projects"
+    title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+    <view type="grid" name="invoicing-project-grid"/>
+    <view type="form" name="invoicing-project-form"/>
+    <domain>self.project.clientPartner = :id</domain>
+  </action-view>
+
+  <search-filters id="business-project-partner-filters" name="partner-filters"
+    model="com.axelor.apps.base.db.Partner" title="Partner filters">
+    <field name="companySet" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="isFactor" hidden="true"
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
+    <field name="sellerCode" hidden="true"
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors())"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
+    <field name="password" hidden="true"
+      if="!(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getPortalSelect() == 2)"/>
+    <field name="factorizedCustomer" hidden="true"
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors())"/>
+    <field name="customerCatalogList" hidden="true"
+      if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableCustomerCatalogMgt())"/>
+    <field name="supplierCatalogList" hidden="true"
+      if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog())"/>
+    <field name="paymentDelay" hidden="true" if="!__config__.app.isApp('cash-management')"/>
+    <field name="invoiceComments" hidden="true" if="!__config__.app.isApp('invoice')"/>
+    <field name="accountingSituationList" hidden="true" if="!__config__.app.isApp('account')"/>
+    <field name="saleOrderInformation" hidden="true" if="!__config__.app.isApp('sale')"/>
+    <field name="payerQuality" hidden="true" if="!__config__.app.isApp('account')"/>
+    <field name="salePartnerPriceList" hidden="true" if="!__config__.app.isApp('sale')"/>
+    <field name="chargeBackPurchaseSelect" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="chargeBackPurchase" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="saleOrderComments" hidden="true" if="!__config__.app.isApp('sale')"/>
+    <field name="purchaseOrderInformation" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="purchasePartnerPriceList" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="supplierQualityRatingSelect" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="supplierArrivalProductQty" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="partnerProductQualityRatingList" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="purchaseOrderComments" hidden="true" if="!__config__.app.isApp('purchase')"/>
+    <field name="deliveryDelay" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="isNeedingConformityCertificate" hidden="true"
+      if="!__config__.app.isApp('stock')"/>
+    <field name="partnerStockSettingsList" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="deliveryComments" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="pickingOrderComments" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="partnerAddressList" hidden="true"/>
+    <field name="mainAddress" title="Main address"/>
+    <field name="isContact" title="Is a contact"/>
+    <field name="simpleFullName" hidden="true"/>
+    <field name="isCarrier" title="Is a carrier" hidden="true"
+      if="!__config__.app.isApp('stock')"/>
+    <filter name="partner-filters-all-enterprises" title="All Enterprises">
+      <domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
+    </filter>
+    <filter name="partner-filters-all-individuals" title="All Individuals">
+      <domain>self.partnerTypeSelect = 2 AND self.isContact = false</domain>
+    </filter>
+    <filter name="partner-filters-all-prospects" title="All Prospects">
+      <domain>self.isProspect = true AND self.isContact = false</domain>
+    </filter>
+    <filter name="partner-filters-all-clients" title="All Clients">
+      <domain>self.isCustomer = true AND self.isContact = false</domain>
+    </filter>
+    <filter name="partner-filters-all-suppliers" title="All Suppliers">
+      <domain>self.isSupplier = true AND self.isContact = false</domain>
+    </filter>
+    <filter name="partner-filters-all-employees" title="All Employees">
+      <domain>self.isEmployee = true AND self.isContact = false</domain>
+    </filter>
+  </search-filters>
+
+  <search-filters id="business-project-contact-filters" name="contact-filters"
+    model="com.axelor.apps.base.db.Partner" title="Contact filters">
+    <field name="companySet" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="isFactor" hidden="true"
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
+    <field name="sellerCode" hidden="true"
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors())"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
+    <field name="password" hidden="true"
+      if="!(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getPortalSelect() == 2)"/>
+    <field name="factorizedCustomer" hidden="true"
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors())"/>
+    <field name="customerCatalogList" hidden="true"
+      if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableCustomerCatalogMgt())"/>
+    <field name="supplierCatalogList" hidden="true"
+      if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog())"/>
+    <field name="paymentDelay" hidden="true" if="!__config__.app.isApp('cash-management')"/>
+    <field name="invoiceComments" hidden="true" if="!__config__.app.isApp('invoice')"/>
+    <field name="accountingSituationList" hidden="true" if="!__config__.app.isApp('account')"/>
+    <field name="saleOrderInformation" hidden="true" if="!__config__.app.isApp('sale')"/>
+    <field name="payerQuality" hidden="true" if="!__config__.app.isApp('account')"/>
+    <field name="salePartnerPriceList" hidden="true" if="!__config__.app.isApp('sale')"/>
+    <field name="chargeBackPurchaseSelect" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="chargeBackPurchase" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="saleOrderComments" hidden="true" if="!__config__.app.isApp('sale')"/>
+    <field name="purchaseOrderInformation" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="purchasePartnerPriceList" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="supplierQualityRatingSelect" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="supplierArrivalProductQty" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="partnerProductQualityRatingList" hidden="true"
+      if="!__config__.app.isApp('purchase')"/>
+    <field name="purchaseOrderComments" hidden="true" if="!__config__.app.isApp('purchase')"/>
+    <field name="deliveryDelay" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="isNeedingConformityCertificate" hidden="true"
+      if="!__config__.app.isApp('stock')"/>
+    <field name="partnerStockSettingsList" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="deliveryComments" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="pickingOrderComments" hidden="true" if="!__config__.app.isApp('stock')"/>
+    <field name="partnerAddressList" hidden="true"/>
+    <field name="mainAddress" title="Main address"/>
+    <field name="isContact" title="Is a contact"/>
+    <field name="simpleFullName" hidden="true"/>
+    <field name="isCarrier" title="Is a carrier" hidden="true"
+      if="!__config__.app.isApp('stock')"/>
+    <filter name="contact-filters-all-prospects-clients" title="All prospects and clients">
+      <domain>self.mainPartner.isProspect = true OR self.mainPartner.isCustomer = true</domain>
+    </filter>
+    <filter name="contact-filters-all-prospects" title="All prospects">
+      <domain>self.mainPartner.isProspect = true</domain>
+    </filter>
+    <filter name="contact-filters-all-clients" title="All clients">
+      <domain>self.mainPartner.isCustomer = true</domain>
+    </filter>
+    <filter name="contact-filters-all-supplier" title="All suppliers">
+      <domain>self.isSupplier = true</domain>
+    </filter>
+  </search-filters>
+</object-views>

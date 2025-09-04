@@ -5,15 +5,43 @@
 
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"
     name="sale-order-line-form" extension="true" id="project-sale-order-line-form">
-    <extend target="//field[@name='project']">
-      <attribute name="onChange" value="action-sale-order-line-method-update-distribution"/>
+
+    <extend target="//panel[@name='invoicingFollowUpPanel']">
+      <insert position="after">
+        <panel name="projectPanel"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
+          title="Business Project" readonlyIf="$isReadOnly !== false"
+          if-module="axelor-business-project">
+          <field name="project" title="Business Project" canEdit="false"
+            onSelect="action-sale-order-line-method-set-project-domain"
+            onChange="action-sale-order-line-method-update-distribution"
+            form-view="business-project-form" grid-view="project-grid"/>
+          <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
+            if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
+            if-module="axelor-business-project"
+            onChange="action-sale-order-line-group-invoicing-mode-select-onchange"/>
+          <field name="toInvoice" hidden="true"/>
+          <panel-dashlet name="projectTaskListPanel" title="Related tasks"
+            action="action-sale-order-line-view-project-tasks" colSpan="12"/>
+        </panel>
+      </insert>
     </extend>
   </form>
 
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"
     name="sale-order-line-template-form" extension="true" id="project-sale-order-line-template-form">
-    <extend target="//field[@name='project']">
-      <attribute name="onChange" value="action-sale-order-line-method-update-distribution"/>
+    <extend target="//panel[@name='marginPanel']">
+      <insert position="after">
+        <panel name="projectPanel"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
+          title="Project/Task" if-module="axelor-business-project">
+          <field name="project" title="Business Project" canEdit="false"
+            onSelect="action-sale-order-line-method-set-project-domain"
+            onChange="action-sale-order-line-method-update-distribution"
+            form-view="business-project-form" grid-view="project-grid"/>
+          <field name="progress" readonly="true" widget="SelectProgress"/>
+        </panel>
+      </insert>
     </extend>
   </form>
 
@@ -42,6 +70,17 @@
       onClick="action-sale-order-line-method-update-to-invoice"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="invoiced" hidden="true"/>
+  </grid>
+
+  <grid id="business-project-sale-order-line-to-invoice-grid"
+    title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true">
+    <extend target="//field[@name='saleOrder.clientPartner']">
+      <insert position="after">
+        <field name="project" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project')" width="150"/>
+      </insert>
+    </extend>
   </grid>
 
   <action-method name="action-sale-order-line-method-set-project">
@@ -79,5 +118,12 @@
     <call class="com.axelor.apps.businessproject.web.SaleOrderLineProjectController"
       method="setProjectDomain"/>
   </action-method>
+
+  <action-view name="action-sale-order-line-view-project-tasks" title="Related tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="business-project-task-grid"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain>self.saleOrderLine = :id AND self.imputable IS TRUE</domain>
+  </action-view>
 
 </object-views>
