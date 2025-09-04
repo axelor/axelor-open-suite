@@ -1,0 +1,3 @@
+---
+title: "Sale config: fixed 'saleOrderClientBox' and 'saleOrderLegalNote' to be translatable and updated Sale Order BIRT to display translated values."
+module: axelor-sale
