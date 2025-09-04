@@ -7,9 +7,9 @@
 
   <entity name="UNCode">
 
-   <string name="code" title="Code" required="true"/>
-   <string name="codeDescription" title="description" large="true" required="true"/>
-  <string name="security" title="Security" large="true"/>
+    <string name="code" title="Code" required="true" namecolumn="true"/>
+    <string name="codeDescription" title="description" large="true" required="true"/>
+    <string name="security" title="Security" large="true"/>
   </entity>
 
 </domain-models>

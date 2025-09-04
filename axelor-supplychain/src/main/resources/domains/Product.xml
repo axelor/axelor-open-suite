@@ -13,6 +13,12 @@
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
     <integer name="availabilityMeanTime" title="Availability mean time" min="0"
       help="Average product availability time in working days" nullable="true"/>
+    <boolean name="isAdr" title="ADR"/>
+    <many-to-one name="unCode" ref="com.axelor.apps.supplychain.db.UNCode"
+      title="UN Code"/>
+    <integer name="packagingGroupSelect" title="Packaging group"
+      selection="product.packaging.group.select" default="1"/>
+    <boolean name="limitedQty" title="Limited qty"/>
 
   </entity>
 
