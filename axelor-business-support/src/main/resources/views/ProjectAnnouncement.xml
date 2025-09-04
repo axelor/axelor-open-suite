@@ -13,7 +13,7 @@
 
   <form name="project-announcement-form" title="Announcement"
     model="com.axelor.apps.businesssupport.db.ProjectAnnouncement" width="large"
-    onNew="action-project-record-project-announcement-onnew,action-business-support-attrs-project-default">
+    onNew="action-project-record-project-announcement-onnew,action-project-announcement-attrs-hide-project">
     <panel name="mainPanel">
       <field name="title" colSpan="12" required="true"/>
       <field name="project" form-view="" grid-view="project-grid"
@@ -37,5 +37,10 @@
     <field name="date" expr="eval: __config__.date"/>
     <field name="project" expr="eval: _project"/>
   </action-record>
+
+  <action-attrs name="action-project-announcement-attrs-hide-project">
+    <attribute name="hidden" for="project" expr="eval:true"
+      if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
+  </action-attrs>
 
 </object-views>

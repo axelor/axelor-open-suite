@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form id="business-support-task-template-form" name="task-template-form"
+    title="Task template" model="com.axelor.apps.project.db.TaskTemplate" extension="true">
+
+    <extend target="//panel[@name='contentPanel']">
+      <insert position="after">
+        <panel if="__config__.app.isApp('business-support')"
+          if-module="axelor-business-support" name="internalDescriptionPanel"
+          title="Internal Description">
+          <field name="internalDescription" colSpan="12" widget="html"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <search-filters id="business-support-task-template-filters"
+    name="task-template-filters" model="com.axelor.apps.project.db.TaskTemplate"
+    title="Task template filters">
+    <field name="internalDescription" hidden="true"
+      if="!__config__.app.isApp('business-support')"/>
+  </search-filters>
+
+</object-views>

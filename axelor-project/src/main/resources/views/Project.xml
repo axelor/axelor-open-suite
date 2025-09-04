@@ -553,11 +553,6 @@
       if="(typeSelect == 'task')&amp;&amp;(project?.membersUserSet)&amp;&amp;(!project.membersUserSet.isEmpty())"/>
   </action-attrs>
 
-  <action-attrs name="action-business-support-attrs-project-default">
-    <attribute name="hidden" for="project" expr="eval:true"
-      if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
-  </action-attrs>
-
   <action-attrs name="action-project-gantt-user-wizard-user-domain">
     <attribute name="domain"
       expr="eval:&quot;self.id in (${([0]+__repo__(Project).all().fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;"
@@ -946,9 +941,6 @@
     <field name="resourceBookingList" hidden="true"
       if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="roadmapSet" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="announcementList" hidden="true"
-      if="!__config__.app.isApp('business-support')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
   </search-filters>
 </object-views>
