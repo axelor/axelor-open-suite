@@ -36,4 +36,43 @@
     </panel>
   </form>
 
+  <search-filters id="business-support-project-filters" name="project-filters"
+    title="Project filters" model="com.axelor.apps.project.db.Project">
+    <field if="!__config__.app.getApp('base')?.getEnableMultiCompany()" name="company"
+      hidden="true"/>
+    <field if="!__config__.app.getApp('project')?.resourceManagement"
+      name="resourceBookingList" hidden="true"/>
+    <field
+      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject())"
+      name="productionOrderList" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="clientPartner" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="currency" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="priceList" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="contactPartner" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="customerAddress" hidden="true"/>
+    <field if="!__config__.app.isApp('employee')" name="totalPlannedHrs" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="toInvoice" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="isInvoicingTimesheet"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="isInvoicingExpenses"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="isInvoicingPurchases"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="invoicingSequenceSelect"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="consolidatePhaseWhenInvoicing"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="invoicingComment"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="manualElementList"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-support')" name="roadmapSet" hidden="true"/>
+    <field if="!__config__.app.isApp('business-support')" name="announcementList"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('employee')" name="productSet" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="isBusinessProject"
+      hidden="true"/>
+  </search-filters>
+
+
 </object-views>

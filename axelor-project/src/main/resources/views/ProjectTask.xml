@@ -907,14 +907,6 @@
 
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">
-    <field name="targetVersion" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="team" hidden="true" if="__config__.app.isApp('business-support')"/>
-    <field name="isPrivate" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="internalDescription" hidden="true"
-      if="!__config__.app.isApp('business-support')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="plannedProgress" hidden="true" if="!__config__.app.isApp('employee')"/>

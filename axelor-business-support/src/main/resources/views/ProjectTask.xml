@@ -25,9 +25,41 @@
     <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
+  <grid id="business-support-business-project-task-grid" name="business-project-task-grid"
+    title="Tasks" model="com.axelor.apps.project.db.ProjectTask" extension="true">
+
+    <extend target="//field[@name='projectTaskCategory']">
+      <insert position="after">
+        <field name="targetVersion" if-module="axelor-business-support"
+          if="__config__.app.isApp('business-support')"/>
+      </insert>
+    </extend>
+
+  </grid>
+
+  <grid id="business-support-business-project-task-project-grid"
+    name="business-project-task-project-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" extension="true">
+
+    <extend target="//button[@name='addTaskBtn']">
+      <insert position="after">
+        <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
+          icon="fa-plus" onClick="action-project-add-ticket" if-module="axelor-business-support"
+          if="__config__.app.isApp('business-support')"/>
+      </insert>
+    </extend>
+
+  </grid>
+
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask" id="business-project-task-ticket-form"
     extension="true">
+
+    <extend target="/">
+      <attribute name="onNew"
+        value="business-support-action-business-project-project-task-group-on-new"/>
+    </extend>
+
     <extend target="//panel[@name='projectDetailsPanel']">
       <insert position="before">
         <panel name="viewerTagsPanel" colSpan="4">
@@ -128,5 +160,58 @@
     <attribute name="domain" for="customerReferral"
       expr="eval: &quot; (SELECT role FROM Role role WHERE role.name='role.customer') MEMBER OF self.roles AND self.id IN (SELECT userSet.id FROM Project p INNER JOIN p.membersUserSet userSet WHERE p.id = ${project?.id}) &quot;"/>
   </action-attrs>
+
+  <action-record name="action-project-task-business-support-provider"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="$provider"
+      expr="eval: __config__.app.getApp('business-support').providerCompany.name"
+      if="__config__.app.getApp('business-support').providerCompany"/>
+  </action-record>
+
+  <action-group
+    name="business-support-action-business-project-project-task-group-on-new">
+    <action name="action-business-project-project-task-group-on-new"/>
+    <action name="action-project-task-business-support-provider"
+      if="__config__.app.isApp('business-support')"/>
+  </action-group>
+
+  <search-filters id="business-support-project-task-filters"
+    name="project-task-filters" title="Project task filters"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field if="!__config__.app.isApp('business-support')" name="targetVersion" hidden="true"/>
+    <field if="__config__.app.isApp('business-support')" name="team" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="customerReferral"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-support')" name="isPrivate" hidden="true"/>
+    <field if="!__config__.app.isApp('business-support')" name="isOrderAccepted" hidden="true"/>
+    <field if="!__config__.app.isApp('business-support')" name="isOrderProposed" hidden="true"/>
+    <field if="!__config__.app.isApp('business-support')" name="assignment" hidden="true"/>
+    <field if="!__config__.app.isApp('business-support')" name="internalDescription"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('employee')" name="totalPlannedHrs" hidden="true"/>
+    <field if="!__config__.app.isApp('employee')" name="budgetedTime" hidden="true"/>
+    <field if="!__config__.app.isApp('employee')" name="plannedProgress" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="invoicingType" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="toInvoice" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="isPaid" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="isTaskRefused" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="invoiced" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')"
+      name="project.invoicingSequenceSelect" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="saleOrderLine" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="product" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="quantity" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="invoicingUnit" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="unitPrice" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="currency" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="discountTypeSelect"
+      hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="discountAmount" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="priceDiscounted" hidden="true"/>
+    <field if="!__config__.app.isApp('business-project')" name="exTaxTotal" hidden="true"/>
+    <field if="!__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
+      hidden="true"/>
+  </search-filters>
+
 
 </object-views>

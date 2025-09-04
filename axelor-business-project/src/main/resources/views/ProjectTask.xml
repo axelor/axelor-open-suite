@@ -17,8 +17,7 @@
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
-    <field name="targetVersion" if-module="axelor-business-support"
-      if="__config__.app.isApp('business-support')"/>
+
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
     <field name="project.completedTaskStatus.id" hidden="true"/>
@@ -32,9 +31,6 @@
     <toolbar>
       <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
         icon="fa-plus" onClick="action-business-project-add-task"/>
-      <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
-        icon="fa-plus" onClick="action-project-add-ticket" if-module="axelor-business-support"
-        if="__config__.app.isApp('business-support')"/>
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
       <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
@@ -550,8 +546,6 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-attrs-set-framework-contracts"/>
     <action name="action-project-task-group-set-product-and-update"/>
-    <action name="action-project-task-business-support-provider"
-      if="__config__.app.isApp('business-support')"/>
     <action name="action-project-task-attrs-onchange-invoice-type"
       if="__config__.app.isApp('business-project')"/>
   </action-group>
@@ -602,13 +596,6 @@
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
     <field name="unitCost" expr="eval: product?.costPrice"/>
     <field name="totalCosts" expr="eval: product?.costPrice"/>
-  </action-record>
-
-  <action-record name="action-project-task-business-support-provider"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <field name="$provider"
-      expr="eval: __config__.app.getApp('business-support').providerCompany.name"
-      if="__config__.app.getApp('business-support').providerCompany"/>
   </action-record>
 
   <action-group name="action-business-project-project-task-group-product-onchange">
@@ -704,16 +691,8 @@
   <search-filters id="business-project-project-task-filters"
     name="project-task-filters" model="com.axelor.apps.project.db.ProjectTask"
     title="Project task filters">
-    <field name="targetVersion" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="team" hidden="true" if="__config__.app.isApp('business-support')"/>
     <field name="customerReferral" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
-    <field name="isPrivate" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="internalDescription" hidden="true"
-      if="!__config__.app.isApp('business-support')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="plannedProgress" hidden="true" if="!__config__.app.isApp('employee')"/>
