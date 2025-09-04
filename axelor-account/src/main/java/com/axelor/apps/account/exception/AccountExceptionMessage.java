@@ -1776,6 +1776,18 @@ public final class AccountExceptionMessage {
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
 
+  public static final String FEC_IMPORT_ANALYTIC_MISSING_REQUIRED = /*$$(*/
+      "The analytic accounting is required on the financial account %s. There should be a template or analytic accounts associated with such account and respecting the number of defined analytic axis. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_NOT_AUTHORIZED = /*$$(*/
+      "The financial account %s doesn't support the analytic accounting. There shouldn't be any template or analytic account associated with such account. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_DISTRIBUTION_EMPTY = /*$$(*/
+      "The analytic distribution template %s can't be found for company %s. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_ACCOUNT_EMPTY = /*$$(*/
+      "The analytic account %s can't be found for company %s and analytic axis %s. Accounting entry %s can't be imported." /*)*/;
+
   public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
       "Please select a foreign exchange gain account config for company %s." /*)*/;
 

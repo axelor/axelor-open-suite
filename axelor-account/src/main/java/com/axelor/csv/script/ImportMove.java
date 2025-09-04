@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.fecimport.ImportMoveFecService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -52,6 +53,7 @@ public class ImportMove {
   @Inject private AppAccountService appAccountService;
   @Inject private ImportMoveFecService importMoveFecService;
   @Inject private FECImportRepository fecImportRepository;
+  @Inject private ImportAnalyticInMoveService importAnalyticInMoveService;
 
   private String lastImportDate;
 
@@ -93,6 +95,8 @@ public class ImportMove {
       moveLine =
           importMoveFecService.fillMoveLineInformation(
               moveLine, values, move, fecImport, importReference);
+
+      importAnalyticInMoveService.fillAnalyticOnMoveLine(moveLine, move, values, csvReference);
 
     } catch (AxelorException e) {
       TraceBackService.trace(e);

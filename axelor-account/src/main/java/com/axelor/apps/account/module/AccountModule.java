@@ -121,6 +121,8 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveService;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveServiceImpl;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -942,6 +944,8 @@ public class AccountModule extends AxelorModule {
         .to(FixedAssetDerogatoryLineManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
+
+    bind(ImportAnalyticInMoveService.class).to(ImportAnalyticInMoveServiceImpl.class);
 
     bind(PeriodCheckService.class).to(PeriodCheckServiceImpl.class);
 
