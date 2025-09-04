@@ -84,8 +84,6 @@ public interface ReconcileService {
 
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException;
 
-  public List<Reconcile> getReconciles(MoveLine moveLine);
-
   public static boolean isReconcilable(MoveLine acc1, MoveLine acc2) {
     return acc1.getAccount().getReconcileOk()
         && acc2.getAccount().getReconcileOk()
