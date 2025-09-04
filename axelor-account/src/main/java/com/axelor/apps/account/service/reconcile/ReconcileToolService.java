@@ -34,5 +34,5 @@ public interface ReconcileToolService {
 
   void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException;
 
-    List<Reconcile> getConfirmedReconcileList(List<MoveLine> moveLineList);
+  List<Reconcile> getConfirmedReconcileList(List<MoveLine> moveLineList);
 }

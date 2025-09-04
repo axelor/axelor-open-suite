@@ -92,8 +92,8 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   /**
    * Method to unlink an invoice Payment
    *
-   * <p>Unlink the eventual Reconcile Compute the total amount paid on the linked invoice
-   * Change the status to cancel
+   * <p>Unlink the eventual Reconcile Compute the total amount paid on the linked invoice Change the
+   * status to cancel
    *
    * @param invoicePayment An invoice payment
    * @throws AxelorException
@@ -113,7 +113,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
   @Override
   public void validateBeforeUnlink(InvoicePayment invoicePayment) throws AxelorException {
-    if (invoicePayment == null || invoicePayment.getMove() == null){
+    if (invoicePayment == null || invoicePayment.getMove() == null) {
       return;
     }
 
@@ -121,16 +121,17 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   }
 
   protected void unlinkPaymentMoveLine(Move move) throws AxelorException {
-    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())){
+    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())) {
       return;
     }
 
-    List<Reconcile> reconcileList = reconcileToolService.getConfirmedReconcileList(move.getMoveLineList());
-    if (ObjectUtils.isEmpty(reconcileList)){
+    List<Reconcile> reconcileList =
+        reconcileToolService.getConfirmedReconcileList(move.getMoveLineList());
+    if (ObjectUtils.isEmpty(reconcileList)) {
       return;
     }
 
-    for (Reconcile reconcile : reconcileList){
+    for (Reconcile reconcile : reconcileList) {
       unreconcileService.unreconcile(reconcile);
     }
   }

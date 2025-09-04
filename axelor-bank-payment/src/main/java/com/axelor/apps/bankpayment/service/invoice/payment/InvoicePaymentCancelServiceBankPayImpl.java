@@ -59,7 +59,12 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
       BankOrderCancelService bankOrderCancelService,
       AppBankPaymentService appBankPaymentService) {
     super(
-        invoicePaymentRepository, moveCancelService, invoicePaymentToolService, invoiceTermService, reconcileToolService, unreconcileService);
+        invoicePaymentRepository,
+        moveCancelService,
+        invoicePaymentToolService,
+        invoiceTermService,
+        reconcileToolService,
+        unreconcileService);
     this.bankOrderCancelService = bankOrderCancelService;
     this.appBankPaymentService = appBankPaymentService;
   }

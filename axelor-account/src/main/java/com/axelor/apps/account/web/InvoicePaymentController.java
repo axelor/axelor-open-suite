@@ -355,7 +355,7 @@ public class InvoicePaymentController {
 
     try {
       Beans.get(InvoicePaymentCancelService.class).validateBeforeUnlink(invoicePayment);
-    } catch (AxelorException e){
+    } catch (AxelorException e) {
       response.setAlert(I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_UNLINK_ALERT));
     }
   }

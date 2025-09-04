@@ -171,38 +171,38 @@ public class ReconcileToolServiceImpl implements ReconcileToolService {
     return moveLineAmountRemaining.compareTo(invoiceTermAmountRemaining) == 0;
   }
 
-
   @Override
   public List<Reconcile> getConfirmedReconcileList(List<MoveLine> moveLineList) {
     List<Reconcile> reconcileList = new ArrayList<>();
-    if (ObjectUtils.isEmpty(moveLineList)){
+    if (ObjectUtils.isEmpty(moveLineList)) {
       return reconcileList;
     }
 
-    for (MoveLine moveLine : moveLineList){
+    for (MoveLine moveLine : moveLineList) {
       reconcileList.addAll(getConfirmedReconcileList(moveLine));
     }
 
     return reconcileList;
   }
 
-  protected List<Reconcile> getConfirmedReconcileList(MoveLine moveLine){
+  protected List<Reconcile> getConfirmedReconcileList(MoveLine moveLine) {
     List<Reconcile> reconcileList = new ArrayList<>();
-    if (moveLine == null){
+    if (moveLine == null) {
       return reconcileList;
     }
 
-    if (moveToolService.isDebitMoveLine(moveLine) && ObjectUtils.notEmpty(moveLine.getDebitReconcileList())){
+    if (moveToolService.isDebitMoveLine(moveLine)
+        && ObjectUtils.notEmpty(moveLine.getDebitReconcileList())) {
       for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
         if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
-                && !reconcileList.contains(reconcile)) {
+            && !reconcileList.contains(reconcile)) {
           reconcileList.add(reconcile);
         }
       }
-    } else if (ObjectUtils.notEmpty(moveLine.getCreditReconcileList())){
+    } else if (ObjectUtils.notEmpty(moveLine.getCreditReconcileList())) {
       for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
         if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
-                && !reconcileList.contains(reconcile)) {
+            && !reconcileList.contains(reconcile)) {
           reconcileList.add(reconcile);
         }
       }

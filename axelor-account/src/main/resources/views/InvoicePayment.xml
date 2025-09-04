@@ -100,8 +100,9 @@
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
       <button name="unlinkPaymentBtn" title="Remove this payment"
-        readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="!move || move.statusSelect == 3"
-        icon="fa-times-circle" onClick="action-invoice-payment-group-unlink-payment"/>
+        readonlyIf="statusSelect == 2 || move.statusSelect == 3"
+        hideIf="!move || move.statusSelect == 3" icon="fa-times-circle"
+        onClick="action-invoice-payment-group-unlink-payment"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>
     </panel>
     <panel name="newInvoicePaymentPanel" hideIf="id">
@@ -275,7 +276,7 @@
 
   <action-method name="action-invoice-payment-method-validate-before-unlink">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
-          method="validateBeforeUnlink"/>
+      method="validateBeforeUnlink"/>
   </action-method>
 
   <action-method name="action-invoice-payment-method-fill-bank-details">

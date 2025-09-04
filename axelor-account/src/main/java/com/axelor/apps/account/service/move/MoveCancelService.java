@@ -90,7 +90,7 @@ public class MoveCancelService {
   }
 
   public void checkBeforeCancel(Move move) throws AxelorException {
-    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())){
+    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())) {
       return;
     }
 
@@ -98,27 +98,30 @@ public class MoveCancelService {
 
       if (moveLine.getReconcileGroup() != null) {
         throw new AxelorException(
-                move,
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(AccountExceptionMessage.MOVE_CANCEL_7));
+            move,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MOVE_CANCEL_7));
       }
 
-      if (Optional.of(moveLine).map(MoveLine::getAccount).map(Account::getUseForPartnerBalance).orElse(false)
-              && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
+      if (Optional.of(moveLine)
+              .map(MoveLine::getAccount)
+              .map(Account::getUseForPartnerBalance)
+              .orElse(false)
+          && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
         throw new AxelorException(
-                move,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MOVE_CANCEL_1));
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MOVE_CANCEL_1));
       }
     }
 
     if (move.getPeriod() == null
-            || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-            || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
       throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_CANCEL_2));
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_2));
     }
   }
 }
