@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -36,6 +37,7 @@ import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
@@ -56,6 +58,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -695,5 +698,21 @@ public class MoveLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void exportMoveLineList(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    List<MoveLine> moveLineList = new ArrayList<>();
+    if (parentContext != null && Account.class.equals(parentContext.getContextClass())) {
+      moveLineList =
+          Beans.get(MoveLineToolService.class).getMoveLineList(parentContext.asType(Account.class));
+    }
+
+    if (ObjectUtils.isEmpty(moveLineList)) {
+      return;
+    }
+
+    // Need to call the export management (look for the one in
+    // GlobalBudgetController.exportBudgetLevel
   }
 }
