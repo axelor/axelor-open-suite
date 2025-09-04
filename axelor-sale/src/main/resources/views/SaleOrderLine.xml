@@ -523,21 +523,6 @@
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-        title="Business Project" readonlyIf="$isReadOnly !== false"
-        if-module="axelor-business-project">
-        <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-method-set-project-domain"
-          form-view="business-project-form" grid-view="project-grid"/>
-        <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-          if-module="axelor-business-project"
-          onChange="action-sale-order-line-group-invoicing-mode-select-onchange"/>
-        <field name="toInvoice" hidden="true"/>
-        <panel-dashlet name="projectTaskListPanel" title="Related tasks"
-          action="action-sale-order-line-view-project-tasks" colSpan="12"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -629,14 +614,6 @@
           target="com.axelor.apps.base.db.Currency"/>
         <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-        title="Project/Task" if-module="axelor-business-project">
-        <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-method-set-project-domain"
-          form-view="business-project-form" grid-view="project-grid"/>
-        <field name="progress" readonly="true" widget="SelectProgress"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -686,13 +663,6 @@
     <view type="grid" name="stock-move-line-sale-order-line-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.saleOrderLine.id = :id</domain>
-  </action-view>
-
-  <action-view name="action-sale-order-line-view-project-tasks" title="Related tasks"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="business-project-task-grid"/>
-    <view type="form" name="business-project-task-form"/>
-    <domain>self.saleOrderLine = :id AND self.imputable IS TRUE</domain>
   </action-view>
 
   <search-filters title="Sale order lines filter" name="sale-order-lines-filter"

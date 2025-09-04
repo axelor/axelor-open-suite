@@ -144,7 +144,7 @@
 
   <action-view name="wizard-client-form-open-my-projects" title="My projects"
     model="com.axelor.apps.project.db.Project">
-    <view type="grid" name="business-project-grid"/>
+    <view type="grid" name="project-grid"/>
     <view type="form" name="project-form"/>
     <domain>self.clientPartner = :_myPartner</domain>
     <context name="_myPartner" expr="eval:__user__.partner"/>

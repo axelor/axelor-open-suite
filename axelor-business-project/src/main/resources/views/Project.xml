@@ -96,6 +96,9 @@
         <item name="perUserCalendar" title="Per user calendar"
           action="save,action-project-view-per-user-calendar"
           showIf="id &amp;&amp; isShowCalendarPerUser"/>
+        <item name="generateEquipmentsBtn" title="Generate equipments"
+          action="action-park-model-show-confirmation-from-project"
+          if="__config__.app.isApp('intervention')"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -594,8 +597,27 @@
     </panel>
   </form>
 
+  <kanban id="business-project-project-kanban" columnBy="projectStatus"
+    sequenceBy="orderByState" limit="10" name="project-kanban" title="Projects"
+    model="com.axelor.apps.project.db.Project"
+    onMove="action-business-project-group-project-status-on-change">
+    <field name="fullName"/>
+    <field name="description"/>
+    <field name="projectStatus"/>
+    <field name="sequence"/>
+    <template>
+      <![CDATA[
+	    <>
+	    	<strong>{fullName}</strong>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
+		]]>
+    </template>
+  </kanban>
+
   <action-group name="action-business-project-project-group-on-new">
     <action name="action-project-group-on-new-project"/>
+    <action name="action-business-project-defaults"/>
     <action name="action-attrs-project-set-project-type"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-business-project-method-get-analytic-distribution-template"/>
@@ -1341,4 +1363,50 @@
       method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
+  <action-attrs name="action-attrs-project-set-project-type"
+    model="com.axelor.apps.project.db.Project">
+    <attribute name="readonly" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
+  </action-attrs>
+
+  <action-attrs name="action-business-project-defaults"
+    model="com.axelor.apps.project.db.Project">
+    <attribute name="value" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
+  </action-attrs>
+
+  <search-filters id="business-project-project-filters" name="project-filters"
+    model="com.axelor.apps.project.db.Project" title="Project filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="resourceBookingList" hidden="true"
+      if="!__config__.app.getApp('project')?.resourceManagement"/>
+    <field name="productionOrderList" hidden="true"
+      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject())"/>
+    <field name="clientPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="priceList" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="isInvoicingTimesheet" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="isInvoicingExpenses" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="isInvoicingPurchases" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="invoicingSequenceSelect" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="consolidatePhaseWhenInvoicing" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="invoicingComment" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="manualElementList" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+    <field name="roadmapSet" hidden="true" if="!__config__.app.isApp('business-support')"/>
+    <field name="announcementList" hidden="true"
+      if="!__config__.app.isApp('business-support')"/>
+    <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="isBusinessProject" hidden="true"
+      if="!__config__.app.isApp('business-project')"/>
+  </search-filters>
 </object-views>

@@ -53,6 +53,17 @@
       <attribute name="onNew"
         value="action-sale-order-method-onnew,action-saleorder-record-template,action-sale-order-method-create-template"/>
     </extend>
+
+    <extend target="//panel[@name='otherInformationsPanel']">
+      <insert position="after">
+        <panel name="projectPanel"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
+          title="Business project" colSpan="12" if-module="axelor-business-project">
+          <field name="project" form-view="business-project-form" grid-view="project-grid"
+            colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-generate-po-select-supplierpartner-form"
@@ -99,5 +110,136 @@
     <call class="com.axelor.apps.businessproject.web.SaleOrderProjectController"
       method="updateLines"/>
   </action-method>
+
+  <action-attrs name="action-sale-order-record-project-default-fields"
+    if-module="axelor-business-project">
+    <attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-set-required">
+    <attribute name="required" for="$_projectGeneratorType"
+      expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product">
+    <attribute name="selection-in" for="$_projectGeneratorType"
+      if="!__config__.app.getApp('business-project')?.getEnableTaskTemplatesByProduct()"
+      expr="['PROJECT_ALONE', 'SUB_PROJECT_BY_LINE', 'TASK_BY_LINE']"/>
+  </action-attrs>
+
+  <action-group id="business-project-action-group-sale-saleorder-onload"
+    name="action-group-sale-saleorder-onload">
+    <action name="action-sale-order-method-onload"/>
+    <action name="action-sale-order-attrs-collapse-specific-settings-group"/>
+    <action name="action-sale-order-attrs-in-ati"/>
+    <action name="action-sale-order-attrs-hidden-bank-details"/>
+    <action name="action-sale-order-record-project-default-fields"
+      if="__config__.app.isApp('business-project')"/>
+    <action name="action-sale-order-attrs-external-reference"/>
+    <action name="action-sale-order-attrs-availability"/>
+    <action name="action-sale-order-attrs-set-required"/>
+    <action name="action-sale-order-attrs-set-discounts-need-review"/>
+    <action name="action-sale-order-record-get-trading-names-management-config"/>
+    <action name="action-sale-order-method-is-incoterm-required"/>
+    <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
+    <action name="action-sale-order-method-get-last-version"/>
+    <action name="action-sale-order-attrs-set-save-actual-version"/>
+    <action name="action-sale-order-attrs-list-selection-in-type-select"/>
+  </action-group>
+
+  <action-group id="business-project-action-sale-group-confirmed"
+    name="action-sale-group-confirmed">
+    <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+    <action name="save"/>
+    <action name="action-business-project-method-generate-project"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
+    <action name="action-sale-order-method-confirm"/>
+  </action-group>
+
+  <search-filters id="business-project-sale-order-filters" name="sale-order-filters"
+    model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="tradingName" hidden="true"
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="saleOrderTypeSelect" hidden="true"
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowSusbcriptionSaleOrder())"/>
+    <field name="versionNumber" hidden="true"
+      if="!__config__.app.getApp('sale')?.getManageSaleOrderVersion()"/>
+    <field name="project" hidden="true"
+      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+    <field name="timetableTemplate" hidden="true"
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
+    <field name="computationDate" hidden="true"
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
+    <field name="timetableList" hidden="true"
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
+    <field name="amountToBeSpreadOverTheTimetable" hidden="true"
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
+    <field name="advancePaymentList" hidden="true"
+      if="!(__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice())"/>
+    <field name="advancePaymentNeeded" hidden="true"
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
+    <field name="advancePaymentAmountNeeded" hidden="true"
+      if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
+    <field name="printingSettings" hidden="true"
+      if="!__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"/>
+    <field name="hideDiscount" hidden="true"
+      if="!__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"/>
+    <field name="specificNotes" hidden="true"
+      if="!__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
+    <field name="expectedRealisationDate" hidden="true"
+      if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
+    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="toStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="specificPackage" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="estimatedShippingDate" hidden="true"
+      if="!__config__.app.isApp('supplychain')"/>
+    <field name="deliveryCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="forwarderPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="incoterm" hidden="true"
+      if="!__config__.app.isApp('supplychain') || !__config__.app.getApp('stock')?.isIncotermEnabled"/>
+    <field name="isNeedingConformityCertificate" hidden="true"
+      if="!__config__.app.isApp('supplychain')"/>
+    <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="deliveryComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="pickingOrderComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="productionNote" hidden="true" if="!__config__.app.isApp('production')"/>
+    <field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="shipmentDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="invoicingState" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="saleOrderLineList.product.name" title="Product Name"/>
+    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+    <field name="cancelReason" hidden="true"/>
+    <field name="deliveryAddress" hidden="true"/>
+    <field name="mainInvoicingAddress" hidden="true"/>
+    <filter name="sale-order-filters-my-proposals" title="My Proposals">
+      <domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salespersonUser.id =
+        :_internalUser</domain>
+    </filter>
+    <filter name="sale-order-filters-my-sales" title="My Sales">
+      <domain>self.statusSelect = 3 and self.salespersonUser.id = :_internalUser</domain>
+    </filter>
+    <filter name="sale-order-filters-my-team-proposals" title="My Team Proposals">
+      <domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.team = :_myActiveTeam</domain>
+    </filter>
+    <filter name="sale-order-filters-my-team-sales" title="My Team Sales">
+      <domain>self.statusSelect = 3 and self.team = :_myActiveTeam</domain>
+    </filter>
+  </search-filters>
 
 </object-views>

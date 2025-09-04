@@ -42,6 +42,7 @@
   <grid name="expense-line-grid" id="business-project-expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" extension="true">
     <extend target="//field[@name='project']">
+      <attribute name="onChange" value="action-expense-line-attrs-project-on-change"/>
       <insert position="before">
         <hilite color="danger"
           if="site &amp;&amp; $get('site.invoicingTypeSelect') == 1 &amp;&amp; toInvoice == false"/>
@@ -54,6 +55,8 @@
     </extend>
     <extend target="//field[@name='projectTask']">
       <attribute name="onChange" value="action-expense-line-group-on-project-task-change"/>
+      <attribute name="form-view" value="business-project-task-form"/>
+      <attribute name="grid-view" value="business-project-task-grid"/>
     </extend>
 
     <extend target="//field[@name='site']">
@@ -61,16 +64,48 @@
     </extend>
   </grid>
 
+  <grid id="business-project-expense-line-kilometric-grid" name="expense-line-kilometric-grid"
+    title="Kilometric Allowances" model="com.axelor.apps.hr.db.ExpenseLine" extension="true">
+
+    <extend target="//field[@name='projectTask']">
+      <attribute name="form-view" value="business-project-task-form"/>
+      <attribute name="grid-view" value="business-project-task-grid"/>
+    </extend>
+  </grid>
+
   <!-- HR FORM EXTENSION -->
   <form name="expense-line-form" id="business-project-expense-line-form" title="Expense line"
     model="com.axelor.apps.hr.db.ExpenseLine" extension="true">
+
+    <extend target="//field[@name='project']">
+      <attribute name="form-view" value="business-project-form"/>
+    </extend>
     <extend target="//field[@name='projectTask']">
       <attribute name="onChange" value="action-expense-line-group-on-project-task-change"/>
+      <attribute name="form-view" value="business-project-task-form"/>
+      <attribute name="grid-view" value="business-project-task-grid"/>
     </extend>
     <extend target="//field[@name='site']">
       <attribute name="onChange" value="action-expense-line-attrs-update-to-invoice"/>
     </extend>
   </form>
+
+  <form name="expense-line-kilometric-form" id="business-project-expense-line-kilometric-form"
+    title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" extension="true">
+
+    <extend target="//field[@name='project']">
+      <attribute name="form-view" value="business-project-form"/>
+    </extend>
+    <extend target="//field[@name='projectTask']">
+      <attribute name="form-view" value="business-project-task-form"/>
+      <attribute name="grid-view" value="business-project-task-grid"/>
+    </extend>
+  </form>
+
+  <action-attrs name="action-expense-line-attrs-project-on-change">
+    <attribute name="value" for="toInvoice" expr="eval: project?.isInvoicingExpenses"
+      if="__config__.app.isApp('business-project')"/>
+  </action-attrs>
 
   <action-attrs name="action-expense-line-attrs-domain-project"
     id="business-project-action-expense-line-attrs-domain-project">

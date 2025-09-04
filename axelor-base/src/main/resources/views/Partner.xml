@@ -516,10 +516,6 @@
         <field name="salePartnerPriceList" canEdit="false"
           onSelect="action-partner-method-sale-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
-        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project')"/>
-        <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3"
-          if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
         <panel name="clientPortalAccessPanel" title="Client portal access"
           if-module="axelor-client-portal"
           if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getPortalSelect() == 2">
@@ -612,13 +608,6 @@
           colSpan="12">
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
-      </panel>
-      <panel name="projectPanel" title="Projects"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel-dashlet name="projectPanel" title="Projects"
-          action="action-partner-view-related-projects" colSpan="12"/>
-        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
-          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
       </panel>
       <panel name="qualityPanel" title="Quality" showIf="isSupplier || isCustomer"
         if="__config__.app.isApp('quality')">
@@ -1666,10 +1655,6 @@
     <field name="saleOrderInformation" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="payerQuality" hidden="true" if="!__config__.app.isApp('account')"/>
     <field name="salePartnerPriceList" hidden="true" if="!__config__.app.isApp('sale')"/>
-    <field name="chargeBackPurchaseSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="chargeBackPurchase" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderComments" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="purchaseOrderInformation" hidden="true"
       if="!__config__.app.isApp('purchase')"/>
@@ -1741,10 +1726,6 @@
     <field name="saleOrderInformation" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="payerQuality" hidden="true" if="!__config__.app.isApp('account')"/>
     <field name="salePartnerPriceList" hidden="true" if="!__config__.app.isApp('sale')"/>
-    <field name="chargeBackPurchaseSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="chargeBackPurchase" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderComments" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="purchaseOrderInformation" hidden="true"
       if="!__config__.app.isApp('purchase')"/>
@@ -1812,19 +1793,7 @@
       expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
 
-  <action-view name="action-partner-view-related-projects" title="Projects"
-    model="com.axelor.apps.project.db.Project">
-    <view type="grid" name="project-grid"/>
-    <view type="form" name="business-project-form"/>
-    <domain>self.clientPartner = :id</domain>
-  </action-view>
 
-  <action-view name="action-partner-view-related-invoicing-projects"
-    title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
-    <view type="grid" name="invoicing-project-grid"/>
-    <view type="form" name="invoicing-project-form"/>
-    <domain>self.project.clientPartner = :id</domain>
-  </action-view>
 
   <action-view name="action-partner-view-wizard-api-sirene-configuration"
     title="Sirene API call" model="com.axelor.utils.db.Wizard">

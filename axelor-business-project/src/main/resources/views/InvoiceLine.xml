@@ -5,15 +5,47 @@
 
   <form model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line"
     name="invoice-line-form" extension="true" id="project-invoice-line-form">
-    <extend target="//field[@name='project']">
-      <attribute name="onChange" value="action-method-change-project-for-analytic-lines"/>
+
+    <extend target="/">
+      <attribute name="onNew" value="action-business-project-invoice-line-onnew-group"/>
+      <attribute name="onLoad" value="action-business-project-invoice-line-onload-group"/>
     </extend>
+
     <extend target="//field[@name='purchaseOrderLine']">
       <insert position="after">
         <field name="expenseLine" grid-view="expense-line-grid" form-view="expense-line-form"
           showIf="expenseLine" if="__config__.app.isApp('business-project')"/>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='accountingPanel']">
+      <insert position="after">
+        <panel name="projectPanel"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()"
+          title="Business Project" if-module="axelor-business-project">
+          <field name="project" canEdit="false"
+            onSelect="action-invoice-line-attrs-domain-project"
+            onChange="action-method-change-project-for-analytic-lines"
+            form-view="business-project-form" grid-view="project-grid"/>
+          <field name="previousProgress" readonly="true"/>
+          <field name="newProgress" readonly="true"/>
+          <panel-dashlet name="projectTaskListPanel" title="Related tasks"
+            action="action-invoice-line-view-project-tasks" colSpan="12" showIf="id"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form id="business-project-invoice-line-client-form" name="invoice-line-client-form"
+    title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
+    extension="true">
+
+    <extend target="/">
+      <attribute name="onNew" value="action-business-project-invoice-line-onnew-group"/>
+      <attribute name="onLoad"
+        value="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form,business-project-action-invoice-line-attrs-readonly-form,action-attrs-account-invoice-line-cut-off-dates-required, action-business-project-invoice-line-attrs-onnew-onload"/>
+    </extend>
+
   </form>
 
   <grid name="invoice-line-project-grid" title="Invoice lines"
@@ -54,5 +86,138 @@
       method="setProjectToAnalyticDistribution"/>
   </action-method>
 
+  <action-group name="action-business-project-invoice-line-onnew-group">
+    <action name="action-group-budget-invoice-line-onnew"/>
+    <action name="action-invoice-line-record-project"/>
+    <action name="action-business-project-invoice-line-attrs-onnew-onload"/>
+  </action-group>
+
+  <action-group name="action-business-project-invoice-line-onload-group">
+    <action name="action-group-budget-invoice-line-onload"/>
+    <action name="action-business-project-invoice-line-attrs-onnew-onload"/>
+    <action name="business-project-action-invoice-line-attrs-readonly-form"/>
+  </action-group>
+
+  <action-record name="action-invoice-line-record-project"
+    model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
+    <field name="project" expr="eval: __parent__?.project"
+      if="__config__.app.isApp('business-project')"/>
+  </action-record>
+
+  <action-group
+    id="business-project-action-group-account-invoice-line-product-onchange"
+    name="action-group-account-invoice-line-product-onchange">
+    <action name="action-invoice-line-method-get-product-information"/>
+    <action name="action-invoice-line-record-account-onchange"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-invoice-line-method-compute"/>
+    <action name="action-invoice-line-method-get-and-compute-analytic-distribution"/>
+    <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
+    <action name="action-invoice-line-method-get-fixed-asset-category"
+      if="__config__.app.isApp('account')"/>
+    <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-business-project-invoice-line-attrs-onnew-onload"/>
+    <action name="action-invoice-line-method-translate-product-description-and-name"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
+    <action name="action-invoice-line-method-set-scale"/>
+    <action name="action-invoice-line-method-set-required-analytic-account"/>
+  </action-group>
+
+  <action-group id="business-project-action-group-invoice-line-menu-form-onload"
+    name="action-group-invoice-line-menu-form-onload">
+    <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-business-project-invoice-line-attrs-onnew-onload"/>
+    <action name="action-invoice-line-attrs-readonly-menu-form"/>
+    <action name="business-project-action-invoice-line-attrs-readonly-menu-form"/>
+    <action name="action-invoice-line-attrs-hidden-menu-form"/>
+    <action name="business-project-action-invoice-line-attrs-hidden-menu-form"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+  </action-group>
+
+  <action-attrs name="business-project-action-invoice-line-attrs-readonly-form">
+    <attribute name="readonly" for="projectPanel"
+      expr="eval: __parent__?.statusSelect &gt; 1"/>
+  </action-attrs>
+
+  <action-attrs name="business-project-action-invoice-line-attrs-readonly-menu-form">
+    <attribute name="readonly" for="projectPanel" expr="eval: invoice.statusSelect &gt; 1"/>
+  </action-attrs>
+
+  <action-attrs name="business-project-action-invoice-line-attrs-hidden-menu-form">
+    <!-- Show Elements -->
+    <attribute name="hidden" for="saleOrder"
+      expr="eval: invoice?.operationTypeSelect != 3 &amp;&amp; invoice?.operationTypeSelect != 4"
+      if="__config__.app.isApp('business-project')"/>
+    <attribute name="hidden" for="purchaseOrder"
+      expr="eval: invoice?.operationTypeSelect != 1 &amp;&amp; invoice?.operationTypeSelect != 2"
+      if="__config__.app.isApp('business-project')"/>
+    <attribute name="hidden" for="saleOrderLine"
+      expr="eval: invoice?.operationTypeSelect != 3 &amp;&amp; invoice?.operationTypeSelect != 4"
+      if="__config__.app.isApp('business-project')"/>
+    <attribute name="hidden" for="purchaseOrderLine"
+      expr="eval: invoice?.operationTypeSelect != 1 &amp;&amp; invoice?.operationTypeSelect != 2"
+      if="__config__.app.isApp('business-project')"/>
+  </action-attrs>
+
+  <action-attrs name="action-business-project-invoice-line-attrs-onnew-onload">
+    <attribute name="title" for="projectPanel"
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
+    <attribute name="title" for="project"
+      expr="eval:  __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
+    <attribute name="hidden" for="saleOrder"
+      expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4"
+      if="__config__.app.isApp('business-project')"/>
+    <attribute name="hidden" for="purchaseOrder"
+      expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2"
+      if="__config__.app.isApp('business-project')"/>
+    <attribute name="hidden" for="saleOrderLine"
+      expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4"
+      if="__config__.app.isApp('business-project')"/>
+    <attribute name="hidden" for="purchaseOrderLine"
+      expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2"
+      if="__config__.app.isApp('business-project')"/>
+  </action-attrs>
+
+  <action-view name="action-invoice-line-view-project-tasks" title="Related tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="business-project-task-grid"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain>:id IN self.invoiceLineSet.id</domain>
+  </action-view>
+
+  <search-filters id="business-project-invoice-line-filters"
+    name="invoice-line-filters" model="com.axelor.apps.account.db.InvoiceLine"
+    title="Invoice line filters">
+    <field name="invoice.invoiceDate" title="Invoice date"/>
+    <field name="invoice.paymentDate" title="Payment date"/>
+    <field name="invoice.company" title="Company"/>
+    <field name="invoice.statusSelect" title="Status select"/>
+    <field name="project" hidden="true"
+      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines())"/>
+    <field name="analyticDistributionTemplate" hidden="true"
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    <field name="analyticMoveLineList" hidden="true"
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+  </search-filters>
+
+  <action-attrs name="action-invoice-line-attrs-domain-project">
+    <attribute name="domain" for="project"
+      expr="eval: &quot; self.clientPartner.id = ${__parent__?.partner.id} AND self.isBusinessProject = true &quot;"
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__?.operationTypeSelect == 3 || __parent__?.operationTypeSelect == 4)"/>
+    <attribute name="domain" for="project"
+      expr="eval: &quot; self.isBusinessProject = true &quot;"
+      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__?.operationTypeSelect == 1 || __parent__?.operationTypeSelect == 2)"/>
+    <attribute name="domain" for="project"
+      expr="eval: &quot; self.clientPartner.id = ${invoice.partner.id} AND self.isBusinessProject = true &quot;"
+      if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'"/>
+    <attribute name="domain" for="project"
+      expr="eval: &quot; self.isBusinessProject = true &quot;"
+      if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'"/>
+  </action-attrs>
 
 </object-views>
