@@ -20,19 +20,25 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.base.AxelorException;
+import com.google.inject.persist.Transactional;
 
 public interface InvoicePaymentCancelService {
 
+  @Transactional(rollbackOn = {Exception.class})
+  void cancel(InvoicePayment invoicePayment) throws AxelorException;
+
   /**
-   * Method to cancel an invoice Payment
+   * Method to unlink an invoice Payment
    *
-   * <p>Cancel the eventual Move and Reconcile Compute the total amount paid on the linked invoice
+   * <p>Unlink the eventual Reconcile Compute the total amount paid on the linked invoice
    * Change the status to cancel
    *
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
-  public void cancel(InvoicePayment invoicePayment) throws AxelorException;
+  public void unlinkPayment(InvoicePayment invoicePayment) throws AxelorException;
+
+  void validateBeforeUnlink(InvoicePayment invoicePayment) throws AxelorException;
 
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException;
 }

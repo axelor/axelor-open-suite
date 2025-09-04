@@ -617,20 +617,6 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Override
-  public List<Reconcile> getReconciles(MoveLine moveLine) {
-
-    List<Reconcile> debitReconcileList = moveLine.getDebitReconcileList();
-    List<Reconcile> creditReconcileList = moveLine.getCreditReconcileList();
-
-    if (moveToolService.isDebitMoveLine(moveLine)) {
-      return debitReconcileList;
-    } else if (debitReconcileList != null && !creditReconcileList.isEmpty()) {
-      return creditReconcileList;
-    }
-    return Lists.newArrayList();
-  }
-
-  @Override
   public String getStringAllowedCreditMoveLines(Reconcile reconcile) {
     return getAllowedCreditMoveLines(reconcile).stream()
         .map(Objects::toString)

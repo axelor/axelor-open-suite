@@ -20,11 +20,15 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileToolService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -39,6 +43,8 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   protected MoveCancelService moveCancelService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoiceTermService invoiceTermService;
+  protected ReconcileToolService reconcileToolService;
+  protected UnreconcileService unreconcileService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -47,11 +53,15 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
       InvoicePaymentToolService invoicePaymentToolService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      ReconcileToolService reconcileToolService,
+      UnreconcileService unreconcileService) {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveCancelService = moveCancelService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoiceTermService = invoiceTermService;
+    this.reconcileToolService = reconcileToolService;
+    this.unreconcileService = unreconcileService;
   }
 
   /**
@@ -63,6 +73,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
     Move paymentMove = invoicePayment.getMove();
@@ -76,6 +87,52 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
       cancelImputedInvoicePayment(invoicePayment);
     }
     updateCancelStatus(invoicePayment);
+  }
+
+  /**
+   * Method to unlink an invoice Payment
+   *
+   * <p>Unlink the eventual Reconcile Compute the total amount paid on the linked invoice
+   * Change the status to cancel
+   *
+   * @param invoicePayment An invoice payment
+   * @throws AxelorException
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void unlinkPayment(InvoicePayment invoicePayment) throws AxelorException {
+    Move paymentMove = invoicePayment.getMove();
+
+    if (paymentMove != null) {
+      unlinkPaymentMoveLine(paymentMove);
+    } else {
+      cancelImputedInvoicePayment(invoicePayment);
+    }
+    updateCancelStatus(invoicePayment);
+  }
+
+  @Override
+  public void validateBeforeUnlink(InvoicePayment invoicePayment) throws AxelorException {
+    if (invoicePayment == null || invoicePayment.getMove() == null){
+      return;
+    }
+
+    moveCancelService.checkBeforeCancel(invoicePayment.getMove());
+  }
+
+  protected void unlinkPaymentMoveLine(Move move) throws AxelorException {
+    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())){
+      return;
+    }
+
+    List<Reconcile> reconcileList = reconcileToolService.getConfirmedReconcileList(move.getMoveLineList());
+    if (ObjectUtils.isEmpty(reconcileList)){
+      return;
+    }
+
+    for (Reconcile reconcile : reconcileList){
+      unreconcileService.unreconcile(reconcile);
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

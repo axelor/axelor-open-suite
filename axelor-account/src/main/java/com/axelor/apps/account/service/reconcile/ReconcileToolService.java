@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.reconcile;
 
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
@@ -32,4 +33,6 @@ public interface ReconcileToolService {
   void updateInvoiceCompanyInTaxTotalRemaining(Reconcile reconcile) throws AxelorException;
 
   void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException;
+
+    List<Reconcile> getConfirmedReconcileList(List<MoveLine> moveLineList);
 }
