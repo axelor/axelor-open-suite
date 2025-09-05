@@ -50,6 +50,7 @@
 
   <selection name="purchase.call.tender.need.type.select">
     <option value="1">Manual</option>
+      <option value="2">MRP</option>
   </selection>
 
 
