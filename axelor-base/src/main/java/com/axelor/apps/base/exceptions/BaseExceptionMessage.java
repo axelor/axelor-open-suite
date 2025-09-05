@@ -740,4 +740,6 @@ public final class BaseExceptionMessage {
 
   public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
       "Signature certificate is expired. Please change to a new certificate." /*)*/;
+
+  public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
 }

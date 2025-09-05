@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
@@ -57,7 +60,8 @@ public class DataBackupRestoreService {
   protected static final char SEPARATOR = ',';
 
   /* Restore the Data using provided zip File and prepare Log File and Return it*/
-  public File restore(MetaFile zipedBackupFile, boolean isTemplateWithDescription) {
+  public File restore(MetaFile zipedBackupFile, boolean isTemplateWithDescription)
+      throws AxelorException {
     Logger LOG = LoggerFactory.getLogger(getClass());
     File tempDir = Files.createTempDir();
     String dirPath = tempDir.getAbsolutePath();
@@ -120,7 +124,7 @@ public class DataBackupRestoreService {
 
   protected boolean unZip(
       MetaFile zipMetaFile, String destinationDirectoryPath, boolean isTemplateWithDescription)
-      throws IOException {
+      throws IOException, AxelorException {
     File zipFile = MetaFiles.getPath(zipMetaFile).toFile();
     try (ZipInputStream zis =
         new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
@@ -129,6 +133,18 @@ public class DataBackupRestoreService {
       int count;
       while ((ze = zis.getNextEntry()) != null) {
         File file = new File(destinationDirectoryPath, ze.getName());
+        if (!file.toPath()
+            .normalize()
+            .startsWith(new File(destinationDirectoryPath).toPath().normalize())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              String.format(BaseExceptionMessage.DATABACKUP_ERROR_1, ze.getName()));
+        }
+
+        if (!file.getParentFile().exists()) {
+          file.getParentFile().mkdirs();
+        }
+
         try (FileOutputStream fout = new FileOutputStream(file)) {
           while ((count = zis.read(buffer)) != -1) {
             fout.write(buffer, 0, count);
