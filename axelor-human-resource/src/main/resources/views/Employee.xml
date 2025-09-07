@@ -114,15 +114,15 @@
       <field name="maritalName" colSpan="4"/>
       <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
-      <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
+      <!-- KAPSIKI Customization: MGM38 -->
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
       <field name="$employeeStatus" hidden="true"/>
-
-      <panel colSpan="12" style="margin: 0; padding: 0;">
-        <!-- KAPSIKI Customization: Displaying address in the personal information view -->
+      <panel colSpan="12">
+        <!-- KAPSIKI Customization: MGM34 MGM60 -->
         <field name="address" canNew="true" canEdit="true" colSpan="6"
           form-view="address-form" grid-view="address-grid"/>
+        <!-- KAPSIKI Customization: MGM39 MGM60 -->
         <field name="bankDetails" colSpan="6" form-view="bank-details-form"
           grid-view="bank-details-grid" widget="SuggestBox" canNew="true" canEdit="true"
           title="Bank Account"/>
@@ -404,9 +404,15 @@
       <field name="maritalName" colSpan="4"/>
       <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
-      <!-- KAPSIKI ADD ON: PERSONAL NUMBER -->
+      <!-- KAPSIKI Cutomization: MGM38 -->
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <panel colSpan="12">
+        <!-- KAPSIKI Cutomization: MGM34 MGM60 -->
+        <field name="address" colSpan="6"/>
+        <!-- KAPSIKI Cutomization: MGM39 MGM60 -->
+        <field name="bankDetails" colSpan="6"/>
+      </panel>
 
       <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
         <field name="emergencyContact" colSpan="4"/>
