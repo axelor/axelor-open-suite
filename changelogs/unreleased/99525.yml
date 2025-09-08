@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed detailed customers balance report to exclude suppliers and supplier invoices."
+module: axelor-account
