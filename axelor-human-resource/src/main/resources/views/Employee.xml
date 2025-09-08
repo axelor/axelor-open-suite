@@ -174,10 +174,12 @@
       showIf="stepByStepSelect == 2">
       <field name="mainEmploymentContract" colSpan="12" domain="self.employee.id = :id"
         showTitle="false">
-        <editor x-viewer="true">
+        <editor>
           <field name="payCompany" colSpan="3"/>
           <field name="executiveStatusSelect" colSpan="3"/>
-          <field name="employment" colSpan="3"/>
+          <!-- KAPSIKI CUSTOMIZATION: MGN-57 -->
+          <field name="employment" widget="SuggestBox" canNew="true" canEdit="true"
+            colSpan="3" form-view="employment-form" grid-view="employment-grid" title="Employment"/>
           <field name="companyDepartment" colSpan="3" form-view="company-department-form"
             grid-view="company-department-grid"/>
         </editor>
@@ -454,10 +456,12 @@
             colSpan="12" canCollapse="true" collapseIf="true">
             <field name="mainEmploymentContract" colSpan="12" domain="self.employee.id = :id"
               showTitle="false">
-              <editor x-viewer="true">
+              <editor>
                 <field name="payCompany" colSpan="3"/>
                 <field name="executiveStatusSelect" colSpan="3"/>
-                <field name="employment" colSpan="3"/>
+                <!-- KAPSIKI CUSTOMIZATION: MGN-57 -->
+                <field name="employment" colSpan="3" canEdit="true"
+                  form-view="employment-form" grid-view="employment-grid"/>
                 <field name="companyDepartment" colSpan="3"
                   form-view="company-department-form" grid-view="company-department-grid"/>
               </editor>
@@ -671,6 +675,7 @@
     <field name="contactPartner.fixedPhone"/>
     <field name="contactPartner.mobilePhone"/>
     <field name="mainEmploymentContract.payCompany"/>
+    <field name="mainEmploymentContract.employment"/>
     <field name="mainEmploymentContract.companyDepartment"/>
     <field name="hrManager"/>
     <field name="external"/>
@@ -703,6 +708,7 @@
 			                                    {renderItem("telephone", contactPartner.fixedPhone)}
 			                                    {renderItem("phone", contactPartner.mobilePhone)}
 			                                    {renderItem("house-fill", mainEmploymentContract.payCompany.name, "Company")}
+			                                    {renderItem("house-fill", mainEmploymentContract.employment.name, "Employment")}
 			                                    {renderItem("house-fill", mainEmploymentContract.companyDepartment.name, "Department")}
 			                                </>
 			                            );

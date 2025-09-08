@@ -44,7 +44,9 @@
     <many-to-one name="employmentContractTemplate"
       ref="com.axelor.apps.hr.db.EmploymentContractTemplate" title="Employment contract template"/>
 
-    <string name="employment" title="Employment"/>
+    <!-- KAPSIKI CUSTOMIZATION: MGN-57 -->
+    <many-to-one name="employment" ref="com.axelor.apps.hr.db.Employment"
+      title="Employment"/>
 
     <decimal name="annualGrossSalary" title="Annual gross salary"/>
     <decimal name="monthlyGlobalCost" title="Monthly global cost"/>
