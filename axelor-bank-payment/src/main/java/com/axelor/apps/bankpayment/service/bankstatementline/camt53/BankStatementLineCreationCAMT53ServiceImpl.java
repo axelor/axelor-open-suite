@@ -181,16 +181,10 @@ public class BankStatementLineCreationCAMT53ServiceImpl
 
     String reference = camt53ToolService.getReference(ntry);
 
-    String operationCodeInterBankCodeLineCode = "";
-    // Todo in the future, Ntry -> BkTxCd -> Prtry -> Cd and get the value before '/'.e.g.:
-    // <Cd>21/0529</Cd> then get 21.
-    String rejectReturnCodeInterBankCodeLineCode = "";
-    // Todo in the future NtryDtls.TxDtls.RtrInf.Rsn.Prtry.Cd check in the
-    // appAccountService.getAppAccount().getChequeInterbankCode()
     InterbankCodeLine operationInterbankCodeLine =
-        interBankCodeLineRepository.findOperationCodeByCode(operationCodeInterBankCodeLineCode);
+        camt53ToolService.getOperationCodeInterBankCodeLineCode(ntry);
     InterbankCodeLine rejectInterbankCodeLine =
-        interBankCodeLineRepository.findOperationCodeByCode(rejectReturnCodeInterBankCodeLineCode);
+        camt53ToolService.getRejectReturnInterBankCodeLineCode(ntry);
 
     if (bankDetails != null) {
       bankDetails = bankDetailsRepository.find(bankDetails.getId());

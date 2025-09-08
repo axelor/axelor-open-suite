@@ -1,5 +1,6 @@
 package com.axelor.apps.bankpayment.service.bankstatementline.camt53;
 
+import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.AccountStatement2;
 import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashAccount20;
@@ -31,4 +32,8 @@ public interface CAMT53ToolService {
   Integer getCommissionExemptionIndexSelect(ReportEntry2 ntry);
 
   BankDetails findBankDetailsByIBAN(CashAccount20 acct);
+
+  InterbankCodeLine getOperationCodeInterBankCodeLineCode(ReportEntry2 ntry);
+
+  InterbankCodeLine getRejectReturnInterBankCodeLineCode(ReportEntry2 reportEntry2);
 }
