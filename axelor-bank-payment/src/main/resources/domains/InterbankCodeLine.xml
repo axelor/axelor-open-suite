@@ -8,6 +8,8 @@
   <entity name="InterbankCodeLine" cacheable="true">
     <finder-method name="findOperationCodeByCode" using="code"
       filter="self.code = :code AND self.interbankCode.typeSelect = 1"/>
+    <finder-method name="findOperationCodeByCodeAndInterBankCode"
+      using="code, interbankCode" filter="self.code = :code AND self.interbankCode = :interbankCode"/>
   </entity>
 
 </domain-models>
