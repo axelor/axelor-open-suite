@@ -690,4 +690,6 @@ public final class BaseExceptionMessage {
 
   public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
       "Language is empty for the localization %s" /*)*/;
+
+  public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
 }
