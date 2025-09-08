@@ -737,4 +737,6 @@ public final class BaseExceptionMessage {
 
   public static final String APP_BASE_SIRENE_API_ACCESS_TOKEN_MISSING = /*$$(*/
       "Please fill API Sirene access token in app base." /*)*/;
+
+  public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
 }
