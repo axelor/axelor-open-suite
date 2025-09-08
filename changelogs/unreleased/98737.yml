@@ -1,0 +1,4 @@
+title: "ProjectTask / Unit : Incorrect Time Unit Conversion After Computing Project Totals"
+module: axelor-business-project
+developer: |
+  Added UnitConversionForProjectService in ProjectTimeUnitServiceImpl constructor

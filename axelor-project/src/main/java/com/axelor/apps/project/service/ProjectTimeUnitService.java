@@ -30,4 +30,7 @@ public interface ProjectTimeUnitService {
   Unit getProjectDefaultHoursTimeUnit(Project project) throws AxelorException;
 
   BigDecimal getDefaultNumberHoursADay(Project project) throws AxelorException;
+
+  BigDecimal convertInProjectTaskUnit(ProjectTask projectTask, Unit startUnit, BigDecimal duration)
+      throws AxelorException;
 }

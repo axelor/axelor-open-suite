@@ -558,10 +558,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     Unit timeUnit = projectTimeUnitService.getTaskDefaultHoursTimeUnit(projectTask);
 
-    plannedTime =
-        projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedTime)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    if (ObjectUtils.notEmpty(projectTask.getProjectPlanningTimeList())) {
+      for (ProjectPlanningTime ppt : projectTask.getProjectPlanningTimeList()) {
+        plannedTime =
+            plannedTime.add(
+                projectTimeUnitService.convertInProjectTaskUnit(
+                    projectTask, ppt.getTimeUnit(), ppt.getPlannedTime()));
+      }
+    }
 
     List<TimesheetLine> timeSheetLines =
         timesheetLineRepository
