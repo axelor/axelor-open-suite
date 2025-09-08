@@ -44,6 +44,7 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
 
   protected static final BigDecimal THICKNESS = BigDecimal.valueOf(5); // (in mm)
   protected static final String UNIT_MILLIMETER = "mm";
+  protected static Unit millimeterUnit;
 
   protected ProductRepository productRepository;
   protected UnitConversionService unitConversionService;
@@ -69,10 +70,51 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
                 Collectors.toMap(
                     SaleOrderLine::getProduct, SaleOrderLine::getQty, BigDecimal::add));
 
-    List<Product> products = getSortedProducts(productQtyMap);
     List<String> messages = new ArrayList<>();
-    List<Product> boxes = productRepository.all().filter("self.isPackaging = true").fetch();
-    boxes.sort(Comparator.comparing(this::getBoxInnerVolume));
+    List<Product> packagingOptions =
+        productRepository.all().filter("self.isPackaging = true").fetch();
+
+    Map<Integer, Map<Product, String>> levelDescriptions = new HashMap<>();
+    Map<Integer, Map<Product, BigDecimal>> levelWeights = new HashMap<>();
+
+    packByLevel(
+        ProductRepository.PACKAGING_LEVEL_BOX,
+        packagingOptions,
+        productQtyMap,
+        messages,
+        levelDescriptions,
+        levelWeights);
+
+    if (CollectionUtils.isEmpty(messages)) {
+      return "";
+    }
+    return StringHtmlListBuilder.formatMessage(
+        I18n.get("Packaging") + " " + I18n.get(saleOrder.getFullName()), messages);
+  }
+
+  protected void packByLevel(
+      int level,
+      List<Product> packagingOptions,
+      Map<Product, BigDecimal> productQtyMap,
+      List<String> messages,
+      Map<Integer, Map<Product, String>> levelDescriptions,
+      Map<Integer, Map<Product, BigDecimal>> levelWeights)
+      throws AxelorException {
+
+    List<Product> currentLevelBoxes =
+        packagingOptions.stream()
+            .filter(p -> p.getPackagingLevelSelect() == level)
+            .sorted(Comparator.comparing(this::getBoxInnerVolume))
+            .collect(Collectors.toList());
+
+    if (CollectionUtils.isEmpty(currentLevelBoxes)) {
+      return;
+    }
+    List<Product> products = getSortedProducts(productQtyMap);
+    List<Product> packedThisLevel = new ArrayList<>();
+
+    Map<Product, String> descMap = levelDescriptions.computeIfAbsent(level, l -> new HashMap<>());
+    Map<Product, BigDecimal> weightMap = levelWeights.computeIfAbsent(level, l -> new HashMap<>());
 
     while (hasRemaining(productQtyMap)) {
       Product nextProduct =
@@ -84,7 +126,8 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
         break;
       }
       Map<Product, BigDecimal> boxContents = new HashMap<>();
-      Product selectedBox = chooseBestBox(nextProduct, boxes, products, productQtyMap, boxContents);
+      Product selectedBox =
+          chooseBestBox(nextProduct, currentLevelBoxes, products, productQtyMap, boxContents);
       if (selectedBox == null) {
         break;
       }
@@ -95,7 +138,15 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
 
       BigDecimal totalWeight = selectedBox.getNetMass();
       for (Map.Entry<Product, BigDecimal> entry : boxContents.entrySet()) {
-        totalWeight = totalWeight.add(entry.getKey().getNetMass().multiply(entry.getValue()));
+        Product subProduct = entry.getKey();
+        BigDecimal qty = entry.getValue();
+
+        BigDecimal subProductWeight =
+            levelWeights
+                .getOrDefault(level - 1, Map.of())
+                .getOrDefault(subProduct, subProduct.getNetMass());
+
+        totalWeight = totalWeight.add(subProductWeight.multiply(qty));
       }
       String contentDescription =
           boxContents.entrySet().stream()
@@ -115,12 +166,23 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
               selectedBox.getOuterWidth(),
               selectedBox.getOuterHeight(),
               totalWeight));
+
+      descMap.put(selectedBox, contentDescription);
+      weightMap.put(selectedBox, totalWeight);
+
+      packedThisLevel.add(selectedBox);
     }
-    if (CollectionUtils.isEmpty(messages)) {
-      return "";
+
+    int nextLevel = level + 1;
+    if (nextLevel <= ProductRepository.PACKAGING_LEVEL_CONTAINER
+        && !CollectionUtils.isEmpty(packedThisLevel)) {
+      Map<Product, BigDecimal> nextLevelMap = new HashMap<>();
+      for (Product box : packedThisLevel) {
+        nextLevelMap.merge(box, BigDecimal.ONE, BigDecimal::add);
+      }
+      packByLevel(
+          nextLevel, packagingOptions, nextLevelMap, messages, levelDescriptions, levelWeights);
     }
-    return StringHtmlListBuilder.formatMessage(
-        I18n.get("Packaging") + " " + I18n.get(saleOrder.getFullName()), messages);
   }
 
   protected Product chooseBestBox(
@@ -132,6 +194,7 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
       throws AxelorException {
     Product bestBox = null;
     BigDecimal maxPlacedQty = BigDecimal.ZERO;
+    BigDecimal bestBoxVolume = BigDecimal.ZERO;
 
     for (Product box : boxes) {
       if (!canFit(product, box)) {
@@ -140,15 +203,24 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
       Map<Product, BigDecimal> contents = new HashMap<>();
       Map<Product, BigDecimal> qtyMap = new HashMap<>(productQtyMap);
 
-      fillBox(box, products, qtyMap, contents);
+      BigDecimal totalWeight = fillBox(box, products, qtyMap, contents);
+
+      BigDecimal minWeight = box.getMinWeight();
+      if (totalWeight.compareTo(minWeight) < 0) {
+        continue;
+      }
 
       BigDecimal placedQty = contents.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+      BigDecimal boxVolume = getBoxInnerVolume(box);
 
-      if (placedQty.compareTo(maxPlacedQty) > 0
-          || (placedQty.compareTo(maxPlacedQty) == 0
-              && getBoxInnerVolume(box).compareTo(getBoxInnerVolume(bestBox)) < 0)) {
+      boolean better =
+          (placedQty.compareTo(maxPlacedQty) > 0)
+              || (placedQty.compareTo(maxPlacedQty) == 0 && boxVolume.compareTo(bestBoxVolume) < 0);
+
+      if (better) {
         bestBox = box;
         maxPlacedQty = placedQty;
+        bestBoxVolume = boxVolume;
         boxContents.clear();
         boxContents.putAll(contents);
       }
@@ -156,7 +228,7 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
     return bestBox;
   }
 
-  protected void fillBox(
+  protected BigDecimal fillBox(
       Product box,
       List<Product> products,
       Map<Product, BigDecimal> productQtyMap,
@@ -165,6 +237,9 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
     List<BigDecimal[]> freeSpaces = new ArrayList<>();
     freeSpaces.add(
         new BigDecimal[] {box.getInnerLength(), box.getInnerWidth(), box.getInnerHeight()});
+
+    BigDecimal totalWeight = box.getNetMass();
+    BigDecimal maxWeight = box.getMaxWeight();
 
     while (hasRemaining(productQtyMap)) {
       boolean placed = false;
@@ -179,7 +254,15 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
           if (qtyLeft.compareTo(BigDecimal.ZERO) <= 0) {
             continue;
           }
-          Object[] plan = planPlacement(product, space[0], space[1], space[2], qtyLeft.longValue());
+          Object[] plan =
+              planPlacement(
+                  product,
+                  space[0],
+                  space[1],
+                  space[2],
+                  qtyLeft.longValue(),
+                  totalWeight,
+                  maxWeight);
           long placedQty = (long) plan[0];
           if (placedQty <= 0) {
             continue;
@@ -189,6 +272,9 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
           BigDecimal usedHeight = (BigDecimal) plan[3];
 
           BigDecimal placeQty = BigDecimal.valueOf(placedQty);
+          BigDecimal productWeight = product.getNetMass().multiply(placeQty);
+          totalWeight = totalWeight.add(productWeight);
+
           boxContents.merge(product, placeQty, BigDecimal::add);
           productQtyMap.put(product, qtyLeft.subtract(placeQty));
 
@@ -207,6 +293,7 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
         break;
       }
     }
+    return totalWeight;
   }
 
   protected Object[] planPlacement(
@@ -214,7 +301,9 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
       BigDecimal spaceLength,
       BigDecimal spaceWidth,
       BigDecimal spaceHeight,
-      long qtyLeft)
+      long qtyLeft,
+      BigDecimal currentBoxWeight,
+      BigDecimal boxMaxWeight)
       throws AxelorException {
     BigDecimal[] dimensions = getProductDimensions(product);
     BigDecimal[][] orientations = getOrientations(dimensions);
@@ -239,6 +328,18 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
       long capacity = maxLength * maxWidth * maxHeight;
       long qty = Math.min(qtyLeft, capacity);
 
+      BigDecimal totalWeight =
+          currentBoxWeight.add(product.getNetMass().multiply(BigDecimal.valueOf(qty)));
+      if (totalWeight.compareTo(boxMaxWeight) > 0) {
+        BigDecimal allowedQty =
+            boxMaxWeight
+                .subtract(currentBoxWeight)
+                .divide(product.getNetMass(), RoundingMode.FLOOR);
+        qty = Math.min(qty, allowedQty.longValue());
+      }
+      if (qty <= 0) {
+        continue;
+      }
       long[] block = bestBlock(qty, maxLength, maxWidth, maxHeight, length, width, height);
 
       BigDecimal usedLength = length.multiply(BigDecimal.valueOf(block[0]));
@@ -415,17 +516,24 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
   protected BigDecimal getConvertedDimension(BigDecimal value, Product product)
       throws AxelorException {
     Unit unit = product.getLengthUnit();
-    Unit targetUnit =
-        unitRepository
-            .all()
-            .filter("self.labelToPrinting = :labelToPrinting")
-            .bind("labelToPrinting", UNIT_MILLIMETER)
-            .fetchOne();
+    Unit targetUnit = getMillimeterUnit();
     if (unit != null && !unit.equals(targetUnit)) {
       value =
           unitConversionService.convert(
               unit, targetUnit, value, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, product);
     }
     return value;
+  }
+
+  protected Unit getMillimeterUnit() {
+    if (millimeterUnit == null) {
+      millimeterUnit =
+          unitRepository
+              .all()
+              .filter("self.labelToPrinting = :labelToPrinting")
+              .bind("labelToPrinting", UNIT_MILLIMETER)
+              .fetchOne();
+    }
+    return millimeterUnit;
   }
 }
