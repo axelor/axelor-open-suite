@@ -114,11 +114,11 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_CLOSING_SALE_ORDER_LINE_NOT_INVOICED = /*$$(*/
       "- a linked sale order line is not totally invoiced" /*)*/;
 
-  public static final String PROJECT_CLOSING_PURCHASE_ORDER_NOT_INVOICED = /*$$(*/
-      "- a linked purchase order is not totally invoiced" /*)*/;
+  public static final String PROJECT_CLOSING_PURCHASE_ORDER_LINE_NOT_INVOICED = /*$$(*/
+      "- a linked purchase order line is not totally invoiced" /*)*/;
 
-  public static final String PROJECT_CLOSING_PURCHASE_ORDER_NOT_RECEIVED = /*$$(*/
-      "- a linked purchase order is not totally received" /*)*/;
+  public static final String PROJECT_CLOSING_PURCHASE_ORDER_LINE_NOT_RECEIVED = /*$$(*/
+      "- a linked purchase order line is not totally received" /*)*/;
 
   public static final String PROJECT_CLOSING_CONTRACT_IN_PROGRESS = /*$$(*/
       "- a linked contract is still in progress" /*)*/;
