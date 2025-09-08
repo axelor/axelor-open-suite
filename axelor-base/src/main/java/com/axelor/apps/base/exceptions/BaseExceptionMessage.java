@@ -656,4 +656,6 @@ public final class BaseExceptionMessage {
       "Factory not found this type of generator" /*)*/;
 
   public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
+
+  public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
 }
