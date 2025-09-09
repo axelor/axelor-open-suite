@@ -405,7 +405,7 @@ public class ContractLineServiceImpl implements ContractLineService {
 
   @Override
   public void checkAnalyticAxisByCompany(Contract contract) throws AxelorException {
-    if (contract.getCurrentContractVersion() == null) {
+    if (contract == null || contract.getCurrentContractVersion() == null) {
       return;
     }
 
