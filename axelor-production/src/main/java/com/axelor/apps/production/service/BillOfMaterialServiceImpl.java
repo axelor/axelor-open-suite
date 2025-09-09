@@ -277,7 +277,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       bomTree.setProduct(bom.getProduct());
       bomTree.setQty(
           Optional.ofNullable(bomLine).map(BillOfMaterialLine::getQty).orElse(bom.getQty()));
-      bomTree.setUnit(Optional.ofNullable(bomLine).map(BillOfMaterialLine::getUnit).orElse(bom.getUnit()));
+      bomTree.setUnit(
+          Optional.ofNullable(bomLine).map(BillOfMaterialLine::getUnit).orElse(bom.getUnit()));
     } else if (bomLine != null) {
       bomTree.setProduct(bomLine.getProduct());
       bomTree.setQty(bomLine.getQty());
