@@ -170,8 +170,7 @@
             if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
           <field name="procurementMethodSelect" colSpan="6"
             onChange="action-product-record-tick-checkbox-purchasable"
-            hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'procurementMethodSelect'})"/>
+            hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
           <field name="standardDelay" colSpan="12"
             showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true"
             if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>

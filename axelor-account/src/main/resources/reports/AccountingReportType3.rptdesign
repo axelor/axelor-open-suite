@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -497,6 +497,8 @@ left outer join account_move as MoveReconciled on (MoveLineReconciled.move = Mov
 left outer join account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
 left outer join base_company as Company on (AccountingReport.company = Company.id)
 left outer join base_currency as Currency on (Currency.id = Company.currency)
+left outer join base_partner as Partner on (MoveLine.partner = Partner.id)
+
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
@@ -515,6 +517,8 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND Partner.is_customer IS TRUE
+AND Invoice.operation_type_select IN (3, 4)
 group by MoveLine.name,MoveLine.partner_full_name,MoveLine.partner_seq,AccountingReport.ref,MoveLine.credit,MoveLine.debit,Invoice.invoice_id,
 InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_from,Reconcile.amount,ABS(MoveLine.amount_remaining),Currency.number_of_decimals]]></xml-property>
         </oda-data-set>
