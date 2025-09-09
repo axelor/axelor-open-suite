@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="IndicatorResultLine">
+
+    <decimal name="indicator" title="Indicator" scale="10" precision="20" readonly="true"/>
+    <decimal name="target" title="Target" scale="10" precision="20" readonly="true"/>
+
+    <many-to-one name="metaModel" title="Taget model" ref="com.axelor.meta.db.MetaModel"/>
+    <many-to-one name="indicatorResult" ref="com.axelor.apps.base.db.IndicatorResult"
+      title="result"/>
+
+    <long name="relatedId" title="Related id" readonly="true"/>
+    <string name="expressionLog" title="Log error result expression" multiline="true"
+      large="true" readonly="true"/>
+    <string name="targetExpressionLog" title="Log error result target" multiline="true"
+      large="true" readonly="true"/>
+    <string name="alertExpressionLog" title="Log error result alert" multiline="true"
+      large="true" readonly="true"/>
+
+  </entity>
+
+</domain-models>
