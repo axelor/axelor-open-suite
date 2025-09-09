@@ -92,9 +92,9 @@ public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
           }
         }
       }
-        offset += getFetchLimit();
-        JPA.clear();
-        findBatch();
+      offset += getFetchLimit();
+      JPA.clear();
+      findBatch();
     }
   }
 
