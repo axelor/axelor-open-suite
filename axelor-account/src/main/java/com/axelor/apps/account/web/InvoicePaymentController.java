@@ -60,13 +60,13 @@ import org.apache.commons.lang3.tuple.Pair;
 @Singleton
 public class InvoicePaymentController {
 
-  public void unlinkInvoicePayment(ActionRequest request, ActionResponse response) {
+  public void cancelInvoicePayment(ActionRequest request, ActionResponse response) {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
     invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
     try {
       Move move = invoicePayment.getMove();
-      Beans.get(InvoicePaymentCancelService.class).unlinkPayment(invoicePayment);
+      Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
       if (ObjectUtils.notEmpty(move)) {
         Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
       }

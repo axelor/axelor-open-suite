@@ -32,18 +32,7 @@ public interface InvoicePaymentCancelService {
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
-  void cancel(InvoicePayment invoicePayment) throws AxelorException;
-
-  /**
-   * Method to unlink an invoice Payment
-   *
-   * <p>Unlink the eventual Reconcile Compute the total amount paid on the linked invoice Change the
-   * status to cancel
-   *
-   * @param invoicePayment An invoice payment
-   * @throws AxelorException
-   */
-  public void unlinkPayment(InvoicePayment invoicePayment) throws AxelorException;
+  public void cancel(InvoicePayment invoicePayment) throws AxelorException;
 
   void validateBeforeUnlink(InvoicePayment invoicePayment) throws AxelorException;
 

@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolService;
@@ -79,31 +78,6 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     Move paymentMove = invoicePayment.getMove();
 
     if (paymentMove != null) {
-      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_NEW) {
-        invoicePayment.setMove(null);
-      }
-      moveCancelService.cancel(paymentMove);
-    } else {
-      cancelImputedInvoicePayment(invoicePayment);
-    }
-    updateCancelStatus(invoicePayment);
-  }
-
-  /**
-   * Method to unlink an invoice Payment
-   *
-   * <p>Unlink the eventual Reconcile Compute the total amount paid on the linked invoice Change the
-   * status to cancel
-   *
-   * @param invoicePayment An invoice payment
-   * @throws AxelorException
-   */
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void unlinkPayment(InvoicePayment invoicePayment) throws AxelorException {
-    Move paymentMove = invoicePayment.getMove();
-
-    if (paymentMove != null) {
       unlinkPaymentMoveLine(paymentMove);
     } else {
       cancelImputedInvoicePayment(invoicePayment);
@@ -141,9 +115,16 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-    invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
+    removeAllLinks(invoicePayment);
 
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  protected void removeAllLinks(InvoicePayment invoicePayment) {
+    invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
+    invoicePayment.setMove(null);
+    invoicePayment.setPaymentSession(null);
+    invoicePayment.setReconcile(null);
   }
 
   protected void cancelImputedInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {

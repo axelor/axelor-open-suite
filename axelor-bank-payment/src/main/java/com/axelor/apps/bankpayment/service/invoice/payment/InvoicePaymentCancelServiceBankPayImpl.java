@@ -117,4 +117,10 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
           I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANCEL));
     }
   }
+
+  @Override
+  protected void removeAllLinks(InvoicePayment invoicePayment) {
+    super.removeAllLinks(invoicePayment);
+    invoicePayment.setBankOrder(null);
+  }
 }
