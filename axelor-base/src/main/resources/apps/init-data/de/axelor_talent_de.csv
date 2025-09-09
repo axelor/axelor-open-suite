@@ -1,0 +1,220 @@
+key,message,language
++10 years,+10 Jahre,de
+0 %,0 %,de
+0-2 years,0-2 Jahre,de
+10 %,10 %,de
+100 %,100 %,de
+2-5 years,2-5 Jahre,de
+20 %,20 %,de
+30 %,30 %,de
+40 %,40 %,de
+5-10 years,5-10 Jahre,de
+50 %,50 %,de
+60 %,60 %,de
+70 %,70 %,de
+80 %,80 %,de
+90 %,90 %,de
+<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,de
+A new employee form will be created. Do you confirm the creation ?,Es wird ein neues Mitarbeiterformular erstellt. Bestätigen Sie die Erstellung?,de
+Address,Adresse,de
+All applications,Alle Anwendungen,de
+All trainings,Alle Schulungen,de
+App,App,de
+App recruitment,App Rekrutierung,de
+Application Information,Informationen zur Bewerbung,de
+Applications,Anwendungen,de
+Applied :,Angewandt:,de
+Applied job,Beworbener Job,de
+Appraisal,Schätzung,de
+Appraisal cancelled,Schätzung annulliert,de
+Appraisal draft,Entwurf der Bewertung,de
+Appraisal filters,Beurteilungsfilter,de
+Appraisal realized,Realisierte Schätzung,de
+Appraisal sent,Bewertung gesendet,de
+Appraisal template,Vorlage für die Beurteilung,de
+Appraisal templates,Vorlagen für Beurteilungen,de
+Appraisal type,Beurteilungsart,de
+Appraisal types,Beurteilungsarten,de
+Appraisals,Schätzungen,de
+Appreciation,Anerkennung,de
+Availability from,Verfügbarkeit von,de
+Business sectors,Geschäftsbereiche,de
+Cadre,Kader,de
+Calendar,Kalender,de
+Cancel,Abbrechen,de
+Cancel session,Sitzung abbrechen,de
+Canceled,Abgesagt,de
+Categories,Kategorien,de
+Category,Kategorie,de
+Clearance,Freigabe,de
+Close,Schließen Sie,de
+Closed,Geschlossen,de
+Closed job offers,Geschlossene Stellenanzeigen,de
+Code,Code,de
+Company,Unternehmen,de
+Competence certificate,Kompetenznachweis,de
+Complete session,Vollständige Sitzung,de
+Completed,Abgeschlossen,de
+Completed trainings of all employees of a team,Abgeschlossene Schulungen für alle Mitarbeiter eines Teams,de
+Configuration,Konfiguration,de
+Contact,Kontakt,de
+Contact details,Kontaktangaben,de
+Contract,Vertrag,de
+Contract type,Vertragsart,de
+Create,erstellen.,de
+Create Appraisal(Select Employees),Beurteilung erstellen (Mitarbeiter auswählen),de
+Create Appraisals,Beurteilungen erstellen,de
+Create Appraisals(Select Employees),Beurteilungen erstellen (Mitarbeiter auswählen),de
+Create a job application,Eine Bewerbung erstellen,de
+Current job offers,Aktuelle Stellenangebote,de
+Dashboard,Dashboard,de
+Date of application,Datum der Anmeldung,de
+Deadline,Deadline,de
+Department,Abteilung,de
+Description,Beschreibung,de
+Disposal,Entsorgung,de
+Draft,Entwurf,de
+Education level,Bildungsniveau,de
+Email,E-Mail,de
+Employee,Mitarbeiter,de
+Employee hired,Eingestellter Mitarbeiter,de
+Employees,Mitarbeiter,de
+End of validity date,Datum des Endes der Gültigkeit,de
+Event list,Liste der Ereignisse,de
+Events,Veranstaltungen,de
+Expected salary,Erwartetes Gehalt,de
+Experience,Erleben Sie,de
+Fax,Fax,de
+First name,Vornamen,de
+Fixed phone,Festnetztelefon,de
+From,Von,de
+From date,Vom Datum,de
+Full name,Vollständiger Name,de
+Graduation date,Datum des Abschlusses,de
+Hire candidate,Bewerber einstellen,de
+Hiring Stage,Einstellungsphase,de
+Hiring manager,Einstellender Manager,de
+Hiring stage,Einstellungsphase,de
+Hiring status,Einstellungsstatus,de
+Invalid dates. From date must be before to date.,Ungültige Daten. Von-Datum muss vor Bis-Datum liegen.,de
+Is template,Ist Vorlage,de
+Job Application,Stellenbewerbung,de
+Job Position Filters,Job-Position-Filter,de
+Job application,Bewerbung,de
+Job applications,Bewerbungen,de
+Job description,Stellenbeschreibung,de
+Job email,Job-E-Mail,de
+Job position,Stellung im Beruf,de
+Job positions,Berufliche Positionen,de
+Job reference,Arbeitszeugnis,de
+Job title,Berufsbezeichnung,de
+JobApplication.resume,JobApplication.resume,de
+Last email sync id,Letzte E-Mail-Synchronisierungs-ID,de
+Last name,Nachname,de
+Level of education,Niveau der Ausbildung,de
+License,Lizenz,de
+LinkedIn profile,LinkedIn-Profil,de
+Location,Standort,de
+Mandatory training,Obligatorische Ausbildung,de
+Mass training register,Register für Massenausbildung,de
+Meeting,Treffen,de
+Mobile phone,Mobiltelefon,de
+Month,Monat,de
+My completed appraisals,Meine abgeschlossenen Beurteilungen,de
+My completed trainings,Meine abgeschlossenen Schulungen,de
+My traning filters,Meine Transformationsfilter,de
+My upcoming appraisal,Meine bevorstehende Bewertung,de
+My upcoming trainings,Meine kommenden Schulungen,de
+Name,Name,de
+Nb Employee,Nb Mitarbeiter,de
+Nb Hours,Nb Stunden,de
+Nb of open jobs,Anzahl der offenen Stellen,de
+Nb of people hired,Anzahl der eingestellten Personen,de
+Nb of training hours per month,Anzahl der Ausbildungsstunden pro Monat,de
+Nb. hours per category,Nb. Stunden pro Kategorie,de
+Nb. hours per training,Anzahl der Stunden pro Schulung,de
+Nb. of trained employee per category,Anzahl der geschulten Mitarbeiter pro Kategorie,de
+New appraisal,Neue Schätzung,de
+No Training register is generated because selected employees don't have any user.,"Es wird kein Ausbildungsregister erstellt, da die ausgewählten Mitarbeiter keinen Benutzer haben.",de
+No resume found,Kein Lebenslauf gefunden,de
+Note,Hinweis,de
+Number of hours,Anzahl der Stunden,de
+Number of registredred to the session,Anzahl der für die Sitzung registrierten Personen,de
+Objectives,Zielsetzungen,de
+On hold,In der Warteschleife,de
+Open,Öffnen Sie,de
+Overall rating,Gesamtbewertung,de
+Overall rating to apply,Gesamtbewertung für die Bewerbung,de
+Photo,Foto,de
+Planned,Geplant,de
+Position Status,Position Status,de
+Primary Address,Primäre Adresse,de
+Profile details,Profil-Details,de
+Profile wanted,Profil gesucht,de
+Program,Programm,de
+Proposed salary,Vorgeschlagenes Gehalt,de
+Publication Date,Datum der Veröffentlichung,de
+Rating,Bewertung,de
+Realize,Realisieren Sie,de
+Reason not hired,Grund für die Nichteinstellung,de
+Recruitment,Rekrutierung,de
+Recruitment management,Verwaltung der Personalbeschaffung,de
+Referred by,Empfohlen von,de
+Register,Register,de
+Register training,Ausbildung anmelden,de
+Requested,Angefordert,de
+Required training,Erforderliche Ausbildung,de
+Responsible,Verantwortlich,de
+Resume,Lebenslauf,de
+Reviewer,Rezensent,de
+Salary,Gehalt,de
+Schedule Event,Zeitplan Ereignis,de
+Send,Senden Sie,de
+Sent,Gesendet,de
+Sequence,Sequenz,de
+Session,Sitzung,de
+Set a hiring manager to create a job application.,"Stellen Sie einen Personalverantwortlichen ein, um eine Bewerbung zu erstellen.",de
+Skill,Fertigkeit,de
+Skills,Fertigkeiten,de
+Skills tag,Skills tag,de
+Source,Quelle,de
+Starting date,Datum des Beginns,de
+Status,Status,de
+Tag skill,Tag skill,de
+Tag skills,Tag-Fähigkeiten,de
+Technicien,Techniker,de
+Title,Titel,de
+To,An,de
+To date,Bis heute,de
+Tools,Werkzeuge,de
+Total,Insgesamt,de
+Training,Ausbildung,de
+Training Categories,Ausbildung Kategorien,de
+Training Category,Kategorie Ausbildung,de
+Training Register,Ausbildungsregister,de
+Training completed,Ausbildung abgeschlossen,de
+Training dashboard,Dashboard Ausbildung,de
+Training dates must be under training session date range.,Die Schulungstermine müssen im Datumsbereich der Schulungssitzung liegen.,de
+Training filters,Filter für die Ausbildung,de
+Training per category,Ausbildung pro Kategorie,de
+Training register,Ausbildungsregister,de
+Training register list,Liste der Ausbildungsregister,de
+Training registers,Register der Ausbildung,de
+Training session,Schulung,de
+Training sessions,Schulungen,de
+Training skill,Geschicklichkeit trainieren,de
+Training skills,Ausbildung von Fähigkeiten,de
+Trainings,Schulungen,de
+Type,Typ,de
+Type of appraisal,Art der Bewertung,de
+Upcoming appraisal,Kommende Bewertung,de
+Upcoming appraisals of all employees of a team,Anstehende Beurteilungen aller Mitarbeiter eines Teams,de
+Upcoming trainings of all employees of a team,Anstehende Schulungen für alle Mitarbeiter eines Teams,de
+Update all rating,Alle Bewertungen aktualisieren,de
+Validity duration,Gültigkeitsdauer,de
+Work experience,Berufserfahrung,de
+jobposition.companyDepartment,jobposition.companyDepartment,de
+user@mydomain.com,user@mydomain.com,de
+value:Appraisal,value:Appraisal,de
+value:Recruitment,value:Recruitment,de
+value:Training,value:Training,de

@@ -1,0 +1,1362 @@
+key,message,language
+% in paper format,% im Papierformat,de
+"%d expense treated successfully,","%d Ausgaben erfolgreich behandelt,",de
+"%d expenses treated successfully,","%d Ausgaben erfolgreich behandelt,",de
+%d leave reason(s) treated and %d anomaly(ies) reported !,%d behandelte(r) Urlaubsgrund(e) und %d gemeldete(r) Anomalie(n) !,de
+%s date is invalid. It must be included in the timesheet's period.,Das Datum %s ist ungültig. Es muss in den Zeitraum des Stundenzettels einbezogen werden.,de
+6 days week,6 Tage Woche,de
+"<><Badge bg=""warning"">At least one line of this expense exceeds the authorised amount for its type of expense.</Badge></>","<><Badge bg=""warning"">Mindestens eine Zeile dieser Ausgabe übersteigt den zulässigen Betrag für ihre Ausgabenart.</Badge></>",de
+A leave line will be created automatically every month for concerned employee if automatic incrementation is enabled.,"Wenn die automatische Erhöhung aktiviert ist, wird für den betreffenden Mitarbeiter jeden Monat automatisch eine Urlaubszeile erstellt.",de
+A leave line will be created automatically every year for concerned employee if automatic incrementation is enabled.,"Wenn die automatische Erhöhung aktiviert ist, wird jedes Jahr automatisch eine Urlaubslinie für den betreffenden Mitarbeiter erstellt.",de
+A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one.,"Es wurde bereits ein Urlaubsantrag für diesen Zeitraum oder einen Teil dieses Zeitraums angenommen. Bitte stornieren Sie den vorherigen Antrag, um diesen zu akzeptieren.",de
+A new planning time has been created.,Es wurde eine neue Planungszeit erstellt.,de
+A project planning time already exists. Do you want to update it?,Es gibt bereits eine Projektplanungszeit. Möchten Sie sie aktualisieren?,de
+ADD A LINE,ZEILE HINZUFÜGEN,de
+Absent,Abwesend,de
+Account information,Informationen zum Konto,de
+Accounting,Buchhaltung,de
+Acquired,Erworben,de
+Action,Aktion,de
+Actions,Aktionen,de
+Activate MyHR enables the HR menu entries for employees.,"Aktivieren Sie MyHR, um die HR-Menüeinträge für Mitarbeiter zu aktivieren.",de
+Active,Aktiv,de
+Active employee,Aktiver Mitarbeiter,de
+Active employees,Aktive Mitarbeiter,de
+Activity,Tätigkeit,de
+Activity on timesheet line is not enabled.,Die Aktivität in der Zeile des Stundenzettels ist nicht aktiviert.,de
+Add a line,Eine Zeile hinzufügen,de
+Add an advance,Einen Vorschuss hinzufügen,de
+Add lines,Zeilen hinzufügen,de
+Add multiple lines,Mehrere Zeilen hinzufügen,de
+Add to expense,Zu den Ausgaben hinzufügen,de
+Advance,Vorschuss,de
+Advance management,Vorgezogene Verwaltung,de
+Afternoon,Nachmittag,de
+Alert if the manuf. order is finish,"Warnung, wenn der Fertigungsauftrag beendet ist",de
+All,Alle,de
+All allocation lines,Alle Zuweisungslinien,de
+All companies,Alle Unternehmen,de
+All extra hours,Alle Überstunden,de
+All lines must have the same currency.,Alle Zeilen müssen die gleiche Währung haben.,de
+All lines must have the same employee.,Alle Linien müssen denselben Mitarbeiter haben.,de
+All remaining leaves will be transferred to the selected leave type. Only incremental type can be chosen.,Alle verbleibenden Urlaubstage werden auf die ausgewählte Urlaubsart übertragen. Es kann nur eine inkrementelle Art gewählt werden.,de
+All timesheets,Alle Zeiterfassungsbögen,de
+Allocated,Zuteilung,de
+Allocated time,Zugewiesene Zeit,de
+Allocation Year,Zuteilung Jahr,de
+Allocation line,Zuweisungslinie,de
+Allocation lines,Zuweisungslinien,de
+Allocation period,Zuteilungszeitraum,de
+Allocation periods,Zuweisungszeiträume,de
+Allocation year,Zuweisungsjahr,de
+Allocation years,Zuteilungsjahre,de
+Allow Injection,Injektion zulassen,de
+Allow allocated initialization,Zugewiesene Initialisierung zulassen,de
+Allow expense creation,Erlauben Sie die Erstellung von Ausgaben,de
+Allow negative value for leaves,Negative Werte für Blätter zulassen,de
+Allow negative values for employee leaves,Negative Werte für Mitarbeiterabgänge zulassen,de
+Allow to associate a product to the timesheet line (pre-requisite: only for product type that are services and Activity field is TRUE). Additional configuration can also be found in Application config --> Users/companies --> Companies --> Human resources config.,"Erlaubt es, ein Produkt mit der Zeiterfassungszeile zu verknüpfen (Voraussetzung: nur für Produkttypen, die Dienstleistungen sind und das Feld Aktivität ist TRUE). Weitere Konfigurationen finden Sie auch unter Anwendungskonfiguration --> Benutzer/Firmen --> Firmen --> Personalkonfiguration.",de
+Allow updates via editor,Aktualisierungen über den Editor zulassen,de
+"Allows external employees to declare expenses. Unlike expense, these declarations do not generate an account move but can be validated before being re-invoiced on a project. External employee costs are reimbursed as part of the payment of a supplier invoice.","Ermöglicht es externen Mitarbeitern, Ausgaben zu melden. Im Gegensatz zu Spesen führen diese Erklärungen nicht zu einer Kontobewegung, sondern können vor der erneuten Rechnungsstellung für ein Projekt validiert werden. Die Kosten für externe Mitarbeiter werden im Rahmen der Zahlung einer Lieferantenrechnung erstattet.",de
+Alone meal,Alleine essen,de
+Already allocated,Bereits zugewiesen,de
+Also export already exported payroll preparations,Auch bereits exportierte Abrechnungsvorbereitungen exportieren,de
+Always,Immer,de
+Amendment,Abänderung,de
+Amendment Date,Datum der Änderung,de
+Amendment type,Art der Abänderung,de
+Amendment types,Arten von Änderungsanträgen,de
+Amount,Betrag,de
+Amount limit,Betragsgrenze,de
+An employee can directly make a request of this leave reason.,Ein Arbeitnehmer kann direkt einen Antrag auf diesen Urlaubsgrund stellen.,de
+Analytic distribution,Analytische Verteilung,de
+Analytic distribution lines,Analytische Verteilungslinien,de
+Analytic distribution template,Vorlage für die analytische Verteilung,de
+Annual expenses report,Jährlicher Ausgabenbericht,de
+Annual gross salary,Jährliches Bruttogehalt,de
+Annual report,Jahresbericht,de
+Annual schedule,Jährlicher Zeitplan,de
+Anomaly,Anomalie,de
+App,App,de
+App Expense,App-Ausgaben,de
+App Leave,App Urlaub,de
+App Timesheet,App Stundenzettel,de
+App employee,App Mitarbeiter,de
+App expense,App-Ausgaben,de
+App leave,App verlassen,de
+App project,App-Projekt,de
+App timesheet,App Stundenzettel,de
+Application condition,Bedingung für die Anwendung,de
+Are you sure you want to remove selected lines?,"Sind Sie sicher, dass Sie ausgewählte Zeilen entfernen möchten?",de
+Arriving city,Ankommende Stadt,de
+At least one line of this expense exceeds the authorised amount for its type of expense.,Mindestens eine Zeile dieser Ausgabe übersteigt den genehmigten Betrag für ihre Art von Ausgabe.,de
+Attach to,Befestigen an,de
+Auto incrementation disabled,Automatische Inkrementierung deaktiviert,de
+Auto incrementation enabled,Automatische Inkrementierung aktiviert,de
+Automatic generation dates must be included in the timesheet period,Die Daten der automatischen Generierung müssen in den Zeitraum der Zeiterfassung einbezogen werden.,de
+Automatic incrementation,Automatische Inkrementierung,de
+Automatically generated,Automatisch erzeugt,de
+Available,Verfügbar,de
+Available Stock of Lunch Vouchers,Verfügbarer Bestand an Essensgutscheinen,de
+Available days,Verfügbare Tage,de
+Available leave days computed.,Verfügbare Urlaubstage werden berechnet.,de
+Available quantity (acquired),Verfügbare Menge (erworben),de
+Available quantity (before validation),Verfügbare Menge (vor der Validierung),de
+Balance,Bilanz,de
+Bank,Bank,de
+Bank Order,Bankauftrag,de
+Bank card,Bankkarte,de
+Bank cards,Bankkarten,de
+Bank details,Bankverbindung,de
+Base amount per employee,Grundbetrag pro Arbeitnehmer,de
+Basic information,Grundlegende Informationen,de
+Batches,Lose,de
+Batchs,Chargen,de
+Benefits and expenses,Leistungen und Kosten,de
+Birth date,Geburtsdatum,de
+Block expense tax modification,Änderung der Blockkostensteuer,de
+Block project planning time generation,Generierung von Blockprojektierungszeiten,de
+Bonus coefficient,Bonus-Koeffizient,de
+Bonus type,Bonus-Typ,de
+Bonuses,Boni,de
+Both,Beide,de
+"By activating this option, the user will only be able to enter a planned time from this selection. Be careful to define the associated values. If the configuration is not activated, no constraints will be applied to the time.","Wenn Sie diese Option aktivieren, kann der Benutzer nur noch eine Sollzeit aus dieser Auswahl eingeben. Achten Sie darauf, die zugehörigen Werte zu definieren. Wenn die Konfiguration nicht aktiviert ist, werden keine Einschränkungen auf die Zeit angewendet.",de
+CDD,CDD,de
+COMPLEMENT,COMPLEMENT,de
+CP,CP,de
+CSP,CSP,de
+CSV,CSV,de
+Calculate,Berechnen Sie,de
+Calculated,Berechnet,de
+Calendar,Kalender,de
+Can only add expense line to drafted expense.,Kann nur eine Ausgabenzeile zu einer gezeichneten Ausgabe hinzufügen.,de
+Can only be selected by HR Management,Kann nur von der Personalleitung ausgewählt werden,de
+Can only cancel planned or realized medical visit.,Kann nur geplante oder durchgeführte Arztbesuche stornieren.,de
+Can only confirm/complete from draft status.,Kann nur vom Entwurfsstatus aus bestätigen/vervollständigen.,de
+Can only plan draft medical visit.,Kann nur den Entwurf eines Arztbesuches planen.,de
+Can only realize planned medical visit.,Kann nur geplanten Arztbesuch realisieren.,de
+Can only refuse a waiting for validation timesheet.,"Kann nur einen Stundenzettel ablehnen, der auf die Validierung wartet.",de
+Can only validate a waiting for validation timesheet.,"Kann nur einen Stundenzettel validieren, der auf die Validierung wartet.",de
+Cancel,Abbrechen,de
+Cancel payment,Zahlung stornieren,de
+Canceled,Abgesagt,de
+Canceled Expense Template,Stornierte Ausgabenvorlage,de
+Canceled Extra Hours Template,Vorlage für stornierte Überstunden,de
+Canceled Leave Request Template,Vorlage für stornierten Urlaubsantrag,de
+Canceled Timesheet Template,Stornierter Stundenzettel Vorlage,de
+Canteen,Kantine,de
+Catalog,Katalog,de
+Categorization,Kategorisierung,de
+Change of position,Änderung der Position,de
+Characteristics,Merkmale,de
+Charges and Contributions,Gebühren und Beiträge,de
+Choose payment mode,Zahlungsart wählen,de
+Citizenship,Staatsbürgerschaft,de
+City of birth,Ort der Geburt,de
+Clear project planning times duration,Klare Projektplanungszeiten Dauer,de
+Close period,Zeitraum schließen,de
+Closed,Geschlossen,de
+Code,Code,de
+Code nature,Code Natur,de
+Coefficient,Koeffizient,de
+Coefficient for bonus,Koeffizient für den Bonus,de
+Cohabitee,Cohabitee,de
+Colleague Leave Requests,Urlaubsanträge von Kollegen,de
+Collective agreement,Kollektivvertrag,de
+Collective agreements,Kollektivverträge,de
+Comment,Kommentar,de
+Comments,Kommentare,de
+Companies,Unternehmen,de
+Company,Unternehmen,de
+Company %s does not have any expense's sequence,Das Unternehmen %s hat keine Ausgabenreihenfolge,de
+Company address,Adresse des Unternehmens,de
+Company bank card,Bankkarte des Unternehmens,de
+Company credit card details,Angaben zur Kreditkarte des Unternehmens,de
+Company department,Abteilung des Unternehmens,de
+Company fixed phone,Festnetztelefon der Firma,de
+Company's credit card,Kreditkarte des Unternehmens,de
+Complete,Vollständig,de
+Complete my expense,Meine Ausgaben vervollständigen,de
+Complete my leave request,Mein Urlaubsantrag ausfüllen,de
+Complete my timesheet,Meinen Stundenzettel ausfüllen,de
+Completed,Abgeschlossen,de
+Compute amounts,Beträge berechnen,de
+Compute distance with web service,Entfernung mit Webservice berechnen,de
+Configurable,Konfigurierbar,de
+Configuration,Konfiguration,de
+Confirm,Bestätigen Sie,de
+Confirm & Continue,Bestätigen & Fortfahren,de
+Confirmed Extra Hours Template,Bestätigte Vorlage für zusätzliche Stunden,de
+Confirmed Timesheet Template,Bestätigte Stundenzettel Vorlage,de
+Consolidate timesheet line on invoice,Zeiterfassungszeile auf der Rechnung konsolidieren,de
+Consume,Verbrauchen Sie,de
+Contact,Kontakt,de
+Contact details,Kontaktangaben,de
+Contact in case of emergency,Kontakt für Notfälle,de
+Content,Inhalt,de
+Continue,Weiter,de
+Contract,Vertrag,de
+Contract extension,Vertragsverlängerung,de
+Contract sub type,Vertragsteilart,de
+Contract type,Vertragsart,de
+Contract types,Vertragsarten,de
+Contractual information,Vertragliche Informationen,de
+Contrat duration must be <= to this duration,Die Vertragsdauer muss <= dieser Dauer sein,de
+Contrat duration must be > to this duration,Die Vertragsdauer muss > dieser Dauer entsprechen,de
+Conventional Hourly Rate,Konventioneller Stundensatz,de
+Conventional Monthly Rate,Konventionelle monatliche Rate,de
+Costs,Kosten,de
+Counted,Gezählt,de
+Country of birth,Land der Geburt,de
+Create,erstellen.,de
+Create Leave Request,Abwesenheitsantrag erstellen,de
+Create Timesheet line,Stundenzettelzeile erstellen,de
+Create amendment,Änderung erstellen,de
+Create expense,Ausgaben erstellen,de
+Create leave request,Abwesenheitsantrag erstellen,de
+Create leave requests,Urlaubsanträge erstellen,de
+Create lines for day leaves,Zeilen für Tagesblätter erstellen,de
+Create lines for public holidays,Zeilen für Feiertage erstellen,de
+Create new user,Neuen Benutzer anlegen,de
+Create or update a scheduler,Erstellen oder Aktualisieren eines Zeitplaners,de
+Create scheduler,Planer erstellen,de
+Created automatically by increment leave batch on,Automatisch erstellt durch Inkrement lassen Batch ein,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Currency,Währung,de
+Current user doesn't have an employee.,Der aktuelle Benutzer hat keinen Mitarbeiter.,de
+DATE D'ENTREE,DATE D'ENTREE,de
+DATE DE SORTIE,DATE DE SORTIE,de
+DATE NAISS,DATUM NAISS,de
+DEPT NAISS,ABTEILUNG NAISS,de
+DPAE,DPAE,de
+DPAE filters,DPAE-Filter,de
+DPAEs,DPAEs,de
+Daily cost,Tägliche Kosten,de
+Daily limit,Tägliches Limit,de
+Daily work hours,Tägliche Arbeitszeiten,de
+Date,Datum,de
+Date can't be in the future,Das Datum kann nicht in der Zukunft liegen,de
+Date can't be in the future for line(s) : %s,Datum kann nicht in der Zukunft liegen für Zeile(n) : %s,de
+Date difference should be maximam 31 days.,Die Datumsdifferenz sollte maximal 31 Tage betragen.,de
+Date of birth,Datum der Geburt,de
+Date of hire,Datum der Einstellung,de
+Dates,Daten,de
+Day,Tag,de
+Day leave,Urlaubstag,de
+Days,Tage,de
+Days validated,Geprüfte Tage,de
+Deduct lunch voucher,Essensgutschein abziehen,de
+Default Activity Product,Standardaktivität Produkt,de
+Default bank details are not filled for your company.,Die Standardbankverbindung für Ihr Unternehmen ist nicht ausgefüllt.,de
+Default day number gain,Voreingestellter Tageszahlgewinn,de
+Department of birth,Abteilung für Geburt,de
+Dependent children,Unterhaltsberechtigte Kinder,de
+Description,Beschreibung,de
+Details,Einzelheiten,de
+Disable project planning time generation if there is no active sprint.,"Deaktivieren Sie die Generierung von Projektplanungszeiten, wenn es keinen aktiven Sprint gibt.",de
+Display activity column in printing,Aktivitätsspalte beim Drucken anzeigen,de
+Display planned time,Anzeige der geplanten Zeit,de
+Display task column in printing,Aufgabenspalte beim Drucken anzeigen,de
+Display time unit,Anzeige der Zeiteinheit,de
+Display timesheet line number,Zeilennummer des Stundenzettels anzeigen,de
+Distance travelled,Zurückgelegte Entfernung,de
+Distribution date,Datum der Verteilung,de
+Draft,Entwurf,de
+Due time entries,Fällige Zeitangaben,de
+Duration,Dauer,de
+Duration (hours),Dauer (Stunden),de
+Duration adjust for customer,Dauer für Kunden anpassen,de
+Duration computed.,Berechnete Dauer.,de
+Duration equals 0,Dauer ist gleich 0,de
+Duration(hours by day),Dauer (Stunden pro Tag),de
+Duration(in day per day),Dauer (in Tagen pro Tag),de
+Duration(minutes by day),Dauer (Minuten pro Tag),de
+E-MAIL,E-MAIL,de
+ETAB,ETAB,de
+ETRANGER,ETRANGER,de
+Early termination,Vorzeitige Beendigung,de
+Edit Expense Selected,Ausgewählte Ausgaben bearbeiten,de
+Edit Leave Request Selected,Ausgewählten Urlaubsantrag bearbeiten,de
+Edit Start&Stop Timer On Stop,Bearbeiten Start&Stop Timer Ein Stopp,de
+Edit Timesheet Selected,Stundenzettel bearbeiten ausgewählt,de
+Edit extra hours selected,Ausgewählte zusätzliche Stunden bearbeiten,de
+Editing timer on stop need to be enabled to set a duration.,"Die Bearbeitungszeit bei Stopp muss aktiviert sein, um eine Dauer festzulegen.",de
+Editor,Herausgeber,de
+Electronic card,Elektronische Karte,de
+Email reminder for timesheet filling batch,E-Mail-Erinnerung für Stapel zum Ausfüllen von Stundenzetteln,de
+Email reminder for timesheets,E-Mail-Erinnerung für Zeiterfassungsbögen,de
+Email sent date,Datum des E-Mail-Versands,de
+Email sent to %s,E-Mail gesendet an %s,de
+Emails,E-Mails,de
+Emergency contact,Kontakt für Notfälle,de
+Emergency contact relationship,Notfall-Kontaktbeziehung,de
+Employee,Mitarbeiter,de
+Employee %s is not allowed to take leave in advance.,Der Mitarbeiter %s darf seinen Urlaub nicht im Voraus nehmen.,de
+Employee PhoneBook,Mitarbeiter-Telefonbuch,de
+Employee advance,Mitarbeitervorschuss,de
+Employee advance list,Vorschussliste für Mitarbeiter,de
+Employee advance usage,Verwendung von Mitarbeitervorschüssen,de
+Employee advances,Vorschüsse für Arbeitnehmer,de
+Employee annual report template,Vorlage Jahresbericht für Mitarbeiter,de
+Employee bonus,Mitarbeiter-Bonus,de
+Employee bonus amount,Betrag der Mitarbeiterprämie,de
+Employee bonus management,Verwaltung von Mitarbeiterprämien,de
+Employee bonus management filters,Filter für die Verwaltung von Mitarbeiterprämien,de
+Employee bonus mgt,Verwaltung von Mitarbeiterprämien,de
+Employee bonus type,Art der Mitarbeiterprämie,de
+Employee bonuses,Mitarbeiterprämien,de
+Employee code,Mitarbeiter-Code,de
+Employee dashboard,Dashboard für Mitarbeiter,de
+Employee filters,Mitarbeiter-Filter,de
+Employee firstname,Vorname des Mitarbeiters,de
+Employee information,Informationen für Mitarbeiter,de
+Employee lastname,Nachname des Mitarbeiters,de
+Employee phone book template,Mitarbeiter-Telefonbuch Vorlage,de
+Employee planning,Personalplanung,de
+Employee status,Arbeitnehmerstatus,de
+Employee to be reminded,Zu erinnernder Mitarbeiter,de
+Employee vehicle list,Fahrzeugliste für Mitarbeiter,de
+Employee's other costs,Sonstige Kosten des Arbeitnehmers,de
+Employee.annualReportOf,Employee.annualReportOf,de
+Employee.company,Employee.company,de
+Employee.contract,Employee.contract,de
+Employee.contractType,Employee.contractType,de
+Employee.country,Employee.country,de
+Employee.dailyCost,Employee.dailyCost,de
+Employee.dailyWork,Employee.dailyWork,de
+Employee.department,Employee.department,de
+Employee.departureDate,Employee.departureDate,de
+Employee.dob,Employee.dob,de
+Employee.emergencyContact,Employee.emergencyContact,de
+Employee.emergencyNumber,Employee.emergencyNumber,de
+Employee.endDate,Employee.endDate,de
+Employee.entryDate,Employee.entryDate,de
+Employee.martialStatus,Employee.martialStatus,de
+Employee.personalInformations,Employee.personalInformations,de
+Employee.phoneAtCustomer,Employee.phoneAtCustomer,de
+Employee.position,Employee.position,de
+Employee.positionList,Employee.positionList,de
+Employee.resume,Employee.resume,de
+Employee.startDate,Employee.startDate,de
+Employee.weeklyWork,Employee.weeklyWork,de
+EmployeeTimesheet.fromDate,EmployeeTimesheet.fromDate,de
+EmployeeTimesheet.toDate,EmployeeTimesheet.toDate,de
+EmployeeTimesheet.user,EmployeeTimesheet.user,de
+EmployeeTimesheet.weekTotal,EmployeeTimesheet.weekTotal,de
+Employees,Mitarbeiter,de
+Employees Management,Mitarbeiter Management,de
+Employees computed: %d,Berechnete Mitarbeiter: %d,de
+Employees failed to be computed due to anomaly: %d,Arbeitnehmer konnten aufgrund einer Anomalie nicht berechnet werden: %d,de
+Employees management,Verwaltung der Mitarbeiter,de
+Employees' leaves attempted to be computed : %s,Versuchte Berechnung der Urlaubstage der Arbeitnehmer : %s,de
+Employees' leaves failed to be computed due to configuration anomaly : %s,Der Urlaub der Mitarbeiter konnte aufgrund einer Konfigurationsanomalie nicht berechnet werden: %s,de
+Employees' leaves failed to be computed due to missing data : %s,Der Urlaub der Mitarbeiter konnte aufgrund fehlender Daten nicht berechnet werden: %s,de
+Employees' leaves successfully computed : %s,Erfolgreiche Berechnung der Urlaubstage der Mitarbeiter : %s,de
+Employees' other costs,Sonstige Kosten der Arbeitnehmer,de
+Employment,Beschäftigung,de
+Employment Contract Templates,Vorlagen für Arbeitsverträge,de
+Employment Contracts,Arbeitsverträge,de
+Employment contract,Arbeitsvertrag,de
+Employment contract export batch,Arbeitsvertrag Export Batch,de
+Employment contract template,Vorlage Arbeitsvertrag,de
+Employment contract templates,Arbeitsvertragsvorlagen,de
+Employment contract type,Art des Arbeitsvertrags,de
+Employment contract types,Arten von Arbeitsverträgen,de
+Employment contracts,Arbeitsverträge,de
+Employment contracts exported : %s,Exportierte Arbeitsverträge : %s,de
+Employment contracts/Contract amendments,Arbeitsverträge/Vertragsänderungen,de
+Employment.name,Employment.name,de
+EmploymentAmendmentType.companies,EmploymentAmendmentType.companies,de
+EmploymentAmendmentType.endDate,EmploymentAmendmentType.endDate,de
+EmploymentAmendmentType.name,EmploymentAmendmentType.name,de
+EmploymentContractSubType.description,EmploymentContractSubType.description,de
+EmploymentContractType.description,EmploymentContractType.description,de
+EmploymentContractType.name,EmploymentContractType.name,de
+Employments,Beschäftigungen,de
+Enable DPAE,DPAE einschalten,de
+Enable MyHR,MyHR aktivieren,de
+Enable activity,Aktivität freigeben,de
+Enable event creation,Erstellung von Ereignissen aktivieren,de
+Enable expense declaration,Aktivieren der Ausgabenerklärung,de
+Enable multiple timer,Aktivieren mehrerer Timer,de
+Enable payroll preparation export,Export der Gehaltsabrechnungsvorbereitung aktivieren,de
+Enable planification,Planifizierung ermöglichen,de
+End Date,Enddatum,de
+End On,Ende am,de
+End date,Datum des Endes,de
+End date of hire,Datum des Endes der Anstellung,de
+End date time,Enddatum Uhrzeit,de
+End of contract,Ende des Vertrags,de
+End of contract reason,Grund für das Vertragsende,de
+End of contract reasons,Gründe für das Vertragsende,de
+End of month,Ende des Monats,de
+End of the week,Ende der Woche,de
+Establishment of the employer,Niederlassung des Arbeitgebers,de
+Estimated time,Geschätzte Zeit,de
+Event,Veranstaltung,de
+Event subject groovy formula,Ereignis Thema groovy Formel,de
+Exceptional leave,Außerordentlicher Urlaub,de
+Exclude timesheet editor,Stundenzettel-Editor ausschließen,de
+Executive,Exekutive,de
+Executive Status,Exekutivstatus,de
+Executive status,Status der Exekutive,de
+Expense,Ausgaben,de
+Expense Journal,Spesenjournal,de
+Expense Notification Mail,Ausgaben-Benachrichtigungs-Mail,de
+Expense N°,Ausgaben Nr.,de
+Expense Per Employee,Ausgaben pro Mitarbeiter,de
+Expense Sequence,Reihenfolge der Ausgaben,de
+Expense Templates,Vorlagen für Ausgaben,de
+Expense Type,Kostenart,de
+Expense date,Datum des Aufwands,de
+Expense declaration,Kostenaufstellung,de
+Expense filters,Ausgaben-Filter,de
+Expense limit,Ausgabengrenze,de
+Expense limit list,Liste der Ausgabengrenzen,de
+Expense limits,Ausgabengrenzen,de
+Expense line,Ausgabenlinie,de
+Expense line has been set as to be billed but billing expenses is disabled on this project.,"Es wurde festgelegt, dass Ausgaben in Rechnung gestellt werden sollen, aber die Abrechnung von Ausgaben ist für dieses Projekt deaktiviert.",de
+Expense line successfully updated.,Ausgabenzeile erfolgreich aktualisiert.,de
+Expense lines,Ausgabenlinien,de
+Expense lines to merge,Zusammenzuführende Ausgabenlinien,de
+Expense paid with company's credit card,Mit der Kreditkarte des Unternehmens bezahlte Ausgaben,de
+Expense payment,Zahlung von Ausgaben,de
+Expense report template,Vorlage für Spesenbericht,de
+Expense successfully updated.,Ausgaben erfolgreich aktualisiert.,de
+Expense successfully updated. An error occurred while sending the mail.,Ausgaben erfolgreich aktualisiert. Beim Senden der E-Mail ist ein Fehler aufgetreten.,de
+Expense tax account,Aufwandsteuerkonto,de
+Expense type,Ausgabenart,de
+Expense types,Ausgabearten,de
+Expense.advanceAmount,Expense.advanceAmount,de
+Expense.comments,Expense.comments,de
+Expense.companyCbSelect,Expense.companyCbSelect,de
+Expense.currency,Expense.currency,de
+Expense.employeeName,Expense.employeeName,de
+Expense.employeeSignature,Expense.employeeSignature,de
+Expense.employerSignature,Expense.employerSignature,de
+Expense.expenseDate,Expense.expenseDate,de
+Expense.expenseOf,Expense.expenseOf,de
+Expense.period,Expense.period,de
+Expense.personalExpenseAmount,Expense.personalExpenseAmount,de
+Expense.total,Expense.total,de
+Expense.totalA.T.I,Expense.totalA.T.I,de
+Expense.totalAmount,Expense.totalAmount,de
+Expense.totalToRefund,Expense.totalToRefund,de
+Expense.withdrawnCash,Expense.withdrawnCash,de
+ExpenseLine.amount,ExpenseLine.amount,de
+ExpenseLine.cityFrom,ExpenseLine.cityFrom,de
+ExpenseLine.cityTo,ExpenseLine.cityTo,de
+ExpenseLine.client,ExpenseLine.client,de
+ExpenseLine.distance,ExpenseLine.distance,de
+ExpenseLine.expenseDate,ExpenseLine.expenseDate,de
+ExpenseLine.expenseType,ExpenseLine.expenseType,de
+ExpenseLine.kilometricAllowParam,ExpenseLine.kilometricAllowParam,de
+ExpenseLine.kilometricExpenseType,ExpenseLine.kilometricExpenseType,de
+ExpenseLine.no,ExpenseLine.no,de
+ExpenseLine.project,ExpenseLine.project,de
+ExpenseLine.toInvoice,ExpenseLine.toInvoice,de
+ExpenseLine.totalTax,ExpenseLine.totalTax,de
+ExpenseLine.untaxedAmount,ExpenseLine.untaxedAmount,de
+ExpenseLine.yes,ExpenseLine.yes,de
+Expenses,Ausgaben,de
+Expenses amount to pay,Zu zahlender Betrag für die Ausgaben,de
+Expenses declaration,Ausgabenerklärung,de
+Expenses to Validate,Zu validierende Ausgaben,de
+Expenses to Ventilate,Kosten für die Belüftung,de
+Expenses to be Validated by your subordinates,"Ausgaben, die von Ihren Untergebenen bestätigt werden müssen",de
+Experience duration,Dauer der Erfahrung,de
+Export,Exportieren,de
+Export CSV,CSV exportieren,de
+Export all leave requests,Alle Urlaubsanträge exportieren,de
+Export code,Code exportieren,de
+Export code for duration,Exportcode für die Dauer,de
+Export code for extra hour management,Exportcode für die Verwaltung von Sonderstunden,de
+Export code for lunch voucher management,Exportcode für die Verwaltung von Essensmarken,de
+Export codes,Codes für die Ausfuhr,de
+Export date,Datum der Ausfuhr,de
+Export des salariés,Export von Gehaltsempfängern,de
+Export employment contract,Arbeitsvertrag exportieren,de
+Export file,Datei exportieren,de
+Export for payroll preparation,Export für die Vorbereitung der Gehaltsabrechnung,de
+Export payroll preparation,Vorbereitung der Gehaltsabrechnung exportieren,de
+Export type,Art der Ausfuhr,de
+Exported,Exportiert,de
+Exports,Ausfuhren,de
+Extension Amendment,Verlängerung Änderung,de
+Extension and Miscellaneous Amendment,Erweiterung und verschiedene Änderungen,de
+External,Extern,de
+Extra Hours,Extra-Stunden,de
+Extra Hours Notification Mail,Extra Hours Notification Mail,de
+Extra Hours Templates,Extra Hours-Vorlagen,de
+Extra hours,Zusätzliche Stunden,de
+Extra hours filters,Extra Stunden Filter,de
+Extra hours request,Antrag auf zusätzliche Stunden,de
+Extra hours to Validate,Zusätzliche Stunden für die Validierung,de
+Extra hours to be Validated by your subordinates,"Zusätzliche Stunden, die von Ihren Untergebenen validiert werden müssen",de
+Extra hours to validate,Zusätzliche Stunden für die Validierung,de
+Extra hours type,Typ der zusätzlichen Stunden,de
+Extra hours' number,Zahl der Überstunden,de
+ExtraHours,ExtraHours,de
+F,F,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+File,Datei,de
+File types,Dateitypen,de
+Files,Dateien,de
+Finish,Oberfläche,de
+Finished,Fertige,de
+First day of leave period,Erster Tag des Urlaubszeitraums,de
+First month of leave period,Erster Monat des Urlaubszeitraums,de
+First name,Vornamen,de
+Fiscal periods,Steuerperioden,de
+Fiscal year,Steuerjahr,de
+Follow-up,Nachbereitung,de
+"For foreign-born employees, please enter the code 99",Für im Ausland geborene Arbeitnehmer geben Sie bitte den Code 99 ein.,de
+Former employee,Ehemaliger Mitarbeiter,de
+Former employees,Ehemalige Mitarbeiter,de
+Formula,Formel,de
+Formula variables configuration,Konfiguration der Formelvariablen,de
+Friday,Freitag,de
+From,Von,de
+From Date,Von Datum,de
+From date,Vom Datum,de
+From date can't be empty,Von-Datum darf nicht leer sein,de
+From generation date,Ab Generationsdatum,de
+Full name,Vollständiger Name,de
+Fullscreen Editor,Vollbild-Editor,de
+General,Allgemein,de
+General Expense,Allgemeine Kosten,de
+General Expenses,Allgemeine Kosten,de
+General expense lines,Allgemeine Kostenlinien,de
+General expenses,Allgemeine Kosten,de
+Generate Lines From Expected Planning,Zeilen aus erwarteter Planung generieren,de
+Generate Lines automatically,Linien automatisch generieren,de
+Generate human resource configurations,Konfigurationen der Humanressourcen generieren,de
+Generate lines,Zeilen generieren,de
+Generate new DPAE,Neue DPAE generieren,de
+Generate payroll prepa.,Generieren Sie Gehaltsabrechnungen vor.,de
+Generate periods,Zeiträume generieren,de
+Generate timesheet lines,Stundenzettelzeilen generieren,de
+Given,Gegeben,de
+Given lunch vouchers on the period,Ausgabe von Essensgutscheinen für den Zeitraum,de
+Given project task and activity are not related.,Die gegebene Projektaufgabe und der Vorgang sind nicht miteinander verbunden.,de
+Given project task and project are not related.,Die gegebene Projektaufgabe und das Projekt sind nicht miteinander verbunden.,de
+Given to Employee,Gegeben an Mitarbeiter,de
+Google Maps error: %s,Google Maps-Fehler: %s,de
+Ground For Refusal,Ablehnungsgrund,de
+Ground for refusal,Grund für die Ablehnung,de
+HR,HR,de
+HR Batch,HR-Charge,de
+HR batch filters,HR-Batch-Filter,de
+HR batches,HR-Chargen,de
+HR config,HR-Konfiguration,de
+HR information,HR-Informationen,de
+HR manager,Personalleiter,de
+Hardship allowance,Erschwerniszulage,de
+Health mutual,Gesundheit auf Gegenseitigkeit,de
+Health mutual rejection reason,Gesundheit gegenseitiger Ablehnungsgrund,de
+Health mutual rejection reasons,Gesundheit gegenseitige Ablehnungsgründe,de
+Health service,Gesundheitsdienst,de
+Health service address,Adresse des Gesundheitsdienstes,de
+Here is the list of the warnings and errors,Hier ist die Liste der Warnungen und Fehler,de
+Historic colleague Expenses,Historischer Kollege Ausgaben,de
+Historic colleague Timesheets,Historische Kollegen Stundenzettel,de
+Historic colleague extra hours,Historischer Kollege Überstunden,de
+Historic extra hours,Historische Überstunden,de
+Historic team Expenses,Historisches Team Ausgaben,de
+Historic team leave requests,Historische Teamurlaubsanträge,de
+Holiday,Urlaub,de
+Hour,Stunde,de
+Hourly complement,Stündliche Ergänzung,de
+Hourly gross salary,Bruttostundenlohn,de
+Hourly rate,Stundensatz,de
+Hours,Stunden,de
+Hours distribution,Verteilung der Stunden,de
+Hr batch,Std. Charge,de
+Hr config,Stundenkonfiguration,de
+HrConfig,HrConfig,de
+Human Resource Manager,Leiter der Personalabteilung,de
+Human Resource config (${ name }),Konfiguration der Humanressourcen (${ Name }),de
+Human Resources Employee,Mitarbeiter der Personalabteilung,de
+Human Resources Manager,Leiter der Personalabteilung,de
+Human Resources configuration,Konfiguration der Humanressourcen,de
+Human Resources configurations,Konfigurationen der Humanressourcen,de
+Human resource configurations,Konfigurationen der Humanressourcen,de
+I am at work,Ich bin bei der Arbeit,de
+"If enable, allow the user to select the initialization of allocated with computed planned time on the period","Wenn diese Option aktiviert ist, kann der Benutzer die Initialisierung der zugewiesenen Zeit mit der berechneten Sollzeit für den Zeitraum auswählen.",de
+"If enabled, planification will be available on project and project task views and some planning lines auto generation will be added to generation via project template, and change of sprint on project tasks.","Wenn diese Option aktiviert ist, wird die Planifizierung in den Projekt- und Projektaufgabenansichten verfügbar sein und einige Planungslinien werden automatisch über die Projektvorlage generiert.",de
+Imposed holidays planning,Auferlegte Ferienplanung,de
+In Trial,In der Verhandlung,de
+In advance,Im Voraus,de
+Inactive,Inaktiv,de
+Increase %,Erhöhung %,de
+Increment leave,Erhöhter Urlaub,de
+Information,Informationen,de
+Init with planning time,Init mit Planungszeit,de
+Inject,Einspritzen,de
+Inject/Consume,Injizieren/Konsumieren,de
+Instruction,Anleitung,de
+Internal description,Interne Beschreibung,de
+Invalid date,Ungültiges Datum,de
+Invalid date periods,Ungültige Datumsbereiche,de
+"Invalid date, it can't be in the future","Ungültiges Datum, es kann nicht in der Zukunft liegen",de
+Invalid dates,Ungültige Daten,de
+Invalid duration (must be a 0.5's multiple),Invalid duration (must be a 0.5's multiple),de
+Invitation,Einladung,de
+Invited collaborators,Eingeladene Mitarbeiter,de
+Invoiced,In Rechnung gestellt,de
+Invoicing Type for Log Times,Fakturierungsart für Logzeiten,de
+Justification,Rechtfertigung,de
+K.A.P.,K.A.P.,de
+Keep Project for Start&Stop Timer,Projekt für Start&Stop Timer beibehalten,de
+Kilometric,Kilometrisch,de
+Kilometric Allowance,Kilometrische Zulage,de
+Kilometric Allowance Param,Kilometrische Zulage Param,de
+Kilometric Allowance Params,Kilometrische Zulässigkeit Params,de
+Kilometric Allowances,Kilometrische Zulagen,de
+Kilometric allowance list,Kilometrische Zulagenliste,de
+Kilometric allowance rate,Kilometrischer Vergütungssatz,de
+Kilometric allowance rates,Kilometrische Vergütungssätze,de
+Kilometric allowance rule,Kilometrische Abzugsregelung,de
+Kilometric allowance rule list,Liste der Regeln für die Kilometrierung,de
+Kilometric allowance rules,Regeln für die Kilometerpauschale,de
+Kilometric expense product,Kilometrisches Kostenprodukt,de
+Kilometric line,Kilometrische Linie,de
+Kilometric lines,Kilometrische Linien,de
+Kilometric log,Kilometrisches Protokoll,de
+Kilometric log list,Kilometrische Log-Liste,de
+Kilometrice Allowance Param,Kilometrice Allowance Param,de
+Kilometrice Allowance Params,Kilometrice Allowance Params,de
+Kilometrice log,Kilometrisches Protokoll,de
+LIEU,LIEU,de
+Label,Etikett,de
+Last medical visit :,Letzter Arztbesuch :,de
+Last medical visit : XX/XX/XXXX,Letzter Arztbesuch : XX/XX/XXXX,de
+Last medical visit date,Datum des letzten Arztbesuches,de
+Last name,Nachname,de
+Launched every,Startet jedes,de
+Leave Batch rules,Batch-Regeln verlassen,de
+Leave List,Urlaubsliste,de
+Leave Management,Urlaubsverwaltung,de
+Leave Management Batch Rule,Batch-Regel für die Urlaubsverwaltung,de
+Leave Management Reset,Urlaubsverwaltung zurücksetzen,de
+Leave Per Employee,Urlaub pro Mitarbeiter,de
+Leave Reason for Leave to justify,Urlaub Grund für den Urlaub zu rechtfertigen,de
+Leave Reasons,Gründe für den Urlaub,de
+Leave Request,Urlaubsantrag,de
+Leave Request Assistant,Assistentin für Urlaubsanträge,de
+Leave Request Notification Mail,Urlaubsantrag Benachrichtigungsmail,de
+Leave Requests,Urlaubsanträge,de
+Leave Requests to Validate,Urlaubsanträge zur Validierung,de
+Leave accounts,Konten verlassen,de
+Leave available to date,Bislang verfügbarer Urlaub,de
+Leave correction,Korrektur hinterlassen,de
+Leave counter reset,Zähler zurücksetzen lassen,de
+Leave day number,Nummer des Urlaubstages,de
+Leave days,Urlaubstage,de
+Leave days' number,Anzahl der Urlaubstage,de
+Leave line,Linie verlassen,de
+Leave managed every month,Monatlich verwalteter Urlaub,de
+Leave managed every year,Jährlich verwalteter Urlaub,de
+Leave management,Verwaltung des Urlaubs,de
+Leave management batch,Batch für die Urlaubsverwaltung,de
+Leave management batch rule list,Liste der Batchregeln für die Urlaubsverwaltung,de
+Leave period,Urlaubszeit,de
+Leave reason,Grund verlassen,de
+Leave reason and day number have to be defined,Urlaubsgrund und Tageszahl müssen definiert werden,de
+Leave reasons,Gründe für den Urlaub,de
+Leave request,Urlaubsantrag,de
+Leave request filters,Filter für Urlaubsanträge,de
+Leave request successfully updated.,Urlaubsantrag erfolgreich aktualisiert.,de
+Leave request successfully updated. An error occurred while sending the mail.,Urlaubsantrag erfolgreich aktualisiert. Beim Senden der E-Mail ist ein Fehler aufgetreten.,de
+Leave request(s) have been correctly created.,Der/die Urlaubsantrag/-anträge wurden korrekt erstellt.,de
+Leave request(s) have been correctly created. Some requests were ignored as they were not correctly configured.,"Die Urlaubsanträge wurden korrekt erstellt. Einige Anträge wurden ignoriert, da sie nicht korrekt konfiguriert waren.",de
+Leave requests,Urlaubsanträge,de
+Leave to justify,Erlaubnis zur Rechtfertigung,de
+Leave type,Art des Urlaubs,de
+LeaveRequest,LeaveRequest,de
+Leaves,Blätter,de
+Leaves Management,Verwaltung von Blättern,de
+Leaves Templates,Blätter-Vorlagen,de
+Leaves and public holidays,Urlaube und Feiertage,de
+Leaves and timesheets,Urlaube und Arbeitszeitnachweise,de
+Leaves calendar,Laubkalender,de
+Leaves to be Validated by your subordinates,"Blätter, die von Ihren Untergebenen validiert werden müssen",de
+Leaving date,Datum der Abreise,de
+Level,Ebene,de
+Line will be attached to a subsequent timesheet,Die Zeile wird an einen späteren Stundenzettel angehängt,de
+Lines Generation Wizard,Zeilengenerierungs-Assistent,de
+Linked project planning time,Verknüpfte Projektplanungszeit,de
+List of employees,Liste der Beschäftigten,de
+Log Time,Zeit protokollieren,de
+Log Times,Log Zeiten,de
+Log time,Zeit protokollieren,de
+Logged Time,Erfasste Zeit,de
+Login,Anmeldung,de
+Lunch Voucher,Mittagessen-Gutschein,de
+Lunch Voucher Employer's Share,Essensgutschein Anteil des Arbeitgebers,de
+Lunch Voucher Format,Format des Essensgutscheins,de
+Lunch Voucher Line,Mittagessen-Gutschein-Linie,de
+Lunch Voucher Lines,Mittagessen-Gutschein-Linien,de
+Lunch Voucher Management,Verwaltung von Essensgutscheinen,de
+Lunch Voucher Wage Share,Essensgutschein Lohnanteil,de
+Lunch Voucher's number,Nummer des Essensgutscheins,de
+Lunch Vouchers,Gutscheine für Mittagessen,de
+Lunch voucher advance,Essensgutschein im Voraus,de
+Lunch voucher advances,Vorschüsse auf Essensmarken,de
+Lunch voucher management filters,Filter für die Verwaltung von Essensmarken,de
+Lunch voucher supplier,Anbieter von Essensgutscheinen,de
+Lunch vouchers,Gutscheine für Mittagessen,de
+Lunch vouchers distributed,Essensgutscheine verteilt,de
+Lunch vouchers used,Eingesetzte Essensgutscheine,de
+Lunch vouchers' number,Anzahl der Essensgutscheine,de
+LunchVoucher.amount,LunchVoucher.amount,de
+LunchVoucher.comment,LunchVoucher.comment,de
+LunchVoucher.employeeShare,LunchVoucher.employeeShare,de
+LunchVoucher.employerShare,LunchVoucher.employerShare,de
+LunchVoucher.handedOn,LunchVoucher.handedOn,de
+LunchVoucher.leavesFrom,LunchVoucher.leavesFrom,de
+LunchVoucher.lvFrom,LunchVoucher.lvFrom,de
+LunchVoucher.month,LunchVoucher.month,de
+LunchVoucher.names,LunchVoucher.names,de
+LunchVoucher.paperNumber,LunchVoucher.paperNumber,de
+LunchVoucher.qty,LunchVoucher.qty,de
+LunchVoucher.signature,LunchVoucher.signature,de
+LunchVoucher.signatureDocument,LunchVoucher.signatureDocument,de
+LunchVoucher.subtotal,LunchVoucher.subtotal,de
+LunchVoucher.to,LunchVoucher.to,de
+LunchVoucher.total,LunchVoucher.total,de
+LunchVoucherCommand,LunchVoucherCommand,de
+M,M,de
+MATRICULE,MATRICULE,de
+Maiden name,Mädchenname,de
+Main,Hauptseite,de
+Main activity code,Code der Haupttätigkeit,de
+Main employment contract,Hauptarbeitsvertrag,de
+Main employment contract status,Status des Hauptarbeitsvertrags,de
+Manage orphan expense lines,Verwalten verwaister Ausgabenposten,de
+Manager,Manager,de
+Manager dashboard,Dashboard für Manager,de
+Marital name,Ehelicher Name,de
+Marital status,Familienstand,de
+Married,Verheiratet,de
+Mass export list,Massenexportliste,de
+Max amount,Maximaler Betrag,de
+Maximum Condition,Maximale Bedingung,de
+Medical Visit Reason,Grund des Arztbesuches,de
+Medical Visit Reasons,Gründe für einen Arztbesuch,de
+Medical visit,Ärztlicher Besuch,de
+Medical visit file,Akte zum Arztbesuch,de
+Medical visit list,Ärztliche Besuchsliste,de
+Medical visit reason,Grund des Arztbesuches,de
+Medical visits,Ärztliche Besuche,de
+Messages,Nachrichten,de
+Meta Schedule,Meta-Zeitplan,de
+Min monthly remuneration,Minimale monatliche Vergütung,de
+Minimum Condition,Minimale Bedingung,de
+Minimum Stock of Lunch Vouchers,Mindestbestand an Essensgutscheinen,de
+Minimum stock of lunch vouchers will be reached for the company %s. Minimum Stock allowed : %s. Available Stock : %s,Der Mindestbestand an Essensgutscheinen für das Unternehmen %s wird erreicht. Zulässiger Mindestbestand : %s. Verfügbarer Bestand : %s,de
+Minutes,Protokoll,de
+Miscellaneous Amendment,Verschiedene Änderungen,de
+Missing hours,Fehlende Stunden,de
+Monday,Montag,de
+Month,Monat,de
+Monthly global cost,Monatliche Gesamtkosten,de
+Monthly schedule,Monatlicher Zeitplan,de
+Morning,Morgen,de
+Move,Verschieben,de
+Move Date,Datum verschieben,de
+"Move already used, you must unreconcile it first","Wenn Sie die Bewegung bereits verwendet haben, müssen Sie sie erst wieder freigeben.",de
+Multi-leave assistant,Multi-leave-Assistent,de
+Multiple Start&Stop Timer,Mehrfacher Start&Stopp-Timer,de
+Multiple timer,Mehrere Timer,de
+My Expenses,Meine Ausgaben,de
+My Extra Hours,Meine Extra-Stunden,de
+My Leave Requests,Meine Urlaubsanträge,de
+My Timesheets,Meine Zeiterfassungsbögen,de
+My expenses,Meine Ausgaben,de
+My extra hours,Meine Überstunden,de
+My leave requests,Meine Urlaubsanträge,de
+My timesheets,Meine Zeiterfassungsbögen,de
+MyHR,MyHR,de
+NOM,NOM,de
+NOM DE JEUNE FILLE,NOM DE JEUNE FILLE,de
+NOM MARITAL,NOM MARITAL,de
+NUMERO INSEE,NUMERO INSEE,de
+Name,Name,de
+Name and surname,Vorname und Nachname,de
+Name for age variable,Name für die Altersvariable,de
+Name for seniority variable,Bezeichnung für die Dienstaltervariable,de
+Name for total working day in a period variable,Bezeichnung für die Variable Gesamtarbeitstag in einem Zeitraum,de
+Name for working day variable,Name für die Variable Arbeitstag,de
+Nbr in card,Nr. in der Karte,de
+Nbr in paper,Nbr in Papier,de
+Nbr lunch vouchers,Nbr Gutscheine für Mittagessen,de
+Need validation,Validierung erforderlich,de
+Net salary,Nettogehalt,de
+Never,Niemals,de
+New,Neu,de
+New employee,Neuer Mitarbeiter,de
+New employees,Neue Mitarbeiter,de
+New line,Neue Linie,de
+New project line,Neue Projektlinie,de
+Next medical visit :,Nächster Arztbesuch :,de
+Next medical visit date,Datum des nächsten Arztbesuchs,de
+Nibelis,Nibelis,de
+No,Nein,de
+No Leave Request to be validated by your subordinates,"Kein Urlaubsantrag, der von Ihren Untergebenen zu validieren ist",de
+No Route Found,Keine Route gefunden,de
+No Tax for the product %s,Keine Steuer für das Produkt %s,de
+No employee found,Kein Mitarbeiter gefunden,de
+No expense to be validated by your subordinates,Keine Kosten für die Validierung durch Ihre Untergebenen,de
+No extra hours to be validated by your subordinates,"Keine zusätzlichen Stunden, die von Ihren Untergebenen validiert werden müssen",de
+No leave requests were created.,Es wurden keine Urlaubsanträge erstellt.,de
+No longer used,Nicht mehr verwendet,de
+No project planning time exists for this task. Do you want to create new project planning lines?,Für diese Aufgabe ist keine Projektplanungszeit vorhanden. Möchten Sie neue Projektplanungszeilen anlegen?,de
+No such place exists,Ein solcher Ort existiert nicht,de
+No time sheet found for employee %s,Kein Arbeitszeitblatt für Mitarbeiter %s gefunden,de
+No timesheet line has been created because the duration is less than 1 minute,"Es wurde keine Zeiterfassungszeile erstellt, da die Dauer weniger als 1 Minute beträgt",de
+No timesheet lines can be generated because no duration is entered. Please fill the duration field if you want to generate timesheet lines.,"Es können keine Stundenzettelzeilen erstellt werden, da keine Dauer eingegeben wurde. Bitte füllen Sie das Feld Dauer aus, wenn Sie Stundenzettelzeilen erstellen möchten.",de
+No timesheet to be validated by your subordinates,"Kein Stundenzettel, der von Ihren Untergebenen validiert werden muss",de
+No user was found when creating the timesheet.,Beim Erstellen des Stundenzettels wurde kein Benutzer gefunden.,de
+Non-Executive,Nicht-exekutive,de
+None,Keine,de
+Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency.,"Nicht alle Ausgaben sind in der gleichen Währung. Sie können nur dann Zeilen in einer Reisekostenabrechnung erstellen oder hinzufügen, wenn sie dieselbe Währung haben.",de
+Not invoiced,Nicht in Rechnung gestellt,de
+Note,Hinweis,de
+Number of canteen entries,Anzahl der Kantineneinträge,de
+Number of days,Anzahl der Tage,de
+"Number of days acquired at the end of the request. This takes into account the leave you earn each month, minus leave already validated.","Anzahl der am Ende des Antrags erworbenen Tage. Dabei wird der Urlaub berücksichtigt, den Sie jeden Monat verdienen, abzüglich des bereits validierten Urlaubs.",de
+Number of days before reminder,Anzahl der Tage vor der Erinnerung,de
+Number of days overseas,Anzahl der Tage in Übersee,de
+Number of days worked,Anzahl der Arbeitstage,de
+Number of lunch vouchers,Anzahl der Essensgutscheine,de
+OK,OK,de
+Occasional,Gelegentlich,de
+Old code,Alter Code,de
+Old value,Alter Wert,de
+One-way,Einbahnstraße,de
+Only HR manager can choose this expense type.,Nur der Personalleiter kann diese Ausgabenart wählen.,de
+Only missing,Es fehlen nur,de
+Open Street Maps error: %s,Open Street Maps Fehler: %s,de
+Organization,Organisation,de
+Orphan expense line,Verwaiste Ausgabenlinie,de
+OrphanExpenseLine.title,OrphanExpenseLine.title,de
+Others,Andere,de
+Overseas,Übersee,de
+Overview,Übersicht,de
+PRENOM,PRENOM,de
+Paper format,Papierformat,de
+Pause,Pause,de
+Pay Company,Unternehmen bezahlen,de
+Pay Grid,Lohnraster,de
+Pay company main employment contract,Lohnunternehmen Hauptarbeitsvertrag,de
+Pay period,Lohnperiode,de
+Payment,Zahlung,de
+Payment Date,Datum der Zahlung,de
+Payment Status,Zahlungsstatus,de
+Payment amount,Zahlungsbetrag,de
+Payment information,Zahlungsinformationen,de
+Payment mode,Zahlungsweise,de
+Payment move,Umzugsgut,de
+Payment voucher,Zahlungsbeleg,de
+Payroll Leave,Urlaub von der Gehaltsabrechnung,de
+Payroll Leaves,Gehaltsabrechnung Blätter,de
+Payroll Preparation,Vorbereitung der Gehaltsabrechnung,de
+Payroll Preparations,Vorbereitungen für die Gehaltsabrechnung,de
+Payroll Year,Gehaltsabrechnung Jahr,de
+Payroll input,Eingabe der Gehaltsabrechnung,de
+Payroll periods,Abrechnungsperioden,de
+Payroll preparation,Vorbereitung der Gehaltsabrechnung,de
+Payroll preparation export,Vorbereitung der Gehaltsabrechnung - Export,de
+Payroll preparation export batch,Vorbereitung der Gehaltsabrechnung Export Batch,de
+Payroll preparation export page,Exportseite zur Vorbereitung der Gehaltsabrechnung,de
+Payroll preparation filters,Filter zur Vorbereitung der Gehaltsabrechnung,de
+Payroll preparation generation,Erstellung von Gehaltsabrechnungen,de
+Payroll preparation generation batch,Batch für die Erstellung der Gehaltsabrechnung,de
+Payroll preparation generation page,Seite zur Erstellung der Gehaltsabrechnung,de
+Payroll preparations,Vorbereitung der Gehaltsabrechnung,de
+Payroll preparations attempted to be generated : %s,"Es wurde versucht, Abrechnungsvorbereitungen zu erstellen: %s",de
+Payroll preparations exported : %s,Vorbereitungen für die Gehaltsabrechnung exportiert : %s,de
+Payroll preparations failed to be generated due to a duplicate one : %s,Abrechnungsvorbereitungen konnten aufgrund einer doppelten Vorbereitung nicht erstellt werden: %s,de
+Payroll preparations failed to be generated due to missing data : %s,Abrechnungsvorbereitungen konnten aufgrund fehlender Daten nicht erstellt werden: %s,de
+Payroll preparations successfully generated : %s,Abrechnungsvorbereitungen erfolgreich erstellt: %s,de
+Payroll year,Jahr der Gehaltsabrechnung,de
+Payroll years,Jahre der Gehaltsabrechnung,de
+PayrollPreparation.registrationNumber,PayrollPreparation.registrationNumber,de
+"Percentage of lunch voucher in paper format, the rest will be in electronic card.","Prozentualer Anteil der Essensmarken in Papierform, der Rest wird in elektronischer Form ausgegeben.",de
+Period,Zeitraum,de
+Period is closed,Zeitraum ist geschlossen,de
+Periods generation assistant,Assistent zur Generierung von Zeiträumen,de
+Permanent,Dauerhaft,de
+Personal expense,Persönliche Ausgaben,de
+Personal expense amount,Betrag für persönliche Ausgaben,de
+Personal information,Persönliche Informationen,de
+Phone,Telefon,de
+Phone at the customer,Telefon beim Kunden,de
+Phonebook.employeePhonebook,Phonebook.employeePhonebook,de
+Plan,Plan,de
+Planification,Planifizierung,de
+Planned,Geplant,de
+Planned Time Planning,Geplante Zeitplanung,de
+Planned time,Geplante Zeit,de
+Planned time value,Geplanter Zeitwert,de
+Planned time values,Geplante Zeitwerte,de
+Planning,Planung,de
+Plannings,Planungen,de
+Plate Number,Nummernschild,de
+Please add a product,Bitte ein Produkt hinzufügen,de
+Please add a start date for generation,Bitte fügen Sie ein Startdatum für die Generierung hinzu,de
+Please add an employee's planning related to user %s,Bitte fügen Sie die Planung eines Mitarbeiters für den Benutzer %s hinzu.,de
+Please add an employee's public holiday events planning related to user %s,Bitte fügen Sie die Feiertagsplanung eines Mitarbeiters für den Benutzer %s hinzu,de
+Please add an end date for generation,Bitte fügen Sie ein Enddatum für die Generierung hinzu,de
+Please choose an activity.,Bitte wählen Sie eine Aktivität.,de
+Please choose an employee.,Bitte wählen Sie einen Mitarbeiter.,de
+Please configure Formula Variables for human resource for the company %s,Bitte konfigurieren Sie die Formelvariablen für die Personalabteilung der Firma %s,de
+Please configure a birt template for expense report.,Bitte konfigurieren Sie eine Geburtsvorlage für die Spesenabrechnung.,de
+Please configure information for human resources for the company %s,Bitte konfigurieren Sie Informationen für die Personalabteilung des Unternehmens %s,de
+Please configure the canceled expense template in HR config for the company %s,Bitte konfigurieren Sie die stornierte Spesenvorlage in HR config für die Firma %s,de
+Please configure the canceled extra hours template in HR config for the company %s,Bitte konfigurieren Sie die Vorlage für stornierte Überstunden in der HR-Konfiguration für die Firma %s,de
+Please configure the canceled leave template in HR config for the company %s,Bitte konfigurieren Sie die Vorlage für stornierten Urlaub in der HR-Konfiguration für die Firma %s,de
+Please configure the canceled timehsheet template in HR config for the company %s,Bitte konfigurieren Sie die Vorlage für den stornierten Stundenzettel in der HR-Konfiguration für die Firma %s,de
+Please configure the expense type for kilometric allowance in HR config for the company %s,Bitte konfigurieren Sie die Spesenart für Kilometergeld in HR config für die Firma %s,de
+Please configure the lunch voucher export path in HR config for the company %s,Bitte konfigurieren Sie den Exportpfad für Essensgutscheine in der HR-Konfiguration für die Firma %s,de
+Please configure the refused expense template in HR config for the company %s,Bitte konfigurieren Sie die abgelehnte Spesenvorlage in HR config für die Firma %s,de
+Please configure the refused extra hours template in HR config for the company %s,Bitte konfigurieren Sie die Vorlage für abgelehnte Überstunden in der HR-Konfiguration für die Firma %s,de
+Please configure the refused leave template in HR config for the company %s,Bitte konfigurieren Sie die Vorlage für abgelehnten Urlaub in der HR-Konfiguration für die Firma %s,de
+Please configure the refused timehsheet template in HR config for the company %s,Bitte konfigurieren Sie die abgelehnte Stundenzettelvorlage in der HR-Konfiguration für die Firma %s,de
+Please configure the sent expense template in HR config for the company %s,Bitte konfigurieren Sie die gesendete Spesenvorlage in HR config für die Firma %s,de
+Please configure the sent extra hours template in HR config for the company %s,Bitte konfigurieren Sie die Vorlage für gesendete Überstunden in der HR-Konfiguration für die Firma %s,de
+Please configure the sent leave template in HR config for the company %s,Bitte konfigurieren Sie die gesendete Urlaubsvorlage in der HR-Konfiguration für die Firma %s,de
+Please configure the sent timehsheet template in HR config for the company %s,Bitte konfigurieren Sie die gesendete Stundenzettelvorlage in der HR-Konfiguration für die Firma %s,de
+Please configure the template for email reminder,Bitte konfigurieren Sie die Vorlage für die E-Mail-Erinnerung,de
+Please configure the unit for this type of absence,Bitte konfigurieren Sie das Gerät für diese Art von Abwesenheit,de
+Please configure the unjustified absence reason in HR config for the company %s,Bitte konfigurieren Sie den Grund für ungerechtfertigte Abwesenheit in der HR-Konfiguration für die Firma %s,de
+Please configure the validated expense template in HR config for the company %s,Bitte konfigurieren Sie die validierte Spesenvorlage in HR config für die Firma %s,de
+Please configure the validated extra hours template in HR config for the company %s,Bitte konfigurieren Sie die validierte Überstundenvorlage in der HR-Konfiguration für die Firma %s,de
+Please configure the validated leave template in HR config for the company %s,Bitte konfigurieren Sie die validierte Urlaubsvorlage in HR config für die Firma %s,de
+Please configure the validated timehsheet template in HR config for the company %s,Bitte konfigurieren Sie die validierte Stundenzettelvorlage in HR config für die Firma %s,de
+Please create an employee for the user ${__user__.name},Please create an employee for the user ${__user__.name},de
+Please create an employee for the user ${assignedTo.name},Please create an employee for the user ${assignedTo.name},de
+Please create an employee for the user %s,Bitte erstellen Sie einen Mitarbeiter für den Benutzer %s,de
+Please fill a company.,Bitte geben Sie ein Unternehmen an.,de
+Please fill a generation date.,Bitte geben Sie ein Generationsdatum an.,de
+Please fill a leave period.,Bitte füllen Sie einen Urlaubszeitraum.,de
+Please fill a user for the employee %s,Bitte geben Sie einen Benutzer für den Mitarbeiter %s an,de
+Please fill the payment mode.,Bitte geben Sie die Zahlungsart an.,de
+Please fill the period,Bitte füllen Sie den Zeitraum,de
+Please provide a company.,Bitte geben Sie ein Unternehmen an.,de
+Please provide a kilometric allowance parameter.,Bitte geben Sie einen Parameter für das Kilometergeld an.,de
+Please provide a kilometric type.,Bitte geben Sie einen Kilometertyp an.,de
+Please provide an expense product.,Bitte geben Sie ein Kostenprodukt an.,de
+Please provide starting and arriving cities.,Bitte geben Sie Start- und Zielort an.,de
+Please select at least one expense line.,Bitte wählen Sie mindestens eine Ausgabenlinie aus.,de
+Please set a company up on leave request,Bitte richten Sie ein Unternehmen auf Urlaubsantrag ein,de
+"Please, add a contract of employment for employee : %s",Bitte fügen Sie einen Arbeitsvertrag für den Mitarbeiter : %s,de
+"Please, add a planning for employee : %s",Bitte fügen Sie eine Planung für den Mitarbeiter : %s,de
+"Please, add a public holiday planning for employee : %s",Bitte fügen Sie eine Feiertagsplanung für einen Mitarbeiter hinzu: %s,de
+"Please, choose unit in leave reason %s.",Bitte wählen Sie die Einheit im Urlaubsgrund %s.,de
+"Please, configure the number of daily work hours.",Bitte konfigurieren Sie die Anzahl der täglichen Arbeitsstunden.,de
+"Please, configure the time logging unit preference.",Bitte konfigurieren Sie die bevorzugte Zeitaufzeichnungseinheit.,de
+"Please, enter an activity for the employee %s",Bitte geben Sie eine Tätigkeit für den Mitarbeiter %s ein,de
+"Please, enter the number of daily work hours per employee %s",Bitte geben Sie die Anzahl der täglichen Arbeitsstunden pro Mitarbeiter ein %s,de
+"Please, provide weeklyPlanning , publicHolidaysPlanning and mainContract information for selected employees","Bitte stellen Sie die Informationen weeklyPlanning , publicHolidaysPlanning und mainContract für ausgewählte Mitarbeiter bereit",de
+"Please, select an employment contract template",Bitte wählen Sie eine Arbeitsvertragsvorlage,de
+"Please, select an expense",Bitte wählen Sie eine Ausgabe,de
+Position,Position,de
+Position / Salary,Position/Gehalt,de
+Presence,Anwesenheit,de
+Present,Gegenwart,de
+Previously hired,Zuvor eingestellt,de
+Print,Drucken,de
+Print contract,Vertrag drucken,de
+Print report and files,Bericht und Dateien drucken,de
+Printings,Drucksachen,de
+Probation period,Bewährungszeit,de
+Probation period duration,Dauer der Bewährungszeit,de
+Probation periods,Bewährungszeiten,de
+ProbationPeriod.maximumDuration,ProbationPeriod.maximumDuration,de
+ProbationPeriod.minimumDuration,ProbationPeriod.minimumDuration,de
+Product Activities,Produkt-Aktivitäten,de
+Product Activity,Produkt Aktivität,de
+Product dates,Produktdaten,de
+Product expense filters,Produktkostenfilter,de
+Product sheet,Produktblatt,de
+Product specific attributes,Produktspezifische Attribute,de
+Product typology,Produkttypologie,de
+Products.items,Products.items,de
+Profit-sharing beneficiary,Begünstigter mit Gewinnbeteiligung,de
+Project,Projekt,de
+Project Dashboard,Projekt-Dashboard,de
+Project Plannings,Projektplanungen,de
+Project and project task must be chosen together.,Projekt und Projektaufgabe müssen gemeinsam ausgewählt werden.,de
+Project config.,Projektkonfiguration.,de
+Project configurations,Projektkonfigurationen,de
+Project planning time,Projektplanungszeit,de
+Project planning time lines,Zeitpläne für die Projektplanung,de
+Project planning time on the duration,Projektplanungszeit über die Dauer,de
+"Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?","Die Projektplanungszeit für die alten Sprinttermine ist vorhanden, möchten Sie diese in den neuen Zeitraum verschieben?",de
+"Project planning time on the sprint dates are existing, do you want to update these with the new budgeted time?",Die Projektplanungszeit für die Sprinttermine ist bereits vorhanden. Möchten Sie diese mit der neuen budgetierten Zeit aktualisieren?,de
+Project planning time unit not matching with time units in base configuration.,Die Zeiteinheit der Projektplanung stimmt nicht mit den Zeiteinheiten der Basiskonfiguration überein.,de
+Project task,Projektaufgabe,de
+ProjectPlanningTime.Activity,ProjectPlanningTime.Activity,de
+Proof file digitally signed,Digital signierte Proof-Datei,de
+Prorate with employee hire date,Prorata mit Einstellungsdatum des Mitarbeiters,de
+Public Holiday Planning,Feiertagsplanung,de
+Public holidays,Feiertage,de
+Public holidays planning,Planung der Feiertage,de
+Qty must be lower than %d.,Die Menge muss kleiner als %d sein.,de
+Qualification,Qualifizierung,de
+Qualification Level,Qualifikationsniveau,de
+Qualification levels,Qualifikationsniveaus,de
+QualificationLevel.code,QualificationLevel.code,de
+QualificationLevel.name,QualificationLevel.name,de
+Qualifications,Qualifikationen,de
+Quantities,Mengen,de
+Quantity,Menge,de
+Quantity to stock,Menge auf Lager,de
+Rate,Bewerten Sie,de
+Realize,Realisieren Sie,de
+Realized,Realisiert,de
+Reason,Grund,de
+Recovery leave reason,Grund für Erholungsurlaub,de
+Recruitment,Rekrutierung,de
+Ref.,Ref.,de
+Referential date for seniority,Stichtag für das Dienstalter,de
+Refresh,Auffrischen,de
+Refusal Date,Datum der Ablehnung,de
+Refuse,Abfälle,de
+Refused,Verweigert,de
+Refused By,Abgelehnt von,de
+Refused Expense Template,Verweigerte Ausgabe Vorlage,de
+Refused Extra Hours Template,Vorlage für abgelehnte Überstunden,de
+Refused Leave Request Template,Abgelehnter Urlaubsantrag Vorlage,de
+Refused Timesheet Template,Abgelehntes zeiterfassungsformular Vorlage,de
+Register payment,Zahlung registrieren,de
+Registration certificate,Zulassungsbescheinigung,de
+Registration code,Registrierungscode,de
+Reimbursed,Rückerstattet,de
+RejectionReason.name,RejectionReason.name,de
+Relationship,Beziehung,de
+Remaining,Verbleibende,de
+Remaining amount,Verbleibender Betrag,de
+Reminder,Erinnerung,de
+Remove lines,Linien entfernen,de
+Reopen period,Zeitraum der Wiedereröffnung,de
+Report,Bericht,de
+Reportings,Berichte,de
+Reports,Berichte,de
+Request date,Datum der Anfrage,de
+Requested,Angefordert,de
+Requested amount,Angeforderter Betrag,de
+Requested lunch vouchers on the period,Angeforderte Essensgutscheine für den Zeitraum,de
+Restaurant,Restaurant,de
+Resume,Lebenslauf,de
+Return to draft status,Rückkehr zum Entwurfsstatus,de
+Round trip,Rundreise,de
+SILAE,SILAE,de
+SMIC value,SMIC-Wert,de
+Sage,Salbei,de
+Salary change,Änderung des Gehalts,de
+Sale,Verkauf,de
+Sales,Vertrieb,de
+Saturday,Samstag,de
+Schedules,Zeitpläne,de
+See timesheet lines,Siehe Stundenzettelzeilen,de
+Select Expense,Ausgaben auswählen,de
+Select Leave Request,Urlaubsantrag auswählen,de
+Select Timesheet,Stundenzettel auswählen,de
+Select employee,Mitarbeiter auswählen,de
+Select extra hours,Zusätzliche Stunden auswählen,de
+Select period,Zeitraum auswählen,de
+Select the expense you want to edit,"Wählen Sie die Ausgabe, die Sie bearbeiten möchten",de
+Select the extra hours you want to edit,"Wählen Sie die Zusatzstunden aus, die Sie bearbeiten möchten",de
+Select the leave request you want to edit,"Wählen Sie die Abwesenheitsmitteilung aus, die Sie bearbeiten möchten",de
+Select the timesheet you want to edit,"Wählen Sie den Stundenzettel, den Sie bearbeiten möchten",de
+Selection on display planned time,Auswahl auf dem Display geplante Zeit,de
+Send,Senden Sie,de
+Send Email,E-Mail senden,de
+Send Expenses,Ausgaben senden,de
+Send reminder,Erinnerung senden,de
+Seniority date,Datum des Dienstalters,de
+Seniority leave Management,Urlaub aus Altersgründen Management,de
+Seniority leave management batch,Batch für die Verwaltung von Urlaub aus Altersgründen,de
+Seniority leave management page,Seite zur Verwaltung von Dienstaltersurlaub,de
+Sent Date,Gesendet Datum,de
+Sent Expense Template,Gesendete Kostenvorlage,de
+Sent Leave Request Template,Gesendete Urlaubsantragsvorlage,de
+Sequence,Sequenz,de
+Set employees to be reminded,Erinnern von Mitarbeitern einstellen,de
+Settings,Einstellungen,de
+Sex,Sex,de
+Show editor,Editor anzeigen,de
+Show expenses annual report,Ausgaben anzeigen Jahresbericht,de
+Show expenses to be validated by my subordinates,"Ausgaben anzeigen, die von meinen Untergebenen bestätigt werden müssen",de
+Show extra hours to be validated by my subordinates,"Überstunden nachweisen, um von meinen Untergebenen bestätigt zu werden",de
+Show leaves to be validated by my subordinates,"Blätter zeigen, um von meinen Untergebenen validiert zu werden",de
+Show planning,Planung anzeigen,de
+Show timesheets to be validated by my subordinates,"Stundenzettel anzeigen, die von meinen Untergebenen zu validieren sind",de
+Signature date,Datum der Unterschrift,de
+Silae,Silae,de
+Single,Einzeln,de
+Site,Website,de
+SmicValue.menu,SmicValue.menu,de
+SmicValue.name,SmicValue.name,de
+Social Charges,Sozialabgaben,de
+Social security number,Sozialversicherungsnummer,de
+Some lines do not have a justification file. Do you want to proceed ?,Für einige Zeilen gibt es keine Rechtfertigungsdatei. Möchten Sie fortfahren?,de
+Spent time,Verwendete Zeit,de
+Sprints,Sprints,de
+Standard,Standard,de
+Standard export do not take into account the elements from employee bonus and others,Der Standardexport berücksichtigt nicht die Elemente der Mitarbeiterprämie und andere,de
+Start,Start,de
+Start Date,Datum des Beginns,de
+Start On,Start am,de
+Start Time,Startzeit,de
+Start date,Datum des Beginns,de
+Start date time,Startdatum Uhrzeit,de
+Start time,Startzeit,de
+Start&Stop,Start&Stopp,de
+Start&Stop Timer,Start&Stopp-Timer,de
+Starting city,Startstadt,de
+Status,Status,de
+Status Timer,Status Timer,de
+Step by step,Schritt für Schritt,de
+Stock quantity status,Status der Bestandsmenge,de
+Stop,Stopp,de
+Sunday,Sonntag,de
+TEL,TEL,de
+TEL 2,TEL 2,de
+TSTimer,TSTimer,de
+TSTimer.Pause,TSTimer.Pause,de
+TSTimer.Start,TSTimer.Start,de
+TSTimer.Stop,TSTimer.Stop,de
+Taken,Aufgenommen,de
+Task,Aufgabe,de
+Tasks,Aufgaben,de
+Tasks per sprint,Aufgaben pro Sprint,de
+TeamTask,TeamAufgabe,de
+Template,Vorlage,de
+The activity is not allowed in the current project.,Die Aktivität ist im aktuellen Projekt nicht erlaubt.,de
+"The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled",Der mit dieser Ausgabe verknüpfte Bankauftrag wurde bereits ausgeführt/abgelehnt und kann daher nicht mehr storniert werden.,de
+The date must be in the timesheet period.,Das Datum muss im Zeitraum der Zeiterfassung liegen.,de
+The date of timesheet line %d can't be empty,Das Datum der Stundenzettelzeile %d kann nicht leer sein,de
+The distance between %s and %s.,Der Abstand zwischen %s und %s.,de
+The employee %s has multiple %s leave lines,Der Mitarbeiter %s hat mehrere %s Urlaubszeilen,de
+The employee %s has no %s leave line,Der Mitarbeiter %s hat keine %s Urlaubslinie,de
+The employee %s has no birth date,Der Mitarbeiter %s hat kein Geburtsdatum,de
+The employee %s has no seniority date,Der Mitarbeiter %s hat kein Senioritätsdatum,de
+The expense limit has been exceeded for the period %s to %s,Die Ausgabengrenze wurde für den Zeitraum %s bis %s überschritten,de
+The expense line amount exceeds the authorized limit of ${expenseProduct?.amountLimit}. Please correct the amount or request the intervention of an HR manager.,Der Betrag der Spesenzeile überschreitet das genehmigte Limit von ${expenseProduct?.amountLimit}. Bitte korrigieren Sie den Betrag oder wenden Sie sich an einen Personalverantwortlichen.,de
+The expense line amount exceeds the authorized limit of %s. Please correct the amount or request the intervention of an HR manager.,Der Betrag der Spesenzeile überschreitet den zulässigen Höchstbetrag von %s. Bitte korrigieren Sie den Betrag oder wenden Sie sich an einen Personalleiter.,de
+"The field Activity is filled automatically from the field ""Default Activity Product"" from the employee form, on the timesheets panel. You can still modify for each task though","Das Feld Tätigkeit wird automatisch aus dem Feld ""Standardtätigkeitsprodukt"" des Mitarbeiterformulars auf dem Arbeitszeitblatt ausgefüllt. Sie können es jedoch für jede Aufgabe ändern",de
+The file is not a PDF nor an image. Please keep the original document.,Bei der Datei handelt es sich weder um ein PDF noch um ein Bild. Bitte behalten Sie das Originaldokument.,de
+"The given product is not an activity, please choose a correct activity.","Das angegebene Produkt ist keine Aktivität, bitte wählen Sie eine richtige Aktivität aus.",de
+The hire date of the employee will be taken into account when computing days to add,Das Einstellungsdatum des Arbeitnehmers wird bei der Berechnung der hinzuzurechnenden Tage berücksichtigt,de
+The kilometric allowance rate corresponding to the kilometric allow param %s and the company %s is missing,"Der Kilometergeldsatz, der dem Kilometergeld-Parameter %s und dem Unternehmen %s entspricht, fehlt",de
+The new expense is not in draft.,Die neue Ausgabe ist nicht im Entwurf.,de
+The start date cannot be more recent than the end date.,Das Anfangsdatum darf nicht jünger sein als das Enddatum.,de
+The total tax has been set to zero since the expense type blocks taxes.,"Die Gesamtsteuer wurde auf Null gesetzt, da die Kostenart Steuern sperrt.",de
+"There is already a payroll preparation for the employee %s, the company %s and the period %s","Es gibt bereits eine Abrechnungsvorbereitung für den Mitarbeiter %s, die Firma %s und die Periode %s",de
+There is already a project planning time in these dates.,In diesen Terminen ist bereits eine Projektierungszeit enthalten.,de
+There is an error in a formula,Es gibt einen Fehler in einer Formel,de
+There is no civil year for society %s which includes date %s,Es gibt kein ziviles Jahr für die Gesellschaft %s mit dem Datum %s,de
+There is no fiscal year for society %s which includes date %s,Es gibt kein Geschäftsjahr für die Gesellschaft %s mit dem Datum %s,de
+There is no leave line for the employee %s and the reason %s.,Es gibt keine Urlaubszeile für den Mitarbeiter %s und den Grund %s.,de
+There is no matching condition for the allowance %s,Es gibt keine passende Bedingung für die Zulage %s,de
+There is no payroll for society %s which includes date %s,"Es gibt keine Abrechnung für die Gesellschaft %s, die das Datum %s enthält",de
+There is no year for society %s which includes date %s,"Es gibt kein Jahr für die Gesellschaft %s, die das Datum %s enthält",de
+There is no year selected for the allowance.,Es ist kein Jahr für die Zulage ausgewählt.,de
+This configuration allows to fill expense line before creating any expense. This process is similar to the mobile application one.,Diese Konfiguration ermöglicht das Ausfüllen der Ausgabenzeile vor der Erstellung einer Ausgabe. Dieser Prozess ist ähnlich wie bei der mobilen Anwendung.,de
+This contact is referenced from employee %s - %s,Dieser Kontakt wird von Mitarbeiter %s - %s referenziert,de
+This date is invalid. It must be included in the timesheet's period.,Dieses Datum ist ungültig. Es muss in der Periode des Stundenzettels enthalten sein.,de
+This expense cannot be created because no project has been filled in and it has been noted as to be billed.,"Diese Ausgabe kann nicht erstellt werden, da kein Projekt ausgefüllt und als zu fakturieren vermerkt wurde.",de
+This expense line is related to an expense which is not in draft.,"Diese Ausgabenlinie bezieht sich auf eine Ausgabe, die nicht im Entwurf ist.",de
+This is a kilometric expense line. Distance must be greater than 0.,Dies ist eine kilometergenaue Kostenlinie. Die Entfernung muss größer als 0 sein.,de
+This planned time value already exists.,Dieser Sollzeitwert ist bereits vorhanden.,de
+This will attach an event to a project planning time,Damit wird ein Ereignis an eine Projektplanungszeit angehängt,de
+This will customize the event subject.,Dadurch wird der Betreff der Veranstaltung angepasst.,de
+Thursday,Donnerstag,de
+Time %,Zeit %,de
+Time Sheet,Stundenzettel,de
+Time follow up,Zeitliche Folgemaßnahmen,de
+Time limit for a day in a timesheet,Zeitlimit für einen Tag in einem Stundenzettel,de
+Time logging preference,Präferenz für die Zeiterfassung,de
+Time of hire,Zeitpunkt der Einstellung,de
+Time unit,Zeiteinheit,de
+Time%,Zeit%,de
+Timer,Zeitschaltuhr,de
+"Timer is already ongoing, stop it before starting a new one.","Der Timer läuft bereits, stoppen Sie ihn, bevor Sie einen neuen starten.",de
+Timer start date time,Timer-Startdatum Uhrzeit,de
+Timer successfully updated.,Timer erfolgreich aktualisiert.,de
+Timesheet,Stundenzettel,de
+Timesheet Line,Arbeitszeitblatt Zeile,de
+Timesheet Line Form,Stundenzettel-Zeilenformular,de
+Timesheet Lines,Stundenzettel-Zeilen,de
+Timesheet Notification Mail,Stundenzettel-Benachrichtigungsmail,de
+Timesheet Templates,Stundenzettel-Vorlagen,de
+Timesheet converted period total.,Arbeitszeitblatt umgewandelte Periode insgesamt.,de
+Timesheet default end date format,Standardformat für das Enddatum des Stundenzettels,de
+Timesheet editor,Stundenzettel-Editor,de
+Timesheet filters,Stundenzettel-Filter,de
+"Timesheet line list is empty, please add a timesheet line list","Die Liste der Stundenzettelzeilen ist leer, bitte fügen Sie eine Liste der Stundenzettelzeilen hinzu",de
+Timesheet line successfully updated.,Stundenzettelzeile erfolgreich aktualisiert.,de
+Timesheet lines,Stundenzettel-Zeilen,de
+Timesheet reminder,Stundenzettel-Erinnerung,de
+Timesheet reminder line,Erinnerungszeile für Stundenzettel,de
+Timesheet reminder lines,Erinnerungszeilen für Stundenzettel,de
+Timesheet reminder template,Stundenzettel-Erinnerungsvorlage,de
+Timesheet reminders,Stundenzettel-Erinnerungen,de
+Timesheet report,Stundenzettel-Bericht,de
+Timesheet successfully updated.,Stundenzettel erfolgreich aktualisiert.,de
+Timesheet.fromDate,Timesheet.fromDate,de
+Timesheet.task,Timesheet.task,de
+Timesheet.timesheetOf,Timesheet.timesheetOf,de
+Timesheet.toDate,Timesheet.toDate,de
+Timesheet.totalDuration,Timesheet.totalDuration,de
+TimesheetLine.duration,TimesheetLine.duration,de
+TimesheetLine.product,TimesheetLine.product,de
+TimesheetLine.project,TimesheetLine.project,de
+TimesheetLine.timeSpent,TimesheetLine.timeSpent,de
+TimesheetReport,TimesheetReport,de
+Timesheets,Zeiterfassungsbögen,de
+Timesheets to Validate,Zu prüfende Stundenzettel,de
+Timesheets to be Validated by your subordinates,"Zeiterfassungsbögen, die von Ihren Untergebenen validiert werden müssen",de
+To,An,de
+To (included),Bis (inklusive),de
+To Date,Bis heute,de
+To be reset yearly,Jährlich neu zu setzen,de
+To calculate,Zur Berechnung,de
+To date,Bis heute,de
+To date can't be empty,Bis heute kann nicht leer sein,de
+To generation date,Bis zum Generierungsdatum,de
+To invoice,Zur Rechnung,de
+Too many requests,Zu viele Anfragen,de
+Tools,Werkzeuge,de
+Total,Insgesamt,de
+Total (h),Gesamt (h),de
+Total A.T.I,Total A.T.I,de
+Total A.T.I.,Total A.T.I.,de
+Total Days in the period,Gesamtzahl der Tage im Berichtszeitraum,de
+Total Hours per Day,Gesamtstunden pro Tag,de
+Total Minutes per Day,Gesamtminuten pro Tag,de
+Total W.T.,Total W.T.,de
+Total allocated time,Zugewiesene Zeit insgesamt,de
+Total amount,Gesamtbetrag,de
+Total amount with tax,Gesamtbetrag mit Steuer,de
+Total available days,Verfügbare Tage insgesamt,de
+Total duration,Gesamtdauer,de
+Total estimated time,Geschätzte Gesamtzeit,de
+Total leave days,Urlaubstage insgesamt,de
+Total lunch vouchers,Total Essensgutscheine,de
+Total on period (hours),Gesamte Einschaltdauer (Stunden),de
+Total planned hours,Geplante Stunden insgesamt,de
+Total planned time,Geplante Gesamtzeit,de
+Total real hours,Reale Stunden insgesamt,de
+Total required hours,Erforderliche Stunden insgesamt,de
+Total spent time,Insgesamt verbrachte Zeit,de
+Total tax,Steuer insgesamt,de
+Total to pay,Zu zahlender Gesamtbetrag,de
+Total to refund,Zu erstattender Gesamtbetrag,de
+TotalToRefund,TotalToRefund,de
+Totals on period,Gesamtsummen im Zeitraum,de
+Tracking number,Verfolgungsnummer,de
+Training,Ausbildung,de
+Trial period duration,Dauer der Probezeit,de
+Tuesday,Dienstag,de
+Type,Typ,de
+Unavailable to users,Nicht verfügbar für Benutzer,de
+Unique product for timesheet,Einzigartiges Produkt für Zeiterfassung,de
+Unit,Einheit,de
+Untaxed amount,Unversteuerter Betrag,de
+Update date,Datum der Aktualisierung,de
+Update scheduler,Zeitplaner aktualisieren,de
+Update to invoice,Aktualisierung der Rechnung,de
+Updated currency and current parent currency are incompatible.,Die aktualisierte Währung und die aktuelle übergeordnete Währung sind nicht kompatibel.,de
+Updated currency and new parent currency are incompatible.,Die aktualisierte Währung und die neue übergeordnete Währung sind nicht kompatibel.,de
+Updated duration,Aktualisierte Dauer,de
+Usable on expense,Verwendbar nach Aufwand,de
+Usable on timesheet,Verwendbar auf dem Stundenzettel,de
+Use employee's Activity,Aktivität des Mitarbeiters verwenden,de
+Use line's Activity,Aktivität der Linie verwenden,de
+Use unique product for timesheet,Einzigartiges Produkt für Stundenzettel verwenden,de
+Use weekly planning coefficient,Wochenplanungskoeffizient verwenden,de
+Use weekly plannning coef.,Verwenden Sie den Wochenplanungskoeffizienten.,de
+Used amount,Verwendete Menge,de
+User,Benutzer,de
+User creation,Erstellung von Benutzern,de
+VILLE,VILLE,de
+VOIE,VOIE,de
+Vacation pay,Urlaubsgeld,de
+Valid,Gültig,de
+Validate,Validieren Sie,de
+Validate the advance,Bestätigen Sie den Vorschuss,de
+Validated,Validiert,de
+Validated Expense Template,Validierte Kostenvorlage,de
+Validated Extra Hours Template,Validierte Extra-Stunden-Vorlage,de
+Validated Leave Request Template,Vorlage für einen validierten Abwesenheitsantrag,de
+Validated Timesheet Template,Validierte Stundenzettel-Vorlage,de
+Validated Timesheet lines,Validierte Stundenzettelzeilen,de
+Validated by,Bestätigt durch,de
+Validation Date,Datum der Validierung,de
+Validation needed configuration is not enabled.,Die für die Validierung erforderliche Konfiguration ist nicht aktiviert.,de
+Value,Wert,de
+Value by default on display planned time,Standardwert für die Anzeige der geplanten Zeit,de
+Vehicle,Fahrzeug,de
+Vehicle Make,Fahrzeugmarke,de
+Vehicle Model,Fahrzeugmodell,de
+Vehicles,Fahrzeuge,de
+Ventilate,Belüften Sie,de
+Ventilated,Belüftet,de
+Ventilated expense can not be deleted. %s can not be deleted.,Belüftete Ausgaben können nicht gelöscht werden. %s kann nicht gelöscht werden.,de
+Waiting,Warten,de
+Waiting Timesheet lines,Wartende Timesheet-Zeilen,de
+Waiting for validation,Warten auf die Validierung,de
+Waiting validation,Wartende Validierung,de
+Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create new project planning lines?,"Warnung: Für diese Aufgabe existiert bereits eine Projektplanungszeit, die nicht automatisch geändert werden kann. Möchten Sie neue Projektplanungszeilen erstellen?",de
+Wednesday,Mittwoch,de
+Weekly Planning,Wöchentliche Planung,de
+Weekly duration,Wöchentliche Dauer,de
+Weekly planning,Wöchentliche Planung,de
+Weekly work duration,Wöchentliche Arbeitsdauer,de
+Weekly work hours,Wöchentliche Arbeitsstunden,de
+"When the checkbox is true, it enables to choose the project when filling timesheet lines VIA THE DYNAMIC EDITOR of the HR timesheet app.","Wenn das Kontrollkästchen aktiviert ist, kann das Projekt beim Ausfüllen der Stundenzettelzeilen VIA THE DYNAMIC EDITOR der HR-Stundenzettel-App ausgewählt werden.",de
+Withdrawn cash,Abgehobenes Bargeld,de
+Work fixed phone,Festnetztelefon Arbeit,de
+Work hours,Arbeitszeiten,de
+Work mobile phone,Arbeitshandy,de
+Work phones,Arbeitstelefone,de
+Working days' number,Anzahl der Arbeitstage,de
+Working time modification,Änderung der Arbeitszeiten,de
+Would you like to create a new planning time?,Möchten Sie eine neue Planungszeit einrichten?,de
+Year,Jahr,de
+You are not able to take leave in advance for the reason '%s'.,"Sie können aus dem Grund ""%s"" keinen Urlaub im Voraus nehmen.",de
+You can not cancel an already cancelled timesheet.,Sie können einen bereits stornierten Stundenzettel nicht stornieren.,de
+You can not update a line from an expense which is not in draft.,"Sie können eine Zeile einer Ausgabe, die sich nicht im Entwurf befindet, nicht aktualisieren.",de
+You can only add a timer to a drafted or a waiting for validation timesheet.,Sie können einen Timer nur zu einem entworfenen oder einem auf die Validierung wartenden Stundenzettel hinzufügen.,de
+You can't exceed the daily limit of %s hours on the %s.,Sie können das tägliche Limit von %s Stunden auf dem %s nicht überschreiten.,de
+You exceeded the available/asked duration. Do you wish to proceed ?,Sie haben die verfügbare/gefragte Dauer überschritten. Möchten Sie fortfahren?,de
+You have already been invited to the restaurant for the following dates:,Für die folgenden Termine sind Sie bereits ins Restaurant eingeladen worden:,de
+You have to choose at least one timesheet,Sie müssen mindestens einen Stundenzettel auswählen,de
+You must be a HR manager to have the permission to do this.,"Sie müssen Personalleiter sein, um die Erlaubnis dazu zu erhalten.",de
+You must choose a template.,Sie müssen eine Vorlage auswählen.,de
+You must configure an account for expenses taxes (company : %s),Sie müssen ein Konto für Aufwandsteuern einrichten (Firma : %s),de
+You must configure an expenses account (company : %s),Sie müssen ein Spesenkonto einrichten (Firma : %s),de
+You must configure an expenses journal(company : %s),Sie müssen ein Spesenjournal einrichten (Firma : %s),de
+You need lines to fill your export.,"Sie brauchen Zeilen, um Ihren Export zu füllen.",de
+You now have a negative number of leaves available for the reason %s,Sie haben jetzt eine negative Anzahl von Blättern zur Verfügung aus dem Grund %s,de
+You will have a negative number of leaves available.,Sie haben dann eine negative Anzahl von Blättern zur Verfügung.,de
+You will not have enough leaves available for this request.,Sie werden nicht genügend Blätter für diese Anfrage zur Verfügung haben.,de
+amount,Betrag,de
+com.axelor.apps.hr.service.batch.HrBatchService,com.axelor.apps.hr.service.batch.HrBatchService,de
+hr.department,hr.department,de
+http://www.url.com,http://www.url.com,de
+login name,Anmeldename,de
+startOnSelect should be 1 for morning or 2 for afternoon.,startOnSelect sollte 1 für morgens oder 2 für nachmittags sein.,de
+user group,Benutzergruppe,de
+value:Employees Management,value:Employees Management,de
+value:Expense Management,value:Expense Management,de
+value:Extra hours,value:Extra hours,de
+value:Leave Management,value:Leave Management,de
+value:Timesheet Management,value:Timesheet Management,de

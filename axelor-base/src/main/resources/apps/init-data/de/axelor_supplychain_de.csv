@@ -1,0 +1,768 @@
+key,message,language
+${fullName} plan. st. move,${fullName} plan. st. move,de
+${product.fullName} plan. st. move,${product.fullName} plan. st. move,de
+${product.fullName} real st. move,${product.fullName} real st. move,de
+${product.fullName} reserved,${product.fullName} reserved,de
+"%d order invoiced successfully,","%d Bestellung erfolgreich fakturiert,",de
+"%d orders invoiced successfully,","%d Aufträge erfolgreich fakturiert,",de
+"%d outgoing stock move processed successfully,","%d ausgehende Lagerbewegung erfolgreich verarbeitet,",de
+"%d outgoing stock moves processed successfully,","%d ausgehende Lagerbewegungen erfolgreich verarbeitet,",de
+%s : The advance payment generation failed. Please configure the bank details for the company %s and the associated payment mode %s either on the payment mode side or this Sale order %s record (hidden field).,%s : Die Erstellung der Vorauszahlung ist fehlgeschlagen. Bitte konfigurieren Sie die Bankverbindung für die Firma %s und den zugehörigen Zahlungsmodus %s entweder auf der Seite des Zahlungsmodus oder in diesem Datensatz des Verkaufsauftrags %s (verborgenes Feld).,de
+%s blocked : maximal accepted credit exceeded for %s.,%s blockiert: maximal akzeptierter Kredit für %s überschritten.,de
+%s please configure a virtual supplier stock location for the company %s,%s bitte konfigurieren Sie einen virtuellen Lieferantenlagerort für die Firma %s,de
+%s purchase order,%s-Bestellung,de
+%s requested reserved,%s beantragt reserviert,de
+%s sale order,%s Verkaufsauftrag,de
+%s stock location,%s Lagerort,de
+A list of all product categories for which to run the batch (children categories are automatically included). All products will be processed if this list is left empty (note that the batch may take a long time to run if you have a lot of products).,"Eine Liste aller Produktkategorien, für die der Stapel ausgeführt werden soll (untergeordnete Kategorien werden automatisch einbezogen). Wird diese Liste leer gelassen, werden alle Produkte verarbeitet (beachten Sie, dass die Ausführung des Stapels bei einer großen Anzahl von Produkten lange dauern kann).",de
+"A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types","Eine Liste von Verkaufsauftragszeilen, die verarbeitet werden. Die Zeilen, die ausgewählt werden können, entsprechen den folgenden Bedingungen:\nProdukt ist lagerfähig\nProdukt wird auf Lager verwaltet\nProdukt ist nicht von mrp ausgeschlossen\nVerkaufsauftrag/Angebot hat die gleiche stockLocation oder eine subLocation\nWenn MPS, Produkt muss ein Fertigprodukt sein\nLiefermenge der Zeile muss niedriger als die Gesamtmenge sein\nDie Zeile muss einer oder mehreren der mrp-Bewegungsarten entsprechen",de
+A supplier partner must be selected,Ein Lieferpartner muss ausgewählt werden,de
+Accepted Credit,Akzeptierter Kredit,de
+Account configuration,Konto-Konfiguration,de
+Accounting Batch,Buchhaltung Batch,de
+Accounting Family Dashboard,Dashboard der Buchhaltungsfamilie,de
+Accounting Family sale turnover (Excl. Tax) per month,Buchhaltung Familienverkaufsumsatz (ohne Steuern) pro Monat,de
+Accounting cut off generation report :,Bericht über die Generierung von Rechnungsabgrenzungsposten :,de
+Action,Aktion,de
+Actions,Aktionen,de
+Activate partial invoicing for incoming moves,Aktivieren Sie die Teilfakturierung für eingehende Umzüge,de
+Activate partial invoicing for outgoing moves,Aktivieren Sie die Teilfakturierung für ausgehende Umzüge,de
+Add to cart,In den Warenkorb legen,de
+All invoices have been generated for this sale order.,Alle Rechnungen sind für diesen Auftrag erstellt worden.,de
+Allocated Qty,Zugewiesene Menge,de
+Allocated qty,Zugewiesene Menge,de
+Allow Subscriptions for Sale orders,Abonnements für Verkaufsaufträge zulassen,de
+Allow complete manually sale order,Manuelles Ausfüllen von Verkaufsaufträgen ermöglichen,de
+Allow finish manually purchase order,Manuelles Beenden der Bestellung erlauben,de
+Allow timetable invoicing,Fahrplanmäßige Rechnungsstellung zulassen,de
+Amount,Betrag,de
+Amount cannot be superior to the order's total excluding taxes,Der Betrag kann nicht höher sein als der Gesamtbetrag der Bestellung ohne Steuern,de
+Amount invoiced W.T.,Amount invoiced W.T.,de
+Amount not invoiced,Nicht in Rechnung gestellter Betrag,de
+Amount remaining to use,Zu verwendende Restmenge,de
+Amount to invoice,In Rechnung zu stellender Betrag,de
+An active stock move (%s) already exists for the sale order %s.,Für den Verkaufsauftrag %s existiert bereits eine aktive Lagerbewegung (%s).,de
+An error have been detected on following pricings : %s.,Es wurde ein Fehler bei folgenden Preisen festgestellt: %s.,de
+An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes.,"Eine Rechnung im Status ""Entwurf"" oder ""bestätigt"" ist mit der Lagerbewegung %s verknüpft. Bitte setzen Sie sich vor Änderungen mit der Abteilung Rechnungsstellung/Buchhaltung in Verbindung.",de
+An invoice not canceled already exists for the incoming stock move %s,Für die eingehende Lagerbewegung %s existiert bereits eine nicht stornierte Rechnung,de
+An invoice not canceled already exists for the outgoing stock move %s,Für die Ausgangsbewegung %s existiert bereits eine nicht stornierte Rechnung,de
+Analytic Move Line,Analytic Move Line,de
+Analytic distribution lines,Analytische Verteilungslinien,de
+Analytic distribution template,Vorlage für die analytische Verteilung,de
+Analytic move line,Analytische Bewegungslinie,de
+Analytic move lines,Analytische Bewegungslinien,de
+Analytics,Analytik,de
+App,App,de
+App Supplychain,App Supplychain,de
+App supplychain,App Lieferkette,de
+Archived,Archiviert,de
+Are you sure you want to run the calculation ? Calculation can take a long time.,"Sind Sie sicher, dass Sie die Berechnung durchführen wollen? Die Berechnung kann sehr lange dauern.",de
+Associated estimated delivery mrp line,Assoziierte voraussichtliche Lieferung mrp line,de
+At least one sale order line must be selected,Es muss mindestens eine Verkaufsauftragszeile ausgewählt werden,de
+"At least one stock move is in litigation, do you really want to validate passed for payment ?","Mindestens eine Aktienbewegung ist in einem Rechtsstreit, wollen Sie wirklich die Zahlung für gültig erklären?",de
+Auto allocate during an availability request,Automatische Zuweisung bei einer Verfügbarkeitsanfrage,de
+Auto allocate stock on other stock moves,Automatische Zuweisung von Aktien bei anderen Aktienbewegungen,de
+Auto allocate stock on receipt,Automatische Zuteilung von Beständen bei Eingang,de
+Auto fill delivery real quantity,Automatische Befüllung der Lieferung mit echter Menge,de
+Auto fill receipt real quantity,Automatisches Befüllen der Quittung mit der tatsächlichen Menge,de
+Auto request reserved qty,Automatische Anfrage reservierte Menge,de
+Availability,Verfügbarkeit,de
+Availability requests,Anfragen zur Verfügbarkeit,de
+Available,Verfügbar,de
+Available status,Verfügbarer Status,de
+Available stock,Verfügbarer Bestand,de
+Batch update stock history :,Stapelaktualisierung des Bestandsverlaufs :,de
+Batches,Lose,de
+Batchs,Chargen,de
+Block deallocation on availability request,Blockfreigabe bei Verfügbarkeitsanfrage,de
+Block delivery,Blockzustellung,de
+Blocked by,Blockiert durch,de
+Blocked until,Gesperrt bis,de
+Blocking comment for delivery,Sperrvermerk für die Zustellung,de
+Blocking delivery reason,Grund für die Liefersperre,de
+Blocking delivery until,Sperrung der Lieferung bis,de
+Blocking reason,Grund der Sperrung,de
+Blockings,Sperrungen,de
+Building quantity,Anzahl der Gebäude,de
+Buyers,Einkäufer,de
+Calculation End Date,Enddatum der Berechnung,de
+Calculation Start Date,Startdatum der Berechnung,de
+Calculation ended,Berechnung beendet,de
+Calculation in progress,Berechnung in Arbeit,de
+Calculation started,Berechnung gestartet,de
+Can only be cancelled from drafted or confirmed forecast.,Kann nur aus der gezeichneten oder bestätigten Vorhersage storniert werden.,de
+Can only be confirmed from drafted forecast.,Kann nur anhand der gezeichneten Vorhersage bestätigt werden.,de
+Can only go back to confirmed if completed.,"Kann nur bestätigt werden, wenn er abgeschlossen ist.",de
+Can only return to validated from finished purchase order.,Sie können nur von einer abgeschlossenen Bestellung zu einer validierten Bestellung zurückkehren.,de
+Can't cancel a stock move that is partially or totally invoiced.,Eine teilweise oder vollständig in Rechnung gestellte Lagerbewegung kann nicht storniert werden.,de
+Can't remove delivered detail line %s.,Die gelieferte Detailzeile %s kann nicht entfernt werden.,de
+Cancel,Abbrechen,de
+Cancel reason on changing sale order,Stornogrund bei Änderung des Verkaufsauftrags,de
+Cancel stock allocation ?,Aktienzuteilung aufheben ?,de
+Cancelled,Abgebrochen,de
+Carriage paid threshold,Freibetragsschwelle,de
+"Carriage paid threshold is exceeded, all shipment cost lines are removed",Bei Überschreiten des Schwellenwerts für die Frachtkosten werden alle Frachtkostenzeilen entfernt.,de
+Carrier,Träger,de
+Cart,Wagen,de
+Cart lines,Wagenlinien,de
+Carts,Karren,de
+Change allocated qty,Zugewiesene Menge ändern,de
+Change requested reserved qty,Änderung gewünscht reservierte Menge,de
+Change reserved qty,Reservierte Menge ändern,de
+Check stock compliance with stock rules,Überprüfung der Übereinstimmung der Bestände mit den Bestandsregeln,de
+Check stocks in a sale order,Bestände in einem Verkaufsauftrag prüfen,de
+Code,Code,de
+Comment,Kommentar,de
+Comments,Kommentare,de
+Company,Unternehmen,de
+Complete sale order when all has been invoiced,"Verkaufsauftrag abschließen, wenn alles in Rechnung gestellt wurde",de
+Compute sub stock locations,Berechnung der Unterlagerorte,de
+Configuration,Konfiguration,de
+Confirm,Bestätigen Sie,de
+Confirm Purchase order generation,Bestätigen Sie die Erstellung einer Bestellung,de
+Confirmation,Konfirmation,de
+Confirmation date,Datum der Bestätigung,de
+Confirmed,Bestätigt,de
+Consider only late sales,Nur späte Verkäufe berücksichtigen,de
+Consolidate the proposals per supplier,Konsolidieren Sie die Angebote pro Lieferant,de
+Consume manuf order quantity,Auftragsmenge des Herstellers verbrauchen,de
+Contact,Kontakt,de
+Contact partner,Kontaktperson,de
+Contract/Subscription,Vertrag/Abonnement,de
+Could not find MRP with sequence %s.,MRP mit Sequenz %s konnte nicht gefunden werden.,de
+Could not find eligible email template for stock rules: %s,Es konnte keine geeignete E-Mail-Vorlage für Bestandsregeln gefunden werden: %s,de
+Could not find recipients for message generated from stock rules: %s,"Es konnten keine Empfänger für eine Nachricht gefunden werden, die aus Bestandsregeln generiert wurde: %s",de
+Could not process MRP %s since its computation is already ongoing.,"MRP %s konnte nicht verarbeitet werden, da die Berechnung bereits im Gange ist.",de
+Country,Land,de
+Cpte Ana. AXIS1,Cpte Ana. AXIS1,de
+Cpte Ana. AXIS2,Cpte Ana. AXIS2,de
+Cpte Ana. AXIS3,Cpte Ana. AXIS3,de
+Cpte Ana. AXIS4,Cpte Ana. AXIS4,de
+Cpte Ana. AXIS5,Cpte Ana. AXIS5,de
+Create interco invoice as validated,Interco-Rechnung als validiert erstellen,de
+Create interco purchase quotation as requested,Interco-Kaufangebote nach Bedarf erstellen,de
+Create interco sale quotation as finalized,"Interco-Verkaufsangebot erstellen, wenn es abgeschlossen ist",de
+Create purchase counterpart on this status,Kaufgegenstück zu diesem Status anlegen,de
+Create sale counterpart on this status,Verkaufsgegenstück zu diesem Status erstellen,de
+Created by,Erstellt von,de
+Created by interco,Erstellt von interco,de
+Created from SOP,Erstellt aus SOP,de
+Created manually,Manuell erstellt,de
+Created on,Erstellt am,de
+Cumulative qty,Kumulierte Menge,de
+Current date,Aktuelles Datum,de
+Current date + days,Aktuelles Datum + Tage,de
+Cust. Invoices,Cust. Rechnungen,de
+Customer,Kunde,de
+Customer Stock Move to invoice,Kundenbestand Bewegung zur Rechnung,de
+Customer deliveries filters,Filter für Kundenlieferungen,de
+Customer deliveries management,Verwaltung von Kundenlieferungen,de
+Customer delivery,Lieferung an den Kunden,de
+Customer shipping carriage paid configuration,Kundenversand frachtfrei Konfiguration,de
+Customs code nomenclature is missing on product %s.,Die Nomenklatur des Zollcodes fehlt für das Produkt %s.,de
+Cut off generation,Abgeschaltete Generation,de
+DECLARATION OF EXCHANGES OF GOODS BETWEEN MEMBER STATES OF THE EUROPEAN COMMUNITY,ERKLÄRUNG ZUM WARENVERKEHR ZWISCHEN DEN MITGLIEDSTAATEN DER EUROPÄISCHEN GEMEINSCHAFT,de
+Dashlet.Moves,Dashlet.Moves,de
+Date,Datum,de
+Date of shipment,Datum der Verschiffung,de
+Date to match delivery delay,Datum für die Übereinstimmung mit der Lieferfrist,de
+Date to respect delays,Datum für die Einhaltung von Verspätungen,de
+Day (end of month),Tag (Ende des Monats),de
+Declaration of exchange filters,Erklärung der Austauschfilter,de
+Declaration of exchanges,Erklärung zum Tausch,de
+Declaration of exchanges of goods,Anmeldung des Austauschs von Waren,de
+Declaration of exchanges of goods template,Erklärung über den Austausch von Waren Vorlage,de
+Declaration of exchanges of services template,Vorlage für die Erklärung zum Dienstleistungsverkehr,de
+Declarations of exchanges,Erklärungen über den Austausch,de
+Default estimated date in stock move from purchase order,Vorgeschätztes Datum der Lagerbewegung aus der Bestellung,de
+Default estimated date in stock move from sale order,Vorgeschätztes Datum der Lagerbewegung aus dem Verkaufsauftrag,de
+Default stock location,Standard-Lagerort,de
+Delay pricing,Preisverzögerung,de
+Delayed invoicing,Verspätete Rechnungsstellung,de
+Delivered,Geliefert,de
+Delivered to,Geliefert an,de
+Deliveries Cancelled,Stornierte Lieferungen,de
+Deliveries History,Lieferungen Historie,de
+Deliveries to prepare,Vorzubereitende Lieferungen,de
+Delivery State,Auslieferungszustand,de
+Delivery blocking,Sperrung der Lieferung,de
+Delivery blocking done by,Die Liefersperre erfolgt durch,de
+Delivery conditions,Lieferbedingungen,de
+Delivery or receipt state,Liefer- oder Empfangszustand,de
+Delivery partner,Lieferpartner,de
+Delivery state,Auslieferungszustand,de
+Description,Beschreibung,de
+Direct order,Direkte Bestellung,de
+Direct order default stock location,Direktbestellung Standardlagerort,de
+Direct order stock location,Direktbestellung Lagerort,de
+Display product without proposal,Produkt ohne Vorschlag anzeigen,de
+Don't take in consideration for the stock computation,Bei der Bestandsberechnung nicht berücksichtigen,de
+Don't take in consideration on MRP,Nicht auf MRP Rücksicht nehmen,de
+Draft,Entwurf,de
+Edited by user,Bearbeitet von Benutzer,de
+Element,Element,de
+End date,Datum des Endes,de
+Entry of stock,Erfassung der Bestände,de
+Error during the computation of MRP %s,Fehler bei der Berechnung von MRP %s,de
+Error generating subscription invoice(s): '%s',Fehler beim Erstellen der Abonnementrechnung(en): '%s'.,de
+Error that happened during the computation,"Fehler, der während der Berechnung aufgetreten ist",de
+Estimated delivery date,Geschätztes Lieferdatum,de
+Estimated shipping date,Geschätztes Versanddatum,de
+European declaration of services,Europäische Erklärung der Dienstleistungen,de
+Exclude from MRP,Von MRP ausschließen,de
+Exclude late sales,Späte Verkäufe ausschließen,de
+Expected realisation date,Voraussichtliches Realisierungsdatum,de
+Expected/Future Quantity,Erwartete/künftige Menge,de
+Expedition,Expedition,de
+Export directory is not configured.,Das Exportverzeichnis ist nicht konfiguriert.,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+Field fieldSelect is null for %s,Feld fieldSelect ist null für %s,de
+Field of application,Anwendungsbereich,de
+Field to select,Zu wählendes Feld,de
+Fill real quantities,Füllen Sie reale Mengen,de
+Filters,Filter,de
+Fiscal year,Steuerjahr,de
+FixedAsset.Location,FixedAsset.Location,de
+Forecast date,Voraussichtliches Datum,de
+Forecasted customer invoices,Prognostizierte Kundenrechnungen,de
+Forecasted invoice customer account,Prognostizierte Rechnung Kundenkonto,de
+Forecasted invoice supplier account,Prognostizierte Rechnung Lieferantenkonto,de
+Forecasted supplier invoices,Voraussichtliche Lieferantenrechnungen,de
+Forecasts,Vorhersagen,de
+Format,Format,de
+Forwarder,Forwarder,de
+Freight Carrier,Güterkraftverkehrsunternehmen,de
+Freight carrier delay,Verspätung des Frachtführers,de
+Freight carrier mode,Frachtführer-Modus,de
+Freight carrier pricing,Preise für Frachtunternehmen,de
+From Date,Von Datum,de
+From stock location,Ab Lagerort,de
+Full name,Vollständiger Name,de
+Future quantity,Künftige Menge,de
+Generate Invoice,Rechnung generieren,de
+Generate all possible proposals,Generieren Sie alle möglichen Vorschläge,de
+Generate customer deliveries automatically,Automatische Generierung von Kundenlieferungen,de
+Generate inc. moves for products,Generierung von Inc. Moves für Produkte,de
+Generate inc. moves for services,Generierung von Umzügen für Dienstleistungen,de
+Generate invoice from purchase order,Rechnung aus Bestellung generieren,de
+Generate invoice from sale order,Rechnung aus Verkaufsauftrag generieren,de
+Generate invoice from stock move,Rechnung aus Lagerbewegung generieren,de
+Generate invoices,Rechnungen generieren,de
+Generate one invoice per incoming stockMove,Erzeugen Sie eine Rechnung pro WareneingangBewegung,de
+Generate one invoice per outgoing stockMove,Erzeugen Sie eine Rechnung pro Lagerabgang,de
+Generate out. moves for products,Auszüge für Produkte generieren,de
+Generate out. moves for services,Auszüge für Dienstleistungen generieren,de
+Generate proposal,Vorschlag generieren,de
+Generate proposals,Vorschläge generieren,de
+Generate proposals for selected lines,Erstellung von Vorschlägen für ausgewählte Linien,de
+Generate purchase orders automatically,Bestellungen automatisch generieren,de
+Generate single invoice,Einzelrechnung generieren,de
+Generate supplier arrivals automatically,Automatische Generierung von Lieferanteneingängen,de
+Generate supply chain configurations,Generierung von Lieferkettenkonfigurationen,de
+Generate the invoice,Erzeugen Sie die Rechnung,de
+Generated sale order,Erstellter Verkaufsauftrag,de
+Growth coefficient,Wachstumskoeffizient,de
+Has carriage paid possibility,Hat frachtfreie Möglichkeit,de
+Hide Unit Amounts,Beträge pro Einheit ausblenden,de
+Ideal Qty,Ideale Menge,de
+"If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves.","Wenn ja, wird nach der Zuteilung der Menge für eine bestimmte Lagerbewegung die verbleibende Menge auf andere Lagerbewegungen aufgeteilt.",de
+"If true, the requested quantity for reservation will be equal to the quantity of the given sale order line.","Wenn ja, ist die angeforderte Menge für die Reservierung gleich der Menge der angegebenen Verkaufsauftragszeile.",de
+Ignore end date,Enddatum ignorieren,de
+Include element without date,Element ohne Datum einbeziehen,de
+Include elements with a date later than MRP end date.,Elemente mit einem Datum nach dem Enddatum der Disposition einbeziehen.,de
+Include in DEB,In DEB einbeziehen,de
+Include late sales,Späte Verkäufe einbeziehen,de
+Include sales with a planned delivery date in the past but which have not yet been delivered.,"Schließen Sie Verkäufe mit einem geplanten Lieferdatum in der Vergangenheit ein, die noch nicht geliefert wurden.",de
+Incorrect product in the stock move %s,Falsches Produkt in der Lagerbewegung %s,de
+Incoterm,Incoterm,de
+Incoterm must be filled,Incoterm muss ausgefüllt werden,de
+Indicators,Indikatoren,de
+Information,Informationen,de
+Insurance date credit,Gutschrift des Versicherungsdatums,de
+Interco,Interco,de
+Interco from invoice,Interco aus Rechnung,de
+Interco from purchase,Interco ab Kauf,de
+Interco from sale,Interco aus Verkauf,de
+Introduction,Einführung,de
+Invoice,Rechnung,de
+Invoice %s type is not filled.,Rechnungstyp %s ist nicht gefüllt.,de
+Invoice all,Alle in Rechnung stellen,de
+Invoice an advance payment,Eine Vorauszahlung in Rechnung stellen,de
+Invoice blocking,Sperrung von Rechnungen,de
+Invoice blocking reason,Grund der Rechnungssperre,de
+Invoice blocking reasons,Gründe für die Sperrung von Rechnungen,de
+Invoice controlled,Rechnung kontrolliert,de
+Invoice created,Rechnung erstellt,de
+Invoice generated,Rechnung erstellt,de
+Invoice on timetable,Rechnung nach Fahrplan,de
+Invoice orders,Aufträge in Rechnung stellen,de
+Invoice orders batch type,Chargenart Rechnungsaufträge,de
+Invoice orders configuration,Konfiguration von Rechnungsaufträgen,de
+Invoice outgoing stock moves,Ausgehende Lagerbewegungen fakturieren,de
+Invoice partially stock move,Rechnung Teilumzug,de
+Invoice selected lines,Ausgewählte Zeilen in Rechnung stellen,de
+Invoice timetable has been updated because a part of the order has already been invoiced. Amount to be spread over the timetable : %s,"Der Rechnungszeitplan wurde aktualisiert, da ein Teil der Bestellung bereits in Rechnung gestellt wurde. Auf den Zeitplan zu verteilender Betrag : %s",de
+Invoiced,In Rechnung gestellt,de
+Invoiced Qty,In Rechnung gestellte Menge,de
+Invoiced partner,In Rechnung gestellter Partner,de
+Invoiced periods,In Rechnung gestellte Zeiträume,de
+Invoiced to,In Rechnung gestellt an,de
+Invoices,Rechnungen,de
+Invoicing,Rechnungsstellung,de
+Invoicing Blocking,Sperrung der Rechnungsstellung,de
+Invoicing State,Status der Rechnungsstellung,de
+Invoicing batch,Fakturierungsstapel,de
+Invoicing blocked customer deliveries,Fakturierung blockierter Kundenlieferungen,de
+Invoicing of this stock move is blocked.,Die Rechnungsstellung für diese Lagerbewegung ist gesperrt.,de
+Invoicing status,Status der Rechnungsstellung,de
+Is ISPM 15 required,Ist ISPM 15 erforderlich?,de
+Is amount in %,Ist Betrag in %,de
+Is certificate of conformity required,Ist eine Konformitätsbescheinigung erforderlich?,de
+Is merged stock move line,Ist fusionierter Bestand Bewegungslinie,de
+It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Please check the invoice line with this product %s.,"Es ist nicht erlaubt, eine größere Menge %s als die gelieferte Menge %s zu berechnen. Bitte prüfen Sie die Rechnungszeile mit diesem Produkt %s.",de
+It is not possible to delete a stock move line with allocated or reserved quantity.,"Es ist nicht möglich, eine Lagerbewegungszeile mit zugeordneter oder reservierter Menge zu löschen.",de
+Label,Etikett,de
+Late Deliveries,Verspätete Lieferungen,de
+Late sales,Späte Verkäufe,de
+Left empty,Leer gelassen,de
+Limit of stock location line to add to the cart.,Begrenzung des Lagerbestands Linie in den Warenkorb legen.,de
+Line numberFiscal valueTaker,ZeilennummerSteuerlicher WertTaker,de
+Line numberNomenclatureSource or destination countryFiscal valueRegimeNet massSupplementary unitNature of transactionMode of transportDepartmentCountry of originAcquirerProduct codeProduct namePartnerInvoice,ZeilennummerNomenklaturHerkunfts- oder BestimmungslandSteuerwertRegelungNettomasseZusatzeinheitArt des VorgangsBeförderungsartAbteilungHerkunftslandErwerberProduktcodeProduktnamePartnerRechnung,de
+Lines to invoice,Zeilen der Rechnung,de
+LogisticalForm.customerCode,LogisticalForm.customerCode,de
+LogisticalForm.customerName,LogisticalForm.customerName,de
+LogisticalForm.date,LogisticalForm.date,de
+LogisticalForm.item,LogisticalForm.item,de
+LogisticalForm.itemDescription,LogisticalForm.itemDescription,de
+LogisticalForm.packagingNumber,LogisticalForm.packagingNumber,de
+LogisticalForm.packingList,LogisticalForm.packingList,de
+LogisticalForm.shippingComments,LogisticalForm.shippingComments,de
+LogisticalForm.totalNetMass,LogisticalForm.totalNetMass,de
+LogisticalFormLine.numberOfParcels/Pallets: {0} - LogisticalForm.totalGrossMass ({1}): {2},LogisticalFormLine.numberOfParcels/Pallets: {0} - LogisticalForm.totalGrossMass ({1}): {2},de
+LogisticalFormLine.palletNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>,LogisticalFormLine.palletNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>,de
+LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>,LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>,de
+LogisticalFormLine.qty,LogisticalFormLine.qty,de
+LogisticalFormLine.stockMoveNo {0} / LogisticalFormLine.refNo {1},LogisticalFormLine.stockMoveNo {0} / LogisticalFormLine.refNo {1},de
+MPS,MPS,de
+MRP,MRP,de
+MRP Type,MRP-Typ,de
+MRP Types,MRP-Typen,de
+MRP families,MRP-Familien,de
+MRP family,MRP-Familie,de
+MRP forecast,MRP-Prognose,de
+MRP forecasts,MRP-Prognosen,de
+MRP move types,MRP-Bewegungsarten,de
+MRP number,MRP-Nummer,de
+MRP n°%s is now finished,MRP n°%s ist jetzt beendet,de
+MRP sequence is missing.,MRP-Sequenz fehlt.,de
+MRP to compute,MRP zum Berechnen,de
+Manage advance payments from payment conditions,Verwaltung von Vorauszahlungen aus Zahlungsbedingungen,de
+Manage stock reservation,Lagerreservierung verwalten,de
+Mass Cust. Stock Move Invoicing,Mass Cust. Lagerbewegung Fakturierung,de
+Mass Suppl. Stock Move Invoicing,Massenzulieferung Lagerbewegung Fakturierung,de
+Mass sale order line invoicing,Fakturierung von Massenverkaufsaufträgen,de
+Maturity,Reifegrad,de
+Maximum level,Maximales Niveau,de
+Min qty,Mindestmenge,de
+Missing,Fehlt,de
+Missing manuf order quantity,Fehlende Bestellmenge beim Hersteller,de
+Month,Monat,de
+"More than one freight carrier pricing line selected, please select only one line.","Wenn Sie mehr als eine Preislinie für Frachtführer ausgewählt haben, wählen Sie bitte nur eine Linie aus.",de
+Move,Verschieben,de
+Mrp,Mrp,de
+Mrp calculation is already on going.,Die Berechnung von Mrp ist bereits im Gange.,de
+Mrp line,Mrp-Linie,de
+MrpList.code,MrpList.code,de
+MrpList.createdOn,MrpList.createdOn,de
+MrpList.cumulativeQty,MrpList.cumulativeQty,de
+MrpList.endDate,MrpList.endDate,de
+MrpList.forecastDate,MrpList.forecastDate,de
+MrpList.forecastsTitle,MrpList.forecastsTitle,de
+MrpList.maturityDate,MrpList.maturityDate,de
+MrpList.maxLevel,MrpList.maxLevel,de
+MrpList.minQty,MrpList.minQty,de
+MrpList.name,MrpList.name,de
+MrpList.parentProductCategory,MrpList.parentProductCategory,de
+MrpList.partner,MrpList.partner,de
+MrpList.price,MrpList.price,de
+MrpList.product,MrpList.product,de
+MrpList.productCategoriesTitle,MrpList.productCategoriesTitle,de
+MrpList.productCategory,MrpList.productCategory,de
+MrpList.productFamiliesTitle,MrpList.productFamiliesTitle,de
+MrpList.productFamily,MrpList.productFamily,de
+MrpList.productType,MrpList.productType,de
+MrpList.productsTitle,MrpList.productsTitle,de
+MrpList.qty,MrpList.qty,de
+MrpList.relatedTo,MrpList.relatedTo,de
+MrpList.saleOrdersTitle,MrpList.saleOrdersTitle,de
+MrpList.salePrice,MrpList.salePrice,de
+MrpList.stockLocation,MrpList.stockLocation,de
+MrpList.title,MrpList.title,de
+MrpList.totalATI,MrpList.totalATI,de
+MrpList.totalWT,MrpList.totalWT,de
+MrpList.type,MrpList.type,de
+MrpList.unit,MrpList.unit,de
+MrpWeeks.createdOn,MrpWeeks.createdOn,de
+MrpWeeks.endDate,MrpWeeks.endDate,de
+MrpWeeks.maxLevel,MrpWeeks.maxLevel,de
+MrpWeeks.product,MrpWeeks.product,de
+MrpWeeks.stockLocation,MrpWeeks.stockLocation,de
+MrpWeeks.title,MrpWeeks.title,de
+MrpWeeks.unit,MrpWeeks.unit,de
+MrpWeeks.week,MrpWeeks.week,de
+Name,Name,de
+No default supplier is defined for the product %s,Für das Produkt %s ist kein Standardlieferant definiert,de
+No delivery stock move to generate for this purchase order,Keine Lieferbestandsbewegung für diese Bestellung zu erzeugen,de
+No delivery stock move to generate for this sale order,Für diesen Verkaufsauftrag ist keine Lieferbestandsbewegung zu erzeugen.,de
+No invoice was generated,Es wurde keine Rechnung erstellt,de
+No items have been selected.,Es wurden keine Artikel ausgewählt.,de
+No proposal can be generated from these lines.,Aus diesen Zeilen kann kein Vorschlag generiert werden.,de
+No stock location valid. Please uncheck the chosen stock location 'is not in MRP'.,Kein Lagerort gültig. Bitte entfernen Sie das Häkchen bei dem gewählten Lagerort 'ist nicht in der Disposition'.,de
+Non-deductible tax not authorized for sale orders. Please remove the non-deductible tax on product.,Die nicht abzugsfähige Steuer ist bei Verkaufsbestellungen nicht zulässig. Bitte entfernen Sie die nicht abziehbare Steuer auf das Produkt.,de
+Not delivered,Nicht geliefert,de
+Not enough quantity are available for reservation for product %s (%s),Für das Produkt %s (%s) sind nicht genügend Mengen zur Reservierung verfügbar,de
+Not invoiced,Nicht in Rechnung gestellt,de
+Note,Hinweis,de
+Number of Product per Accounting Family,Anzahl der Produkte pro Buchhaltungsfamilie,de
+Number of Product per Category,Anzahl der Produkte pro Kategorie,de
+Number of days,Anzahl der Tage,de
+OK,OK,de
+Offset in months,Verrechnung in Monaten,de
+One of the timetables has a percentage exceeding 100%.,Einer der Fahrpläne weist einen Prozentsatz von über 100 % auf.,de
+One-off sale outgoing quantity,Einmaliger Verkauf abgehende Menge,de
+One-off sales,Einmalige Verkäufe,de
+One-off sales excluded,Einmalige Verkäufe ausgeschlossen,de
+One-off sales included,Zu den einmaligen Verkäufen gehören,de
+One-off sales only,Nur einmalige Verkäufe,de
+Open sale order,Auftrag zur Eröffnung des Verkaufs,de
+Operation choice,Wahl der Operation,de
+Order %s,Bestellung %s,de
+Order invoicing report:,Bericht zur Rechnungsstellung bestellen:,de
+Order up to date,Bestellung auf dem neuesten Stand,de
+Order(s) processed,Bearbeitete(r) Auftrag(e),de
+Ordered by,Bestellt von,de
+Orders,Bestellungen,de
+Origin,Herkunft,de
+Origin purchase order line,Ursprungs-Bestellzeile,de
+Origin sale order line,Ursprünglicher Verkauf Auftragslinie,de
+Origins,Ursprünge,de
+Out of stock,Nicht mehr lieferbar,de
+Outgoing quantity (One-off sale excluded),Ausgehende Menge (einmaliger Verkauf ausgeschlossen),de
+Outgoing stock move invoicing report:,Bericht zur Rechnungsstellung für ausgehende Lagerbewegungen:,de
+PFP Status,PFP-Status,de
+PO line,PO-Zeile,de
+PO lines,PO-Zeilen,de
+Pack lines,Linien verpacken,de
+Parent Stock location,Übergeordneter Lagerort,de
+Parent line,Übergeordnete Linie,de
+Partial invoicing of outgoing stock move with tracking number activated is not supported.,Die Teilfakturierung von ausgehenden Lagerbewegungen mit aktivierter Trackingnummer wird nicht unterstützt.,de
+Partially delivered,Teilweise geliefert,de
+Partially invoiced,Teilweise in Rechnung gestellt,de
+Partner,Partner,de
+Partner is missing on stock move %s.,Partner fehlt bei Lagerbewegung %s.,de
+Payment condition,Zahlungsbedingungen,de
+Payment mode,Zahlungsweise,de
+Payment period (N days / Month),Zahlungsfrist (N Tage / Monat),de
+Percentage,Prozentsatz,de
+Period,Zeitraum,de
+Period type,Typ des Zeitraums,de
+Picking Order Info,Informationen zum Kommissionierauftrag,de
+Please configure a correct value for the sale order date used for reservation.,"Bitte konfigurieren Sie einen korrekten Wert für das Verkaufsauftragsdatum, das für die Reservierung verwendet wird.",de
+Please configure the advance payment account for the company %s,Bitte konfigurieren Sie das Vorauszahlungskonto für die Firma %s,de
+Please configure the advance payment product,Bitte konfigurieren Sie das Vorauszahlungsprodukt,de
+Please configure the sale order invoicing product,Bitte konfigurieren Sie das Produkt zur Fakturierung von Verkaufsaufträgen,de
+Please confirm the sale order before invoicing.,Bitte bestätigen Sie den Kaufauftrag vor der Rechnungsstellung.,de
+Please do not enter negative quantity for reservation.,Bitte geben Sie bei der Reservierung keine negative Menge an.,de
+Please enter amount to invoice.,Bitte geben Sie den zu berechnenden Betrag ein.,de
+Please fill a quantity to invoice.,Bitte geben Sie eine Menge für die Rechnung ein.,de
+Please fill unit for product %s,Bitte geben Sie die Einheit für das Produkt %s ein,de
+Please generate a stock move for this sale order before modifying allocated quantity.,"Bitte erstellen Sie eine Lagerbewegung für diesen Verkaufsauftrag, bevor Sie die zugewiesene Menge ändern.",de
+Please select a forecasted invoice customer account in the accounting batch,Bitte wählen Sie ein Debitoren-Konto für die prognostizierte Rechnung im Buchhaltungsstapel aus,de
+Please select a forecasted invoice supplier account in the accounting batch,Bitte wählen Sie ein prognostiziertes Rechnungskonto im Buchhaltungsstapel aus,de
+Please select an element to run calculation,"Bitte wählen Sie ein Element aus, um die Berechnung durchzuführen",de
+Please select at least one line to generate a proposal.,"Bitte wählen Sie mindestens eine Zeile aus, um einen Vorschlag zu erstellen.",de
+Please select one freight carrier pricing line.,Bitte wählen Sie eine Frachtführer-Preiszeile aus.,de
+Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry.,"Bitte deaktivieren Sie das Kontrollkästchen Kommissionierauftrag bearbeitet von dieser Lagerbewegung von Cust. Shipment, um den Menüeintrag vorzubereiten.",de
+Please validate the purchase order before invoicing.,Bitte validieren Sie die Bestellung vor der Rechnungsstellung.,de
+"Please, select a currency for the order %s",Bitte wählen Sie eine Währung für die Bestellung %s,de
+"Please, select a supplier for the line %s",Bitte wählen Sie einen Lieferanten für die Linie %s,de
+Price,Preis,de
+Pricing,Preisgestaltung,de
+Pricing rules,Regeln für die Preisgestaltung,de
+Print,Drucken,de
+Printings,Drucksachen,de
+Product,Produkt,de
+Product Accounting Family,Produktbuchhaltung Familie,de
+Product Categories,Produkt-Kategorien,de
+Product Category,Produktkategorie,de
+Product Type,Produkttyp,de
+Product cannot be regenerated because delivered / invoiced sale order lines are using it.,"Das Produkt kann nicht neu generiert werden, da es von gelieferten / fakturierten Verkaufsauftragszeilen verwendet wird.",de
+Product categories,Produktkategorien,de
+Product code,Produkt-Code,de
+Product families,Produktfamilien,de
+Product is missing.,Es fehlt ein Produkt.,de
+Product launches/withdrawal each month,Produkteinführungen/-rücknahmen pro Monat,de
+Product stock for %s is not enough for availability request,Der Produktbestand für %s ist nicht ausreichend für die Verfügbarkeitsanfrage,de
+Product type,Produkttyp,de
+Product type distribution,Verteilung der Produktarten,de
+Products,Produkte,de
+Products DB 1,Produkte DB 1,de
+Products Details,Produkte Details,de
+Products of %s have been added to your cart.,Produkte von %s wurden zu Ihrem Warenkorb hinzugefügt.,de
+Project identically over the next few months,Gleiches Projekt in den nächsten Monaten,de
+Projected Stock,Voraussichtlicher Bestand,de
+Projected stock,Voraussichtlicher Bestand,de
+Projection details,Details zur Projektion,de
+Projection' s number of month,Anzahl der Monate der Projektion,de
+Proposal,Vorschlag,de
+Proposal generated,Vorschlag generiert,de
+Proposal select,Vorschlag auswählen,de
+Proposals have been generated successfully.,Die Vorschläge wurden erfolgreich erstellt.,de
+Purchase,Kaufen Sie,de
+Purchase order,Bestellung,de
+Purchase order line,Bestellungseingang,de
+"Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)",Bestellung oder Verkaufsauftrag ohne voraussichtliches Lieferdatum und Produktionsauftrag ohne Plandatum. In diesem Fall verwenden wir den Dispositionsstarttermin (heute),de
+Purchase order quantity,Bestellte Menge,de
+Purchase order without incoming stock move,Bestellung ohne eingehende Lagerbewegung,de
+Purchase order without stock move,Bestellung ohne Lagerbewegung,de
+Purchase orders,Kaufaufträge,de
+Purchase proposal,Vorschlag zum Kauf,de
+Purchase proposal / Estimated delivery,Kaufangebot / Voraussichtliche Lieferung,de
+Purchases orders,Kauft Aufträge,de
+Qty,Menge,de
+Qty to invoice,Menge auf Rechnung,de
+Quantity cannot be lower than already delivered quantity on detail line %s.,Die Menge kann nicht niedriger sein als die bereits gelieferte Menge in der Detailzeile %s.,de
+Quantity requested,Angefragte Menge,de
+Quotations,Kostenvoranschläge,de
+Real Qty,Echte Menge,de
+Real quantity,Reale Menge,de
+Real/Current Quantity,Reale/aktuelle Menge,de
+Receipt state,Zustand der Quittung,de
+Ref,Ref,de
+Refill Qty,Menge nachfüllen,de
+Refresh availability,Verfügbarkeit aktualisieren,de
+Related to,Verwandt mit,de
+Related to select,Verwandt mit wählen,de
+Remaining Qty,Verbleibende Menge,de
+Requested reserved qty,Gewünschte reservierte Menge,de
+Requested reserved quantity,Angeforderte reservierte Menge,de
+Reservation date time,Datum und Uhrzeit der Reservierung,de
+Reserved quantity,Reservierte Menge,de
+Reserved stock move lines,Reservierte Zeilen für Lagerbewegungen,de
+Result,Ergebnis,de
+Results,Ergebnisse,de
+Run calculation,Berechnung durchführen,de
+Run stock batch,Bestandscharge ausführen,de
+SO line,SO-Linie,de
+SO lines,SO-Linien,de
+SOL to invoice,SOL auf Rechnung,de
+Sale,Verkauf,de
+Sale Batch,Verkauf Charge,de
+Sale Order,Verkaufsauftrag,de
+Sale forecast,Verkaufsprognose,de
+Sale order,Verkaufsauftrag,de
+Sale order date used for stock reservation,"Verkaufsauftragsdatum, das für die Bestandsreservierung verwendet wird",de
+Sale order line,Verkaufsauftragszeile,de
+Sale order line to invoice,Verkaufsauftragszeile zur Rechnung,de
+Sale order lines to invoice,Verkaufsauftragszeilen zur Rechnung,de
+Sale order quantity,Menge des Verkaufsauftrags,de
+Sale order without outgoing stock move,Verkaufsauftrag ohne Lagerabgang,de
+Sale order without stock move,Verkaufsauftrag ohne Lagerbewegung,de
+Sale orders,Verkaufsaufträge,de
+SaleOrder,SaleOrder,de
+Sales,Vertrieb,de
+Sales forecast,Umsatzprognose,de
+Sales order,Kundenauftrag,de
+Sales order line,Kundenauftragszeile,de
+Sales orders,Kundenaufträge,de
+Sales quotations,Verkaufsangebote,de
+Salesperson or buyer set,Verkäufer oder Käufer eingestellt,de
+Salespersons,Vertriebsmitarbeiter,de
+Schedule,Zeitplan,de
+Security delay (days),Sicherheitsverzug (Tage),de
+See projected stock,Siehe voraussichtlicher Bestand,de
+See stock history,Siehe Aktienverlauf,de
+Select,Wählen Sie,de
+Select all,Alle auswählen,de
+Select carrier,Träger auswählen,de
+Select supplier partner,Lieferantenpartner auswählen,de
+Select the lines to invoice,Wählen Sie die zu fakturierenden Zeilen,de
+Select timetables to invoice,Fahrpläne für die Rechnung auswählen,de
+Sequence to order MRP results,Reihenfolge zur Bestellung von Dispositionsergebnissen,de
+Settings,Einstellungen,de
+Shipment Mode,Versandart,de
+Shipment mode,Modus der Versendung,de
+Shipping cost,Kosten für den Versand,de
+Show Total,Gesamt anzeigen,de
+Specific package,Spezifisches Paket,de
+Standard,Standard,de
+Standard delay (days),Standardverspätung (Tage),de
+Status,Status,de
+Status considered to filter a purchase order,Status zum Filtern einer Bestellung,de
+Status considered to filter a sale order,Status als Filter für einen Verkaufsauftrag,de
+Statuses to take into account,Zu berücksichtigende Status,de
+Stock,Lagerbestand,de
+Stock Locations content,Inhalt der Lagerorte,de
+Stock details,Einzelheiten zum Bestand,de
+Stock details by product,Angaben zum Lagerbestand nach Produkt,de
+Stock history,Bestandsentwicklung,de
+Stock history line,Zeile Bestandsverlauf,de
+Stock history updated,Bestandsverlauf aktualisiert,de
+Stock location,Lagerort,de
+Stock location is missing for the purchase order %s.,Es fehlt ein Lagerort für die Bestellung %s.,de
+Stock location is missing for the sale order %s.,Für den Verkaufsauftrag %s fehlt der Lagerort.,de
+Stock location lines by product,Lagerortlinien nach Produkt,de
+Stock move,Lagerbewegung,de
+Stock move %s has already been invoiced.,Die Lagerbewegung %s wurde bereits in Rechnung gestellt.,de
+Stock move %s has been created for this sale order,Lagerbewegung %s wurde für diesen Verkaufsauftrag erstellt,de
+Stock move has already been totally invoiced.,Der Lagerumzug wurde bereits vollständig abgerechnet.,de
+Stock move line,Bewegungslinie der Aktie,de
+Stock move lines,Bewegungslinien für Aktien,de
+Stock move lines concerned by cut off,Von der Unterbrechung betroffene Bewegungslinien,de
+Stock move type,Art der Aktienbewegung,de
+Stock move(s) processed,Verarbeitete Lagerbewegung(en),de
+Stock moves,Aktienbewegungen,de
+Stock reservation feature cannot be active when we are managing stock locations on stock move line.,"Die Funktion der Lagerreservierung kann nicht aktiv sein, wenn wir Lagerorte in der Lagerumzugszeile verwalten.",de
+StockMove,StockMove,de
+Subscription,Abonnement,de
+Subscription invoice generation report :,Bericht zur Erstellung von Abonnementrechnungen :,de
+Subscription invoices to validate,Zu validierende Abonnementrechnungen,de
+Suppl. Invoices,Nachtrag. Rechnungen,de
+Supplier,Anbieter,de
+Supplier Stock Move to invoice,Lieferantenbestand Bewegung zur Rechnung,de
+Supplier arrival,Ankunft des Lieferanten,de
+Supplier arrivals management,Verwaltung von Lieferanteneingängen,de
+Supplier shipping carriage paid configuration,Lieferantenversand frachtfrei Konfiguration,de
+Supply chain config,Konfiguration der Lieferkette,de
+Supply chain config (${ name }),Lieferkettenkonfiguration (${ Name }),de
+Supply chain configuration,Konfiguration der Lieferkette,de
+Supply chain configurations,Konfigurationen der Lieferkette,de
+Supply method,Methode der Versorgung,de
+Supplychain Batch,Lieferkette Charge,de
+Supplychain batch,Charge der Lieferkette,de
+Supplychain batch filters,Batch-Filter in der Versorgungskette,de
+Supplychain batches,Chargen in der Lieferkette,de
+Take in account sub categories,Berücksichtigen Sie Unterkategorien,de
+Tax number is missing on partner %s.,Die Steuernummer des Partners %s fehlt.,de
+Team,Team,de
+Template,Vorlage,de
+Terminate purchase order on Receipt,Bestellung bei Erhalt kündigen,de
+Terminate sale order on delivery,Beendigung des Verkaufsauftrags bei Lieferung,de
+Terms,Bedingungen,de
+The MRP has been reset and results deleted.,Die Disposition wurde zurückgesetzt und die Ergebnisse gelöscht.,de
+The MRP have been reset and their results deleted.,Die MRP wurden zurückgesetzt und ihre Ergebnisse gelöscht.,de
+The allocated quantity must not be greater than the quantity in the stock move line %s.,Die zugeteilte Menge darf nicht größer sein als die Menge in der Lagerbewegungszeile %s.,de
+The amount to be spread over the timetable is negative.,Der über den Zeitplan zu verteilende Betrag ist negativ.,de
+The amount to invoice is superior than the amount in the sale order,Der zu fakturierende Betrag ist höher als der Betrag in der Bestellung,de
+The client is required and must be the same for all sale orders,Der Kunde ist erforderlich und muss für alle Verkaufsaufträge derselbe sein.,de
+The company %s doesn't have any configured sequence for MRP,Das Unternehmen %s hat keine konfigurierte Reihenfolge für MRP,de
+The company is required and must be the same for all purchase orders,Die Firma ist erforderlich und muss für alle Bestellungen dieselbe sein,de
+The company is required and must be the same for all sale orders,Die Firma ist erforderlich und muss für alle Verkaufsaufträge dieselbe sein,de
+The component %s - %s not referenced in the product list selected for the MRP or in the BOM route should be added on the MRP.,"Die Komponente %s - %s, die nicht in der für die Disposition ausgewählten Produktliste oder in der Stücklistenroute referenziert ist, sollte in der Disposition hinzugefügt werden.",de
+The currency is required and must be the same for all sale orders,Die Währung ist erforderlich und muss für alle Verkaufsaufträge gleich sein.,de
+The customer account is blocked because he has late payments.,Das Konto des Kunden ist wegen Zahlungsverzuges gesperrt.,de
+The delivered partner must be the same for all sale orders,Der gelieferte Partner muss für alle Verkaufsaufträge derselbe sein.,de
+"The execution of MRP n°%s is now finished, you can click above to see the results.","Die Ausführung von MRP n°%s ist nun abgeschlossen, Sie können oben klicken, um die Ergebnisse zu sehen.",de
+The fiscal position must be the same for all purchase orders,Die Steuerposition muss für alle Bestellungen gleich sein.,de
+The fiscal position must be the same for all sale orders,Die Steuerposition muss für alle Verkaufsaufträge gleich sein.,de
+The following stock move lines are already associated with invoice lines and can not be splitted: %s,Die folgenden Umlagerungszeilen sind bereits mit Rechnungszeilen verbunden und können nicht aufgeteilt werden: %s,de
+The incoterm must be the same for all sale orders,Der Incoterm muss für alle Verkaufsaufträge gleich sein,de
+The incoterm must be the same for all sale orders.,Der Incoterm muss für alle Verkaufsaufträge gleich sein.,de
+The invoice for the stock move %s can't be generated because of this following error : %s,Die Rechnung für die Lagerbewegung %s kann aufgrund des folgenden Fehlers nicht erstellt werden: %s,de
+The invoice has already been generated.,Die Rechnung ist bereits erstellt worden.,de
+The invoice's unit is different and inconvertible into the stock move's unit.,Die Einheit der Rechnung ist anders und nicht in die Einheit des Lagerumzugs konvertierbar.,de
+The invoiced partner must be the same for all sale orders,Der fakturierte Partner muss für alle Verkaufsaufträge derselbe sein.,de
+The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error.,"Der Prozess wurde angehalten, weil die Berechnung in einer Endlosschleife stecken geblieben ist. Dieser Fehler kann durch einen Konfigurationsfehler verursacht werden.",de
+The product will not be delivered in time for its corresponding need.,Das Produkt wird nicht rechtzeitig für den entsprechenden Bedarf geliefert.,de
+The proposal has been successfully generated.,Der Vorschlag ist erfolgreich erstellt worden.,de
+The purchase order %s invoiced amount cannot be greater than its total amount.,Der Rechnungsbetrag der Bestellung %s kann nicht größer sein als ihr Gesamtbetrag.,de
+The purchase order trading name is missing.,Es fehlt der Handelsname der Bestellung.,de
+The quantity to invoice is greater than the quantity in the purchase order,Die zu berechnende Menge ist größer als die Menge in der Bestellung,de
+The quantity to invoice is greater than the quantity in the sale order,Die zu fakturierende Menge ist größer als die Menge im Kundenauftrag,de
+The requested quantity must be greater than the already delivered quantity.,Die angeforderte Menge muss größer sein als die bereits gelieferte Menge.,de
+The requested quantity must not be greater than the quantity in the stock move line %s.,Die angeforderte Menge darf nicht größer sein als die Menge in der Lagerbewegungszeile %s.,de
+The reservation for an availability requested stock move cannot be lowered.,Die Reservierung für eine angeforderte Lagerbewegung kann nicht gesenkt werden.,de
+The sale order %s invoiced amount cannot be greater than its total amount.,Der Rechnungsbetrag des Kundenauftrags %s kann nicht größer sein als sein Gesamtbetrag.,de
+The stock location must be the same for all purchase orders.,Der Lagerort muss für alle Bestellungen derselbe sein.,de
+The supplier is required and must be the same for all purchase orders,Der Lieferant ist erforderlich und muss für alle Bestellungen derselbe sein.,de
+The total of the order must be equal or superior than the advance payment total.,Der Gesamtbetrag der Bestellung muss gleich oder höher sein als die Summe der Vorauszahlung.,de
+The trading name must be the same for all purchase orders.,Der Handelsname muss bei allen Bestellungen gleich lauten.,de
+The trading name must be the same for all sale orders.,Der Handelsname muss für alle Verkaufsaufträge gleich sein.,de
+There are no lines to invoice,Es sind keine Zeilen zu berechnen,de
+There are no selected timetables to invoice,Es sind keine ausgewählten Fahrpläne zu berechnen,de
+There are too many stock location lines to add to the cart. The limit configured is %s.,"Es gibt zu viele Lagerplatzzeilen, die in den Warenkorb gelegt werden können. Das konfigurierte Limit ist %s.",de
+"There is a configuration error, partner %s is its own parent.","Es liegt ein Konfigurationsfehler vor, der Partner %s ist sein eigenes Elternteil.",de
+There is at least one draft or planned stock move for this sale order.,Für diesen Verkaufsauftrag gibt es mindestens einen Entwurf oder eine geplante Lagerbewegung.,de
+There is no analytic distribution on %s purchase order line,Es gibt keine analytische Verteilung für die %s-Bestellzeile,de
+There is no analytic distribution on %s sale order line,Es gibt keine analytische Verteilung auf %s Verkaufsauftragszeile,de
+There is no supplier catalog for this product,Es gibt keinen Lieferantenkatalog für dieses Produkt,de
+"This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.","Dieser Vorgang kann nicht durchgeführt werden. Verfügbarer Bestand für Produkt %s: %s, benötigter Bestand: %s. Bitte auslagern.",de
+This option prevents adding by mistake too many products in carts from a stock location.,"Diese Option verhindert, dass versehentlich zu viele Produkte aus einem Lagerbestand in den Einkaufswagen gelegt werden.",de
+This product is not stock managed.,Dieses Produkt wird nicht auf Lager gehalten.,de
+This quantity is not available in stock.,Diese Menge ist nicht vorrätig.,de
+"This stock move needs to be invoiced manually, manual intervention is needed : %s","Diese Lagerbewegung muss manuell fakturiert werden, ein manueller Eingriff ist erforderlich: %s",de
+Timetable,Fahrplan,de
+Timetable computation date,Datum der Fahrplanberechnung,de
+Timetable template,Vorlage für den Stundenplan,de
+Timetable template line,Fahrplanvorlage Zeile,de
+Timetable template lines,Fahrplanvorlage Linien,de
+Timetable templates,Stundenplan-Vorlagen,de
+Timetables,Fahrpläne,de
+Title,Titel,de
+To Date,Bis heute,de
+To process,Zur Verarbeitung,de
+To stock location,Zum Lagerort,de
+Tools,Werkzeuge,de
+Total price,Gesamtpreis,de
+Total subscription invoice(s) generated: %s,Gesamte(r) generierte(r) Abonnementrechnung(en): %s,de
+Tracking number,Verfolgungsnummer,de
+Tracking number search,Suche nach Tracking-Nummern,de
+Transport rates,Beförderungspreise,de
+Type,Typ,de
+Undo manual changes,Manuelle Änderungen rückgängig machen,de
+Unit,Einheit,de
+Unit price,Preis pro Einheit,de
+Unit prices in A.T.I and in W.T. can't be mix,Unit prices in A.T.I and in W.T. can't be mix,de
+Unselect,abwählen,de
+Unsupported product type: %s,Nicht unterstützter Produkttyp: %s,de
+Update stock history,Bestandsverlauf aktualisieren,de
+Update stock history configuration,Konfiguration des Bestandsverlaufs aktualisieren,de
+Usable on purchase order,Verwendbar in der Bestellung,de
+Usable on sale order,Verwendbar bei Verkaufsaufträgen,de
+Used Credit,Verwendeter Kredit,de
+Used stock rules,Regeln für gebrauchte Aktien,de
+Validate,Validieren Sie,de
+Validate scenario,Szenario validieren,de
+Validated for invoicing,Für die Rechnungsstellung validiert,de
+Validation step for invoicing outgoing stock move,Validierungsschritt für die Fakturierung ausgehender Lagerbewegungen,de
+Verify product stock before availabity request,Überprüfen Sie den Produktbestand vor der Verfügbarkeitsanfrage,de
+Warn delay from supplier,Warnverzug vom Lieferanten,de
+Warning : Estimated shipping date isn't updated due to pricing set on sale order.,"Warnung: Das geschätzte Versanddatum wird nicht aktualisiert, da der Preis für eine Verkaufsbestellung festgelegt wurde.",de
+Warning : One or more lines are blocked for delivery,Warnung: Eine oder mehrere Zeilen sind für die Zustellung gesperrt,de
+"When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'","When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'",de
+Would you like to update all lines with this stock location?,Möchten Sie alle Zeilen mit diesem Lagerort aktualisieren?,de
+You cannot request reservation with a negative quantity.,Sie können keine Reservierung mit einer negativen Menge anfordern.,de
+You have to choose at least one incoming stock move,Sie müssen mindestens eine eingehende Aktienbewegung auswählen,de
+You have to choose at least one outgoing stock move,Sie müssen mindestens eine ausgehende Aktienbewegung auswählen,de
+You must configure a Supply chain module for the company %s,Sie müssen ein Lieferkettenmodul für das Unternehmen %s konfigurieren,de
+You must configure a cancel reason on changing sale order in app supplychain.,Sie müssen einen Stornogrund für die Änderung eines Verkaufsauftrags in der App Supplychain konfigurieren.,de
+You must configure a forecasted invoiced customer account for the company %s,Sie müssen ein prognostiziertes Rechnungskonto für die Firma %s einrichten.,de
+You must configure a forecasted invoiced supplier account for the company %s,Sie müssen ein prognostiziertes Rechnungskonto für die Firma %s einrichten.,de
+You must configure an advance payment account for the company %s,Sie müssen ein Vorauszahlungskonto für die Firma %s einrichten,de
+You must configure an supplier advance payment account for the company %s,Sie müssen ein Lieferantenvorauszahlungskonto für die Firma %s einrichten,de
+com.axelor.apps.supplychain.job.BillSubJob,com.axelor.apps.supplychain.job.BillSubJob,de
+com.axelor.apps.supplychain.job.MrpJob,com.axelor.apps.supplychain.job.MrpJob,de
+com.axelor.apps.supplychain.service.batch.SupplychainBatchService,com.axelor.apps.supplychain.service.batch.SupplychainBatchService,de
+day(s),Tag(e),de
+declarationOfExchanges.ProductType.product,declarationOfExchanges.ProductType.product,de
+declarationOfExchanges.Service,declarationOfExchanges.Service,de
+mainPanel,mainPanel,de
+month(s),Monat(e),de
+value:Delivered instead of,value:Delivered instead of,de
+value:Delivered to,value:Delivered to,de
+value:Invoiced instead of,value:Invoiced instead of,de
+value:Invoiced to,value:Invoiced to,de
+value:Order for,value:Order for,de
+value:Ordered by,value:Ordered by,de
+value:Supplychain,value:Supplychain,de

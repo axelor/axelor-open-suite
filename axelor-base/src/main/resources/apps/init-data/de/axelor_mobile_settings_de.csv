@@ -1,0 +1,228 @@
+key,message,language
+"A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value. <br>Example : <br>SELECT partner.fullName, count(so.id) FROM Partner partner LEFT JOIN SaleOrder so on partner.id = so.clientPartner GROUP BY partner.fullName <br>Note : <br>- The JPQL query must select at least 2 values. <br>- The first selected value must be a string type. <br>- The second selected value must be a number type (long, decimal, integer). <br>- If more than 2 values are selected, they will be ignored. <br>","A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value. <br>Example : <br>SELECT partner.fullName, count(so.id) FROM Partner partner LEFT JOIN SaleOrder so on partner.id = so.clientPartner GROUP BY partner.fullName <br>Note : <br>- The JPQL query must select at least 2 values. <br>- The first selected value must be a string type. <br>- The second selected value must be a number type (long, decimal, integer). <br>- If more than 2 values are selected, they will be ignored. <br>",de
+AOS view,AOS-Ansicht,de
+Action,Aktion,de
+Activate favorites management,Aktivieren Sie die Favoritenverwaltung,de
+Activate inbox access,Aktivieren Sie den Zugang zum Posteingang,de
+Activate invoicing on projects,Aktivieren der Rechnungsstellung für Projekte,de
+Activate multi currency,Mehrwährungsfähigkeit aktivieren,de
+Active menus,Aktive Menüs,de
+Activities,Aktivitäten,de
+Activity,Tätigkeit,de
+All,Alle,de
+Allow creation,Erstellung zulassen,de
+Allow deletion,Löschung zulassen,de
+Allow download,Download zulassen,de
+Allow edition of date,Ausgabe des Datums zulassen,de
+Allow files to be downloaded from the mobile application.,Erlauben Sie das Herunterladen von Dateien über die mobile Anwendung.,de
+Allow kilometric expenses,Kilometrische Ausgaben zulassen,de
+Allow line creation of expense details,Erlauben Sie die Erstellung von Zeilen für Ausgabendetails,de
+Allow line creation of timesheet details,Zeilenerstellung von Zeittabellendetails zulassen,de
+Allow manual creation of expense,Erlauben Sie die manuelle Erstellung von Ausgaben,de
+Allow manual creation of timesheet,Manuelle Erstellung von Stundenzetteln zulassen,de
+Allow new files to be uploaded,Das Hochladen neuer Dateien zulassen,de
+Allow renaming,Umbenennung zulassen,de
+Allow users to manage carrier option for customer deliveries.,Erlauben Sie den Nutzern die Verwaltung von Speditionsoptionen für Kundenlieferungen.,de
+Allows files to be deleted from the mobile application if the user has the necessary permissions.,"Ermöglicht das Löschen von Dateien aus der mobilen Anwendung, wenn der Benutzer über die erforderlichen Berechtigungen verfügt.",de
+Allows folders to be created from the mobile application.,Ermöglicht die Erstellung von Ordnern über die mobile Anwendung.,de
+Allows new files to be created from the mobile application if the user has the necessary permissions.,"Ermöglicht die Erstellung neuer Dateien über die mobile Anwendung, wenn der Benutzer über die erforderlichen Berechtigungen verfügt.",de
+Allows renaming of files or folders from the mobile application.,Ermöglicht das Umbenennen von Dateien oder Ordnern über die mobile Anwendung.,de
+"Allows the user to define the position of the menu in the list. By default, the new menu entry is positioned at the end, but it can also be inserted between two existing menus. The order value for standard menus is its index in the list multiplied by 10. So to position a new menu between the first and second menu entries, you need to give it an order between 10 and 20.","Ermöglicht es dem Benutzer, die Position des Menüs in der Liste zu bestimmen. Standardmäßig wird der neue Menüeintrag am Ende positioniert, er kann aber auch zwischen zwei bestehenden Menüs eingefügt werden. Der Ordnungswert für Standardmenüs ist sein Index in der Liste multipliziert mit 10. Um ein neues Menü zwischen dem ersten und zweiten Menüeintrag zu positionieren, müssen Sie ihm also eine Reihenfolge zwischen 10 und 20 geben.",de
+Allows to filter the product types displayed on the mobile application in the sales section.,"Ermöglicht das Filtern der Produkttypen, die in der mobilen Anwendung im Verkaufsbereich angezeigt werden.",de
+Allows users to fill in the username field on the login page with the qr code present on the user's form view.,"Ermöglicht es Benutzern, das Feld für den Benutzernamen auf der Anmeldeseite mit dem QR-Code auszufüllen, der sich in der Formularansicht des Benutzers befindet.",de
+Allows you to customize the active menus for this application. If the menus are not configured then all the menus of the application are available.,"Ermöglicht es Ihnen, die aktiven Menüs für diese Anwendung anzupassen. Wenn die Menüs nicht konfiguriert sind, sind alle Menüs der Anwendung verfügbar.",de
+Allows you to define favorite files for quick access in a dedicated menu on the mobile application.,Ermöglicht Ihnen die Definition von Lieblingsdateien für den schnellen Zugriff in einem speziellen Menü der mobilen Anwendung.,de
+Allows you to define favorite folders on the DMS to create shortcuts on the mobile application.,"Ermöglicht es Ihnen, Favoritenordner im DMS zu definieren, um Verknüpfungen in der mobilen Anwendung zu erstellen.",de
+"Allows you to define which fields are visible on timers and timesheet lines form views. By default, if nothing is selected, all fields are visible. This configuration extends the employee's configuration for time allocation.","Ermöglicht es Ihnen festzulegen, welche Felder in den Formularansichten für Zeitzähler und Stundenzettelzeilen sichtbar sind. Wenn nichts ausgewählt ist, sind standardmäßig alle Felder sichtbar. Diese Konfiguration erweitert die Konfiguration des Mitarbeiters für die Zeitzuweisung.",de
+Allows you to enable this package on the mobile application.,"Ermöglicht es Ihnen, dieses Paket in der mobilen Anwendung zu aktivieren.",de
+App,App,de
+App configuration,Konfiguration der App,de
+App mobile,App mobil,de
+App mobile settings,Mobile Einstellungen der App,de
+Application,Anmeldung,de
+Authorized roles,Autorisierte Rollen,de
+"Authorized values for menuType : menu, separator or submenu","Zulässige Werte für menuType : Menü, Trennzeichen oder Untermenü",de
+Bar,Bar,de
+Barcode,Barcode,de
+"Bootstrap icon name, see https://icons.getbootstrap.com/","Bootstrap icon name, see https://icons.getbootstrap.com/",de
+CRM,CRM,de
+CRM config,CRM-Konfiguration,de
+Chart,Tabelle,de
+Chart 1,Schaubild 1,de
+Chart 2,Schaubild 2,de
+Chart 3,Schaubild 3,de
+Chart 4,Schaubild 4,de
+Chart type,Diagrammtyp,de
+Chart.indicator,Chart.indicator,de
+Config CRM,CRM-Konfiguration,de
+Config DMS,DMS konfigurieren,de
+Config HR,Konfig HR,de
+Config Helpdesk,Config-Helpdesk,de
+Config Intervention,Intervention konfigurieren,de
+Config Production,Produktion konfigurieren,de
+Config Project,Projekt konfigurieren,de
+Config Purchase,Config Kauf,de
+Config Quality,Qualität der Konfiguration,de
+Config Sale,Konfig Verkauf,de
+Config Stock,Konfig Bestand,de
+Current Android build,Aktuelle Android-Version,de
+Custom field,Benutzerdefiniertes Feld,de
+Custom menu entry,Benutzerdefinierter Menüeintrag,de
+Customize menus,Menüs anpassen,de
+Customize translations,Anpassen von Übersetzungen,de
+DMS,DMS,de
+DMS config,DMS-Konfiguration,de
+DMS root on the mobile application,DMS-Root auf der mobilen Anwendung,de
+DMSFile added to favorites successfully,DMSFile erfolgreich zu den Favoriten hinzugefügt,de
+DMSFile removed from favorites successfully,DMSFile erfolgreich aus den Favoriten entfernt,de
+Dashboard management,Verwaltung des Armaturenbretts,de
+Default DMS root on the mobile application,Standard-DMS-Root auf der mobilen Anwendung,de
+Defines whether products from the configurator are to be displayed on the mobile application or not.,"Legt fest, ob Produkte aus dem Konfigurator in der mobilen Anwendung angezeigt werden sollen oder nicht.",de
+"Defines whether variants are managed with the generic product or directly by the variant product. If the configuration is activated, you must go through the generic product to select a variant, otherwise all variants are displayed and selectable on the application.","Legt fest, ob Varianten über das generische Produkt oder direkt über das Variantenprodukt verwaltet werden. Wenn die Konfiguration aktiviert ist, müssen Sie über das generische Produkt gehen, um eine Variante auszuwählen, andernfalls werden alle Varianten in der Anwendung angezeigt und können ausgewählt werden.",de
+Donut,Donut,de
+Enable addition of new lines in customer delivery.,Ermöglichung der Aufnahme neuer Linien in die Kundenbelieferung.,de
+Enable addition of new lines in supplier arrival.,Ermöglicht das Hinzufügen neuer Zeilen bei der Ankunft des Lieferanten.,de
+Enable app,App aktivieren,de
+Enable default stock location management,Aktivieren Sie die Standardlagerverwaltung,de
+Enable inventory validation.,Aktivieren Sie die Bestandsüberprüfung.,de
+Enable line addition,Hinzufügen von Zeilen aktivieren,de
+Enable line verification,Leitungsprüfung einschalten,de
+Enable line verification on customer deliveries,Ermöglichung der Leitungsprüfung bei Kundenlieferungen,de
+Enable line verification on internal moves,Aktivieren der Leitungsüberprüfung bei internen Umzügen,de
+Enable line verification on inventories,Überprüfung von Beständen in der Linie ermöglichen,de
+Enable line verification on supplier arrivals,Aktivieren der Leitungsüberprüfung bei Lieferanteneingängen,de
+Enable project invoicing,Projektfakturierung ermöglichen,de
+Enable stock correction validation.,Aktivieren Sie die Bestandskorrekturvalidierung.,de
+"Enable the user to create a new menu entry with custom title, icon and order.","Ermöglichen Sie es dem Benutzer, einen neuen Menüeintrag mit benutzerdefiniertem Titel, Symbol und Reihenfolge zu erstellen.",de
+Enable tracker messages.,Aktivieren Sie Tracker-Nachrichten.,de
+Enable validation,Validierung einschalten,de
+Enables favorites management on the mobile application. Users will have access to a favorites menu with their saved files and a new menu for each favorite folder for quick access.,Ermöglicht die Verwaltung von Favoriten in der mobilen Anwendung. Die Benutzer haben Zugriff auf ein Favoritenmenü mit ihren gespeicherten Dateien und ein neues Menü für jeden Favoritenordner für den schnellen Zugriff.,de
+"Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application.","Wenn Sie diese Einstellung aktivieren, können Sie in der mobilen Anwendung die Kommentare und Änderungen sehen, die in der Webanwendung verfolgt werden.",de
+Expenses,Ausgaben,de
+Favourite files,Favoriten-Dateien,de
+Favourite folders,Bevorzugte Ordner,de
+Fields to show on timesheet,"Felder, die auf dem Stundenzettel angezeigt werden",de
+Files,Dateien,de
+Folders,Ordner,de
+"For each of the following features, if configuration is enabled, users will be asked to confirm the tracking number or product of the line before accessing the details screen. If the setting is disabled, they will be able to access the details screen directly.","Für jede der folgenden Funktionen werden die Benutzer bei aktivierter Konfiguration aufgefordert, die Tracking-Nummer oder das Produkt der Linie zu bestätigen, bevor sie auf den Detailbildschirm zugreifen. Wenn die Einstellung deaktiviert ist, können sie direkt auf den Detailbildschirm zugreifen.",de
+General,Allgemein,de
+General configuration,Allgemeine Konfiguration,de
+Generate QR Code,QR-Code generieren,de
+Generate barcode,Barcode generieren,de
+HR,HR,de
+HR config,HR-Konfiguration,de
+Helpdesk,Helpdesk,de
+Helpdesk config,Helpdesk-Konfiguration,de
+Icon name,Name des Symbols,de
+"If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature.","Wenn keine Rolle ausgewählt ist, kann jeder diese Funktion nutzen. Andernfalls haben nur ausgewählte Rollen die Möglichkeit, diese Funktion zu nutzen.",de
+"If this configuration is enabled, users can add new lines to the enabled feature on mobile application.","Wenn diese Konfiguration aktiviert ist, können Benutzer neue Zeilen zu der aktivierten Funktion in der mobilen Anwendung hinzufügen.",de
+"If this configuration is enabled, users will be able to directly validate the enabled feature on mobile application.","Wenn diese Konfiguration aktiviert ist, können Benutzer die aktivierte Funktion direkt in der mobilen Anwendung validieren.",de
+"Indicates the minimal required version of the mobile application. If the user's version is different than the one indicated, the mobile app will require the user to update to have access to the app.","Gibt die minimal erforderliche Version der mobilen Anwendung an. Wenn die Version des Benutzers von der angegebenen Version abweicht, muss der Benutzer die mobile Anwendung aktualisieren, um auf die Anwendung zugreifen zu können.",de
+Indicators,Indikatoren,de
+Intervention,Intervention,de
+Intervention config,Konfiguration der Intervention,de
+Key,Schlüssel,de
+Line,Leitung,de
+"List of active menus for this application. Menus need to be added to this list to make them accessible on the mobile application. Once a menu has been added, you can restrict access to it to the associated roles.","Liste der aktiven Menüs für diese Anwendung. Menüs müssen zu dieser Liste hinzugefügt werden, damit sie über die mobile Anwendung zugänglich sind. Sobald ein Menü hinzugefügt wurde, können Sie den Zugriff darauf auf die zugehörigen Rollen beschränken.",de
+List of roles that have access to this application. If the field is empty then everyone has access to the application. If it contains at least one role then only users with one of the roles present have access to the application.,"Liste der Rollen, die Zugriff auf diese Anwendung haben. Wenn das Feld leer ist, hat jeder Zugriff auf die Anwendung. Enthält es mindestens eine Rolle, haben nur Benutzer mit einer der vorhandenen Rollen Zugriff auf die Anwendung.",de
+"List of roles with access to this menu. If the field is empty, then everyone has access to the menu. If it contains at least one role, then only users with one of the roles present have access to the menu. However, if the application itself has restrictions on roles, then the user must have a role included in the authorized roles for the application concerned, as well as a role entered in this field.","Liste der Rollen mit Zugriff auf dieses Menü. Wenn das Feld leer ist, hat jeder Zugriff auf das Menü. Enthält es mindestens eine Rolle, haben nur Benutzer mit einer der vorhandenen Rollen Zugriff auf das Menü. Wenn jedoch die Anwendung selbst Rollenbeschränkungen hat, muss der Benutzer über eine Rolle verfügen, die in den autorisierten Rollen der betreffenden Anwendung enthalten ist, sowie über eine in diesem Feld eingetragene Rolle.",de
+Manage carrier option,Option Träger verwalten,de
+Manuf order,Herstellerauftrag,de
+Manufacturing,Herstellung,de
+Manufacturing operation,Herstellungsvorgang,de
+Menu,Menü,de
+Menu name,Name des Menüs,de
+Menu order,Menü-Bestellung,de
+Menu title,Titel des Menüs,de
+Menu translation,Übersetzung des Menüs,de
+Menu type,Menü-Typ,de
+Menus config,Menüs konfigurieren,de
+Minimal required version of the mobile application.,Minimal erforderliche Version der mobilen Anwendung.,de
+Mobile Chart,Mobile Karte,de
+Mobile Menu,Mobiles Menü,de
+Mobile Menus,Mobile Menüs,de
+Mobile app,Mobile App,de
+Mobile apps,Mobile Anwendungen,de
+Mobile chart,Mobile Karte,de
+Mobile config,Mobile Konfiguration,de
+Mobile dashboard,Mobiles Dashboard,de
+Mobile dashboard line,Mobile Armaturenbrettlinie,de
+Mobile dashboard line list,Liste der Zeilen des mobilen Dashboards,de
+Mobile dashboard lines,Mobile Armaturenbrettzeilen,de
+Mobile dashboard list,Liste der mobilen Armaturenbretter,de
+Mobile dashboards,Mobile Dashboards,de
+Mobile menus and screens have been created.,Es wurden mobile Menüs und Bildschirme erstellt.,de
+Mobile screen,Mobiler Bildschirm,de
+Mobile screens,Mobile Bildschirme,de
+Mobile shortcut,Mobile Abkürzung,de
+Mobile shortcut list,Liste der mobilen Tastenkombinationen,de
+Mobile shortcuts,Mobile Shortcuts,de
+Mobile tracebacks,Mobile Rückverfolgungen,de
+Mobile translations,Mobile Übersetzungen,de
+Mobile web view,Mobile Webansicht,de
+Mobile web views,Mobile Webansichten,de
+Name,Name,de
+None,Keine,de
+On customer deliveries,Bei Kundenlieferungen,de
+On internal moves,Bei internen Umzügen,de
+On inventories,Zu den Vorräten,de
+On stock corrections,Zu Aktienkorrekturen,de
+On supplier arrivals,Bei Lieferanteneingängen,de
+Parent application,Antrag der Eltern,de
+Parent application of the dashboard menu entry.,Übergeordnete Anwendung des Dashboard-Menüeintrags.,de
+Parent application of the menu entry.,Übergeordnete Anwendung des Menüeintrags.,de
+Parent menu name,Name des übergeordneten Menüs,de
+Pie,Kuchen,de
+Production config,Produktionskonfiguration,de
+Project,Projekt,de
+Project config,Projektkonfiguration,de
+Project task,Projektaufgabe,de
+Purchase,Kaufen Sie,de
+Purchase config,Konfiguration kaufen,de
+Quality,Qualität,de
+Quality config,Qualität der Konfiguration,de
+Query,Abfrage,de
+Reporting to display,Berichterstattung zur Anzeige,de
+Response,Antwort,de
+Response of the query for settings,Antwort auf die Abfrage der Einstellungen,de
+Response of the query of the chart,Antwort auf die Abfrage des Diagramms,de
+Run,ausführen.,de
+Sale,Verkauf,de
+Sale config,Verkauf Konfiguration,de
+"Saves the current build of the mobile application linked to this instance. If the user is behind the minimum required version, he'll be prompted to download the version saved here.","Speichert den aktuellen Build der mit dieser Instanz verknüpften mobilen Anwendung. Wenn der Benutzer nicht die erforderliche Mindestversion hat, wird er aufgefordert, die hier gespeicherte Version herunterzuladen.",de
+Screen,Bildschirm,de
+Screen name,Bildschirmname,de
+See web views,Siehe Webansichten,de
+Select all menus,Alle Menüs auswählen,de
+Separator,Abscheider,de
+"Set the default DMS root for all users on the mobile application. If no value is entered, the global root will be used. If the user has a specific value, this field will be ignored.","Legen Sie das Standard-DMS-Stammverzeichnis für alle Benutzer der mobilen Anwendung fest. Wenn kein Wert eingegeben wird, wird das globale Stammverzeichnis verwendet. Wenn der Benutzer einen bestimmten Wert hat, wird dieses Feld ignoriert.",de
+Shortcut management,Verwaltung von Abkürzungen,de
+Shortcuts display,Anzeige der Shortcuts,de
+Show charts,Diagramme anzeigen,de
+Show configurator products,Konfiguratorprodukte anzeigen,de
+Show generic product,Generisches Produkt anzeigen,de
+Stock,Lagerbestand,de
+Stock config,Lager-Konfiguration,de
+Submenu,Untermenü,de
+Submenu needs a parent menu.,Ein Untermenü braucht ein übergeordnetes Menü.,de
+Technical name,Technischer Name,de
+Technical name should be the menu key used in module export on mobile application.,"Der technische Name sollte der Menüschlüssel sein, der im Modulexport der mobilen Anwendung verwendet wird.",de
+There is an error with the query : \n,Bei der Abfrage ist ein Fehler aufgetreten: \n,de
+This configuration allows all users to access their inbox.,Diese Konfiguration ermöglicht allen Benutzern den Zugriff auf ihren Posteingang.,de
+Timesheets,Zeiterfassungsbögen,de
+Title,Titel,de
+Types of products to display,Arten der auszustellenden Produkte,de
+Url,Url,de
+Usable on shortcut,Verwendbar als Shortcut,de
+Use custom chart,Benutzerdefiniertes Diagramm verwenden,de
+Use qrCode for user connection,qrCode für Benutzerverbindung verwenden,de
+"Used to define the EDM root for the user on the mobile application. If no value is entered, the value defined in the mobile application configuration will be used.","Wird verwendet, um das EDM-Stammverzeichnis für den Benutzer in der mobilen Anwendung zu definieren. Wenn kein Wert eingegeben wird, wird der in der Konfiguration der mobilen Anwendung definierte Wert verwendet.",de
+User,Benutzer,de
+View dashboards,Dashboards anzeigen,de
+View tracebacks,Rückverfolgungen anzeigen,de
+Visible in mobile application,Sichtbar in der mobilen Anwendung,de
+You do not have access to this record,Sie haben keinen Zugang zu diesem Datensatz,de
+all,alle,de
+isOneLineShortcut.Grid,isOneLineShortcut.Grid,de
+mobileMenu.Order,mobileMenu.Order,de
+value:Axelor Mobile Settings,value:Axelor Mobile Settings,de

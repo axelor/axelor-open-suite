@@ -1,0 +1,378 @@
+key,message,language
+Acceptance,Akzeptanz,de
+Acceptance required,Akzeptanz erforderlich,de
+Accepted,Angenommen,de
+Accepted quantity,Angenommene Menge,de
+Action,Aktion,de
+Action distribution sequence,Reihenfolge der Aktionsverteilung,de
+Action distribution template,Vorlage für Aktionsverteilung,de
+Action plan,Aktionsplan,de
+Action proposed,Vorgeschlagene Maßnahme,de
+Actions,Aktionen,de
+Add optional control points,Optionale Kontrollpunkte hinzufügen,de
+Advancement,Beförderung,de
+Alert calendar,Alert-Kalender,de
+"All fields related to the order will be reset, continue ?","Alle Felder, die sich auf die Bestellung beziehen, werden zurückgesetzt, weiter ?",de
+Analysis,Analyse,de
+Analysis Method,Analyse-Methode,de
+Analysis costs,Kosten der Analyse,de
+Analysis method line,Analyseverfahren Linie,de
+Analysis method lines,Analyseverfahren Linien,de
+Analysis methods,Analysemethoden,de
+Answer comment,Antwort Kommentar,de
+Answer required,Antwort erforderlich,de
+Answered by,Beantwortet von,de
+Answered on,Beantwortet am,de
+App,App,de
+App quality,Qualität der App,de
+Applicable,Anwendbar,de
+Automatic mail by completing quality control,Automatische Post durch Abschluss der Qualitätskontrolle,de
+Branch,Zweigstelle,de
+Calendar,Kalender,de
+Cancel,Abbrechen,de
+Canceled,Abgesagt,de
+Cancelled Status,Abgebrochener Status,de
+Cancelled status already exists.,"Der Status ""storniert"" ist bereits vorhanden.",de
+Causal analysis,Kausalanalyse,de
+Cause,Ursache,de
+Cause analysis,Analyse der Ursachen,de
+Causes,Verursacht,de
+Causes written by,Ursachen geschrieben von,de
+Causes written on,Ursachen geschrieben am,de
+"Changing this value will change value of product, continue ?","Wenn Sie diesen Wert ändern, ändert sich der Wert des Produkts, weiter ?",de
+Characteristic,Charakteristisch,de
+Characteristic or sample does not belong to this control entry.,Das Merkmal oder die Probe gehört nicht zu dieser Kontrolleintragung.,de
+Check,Siehe,de
+Check conformity,Konformität prüfen,de
+Choose quality process,Qualitätsprozess wählen,de
+Close,Schließen Sie,de
+Closed Status,Abgeschlossener Status,de
+Closed status already exists.,"Der Status ""abgeschlossen"" ist bereits vorhanden.",de
+Code,Code,de
+Coefficient,Koeffizient,de
+Company,Unternehmen,de
+Compliant,Konform,de
+Configuration,Konfiguration,de
+Configurations by company,Konfigurationen nach Unternehmen,de
+Confirm,Bestätigen Sie,de
+Confirmed,Bestätigt,de
+Conformity,Konformität,de
+Conformity formula can not be fetched,Konformitätsformel kann nicht abgerufen werden,de
+Contact,Kontakt,de
+Control Frequency,Kontrolle Frequenz,de
+Control Points,Kontrollpunkte,de
+Control comment,Kommentar zur Kontrolle,de
+Control entries,Einträge kontrollieren,de
+Control entry,Eintrag kontrollieren,de
+Control entry sample,Kontrolleintrag Probe,de
+Control entry sample line,Kontrolleintrag Musterzeile,de
+Control entry sample lines,Kontrolleintrag Probenzeilen,de
+Control entry samples,Kontrolleingangsproben,de
+Control plan,Kontrollplan,de
+Control plan characteristics,Merkmale des Kontrollplans,de
+Control plan frequencies,Häufigkeit der Kontrollpläne,de
+Control plan frequency,Häufigkeit des Kontrollplans,de
+Control plan line,Kontrollplan Linie,de
+Control plan line characteristics,Merkmale der Kontrollplanlinie,de
+Control plan lines,Linien des Kontrollplans,de
+Control plans,Kontrollpläne,de
+Control point,Kontrollpunkt,de
+Control point list,Liste der Kontrollpunkte,de
+Control point model list,Liste der Kontrollpunktmodelle,de
+Control point name,Name des Kontrollpunkts,de
+Control point type,Typ des Kontrollpunkts,de
+Control points,Kontrollpunkte,de
+Control type,Art der Kontrolle,de
+Corrective,Berichtigung,de
+Corrective actions,Abhilfemaßnahmen,de
+Corrective actions list,Liste der Abhilfemaßnahmen,de
+Costs list per decision,Kostenliste pro Entscheidung,de
+Create control entry samples,Muster für die Kontrolleingabe erstellen,de
+Critical,Kritisch,de
+Criticality,Kritikalität,de
+Custom frequency,Benutzerdefinierte Frequenz,de
+Customer,Kunde,de
+Customer Order,Kundenauftrag,de
+Customer Order line,Kundenauftragszeile,de
+Customer contact,Kontakt zum Kunden,de
+Customer delivery note,Lieferschein des Kunden,de
+Customer delivery note line,Kunden-Lieferscheinzeile,de
+Customer signature,Unterschrift des Kunden,de
+Date,Datum,de
+Deadline,Deadline,de
+Decision,Entscheidung,de
+Decision distribution sequence,Reihenfolge der Entscheidungsfindung,de
+Decision distribution template,Vorlage für die Verteilung von Entscheidungen,de
+Decision making,Entscheidungsfindung,de
+Decisions,Beschlüsse,de
+Decisions written by,Entscheidungen geschrieben von,de
+Decisions written on,Entscheidungen geschrieben am,de
+Defect,Defekt,de
+Defect written by,Defekt geschrieben von,de
+Defect written on,Defekt geschrieben auf,de
+Defects,Defekte,de
+Description,Beschreibung,de
+Details,Einzelheiten,de
+Detected by (internal),Erkannt von (intern),de
+Detection,Erkennung,de
+Detection origin is customer but no customer is provided.,"Der Ursprung der Erkennung ist Kunde, aber es wird kein Kunde angegeben.",de
+Detection origin is supplier but no supplier is provided.,"Der Ursprung des Nachweises ist der Lieferant, aber es wird kein Lieferant angegeben.",de
+Detections,Erkennungen,de
+Direct cost,Direkte Kosten,de
+Distribution,Vertrieb,de
+Distribution of costs per decision,Verteilung der Kosten pro Entscheidung,de
+Distributions,Ausschüttungen,de
+Document reference,Referenz des Dokuments,de
+Documentary,Dokumentarfilm,de
+Done,Erledigt,de
+Draft,Entwurf,de
+Earliest date,Frühestes Datum,de
+Edit control points,Kontrollpunkte bearbeiten,de
+Editable,Editierbar,de
+Efficiency,Effizienz,de
+Efficiency Criteria,Kriterien für die Effizienz,de
+Efficiency checked by,Effizienz geprüft durch,de
+Efficiency checked on,Effizienz geprüft am,de
+Employee,Mitarbeiter,de
+End date,Datum des Endes,de
+Entry attrs,Eintrag attrs,de
+Entry date,Eintrittsdatum,de
+Entry sample line,Eintrag Musterzeile,de
+"Evaluation of the conformity formula failed, please make sure that every required fields for the evaluation are filled.","Die Bewertung der Konformitätsformel ist fehlgeschlagen, bitte stellen Sie sicher, dass alle erforderlichen Felder für die Bewertung ausgefüllt sind.",de
+Excepted result for formula is either true (compliant) or false (not compliant). Current result = %s,Ausgenommenes Ergebnis für die Formel ist entweder wahr (konform) oder falsch (nicht konform). Aktuelles Ergebnis = %s,de
+External Diffusion,Externe Diffusion,de
+File,Datei,de
+Finish,Oberfläche,de
+Finished,Fertige,de
+Fixed amount,Fester Betrag,de
+Formula,Formel,de
+Frequency,Frequenz,de
+From Date,Von Datum,de
+Full name,Vollständiger Name,de
+Generate distributions,Verteilungen generieren,de
+Generate distributions for other,Erzeugen Sie Verteilungen für andere,de
+Generate distributions for responsibles,Verteilungen für Verantwortliche generieren,de
+Generate quality configurations,Qualitätskonfigurationen generieren,de
+Generated file,Erstellte Datei,de
+Gravity,Schwerkraft,de
+High,Hoch,de
+Identification,Identifizierung,de
+In progress,In Arbeit,de
+Inspector,Inspektor,de
+Inspector signature,Unterschrift des Inspektors,de
+Internal,Intern,de
+Internal Diffusion,Interne Diffusion,de
+Interne,Interne,de
+Items,Artikel,de
+Label,Etikett,de
+Latest date,Spätester Termin,de
+Level,Ebene,de
+Low,Niedrig,de
+Major,Major,de
+Manual,Handbuch,de
+Manual Identification,Manuelle Identifizierung,de
+Manuf Order consummed product,Manufaktur Bestellung verbrauchter Produkte,de
+Manuf Order product to consume,Manufaktur Produkt zum Verzehr bestellen,de
+Manufacturing Order,Fertigungsauftrag,de
+Measuring Type,Messart,de
+Measuring point list,Messstellenliste,de
+Measuring points,Messstellen,de
+Minor,Kleinere,de
+Model for quality control,Modell für die Qualitätskontrolle,de
+My alerts,Meine Warnungen,de
+My quality controls,Meine Qualitätskontrollen,de
+My team alerts,Mein Team alarmiert,de
+My team quality controls,Mein Team kontrolliert die Qualität,de
+Name,Name,de
+New,Neu,de
+No,Nein,de
+No checked,Nicht geprüft,de
+"No status have been found for the QA, please register at least one in the configurations","Es wurde kein Status für die QA gefunden, bitte registrieren Sie mindestens einen in den Konfigurationen",de
+Non-Conforming quantity,Nichtkonforme Menge,de
+Normal,Normal,de
+Not compliant,Nicht konform,de
+Not controlled,Nicht kontrolliert,de
+Note,Hinweis,de
+Notes,Anmerkungen,de
+Number,Nummer,de
+Number of quality alerts by team,Anzahl der Qualitätswarnungen nach Team,de
+Number of quality control by team,Anzahl der Qualitätskontrollen pro Team,de
+Number of solved quality alerts by team,Anzahl der gelösten Qualitätswarnungen nach Team,de
+Objective,Zielsetzung,de
+Observations,Beobachtungen,de
+Observed defects,Beobachtete Mängel,de
+Obsolete,Veraltet,de
+On hold,In der Warteschleife,de
+Operation line,Betriebsleitung,de
+Optional control point list,Optionale Kontrollpunktliste,de
+Optional control points,Optionale Kontrollpunkte,de
+Optional quality control,Optionale Qualitätskontrolle,de
+Optional quality process,Optionaler Qualitätsprozess,de
+Origin,Herkunft,de
+Partially accepted,Teilweise akzeptiert,de
+Partner,Partner,de
+Pause,Pause,de
+Pictures,Bilder,de
+Plan,Plan,de
+Plan attrs,Plan attrs,de
+Plan line,Linie planen,de
+Plan owner,Eigentümer des Plans,de
+Planned,Geplant,de
+Please complete all control points,Bitte füllen Sie alle Kontrollpunkte aus,de
+Please configure a sequence for action distribution.,Bitte konfigurieren Sie eine Reihenfolge für die Aktionsverteilung.,de
+Please configure a sequence for decision distribution.,Bitte konfigurieren Sie eine Reihenfolge für die Entscheidungsverteilung.,de
+Please configure information for quality for the company %s,Bitte konfigurieren Sie Informationen zur Qualität für das Unternehmen %s,de
+Please fill printing settings on quality control,Bitte füllen Sie die Druckeinstellungen zur Qualitätskontrolle aus.,de
+"Please provide one of the two fields, characteristicId or sampleId, in request body.","Bitte geben Sie eines der beiden Felder, characteristicId oder sampleId, im Anfragetext an.",de
+Please select at least a line to generate a distribution.,"Bitte wählen Sie mindestens eine Zeile aus, um eine Verteilung zu erstellen.",de
+Please select at least a line to send a distribution.,"Bitte wählen Sie mindestens eine Zeile aus, um eine Verteilung zu versenden.",de
+Pre-fill control points,Kontrollpunkte vorfüllen,de
+Preventive,Vorbeugende Maßnahmen,de
+Preventive actions,Vorbeugende Maßnahmen,de
+Print,Drucken,de
+Printing settings,Druckeinstellungen,de
+Priority,Priorität,de
+Process,Prozess,de
+Processes,Prozesse,de
+Product,Produkt,de
+Product/ManufOrder fields should not be filled if type is 'System'.,"Die Felder Product/ManufOrder sollten nicht gefüllt werden, wenn der Typ 'System' ist.",de
+Project,Projekt,de
+Propose action,Maßnahme vorschlagen,de
+Provided data does not match with detection origin %s.,Die bereitgestellten Daten stimmen nicht mit dem Erkennungsursprung %s überein.,de
+QI,QI,de
+QI Action distribution,QI-Aktionsverteilung,de
+QI Analysis Cause,QI-Analyse Ursache,de
+QI Analysis Causes,QI-Analyse Ursachen,de
+QI Decision Distribution,QI-Entscheidung Verteilung,de
+QI Decision config company,QI Decision Config Unternehmen,de
+QI Decision distribution,QI Entscheidung Verteilung,de
+QI Resolution Decision,QI-Auflösungsbeschluss,de
+QI Resolution Decisions,QI-Auflösungsbeschlüsse,de
+QI Resolution Defect,QI-Auflösung Defekt,de
+QI Resolution Defects,QI-Auflösungsmängel,de
+QI Task,QI Aufgabe,de
+QI Tasks,QI-Aufgaben,de
+QIProcess.manager,QIProcess.manager,de
+Quality,Qualität,de
+Quality Control,Qualitätskontrolle,de
+Quality Dashboard,Qualitäts-Dashboard,de
+Quality Improvement,Qualitätsverbesserung,de
+Quality alert,Qualitätsalarm,de
+Quality alert filters,Qualitätswarnfilter,de
+Quality alerts,Qualitätswarnungen,de
+Quality config,Qualität der Konfiguration,de
+Quality config (${ name }),Qualitätskonfiguration (${ Name }),de
+Quality configuration,Qualität der Konfiguration,de
+Quality configurations,Qualität der Konfigurationen,de
+Quality control,Qualitätskontrolle,de
+Quality control calendar,Kalender zur Qualitätskontrolle,de
+Quality control filters,Filter für die Qualitätskontrolle,de
+Quality controls,Qualitätskontrollen,de
+Quality improvement,Verbesserung der Qualität,de
+Quality improvement successfully updated.,Qualitätsverbesserung erfolgreich aktualisiert.,de
+Quality improvements,Verbesserungen der Qualität,de
+Quality process,Qualitätsprozess,de
+Quality processes,Qualitätsprozesse,de
+Quality teams,Qualitätsteams,de
+QualityControl.coefficient,QualityControl.coefficient,de
+QualityControl.correctiveActions,QualityControl.correctiveActions,de
+QualityControl.customerSignature,QualityControl.customerSignature,de
+QualityControl.endDate,QualityControl.endDate,de
+QualityControl.finalNote,QualityControl.finalNote,de
+QualityControl.generalObservation,QualityControl.generalObservation,de
+QualityControl.inspectorSignature,QualityControl.inspectorSignature,de
+QualityControl.measuringNote,QualityControl.measuringNote,de
+QualityControl.observation,QualityControl.observation,de
+QualityControl.project,QualityControl.project,de
+QualityControl.projectClient,QualityControl.projectClient,de
+QualityControl.qualityControlTitle,QualityControl.qualityControlTitle,de
+QualityControl.reference,QualityControl.reference,de
+QualityControl.responsible,QualityControl.responsible,de
+QualityControl.total,QualityControl.total,de
+Quantity,Menge,de
+Quantity can not be greater than non conforming quantity,Die Menge darf nicht größer sein als die nicht konforme Menge,de
+Recipient,Empfänger,de
+Recipient name,Name des Empfängers,de
+Reference,Referenz,de
+Register response,Antwort registrieren,de
+Rejected,Abgelehnt,de
+Rejected quantity,Abgelehnte Menge,de
+Reportings,Berichte,de
+Resolution,Auflösung,de
+Responsible,Verantwortlich,de
+Responsible name,Verantwortlicher Name,de
+Responsible partner,Verantwortlicher Partner,de
+Responsible partner type,Verantwortlicher Partnertyp,de
+Result,Ergebnis,de
+Root cause,Grundlegende Ursache,de
+Root causes,Grundlegende Ursachen,de
+Sample,Muster,de
+Sample count,Anzahl der Proben,de
+Sample frequency,Häufigkeit der Probenahme,de
+Sample quantity,Menge der Proben,de
+Sample type,Typ der Probe,de
+Select recepient partner for QI Action distribution,Empfängerpartner für die Verteilung von QI-Aktionen auswählen,de
+Send QI Action distributions,QI-Aktionsverteilungen senden,de
+Send QI Decision distributions,QI-Entscheidungsverteilungen senden,de
+Send email,E-Mail senden,de
+Send the distributions,Senden Sie die Verteilungen,de
+Sent,Gesendet,de
+Sequence,Sequenz,de
+Solve,Lösen Sie,de
+Solved,Gelöst,de
+Some defaults have been skipped as they were incompatibles. (%s line(s)),"Einige Voreinstellungen wurden übersprungen, da sie nicht kompatibel waren. (%s Zeile(n))",de
+Source QI,Quelle QI,de
+Standby,Bereitschaft,de
+Start,Start,de
+Start date,Datum des Beginns,de
+Status,Status,de
+Status select,Status auswählen,de
+Statuses,Zustände,de
+Stock move,Lagerbewegung,de
+Stock move line,Bewegungslinie der Aktie,de
+Sum of accepted quantity and rejected quantity can not be greater than quantity,Die Summe aus angenommener und abgelehnter Menge kann nicht größer sein als die Menge,de
+Sum of quantities of the decisions for a default must not be greater than the default's quantity,Die Summe der Mengen der Entscheidungen für einen Ausfall darf nicht größer sein als die Menge des Ausfalls,de
+Supplier,Anbieter,de
+Supplier Order,Lieferant Bestellung,de
+Supplier Order line,Lieferant Bestellzeile,de
+Supplier contact,Kontakt zum Lieferanten,de
+Supplier delivery note,Lieferanten-Lieferschein,de
+Supplier delivery note line,Lieferanten-Lieferscheinzeile,de
+System,System,de
+Systematic,Systematisch,de
+Tags,Tags,de
+Tasks,Aufgaben,de
+Team,Team,de
+Technical sequence,Technischer Ablauf,de
+Template,Vorlage,de
+The QualityImprovement has been correctly created with the id : %s.,Die Qualitätsverbesserung wurde korrekt erstellt mit der ID: %s.,de
+The company %s doesn't have any configured sequence for Quality improvement,Das Unternehmen %s hat keinen konfigurierten Ablauf zur Qualitätsverbesserung,de
+"The following fields will be reset: customer order, stock move and stock move line , continue ?","Die folgenden Felder werden zurückgesetzt: Kundenauftrag, Lagerbewegung und Lagerbewegungszeile, weiter ?",de
+"The following fields will be reset: customer stock move and customer stock move line , continue ?","Die folgenden Felder werden zurückgesetzt: Kundenbestandsbewegung und Kundenbestandsbewegungszeile, weiter ?",de
+"The following fields will be reset: manufacturing operation line, manuf Order product to consume, consummed manuf order product , continue ?","Die folgenden Felder werden zurückgesetzt: Linie des Herstellungsvorgangs, zu verbrauchendes Manuf Order Produkt, verbrauchtes Manuf Order Produkt, weiter ?",de
+"The following fields will be reset: stock move line , continue ?","Die folgenden Felder werden zurückgesetzt: stock move line , continue ?",de
+"The following fields will be reset: supplier order, stock move and stock move line , continue ?","Die folgenden Felder werden zurückgesetzt: Lieferantenbestellung, Lagerbewegung und Lagerbewegungszeile, weiter ?",de
+"The following fields will be reset: supplier stock move and supplier stock move line , continue ?","Die folgenden Felder werden zurückgesetzt: Lieferantenbestandsbewegung und Lieferantenbestandsbewegungszeile, weiter ?",de
+The resolution default line with id %s doesn't belong to this quality improvement.,Die Auflösungsstandardzeile mit der ID %s gehört nicht zu dieser Qualitätsverbesserung.,de
+To Date,Bis heute,de
+Tools,Werkzeuge,de
+Total Cost,Gesamtkosten,de
+Tracking Number,Verfolgungsnummer,de
+Tracking Numbers,Tracking-Nummern,de
+Type,Typ,de
+Type of control device,Art der Kontrolleinrichtung,de
+Unit,Einheit,de
+Urgent,Dringend,de
+Validated,Validiert,de
+Waiting,Warten,de
+Week(s),Woche(n),de
+Work center,Arbeitsplatz,de
+Written by,Geschrieben von,de
+Written on,Geschrieben am,de
+Yes,Ja,de
+counter,Zähler,de
+each,jede,de
+name,Name,de
+priority,Priorität,de
+quality.responsible,quality.responsible,de
+value:Quality,value:Quality,de

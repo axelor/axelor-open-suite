@@ -1,0 +1,162 @@
+key,message,language
+1,1,de
+10,10,de
+11,11,de
+12,12,de
+13,13,de
+14,14,de
+15,15,de
+16,16,de
+17,17,de
+18,18,de
+19,19,de
+2,2,de
+20,20,de
+21,21,de
+22,22,de
+23,23,de
+24,24,de
+25,25,de
+26,26,de
+27,27,de
+28,28,de
+3,3,de
+4,4,de
+5,5,de
+6,6,de
+7,7,de
+8,8,de
+9,9,de
+<h4>Forecasts in out total</h4>,<h4>Vorhersagen in out total</h4>,de
+Actualize,Aktualisieren Sie,de
+Amount,Betrag,de
+Balance,Bilanz,de
+Balance by bank details,Saldo nach Bankverbindung,de
+Bank,Bank,de
+Bank details,Bankverbindung,de
+Best,Am besten,de
+Both,Beide,de
+Calculation Date,Berechnungsdatum,de
+Cash Management Dashboard,Cash Management Dashboard,de
+Cash balance over time,Kassenbestand im Zeitverlauf,de
+Cash management,Kassenführung,de
+Comments,Kommentare,de
+Company,Unternehmen,de
+Configuration,Konfiguration,de
+Currency,Währung,de
+Current balance,Aktuelle Bilanz,de
+Custom,Benutzerdefiniert,de
+Date,Datum,de
+Details,Einzelheiten,de
+Display,Anzeige,de
+Element,Element,de
+Employee,Mitarbeiter,de
+End Of Month,Ende des Monats,de
+Ending Balance,Endsaldo,de
+Estimated date,Geschätztes Datum,de
+Estimated duration after order creation (in days),Geschätzte Dauer nach Auftragserstellung (in Tagen),de
+Expense,Ausgaben,de
+Forecast,Vorhersage,de
+Forecast Assistant,Prognose-Assistent,de
+Forecast Assistant filters,Filter des Vorhersageassistenten,de
+Forecast Assistants,Prognose-Assistenten,de
+Forecast Dashboard,Dashboard für Vorhersagen,de
+Forecast Recap,Zusammenfassung der Vorhersage,de
+Forecast Recap Line Type,Vorhersage Wiederholung Zeilentyp,de
+Forecast Recap line Types,Vorhersage Wiederholungszeile Typen,de
+Forecast Recaps,Vorhersage-Recaps,de
+Forecast Report,Vorhersagebericht,de
+Forecast Reports,Vorhersage-Berichte,de
+Forecast Type,Vorhersage Typ,de
+Forecast Types,Arten von Prognosen,de
+Forecast filters,Vorhersage-Filter,de
+Forecast generator,Vorhersage-Generator,de
+Forecast recap,Zusammenfassung der Vorhersage,de
+Forecast recap filters,Filter für die Prognosezusammenfassung,de
+Forecast recap line type updated.,Der Typ der Vorhersagezusammenfassung wurde aktualisiert.,de
+ForecastLine.amount,ForecastLine.amount,de
+ForecastLine.balance,ForecastLine.balance,de
+ForecastLine.estimatedDate,ForecastLine.estimatedDate,de
+ForecastLine.relatedToName,ForecastLine.relatedToName,de
+ForecastLine.type,ForecastLine.type,de
+ForecastLineType.in,ForecastLineType.in,de
+ForecastLineType.out,ForecastLineType.out,de
+ForecastOpportunitiesType.base,ForecastOpportunitiesType.base,de
+ForecastOpportunitiesType.best,ForecastOpportunitiesType.best,de
+ForecastOpportunitiesType.no,ForecastOpportunitiesType.no,de
+ForecastOpportunitiesType.worst,ForecastOpportunitiesType.worst,de
+ForecastRecap.bankDetailsIban,ForecastRecap.bankDetailsIban,de
+ForecastRecap.calculationDate,ForecastRecap.calculationDate,de
+ForecastRecap.company,ForecastRecap.company,de
+ForecastRecap.currency,ForecastRecap.currency,de
+ForecastRecap.endingBalance,ForecastRecap.endingBalance,de
+ForecastRecap.fromDate,ForecastRecap.fromDate,de
+ForecastRecap.operationDetails,ForecastRecap.operationDetails,de
+ForecastRecap.opportunitiesTypeSelect,ForecastRecap.opportunitiesTypeSelect,de
+ForecastRecap.startingBalance,ForecastRecap.startingBalance,de
+ForecastRecap.title,ForecastRecap.title,de
+ForecastRecap.toDate,ForecastRecap.toDate,de
+ForecastRecapLine.balance,ForecastRecapLine.balance,de
+ForecastRecapLine.relatedToSelect,ForecastRecapLine.relatedToSelect,de
+Forecasts,Vorhersagen,de
+Forecasts generated,Erstellte Vorhersagen,de
+Forecasts in out total,Vorhersagen in out total,de
+From,Von,de
+From Date,Von Datum,de
+Functional origin,Funktionaler Ursprung,de
+Generate,Erzeugen Sie,de
+IBAN / BBAN,IBAN / BBAN,de
+Invalid dates,Ungültige Daten,de
+Invoice,Rechnung,de
+Is complete,Ist vollständig,de
+Journals to take into account,Zu berücksichtigende Journale,de
+Line,Leitung,de
+Lines,Zeilen,de
+Manual Forecast,Manuelle Vorhersage,de
+Manual forecasts,Manuelle Prognosen,de
+Marges,Marges,de
+Month,Monat,de
+Move,Verschieben,de
+Name,Name,de
+No,Nein,de
+No move type found for element : %s,Kein Bewegungstyp für Element gefunden: %s,de
+Operation type,Art des Vorgangs,de
+Opportunity,Gelegenheit,de
+Pay Day,Zahltag,de
+Payment mode,Zahlungsweise,de
+Periodicity,Periodizität,de
+Please fill periodicity.,Bitte Regelmäßigkeit angeben.,de
+Please select a company,Bitte wählen Sie ein Unternehmen,de
+Populate,Bevölkern Sie,de
+Previsional Marges,Präventive Margen,de
+Previsional Sales,Vorläufige Verkäufe,de
+Previsional Spending,Voraussichtliche Ausgaben,de
+Print,Drucken,de
+Purchase order,Bestellung,de
+Realization date,Datum der Verwirklichung,de
+Reason,Grund,de
+Reference,Referenz,de
+Related to select,Verwandt mit wählen,de
+Salary,Gehalt,de
+Sale order,Verkaufsauftrag,de
+Sales,Vertrieb,de
+Salesperson,Vertriebsmitarbeiter,de
+Seq.,Seq.,de
+Sequence,Sequenz,de
+Spending,Ausgaben,de
+Starting Balance,Startguthaben,de
+Starting date should not be in the past,Das Anfangsdatum sollte nicht in der Vergangenheit liegen,de
+Statuses to take into account,Zu berücksichtigende Status,de
+Take into account opportunies,Berücksichtigen Sie Chancen,de
+The company %s doesn't have any configured sequence for ForcastRecap,Das Unternehmen %s hat keine konfigurierte Sequenz für ForcastRecap,de
+The company %s doesn't have any configured sequence for Forecast,Das Unternehmen %s hat keine konfigurierte Sequenz für Forecast,de
+To,An,de
+To Date,Bis heute,de
+Type,Typ,de
+Update,Update,de
+Use for report,Verwendung für Bericht,de
+User,Benutzer,de
+Value %s is not supported for forecast recap line type.,Der Wert %s wird für den Zeilentyp forecast recap nicht unterstützt.,de
+Week,Woche,de
+Worst,Schlimmste,de
+value:Cash management,value:Cash management,de

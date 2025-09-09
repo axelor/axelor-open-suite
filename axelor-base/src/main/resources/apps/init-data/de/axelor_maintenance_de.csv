@@ -1,0 +1,122 @@
+key,message,language
+Action,Aktion,de
+Actions,Aktionen,de
+All reached,Alle erreicht,de
+Allocate all,Zuteilung aller,de
+Alternative Bill of materials,Alternative Stückliste,de
+Assigned to,Zugewiesen an,de
+BOM.machine,BOM.machine,de
+Bill of Materials,Stückliste,de
+Bill of materials,Stückliste,de
+Bills of material,Stücklisten,de
+Bills of materials,Stücklisten,de
+Cancel,Abbrechen,de
+Cancel Reason,Abbrechen Grund,de
+Cancel reservation,Reservierung stornieren,de
+Canceled,Abgesagt,de
+Complete,Vollständig,de
+Completed,Abgeschlossen,de
+Compute cost price,Berechnung des Selbstkostenpreises,de
+Configuration,Konfiguration,de
+Consumed products,Verbrauchte Produkte,de
+Corrective,Berichtigung,de
+Cost,Kosten,de
+Create maintenance request,Wartungsanforderung erstellen,de
+Current requests,Aktuelle Anfragen,de
+Cycles,Zyklen,de
+Dates,Daten,de
+Days,Tage,de
+Deallocate all,Deallokieren Sie alle,de
+Default Bill of materials,Standard-Stückliste,de
+Done on,Erledigt am,de
+Duration (Hours),Dauer (Stunden),de
+End date,Datum des Endes,de
+Equipement maintenance,Wartung der Ausrüstung,de
+Equipement maintenances,Instandhaltung der Ausrüstung,de
+Event end date,Enddatum der Veranstaltung,de
+Event start date,Datum des Veranstaltungsbeginns,de
+Expected date,Voraussichtliches Datum,de
+Finish,Oberfläche,de
+First reached,Zuerst erreicht,de
+General BoM,Allgemeiner BoM,de
+General production processes,Allgemeine Produktionsprozesse,de
+Generate new version,Neue Version generieren,de
+Generate request each,Erzeugen Sie jede Anfrage,de
+Hours of production,Stunden der Produktion,de
+In progress,In Arbeit,de
+MO's comment from sale order,Stellungnahme der MO aus dem Verkaufsauftrag,de
+MO's comment from sale order line,Kommentar der MO aus der Verkaufsauftragszeile,de
+Machine,Maschine,de
+Machine type,Typ der Maschine,de
+Machines,Maschinen,de
+Machines unavailable,Maschinen nicht verfügbar,de
+Maintenance,Wartung,de
+Maintenance Category,Kategorie Wartung,de
+Maintenance File,Wartungsdatei,de
+Maintenance Procedure,Verfahren zur Wartung,de
+Maintenance Request,Anfrage zur Wartung,de
+Maintenance Requests,Wartungsanfragen,de
+Maintenance bill of materials template,Wartung Stückliste Vorlage,de
+Maintenance comments,Bemerkungen zur Wartung,de
+Maintenance manuf order template,Instandhaltungsauftragsvorlage,de
+Maintenance order,Instandhaltungsauftrag,de
+Maintenance orders,Instandhaltungsaufträge,de
+Maintenance periods,Wartungszeiträume,de
+Maintenance prod process template,Prozessvorlage für Wartungsarbeiten,de
+Maintenance task,Wartungsaufgabe,de
+ManufOrder.machine,ManufOrder.machine,de
+ManufOrder.machineType,ManufOrder.machineType,de
+Manufacturing Order,Fertigungsauftrag,de
+Manufacturing order,Fertigungsauftrag,de
+Manufacturing orders,Fertigungsaufträge,de
+Merged MO,Zusammengelegte MO,de
+Missing equipement maintenance sequence.,Fehlender Ablauf der Ausrüstungswartung.,de
+My Maintenance requests,Meine Wartungsanfragen,de
+Name,Name,de
+Next maintenance date,Nächster Wartungstermin,de
+Note,Hinweis,de
+Number of phases,Anzahl der Phasen,de
+Options,Optionen,de
+Outsourced,Ausgelagert,de
+Partial Finish,Teilweiser Abschluss,de
+Pause,Pause,de
+Permanent,Dauerhaft,de
+Personalized production processes,Personalisierte Produktionsprozesse,de
+Phases,Phasen,de
+Plan,Plan,de
+Planned dates,Geplante Termine,de
+Please select the Manufacturing order(s) to print.,Bitte wählen Sie den/die zu druckenden Fertigungsauftrag(e) aus.,de
+Pre-fill operations,Vorfüllvorgänge,de
+Preventive,Vorbeugende Maßnahmen,de
+Print,Drucken,de
+Print Production Process,Prozess der Druckproduktion,de
+ProdProcess.machine,ProdProcess.machine,de
+Product,Produkt,de
+Production configuration,Konfiguration der Produktion,de
+Production process,Produktionsprozess,de
+Production processes,Produktionsverfahren,de
+Real dates,Echte Daten,de
+Replan,Replan,de
+Reports,Berichte,de
+Request By,Anfrage von,de
+Request date,Datum der Anfrage,de
+Request history,Historie anfordern,de
+Reserve all,Alle reservieren,de
+Residual products,Verbleibende Produkte,de
+Resume,Lebenslauf,de
+Sequence,Sequenz,de
+Start,Start,de
+Start date,Datum des Beginns,de
+State,Staat,de
+Total Planned Duration,Geplante Gesamtdauer,de
+Total Real Duration,Reale Gesamtdauer,de
+Type,Typ,de
+Update planned quantities (Components and FP),Aktualisierung der geplanten Mengen (Komponenten und FP),de
+Update product cost price,Aktualisierung des Selbstkostenpreises des Produkts,de
+Update real quantities (Components and FP),Aktualisierung der realen Mengen (Komponenten und FP),de
+Version management,Versionsverwaltung,de
+equipement.maintenance.code,equipement.maintenance.code,de
+equipement.maintenance.image,equipement.maintenance.image,de
+equipement.maintenance.name,equipement.maintenance.name,de
+maintenance.request.planned,maintenance.request.planned,de
+value:Maintenance,value:Maintenance,de

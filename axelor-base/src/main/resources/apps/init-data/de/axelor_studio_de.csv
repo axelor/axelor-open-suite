@@ -1,0 +1,1699 @@
+key,message,language
+<< Previous,<< Zurück,de
+"<b>Tags:</b>$date: Today's date, $time: Current time","<b>Tags:</b>$date: Heutiges Datum, $time: Aktuelle Uhrzeit",de
+A negative value won't set a depth limit in the recursive task evaluation. Please do so only if you are aware of the impacts.,"Ein negativer Wert setzt keine Tiefenbegrenzung bei der rekursiven Aufgabenauswertung. Bitte tun Sie dies nur, wenn Sie sich der Auswirkungen bewusst sind.",de
+A negative value won't set a time limit in the recursive task evaluation. Please do so only if you are aware of the impacts.,"Ein negativer Wert setzt kein Zeitlimit bei der rekursiven Aufgabenauswertung. Bitte tun Sie dies nur, wenn Sie sich der Auswirkungen bewusst sind.",de
+A suspicion of infinite loop occurs when both of these limits are exceeded.,"Der Verdacht auf eine Endlosschleife entsteht, wenn diese beiden Grenzen überschritten werden.",de
+AND,UND,de
+Accept,Akzeptieren,de
+Accept-Charset,Accept-Charset,de
+Accept-Datetime,Accept-Datetime,de
+Accept-Encoding,Accept-Encoding,de
+Accept-Language,Accept-Language,de
+Access config imported successfully,Zugangskonfiguration erfolgreich importiert,de
+Access-Control-Allow-Headers,Zugriffskontrolle-Zulassungs-Kopfzeilen,de
+Access-Control-Allow-Methods,Zugriffssteuerungs-Zulassungs-Methoden,de
+Access-Control-Allow-Origin,Zugriffskontrolle-Ursprung zulassen,de
+Access-Control-Expose-Headers,Zugriffskontroll-Expose-Header,de
+Access-Control-Max-Age,Zugangskontrolle-Max-Alter,de
+Action,Aktion,de
+Action/Email title,Titel der Aktion/E-Mail,de
+Actions,Aktionen,de
+Activate the hand tool,Aktivieren Sie das Handwerkzeug,de
+Activate the lasso tool,Aktivieren Sie das Lasso-Werkzeug,de
+Active,Aktiv,de
+Activity ref,Aktivität ref,de
+Ad-hoc,Ad-hoc,de
+Add,hinzufügen,de
+Add Fields,Felder hinzufügen,de
+Add all values,Alle Werte hinzufügen,de
+Add comments,Kommentare hinzufügen,de
+Add context menu,Kontextmenü hinzufügen,de
+Add expression,Ausdruck hinzufügen,de
+Add group,Gruppe hinzufügen,de
+Add menus,Menüs hinzufügen,de
+Add multiple arguments,Mehrere Argumente hinzufügen,de
+Add new,Neu hinzufügen,de
+Add payload,Nutzlast hinzufügen,de
+Add query,Abfrage hinzufügen,de
+Add rule,Regel hinzufügen,de
+Add sub field,Unterfeld hinzufügen,de
+Add tab,Registerkarte hinzufügen,de
+Add the application to the App Management,Hinzufügen der Anwendung zur App-Verwaltung,de
+Add translations,Übersetzungen hinzufügen,de
+Addons,Zusätze,de
+Admins,Admins,de
+After,Nach,de
+Aggregate,Aggregat,de
+Aggregate On,Aggregat ein,de
+Aggregate On type,Aggregat Auf Typ,de
+Aggregate date type,Aggregierte Datumsart,de
+Alert,Alarmierung,de
+All,Alle,de
+All Action,Alle Aktionen,de
+All Processes,Alle Prozesse,de
+All instances,Alle Instanzen,de
+All options and selection will be lost. Are you sure ?,Alle Optionen und Auswahlmöglichkeiten gehen verloren. Sind Sie sicher?,de
+Allow Bpm loading from sources,Bpm-Laden aus Quellen zulassen,de
+Amber,Bernstein,de
+And,Und,de
+App,App,de
+App BPM,Anwendung BPM,de
+App Data Loader,App-Datenlader,de
+App Loader,App-Lader,de
+App Loaders,App-Lader,de
+App Studio,App-Studio,de
+App loader,App-Lader,de
+App name,App-Name,de
+Append,Anhängen,de
+Append mapper,Mapper anhängen,de
+Append query,Abfrage anhängen,de
+Applied,Angewandt,de
+Apply,Bewerbung,de
+Apps,Apps,de
+Apps imported successfully,Apps erfolgreich importiert,de
+Apps installed successfully,Apps erfolgreich installiert,de
+Apps management,Verwaltung von Apps,de
+Apps refreshed successfully,Apps wurden erfolgreich aktualisiert,de
+Are you sure to import demo data for '${name}'?,"Sind Sie sicher, dass Sie die Demodaten für '${Name}' importieren wollen?",de
+Are you sure to install '${name}'?,"Sind Sie sicher, dass Sie '${name}' installieren wollen?",de
+Are you sure to uninstall '${name}'?,"Sind Sie sicher, dass Sie '${Name}' deinstallieren wollen?",de
+Are you sure you want to close the tab?,"Sind Sie sicher, dass Sie die Registerkarte schließen wollen?",de
+Are you sure you want to delete this record?,"Sind Sie sicher, dass Sie diesen Datensatz löschen wollen?",de
+Are you sure you want to terminate all the processes?,"Sind Sie sicher, dass Sie alle Prozesse beenden wollen?",de
+"Are you sure, do you want to delete translations?","Sind Sie sicher, dass Sie Übersetzungen löschen wollen?",de
+Are you sure?,Sind Sie sicher?,de
+Are you sure? Do you want to delete it?,Sind Sie sicher? Möchten Sie es löschen?,de
+Area,Bereich,de
+Assign output to fields,Ausgabe zu Feldern zuordnen,de
+Assign value to,Wert zuweisen,de
+Assigned to me,Mir zugewiesen,de
+Assigned to others,Anderen zugewiesen,de
+At least 2 models are required to perform the merge operation.,"Es sind mindestens 2 Modelle erforderlich, um die Zusammenführung durchzuführen.",de
+At least one children required,Mindestens ein Kind erforderlich,de
+At least one menu item required,Mindestens ein Menüpunkt erforderlich,de
+Attribute value,Wert des Attributs,de
+Attributes,Attribute,de
+Auth call token,Auth-Call-Token,de
+Auth request,Autorisierungsanfrage,de
+Auth response,Antwort der Autorisierung,de
+Auth type,Auth-Typ,de
+Authenticate,Authentifizieren Sie,de
+Authenticated,Authentifiziert,de
+Authenticator,Authentifikator,de
+Authorization,Autorisierung,de
+Average time spent per node by per users,Durchschnittlich verbrachte Zeit pro Knoten durch die Benutzer,de
+BAML,BAML,de
+BAML Editor,BAML-Editor,de
+BAML Model,BAML-Modell,de
+BAML editor,BAML-Redakteur,de
+BAML model,BAML-Modell,de
+BAMLs,BAMLs,de
+BPM,BPM,de
+BPM Dashboard,BPM-Dashboard,de
+BPM Instance,BPM-Instanz,de
+BPM Instance State,Zustand der BPM-Instanz,de
+BPM Migration,BPM-Migration,de
+BPM Model,BPM-Modell,de
+BPM Models,BPM-Modelle,de
+BPM State,BPM-Status,de
+BPM Studio,BPM-Studio,de
+BPM components,BPM-Komponenten,de
+BPM editor,BPM-Editor,de
+BPM error,BPM-Fehler,de
+BPM model,BPM-Modell,de
+"BPM state <b>%s</b> is activated on<br/> <a href=\""%s\"">%s</a><br/>","Der BPM-Status <b>%s</b> ist aktiviert am<br/> <a href=\""%s\"">%s</a><br/>",de
+BPMN,BPMN,de
+Back to Draft,Zurück zu den Entwürfen,de
+Back to draft,Zurück zum Entwurf,de
+Background,Hintergrund,de
+Bar,Bar,de
+Base URL,Basis-URL,de
+Basic,Grundlegend,de
+Basic Type,Grundtyp,de
+Before,Vor,de
+Between,Zwischen,de
+Binding,Verbindlich,de
+Black,Schwarz,de
+Blocking,Blockieren,de
+Blue,Blau,de
+Blue Grey,Blau Grau,de
+Body,Körper,de
+Boolean,Boolesche,de
+Bpm import from sources is not allowed,Bpm-Import aus Quellen ist nicht erlaubt,de
+Brown,Braun,de
+Bulk install,Massenhafte Installation,de
+Business Rule Task,Geschäftsvorschrift Aufgabe,de
+Button,Schaltfläche,de
+Buttons,Buttons,de
+CRON builder,CRON-Ersteller,de
+Cache-Control,Cache-Kontrolle,de
+Call,Rufen Sie  an.,de
+Call Activity,Aktivität aufrufen,de
+Call Connector,Stecker anrufen,de
+Call if,"Anrufen, wenn",de
+Call link,Link aufrufen,de
+Call link condition,Link-Bedingung aufrufen,de
+Call model,Modell aufrufen,de
+CallActivity type,CallActivity-Typ,de
+Called element,Aufgerufenes Element,de
+Can Collapse,Dose Einsturz,de
+Can collapse,Kann zusammenbrechen,de
+Can move,Kann sich bewegen,de
+Can save,Kann sparen,de
+Can search,Kann suchen,de
+Can't alter nodes for real existing selection field,Knoten für real existierendes Auswahlfeld können nicht geändert werden,de
+Can't restart inactive process,Inaktiver Prozess kann nicht neu gestartet werden,de
+Cancel,Abbrechen,de
+Cancel Boundary Event,Grenzereignis abbrechen,de
+Cancel End Event,Abbrechen Ende Ereignis,de
+Cancel node,Knoten abbrechen,de
+Cancelled successfully,Erfolgreich abgebrochen,de
+Candidate starter groups,Startgruppen für Bewerberinnen und Bewerber,de
+Candidate starter users,Kandidat für den Einstieg,de
+Case ref,Fall ref,de
+Category value,Kategorie Wert,de
+Chart,Tabelle,de
+Chart type,Diagrammtyp,de
+Charts,Diagramme,de
+Clear log,Protokoll löschen,de
+Close,Schließen Sie,de
+Code,Code,de
+Code is required.,Code ist erforderlich.,de
+Collapse If,Kollabieren Wenn,de
+Collapse if,Kollabieren wenn,de
+Collection,Sammlung,de
+Color,Farbe,de
+Colspan,Colspan,de
+Column sequence,Reihenfolge der Säulen,de
+Comment,Kommentar,de
+Comments,Kommentare,de
+Common,Gemeinsame,de
+Comparison,Vergleich,de
+Compensation Boundary Event,Entschädigung Grenzereignis,de
+Compensation End Event,Entschädigung Ende Ereignis,de
+Compensation Intermediate Throw Event,Entschädigung Zwischenwurfwettbewerb,de
+Compensation Start Event,Entschädigung Start Ereignis,de
+Completed If can't be managed using builder once changed manually.,"Abgeschlossen Kann nicht mit dem Builder verwaltet werden, wenn es einmal manuell geändert wurde.",de
+Completed if,"Abgeschlossen, wenn",de
+Completion condition,Bedingung für die Fertigstellung,de
+Complex Gateway,Komplexes Gateway,de
+Compulsory,Obligatorisch,de
+Computed,Berechnet,de
+Condition,Zustand,de
+Conditional Boundary Event,Bedingtes Boundary-Ereignis,de
+Conditional Flow,Bedingter Fluss,de
+Conditional Intermediate Catch Event,Bedingtes Zwischenfangereignis,de
+Conditional Start Event,Bedingtes Startereignis,de
+Configuration,Konfiguration,de
+Configure,Konfigurieren Sie,de
+Confirm,Bestätigen Sie,de
+Connect using transition,Verbinden mit Übergang,de
+Connection,Verbindung,de
+Connector,Anschluss,de
+Connector script,Anschluss-Skript,de
+Content-Disposition,Inhalt-Disposition,de
+Content-Encoding,Content-Encoding,de
+Content-Language,Inhalt-Sprache,de
+Content-Length,Inhalt-Länge,de
+Content-MD5,Inhalt-MD5,de
+Content-Range,Content-Range,de
+Content-Security-Policy,Content-Security-Policy,de
+Content-Security-Policy-Report-Only,Content-Security-Policy-Report-Only,de
+Content-Type,Inhalt-Typ,de
+Context,Kontext,de
+Context builder,Kontext-Ersteller,de
+Context model,Modell des Kontextes,de
+Cookie,Keks,de
+Create,erstellen.,de
+Create Decision Table,Entscheidungstabelle erstellen,de
+Create Input Data,Eingabedaten erstellen,de
+Create Knowledge Model,Wissensmodell erstellen,de
+Create Knowledge Source,Wissensquelle erstellen,de
+Create condition,Bedingung erstellen,de
+Create loop,Schleife erstellen,de
+Create user action,Benutzeraktion erstellen,de
+Cross-Origin-Resource-Policy,Herkunftsübergreifende Ressourcenpolitik,de
+Css,Css,de
+Current changes will be lost. Do you really want to proceed?,Die aktuellen Änderungen gehen verloren. Wollen Sie wirklich fortfahren?,de
+Current node,Aktueller Knoten,de
+Current status,Aktueller Stand,de
+Custom,Benutzerdefiniert,de
+Custom Variable,Benutzerdefinierte Variable,de
+Custom Variables,Benutzerdefinierte Variablen,de
+Custom actions,Benutzerdefinierte Aktionen,de
+Custom field,Benutzerdefiniertes Feld,de
+Custom fields,Benutzerdefinierte Felder,de
+Custom model,Benutzerdefiniertes Modell,de
+Custom models,Kundenspezifische Modelle,de
+Custom variable list,Benutzerdefinierte Variablenliste,de
+Custom variables,Benutzerdefinierte Variablen,de
+Cyan,Cyan,de
+Cycle,Zyklus,de
+DELETE,DELETE,de
+DMN,DMN,de
+DMN Diagrams,DMN-Diagramme,de
+DMN Editor,DMN-Redakteur,de
+DMN editor,DMN-Redakteur,de
+DMN field,DMN-Feld,de
+DMN model,DMN-Modell,de
+DMNs,DMNs,de
+Dashboard,Dashboard,de
+Dashboards,Dashboards,de
+Dashlet,Dashlet,de
+Dashlets,Dashlets,de
+Data Object Reference,Datenobjekt-Referenz,de
+Data Store Reference,Datenspeicher-Referenz,de
+Data file,Die Datei,de
+Data file must be excel file,Datendatei muss Excel-Datei sein,de
+Date,Datum,de
+Date time,Datum Uhrzeit,de
+Datetime,Datum und Uhrzeit,de
+Day,Tag,de
+Days,Tage,de
+Deadline field path,Deadline Feldweg,de
+Deadline type field,Feld Fristenart,de
+Decimal,Dezimal,de
+Decision,Entscheidung,de
+Decision Id,Entscheidung Id,de
+Decision name,Name der Entscheidung,de
+Decision ref,Entscheidung ref,de
+Decision tables,Entscheidungstabellen,de
+Deep Orange,Tiefes Orange,de
+Deep Purple,Tiefes Lila,de
+Default Flow,Standardfluss,de
+Default Value,Standardwert,de
+Default authenticator,Standard-Authentifikator,de
+Default form,Standardformular,de
+Default value,Standardwert,de
+Definitions,Definitionen,de
+Delegate expression,Ausdruck delegieren,de
+Delete,Löschen,de
+Delete Confirmation,Bestätigung löschen,de
+Deleted Successfully,Erfolgreich gelöscht,de
+Demo data loaded,Demo-Daten geladen,de
+Demo data loaded successfully,Demo-Daten erfolgreich geladen,de
+Dependency arcs,Abhängigkeitsbögen,de
+Dependency link script,Skript zur Verknüpfung von Abhängigkeiten,de
+Depends on,Hängt ab von,de
+Deploy,Bereitstellung von,de
+Deployed Successfully,Erfolgreich im Einsatz,de
+Deployment id,Einsatz-ID,de
+Description,Beschreibung,de
+Description type,Art der Beschreibung,de
+Details,Einzelheiten,de
+Diagram xml,Diagramm xml,de
+Direct creation,Direkte Erstellung,de
+Direct creation ?,Direkte Erstellung ?,de
+Display,Anzeige,de
+Display for models,Anzeige für Modelle,de
+Display message,Meldung anzeigen,de
+Display on models,Anzeige bei Modellen,de
+Display status,Status anzeigen,de
+Display tag count,Tag-Anzahl anzeigen,de
+Display tag count ?,Tag-Anzahl anzeigen ?,de
+Display type,Art der Anzeige,de
+Dmn model,Dmn-Modell,de
+Do you really want to delete?,Wollen Sie wirklich löschen?,de
+Domain,Bereich,de
+Donut,Donut,de
+Download,Herunterladen,de
+Download SVG,SVG herunterladen,de
+Draft,Entwurf,de
+Dummy,Schnuller,de
+Duration,Dauer,de
+Duration (m),Dauer (m),de
+Duration type,Dauer Typ,de
+ETag,ETag,de
+Edit,bearbeiten,de
+Edit before send,Vor dem Senden bearbeiten,de
+Edit number,Nummer bearbeiten,de
+Edit string,Zeichenfolge bearbeiten,de
+Editable,Editierbar,de
+Editing not supported for set expression language,Bearbeitung nicht unterstützt für Satzausdruckssprache,de
+Element variable,Element variabel,de
+Email,E-Mail,de
+Email event,E-Mail-Veranstaltung,de
+Email notification,E-Mail-Benachrichtigung,de
+Email template,E-Mail-Vorlage,de
+Enable,Aktivieren Sie,de
+Enable app,App aktivieren,de
+Enable track web services,Aktivieren von Tracking-Webdiensten,de
+End Event,Ereignis beenden,de
+End node,Knoten beenden,de
+End value,Endwert,de
+Ensure providing a valid WKF model before proceeding.,"Stellen Sie sicher, dass Sie ein gültiges WKF-Modell bereitstellen, bevor Sie fortfahren.",de
+Enterprise,Unternehmen,de
+Equal,Gleichberechtigt,de
+Equals,Entspricht,de
+Error,Fehler,de
+Error Boundary Event,Fehlergrenzenereignis,de
+Error End Event,Fehler Ende Ereignis,de
+Error Start Event,Fehler Start Ereignis,de
+Error code,Fehlercode,de
+Error code variable,Fehlercode-Variable,de
+Error in authorization,Fehler bei der Autorisierung,de
+Error in authorization of connector: %s,Fehler bei der Autorisierung des Konnektors: %s,de
+Error in refreshing app,Fehler beim Aktualisieren der Anwendung,de
+Error message,Fehlermeldung,de
+Error message variable,Variable Fehlermeldung,de
+Error name,Name des Fehlers,de
+Error! Can't import XML,Fehler! XML kann nicht importiert werden,de
+Escalation,Eskalation,de
+Escalation Boundary Event,Eskalation Grenzereignis,de
+Escalation End Event,Eskalationsende-Ereignis,de
+Escalation Intermediate Throw Event,Eskalation Zwischenzeitliches Wurfereignis,de
+Escalation Start Event,Eskalationsstart-Ereignis,de
+Escalation code,Eskalationscode,de
+Escalation code variable,Eskalationscode variabel,de
+Escalation name,Name der Eskalation,de
+Event Sub Process,Ereignis-Unterprozess,de
+Event based Gateway,Ereignisbasiertes Gateway,de
+Event type,Art der Veranstaltung,de
+Exactly,Genau,de
+Exclude,Ausgeschlossen sind,de
+Exclusive Gateway,Exklusives Gateway,de
+Executable,Ausführbar,de
+Execute,Ausführen,de
+Execution listener,Hörer für die Ausführung,de
+Existing menu,Vorhandenes Menü,de
+Existing select,Vorhandenes auswählen,de
+Existing selection,Vorhandene Auswahl,de
+Expanded Pool,Erweiterter Pool,de
+Expect,Erwarten Sie,de
+Experimental,Experimentelle,de
+Export,Exportieren,de
+Export Apps,Apps exportieren,de
+Export Data,Daten exportieren,de
+Export app,App exportieren,de
+Export data,Daten exportieren,de
+Export file,Datei exportieren,de
+Export libraries,Bibliotheken exportieren,de
+Export path not configured,Exportpfad nicht konfiguriert,de
+Export wkf,wkf exportieren,de
+Exported on,Exportiert am,de
+Expression,Ausdruck,de
+Expression can't be managed using builder once changed manually.,"Der Ausdruck kann nicht mit dem Builder verwaltet werden, wenn er einmal manuell geändert wurde.",de
+Expression language,Ausdruckssprache,de
+"Expressions are evaluated as groovy expressions <b>if</b> it starts with <b>'eval:'</b>. Otherwise, it's considered as a string.","Ausdrücke werden als Groovy-Ausdrücke ausgewertet, <b>wenn</b> sie mit <b>'eval:'</b> beginnen. Andernfalls wird er als String betrachtet.",de
+Extension,Erweiterung,de
+External,Extern,de
+External task configuration,Konfiguration externer Aufgaben,de
+Extra,Extra,de
+False,Falsch,de
+Feature-Policy,Feature-Policy,de
+Field,Feld,de
+Field name,Name des Feldes,de
+Field name should be unique,Feldname sollte eindeutig sein,de
+Field name should be unique. Check,Der Feldname sollte eindeutig sein. Prüfen Sie,de
+Field options,Feldoptionen,de
+Field should be date field,Feld sollte Datumsfeld sein,de
+Field tracking,Feldverfolgung,de
+Field type,Feldtyp,de
+Fields,Felder,de
+File Link,Datei-Link,de
+File Path,Datei-Pfad,de
+File not found,Datei nicht gefunden,de
+File text,Text der Datei,de
+File upload path not configured,Datei-Upload-Pfad nicht konfiguriert,de
+Filter,Filter,de
+Filter Query,Filterabfrage,de
+Filters,Filter,de
+First,Erste,de
+First Letter of the id should always be alphabet,Der erste Buchstabe der Kennung sollte immer das Alphabet sein.,de
+First Letter of the name should always be alphabet,Der erste Buchstabe des Namens sollte immer das Alphabet sein,de
+First group by,Erste Gruppe nach,de
+Force Migration,Migration erzwingen,de
+Form,Formular,de
+Form view,Ansicht des Formulars,de
+Form width,Breite des Formulars,de
+Forwarded,Weitergeleitet,de
+From,Von,de
+Function name,Name der Funktion,de
+Funnel,Trichter,de
+GET,GET,de
+Gauge,Messgerät,de
+General,Allgemein,de
+Generate Node Mapping,Knotenzuordnung generieren,de
+Generate code,Code generieren,de
+Generate menu,Menü generieren,de
+Generate with saved record,Generieren mit gespeichertem Datensatz,de
+Generated Actions,Generierte Aktionen,de
+Generated app,Erstellte Anwendung,de
+Generated from call activity,Erzeugt aus der Anrufaktivität,de
+Global actions,Globale Maßnahmen,de
+Greater,Größere,de
+Greater or equals,Größer oder gleich,de
+Green,Grün,de
+Grey,Grau,de
+Grid view,Gitternetz-Ansicht,de
+Groovy,Groovy,de
+Groovy template,Groovy-Vorlage,de
+Group By,Gruppe nach,de
+Group date type,Datumstyp gruppieren,de
+Group on type,Gruppe nach Typ,de
+Groups,Gruppen,de
+Header,Kopfzeile,de
+Header builder,Kopfzeilenerstellung,de
+Header is invalid in import file,Kopfzeile in der Importdatei ist ungültig,de
+Headers,Kopfzeilen,de
+Height,Höhe,de
+"Hello %s<br/> BPM state <b>%s</b> is activated on<br/> <a href=\""%s\"">%s</a><br/>","Hallo %s<br/> Der BPM-Status <b>%s</b> ist aktiviert am<br/> <a href=\""%s\"">%s</a><br/>",de
+Help,Hilfe,de
+Hidden,Versteckt,de
+Hidden in grid,Versteckt im Gitter,de
+Hidden menu,Verstecktes Menü,de
+Hide if,"Ausblenden, wenn",de
+Hint,Hinweis,de
+History configuration,Konfiguration der Geschichte,de
+History time to live,Geschichte Zeit zu leben,de
+Horizontal bar,Horizontaler Balken,de
+Host,Gastgeber,de
+Hours,Stunden,de
+Icon,Icon,de
+Id,Id,de
+Id is required in,Id ist erforderlich in,de
+If,Wenn,de
+If multiple,Wenn mehrere,de
+"If you don't add a return on the last line of the body, then all variables of the current context plus all variables you've defined in the body will be implicitly returned.<br>Either implicitly or explicitly declared, the returned value will be injected in the context in a variable named following the name defined in the arc.","Wenn Sie in der letzten Zeile des Körpers kein Return einfügen, werden alle Variablen des aktuellen Kontexts sowie alle im Körper definierten Variablen implizit zurückgegeben.<br> Entweder implizit oder explizit deklariert, wird der zurückgegebene Wert in den Kontext in eine Variable injiziert, die nach dem im Bogen definierten Namen benannt ist.",de
+If-Match,If-Match,de
+If-Modified-Since,Wenn-geändert-seit,de
+If-None-Match,Wenn-nicht-übereinstimmend,de
+If-Range,If-Range,de
+If-Unmodified-Since,Wenn-unverändert-seit,de
+If-module,Wenn-Baustein,de
+Image,Bild,de
+Implementation,Umsetzung,de
+Import,Importieren,de
+Import ID,Import-ID,de
+Import Log,Protokoll importieren,de
+Import app,Anwendung importieren,de
+Import demo data,Demo-Daten importieren,de
+Import failed,Import fehlgeschlagen,de
+Import file,Datei importieren,de
+Import from sources,Import aus Quellen,de
+Import log,Protokoll importieren,de
+Import roles,Rollen importieren,de
+Import wkf,wkf importieren,de
+Import workflow models,Workflow-Modelle importieren,de
+Imported Apps,Importierte Apps,de
+Imported from,Importiert aus,de
+Imported on,Importiert am,de
+Imported successfully,Erfolgreich importiert,de
+In mapping,In Kartierung,de
+In progress,In Arbeit,de
+Include,einbeziehen.,de
+Include if,"Einschließen, wenn",de
+Inclusive Gateway,Inklusive Gateway,de
+Indigo,Indigo,de
+Infinite loop execution suspected,Verdacht auf Ausführung einer Endlosschleife,de
+Information,Informationen,de
+Init data loaded,Init-Daten geladen,de
+Initiator,Initiator,de
+Input,Eingabe,de
+Input Expression,Eingabe Ausdruck,de
+Input Label,Eingabe Etikett,de
+Input Type,Eingabe Typ,de
+Input Values,Eingabewerte,de
+Input variable,Eingangsvariable,de
+Input xml,Eingabe xml,de
+Install,Installieren Sie,de
+Install order,Auftrag installieren,de
+Installed,Installiert,de
+Instance Restarted,Instanz neu gestartet,de
+Instance Variable,Instanz-Variable,de
+Instance Variables,Instanz-Variablen,de
+Instance error,Instanz-Fehler,de
+Instance id,Instanz-ID,de
+Integer,Integer,de
+Intermediate Throw Event,Wurfwettbewerb für Fortgeschrittene,de
+Invalid,Ungültig,de
+Invalid BAML xml. Please contact admin for further info,Ungültige BAML xml. Bitte kontaktieren Sie den Administrator für weitere Informationen,de
+Invalid File,Ungültige Datei,de
+Invalid date: start date is after end date,Ungültiges Datum: Startdatum liegt nach dem Enddatum,de
+Is active,Ist aktiv,de
+Is json,Ist json,de
+Is json relational field,Ist json relationales Feld,de
+Is optional,Ist fakultativ,de
+Is parameter,Ist Parameter,de
+Is selection field,Ist Auswahlfeld,de
+Item,Artikel,de
+Item is required in,Artikel ist erforderlich in,de
+Item is required.,Artikel ist erforderlich.,de
+Item name is required in,Der Artikelname ist erforderlich in,de
+Item value is required in,Artikelwert ist erforderlich in,de
+Itemspan,Artikelspan,de
+Java class,Java-Klasse,de
+Javascript,Javascript,de
+Job configuration,Auftragskonfiguration,de
+Job priority,Priorität der Arbeit,de
+Json,Json,de
+Json Field,Json-Feld,de
+Json many to many,Json viele zu viele,de
+Json many to one,Json viele zu einem,de
+Json model name,Json-Modellname,de
+Json one to many,Json eins zu viele,de
+Keep empty,Leer halten,de
+Key,Schlüssel,de
+Key value,Schlüsselwert,de
+Label,Etikett,de
+Language,Sprache,de
+Last field selected must be of O2M or M2M type,Das letzte ausgewählte Feld muss vom Typ O2M oder M2M sein,de
+Last sub field must be user field,Letztes Unterfeld muss Benutzerfeld sein,de
+Last subfield should be many to many or one to many field,Das letzte Unterfeld sollte ein Many-to-many- oder One-to-many-Feld sein.,de
+Last subfield should be related to start model,Das letzte Unterfeld sollte sich auf das Startmodell beziehen.,de
+Last subfield should be related to team,Das letzte Unterfeld sollte sich auf das Team beziehen,de
+Last subfield should be related to user,Das letzte Unterfeld sollte sich auf den Benutzer beziehen,de
+Last-Modified,Zuletzt geändert,de
+Late tasks,Verspätete Aufgaben,de
+Left menu,Linkes Menü,de
+Less,Weniger,de
+Less or equals,Weniger oder gleich,de
+Libraries,Bibliotheken,de
+Library,Bibliothek,de
+Light Blue,Hellblau,de
+Light Green,Hellgrün,de
+Like,Wie,de
+Lime,Limette,de
+Line,Leitung,de
+Link,Link,de
+Link Intermediate Catch Event,Link Zwischenfangereignis,de
+Link Intermediate Throw Event,Link Intermediate Throw Event,de
+Link name,Link Name,de
+LinkScript,LinkScript,de
+LinkScript Arc,LinkScript-Bogen,de
+LinkScript Arcs,LinkScript-Bögen,de
+List,Liste,de
+Listener id,Hörer-ID,de
+Listeners,Hörer,de
+Local,Lokales,de
+Location,Standort,de
+Log,Protokoll,de
+Log File,Log-Datei,de
+Log file,Log-Datei,de
+Logic operator,Logik-Operator,de
+Loop,Schleife,de
+Loop cardinality,Kardinalität der Schleife,de
+Main panel is required to have side panels,Das Hauptpaneel muss Seitenpaneele haben,de
+Managers,Manager,de
+Manual Task,Manuelle Aufgabe,de
+Many to many,Viele an viele,de
+Many to one,Viele gegen einen,de
+Mapper,Mapper,de
+Mappers,Kartenzeichner,de
+Mapping,Kartierung,de
+Mapping must have a target,Mapping muss ein Ziel haben,de
+Match none,Spiel keine,de
+Match one,Spiel eins,de
+Max,Max,de
+Max depth of recursive task execution,Maximale Tiefe der rekursiven Aufgabenausführung,de
+Max duration (in seconds) for task execution,Maximale Dauer (in Sekunden) der Aufgabenausführung,de
+Max size,Maximale Größe,de
+Max-Forwards,Max-Forwards,de
+Menu,Menü,de
+Menu Item,Menüpunkt,de
+Menu action,Menü Aktion,de
+Menu contexts,Menü-Kontexte,de
+Menu id,Menü-ID,de
+Menu name,Name des Menüs,de
+Menu not found,Menü nicht gefunden,de
+Menu parent,Übergeordnetes Menü,de
+Menu title,Titel des Menüs,de
+Menu/Action,Menü/Aktion,de
+Menubar,Menüleiste,de
+Menus,Menüs,de
+Merge and split feature,Funktion zum Zusammenführen und Teilen,de
+Merge operation requires at least 2 models. Please provide multiple models to proceed with the merge.,"Für die Zusammenführung sind mindestens 2 Modelle erforderlich. Bitte geben Sie mehrere Modelle an, um mit der Zusammenführung fortzufahren.",de
+Merging editor,Editor für die Zusammenführung,de
+Message,Nachricht,de
+Message Boundary Event,Nachricht Grenzereignis,de
+Message End Event,Nachricht Ende Ereignis,de
+Message Intermediate Catch Event,Nachricht Zwischenfangereignis,de
+Message Intermediate Throw Event,Nachricht Zwischenwurfereignis,de
+Message Start Event,Nachricht Start Ereignis,de
+Message name,Name der Nachricht,de
+Meta model,Meta-Modell,de
+Meta model else,Meta-Modell sonst,de
+Meta module,Meta-Modul,de
+MetaMenu,MetaMenü,de
+Migrate instance,Instanz migrieren,de
+Migrate previous version records?,Datensätze früherer Versionen migrieren?,de
+Migrated successfully,Erfolgreich migriert,de
+Migration History,Geschichte der Migration,de
+Migration done successfully,Migration erfolgreich abgeschlossen,de
+Migration error,Fehler bei der Migration,de
+Migration status,Migrationsstatus,de
+Min,Min,de
+Min size,Minimale Größe,de
+Minutes,Protokoll,de
+Missing input label,Fehlende Eingabebezeichnung,de
+Missing output label,Fehlende Ausgabebezeichnung,de
+Missing process configuration. Ensure that the required configuration for all the process is provided.,"Fehlende Prozesskonfiguration. Stellen Sie sicher, dass die erforderliche Konfiguration für alle Prozesse vorhanden ist.",de
+Mobile menu,Mobiles Menü,de
+Model,Modell,de
+Model actions,Modellhafte Aktionen,de
+Model field,Modellfeld,de
+Model name,Name des Modells,de
+Model name should be unique,Der Modellname sollte eindeutig sein,de
+Models,Modelle,de
+Module,Modul,de
+Modules,Module,de
+Modules contains in the app,In der App enthaltene Module,de
+Month,Monat,de
+Multi instance,Mehrere Instanzen,de
+Multiline,Mehrzeilig,de
+Multiple BPM files with the code %s are defined in sources,Mehrere BPM-Dateien mit dem Code %s sind in den Quellen definiert,de
+Must provide a value,Muss einen Wert liefern,de
+Must provide a value for timeout task listener,Muss einen Wert für timeout task listener angeben,de
+Must provide attributes,Muss Attribute bereitstellen,de
+Must provide either loop cardinality or collection,Muss entweder die Kardinalität der Schleife oder die Sammlung angeben,de
+Must provide meta model or custom model,Muss Metamodell oder benutzerdefiniertes Modell bereitstellen,de
+My Late tasks,Meine späten Aufgaben,de
+My Tasks to do for the next 7 days,Meine Aufgaben für die nächsten 7 Tage,de
+My Tasks to do today,Meine heute zu erledigenden Aufgaben,de
+My processes,Meine Prozesse,de
+Name,Name,de
+Name (unique),Name (eindeutig),de
+Name and code are required.,Name und Code sind erforderlich.,de
+Name column,Spalte Name,de
+Name field,Feld Name,de
+Name is required.,Name ist erforderlich.,de
+New,Neu,de
+New instance,Neue Instanz,de
+New process added successfully,Neuer Prozess erfolgreich hinzugefügt,de
+New record,Neuer Rekord,de
+New selection,Neue Auswahl,de
+New user menu,Neues Benutzermenü,de
+New version,Neue Version,de
+New version on deploy,Neue Version im Einsatz,de
+Next >>,Nächste >>,de
+No,Nein,de
+No BPM files with the code %s is defined in sources,In den Quellen sind keine BPM-Dateien mit dem Code %s definiert,de
+No application language set. Please set 'application.locale' property.,No application language set. Please set 'application.locale' property.,de
+No chart found with given chart name,Keine Karte mit dem angegebenen Kartennamen gefunden,de
+No configuration required,Keine Konfiguration erforderlich,de
+No data found,Keine Daten gefunden,de
+No data to display,Keine Daten zum Anzeigen,de
+No fields available,Keine Felder verfügbar,de
+No new version found,Keine neue Version gefunden,de
+No options,Keine Optionen,de
+No result from DMN : %s,Kein Ergebnis von DMN : %s,de
+No status,Kein Status,de
+No wkf model was imported.,Es wurde kein wkf-Modell importiert.,de
+Node,Knotenpunkt,de
+Node activation time,Aktivierungszeit des Knotens,de
+Node cancelled,Knotenpunkt gelöscht,de
+Node ids,Knoten-IDs,de
+Node mapping,Knoten-Zuordnung,de
+None,Keine,de
+Not late tasks,Nicht verspätete Aufgaben,de
+Not migrated,Nicht migriert,de
+OAuth 2,OAuth 2,de
+OK,OK,de
+OR,OR,de
+Object,Objekt,de
+Old node,Alter Knoten,de
+Old nodes,Alte Knotenpunkte,de
+On Going,Unterwegs,de
+On change,Über den Wandel,de
+On click,Auf Klick,de
+On going,Im Gange,de
+On load,Bei Belastung,de
+On new,Auf neue,de
+On save,Beim Speichern,de
+One to many,Einer zu vielen,de
+One to one,Eins zu eins,de
+Only if,Nur wenn,de
+Only use this menu-item if the given expression is true.,"Verwenden Sie diesen Menüpunkt nur, wenn der angegebene Ausdruck wahr ist.",de
+Only use this menu-item if the given module is installed.,"Verwenden Sie diesen Menüpunkt nur, wenn das angegebene Modul installiert ist.",de
+Open editor,Editor öffnen,de
+Open mapper,Mapper öffnen,de
+Open record,Offene Aufzeichnung,de
+Operation successful,Operation erfolgreich,de
+Operator,Betreiber,de
+Orange,Orange,de
+Order by,Bestellen bei,de
+Origin,Herkunft,de
+Other actions,Andere Aktionen,de
+Others,Andere,de
+Out mapping,Out-Mapping,de
+Output,Ausgabe,de
+Output Label,Ausgabe Etikett,de
+Output Name,Name der Ausgabe,de
+Output Type,Ausgangstyp,de
+Output Values,Werte ausgeben,de
+Output arcs,Ausgangsbögen,de
+Output columns can't be empty in import file,Ausgabespalten können in der Importdatei nicht leer sein,de
+Output dmn table,Ausgabe der dmn-Tabelle,de
+Output link script,Output-Link-Skript,de
+Output name,Name der Ausgabe,de
+Outputs,Ausgänge,de
+Overview,Übersicht,de
+PATCH,PATCH,de
+POST,POST,de
+PUT,PUT,de
+Pagination limit,Paginierungsgrenze,de
+Panel,Panel,de
+Panels,Paneele,de
+Parallel Gateway,Paralleles Gateway,de
+Parallel multi instance,Parallele Mehrfachinstanz,de
+Parameter,Parameter,de
+Parameter %s has Already been defined!,Der Parameter %s wurde bereits definiert!,de
+Parameter %s has already been defined!,Der Parameter %s wurde bereits definiert!,de
+Parameters,Parameter,de
+Parent,Elternteil,de
+Parent path,Übergeordneter Pfad,de
+Participant multiplicity,Teilnehmer-Multiplikation,de
+Password,Passwort,de
+Path condition can't be managed using builder once changed manually.,"Die Pfadbedingung kann nicht mit dem Builder verwaltet werden, wenn sie einmal manuell geändert wurde.",de
+PayLoad type,PayLoad Typ,de
+Payload,Nutzlast,de
+Percentage(%),Prozentsatz (%),de
+Permanent,Dauerhaft,de
+Permanent ?,Dauerhaft?,de
+Permanent menu,Ständiges Menü,de
+Permissions,Berechtigungen,de
+Personal Access Keys,Persönliche Zugangsschlüssel,de
+Pie Chart,Kreisdiagramm,de
+Pink,Rosa,de
+Please enter form name and title,Bitte Name und Titel des Formulars eingeben,de
+Please fill the fields lines by the right values.\n No effect for this action will be triggered,Bitte füllen Sie die Felder in den Zeilen mit den richtigen Werten aus.\n Diese Aktion hat keine Auswirkungen.,de
+Please input value bind with single quotation.,Bitte geben Sie den Wert in einfachen Anführungszeichen ein.,de
+Please provide unique code. The code '%s' is already used,Bitte geben Sie einen eindeutigen Code an. Der Code '%s' wird bereits verwendet,de
+Please provide unique process id,Bitte eindeutige Prozess-ID angeben,de
+Please select the App(s) to export,Bitte wählen Sie die zu exportierende(n) App(s),de
+Position,Position,de
+Position menu,Menü Position,de
+Powered by Axelor,Angetrieben von Axelor,de
+Powered by bpmn.io,Powered by bpmn.io,de
+Pragma,Pragma,de
+Precision,Präzision,de
+Previous Versions,Frühere Versionen,de
+Previous version,Vorherige Version,de
+Previous versions,Frühere Versionen,de
+Pro,Pro,de
+Process,Prozess,de
+Process Instance,Prozess-Instanz,de
+Process Instances,Prozess-Instanzen,de
+Process configs,Prozess-Konfigurationen,de
+Process id,Prozess-ID,de
+Process instance,Prozess-Instanz,de
+Process instance id,Prozess-Instanz-ID,de
+Process instance modification,Änderung der Prozessinstanz,de
+Process instance not found : %s,Prozessinstanz nicht gefunden : %s,de
+Process list,Prozess-Liste,de
+Process name,Name des Prozesses,de
+Process path,Prozessweg,de
+Process update,Aktualisierung des Prozesses,de
+Processes,Prozesse,de
+Prompt,Eingabeaufforderung,de
+Properties,Eigenschaften,de
+Properties panel,"Bedienfeld ""Eigenschaften",de
+Proxy-Authorization,Proxy-Autorisierung,de
+Purple,Lila,de
+Query,Abfrage,de
+Query can't be managed using builder once changed manually.,"Die Abfrage kann nicht mit dem Builder verwaltet werden, wenn sie einmal manuell geändert wurde.",de
+Question,Frage,de
+Radar,Radar,de
+Range,Bereich,de
+Readonly,Schreibgeschützt,de
+Readonly if,"Schreibgeschützt, wenn",de
+Receive Task,Aufgabe empfangen,de
+Record builders,Rekordverdächtige Bauherren,de
+Red,Rot,de
+Referer,Referent,de
+Referrer-Policy,Referrer-Richtlinie,de
+Refresh,Aktualisieren,de
+Refresh token request,Token-Anforderung aktualisieren,de
+Refresh token response,Token-Antwort aktualisieren,de
+Regex,Regex,de
+Related field,Verwandtes Gebiet,de
+Related field is required in,Das zugehörige Feld ist erforderlich in,de
+Related process instance,Verwandte Prozessinstanz,de
+Relational field search,Relationale Feldsuche,de
+Relational fields,Relationale Felder,de
+Remove,entfernen,de
+Remove field,Feld entfernen,de
+Remove group,Gruppe entfernen,de
+Remove old version menu,Menü der alten Version entfernen,de
+Remove sub field,Unterfeld entfernen,de
+Remove widget,Widget entfernen,de
+Repeat if,"Wiederholen Sie den Vorgang, wenn",de
+Reply,Antwort,de
+Reporting,Berichterstattung,de
+Request,Anfrage,de
+Request variable,Variable anfordern,de
+Requests,Anfragen an,de
+Required,Erforderlich,de
+Required if,"Erforderlich, wenn",de
+Reset zoom,Zoom zurücksetzen,de
+Response type,Antworttyp,de
+Restart,Neustart,de
+Restarted successfully,Erfolgreich neu gestartet,de
+Result,Ergebnis,de
+Result script,Ergebnis-Skript,de
+Result variable,Ergebnisvariable,de
+Retry time cycle,Wiederholungszeitzyklus,de
+Return expression,Ausdruck zurückgeben,de
+Return type,Art der Rückgabe,de
+Return variable,Variable zurückgeben,de
+Role,Rolle,de
+Role field path,Rollenfeld Pfad,de
+Role type,Rollenart,de
+Roles,Rollen,de
+Roles imported,Importierte Rollen,de
+Roles imported successfully,Rollen erfolgreich importiert,de
+Rules may overlap. The first matching rule will be chosen,Regeln können sich überschneiden. Die erste passende Regel wird ausgewählt,de
+SCRIPT,SCRIPT,de
+Save,Speichern Sie,de
+Saved Successfully,Erfolgreich gerettet,de
+Scale,Skala,de
+Scatter,Streuung,de
+Script,Drehbuch,de
+Script Meta,Skript-Meta,de
+Script Task,Skript Aufgabe,de
+Script can't be managed using builder once changed manually.,"Das Skript kann nicht mit dem Builder verwaltet werden, wenn es einmal manuell geändert wurde.",de
+Script type,Schriftart,de
+Search,Suche,de
+Search Fields,Suchfelder,de
+Search fields,Suchfelder,de
+Search with,Suche mit,de
+Second group by,Zweite Gruppe von,de
+Select BAML,BAML auswählen,de
+Select BPMN,BPMN auswählen,de
+Select DMN,DMN auswählen,de
+Select Mapper,Mapper auswählen,de
+Select all,Alle auswählen,de
+Select fields,Felder auswählen,de
+Select first,Wählen Sie zuerst,de
+Select model,Modell auswählen,de
+Select option,Option auswählen,de
+Select process,Prozess auswählen,de
+Select value,Wert auswählen,de
+Selection,Auswahl,de
+Selection in,Auswahl in,de
+Selection items,Auswahl Artikel,de
+Selection or selection options are required,Auswahl oder Auswahloptionen sind erforderlich,de
+Selection text,Auswahltext,de
+Selections,Auswahlen,de
+Self,Selbst,de
+Send Task,Aufgabe senden,de
+Send admins notification,Benachrichtigung der Administratoren,de
+Send directly,Direkt senden,de
+Send managers notification,Benachrichtigung von Managern,de
+Send messages,Nachrichten senden,de
+Send option,Option Senden,de
+Send users notification,Benutzerbenachrichtigung senden,de
+Separator,Abscheider,de
+Sequence,Sequenz,de
+Sequence Flow,Sequenzfluss,de
+Sequential multi instance,Sequentielle Mehrfachinstanz,de
+Service Task,Dienst Aufgabe,de
+Show,anzeigen,de
+Show Processes,Prozesse anzeigen,de
+Show actions,Aktionen anzeigen,de
+Show diagram properties,Diagrammeigenschaften anzeigen,de
+Show if,Zeigen wenn,de
+Show more...,Mehr anzeigen...,de
+Show process tracking,Prozessverfolgung anzeigen,de
+Show records,Datensätze anzeigen,de
+Show title,Titel anzeigen,de
+Sidebar,Seitenleiste,de
+Signal,Signal,de
+Signal Boundary Event,Signal Boundary Event,de
+Signal End Event,Signal Ende Ereignis,de
+Signal Intermediate Catch Event,Signal Zwischenfangereignis,de
+Signal Intermediate Throw Event,Signal-Zwischenwurf-Ereignis,de
+Signal Start Event,Signal Start Ereignis,de
+Signal name,Signalname,de
+Some error occurred,Ein Fehler ist aufgetreten,de
+Source,Quelle,de
+Source Json?,Quelle Json?,de
+Source expression,Ausdruck der Quelle,de
+Source field,Quelle: Feld,de
+Source language,Sprache der Quelle,de
+Source model,Quelle: Modell,de
+Source version,Quelle: Version,de
+Spacer,Abstandshalter,de
+Specify more than one group as a comma separated list.,Geben Sie mehr als eine Gruppe als kommagetrennte Liste an.,de
+Specify more than one user as a comma separated list.,Geben Sie mehr als einen Benutzer in einer durch Komma getrennten Liste an.,de
+Specify more than one variable change event as a comma separated list.,Geben Sie mehr als ein Variablenänderungsereignis als kommagetrennte Liste an.,de
+Split operation requires exactly one model. Please provide a single model to proceed with the split.,"Der Splitvorgang erfordert genau ein Modell. Bitte geben Sie ein einzelnes Modell an, um mit dem Split fortzufahren.",de
+Splitting editor,Splitting-Editor,de
+Standard,Standard,de
+Start,Start,de
+Start Event,Start Ereignis,de
+Start model ?,Startmodell ?,de
+Start node,Start-Knoten,de
+Start value,Startwert,de
+Startable,Startbar,de
+Status,Status,de
+Status per day,Status pro Tag,de
+Status per month,Status pro Monat,de
+Stopped,Gestoppt,de
+Stream,Stream,de
+Strict-Transport-Security,Strenge-Transport-Sicherheit,de
+String,Zeichenfolge,de
+Strings must be in double quotes. Add multiple strings with comma.,Zeichenketten müssen in doppelten Anführungszeichen stehen. Mehrere Zeichenketten mit Komma hinzufügen.,de
+Strong,Stark,de
+Studio,Studio,de
+Studio App,Studio-App,de
+Studio action,Studio-Aktion,de
+Studio chart,Studio-Karte,de
+Studio components,Studio-Komponenten,de
+Studio dashboard,Studio-Dashboard,de
+Studio dashlet list,Studio Dashlet-Liste,de
+StudioChart.Group,StudioChart.Group,de
+StudioMenu.Order,StudioMenu.Order,de
+StudioMenu.menu,StudioMenu.menu,de
+StudioMenu.menus,StudioMenu.menus,de
+Sub Process,Teilprozess,de
+Sub key values,Unterschlüsselwerte,de
+Sub lines,Nebenlinien,de
+Successfully drafted,Erfolgreich verfasst,de
+TE,TE,de
+Tab,Registerkarte,de
+Tab panel,Registerkarte,de
+Tabs,Registerkarten,de
+Tabs should have at least one panel,Tabs sollten mindestens ein Panel haben,de
+Tag count,Anzahl der Tags,de
+Tag label,Etikett,de
+Tag method,Tag-Methode,de
+Tag style,Tag-Stil,de
+Target,Ziel,de
+Target Json?,Ziel Json?,de
+Target field,Zielfeld,de
+Target json,Ziel json,de
+Target json model,Ziel json-Modell,de
+Target json model required,Ziel-Json-Modell erforderlich,de
+Target language,Zielsprache,de
+Target model,Zielmodell,de
+Target model required,Erforderliches Zielmodell,de
+Target object,Zielobjekt,de
+Target title,Zieltitel,de
+Target type,Zieltyp,de
+Target version,Zielversion,de
+Task,Aufgabe,de
+Task configs,Aufgaben-Konfigurationen,de
+Task done today per user,Heute erledigte Aufgabe pro Benutzer,de
+Task evaluation,Bewertung der Aufgabe,de
+Task listener,Aufgaben-Hörer,de
+Task node,Aufgaben-Knoten,de
+Task priority,Priorität der Aufgabe,de
+Task to do per user,Zu erledigende Aufgabe pro Benutzer,de
+Task/Email,Aufgabe/E-Mail,de
+Tasks assigned to me,Mir zugewiesene Aufgaben,de
+Tasks by process,Aufgaben nach Prozess,de
+Tasks completion by days,Erledigung von Aufgaben nach Tagen,de
+Tasks to do for the next 7 days,Zu erledigende Aufgaben für die nächsten 7 Tage,de
+Tasks to do today,Heute zu erledigende Aufgaben,de
+Teal,Türkisblau,de
+Team field path,Team Feldweg,de
+Team field type,Feldtyp Mannschaft,de
+Technical menu,Technisches Menü,de
+Technical monitoring,Technische Überwachung,de
+Template,Vorlage,de
+Tenant id,Mieter-ID,de
+Terminate End Event,Beenden End-Ereignis,de
+Terminate all the processes,Beenden Sie alle Prozesse,de
+Terminated,Beendet,de
+Test,Test,de
+Test LinkScript,Test LinkScript,de
+Text,Text,de
+The code %s is already in use. Please choose a different code.,Der Code %s ist bereits in Gebrauch. Bitte wählen Sie einen anderen Code.,de
+The data file is not an XML.,Bei der Datendatei handelt es sich nicht um eine XML-Datei.,de
+The domain must not contains any escaped HTML characters,Die Domain darf keine escapeten HTML-Zeichen enthalten,de
+The groovy template in transformation is not valid,Die Groovy-Vorlage in der Transformation ist nicht gültig,de
+The groovy template is not valid,Die Groovy-Vorlage ist nicht gültig,de
+The name must not contain spaces,Der Name darf keine Leerzeichen enthalten,de
+Then,Dann,de
+This App is in referenced. Please unlink it before continue.,"Diese App ist referenziert. Bitte heben Sie die Verknüpfung auf, bevor Sie fortfahren.",de
+This app is used by %s. Please deactivate them before continue.,"Diese App wird von %s verwendet. Bitte deaktivieren Sie sie, bevor Sie fortfahren.",de
+This maps to the decision definition key.,Dies entspricht dem Entscheidungsdefinitionsschlüssel.,de
+This maps to the process definition key.,Dies entspricht dem Prozessdefinitionsschlüssel.,de
+This maps to the task definition key.,Dies entspricht dem Schlüssel für die Aufgabendefinition.,de
+Time,Zeit,de
+Time spent per status (hours),Zeitaufwand pro Status (Stunden),de
+Timer Boundary Event,Timer-Grenzereignis,de
+Timer Intermediate Catch Event,Timer-Zwischenfallevent,de
+Timer Start Event,Timer Start Ereignis,de
+Timer definition,Timer-Definition,de
+Timer definition type,Typ der Zeitgeberdefinition,de
+Timer events are not supported.,Timer-Ereignisse werden nicht unterstützt.,de
+Timespent per node,Zeitaufwand pro Knoten,de
+Title,Titel,de
+To,An,de
+To LinkScript,Zu LinkScript,de
+Token,Token,de
+Token field name,Token-Feldname,de
+Token request,Token-Anfrage,de
+Token response,Token-Antwort,de
+Toolbar,Symbolleiste,de
+Topic,Thema,de
+Transaction,Transaktion,de
+Transactional,Transaktionelle,de
+Transformation,Umwandlung,de
+Transformation %s has Already been defined in the library %s !,Die Transformation %s wurde bereits in der Bibliothek %s definiert!,de
+Transformation library,Bibliothek zur Umwandlung,de
+Transformations,Verwandlungen,de
+Translate,Übersetzen Sie,de
+Translation,Übersetzung,de
+Translations,Übersetzungen,de
+Trigger only on client change,Auslöser nur bei Clientwechsel,de
+True,Wahr,de
+Type,Typ,de
+Type of multiple arguments,Typ der Mehrfachargumente,de
+URL,URL,de
+Ui options,Ui-Optionen,de
+Unblock all instances,Alle Instanzen entsperren,de
+Unblock process instance,Prozessinstanz entsperren,de
+Uninstall,Deinstallieren Sie,de
+Unique constraint violation,Eindeutige Verletzung einer Bedingung,de
+Unique model,Einzigartiges Modell,de
+Unit,Einheit,de
+Unsupported operation : %s,Nicht unterstützte Operation : %s,de
+Unsupported variable type or empty map,Nicht unterstützter Variablentyp oder leere Map,de
+Update,Update,de
+Update comment,Kommentar aktualisieren,de
+Update selection,Auswahl aktualisieren,de
+Updated on,Aktualisiert am,de
+Upgrade,Upgrade,de
+Upload,Hochladen,de
+Upload Bpmn files only,Nur Bpmn-Dateien hochladen,de
+Upload File,Datei hochladen,de
+Upload dmn files only,Nur dmn-Dateien hochladen,de
+User Task,Benutzer Aufgabe,de
+User default path,Benutzer-Standardpfad,de
+User field path,Benutzerfeld Pfad,de
+User field type,Typ des Benutzerfeldes,de
+User menu ?,Benutzermenü ?,de
+User-Agent,Benutzer-Agent,de
+Users,Benutzer,de
+Valid,Gültig,de
+Valid if,"Gültig, wenn",de
+Validation type,Art der Validierung,de
+Value,Wert,de
+Value expr,Wert expr,de
+Value from,Wert aus,de
+Value is required,Wert ist erforderlich,de
+Value:add,Value:add,de
+Value:del,Value:del,de
+Var,Var,de
+Variable,Variabel,de
+Variable event,Variables Ereignis,de
+Variable name,Name der Variablen,de
+Variables,Variablen,de
+Version,Version,de
+Version id,Version id,de
+Version tag,Version Tag,de
+Via,Über,de
+View,Siehe,de
+View DRD,DRD anzeigen,de
+View attributes,Attribute anzeigen,de
+View generated,Ansicht erzeugt,de
+View name already exists,Ansichtsname existiert bereits,de
+View param,Ansicht param,de
+View params,Parameter anzeigen,de
+Views,Ansichten,de
+Visible in grid,Sichtbar im Gitter,de
+WS Authentication,WS-Authentifizierung,de
+WS Authenticator,WS-Authentifikator,de
+WS Component,WS-Komponente,de
+WS Connector,WS-Anschluss,de
+WS Request,WS-Anfrage,de
+WS Studio,WS-Studio,de
+WS studio,WS-Studio,de
+Wait for completion,Warten auf Fertigstellung,de
+Warning,Warnung,de
+"Web-based tooling for BPMN, DMN and CMMN diagrams powered by bpmn.io","Web-based tooling for BPMN, DMN and CMMN diagrams powered by bpmn.io",de
+Web-based tooling for no-code BPM apps powered by Axelor,Webbasiertes Tooling für no-code BPM-Anwendungen von Axelor,de
+When,Wenn,de
+White,Weiß,de
+Widget,Widget,de
+Widget attributes,Widget-Attribute,de
+Wkf instance,Wkf-Instanz,de
+Wkf instance dashboard,Dashboard der Wkf-Instanz,de
+Wkf model,Wkf-Modell,de
+Wkf process,Wkf-Verfahren,de
+Wkf process config,Wkf-Prozess-Konfiguration,de
+Wkf status color,Wkf-Status Farbe,de
+Wkf task config,Wkf-Aufgaben-Konfiguration,de
+WkfModel,WkfModell,de
+Workflow dashboard,Workflow-Dashboard,de
+Ws Connector,Ws-Anschluss,de
+X-Access-Token,X-Access-Token,de
+X-Content-Type-Options,X-Content-Type-Options,de
+X-Custom-Header,X-Custom-Header,de
+X-Forwarded-For,X-Forwarded-For,de
+X-Forwarded-Host,X-Forwarded-Host,de
+X-Forwarded-Port,X-Forwarded-Port,de
+X-Forwarded-Proto,X-Forwarded-Proto,de
+X-Forwarded-Server,X-Forwarded-Server,de
+X-Frame-Options,X-Frame-Options,de
+X-Requested-With,X-Requested-With,de
+X-XSS-Protection,X-XSS-Schutz,de
+XML,XML,de
+XML data file,XML-Datendatei,de
+XMLHttpRequest,XMLHttpRequest,de
+Xml,Xml,de
+Year,Jahr,de
+Yellow,Gelb,de
+Yes,Ja,de
+You can add comments about diagrams or specific BPMN elements.,Sie können Kommentare zu Diagrammen oder bestimmten BPMN-Elementen hinzufügen.,de
+Zoom in,Vergrößern,de
+Zoom out,Verkleinern,de
+\nIt contains placeholders for non existing parameters: \n,\nSie enthält Platzhalter für nicht vorhandene Parameter: \n,de
+\nIt should contain a placeholder for the following  parameters:\n,\nSie sollte einen Platzhalter für die folgenden Parameter enthalten:\n,de
+\nIt should contain the multiple arguments placeholder (%)!,\nSie sollte den Platzhalter für mehrere Argumente (%) enthalten!,de
+airplane,Flugzeug,de
+airplane-fill,Flugzeug-Füllung,de
+amazon,amazon,de
+application/gzip,Anwendung/Gzip,de
+application/javascript,anwendung/javascript,de
+application/json,anwendung/json,de
+application/msword,Anwendung/msword,de
+application/octet-stream,Anwendung/Oktettstrom,de
+application/pdf,anwendung/pdf,de
+application/rtf,anwendung/rtf,de
+application/vnd.ms-excel,application/vnd.ms-excel,de
+application/vnd.ms-powerpoint,application/vnd.ms-powerpoint,de
+application/x-bzip2,Anwendung/x-bzip2,de
+application/x-javascript,anwendung/x-javascript,de
+application/x-perl,Anwendung/x-perl,de
+application/x-php,anwendung/x-php,de
+application/x-python-script,anwendung/x-python-skript,de
+application/x-rar-compressed,Anwendung/x-rar-komprimiert,de
+application/x-ruby,anwendung/x-ruby,de
+application/x-sh,Anwendung/x-sh,de
+application/x-tar,anwendung/x-tar,de
+application/x-www-form-urlencoded,anwendung/x-www-form-urlencoded,de
+application/xhtml+xml,Anwendung/xhtml+xml,de
+application/xml,Anwendung/xml,de
+application/zip,Anwendung/Zip,de
+arrow-90deg-down,Pfeil-90Grad-abwärts,de
+arrow-90deg-up,Pfeil-90Grad-nach-oben,de
+arrow-counterclockwise,Pfeil-gegen-den-Uhrzeigersinn,de
+arrow-down,Pfeil nach unten,de
+arrow-down-circle-fill,pfeil-nach-unten-kreis-füllen,de
+arrow-down-left-circle,pfeil-nach-unten-links-kreis,de
+arrow-left,pfeil-links,de
+arrow-left-circle-fill,pfeil-links-kreis-füllung,de
+arrow-left-right,pfeil-links-rechts,de
+arrow-repeat,Pfeil-Wiederholung,de
+arrow-right,Pfeil-nach-rechts,de
+arrow-right-circle-fill,pfeil-rechts-kreis-füllung,de
+arrow-up,Pfeil-nach-oben,de
+arrow-up-circle-fill,pfeil-nach-oben-kreis-füllen,de
+arrow-up-left-circle,pfeil-oben-links-kreis,de
+arrows,Pfeile,de
+arrows-angle-contract,pfeil-winkel-vertrag,de
+arrows-angle-expand,pfeil-winkel-expand,de
+arrows-fullscreen,pfeile-vollbildschirm,de
+arrows-move,pfeile-bewegen,de
+arrows-vertical,Pfeile - vertikal,de
+assignment,Auftrag,de
+asterisk,Sternchen,de
+at,unter,de
+audio/aac,audio/aac,de
+audio/flac,Audio/Flac,de
+audio/midi,Audio/Midi,de
+audio/mp4,audio/mp4,de
+audio/mpeg,audio/mpeg,de
+audio/ogg,audio/ogg,de
+audio/wav,audio/wav,de
+audio/webm,audio/webm,de
+audio/x-ms-wma,audio/x-ms-wma,de
+back,zurück,de
+badge-cc,Abzeichen-cc,de
+badge-tm,badge-tm,de
+bag-fill,bag-fill,de
+ban,verbieten,de
+bar-chart,Balkendiagramm,de
+basket-fill,Korb-Füllung,de
+battery,Batterie,de
+battery-full,batterie-voll,de
+battery-half,Batterie-Hälfte,de
+behance,behance,de
+bell,Glocke,de
+bell-fill,Glockenfüllung,de
+bell-slash,Glockenschrägstrich,de
+bell-slash-fill,Glocke-Schrägstrich-Füllung,de
+bicycle,Fahrrad,de
+binoculars-fill,Fernglas-Füllung,de
+black,schwarz,de
+blue,blau,de
+bluetooth,bluetooth,de
+book,Buch,de
+bookmark-fill,bookmark-fill,de
+bookmark-o,Lesezeichen-o,de
+box,Box,de
+box-arrow-in-right,box-arrow-in-right,de
+box-arrow-right,box-arrow-right,de
+box-arrow-up-right,box-arrow-up-right,de
+boxes,Boxen,de
+briefcase-fill,Aktenkoffer-Füllung,de
+broadcast-pin,broadcast-pin,de
+brown,braun,de
+browser-chrome,Browser-Chrom,de
+browser-edge,Browser-Rand,de
+browser-firefox,browser-firefox,de
+browser-safari,browser-safari,de
+brush-fill,Bürstengarnitur,de
+building,Gebäude,de
+buildings-fill,Gebäude-Füllung,de
+bullseye,Volltreffer,de
+bus-front,Bus-Front,de
+c-circle,c-kreis,de
+cake2-fill,cake2-fill,de
+calculator,Rechner,de
+calendar,Kalender,de
+calendar-check,kalender-check,de
+calendar-minus,Kalender-Minus,de
+calendar-plus,Kalender-plus,de
+calendar-x,kalender-x,de
+camera-fill,Kamera-Füllung,de
+camera-retro,Kamera-Retro,de
+camera-video-fill,kamera-video-füllung,de
+car-front,Auto-Front,de
+card-list,Karten-Liste,de
+caret-down-fill,caret-down-fill,de
+caret-down-square,Abwärtshaken-Quadrat,de
+caret-left-fill,caret-left-fill,de
+caret-right-fill,caret-right-fill,de
+caret-right-square,caret-right-square,de
+caret-up-fill,Auffüllen,de
+caret-up-square,Aufpasser-Quadrat,de
+cart-fill,Warenkorb befüllen,de
+cart-plus-fill,cart-plus-fill,de
+cash,Bargeld,de
+chat,Chat,de
+chat-dots,Chat-Dots,de
+chat-dots-fill,chat-dots-fill,de
+chat-fill,chat-fill,de
+check,siehe,de
+check-circle,Karokreis,de
+check-circle-fill,check-circle-fill,de
+check-square,Karo-Winkel,de
+chevron-double-down,chevron-double-down,de
+chevron-double-left,chevron-double-left,de
+chevron-double-right,chevron-double-right,de
+chevron-double-up,chevron-double-up,de
+chevron-down,Chevron-Down,de
+chevron-left,chevron-links,de
+chevron-right,chevron-rechts,de
+chevron-up,chevron-up,de
+circle,Kreis,de
+circle-fill,Kreisfüllungen,de
+clipboard,Zwischenablage,de
+clock,Uhr,de
+cloud-arrow-down-fill,Wolken-Pfeil-nach-unten-Füllen,de
+cloud-arrow-up-fill,wolken-pfeil-auf-füllung,de
+cloud-fill,Cloud-Fill,de
+code-slash,Code-Schrägstrich,de
+collapsed,zusammengebrochen,de
+comments,Kommentare,de
+compass,Kompass,de
+complete,vollständig,de
+contains,enthält,de
+controller,Controller,de
+copy,kopieren.,de
+create,erstellen.,de
+credit-card,kreditkarte,de
+credit-card-fill,kreditkarten-ausfüllen,de
+crop,Ernte,de
+crosshair,Fadenkreuz,de
+cup-hot-fill,Tassen-Heißfüller,de
+cup-straw,Tassen-Strohhalm,de
+currency-bitcoin,Währung-Bitcoin,de
+currency-dollar,Währung/Dollar,de
+currency-euro,Währung-Euro,de
+currency-pound,Währung-Pfund,de
+currency-rupee,Währung - Rupie,de
+currency-yen,Währung - Yen,de
+cursor-text,Cursor-Text,de
+dash-circle-fill,strich-kreis-füllung,de
+dash-lg,dash-lg,de
+dash-square,Bindestrich-Quadrat,de
+dash-square-fill,Bindestrich-Quadrat-Füllung,de
+database-fill,Datenbankausfüllung,de
+default-search-filters,Standard-Suchfilter,de
+delete,löschen,de
+deployment,Bereitstellung,de
+details-view,Detail-Ansicht,de
+diagram-3-fill,Diagramm-3-Füllung,de
+doesn't contain,enthält nicht,de
+download,herunterladen,de
+dropbox,Dropbox,de
+eject-fill,Auswerfen-Füllen,de
+emoji-frown,Emoji-Stirnrunzeln,de
+emoji-neutral,Emoji-neutral,de
+emoji-smile,Emoji-Lächeln,de
+empty,leer,de
+end,Ende,de
+envelope,Briefumschlag,de
+envelope-fill,Kuvert-Füllung,de
+envelope-open,Briefumschlag öffnen,de
+envelope-open-fill,kuvert-open-fill,de
+equal,gleich,de
+eraser-fill,Radiergummi-Füllung,de
+exclamation,Ausruf,de
+exclamation-circle-fill,ausrufe-kreis-füllung,de
+exclamation-triangle,Ausrufezeichen-Dreieck,de
+expanded,erweitert,de
+eye-fill,Augenfüller,de
+eye-slash,Augenzwinkern,de
+eye-slash-fill,Augen-Schrägstrich-Füllung,de
+eyedropper,Augentropfer,de
+facebook,facebook,de
+file,Datei,de
+file-code,Dateicode,de
+file-earmark-lock2-fill,file-earmark-lock2-fill,de
+file-excel,datei-excel,de
+file-fill,file-fill,de
+file-medical-fill,file-medical-fill,de
+file-music,file-music,de
+file-pdf,datei-pdf,de
+file-play,file-play,de
+file-ppt,file-ppt,de
+file-richtext,datei-richtext,de
+file-text,Datei-Text,de
+file-word,Datei-Wort,de
+file-zip,file-zip,de
+files,Dateien,de
+film,Film,de
+fire,Feuer,de
+flag,Flagge,de
+flag-fill,flag-fill,de
+folder,Ordner,de
+folder-fill,Ordner-füllen,de
+folder2-open,Ordner2-öffnen,de
+fonts,Schriftarten,de
+forceEdit,forceEdit,de
+forceTitle,forceTitle,de
+forward-fill,forward-fill,de
+fullscreen-exit,fullscreen-exit,de
+funnel-fill,Trichter-Füllung,de
+gear,Getriebe,de
+gem,gem,de
+gender-ambiguous,gender-ambiguous,de
+gender-female,Geschlecht - weiblich,de
+gender-male,Geschlecht - männlich,de
+gender-trans,gender-trans,de
+geo-alt-fill,geo-alt-fill,de
+geo-fill,geo-fill,de
+gift,Geschenk,de
+git,git,de
+github,github,de
+gitlab,gitlab,de
+globe,Weltkugel,de
+google,Google,de
+graph-up,graph-up,de
+graph-up-arrow,Grafik-Pfeil-nach-oben,de
+greater or equal,größer oder gleich,de
+greater than,größer als,de
+green,grün,de
+grid-3x3-gap-fill,grid-3x3-gap-fill,de
+grid-fill,Gitterfüllungen,de
+gzip,gzip,de
+h-square-fill,h-Quadrat-Füllung,de
+hammer,Hammer,de
+hand-index,Hand-Index,de
+hand-index-thumb,hand-index-thumb,de
+hand-thumbs-down,Hand - Daumen runter,de
+hand-thumbs-down-fill,hand-daumen-nach-unten-füllen,de
+hand-thumbs-up,Hand-Daumen-hoch,de
+hand-thumbs-up-fill,Hand-Daumen-hoch-Füllen,de
+hash,Hash,de
+hdd,hdd,de
+hdd-stack,hdd-stack,de
+headphones,Kopfhörer,de
+heart,Herz,de
+heart-pulse-fill,Herz-Puls-Füllung,de
+hilite,hilite,de
+hospital,Krankenhaus,de
+hourglass,Sanduhr,de
+hourglass-bottom,Sanduhr-Boden,de
+hourglass-split,hourglass-split,de
+hourglass-top,Sanduhr-Oberteil,de
+house-fill,Hausfüllungen,de
+image,Bild,de
+image/bmp,image/bmp,de
+image/gif,image/gif,de
+image/jpeg,image/jpeg,de
+image/png,bild/png,de
+image/svg+xml,bild/svg+xml,de
+image/tiff,image/tiff,de
+image/webp,image/webp,de
+image/x-icon,image/x-icon,de
+import.name,import.name,de
+import.verb,import.verb,de
+in,in,de
+inbox,Posteingang,de
+include,einschließen.,de
+incognito,inkognito,de
+info,Infos,de
+info-circle-fill,info-kreis-ausfuellen,de
+is false,ist falsch,de
+is not null,ist nicht null,de
+is null,ist null,de
+is true,ist wahr,de
+item,Artikel,de
+justify,rechtfertigen,de
+key,Schlüssel,de
+keyboard,Tastatur,de
+laptop,Laptop,de
+latest,neueste,de
+layout-three-columns,layout-dreispaltig,de
+less or equal,kleiner oder gleich,de
+less than,weniger als,de
+life-preserver,Lebensretter,de
+lightbulb,Glühbirne,de
+lightning-fill,Blitzableiter,de
+limit,Grenze,de
+link,Link,de
+linkedin,linkedin,de
+list,Liste,de
+list-ol,Liste-ol,de
+list-task,Liste - Aufgabe,de
+lock-fill,lock-fill,de
+magic,Magie,de
+magnet-fill,Magnet-Füllung,de
+map,Karte,de
+map-fill,karte-füllen,de
+megaphone,Megaphon,de
+message/external-body,nachricht/externer-körper,de
+message/http,nachricht/http,de
+message/news,Nachricht/Nachrichten,de
+message/partial,nachricht/teilig,de
+mic-fill,mic-fill,de
+mic-mute-fill,mic-mute-fill,de
+mortarboard-fill,Mörtelbrett-Füllung,de
+multipart/alternative,multipart/alternativ,de
+multipart/encrypted,multipart/verschlüsselt,de
+multipart/form-data,multipart/form-data,de
+multipart/mixed,multipart/mixed,de
+multipart/related,multipart/verwandt,de
+multipart/signed,mehrteilig/signiert,de
+music-note-beamed,musiknote-beamed,de
+name,Name,de
+newspaper,Zeitung,de
+non-interrupting,nicht unterbrechend,de
+not equal,nicht gleich,de
+not in,nicht in,de
+not include,nicht enthalten,de
+operations,Operationen,de
+orange,orange,de
+paperclip,Büroklammer,de
+paragraph,Absatz,de
+password,Passwort,de
+pause-circle,pause-kreis,de
+pause-circle-fill,pause-kreis-füllen,de
+pause-fill,pause-fill,de
+paypal,paypal,de
+pc-display-horizontal,pc-anzeige-horizontal,de
+pencil-fill,Bleistift-Füllung,de
+pencil-square,Bleistift-Quadrat,de
+people-fill,Leute-füllen,de
+percent,Prozent,de
+person,Person,de
+person-badge,Personenausweise,de
+person-circle,Personenkreis,de
+person-fill,Personenbelegung,de
+person-plus-fill,Person-plus-Füllung,de
+person-vcard,Personenkarte,de
+person-vcard-fill,person-vcard-fill,de
+person-x-fill,person-x-fill,de
+phone,Telefon,de
+pie-chart-fill,kuchendiagramm-füllung,de
+pin-fill,Pin-Füllung,de
+pin-map-fill,pin-map-fill,de
+pink,rosa,de
+pinterest,pinterest,de
+play-circle,Spielkreis,de
+play-fill,play-fill,de
+plug-fill,Stopfen-Füllung,de
+plus-circle-fill,plus-kreis-füllung,de
+plus-lg,plus-lg,de
+plus-square-fill,Plus-Quadrat-Füllung,de
+popup,Popup,de
+popup-save,popup-save,de
+popup.maximized,popup.maximized,de
+power,Macht,de
+printer,Drucker,de
+purple,lila,de
+puzzle-fill,puzzle-fill,de
+qr-code,qr-code,de
+question,Frage,de
+question-circle-fill,fragen-kreis-füllen,de
+quora,quora,de
+quote,Zitat,de
+r-circle,r-kreis,de
+reception-4,Empfang-4,de
+record-circle,rekord-kreis,de
+recycle,recyceln,de
+red,rot,de
+reddit,reddit,de
+reload-dotted,nachladen-gepunktet,de
+repeat,wiederholen,de
+reply-all-fill,reply-all-fill,de
+reply-fill,reply-fill,de
+required,erforderlich,de
+result,Ergebnis,de
+rocket-takeoff-fill,rocket-takeoff-fill,de
+rss,rss,de
+save,speichern,de
+scissors,Schere,de
+search,Suche,de
+search-filters,Suchfilter,de
+sequence,Reihenfolge,de
+share,Aktie,de
+share-fill,share-fill,de
+shield-shaded,schattiert,de
+show-confirm,show-confirm,de
+show-toolbar,show-toolbar,de
+showArchived,showArchived,de
+shuffle,mischen,de
+signpost-2-fill,Wegweiser-2-Füllung,de
+skip-backward,Rückwärts springen,de
+skip-forward-fill,vorwärts-überspringen-ausfüllen,de
+slack,schlaff,de
+sliders,Schieberegler,de
+snapchat,Snapchat,de
+sort-alpha-down,sort-alpha-down,de
+sort-alpha-up,sort-alpha-up,de
+sort-down,absteigend sortieren,de
+sort-numeric-down,sort-numeric-down,de
+sort-numeric-up,sort-numeric-up,de
+sort-up,Sortieren,de
+speedometer,Tachometer,de
+spotify,Spotify,de
+square,Platz,de
+square-fill,Quadratische Füllung,de
+star,Stern,de
+star-fill,sternförmig füllen,de
+star-half,star-half,de
+start,Start,de
+status,Status,de
+steam,Dampf,de
+sticky,klebrig,de
+sticky-fill,Sticky-Fill,de
+stop-circle,Stoppkreis,de
+stop-circle-fill,stop-circle-fill,de
+stop-fill,Stop-Fill,de
+stripe,streifen,de
+subscript,Subskription,de
+superscript,Hochgestellt,de
+table,Tabelle,de
+tablet,Tablette,de
+tag-fill,Tag-Füllung,de
+tags-fill,tag-fill,de
+take,Nehmen Sie,de
+task name type,Aufgabenname Typ,de
+taskPriorityType,taskPriorityType,de
+taxi-front-fill,Taxi-front-fill,de
+telegram,Telegramm,de
+telephone,Telefon,de
+terminal,Terminal,de
+text-center,text-center,de
+text-indent-left,text-indent-left,de
+text-indent-right,text-indent-rechts,de
+text-left,text-links,de
+text-right,text-rechts,de
+text/calendar,Text/Kalender,de
+text/css,text/css,de
+text/csv,text/csv,de
+text/html,text/html,de
+text/javascript,text/javascript,de
+text/markdown,Text/Markdown,de
+text/plain,text/plain,de
+text/vcard,text/vcard,de
+text/xml,text/xml,de
+thermometer,Thermometer,de
+thermometer-half,Thermometer-Hälfte,de
+thermometer-high,Thermometer-hoch,de
+thermometer-low,Thermometer-niedrig,de
+three-dots,drei Punkte,de
+three-dots-vertical,drei-Punkte-vertikal,de
+ticket-fill,ticket-fill,de
+timeout,Timeout,de
+toggle-off,abschaltbar,de
+toggle-on,einschalten,de
+train-front-fill,train-front-fill,de
+translate,übersetzen,de
+trash,Müll,de
+tree-fill,Baumfüllungen,de
+trophy,Trophäe,de
+truck,Lkw,de
+tv,TV,de
+twitch,twitch,de
+twitter,twitter,de
+type-bold,type-bold,de
+type-italic,type-italic,de
+type-strikethrough,type-strikethrough,de
+type-underline,type-underline,de
+umbrella-fill,regenschirm-füllung,de
+unique,einzigartig,de
+universal-access,Universal-Zugang,de
+unlock-fill,freischalten-ausfüllen,de
+upc,upc,de
+update,Update,de
+upload,hochladen,de
+usb-symbol,usb-symbol,de
+username,Nutzername,de
+value,Wert,de
+value:,Wert:,de
+value:BPM,value:BPM,de
+value:Product App,value:Product App,de
+versionTag,versionTag,de
+vimeo,vimeo,de
+violet,violett,de
+volume-down-fill,Volumen-Down-Füllung,de
+volume-off-fill,volume-off-fill,de
+volume-up-fill,volume-up-fill,de
+whatsapp,whatsapp,de
+white,weiß,de
+wifi,wlan,de
+wikipedia,wikipedia,de
+window-dash,Schaufensterauslage,de
+wkf.open.editor,wkf.open.editor,de
+wkf.terminate.btn,wkf.terminate.btn,de
+wordpress,wordpress,de
+wrench,Schraubenschlüssel,de
+x,x,de
+x-circle,x-kreis,de
+x-circle-fill,x-kreis-füllung,de
+yellow,gelb,de
+yelp,yelp,de
+youtube,youtube,de
+zoom-in,Vergrößern,de
+zoom-out,Herauszoomen,de
+{{$fmt('name')}},{{$fmt('name')}},de
+Show timer-blocked instances,Timer-blockierte Instanzen anzeigen,de
+Resume timer-blocked instances,Wiederaufnahme von zeitlich blockierten Instanzen,de
+Timer-Blocked instances,Timer-gesperrte Instanzen,de
+Please select at least one instance blocked on a timer to resume processing.,"Bitte wählen Sie mindestens eine Instanz aus, die mit einem Timer blockiert ist, um die Bearbeitung fortzusetzen.",de
+Field config,Feld Konfiguration,de
+Field path,Feldweg,de
+User,Benutzer,de
+Team,Team,de
+Deadline,Deadline,de

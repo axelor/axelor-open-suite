@@ -1,0 +1,497 @@
+key,message,language
+%s : You must configure Project module for company %s,%s : Sie müssen das Projektmodul für das Unternehmen %s konfigurieren,de
+%s project,%s-Projekt,de
+%s sprints have been generated,%s Sprints wurden erstellt,de
+* %s project task updated,* %s Projektaufgabe aktualisiert,de
+0 %,0 %,de
+10 %,10 %,de
+100 %,100 %,de
+20 %,20 %,de
+30 %,30 %,de
+40 %,40 %,de
+50 %,50 %,de
+60 %,60 %,de
+70 %,70 %,de
+80 %,80 %,de
+90 %,90 %,de
+<< Previous,<< Zurück,de
+<br/>Example:<br/>Start unit : day<br/>End unit : hour<br/><strong>$Project.numberHoursADay$</strong><br/>,<br/>Example:<br/>Start unit : day<br/>End unit : hour<br/><strong>$Project.numberHoursADay$</strong><br/>,de
+Action,Aktion,de
+Actions,Aktionen,de
+Activate a field on a project task where you can record the task progress in %.,"Aktivieren Sie ein Feld auf einer Projektaufgabe, in dem Sie den Aufgabenfortschritt in % erfassen können.",de
+"Activate a panel tab, within a project-task-form related to the project, allowing to replicate a task following a date frequency defined by the user.","Aktivieren Sie eine Registerkarte in einem projektbezogenen Aufgabenformular, die es ermöglicht, eine Aufgabe nach einer vom Benutzer festgelegten Datumsfrequenz zu wiederholen.",de
+"Activates a Kanban view with tasks of the project categorized by category, accessible via the Tools menu.","Aktiviert eine Kanban-Ansicht mit nach Kategorien geordneten Aufgaben des Projekts, die über das Menü Extras zugänglich ist.",de
+"Activates a Kanban view with tasks of the project categorized by status, accessible via the Tools menu.","Aktiviert eine Kanban-Ansicht mit den Vorgängen des Projekts, kategorisiert nach Status, zugänglich über das Menü Extras.",de
+"Activates a Planification tab on the project-task-form allowing to record planned times on tasks, in order to compare with actual spent time.","Aktiviert eine Registerkarte ""Planung"" auf dem Projekt-Aufgabenformular, die es ermöglicht, geplante Zeiten für Aufgaben zu erfassen, um sie mit der tatsächlich verbrauchten Zeit zu vergleichen.",de
+"Activates a calendar view with tasks of the project categorized by category, accessible via the Tools menu.","Aktiviert eine Kalenderansicht mit nach Kategorien geordneten Aufgaben des Projekts, die über das Menü Extras zugänglich ist.",de
+"Activates a calendar view with tasks of the project categorized by status, accessible via the Tools menu.","Aktiviert eine Kalenderansicht mit den Aufgaben des Projekts, geordnet nach Status, zugänglich über das Menü Extras.",de
+"Activates a calendar view with tasks of the project categorized by user, accessible via the Tools menu.","Aktiviert eine Kalenderansicht mit den Aufgaben des Projekts, kategorisiert nach Benutzer, zugänglich über das Menü Extras.",de
+Activates a gantt view of the project accessible via the Tools menu.,"Aktiviert eine Gantt-Ansicht des Projekts, die über das Menü Extras zugänglich ist.",de
+Active project,Aktives Projekt,de
+Active project changed to %s,Aktives Projekt auf %s geändert,de
+Active sprint,Aktiver Sprint,de
+Activities,Aktivitäten,de
+Activity,Tätigkeit,de
+Add a new check list item,Einen neuen Punkt der Checkliste hinzufügen,de
+Add a new item,Einen neuen Artikel hinzufügen,de
+Add status,Status hinzufügen,de
+Added by,Hinzugefügt von,de
+All,Alle,de
+All open tasks,Alle offenen Aufgaben,de
+All sprints,Alle Sprints,de
+All tasks,Alle Aufgaben,de
+All tasks (tree),Alle Aufgaben (Baum),de
+Allocated,Zuteilung,de
+Allocation period,Zuteilungszeitraum,de
+"Allow to allocate Time spent from the project-task-form. A readonly logtimes paneltab will also appear on the related project-form. Note: if you use the HR timesheets, these log times will allocate HR Timesheet for the concerned colleague.","Ermöglicht die Zuordnung von Zeitaufwand aus dem Projekt-Aufgabenformular. Auf dem zugehörigen Projektformular wird auch eine schreibgeschützte Registerkarte für die Logzeiten angezeigt. Hinweis: Wenn Sie die HR-Zeiterfassungsbögen verwenden, werden diese Protokollzeiten dem betreffenden Mitarbeiter zugewiesen.",de
+"Allow to open discussion topic, where project members can interact, accessible via the the Tools menu.","Ermöglicht das Eröffnen eines Diskussionsthemas, in dem die Projektmitglieder interagieren können, zugänglich über das Menü Extras.",de
+App,App,de
+App base,App-Basis,de
+App customized fields,Benutzerdefinierte Felder der App,de
+App json,App json,de
+App project,App-Projekt,de
+Apply modifications to next tasks,Änderungen auf nächste Aufgaben anwenden,de
+Are you sure you want to delete this task ?,"Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?",de
+Assign the task to a user.The user has to be created beforehand and recorded as a member of the selected project (in the membersPanelTab of the project).,Assign the task to a user.The user has to be created beforehand and recorded as a member of the selected project (in the membersPanelTab of the project).,de
+Assigned to,Zugewiesen an,de
+AssignedTo,ZugewiesenAn,de
+Attrs,Attrs,de
+Backlog sprint,Backlog-Sprint,de
+Batches,Lose,de
+Batchs,Chargen,de
+Book resource,Ressource Buch,de
+Budgeted time,Geplante Zeit,de
+Business project,Geschäftliches Projekt,de
+Calendar,Kalender,de
+Cancel,Abbrechen,de
+Canceled project status,Abgebrochener Projektstatus,de
+Categories?,Kategorien?,de
+Category,Kategorie,de
+Category customized fields,Kategorie benutzerdefinierte Felder,de
+Category json,Kategorie json,de
+Characteristics,Merkmale,de
+Check availability of resources,Verfügbarkeit von Ressourcen prüfen,de
+Check list,Checkliste,de
+Check list item,Punkt der Checkliste,de
+Check list template,Vorlage Checkliste,de
+Check list templates,Vorlagen für Checklisten,de
+Close topic,Thema schließen,de
+Closed,Geschlossen,de
+Code,Code,de
+Company,Unternehmen,de
+Completed,Abgeschlossen,de
+Completed ?,Abgeschlossen ?,de
+Completed project status,Status des abgeschlossenen Projekts,de
+Completed task status,Status der abgeschlossenen Aufgabe,de
+Configuration,Konfiguration,de
+Configurations,Konfigurationen,de
+Content,Inhalt,de
+Create project from this template,Projekt aus dieser Vorlage erstellen,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Currency,Währung,de
+Custom field,Benutzerdefiniertes Feld,de
+Custom fields,Benutzerdefinierte Felder,de
+Custom fields management,Verwaltung benutzerdefinierter Felder,de
+Customer,Kunde,de
+Customer Contact,Kundenkontakt,de
+Customized,Kundenspezifisch,de
+Customized fields,Benutzerdefinierte Felder,de
+Daily planned charge in a month in an average per employee,Tägliches geplantes Entgelt in einem Monat im Durchschnitt pro Mitarbeiter,de
+Daily planned charge in a month per employee,Tägliches Sollentgelt im Monat pro Mitarbeiter,de
+Daily planned charge in a month per project,Tägliches geplantes Entgelt in einem Monat pro Projekt,de
+Dashboard,Dashboard,de
+Date,Datum,de
+Date or frequency changed,Datum oder Häufigkeit geändert,de
+Deadline,Deadline,de
+Deadline Today,Abgabetermin heute,de
+Deadline Tomorrow,Deadline morgen,de
+Deadline Yesterday,Abgabetermin gestern,de
+Decimal,Dezimal,de
+Default priorities,Standard-Prioritäten,de
+Default progress,Standard-Fortschritt,de
+Default sites,Standard-Seiten,de
+Default task status,Standard-Aufgabenstatus,de
+Delay to start (Hours),Verzögerung bis zum Start (Stunden),de
+Delete,Löschen,de
+Description,Beschreibung,de
+Details,Einzelheiten,de
+Due Date,Fälligkeitsdatum,de
+Duration (Hours),Dauer (Stunden),de
+Duration hours,Dauer Stunden,de
+Employee,Mitarbeiter,de
+Empty opposite project task link type,Leere gegenüberliegende Projektaufgabenverknüpfungsart,de
+Empty the opposite link type,Leeren Sie den gegenüberliegenden Link-Typ,de
+Enable Gantt view,Aktivieren der Gantt-Ansicht,de
+Enable Kanban view per category,Kanban-Ansicht pro Kategorie aktivieren,de
+Enable Kanban view per status,Kanban-Ansicht pro Status aktivieren,de
+Enable calendar view per category,Aktivieren der Kalenderansicht pro Kategorie,de
+Enable calendar view per status,Aktivieren der Kalenderansicht pro Status,de
+Enable calendar view per user,Aktivieren der Kalenderansicht pro Benutzer,de
+Enable per project task sequence,Aktivieren Sie die Abfolge der Aufgaben pro Projekt,de
+Enable site management for project,Standortmanagement für das Projekt ermöglichen,de
+Enable status management by task category,Statusverwaltung nach Aufgabenkategorie aktivieren,de
+Enable status progress by category.,Aktivieren Sie den Statusverlauf nach Kategorie.,de
+Enable task progress by status,Aktivieren des Aufgabenfortschritts nach Status,de
+Enable task signature,Aktivieren der Aufgabensignatur,de
+End date,Datum des Endes,de
+Estimated time,Geschätzte Zeit,de
+Estimated time (in hours),Geschätzte Zeit (in Stunden),de
+Extends members from parent,Erweitert die Mitglieder von der Muttergesellschaft,de
+Finish,Oberfläche,de
+Finish tasks to finish,Aufgaben zu Ende bringen,de
+Finish tasks to start,"Aufgaben beenden, um zu beginnen",de
+First,Erste,de
+Folder,Mappe,de
+Follow-up,Nachbereitung,de
+Followers,Follower,de
+Frequency,Frequenz,de
+Frequency end date cannot be before task date.,Das Enddatum der Frequenz kann nicht vor dem Datum der Aufgabe liegen.,de
+From,Von,de
+From Date,Von Datum,de
+From date,Vom Datum,de
+"Full name could not be computed, please check the groovy formula.","Der vollständige Name konnte nicht berechnet werden, bitte prüfen Sie die Groovy-Formel.",de
+Full name groovy formula,Vollständiger Name groovy formula,de
+Gantt,Gantt,de
+Gantt with project,Gantt mit Projekt,de
+Gantt with user,Gantt mit Benutzer,de
+Gen proj type per order line,Projekttyp pro Auftragszeile,de
+General configuration,Allgemeine Konfiguration,de
+Generate,Erzeugen Sie,de
+Generate a backlog sprint,Erzeugen eines Backlog-Sprints,de
+Generate a new link,Einen neuen Link generieren,de
+Generate a project task link type,Erzeugen Sie einen Projektvorgangsverknüpfungstyp,de
+Generate check list,Checkliste generieren,de
+Generate new opposite link type,Neuen gegenüberliegenden Link-Typ generieren,de
+Generate opposite link type,Gegensätzlichen Link-Typ generieren,de
+Generate project configurations,Projektkonfigurationen generieren,de
+Generate sequence for project,Reihenfolge für Projekt generieren,de
+Generate sprints,Sprints generieren,de
+Generated project,Erstelltes Projekt,de
+High,Hoch,de
+Image,Bild,de
+Import all members,Alle Mitglieder importieren,de
+In production,In der Produktion,de
+In progress,In Arbeit,de
+In test,Im Test,de
+Include sub projects,Teilprojekte einbeziehen,de
+Information,Informationen,de
+Integer,Integer,de
+Internal Description,Interne Beschreibung,de
+Invalid date,Ungültiges Datum,de
+Invalid model name,Ungültiger Modellname,de
+Invalid selection name,Ungültiger Name der Auswahl,de
+Invoicing unit,Einheit für die Rechnungsstellung,de
+Is unique task for multiple quantity,Ist einmalige Aufgabe für mehrere Mengen,de
+Last status,Letzter Status,de
+Last updated on,Zuletzt aktualisiert am,de
+Latest announcement,Letzte Ankündigung,de
+Link type,Art der Verbindung,de
+Log Times,Log Zeiten,de
+Log time,Zeit protokollieren,de
+Low,Niedrig,de
+Manage by category,Verwalten nach Kategorie,de
+Manage by project,Verwalten nach Projekten,de
+Manage opposite link type,Verwalten des gegenüberliegenden Link-Typs,de
+Manage relations,Verwalten von Beziehungen,de
+Manage sprints,Verwalten von Sprints,de
+Members,Mitglieder,de
+Membres,Membres,de
+Message,Nachricht,de
+MultiSelect,MultiSelect,de
+My open tasks,Meine offenen Aufgaben,de
+My project,Mein Projekt,de
+My projects,Meine Projekte,de
+My tasks due,Meine fälligen Aufgaben,de
+My tasks to do,Meine zu erledigenden Aufgaben,de
+My today planning,Meine heutige Planung,de
+My topics,Meine Themen,de
+My upcoming planning,Meine kommende Planung,de
+Name,Name,de
+New line,Neue Linie,de
+New topics,Neue Themen,de
+Next >>,Nächste >>,de
+Next project sequence,Nächster Projektablauf,de
+Next task,Nächste Aufgabe,de
+No data to display,Keine Daten zum Anzeigen,de
+No status management,Keine Statusverwaltung,de
+None,Keine,de
+Normal,Normal,de
+Not specified,Keine Angaben,de
+Notes,Anmerkungen,de
+Number of days in a sprint,Anzahl der Tage in einem Sprint,de
+Number of hours in a day,Anzahl der Stunden an einem Tag,de
+Old sprint,Alter Sprint,de
+On hold,In der Warteschleife,de
+Open,Öffnen Sie,de
+Open gantt,Gantt öffnen,de
+Open phase,Offene Phase,de
+Open task,Offene Aufgabe,de
+Open task btn,Aufgabe öffnen btn,de
+Opposite link type,Gegenüberliegender Link-Typ,de
+Opposite project task link type,Gegenüberliegender Projektvorgangsverknüpfungstyp,de
+Order by state,Bestellung nach Bundesland,de
+Other customized fields,Andere benutzerdefinierte Felder,de
+Overview,Übersicht,de
+Parent,Elternteil,de
+Parent project,Übergeordnetes Projekt,de
+Parent task,Übergeordnete Aufgabe,de
+Per category calendar,Pro Kategorie Kalender,de
+Per category kanban,Kanban pro Kategorie,de
+Per status calendar,Pro Statuskalender,de
+Per status kanban,Pro Status Kanban,de
+Per user calendar,Kalender pro Benutzer,de
+Period,Zeitraum,de
+Phase by line,Phase für Zeile,de
+Phases,Phasen,de
+Planned Time Planning,Geplante Zeitplanung,de
+Planned charge,Geplante Gebühr,de
+Planned progress,Geplanter Fortschritt,de
+Planned time,Geplante Zeit,de
+Please check the compute full name groovy formula in project app configuration,Bitte überprüfen Sie die Groovy-Formel für die Berechnung des vollen Namens in der Konfiguration der Projektanwendung,de
+Please configure the completed task status in the project config panel.,Bitte konfigurieren Sie den Status der abgeschlossenen Aufgabe in der Projektkonfiguration.,de
+Please configure the completed task status of the project task category.,Bitte konfigurieren Sie den Status der abgeschlossenen Aufgabe der Projektaufgabenkategorie.,de
+Please configure the project %s with project task link type %s if you want to create this link.,"Bitte konfigurieren Sie das Projekt %s mit dem Projektvorgangsverknüpfungstyp %s, wenn Sie diese Verknüpfung erstellen möchten.",de
+Please fill all dates and the number of days in a sprint with valid values.,Bitte geben Sie alle Daten und die Anzahl der Tage in einem Sprint mit gültigen Werten an.,de
+Please fill canceled project status in App Project configuration.,Bitte füllen Sie den abgebrochenen Projektstatus in der App Projektkonfiguration aus.,de
+Please fill completed task status in Project configuration.,Bitte füllen Sie den Status der abgeschlossenen Aufgabe in der Projektkonfiguration aus.,de
+Please fill in task date.,Bitte geben Sie das Datum der Aufgabe an.,de
+Please select project,Bitte Projekt auswählen,de
+Please select user,Bitte Benutzer auswählen,de
+Please set the completed paid project status in the project configuration.,"Bitte setzen Sie den Status ""abgeschlossenes bezahltes Projekt"" in der Projektkonfiguration.",de
+Please set the completed project status in the project configuration.,"Bitte setzen Sie den Status ""abgeschlossen"" in der Projektkonfiguration.",de
+Please set the default number of hours per day in the project configuration.,Bitte stellen Sie die Standardanzahl der Stunden pro Tag in der Projektkonfiguration ein.,de
+Please set the unit for the project %s.,Bitte stellen Sie die Einheit für das Projekt %s ein.,de
+Please set the unit for the task %s.,Bitte stellen Sie die Einheit für die Aufgabe %s ein.,de
+Predecessors tasks,Aufgaben der Vorgänger,de
+Preferences,Präferenzen,de
+Priorities?,Prioritäten?,de
+Priority,Priorität,de
+Product,Produkt,de
+Production server date,Datum des Produktionsservers,de
+Progress,Fortschritt,de
+Progress by task status,Fortschritt nach Aufgabenstatus,de
+Project,Projekt,de
+Project %s,Projekt %s,de
+Project Activities,Projekt-Aktivitäten,de
+Project Activity,Projekt Tätigkeit,de
+Project Calendar,Projekt-Kalender,de
+Project Dashboard,Projekt-Dashboard,de
+Project Gantt,Projekt Gantt,de
+Project Label,Projekt-Label,de
+Project Phase,Projektphase,de
+Project Priority,Projektpriorität,de
+Project Task,Projekt Aufgabe,de
+Project Task Category,Projekt Aufgabenkategorie,de
+Project Task Tree,Projekt Aufgabenbaum,de
+Project Tasks,Projekt-Aufgaben,de
+Project allocation lines,Projektzuweisungslinien,de
+Project alone,Projekt allein,de
+Project batch,Projektcharge,de
+Project batches,Projektchargen,de
+Project check list item list,Projekt-Checkliste Punkteliste,de
+Project check list template,Vorlage für eine Projekt-Checkliste,de
+Project code is already used. Please provide unique code,Der Projektcode wird bereits verwendet. Bitte geben Sie einen eindeutigen Code an,de
+Project config,Projektkonfiguration,de
+Project configurations,Projektkonfigurationen,de
+Project customized fields,Projektspezifische Felder,de
+Project dashboard,Projekt-Dashboard,de
+Project fields,Projektfelder,de
+Project filters,Projekt-Filter,de
+Project json,Projekt json,de
+Project management,Projektleitung,de
+Project planning tasks,Aufgaben der Projektplanung,de
+Project status,Status des Projekts,de
+Project status management,Verwaltung des Projektstatus,de
+Project structure,Struktur des Projekts,de
+Project task,Projektaufgabe,de
+Project task category,Kategorie der Projektaufgabe,de
+Project task category %s,Kategorie der Projektaufgabe %s,de
+Project task category filters,Filter für Projektaufgabenkategorien,de
+Project task filters,Filter für Projektaufgaben,de
+Project task link,Link zur Projektaufgabe,de
+Project task link type,Typ der Projektaufgabenverknüpfung,de
+Project task linked,Projektaufgabe verknüpft,de
+Project task list,Aufgabenliste des Projekts,de
+Project task relation,Projektaufgabenbezug,de
+Project task relation type,Typ der Projektaufgabenbeziehung,de
+Project task relation types,Projektaufgaben-Beziehungstypen,de
+Project task relations,Projektaufgabenbeziehungen,de
+Project task to link,Projektaufgabe zu verknüpfen,de
+Project tasks,Projektaufgaben,de
+Project template,Projektvorlage,de
+Project template filters,Filter für Projektvorlagen,de
+Project templates,Projektvorlagen,de
+Project time unit,Zeiteinheit des Projekts,de
+Project version,Version des Projekts,de
+Project.Resource,Project.Resource,de
+Project.version,Project.version,de
+Project.versions,Project.versions,de
+Project/Business (Project),Projekt/Geschäft (Projekt),de
+Projects,Projekte,de
+Projects and resources management,Verwaltung von Projekten und Ressourcen,de
+Quantity,Menge,de
+Related Tasks,Verwandte Aufgaben,de
+Related task,Verwandte Aufgabe,de
+Remove lines,Linien entfernen,de
+Remove status,Status entfernen,de
+Remove task status,Aufgabenstatus entfernen,de
+Reporting,Berichterstattung,de
+Reportings,Berichte,de
+Reset,Zurücksetzen,de
+Resource,Ressource,de
+Resource booking,Buchung von Ressourcen,de
+Resource bookings,Buchungen von Ressourcen,de
+Resource management,Verwaltung der Ressourcen,de
+Resource type,Art der Ressource,de
+Resource types,Ressourcenarten,de
+Resources,Ressourcen,de
+Roadmap,Straßenkarte,de
+Select,Wählen Sie,de
+Select Projects,Projekte auswählen,de
+Select Users,Benutzer auswählen,de
+Select an existing project task link type,Wählen Sie einen bestehenden Projektvorgangsverknüpfungstyp,de
+Select an opposite link type,Wählen Sie einen anderen Link-Typ,de
+Select values,Werte auswählen,de
+Sequence,Sequenz,de
+Serial/batch number,Serien-/Chargennummer,de
+Show sub-projects,Unterprojekte anzeigen,de
+Signature,Unterschrift,de
+Site,Website,de
+Sites,Standorte,de
+Spent time,Verwendete Zeit,de
+Sprint,Sprint,de
+Sprint generator,Sprint-Generator,de
+Sprints,Sprints,de
+Start,Start,de
+Start date,Datum des Beginns,de
+Start tasks to finish,Aufgaben beginnen und beenden,de
+Start tasks to start,Zu startende Aufgaben,de
+Status,Status,de
+Status to add,Status zum Hinzufügen,de
+Status to remove,Status zu entfernen,de
+Stop,Stopp,de
+String,Zeichenfolge,de
+Sub-Projects,Teilprojekte,de
+Subject,Thema,de
+Suprojects,Suproprojekte,de
+Synchronize,Synchronisieren,de
+Tags,Tags,de
+Take charge,Verantwortung übernehmen,de
+Target version,Zielversion,de
+Task,Aufgabe,de
+Task %s,Aufgabe %s,de
+Task Calendar,Aufgaben-Kalender,de
+Task Tree,Aufgabenbaum,de
+Task by line,Aufgabe nach Zeilen,de
+Task categories,Aufgabenkategorien,de
+Task configuration,Konfiguration der Aufgabe,de
+Task date,Datum der Aufgabe,de
+Task deadline,Frist für die Aufgabe,de
+Task duration,Dauer der Aufgabe,de
+Task fields,Aufgabenfelder,de
+Task parent or children has not been configured correctly.,Die übergeordnete Aufgabe oder die untergeordneten Aufgaben wurden nicht korrekt konfiguriert.,de
+Task planning,Planung von Aufgaben,de
+Task progress,Fortschritt der Aufgabe,de
+Task recurrence,Wiederholung von Aufgaben,de
+Task status,Status der Aufgabe,de
+Task status management,Verwaltung des Aufgabenstatus,de
+Task statuses,Status der Aufgaben,de
+Task template,Aufgabenvorlage,de
+Task template filters,Filter für Aufgabenvorlagen,de
+Task template list,Aufgabenvorlagenliste,de
+Task templates,Aufgabenvorlagen,de
+Task tracking,Aufgabenverfolgung,de
+Tasks,Aufgaben,de
+Tasks associated,Zugehörige Aufgaben,de
+Tasks created by me,Von mir erstellte Aufgaben,de
+Tasks per sprint,Aufgaben pro Sprint,de
+Tasks status update completed:,Aktualisierung des Aufgabenstatus abgeschlossen:,de
+Tasks to finish before finish,Zu erledigende Aufgaben vor der Fertigstellung,de
+Tasks to start before start,Zu erledigende Aufgaben vor dem Start,de
+Team,Team,de
+Technical type,Technischer Typ,de
+Templates,Schablonen,de
+Testing server date,Datum des Prüfservers,de
+The company %s doesn't have any configured sequence for Project,Das Unternehmen %s hat keine konfigurierte Sequenz für das Projekt,de
+The parent task creates a loop in the task tree.,Die übergeordnete Aufgabe erstellt eine Schleife im Aufgabenbaum.,de
+The project contains overlapping sprints. Please correct the date ranges.,Das Projekt enthält sich überschneidende Sprints. Bitte korrigieren Sie die Datumsbereiche.,de
+The selectable projects are those for which the 'Manage via project' option is enabled.,"Die auswählbaren Projekte sind diejenigen, für die die Option ""Verwalten über Projekt"" aktiviert ist.",de
+"The selected statuses will be removed from the allowed status types for these projects and/or categories and, as a result, will no longer be available for associated tasks. In the case of categories, the statuses will only be removed from the tasks if the 'Manage via categories' option is enabled in the project configuration.","Die ausgewählten Status werden aus den zulässigen Statustypen für diese Projekte und/oder Kategorien entfernt und sind somit für die zugehörigen Aufgaben nicht mehr verfügbar. Im Falle von Kategorien werden die Status nur dann aus den Aufgaben entfernt, wenn die Option ""Über Kategorien verwalten"" in der Projektkonfiguration aktiviert ist.",de
+"The status of project tasks will be defined by the selection chosen. The priority of the statuses displayed is determined first by the category, then by the project.",Der Status der Projektaufgaben wird durch die gewählte Auswahl bestimmt. Die Priorität der angezeigten Status wird zuerst durch die Kategorie und dann durch das Projekt bestimmt.,de
+"The status of project tasks will be defined by the selection chosen. The priority of the statuses displayed is determined first by the category, then by the project. Once a task is linked to the project, the selection can no longer be modified.","Der Status der Projektaufgaben wird durch die gewählte Auswahl bestimmt. Die Priorität der angezeigten Status wird zuerst durch die Kategorie und dann durch das Projekt bestimmt. Sobald eine Aufgabe mit dem Projekt verknüpft ist, kann die Auswahl nicht mehr geändert werden.",de
+There is a potential inconsistency between the progression values configured.,Es besteht eine mögliche Inkonsistenz zwischen den konfigurierten Progressionswerten.,de
+This formula allows you to define the composition of the fullName through a groovy formula,Mit dieser Formel können Sie die Zusammensetzung des vollständigen Namens durch eine Groovy-Formel definieren,de
+This option enables resource reservation on projects. You can create resources that can be booked on projects.,"Diese Option ermöglicht die Reservierung von Ressourcen für Projekte. Sie können Ressourcen erstellen, die auf Projekte gebucht werden können.",de
+"This option is used to activate the automatic allocation of progress to project tasks via project task category. If this option is enabled, the progress field will be available in the category view and the category will be updated using this data (or the data entered in the status if this is empty).","Mit dieser Option wird die automatische Zuordnung des Fortschritts zu den Projektaufgaben über die Projektaufgabenkategorie aktiviert. Wenn diese Option aktiviert ist, steht das Feld Fortschritt in der Kategorieansicht zur Verfügung und die Kategorie wird anhand dieser Daten (oder der im Status eingegebenen Daten, wenn dieser leer ist) aktualisiert.",de
+"This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change. The percentage defined by default in the statuses will apply to all tasks.","Mit dieser Option wird die automatische Zuordnung von Fortschritten zu Projektaufgaben aktiviert. Wenn sie aktiviert ist, wird das Fortschrittsfeld in den Vorgangsstatus verfügbar sein und den Fortschritt generieren, wenn sich diese ändern. Der standardmäßig im Status definierte Prozentsatz gilt für alle Aufgaben.",de
+This resource is already booked for this period,Diese Ressource ist für diesen Zeitraum bereits gebucht,de
+This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?,Dieser Aufgabenstatus wird in der Projektaufgabenkategorie für den automatischen Fortschrittsprozess verwendet. Möchten Sie alle nicht geänderten Werte mit diesem Wert aktualisieren?,de
+This task status will be used to define which status is flagged as completed for tasks.,"Dieser Aufgabenstatus wird verwendet, um festzulegen, welcher Status für Aufgaben als abgeschlossen gekennzeichnet wird.",de
+"This will determine the unit used for project-wide reporting. If there are tasks using another unit, conversions will be made using 'Number of hours in a day' value.","Damit wird die für die projektweite Berichterstattung verwendete Einheit festgelegt. Wenn es Aufgaben gibt, die eine andere Einheit verwenden, werden die Umrechnungen anhand des Werts ""Anzahl der Stunden pro Tag"" vorgenommen.",de
+Ticker number,Tickernummer,de
+Ticket,Ticket,de
+Ticket associated,Ticket zugeordnet,de
+Ticket number,Fahrscheinnummer,de
+Time Spent,Aufgewandte Zeit,de
+Time Spent?,Verwendete Zeit?,de
+Time follow up,Zeitliche Folgemaßnahmen,de
+Time follow-up,Zeitliche Nachbereitung,de
+Time unit,Zeiteinheit,de
+Timer,Zeitschaltuhr,de
+Timer list,Timer-Liste,de
+TimesheetLine.timeSpent,TimesheetLine.timeSpent,de
+Title,Titel,de
+To,An,de
+To Date,Bis heute,de
+To date,Bis heute,de
+Today,Heute,de
+Tools,Werkzeuge,de
+Topic,Thema,de
+Topic created by,Thema erstellt von,de
+Topic?,Thema?,de
+Topics,Themen,de
+Topics (${name}),Themen (${Name}),de
+Total,Insgesamt,de
+Total duration (Hours),Gesamtdauer (Stunden),de
+Total planned hours,Geplante Stunden insgesamt,de
+Type,Typ,de
+Type of authorized activities,Art der genehmigten Aktivitäten,de
+Type of authorized categories,Art der zugelassenen Kategorien,de
+Type of authorized priorities,Art der genehmigten Prioritäten,de
+Type of authorized status,Art des autorisierten Status,de
+Unit conversion,Umrechnung in Einheiten,de
+Unit conversions,Umrechnung von Einheiten,de
+Unit price,Preis pro Einheit,de
+Update period according to task,Aktualisierungszeitraum je nach Aufgabe,de
+Urgent,Dringend,de
+Usable on project,Verwendbar im Projekt,de
+User,Benutzer,de
+User Gantt,Benutzer Gantt,de
+User Task,Benutzer Aufgabe,de
+Users,Benutzer,de
+Validated Timesheet lines,Validierte Stundenzettelzeilen,de
+Version,Version,de
+View all issues,Alle Ausgaben anzeigen,de
+View configuration,Konfiguration anzeigen,de
+Waiting Timesheet lines,Wartende Timesheet-Zeilen,de
+"Warning, at least 2 versions with the title %s are used on the project(s) %s.","Warnung, mindestens 2 Versionen mit dem Titel %s werden für das/die Projekt(e) %s verwendet.",de
+Wiki,Wiki,de
+Wiki description,Wiki-Beschreibung,de
+Wiki folder,Wiki-Ordner,de
+Wikis ${_projectName},Wikis ${_Projektname},de
+Wikis (${name}),Wikis (${Name}),de
+"You have no active team, the planning can't be generated","Sie haben kein aktives Team, die Planung kann nicht erstellt werden",de
+"You have no projects or tasks bound to you, your planning can't be generated.","Sie haben keine Projekte oder Aufgaben, die an Sie gebunden sind, Ihre Planung kann nicht erstellt werden.",de
+You have selected no team for this project,Sie haben kein Team für dieses Projekt ausgewählt,de
+"Your current check list will be erased, do you want to continue ?","Ihre aktuelle Checkliste wird gelöscht, möchten Sie fortfahren?",de
+"Your team has no projects or tasks bound to it, the planning can't be generated.","Ihr Team hat keine Projekte oder Aufgaben, die mit ihm verbunden sind, die Planung kann nicht erstellt werden.",de
+hours,Stunden,de
+to,zu,de
+updated document,aktualisiertes Dokument,de
+value:Canceled,value:Canceled,de
+value:Done,value:Done,de
+value:High,value:High,de
+value:In progress,value:In progress,de
+value:Low,value:Low,de
+value:New,value:New,de

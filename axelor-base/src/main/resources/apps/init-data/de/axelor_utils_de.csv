@@ -1,0 +1,37 @@
+key,message,language
+"AOS API calls are disabled, please contact your administrator. The property utils.api.enable is false in application.properties.","AOS API calls are disabled, please contact your administrator. The property utils.api.enable is false in application.properties.",de
+An error occurred with the following message : %s,Es ist ein Fehler mit der folgenden Meldung aufgetreten: %s,de
+An error occurs while opening the connection. Please verify the following URL : %s.,Beim Öffnen der Verbindung ist ein Fehler aufgetreten. Bitte überprüfen Sie die folgende URL: %s.,de
+Can not opening the connection to a empty URL.,Kann die Verbindung zu einer leeren URL nicht öffnen.,de
+Cannot find record #%s,Kann Datensatz #%s nicht finden,de
+Code,Code,de
+Computation in progress...,Berechnung im Gange...,de
+Error executing query: %s,Fehler beim Ausführen der Abfrage: %s,de
+Error while searching null title from following selection: '%s'.,Fehler bei der Suche nach Null-Titel aus folgender Auswahl: '%s'.,de
+Given couple %s / %s match a value which is not an integer.,"Das gegebene Paar %s / %s entspricht einem Wert, der keine ganze Zahl ist.",de
+Meta json field type %s could not be converted to a meta field type.,Meta-Json-Feldtyp %s konnte nicht in einen Meta-Feldtyp konvertiert werden.,de
+Name,Name,de
+No such template,Keine solche Vorlage,de
+No title found for the view '%s'.,Kein Titel für die Ansicht '%s' gefunden.,de
+Null given value.,Null gegebener Wert.,de
+Record Id,Datensatz-ID,de
+Record Name,Name des Datensatzes,de
+Reference on %s ID %s (%s) :: %s,Referenz auf %s ID %s (%s) :: %s,de
+Selection '%s' is not an integer one or is wrongly defined.,Die Auswahl '%s' ist nicht ganzzahlig oder falsch definiert.,de
+Templating can not be empty,Schablonen können nicht leer sein,de
+The collection of IDs cannot be null.,Die Sammlung von IDs kann nicht null sein.,de
+The consumer cannot be null.,Der Verbraucher kann nicht null sein.,de
+The following references exist for %s (%s) :,Für %s (%s) sind folgende Referenzen vorhanden:,de
+The following required fields are missing on %s (%s) :,Bei %s (%s) fehlen die folgenden Pflichtfelder:,de
+The object,Das Objekt,de
+The parameter copyNumber should be superior to 0.,Der Parameter copyNumber sollte größer als 0 sein.,de
+The process was stopped because the computation might be stuck in an infinite loop.,"Der Prozess wurde gestoppt, weil die Berechnung in einer Endlosschleife stecken geblieben sein könnte.",de
+This field needs to be unique.,Dieses Feld muss eindeutig sein.,de
+Type %s could not be converted to json type.,Der Typ %s konnte nicht in den Typ json konvertiert werden.,de
+Unknown selection and title pair: '%s' / '%s'.,Unbekanntes Auswahl- und Titelpaar: '%s' / '%s'.,de
+Unknown selection and value pair: '%s' / '%s'.,Unbekanntes Auswahl- und Wertepaar: '%s' / '%s'.,de
+Unknown selection: '%s'.,Unbekannte Auswahl: '%s'.,de
+Url %s is malformed.,Url %s ist missgebildet.,de
+Years in 360 days,Jahre in 360 Tagen,de
+has been correctly created with the id :,wurde korrekt mit der id erstellt:,de
+has been created,wurde erstellt,de

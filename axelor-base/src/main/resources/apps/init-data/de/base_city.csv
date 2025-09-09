@@ -1,0 +1,13 @@
+importId;inseeCode;name;nbInhCommune;canton.code;department.code;region.code;artmin;country_alpha3Code;zip
+1;DE-BE;BERLIN;;;;;;DEU;
+3;DE-BY-MU;HAMBURG;;;;;;DEU;
+4;DE-HH;STUTTGART;;;;;;DEU;
+2;DE-BW;MÜNCHEN;;;;;;DEU;
+5;;GERLIGEN;;;;;;DEU;
+6;;FELLBACH;;;;;;DEU;
+7;;WEISSACH-FLACHT;;;;;;DEU;
+8;;WAIBLINGEN;;;;;;DEU;
+9;;LEONBERG;;;;;;DEU;
+10;;KORNTAL-MÜNCHINGEN;;;;;;DEU;
+11;;KORNWESTHEIM;;;;;;DEU;
+12;;KORB;;;;;;DEU;

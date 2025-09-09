@@ -1,0 +1,133 @@
+key,message,language
+%d messages has been regenerated successfully and %d errors append.,%d Nachrichten wurden erfolgreich neu generiert und %d Fehler angehängt.,de
+Add Signature,Unterschrift hinzufügen,de
+Address,Adresse,de
+Address Block,Adressblock,de
+All messages,Alle Meldungen,de
+Bcc,Bcc,de
+Brevo API key,Brevo API-Schlüssel,de
+Brevo identification,Brevo-Identifizierung,de
+Cannot regenerate message without related model.,Die Nachricht kann ohne zugehöriges Modell nicht neu generiert werden.,de
+Cannot regenerate message without template associated to message.,"Die Nachricht kann nicht neu generiert werden, wenn keine Vorlage mit der Nachricht verknüpft ist.",de
+Cc,Cc,de
+Chat,Chat,de
+Check Duplicate,Duplikat prüfen,de
+Configurations,Konfigurationen,de
+Connection successful,Verbindung erfolgreich,de
+Content,Inhalt,de
+Context,Kontext,de
+Create message,Nachricht erstellen,de
+Default,Standard,de
+Default account,Standard-Konto,de
+Delete,Löschen,de
+Deleted,Gelöscht,de
+Draft,Entwurf,de
+Email,E-Mail,de
+Email Accounts,E-Mail-Konten,de
+Email address,E-Mail Adresse,de
+Email addresses,E-Mail-Adressen,de
+Email sending is in progress,E-Mail-Versand ist im Gange,de
+Email sending is in progress for %d messages.,Der E-Mail-Versand für %d Nachrichten ist im Gange.,de
+Emails,E-Mails,de
+Error when sending email: %s,Fehler beim Senden einer E-Mail: %s,de
+Expr. value,Ausgedrückter Wert,de
+Fetch emails,E-Mails abrufen,de
+Forecasted Sent Date,Voraussichtliches Versanddatum,de
+From,Von,de
+From :,Von :,de
+From email address,Von E-Mail Adresse,de
+From email name,Von E-Mail-Name,de
+Generate Message,Nachricht generieren,de
+Generate message,Nachricht generieren,de
+Groovy Template,Groovy Vorlage,de
+Group,Gruppe,de
+Host,Gastgeber,de
+IMAP,IMAP,de
+"If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$","If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$",de
+In progress,In Arbeit,de
+Incorrect login or password,Falsches Login oder Passwort,de
+Information,Informationen,de
+Json,Json,de
+Language,Sprache,de
+Login,Anmeldung,de
+Mail,E-Mail,de
+Mail account,Mail-Konto,de
+Mail accounts,Mail-Konten,de
+Media Type,Medienart,de
+Message,Nachricht,de
+Message destinated to,Nachricht bestimmt für,de
+Messages,Nachrichten,de
+Messages not sent,Nicht gesendete Nachrichten,de
+Mobile phone,Mobiltelefon,de
+Model,Modell,de
+Model empty. Please configure a model.,Modell leer. Bitte konfigurieren Sie ein Modell.,de
+Multi related,Multi-bezogen,de
+Multi relateds,Mehrere Verwandte,de
+NONE,KEINE,de
+Name,Name,de
+No Mail content entered.,Kein Mail-Inhalt eingegeben.,de
+Not sent,Nicht gesendet,de
+POP,POP,de
+Password,Passwort,de
+Please configure a template,Bitte konfigurieren Sie eine Vorlage,de
+Please fill mobile phone number.,Bitte geben Sie Ihre Mobiltelefonnummer an.,de
+Please select one or more messages.,Bitte wählen Sie eine oder mehrere Nachrichten aus.,de
+Please set the email template to send,Bitte stellen Sie die E-Mail-Vorlage zum Senden ein,de
+Port,Hafen,de
+Print,Drucken,de
+"Provided settings are wrong, please modify them and try again","Falls die Einstellungen falsch sind, ändern Sie sie bitte und versuchen Sie es erneut.",de
+Received,Empfangen,de
+Recipient,Empfänger,de
+Recipient address,Adresse des Empfängers,de
+Recipients,Empfänger,de
+Reference,Referenz,de
+Regenerate messages,Nachrichten neu generieren,de
+Related to,Verwandt mit,de
+Related to select,Verwandt mit wählen,de
+Reply to,Antwort an,de
+Resend,Erneut senden,de
+Resend messages,Nachrichten erneut senden,de
+SMS,SMS,de
+SMTP,SMTP,de
+SSL,SSL,de
+SSL/STARTTLS,SSL/STARTTLS,de
+STARTTLS,STARTTLS,de
+Select template,Vorlage auswählen,de
+Send,Senden Sie,de
+Sender (User),Absender (Benutzer),de
+Sender's email address is null or empty,Die E-Mail-Adresse des Absenders ist null oder leer,de
+Sent,Gesendet,de
+Sent by email,Per E-Mail gesendet,de
+Sent date,Gesendetes Datum,de
+Server Type,Server-Typ,de
+Signature,Unterschrift,de
+Status,Status,de
+String Template,String-Vorlage,de
+Subject,Thema,de
+Successful send,Erfolgreicher Versand,de
+System,System,de
+TO/CC/BCC recipient's email address is empty,TO/CC/BCC-Empfänger-E-Mail-Adresse ist leer,de
+Target receptor,Ziel-Rezeptor,de
+Template,Vorlage,de
+Template Context,Vorlage Kontext,de
+Template engine,Template-Engine,de
+Templates,Schablonen,de
+Temporary email service only support Email media type.,Der temporäre E-Mail-Dienst unterstützt nur den Medientyp E-Mail.,de
+Test connection,Verbindung testen,de
+Test template,Testvorlage,de
+The email template model (%s) is different than the entity generating the email (%s),"Das Modell der E-Mail-Vorlage (%s) unterscheidet sich von der Entität, die die E-Mail erzeugt (%s)",de
+There is already a default account,Es gibt bereits ein Standardkonto,de
+There is no default email account,Es gibt kein Standard-E-Mail-Konto,de
+Thread ID,Gewinde-ID,de
+To,An,de
+To :,An :,de
+Type,Typ,de
+"Unable to reach server. Please check Host,Port and SSL/TLS","Der Server kann nicht erreicht werden. Bitte überprüfen Sie Host, Port und SSL/TLS",de
+User,Benutzer,de
+Valid,Gültig,de
+Validate,Validieren Sie,de
+Waiting model: %s,Wartendes Modell: %s,de
+Your target receptor is not valid. Please check it.,Ihr Zielrezeptor ist nicht gültig. Bitte überprüfen Sie ihn.,de
+user@mydomain.com,user@mydomain.com,de
+Invalid address format :  %s,Ungültiges Adressformat: %s,de
+The message is already being sent. Please wait...,Die Nachricht wird bereits gesendet. Bitte warten...,de

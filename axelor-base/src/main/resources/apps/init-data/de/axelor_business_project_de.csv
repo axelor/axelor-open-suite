@@ -1,0 +1,611 @@
+key,message,language
+%,%,de
+% Charging Back Purhcases,% Aufladen von Rücksäcken,de
+% consump,% Verbrauch,de
+% consumption is the ratio of spent time on sold time on the task and all of it's sub tasks.,Der prozentuale Verbrauch ist das Verhältnis der für die Aufgabe und alle ihre Unteraufgaben aufgewendeten Zeit.,de
+% of consumption,% des Verbrauchs,de
+% of progress,% des Fortschritts,de
+% prog,% prog,de
+% progress is the ratio of spent time on updated time on the task and all of it's sub tasks.,Der prozentuale Fortschritt ist das Verhältnis zwischen der aufgewendeten Zeit und der aktualisierten Zeit für die Aufgabe und alle ihre Unteraufgaben.,de
+%s : You must configure Business project module for company %s,%s : Sie müssen das Business-Projektmodul für das Unternehmen %s konfigurieren,de
+%s is in %s and should be in Days or Hours as they are defined in Business Project module configuration,"%s ist in %s und sollte in Tagen oder Stunden angegeben werden, wie sie in der Konfiguration des Business Project-Moduls definiert sind",de
+- a linked contract is not at finished status,- ein verbundener Vertrag ist noch nicht abgeschlossen,de
+- a linked contract is still in progress,- ein damit verbundener Vertrag ist noch in Arbeit,de
+- a linked expense line is not invoiced,- eine verknüpfte Ausgabenposition nicht in Rechnung gestellt wird,de
+- a linked purchase order is not totally invoiced,- eine verknüpfte Bestellung wird nicht vollständig in Rechnung gestellt,de
+- a linked purchase order is not totally invoiced or is not totally delivered,- eine verknüpfte Bestellung nicht vollständig in Rechnung gestellt oder nicht vollständig geliefert wird,de
+- a linked purchase order is not totally received,- eine verknüpfte Bestellung ist nicht vollständig eingegangen,de
+- a linked sale order is not totally invoiced,- ein verbundener Verkaufsauftrag nicht vollständig fakturiert ist,de
+- a linked timesheet line is not invoiced,- eine verknüpfte Zeiterfassungszeile wird nicht in Rechnung gestellt,de
+- a linked timesheet line that must be invoiced has not been invoiced,"- eine verknüpfte Zeiterfassungszeile, die in Rechnung gestellt werden muss, nicht in Rechnung gestellt wurde",de
+1,1,de
+2,2,de
+3,3,de
+4,4,de
+5,5,de
+6,6,de
+A deadline is required,Eine Frist ist erforderlich,de
+Action,Aktion,de
+Add a new sale order line,Eine neue Auftragszeile hinzufügen,de
+Add selected lines,Ausgewählte Zeilen hinzufügen,de
+Address,Adresse,de
+Advance payment invoices,Rechnungen mit Vorauszahlung,de
+All open tasks,Alle offenen Aufgaben,de
+All tasks,Alle Aufgaben,de
+All tasks (tree),Alle Aufgaben (Baum),de
+Allows to retrieve prices from a framework contract,Ermöglicht den Abruf von Preisen aus einem Rahmenvertrag,de
+Analytic distribution,Analytische Verteilung,de
+Analytic distribution required on project,Analytische Verteilung im Projekt erforderlich,de
+Analytic distribution template,Vorlage für die analytische Verteilung,de
+Analytic move lines,Analytische Bewegungslinien,de
+Analytics,Analytik,de
+App,App,de
+App business project,App-Business-Projekt,de
+App project,App-Projekt,de
+AppBusinessProject.Blocking,AppBusinessProject.Blocking,de
+Are you sure to unlink project from selected lines?,"Sind Sie sicher, dass Sie das Projekt von den ausgewählten Zeilen trennen wollen?",de
+Are you sure you want to generate invoices for all selected affairs ?,"Sind Sie sicher, dass Sie Rechnungen für alle ausgewählten Angelegenheiten erstellen möchten?",de
+Assigned to,Zugewiesen an,de
+Attach the Annex to the invoice,Legen Sie der Rechnung den Anhang bei,de
+Automatic Project,Automatisches Projekt,de
+Automatic invoicing,Automatische Rechnungsstellung,de
+Backup project data to project history,Sicherung von Projektdaten in der Projekthistorie,de
+Batch,Stapel,de
+Batches,Lose,de
+Book resource,Ressource Buch,de
+Business,Business,de
+Business (via business proj),Business (über business proj),de
+Business configuration,Business-Konfiguration,de
+Business project,Geschäftliches Projekt,de
+Business project batch,Geschäftsprojekt Batch,de
+Business project batch filters,Batch-Filter für Geschäftsprojekte,de
+Business project batches,Business-Projektchargen,de
+Business project configurations,Geschäftliche Projektkonfigurationen,de
+Business project tasks,Aufgaben für Unternehmensprojekte,de
+Business projects,Geschäftliche Projekte,de
+Cancel,Abbrechen,de
+Canceled,Abgesagt,de
+Characteristics,Merkmale,de
+Charging Back Purchases Type,Rückbuchung von Käufen Typ,de
+Client partner,Partner des Kunden,de
+Closing project rule select,Projektabschlussregel auswählen,de
+Code,Code,de
+Comments,Kommentare,de
+Company,Unternehmen,de
+Completed paid project status,Status des abgeschlossenen bezahlten Projekts,de
+Compute project totals,Berechnung der Projektgesamtbeträge,de
+Configurations,Konfigurationen,de
+Confirm Purchase order generation,Bestätigen Sie die Erstellung einer Bestellung,de
+Consolidate all,Konsolidieren Sie alle,de
+Consolidate phase invoicing,Konsolidierung der Phasenfakturierung,de
+Consolidate sub project when invoicing,Konsolidierung von Teilprojekten bei der Rechnungsstellung,de
+Consolidate the phases,Konsolidierung der Phasen,de
+Content,Inhalt,de
+Contract,Vertrag,de
+Contracts,Verträge,de
+Convert,Konvertieren,de
+Convert into business project,Umwandlung in ein Geschäftsprojekt,de
+Cost W.T.,Cost W.T.,de
+Could not find the project id.,Die Projekt-ID konnte nicht gefunden werden.,de
+Could not find the project task id.,Die ID der Projektaufgabe konnte nicht gefunden werden.,de
+Create business project from this template,Geschäftsprojekt aus dieser Vorlage erstellen,de
+Create invoicing project,Rechnungsstellungsprojekt erstellen,de
+Create new customer contract,Neuen Kundenvertrag anlegen,de
+Create new supplier contract,Neuen Lieferantenvertrag erstellen,de
+Create project from this template,Projekt aus dieser Vorlage erstellen,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Currency,Währung,de
+Customer,Kunde,de
+Customer Invoice lines,Kunden-Rechnungszeilen,de
+Customer contracts,Kundenverträge,de
+Customer deliveries,Lieferungen an Kunden,de
+Customer invoice lines,Kundenrechnungszeilen,de
+Customer invoices,Kundenrechnungen,de
+Customer referral,Kundenempfehlungen,de
+Date,Datum,de
+Deadline,Deadline,de
+Default Invoicing Product for Projects,Standard-Fakturierungsprodukt für Projekte,de
+Default framework customer contract,Standard-Rahmenkundenvertrag,de
+Default framework supplier contract,Standard-Rahmenlieferantenvertrag,de
+Default percentage,Standard-Prozentsatz,de
+Default product,Standardprodukt,de
+Default value,Standardwert,de
+Default value invoicing type,Vorschlagswert Fakturierungsart,de
+Deliveries,Lieferungen,de
+"Depending on the chosen configuration, the user get an alert or an error message if:","Je nach gewählter Konfiguration erhält der Benutzer eine Warnung oder eine Fehlermeldung, wenn:",de
+Description,Beschreibung,de
+Details Lines (Tree),Details Linien (Baum),de
+Discount amount,Rabattbetrag,de
+Discount rate,Abzinsungssatz,de
+Discount type,Rabatt-Typ,de
+Display,Anzeige,de
+Display expense lines on printing,Ausgabenzeilen beim Drucken anzeigen,de
+Display timesheet lines on printing,Arbeitszeitblattzeilen beim Drucken anzeigen,de
+Don't consolidate,Nicht konsolidieren,de
+Draft,Entwurf,de
+Duration adjust for customer,Dauer für Kunden anpassen,de
+Elements To Invoice,Elemente zur Rechnung,de
+Employee,Mitarbeiter,de
+Empty,Leere,de
+Enable task templates by product,Aktivieren von Aufgabenvorlagen nach Produkt,de
+Enable to invoice expense,Ermöglicht die Abrechnung von Ausgaben,de
+Enable to invoice timesheet,Aktivieren Sie den Stundenzettel für die Rechnung,de
+Error while trying to save to project history for project %s.,"Fehler beim Versuch, den Projektverlauf für das Projekt %s zu speichern.",de
+Error while trying to transition between paid status for project %s.,"Fehler beim Versuch, den bezahlten Status für das Projekt %s zu wechseln.",de
+Estimated Costs Total,Geschätzte Kosten Insgesamt,de
+Estimated Margin,Geschätzte Marge,de
+Exclude tasks for invoicing,Aufgaben für die Rechnungsstellung ausschließen,de
+Expense,Ausgaben,de
+Expense Lines,Ausgaben-Linien,de
+Expense Lines Priority,Ausgabenzeilen Priorität,de
+Expense line,Ausgabenlinie,de
+"Expense line successfully created. The project is configured as billable, so the charge has been marked as billable by default.","Spesenzeile erfolgreich erstellt. Das Projekt ist als abrechenbar konfiguriert, so dass die Gebühr standardmäßig als abrechenbar markiert wurde.",de
+Expense lines,Ausgabenlinien,de
+Expenses,Ausgaben,de
+ExpensesTotal,AusgabenGesamt,de
+Factory not found this type of generator,Fabrik nicht gefunden diese Art von Generator,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+Fill project,Projekt befüllen,de
+Financial Data,Finanzielle Daten,de
+Financial datas,Finanzdaten,de
+Financial follow-up,Finanzielle Folgemaßnahmen,de
+Finish,Oberfläche,de
+Forecast,Vorhersage,de
+Framework customer contract,Rahmenvertrag mit Kunden,de
+Framework supplier contract,Rahmenvertrag mit Lieferanten,de
+Free,Kostenlos,de
+From,Von,de
+Gantt,Gantt,de
+General information,Allgemeine Informationen,de
+Generate Invoice,Rechnung generieren,de
+Generate Project/Business,Projekt/Geschäft generieren,de
+Generate Purchase Order,Bestellung generieren,de
+Generate business project configurations,Generierung von Geschäftsprojektkonfigurationen,de
+Generate invoicing projects,Projekte zur Rechnungsstellung generieren,de
+Generate quotation,Angebot generieren,de
+Generate/Select Project for Order,Projekt für Auftrag generieren/auswählen,de
+Generated,Erzeugt,de
+Generated invoicing project,Generiertes Fakturierungsprojekt,de
+Generated invoicing projects,Erstellte Fakturierungsprojekte,de
+Group expense on invoice,Gruppenaufwand auf Rechnung,de
+Grouping period,Gruppierungszeitraum,de
+Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria,"Hier können Sie eine Groovy-Formel eingeben, um bestimmte Aufgaben nach bestimmten gewünschten Kriterien von der Rechnungsstellung auszuschließen",de
+HoldBack,HoldBack,de
+HoldBack line,HoldBack-Zeile,de
+HoldBack product,HoldBack-Produkt,de
+HoldBacks,HoldBacks,de
+HoldBacks lines,HoldBacks Linien,de
+Identically,Identisch,de
+Impossible to retrieve the price as several matching products were found.,"Es ist nicht möglich, den Preis abzurufen, da mehrere passende Produkte gefunden wurden.",de
+In progress invoice,Rechnung in Bearbeitung,de
+Information,Informationen,de
+Initial,Ursprüngliche,de
+Invalid exclude task for invoicing filter,Ungültige Aufgabe für den Rechnungsstellungsfilter ausschließen,de
+Invoice,Rechnung,de
+Invoice Business Project,Rechnung Business Projekt,de
+Invoice all selected business affairs,Rechnungstellung für alle ausgewählten Geschäftsangelegenheiten,de
+Invoice expense template,Rechnung Kostenvorlage,de
+Invoice generated,Rechnung erstellt,de
+Invoice line,Linie der Rechnung,de
+Invoice lines,Rechnungszeilen,de
+Invoice post task,"Aufgabe ""Rechnung buchen",de
+Invoice pre task,Rechnung vor Aufgabe,de
+Invoice.creditNoteNoAnnex,Invoice.creditNoteNoAnnex,de
+Invoice.draftInvoiceNoAnnex,Invoice.draftInvoiceNoAnnex,de
+Invoice.expenseProduct,Invoice.expenseProduct,de
+Invoice.expenseTaxAmount,Invoice.expenseTaxAmount,de
+Invoice.expenseTitle,Invoice.expenseTitle,de
+Invoice.expenseTotalAmount,Invoice.expenseTotalAmount,de
+Invoice.invoiceNoAnnex,Invoice.invoiceNoAnnex,de
+Invoice.noPreviousProgress,Invoice.noPreviousProgress,de
+Invoice.previousProgress,Invoice.previousProgress,de
+Invoice.progressAt,Invoice.progressAt,de
+Invoice.purchaseCreditNoteNoAnnex,Invoice.purchaseCreditNoteNoAnnex,de
+Invoice.purchaseInvoiceNoAnnex,Invoice.purchaseInvoiceNoAnnex,de
+Invoice.supplierReference,Invoice.supplierReference,de
+Invoice.timesheetActivity,Invoice.timesheetActivity,de
+Invoice.timesheetDuration,Invoice.timesheetDuration,de
+Invoice.timesheetTitle,Invoice.timesheetTitle,de
+Invoice.timesheetUser,Invoice.timesheetUser,de
+InvoiceExpense.amount,InvoiceExpense.amount,de
+InvoiceExpense.comments,InvoiceExpense.comments,de
+InvoiceExpense.currency,InvoiceExpense.currency,de
+InvoiceExpense.distance,InvoiceExpense.distance,de
+InvoiceExpense.employee,InvoiceExpense.employee,de
+InvoiceExpense.expenseDate,InvoiceExpense.expenseDate,de
+InvoiceExpense.expenseJustification,InvoiceExpense.expenseJustification,de
+InvoiceExpense.expenseOnInvoice,InvoiceExpense.expenseOnInvoice,de
+InvoiceExpense.expenseType,InvoiceExpense.expenseType,de
+InvoiceExpense.fromCity,InvoiceExpense.fromCity,de
+InvoiceExpense.kap,InvoiceExpense.kap,de
+InvoiceExpense.project,InvoiceExpense.project,de
+InvoiceExpense.task,InvoiceExpense.task,de
+InvoiceExpense.toCity,InvoiceExpense.toCity,de
+InvoiceExpense.total,InvoiceExpense.total,de
+InvoiceExpense.totalAmount,InvoiceExpense.totalAmount,de
+InvoiceExpense.totalTaxExpense,InvoiceExpense.totalTaxExpense,de
+Invoiced,In Rechnung gestellt,de
+Invoiced last month,Im letzten Monat in Rechnung gestellt,de
+Invoiced this month,Diesen Monat in Rechnung gestellt,de
+Invoices,Rechnungen,de
+Invoicing,Rechnungsstellung,de
+Invoicing (excl. VAT),Rechnungsstellung (ohne MwSt.),de
+Invoicing Expenses,Inrechnungstellung von Ausgaben,de
+Invoicing Purchases,Fakturierung von Einkäufen,de
+Invoicing Type,Art der Rechnungsstellung,de
+Invoicing annex template,Vorlage für den Anhang zur Rechnung,de
+Invoicing business project,Geschäftsprojekt Fakturierung,de
+Invoicing business projects,Fakturierung von Geschäftsprojekten,de
+Invoicing comment,Kommentar zur Rechnungsstellung,de
+Invoicing mode,Modus der Rechnungsstellung,de
+Invoicing progress,Fortschritt der Rechnungsstellung,de
+Invoicing project,Projekt Fakturierung,de
+Invoicing project annex template,Rechnungsstellung Projekt Anhang Vorlage,de
+Invoicing project filters,Projektfilter für die Rechnungsstellung,de
+Invoicing projects,Projekte zur Rechnungsstellung,de
+Invoicing reports,Berichte zur Rechnungsstellung,de
+Invoicing sequence,Reihenfolge der Rechnungsstellung,de
+Invoicing timesheet,Stundenzettel für die Rechnungsstellung,de
+Invoicing unit,Einheit für die Rechnungsstellung,de
+InvoicingProjectAnnex.activity,InvoicingProjectAnnex.activity,de
+InvoicingProjectAnnex.annex,InvoicingProjectAnnex.annex,de
+InvoicingProjectAnnex.businessProject,InvoicingProjectAnnex.businessProject,de
+InvoicingProjectAnnex.code,InvoicingProjectAnnex.code,de
+InvoicingProjectAnnex.comments,InvoicingProjectAnnex.comments,de
+InvoicingProjectAnnex.currency,InvoicingProjectAnnex.currency,de
+InvoicingProjectAnnex.date,InvoicingProjectAnnex.date,de
+InvoicingProjectAnnex.deadline,InvoicingProjectAnnex.deadline,de
+InvoicingProjectAnnex.duration,InvoicingProjectAnnex.duration,de
+InvoicingProjectAnnex.estimatedShippingDate,InvoicingProjectAnnex.estimatedShippingDate,de
+InvoicingProjectAnnex.expenseDate,InvoicingProjectAnnex.expenseDate,de
+InvoicingProjectAnnex.expenseType,InvoicingProjectAnnex.expenseType,de
+InvoicingProjectAnnex.expenses,InvoicingProjectAnnex.expenses,de
+InvoicingProjectAnnex.invoiceGenerated,InvoicingProjectAnnex.invoiceGenerated,de
+InvoicingProjectAnnex.invoiced,InvoicingProjectAnnex.invoiced,de
+InvoicingProjectAnnex.name,InvoicingProjectAnnex.name,de
+InvoicingProjectAnnex.parentProject,InvoicingProjectAnnex.parentProject,de
+InvoicingProjectAnnex.productName,InvoicingProjectAnnex.productName,de
+InvoicingProjectAnnex.progress,InvoicingProjectAnnex.progress,de
+InvoicingProjectAnnex.project,InvoicingProjectAnnex.project,de
+InvoicingProjectAnnex.projects,InvoicingProjectAnnex.projects,de
+InvoicingProjectAnnex.purchaseOrder,InvoicingProjectAnnex.purchaseOrder,de
+InvoicingProjectAnnex.purchases,InvoicingProjectAnnex.purchases,de
+InvoicingProjectAnnex.qty,InvoicingProjectAnnex.qty,de
+InvoicingProjectAnnex.sales,InvoicingProjectAnnex.sales,de
+InvoicingProjectAnnex.status,InvoicingProjectAnnex.status,de
+InvoicingProjectAnnex.supplier,InvoicingProjectAnnex.supplier,de
+InvoicingProjectAnnex.task,InvoicingProjectAnnex.task,de
+InvoicingProjectAnnex.taskDate,InvoicingProjectAnnex.taskDate,de
+InvoicingProjectAnnex.tasks,InvoicingProjectAnnex.tasks,de
+InvoicingProjectAnnex.timeSpent,InvoicingProjectAnnex.timeSpent,de
+InvoicingProjectAnnex.toInvoice,InvoicingProjectAnnex.toInvoice,de
+InvoicingProjectAnnex.totalATI,InvoicingProjectAnnex.totalATI,de
+InvoicingProjectAnnex.totalAmountWT,InvoicingProjectAnnex.totalAmountWT,de
+InvoicingProjectAnnex.totalTax,InvoicingProjectAnnex.totalTax,de
+InvoicingProjectAnnex.totalWT,InvoicingProjectAnnex.totalWT,de
+InvoicingProjectAnnex.unit,InvoicingProjectAnnex.unit,de
+InvoicingProjectAnnex.unitPriceATI,InvoicingProjectAnnex.unitPriceATI,de
+InvoicingProjectAnnex.unitPriceWT,InvoicingProjectAnnex.unitPriceWT,de
+InvoicingProjectAnnex.user,InvoicingProjectAnnex.user,de
+Landing,Landung,de
+Log Times,Log Zeiten,de
+Log Times Priority,Logzeiten Priorität,de
+Manage lines,Verwalten von Linien,de
+Manual element,Manuelles Element,de
+Manual elements,Manuelle Elemente,de
+Month,Monat,de
+My open tasks,Meine offenen Aufgaben,de
+Name,Name,de
+New progress,Neue Fortschritte,de
+New task,Neue Aufgabe,de
+New ticket,Neues Ticket,de
+No invoicing,Keine Rechnungsstellung,de
+No project found for task %s.,Kein Projekt für Aufgabe %s gefunden.,de
+Non-blocking,Nicht-blockierend,de
+None,Keine,de
+Not invoiced,Nicht in Rechnung gestellt,de
+Nothing has changed so no new task will be generated,"Da sich nichts geändert hat, wird keine neue Aufgabe erstellt.",de
+"On creation of an Invoicing project, attached Timesheet Lines and Teamtasks will be automatically set as to invoice regarding Status for invoice pre task tasks, Status for invoice post task tasks and Exclude tasks for invoicing field","Bei der Erstellung eines Rechnungsstellungsprojekts werden die angehängten Stundenzettelzeilen und Teamtasks automatisch für die Rechnungsstellung in Bezug auf den Status für Aufgaben vor der Rechnungsstellung, den Status für Aufgaben nach der Rechnungsstellung und das Feld Aufgaben für die Rechnungsstellung ausschließen festgelegt.",de
+On delivery (via business proj),Bei Lieferung (über Business Proj),de
+On package (via task),Im Paket (über Aufgabe),de
+On progress,Zum Fortschritt,de
+On progress (via task),Über den Fortschritt (über die Aufgabe),de
+On spent time (via task),Über die verbrachte Zeit (über die Aufgabe),de
+Open task btn,Aufgabe öffnen btn,de
+Overview,Übersicht,de
+PO line,PO-Zeile,de
+PO.Quotation,PO.Quotation,de
+Packaged task invoicing,Fakturierung von Aufgabenpaketen,de
+Paid,Bezahlt,de
+Per category calendar,Pro Kategorie Kalender,de
+Per category kanban,Kanban pro Kategorie,de
+Per status calendar,Pro Statuskalender,de
+Per status kanban,Pro Status Kanban,de
+Per user calendar,Kalender pro Benutzer,de
+Percentage,Prozentsatz,de
+Planned Time Planning,Geplante Zeitplanung,de
+Planned Times Total,Geplante Zeiten Gesamt,de
+Planned time,Geplante Zeit,de
+Planning,Planung,de
+Please complete the order lines with at least one product type 'Service' and the supply mode 'Produce',Bitte füllen Sie die Bestellzeilen mit mindestens einer Produktart 'Service' und der Lieferart 'Produce' aus.,de
+Please fill printing settings on invoice ${invoiceId}.,Bitte füllen Sie die Druckeinstellungen der Rechnung ${RechnungsId} aus.,de
+Please fill the company and the client partner before conversion.,Bitte füllen Sie die Firma und den Kundenpartner vor der Umsetzung aus.,de
+Please select lines,Bitte Zeilen auswählen,de
+Previous progress,Bisherige Fortschritte,de
+Price list,Die Preisliste,de
+Printings,Drucksachen,de
+Produced Turnover,Produzierte Umsätze,de
+Product,Produkt,de
+Production,Produktion,de
+Production orders,Produktionsaufträge,de
+Products,Produkte,de
+Products held back,Zurückgehaltene Produkte,de
+Products must be Service type and Method of Supply Produce.,Bei den Produkten muss es sich um die Art des Dienstes und die Art der Versorgung handeln Produzieren.,de
+Progress,Fortschritt,de
+Project,Projekt,de
+Project %s,Projekt %s,de
+Project Folder,Projekt-Ordner,de
+Project Folders,Projekt-Ordner,de
+Project Phase,Projektphase,de
+Project Priority,Projektpriorität,de
+Project Task Tree,Projekt Aufgabenbaum,de
+Project Tasks,Projekt-Aufgaben,de
+Project alone,Projekt allein,de
+Project and task generation,Projekt- und Aufgabenerstellung,de
+Project generation from sale orders,Projektgenerierung aus Verkaufsaufträgen,de
+Project generation method,Methode der Projekterstellung,de
+Project generator type,Typ des Projektgenerators,de
+Project history,Geschichte des Projekts,de
+Project hold back line list,Projektrückhalteliste,de
+Project in Invoice Lines,Projekt in Rechnungszeilen,de
+Project in Purchase order lines,Projekt in Bestellzeilen,de
+Project in Sale order lines,Projekt in Verkaufsauftragszeilen,de
+Project planification and costs,Projektplanung und Kosten,de
+Project status management,Verwaltung des Projektstatus,de
+Project task,Projektaufgabe,de
+Project template,Projektvorlage,de
+Project.amount,Project.amount,de
+Project.analyticalAccount,Project.analyticalAccount,de
+Project.analyticalAxis,Project.analyticalAxis,de
+Project.analyticalLines,Project.analyticalLines,de
+Project.chartCostPassedPerMonth,Project.chartCostPassedPerMonth,de
+Project.chartCostRemainingPerMonth,Project.chartCostRemainingPerMonth,de
+Project.chartTimePassedPerMonth,Project.chartTimePassedPerMonth,de
+Project.chartTimeRemainingPerMonth,Project.chartTimeRemainingPerMonth,de
+Project.consumedTime,Project.consumedTime,de
+Project.costs,Project.costs,de
+Project.currency,Project.currency,de
+Project.customer,Project.customer,de
+Project.date,Project.date,de
+Project.employee,Project.employee,de
+Project.endDate,Project.endDate,de
+Project.expectedCosts,Project.expectedCosts,de
+Project.expectedMargin,Project.expectedMargin,de
+Project.expectedRevenue,Project.expectedRevenue,de
+Project.expense,Project.expense,de
+Project.hourlyRate,Project.hourlyRate,de
+Project.initial,Project.initial,de
+Project.invoiceNumber,Project.invoiceNumber,de
+Project.invoiced,Project.invoiced,de
+Project.manualElement,Project.manualElement,de
+Project.manualElementTitle,Project.manualElementTitle,de
+Project.margin,Project.margin,de
+Project.planned,Project.planned,de
+Project.plannedPast,Project.plannedPast,de
+Project.plannedTime,Project.plannedTime,de
+Project.planning,Project.planning,de
+Project.progress,Project.progress,de
+Project.purchase,Project.purchase,de
+Project.purchaseOrderNumber,Project.purchaseOrderNumber,de
+Project.realPassed,Project.realPassed,de
+Project.remainInTheory,Project.remainInTheory,de
+Project.remainPlanned,Project.remainPlanned,de
+Project.result,Project.result,de
+Project.sales,Project.sales,de
+Project.salesInvoice,Project.salesInvoice,de
+Project.salesOrderNumber,Project.salesOrderNumber,de
+Project.salesOrders,Project.salesOrders,de
+Project.sold,Project.sold,de
+Project.spent,Project.spent,de
+Project.subType,Project.subType,de
+Project.synthesis,Project.synthesis,de
+Project.taskName,Project.taskName,de
+Project.tasks,Project.tasks,de
+Project.time,Project.time,de
+Project.timesheet,Project.timesheet,de
+Project.title,Project.title,de
+Project.total,Project.total,de
+Project.totalCostChart,Project.totalCostChart,de
+Project.totalCosts,Project.totalCosts,de
+Project.totalHours,Project.totalHours,de
+Project.totalMargin,Project.totalMargin,de
+Project.totalSales,Project.totalSales,de
+Project.totalTimeChart,Project.totalTimeChart,de
+Project.totalTurnover,Project.totalTurnover,de
+Project.turnover,Project.turnover,de
+Project.turnoverAndCostPerMonth,Project.turnoverAndCostPerMonth,de
+Project.type,Project.type,de
+Project.updated,Project.updated,de
+ProjectTask.Costs,ProjectTask.Costs,de
+ProjectTask.Forecast,ProjectTask.Forecast,de
+ProjectTask.Landing,ProjectTask.Landing,de
+ProjectTask.Margin,ProjectTask.Margin,de
+ProjectTask.Markup,ProjectTask.Markup,de
+ProjectTask.Package,ProjectTask.Package,de
+ProjectTask.Real,ProjectTask.Real,de
+ProjectTask.Sold,ProjectTask.Sold,de
+ProjectTask.Turnover,ProjectTask.Turnover,de
+ProjectTask.exTaxTotal,ProjectTask.exTaxTotal,de
+Projects,Projekte,de
+Projects Folder,Mappe Projekte,de
+Projects financial report,Finanzbericht der Projekte,de
+Purchase,Kaufen Sie,de
+Purchase Order,Bestellung,de
+Purchase order,Bestellung,de
+Purchase order lines,Bestellzeilen,de
+Purchase order lines Priority,Bestellzeilen Priorität,de
+Purchases,Käufe,de
+Quantity must be greater than 0 for task template %s.,Die Menge muss für die Aufgabenvorlage %s größer als 0 sein.,de
+Quotation,Angebot,de
+Real,Real,de
+Real Costs Total,Reale Kosten Insgesamt,de
+Real Margin (Invoicing),Reale Marge (Fakturierung),de
+Real Margin (Time),Reale Marge (Zeit),de
+Real costs,Reale Kosten,de
+Real turnover,Realer Umsatz,de
+Realised,Realisiert,de
+Realised Times Total,Realisierte Zeiten Gesamt,de
+Reference,Referenz,de
+References,Referenzen,de
+Refused,Verweigert,de
+Related Invoice lines,Verwandte Rechnungszeilen,de
+Related Tasks,Verwandte Aufgaben,de
+Related purchase order lines,Verwandte Bestellzeilen,de
+Related purchase orders,Zugehörige Bestellungen,de
+Related sale order line,Verbundene Verkaufsauftragslinie,de
+Remaining,Verbleibende,de
+Remaining amount is the subtraction of the spent time from the updated time on the task and all of it's sub tasks.,Der verbleibende Betrag ist die Subtraktion der verbrauchten Zeit von der aktualisierten Zeit für die Aufgabe und alle ihre Unteraufgaben.,de
+Remaining amount to do,Verbleibender Betrag zu tun,de
+Remove lines,Linien entfernen,de
+Reporting,Berichterstattung,de
+Reporting values for project with id %s.,Berichtswerte für Projekt mit der ID %s.,de
+Reset,Zurücksetzen,de
+SO line,SO-Linie,de
+Sale,Verkauf,de
+Sale Order Lines,Verkauf Auftragszeilen,de
+Sale order,Verkaufsauftrag,de
+Sale order (if existing),Verkaufsauftrag (falls vorhanden),de
+Sale order lines,Verkaufsauftragszeilen,de
+Sale order lines Priority,Verkaufsauftragszeilen Vorrangig,de
+Sale quotation,Verkaufspreis,de
+Sales,Vertrieb,de
+See Linked Timesheet Lines,Siehe Verknüpfte Stundenzettelzeilen,de
+Select lines to add,Zeilen zum Hinzufügen auswählen,de
+Select lines to unlink,Zu entknüpfende Zeilen auswählen,de
+Select new lines,Neue Zeilen auswählen,de
+Show expense lines,Ausgabenzeilen anzeigen,de
+Show expense order lines related to the project,Zeigen Sie die mit dem Projekt zusammenhängenden Auftragszeilen an,de
+Show financial datas,Finanzdaten anzeigen,de
+Show financial reports,Finanzberichte anzeigen,de
+Show planning,Planung anzeigen,de
+Show production orders,Produktionsaufträge anzeigen,de
+Show production orders related to the project,Produktionsaufträge im Zusammenhang mit dem Projekt anzeigen,de
+Show purchase invoice line related to the project,Rechnungsposten für das Projekt anzeigen,de
+Show purchase order lines,Bestellzeilen anzeigen,de
+Show purchase order lines related to the project,Bestellzeilen für das Projekt anzeigen,de
+Show sale invoice line related to the project,Verkaufsrechnungszeile für das Projekt anzeigen,de
+Show sale order lines,Verkaufsauftragszeilen anzeigen,de
+Show sale order lines related to the project,Verkaufsauftragszeilen für das Projekt anzeigen,de
+"Since the invoice has already been generated, it's impossible to delete this record","Da die Rechnung bereits erstellt wurde, ist es unmöglich, diesen Datensatz zu löschen.",de
+Site,Website,de
+Sold time,Verkaufte Zeit,de
+Sold time and updated time must be greater than 0 for task %s,Die verkaufte Zeit und die aktualisierte Zeit müssen für die Aufgabe %s größer als 0 sein,de
+Sold time value error for project task %s.,Fehler beim verkauften Zeitwert für Projektaufgabe %s.,de
+Spent time,Verwendete Zeit,de
+Spent time actual cost computation method,Berechnungsmethode für die verbrauchte Zeit und die tatsächlichen Kosten,de
+Standard (via order),Standard (über Bestellung),de
+Start date,Datum des Beginns,de
+Status,Status,de
+Status for invoice post task tasks,Status für Rechnungsnachbearbeitungsaufgaben,de
+Status for invoice pre task tasks,Status für Rechnungsvorbereitungsaufgaben,de
+Sub-project by line,Teilprojekt nach Linien,de
+Subject,Thema,de
+Supplier Invoice lines,Lieferanten-Rechnungszeilen,de
+Supplier arrivals,Ankunft der Lieferanten,de
+Supplier contracts,Verträge mit Lieferanten,de
+Supplier invoice lines,Rechnungszeilen für Lieferanten,de
+Supplier invoices,Lieferantenrechnungen,de
+TBD,TBD,de
+Take charge,Verantwortung übernehmen,de
+Task,Aufgabe,de
+Task %s,Aufgabe %s,de
+Task Invoicing,Aufgabenfakturierung,de
+Task Priority,Priorität der Aufgabe,de
+Task Tree,Aufgabenbaum,de
+Task by line,Aufgabe nach Zeilen,de
+Task by line using subtasks models,Aufgaben nach Zeilen unter Verwendung von Teilaufgabenmodellen,de
+Task date,Datum der Aufgabe,de
+Task templates,Aufgabenvorlagen,de
+Tasks,Aufgaben,de
+Tasks created by me,Von mir erstellte Aufgaben,de
+Tasks update completed:,Aktualisierung der Aufgaben abgeschlossen:,de
+Technical case,Technischer Fall,de
+Template,Vorlage,de
+The order line unit of the product %s is not compatible with the configuration.,Die Bestellzeileneinheit des Produkts %s ist nicht mit der Konfiguration kompatibel.,de
+The product was not found on the linked framework contract.,Das Produkt wurde in dem verlinkten Rahmenvertrag nicht gefunden.,de
+The storage unit of the product %s is not compatible with the configuration.,Die Speichereinheit des Produkts %s ist nicht mit der Konfiguration kompatibel.,de
+The timesheet product defined on the employee is not available on contracts linked to the task.,Das für den Mitarbeiter definierte Arbeitszeitkontrollprodukt ist für die mit der Aufgabe verbundenen Verträge nicht verfügbar.,de
+There is no customer for this project/task,Es gibt keinen Kunden für dieses Projekt/diese Aufgabe,de
+These following tasks have follow-up percentages above 1000%% or remaining amount over 10000 %s. <br>,Diese folgenden Aufgaben haben Nachbearbeitungsprozentsätze über 1000%% oder Restbeträge über 10000 %s. <br>,de
+This analytic distribution template will be filled with partner or assigned user configuration according to Business Project module configuration.,Diese analytische Verteilungsvorlage wird entsprechend der Konfiguration des Business Project-Moduls mit der Konfiguration des Partners oder des zugewiesenen Benutzers gefüllt.,de
+This configuration allows you to group expenses by period on the project's invoice and to attach separate receipts for these expenses.,Mit dieser Konfiguration können Sie Ausgaben auf der Projektrechnung nach Zeitraum gruppieren und separate Belege für diese Ausgaben anhängen.,de
+This configuration allows you to select the rule to be applied when closing a project. Stay focus on selection for more information.,"Mit dieser Konfiguration können Sie die Regel auswählen, die beim Schließen eines Projekts angewendet werden soll. Bleiben Sie für weitere Informationen auf die Auswahl fokussiert.",de
+This option allows you to link an order to a new or existing project.,Mit dieser Option können Sie einen Auftrag mit einem neuen oder bestehenden Projekt verknüpfen.,de
+This will allow you to select a framework contract from which to retrieve the prices of products on tasks.,"Auf diese Weise können Sie einen Rahmenvertrag auswählen, aus dem Sie die Preise von Produkten für Aufgaben abrufen können.",de
+"This will determine the way of computing actual costs for time spent : Sale order (using sale order line's unitary cost), Product (using task product's cost price), or Employee (using Employee hourly rate). If Sale order is selected, then product's cost price will be used if there's no sale order line linked to the task.","Damit wird festgelegt, wie die tatsächlichen Kosten für die aufgewendete Zeit berechnet werden: Verkaufsauftrag (unter Verwendung der Einzelkosten der Verkaufsauftragszeile), Produkt (unter Verwendung des Selbstkostenpreises des Aufgabenprodukts) oder Mitarbeiter (unter Verwendung des Stundensatzes des Mitarbeiters). Wenn Sie ""Verkaufsauftrag"" wählen, wird der Selbstkostenpreis des Produkts verwendet, wenn keine Verkaufsauftragszeile mit der Aufgabe verknüpft ist.",de
+Ticket,Ticket,de
+Time Spent,Verwendete Zeit,de
+Time follow up,Zeitliche Folgemaßnahmen,de
+Time follow-up,Zeitliche Nachbereitung,de
+Time spent,Verbrachte Zeit,de
+Timesheet Line,Arbeitszeitblatt Zeile,de
+Timesheet line %s,Arbeitszeitblatt Zeile %s,de
+Timesheet lines,Stundenzettel-Zeilen,de
+Title,Titel,de
+To Invoice,In Rechnung stellen,de
+"To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox ""To invoice"" as True. These boolean buttons below will set newly created element with ""To invoice"" as True.","Um fakturierbar zu sein, muss für jedes Element (Aufgabe, Stundenzettel, Spesen usw.) das Kontrollkästchen ""Zu fakturieren"" auf Wahr gesetzt werden. Diese booleschen Schaltflächen unten setzen neu erstellte Elemente mit ""Zu fakturieren"" auf Wahr.",de
+To invoice,Zur Rechnung,de
+To invoice with project,Zur Abrechnung mit dem Projekt,de
+Tools,Werkzeuge,de
+Topic,Thema,de
+Total cost,Gesamtkosten,de
+Total invoiced,Insgesamt in Rechnung gestellt,de
+Total paid,Insgesamt bezahlt,de
+Total paid (incl. VAT),Bezahlter Gesamtbetrag (inkl. MwSt.),de
+Totals have been updated,Die Gesamtzahlen wurden aktualisiert,de
+Transition between paid status,Übergang zwischen dem bezahlten Status,de
+Transition between paid status for projects,Übergang zwischen dem bezahlten Status für Projekte,de
+Transition the project between paid status,Übergang des Projekts in den bezahlten Status,de
+Tree view,Baumansicht,de
+Turnover W.T.,Turnover W.T.,de
+Type,Typ,de
+Unit cost,Kosten pro Einheit,de
+Unit price discounted,Ermäßigter Stückpreis,de
+Unlink selected lines,Ausgewählte Zeilen entkoppeln,de
+Update Tasks,Aufgaben aktualisieren,de
+Update tasks,Aufgaben aktualisieren,de
+Update to invoice,Aktualisierung der Rechnung,de
+Updated tasks,Aktualisierte Aufgaben,de
+Updated time,Aktualisierte Zeit,de
+Updated timesheet lines,Aktualisierte Stundenzettelzeilen,de
+Use Analytic distribution from assigned user on project,Analytische Verteilung von zugewiesenem Benutzer auf Projekt verwenden,de
+"Valid for fixed price tasks: it will be possible to choose (from the billing sequence of the case) which tasks to bill according to their status. The correspondences between invoicing sequences are in the configurations of the business module. For example, if you choose post-task, for completed tasks, the system will propose to invoice all completed tasks when invoicing the job.","Gültig für Festpreisaufgaben: Es wird möglich sein, aus der Abrechnungsreihenfolge des Falles auszuwählen, welche Aufgaben je nach ihrem Status abgerechnet werden sollen. Die Entsprechungen zwischen den Abrechnungssequenzen sind in den Konfigurationen des Geschäftsmoduls enthalten. Wenn Sie z. B. für erledigte Aufgaben die Abrechnungsreihenfolge ""Nach der Aufgabe"" wählen, schlägt das System vor, alle erledigten Aufgaben bei der Fakturierung des Auftrags in Rechnung zu stellen.",de
+Validated,Validiert,de
+Validated expenses,Validierte Ausgaben,de
+Ventilated,Belüftet,de
+WARNING:,WARNUNG:,de
+Waiting expenses,Kosten für Wartezeiten,de
+Week,Woche,de
+"When activated, this will add a new tab to the product form where you can select a task template that will be used when a task is generated in relation to the given product.","Wenn diese Option aktiviert ist, wird dem Produktformular eine neue Registerkarte hinzugefügt, auf der Sie eine Aufgabenvorlage auswählen können, die verwendet wird, wenn eine Aufgabe in Bezug auf das betreffende Produkt erstellt wird.",de
+When this checkbox is true: will set field 'To invoice' as true by default on all expenses associated to the project.,"Wenn dieses Kontrollkästchen auf ""wahr"" gesetzt ist, wird das Feld ""Auf Rechnung"" standardmäßig für alle mit dem Projekt verbundenen Ausgaben auf ""wahr"" gesetzt.",de
+When this checkbox is true: will set field 'To invoice' as true by default on all purchases orders associated to the project.,"Wenn dieses Kontrollkästchen aktiviert ist, wird das Feld ""Auf Rechnung"" bei allen Bestellungen, die mit dem Projekt verbunden sind, standardmäßig aktiviert.",de
+When this checkbox is true: will set field 'To invoice' as true by default on all timesheets associated to the project.,"Wenn dieses Kontrollkästchen auf ""wahr"" gesetzt ist, wird das Feld ""Auf Rechnung"" auf allen Stundenzetteln, die dem Projekt zugeordnet sind, standardmäßig auf ""wahr"" gesetzt.",de
+Wiki,Wiki,de
+With percentage,Mit Prozentsatz,de
+With price list,Mit Preisliste,de
+Workflow management,Verwaltung des Arbeitsablaufs,de
+"You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has ""Produce"" as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration.","Sie können entweder ein leeres Projekt, ein Projekt mit Unterprojekten oder ein Projekt mit Aufgaben erstellen. Bei der Generierung von Unterprojekten oder Aufgaben wird ein Element für jede Auftragszeile mit einem Produkt vom Typ Dienstleistung erstellt, das ""Produce"" als Liefermethode hat (Registerkarte Konfiguration). Die Modelle der Unteraufgaben werden im Produktformular ausgefüllt, wenn die entsprechende Konfiguration in der Konfiguration des Moduls Geschäftsprojekt aktiv ist.",de
+You can not close this project :,Sie können dieses Projekt nicht abschließen:,de
+You can't fill a project with the strategy Project Alone.,Sie können ein Projekt nicht mit der Strategie Project Alone füllen.,de
+You haven't select a company on the main project,Sie haben kein Unternehmen für das Hauptprojekt ausgewählt,de
+You haven't select a product to invoice for the task %s,"Sie haben kein Produkt ausgewählt, das für die Aufgabe %s in Rechnung gestellt werden soll.",de
+You haven't select any element to invoice,Sie haben kein Element für die Rechnung ausgewählt,de
+You must add a sale order template,Sie müssen eine Vorlage für einen Verkaufsauftrag hinzufügen,de
+You must select a project/task,Sie müssen ein Projekt/eine Aufgabe auswählen,de
+com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService,com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService,de
+value:Canceled,value:Canceled,de
+value:Done paid,value:Done paid,de
+value:Job costing,value:Job costing,de
+week,Woche,de

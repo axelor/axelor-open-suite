@@ -1,0 +1,1047 @@
+key,message,language
+% Gap,% Lücke,de
+%d MO created.,%d MO erstellt.,de
+%s building,%s Gebäude,de
+%s consume,%s verbrauchen,de
+%s missing,%s fehlt,de
+* %s Computed work in progress valuation,* %s Berechnete Bewertung der unfertigen Erzeugnisse,de
+* %s Filled SOP lines,* %s Gefüllte SOP-Zeilen,de
+105,105,de
+5,5,de
+<b>Missing components</b> :<br/>%s,<b>Fehlende Komponenten</b> :<br/>%s,de
+A cancel reason must be selected,Es muss ein Stornogrund ausgewählt werden,de
+"A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types","Eine Liste von Verkaufsauftragszeilen, die verarbeitet werden. Die Zeilen, die ausgewählt werden können, entsprechen den folgenden Bedingungen:\nProdukt ist lagerfähig\nProdukt wird auf Lager verwaltet\nProdukt ist nicht von mrp ausgeschlossen\nVerkaufsauftrag/Angebot hat die gleiche stockLocation oder eine subLocation\nWenn MPS, Produkt muss ein Fertigprodukt sein\nLiefermenge der Zeile muss niedriger als die Gesamtmenge sein\nDie Zeile muss einer oder mehreren der mrp-Bewegungsarten entsprechen",de
+Action,Aktion,de
+Actions,Aktionen,de
+Add Manuf. Order,Manufaktur hinzufügen. Bestellung,de
+Add a new sale order line,Eine neue Auftragszeile hinzufügen,de
+All Child MO,Alle Kinder MO,de
+All Current Manufacturing Orders,Alle laufenden Fertigungsaufträge,de
+All Upcoming Manufacturing Orders,Alle anstehenden Fertigungsaufträge,de
+All products has been consumed,Alle Produkte wurden verbraucht,de
+Allocate,Zuweisen,de
+Allocate all,Zuteilung aller,de
+Allow to personalize bill of material,Erlaubt die Personalisierung von Stücklisten,de
+Allow to personalize production process,Ermöglicht die Personalisierung des Produktionsprozesses,de
+Alternative Bill of materials,Alternative Stückliste,de
+Anomalies,Anomalien,de
+App,App,de
+App Supplychain,App Supplychain,de
+App manufacturing,App-Herstellung,de
+App production,App-Produktion,de
+Applicable,Anwendbar,de
+Approval,Zulassung,de
+Are you sure you want to merge those manufacturing orders?,"Sind Sie sicher, dass Sie diese Produktionsaufträge zusammenführen wollen?",de
+Are you sure you want to run the calculation ? Calculation can take a long time.,"Sind Sie sicher, dass Sie die Berechnung durchführen wollen? Die Berechnung kann sehr lange dauern.",de
+As soon as possible,So bald wie möglich,de
+At the latest,Spätestens am,de
+Auto request qty for manuf orders,Automatische Mengenanforderung für Herstelleraufträge,de
+Automatic email was not sent because no default email account and/or no valid email account was found : please create one.,"Die automatische E-Mail wurde nicht versendet, weil kein Standard-E-Mail-Konto und/oder kein gültiges E-Mail-Konto gefunden wurde: Bitte erstellen Sie eines.",de
+Automatically plan after fusion,Automatisch planen nach der Verschmelzung,de
+Automatically plan the manuf. orders generated from sale order,Automatische Planung der aus dem Verkaufsauftrag generierten Fertigungsaufträge,de
+Available stock,Verfügbarer Bestand,de
+Average Price,Durchschnittlicher Preis,de
+BOM,STÜCKLISTE,de
+BOM currently has no status,BOM hat derzeit keinen Status,de
+BOM is already on draft status,Stückliste ist bereits im Entwurfsstatus,de
+BOM.billOfMaterialList,BOM.billOfMaterialList,de
+BOM.company,BOM.company,de
+BOM.defineSubBillOfMaterial,BOM.defineSubBillOfMaterial,de
+BOM.hasNoManageStock,BOM.hasNoManageStock,de
+BOM.priority,BOM.priority,de
+BOM.qty,BOM.qty,de
+BOM.residualProducts,BOM.residualProducts,de
+BOM.title,BOM.title,de
+BOM.unit,BOM.unit,de
+BOM.versionNumber,BOM.versionNumber,de
+Back to draft,Zurück zum Entwurf,de
+Barcode,Barcode,de
+Barcode Type,Barcode Typ,de
+Batchs,Chargen,de
+Bill of material,Stückliste,de
+Bill of material line,Stücklistenzeile,de
+Bill of material line list,Stücklistenzeilenliste,de
+Bill of materials,Stückliste,de
+Bill of materials import,Import von Stücklisten,de
+Bill of materials import line,Stücklisten-Importzeile,de
+Bill of materials import line tree,Stücklistenimport-Linienbaum,de
+Bill of materials import lines,Stücklisten-Importlinien,de
+Bill of materials import source,Stücklisten-Importquelle,de
+Bill of materials import sources,Importquellen für Stücklisten,de
+Bill of materials imports,Einfuhr von Stücklisten,de
+BillOfMaterial,BillOfMaterial,de
+Bills of material,Stücklisten,de
+Bills of material filters,Stücklistenfilter,de
+Bills of materials,Stücklisten,de
+Bills of materials generated,Erstellte Stücklisten,de
+Binding file,Verbindliche Datei,de
+Block production,Blockproduktion,de
+Blocking comment for production,Sperrvermerk für die Produktion,de
+Blocking production reason,Grund der Produktionssperre,de
+Blocking production until,Sperrung der Produktion bis,de
+BoM,BoM,de
+BoM line,BoM-Linie,de
+Bom child tree list,Bom Kinderbaumliste,de
+Bom level,Bombenstufe,de
+Bom tree list,Bombenbaumliste,de
+Brand,Marke,de
+Budget item,Haushaltsposten,de
+Buying currency,Kauf einer Währung,de
+Buying date,Datum des Kaufs,de
+Buying price,Preis beim Kauf,de
+"By enabling this, the total cost price will be calculated by considering the real duration (including hours) of production cycle.","Wenn Sie dies aktivieren, wird der Gesamtkostenpreis unter Berücksichtigung der tatsächlichen Dauer (einschließlich Stunden) des Produktionszyklus berechnet.",de
+Calculate all BOM levels,Berechnen aller Stücklistenstufen,de
+Calculation date,Berechnungsdatum,de
+Calculation in progress,Berechnung in Arbeit,de
+Calculation number,Berechnungsnummer,de
+Calculation quantity,Berechnungsmenge,de
+Calculation quantity should not be zero.,Die Berechnungsmenge sollte nicht Null sein.,de
+Calculation type,Berechnungsart,de
+Calendars,Kalendarien,de
+Cancel,Abbrechen,de
+Cancel Reason,Abbrechen Grund,de
+Cancel Reasons,Gründe stornieren,de
+Cancel reason,Grund stornieren,de
+Cancel reservation,Reservierung stornieren,de
+Canceled,Abgesagt,de
+Cancellation,Stornierung,de
+Cancellation confirmation,Bestätigung der Stornierung,de
+Cancelled MOs,Annullierte MOs,de
+Cancelled Operations,Abgebrochene Operationen,de
+Cannot add a manufacturing order without a production process. Please check that your chosen bill of materials has a valid production process.,"Sie können keinen Produktionsauftrag ohne einen Produktionsprozess hinzufügen. Bitte prüfen Sie, ob die von Ihnen gewählte Stückliste einen gültigen Produktionsprozess enthält.",de
+Cannot make BOM applicable that is not validated,"Keine Stückliste anwendbar machen, die nicht validiert ist",de
+Cannot make BOM obsolete that is not applicable,"Stücklisten, die nicht anwendbar sind, können nicht veraltet werden",de
+Cannot make prod process applicable that is not validated,Nicht validierte Produktionsprozesse können nicht angewendet werden,de
+Cannot make prod process obsolete that is not applicable,Kann einen nicht anwendbaren Produktionsprozess nicht überflüssig machen,de
+Cannot regenerate because the bill of material is in use in production (one manuf order exist),"Kann nicht neu generiert werden, da die Stückliste in der Produktion verwendet wird (ein Fertigungsauftrag vorhanden)",de
+Cannot regenerate because the product is already in production (one manuf order exist),"Kann nicht regeneriert werden, da das Produkt bereits in Produktion ist (ein Fertigungsauftrag vorhanden)",de
+Cannot validate BOM that is not draft,"Stückliste, die kein Entwurf ist, kann nicht validiert werden",de
+Cannot validate prod process that is not draft,"Kann keinen Prozess validieren, der kein Entwurf ist",de
+Capacity,Kapazität,de
+Capacity settings,Einstellungen zur Kapazität,de
+Category,Kategorie,de
+Change allocated qty,Zugewiesene Menge ändern,de
+Children MO,Kinder MO,de
+Code,Code,de
+Comments,Kommentare,de
+Companies,Unternehmen,de
+Company,Unternehmen,de
+Company_currency,Unternehmen_Währung,de
+Completed,Abgeschlossen,de
+Component,Komponente,de
+Components,Komponenten,de
+Components default stock location,Komponenten Standardlagerort,de
+Components valuation method for BOM,Komponentenbewertungsmethode für Stücklisten,de
+Components valuation method for manuf. order,Komponenten Bewertungsmethode für Fertigungsaufträge,de
+Comput. cost,Rechnerische Kosten,de
+Compute cost price,Berechnung des Selbstkostenpreises,de
+Compute total forecast,Berechnung der Gesamtprognose,de
+Compute work in progress valuation,Berechnung der Bewertung unfertiger Erzeugnisse,de
+Computed_cost,Berechnete_Kosten,de
+Condition,Zustand,de
+Configuration,Konfiguration,de
+Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM.,"Konfigurationsproblem im Produkt %s: Die Dispositionsausführung wurde abgebrochen, weil bei der Suche nach Komponenten in der Stückliste eine Schleife entdeckt wurde.",de
+Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM.,"Konfigurationsproblem: Die Dispositionsausführung wurde abgebrochen, weil bei der Suche nach Komponenten in der Stückliste eine Schleife entdeckt wurde.",de
+Configurator BOM,Konfigurator-Stückliste,de
+Configurator BOM component,Konfigurator Stücklistenkomponente,de
+Configurator BOM components,Komponenten der Konfigurator-Stückliste,de
+Configurator BOM tree view,Konfigurator-Stücklisten-Baumansicht,de
+Configurator BoM,Konfigurator BoM,de
+Configurator Phase,Konfigurator Phase,de
+Configurator Phases,Konfigurator-Phasen,de
+Configurator Prod Process,Konfigurator Produktionsprozess,de
+Configurator Prod Process filters,Konfigurator Prod Prozessfilter,de
+Configurator creators,Ersteller des Konfigurators,de
+Configurator prod product,Konfigurator prod Produkt,de
+Configurator prod products,Konfigurator für Produkte,de
+Configurator production process,Produktionsprozess des Konfigurators,de
+Configurators,Konfiguratoren,de
+Configurators BOMs,Konfiguratoren Stücklisten,de
+Configurators BOMs tree,Konfiguratoren Stücklistenbaum,de
+Confirm cancellation,Stornierung bestätigen,de
+Confirm forecasts,Prognosen bestätigen,de
+Consume in stock moves,Verbrauchen in Lagerbewegungen,de
+Consumed product,Verbrauchtes Produkt,de
+Consumed product waste,Verbrauchte Produktabfälle,de
+Consumed products,Verbrauchte Produkte,de
+Consumed products on phases,Verbrauchte Produkte in den Phasen,de
+Consumed quantity,Verbrauchte Menge,de
+Consumption,Verbrauch,de
+Consumption qty,Verbrauchsmenge,de
+Content lines,Inhalt der Zeilen,de
+Continuity by default,Kontinuität als Standard,de
+Control on receipt,Kontrolle bei Erhalt,de
+Cost,Kosten,de
+Cost (W.T.),Cost (W.T.),de
+Cost Price,Selbstkostenpreis,de
+Cost calculations,Kostenberechnungen,de
+Cost per process line,Kosten pro Prozesslinie,de
+Cost price,Selbstkostenpreis,de
+Cost price calculation,Berechnung der Selbstkosten,de
+Cost sheet,Kostenblatt,de
+Cost sheet - %s,Kostenblatt - %s,de
+Cost sheet group,Kostenplan-Gruppe,de
+Cost sheet group for product,Kalkulationsschema-Gruppe für Produkt,de
+Cost sheet group for work center,Kostenschema-Gruppe für Arbeitsplatz,de
+Cost sheet groups,Gruppen von Kostenblättern,de
+Cost sheet line,Zeile im Kostenplan,de
+Cost sheet line detail,Detail der Kostenplanzeile,de
+Cost sheet lines,Zeilen des Kostenplans,de
+Cost sheet valuation,Bewertung des Kostenplans,de
+Cost sheets,Kostenblätter,de
+Cost sheets tree,Kostenblätter Baum,de
+Cost to apply,Kosten für die Bewerbung,de
+Cost type,Kostenart,de
+CostSheet,CostSheet,de
+CostSheet.ManufOrderNumber,CostSheet.ManufOrderNumber,de
+CostSheet.billOfMaterial,CostSheet.billOfMaterial,de
+CostSheet.calculationDate,CostSheet.calculationDate,de
+CostSheet.calculationType,CostSheet.calculationType,de
+CostSheet.calculationTypeBillOfMaterial,CostSheet.calculationTypeBillOfMaterial,de
+CostSheet.calculationTypeEndOfProduction,CostSheet.calculationTypeEndOfProduction,de
+CostSheet.calculationTypePartialEndOfProduction,CostSheet.calculationTypePartialEndOfProduction,de
+CostSheet.calculationTypeWorkInProgress,CostSheet.calculationTypeWorkInProgress,de
+CostSheet.company,CostSheet.company,de
+CostSheet.costPrice,CostSheet.costPrice,de
+CostSheet.costSheetLineBomLevel,CostSheet.costSheetLineBomLevel,de
+CostSheet.costSheetLineCode,CostSheet.costSheetLineCode,de
+CostSheet.costSheetLineConsumptionQty,CostSheet.costSheetLineConsumptionQty,de
+CostSheet.costSheetLineCostSheetGroup,CostSheet.costSheetLineCostSheetGroup,de
+CostSheet.costSheetLineName,CostSheet.costSheetLineName,de
+CostSheet.costSheetLineUnit,CostSheet.costSheetLineUnit,de
+CostSheet.costSheetLines,CostSheet.costSheetLines,de
+CostSheet.createdBy,CostSheet.createdBy,de
+CostSheet.createdOn,CostSheet.createdOn,de
+CostSheet.currency,CostSheet.currency,de
+CostSheet.dateOfEdition,CostSheet.dateOfEdition,de
+CostSheet.legend,CostSheet.legend,de
+CostSheet.lineType,CostSheet.lineType,de
+CostSheet.lineTypeConsumeProduct,CostSheet.lineTypeConsumeProduct,de
+CostSheet.lineTypeConsumeProductWaste,CostSheet.lineTypeConsumeProductWaste,de
+CostSheet.lineTypeHuman,CostSheet.lineTypeHuman,de
+CostSheet.lineTypeIndirectCost,CostSheet.lineTypeIndirectCost,de
+CostSheet.lineTypeProduceProduct,CostSheet.lineTypeProduceProduct,de
+CostSheet.lineTypeWorkCenter,CostSheet.lineTypeWorkCenter,de
+CostSheet.manufOrder,CostSheet.manufOrder,de
+CostSheet.title,CostSheet.title,de
+Cost_to_apply,Kosten_für_die_Bewerbung,de
+Costing settings,Einstellungen für die Kalkulation,de
+Costs computed,Berechnete Kosten,de
+Costs updated,Kosten aktualisiert,de
+Could not find main bill of materials generated (BoM level 0).,Die generierte Hauptstückliste konnte nicht gefunden werden (BoM Level 0).,de
+Create a bill of material,Erstellen Sie eine Stückliste,de
+Create a production process,Erstellen Sie einen Produktionsprozess,de
+Create production order,Produktionsauftrag erstellen,de
+Created by,Erstellt von,de
+Created from bom import,Erstellt von bom import,de
+Created on,Erstellt am,de
+Created product,Erstelltes Produkt,de
+Created products,Erstellte Produkte,de
+Currency,Währung,de
+Current production configuration does not permit to have operation orders with no duration nor interoperation time on the same machine and at the same time. (Operation: %s),"Die aktuelle Produktionskonfiguration lässt es nicht zu, dass auf derselben Maschine und zur selben Zeit Arbeitsgänge ohne Dauer und ohne Zwischenzeit durchgeführt werden. (Vorgang: %s)",de
+Customer,Kunde,de
+Customize BOM,Stückliste anpassen,de
+Customize production process,Produktionsprozess anpassen,de
+Cycle unit,Zyklus-Einheit,de
+Dashboard,Dashboard,de
+Data import failed,Datenimport fehlgeschlagen,de
+Date of calculation,Datum der Berechnung,de
+Date to respect delays,Datum für die Einhaltung von Verspätungen,de
+Dates,Daten,de
+Deallocate,Freigeben von,de
+Deallocate all,Deallokieren Sie alle,de
+Declare delivery to outsource partner,Lieferung an Outsourcing-Partner erklären,de
+Default BOM,Standard-Stückliste,de
+Default Bill of materials,Standard-Stückliste,de
+Default sequence,Standardreihenfolge,de
+Default work center product,Standard-Arbeitsplatzprodukt,de
+Define as default BOM of product,Als Standardstückliste des Produkts definieren,de
+Define sub bill of material,Unterstückliste definieren,de
+Define sub bill of materials,Unterstückliste definieren,de
+Define with a configurator,Definieren Sie mit einem Konfigurator,de
+Define with a script,Definieren Sie mit einem Skript,de
+Description,Beschreibung,de
+Descriptions,Beschreibungen,de
+Details,Einzelheiten,de
+Diff,Diff,de
+Diff consume manuf order,Diff verbrauchen Herstellung bestellen,de
+Diff consume operation order,Unterschiedliche Reihenfolge der Verbrauchsvorgänge,de
+Difference,Unterschied,de
+Differences,Unterschiede,de
+Direct Manufacturing,Direkte Herstellung,de
+Direct Material,Direktes Material,de
+Disable BOM lines generation in sale order.,Deaktivieren Sie die Erzeugung von Stücklistenzeilen im Verkaufsauftrag.,de
+Disable prod process lines generation in sale order.,Deaktivieren Sie die Erzeugung von Prozesslinien im Verkaufsauftrag.,de
+Display products tree,Produktbaum anzeigen,de
+Disposal date,Datum der Veräußerung,de
+Do you really wish to create a new version of this bill of materials ?,Möchten Sie wirklich eine neue Version dieser Stückliste erstellen?,de
+Do you really wish to create a new version of this production process ?,Möchten Sie wirklich eine neue Version dieses Produktionsprozesses erstellen?,de
+Documents,Dokumente,de
+Draft,Entwurf,de
+Draft MOs,Entwurf von MOs,de
+Draft Operations,Entwurfsarbeiten,de
+Draft orders,Auftragsentwürfe,de
+Duration (days),Dauer (Tage),de
+Duration (hours),Dauer (Stunden),de
+Duration / cycle (hhh:mm:ss),Duration / cycle (hhh:mm:ss),de
+Duration / cycle (in hours),Dauer/Zyklus (in Stunden),de
+Duration between two cycles (hhh:mm:ss),Duration between two cycles (hhh:mm:ss),de
+Duration on MOs,Dauer von MOs,de
+Employee scheduling,Personaleinsatzplanung,de
+Enable Tool Management,Aktivieren der Werkzeugverwaltung,de
+Enable production configurator,Produktionskonfigurator einschalten,de
+Enable the process for other products,Aktivieren Sie den Prozess für andere Produkte,de
+End Month,Ende Monat,de
+End date,Datum des Endes,de
+End month should be after Start Month,Der Endmonat sollte nach dem Startmonat liegen.,de
+End of production,Ende der Produktion,de
+Ending duration (hhh:mm:ss),Ending duration (hhh:mm:ss),de
+Ending duration of the machine.,Beendigung der Laufzeit der Maschine.,de
+Error : You must configure a raw material requirement reporting sequence for the company %s,Fehler : Sie müssen eine Rohstoffbedarfsmeldefolge für die Firma %s konfigurieren,de
+Error during production's order's creation,Fehler bei der Erstellung des Produktionsauftrags,de
+Error that happened during the computation,"Fehler, der während der Berechnung aufgetreten ist",de
+Error while generating bill of material: the product of the bill of material is supposed to be computed from a script but the script did not return a product.,"Fehler beim Generieren der Stückliste: Das Produkt der Stückliste soll aus einem Skript berechnet werden, aber das Skript hat kein Produkt zurückgegeben.",de
+Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty.,"Fehler bei der Stücklistengenerierung: Das Produkt der Stückliste soll in der Konfigurator-Stückliste gefüllt werden, war aber leer.",de
+Error while generating bill of material: the product of the bill of material is supposed to be generated from the configurator but the configurator did not generate a product.,"Fehler beim Generieren der Stückliste: Das Produkt der Stückliste soll aus dem Konfigurator generiert werden, aber der Konfigurator hat kein Produkt generiert.",de
+Every manufacturing orders have already been generated for selected lines.,Alle Produktionsaufträge sind bereits für ausgewählte Linien generiert worden.,de
+Every manufacturing orders have already been generated.,Alle Fertigungsaufträge sind bereits generiert worden.,de
+Every sale order lines have already generated a production order.,Jede Verkaufsauftragszeile hat bereits einen Produktionsauftrag erzeugt.,de
+Every selected sale order lines have already generated a production order.,Jede ausgewählte Verkaufsauftragszeile hat bereits einen Produktionsauftrag erzeugt.,de
+Expected/Future Quantity,Erwartete/künftige Menge,de
+Export,Exportieren,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+Fill SOP real values,SOP reale Werte ausfüllen,de
+Filters,Filter,de
+Finish,Oberfläche,de
+Finished,Fertige,de
+Finished MOs,Beendete MOs,de
+Finished Operations,Beendete Operationen,de
+Finished products,Fertige Produkte,de
+Finished products default stock location,Standardlagerort für Fertigerzeugnisse,de
+Finite,Endliche,de
+Forecast,Vorhersage,de
+Forecast date,Voraussichtliches Datum,de
+Forecast on historic,Vorhersage zu historischen,de
+Forecasts,Vorhersagen,de
+Friday hours,Öffnungszeiten Freitag,de
+From,Von,de
+From Date,Von Datum,de
+General BoM,Allgemeiner BoM,de
+General production processes,Allgemeine Produktionsprozesse,de
+Generate MO.,MO generieren.,de
+Generate MPS forecasts,MPS-Prognosen generieren,de
+Generate Sales and Operations Planning Lines,Vertriebs- und Betriebsplanungszeilen generieren,de
+Generate a purchase order on MO planning,Erzeugen einer Bestellung über die MO-Planung,de
+Generate new version,Neue Version generieren,de
+Generate periods,Zeiträume generieren,de
+Generate production configurations,Produktionskonfigurationen generieren,de
+Generate production orders automatically,Produktionsaufträge automatisch generieren,de
+Generate proposals,Vorschläge generieren,de
+Generate waste stock move,Umlagerung von Abfallbeständen erzeugen,de
+Growth Coefficient,Wachstumskoeffizient,de
+HR Cost Settings,HR-Kosteneinstellungen,de
+HR Duration Per Cycle (hhh:mm:ss),HR Duration Per Cycle (hhh:mm:ss),de
+High,Hoch,de
+Historic period,Historischer Zeitraum,de
+Hours of use,Stunden der Nutzung,de
+Human,Menschen,de
+Human Duration (hh:mm:ss),Human Duration (hh:mm:ss),de
+Human Duration (in hours),Menschliche Dauer (in Stunden),de
+Human Resources,Personalwesen,de
+Human and Machine,Mensch und Maschine,de
+Human resources,Humanressourcen,de
+Human times,Menschliche Zeiten,de
+Hundredth of an hour input,Eingabe einer Hundertstelstunde,de
+"If true, the components will be automatically requested for reservation on planning manufacturing orders.","Wenn ja, werden die Komponenten automatisch für die Reservierung von Planungsfertigungsaufträgen angefordert.",de
+Image,Bild,de
+Import,Importieren,de
+Import CSV,CSV importieren,de
+Import source,Quelle importieren,de
+Imported,Eingeführt,de
+Imported bill of material tree,Importierter Stücklistenbaum,de
+Impossible to generate outsourcing purchase order. Please fill unit on your product.,"Es ist nicht möglich, eine Outsourcing-Bestellung zu erstellen. Bitte füllen Sie Einheit auf Ihr Produkt.",de
+In manuf order,Im Fertigungsauftrag,de
+In operation order,In der Reihenfolge des Betriebs,de
+In progress,In Arbeit,de
+Indirect,Indirekt,de
+Indirect cost,Indirekte Kosten,de
+Infinite,Unendlich,de
+Information,Informationen,de
+Inheritate the finished products from the MO to the deliveries,Vererbung der Fertigerzeugnisse vom MO an die Lieferungen,de
+Input file,Eingabedatei,de
+Invalid date,Ungültiges Datum,de
+Invalid scheduling and capacity configuration.,Ungültige Terminierung und Kapazitätskonfiguration.,de
+Is closed,Ist geschlossen,de
+Is generated,Erzeugt wird,de
+Is to produce,ist zu produzieren,de
+Is with difference,Ist mit Unterschied,de
+Is workshop,Ist Workshop,de
+It will remove subcontractor tag from all partners. This change is irreversible,Dadurch wird die Markierung des Unterauftragnehmers von allen Partnern entfernt. Diese Änderung ist unumkehrbar,de
+Label,Etikett,de
+Last overhaul date,Datum der letzten Überholung,de
+Last production price,Letzter Produktionspreis,de
+Late Planned MOs,Spät geplante MOs,de
+Late Planned Operations,Späte geplante Operationen,de
+Launch quantity,Startmenge,de
+Lead time,Vorlaufzeit,de
+Level,Ebene,de
+List of Wastes Per Product,Liste der Abfälle pro Produkt,de
+Low,Niedrig,de
+MO,MO,de
+MO's comment from sale order,Stellungnahme der MO aus dem Verkaufsauftrag,de
+MO's comment from sale order line,Kommentar der MO aus der Verkaufsauftragszeile,de
+MO's valuation method,Die Bewertungsmethode von MO,de
+MOs Finished late,MOs Spät fertig geworden,de
+MOs In Progress,MOs in Bearbeitung,de
+MOs In Standby,MOs in Bereitschaft,de
+MOs to invoice,MOs zur Rechnung,de
+MPS,MPS,de
+MPS Charge,MPS-Gebühr,de
+MPS Weekly schedules,MPS Wöchentliche Fahrpläne,de
+MPS number,MPS-Nummer,de
+MRP,MRP,de
+MRP Type,MRP-Typ,de
+MRP Types,MRP-Typen,de
+Machine,Maschine,de
+Machine Information,Informationen zur Maschine,de
+Machine Planning,Planung von Maschinen,de
+Machine Type,Maschinentyp,de
+Machine Types,Maschinentypen,de
+Machine charge,Ladung der Maschine,de
+Machine settings,Einstellungen der Maschine,de
+Machine times,Maschinenzeiten,de
+Machine's planning,Planung der Maschine,de
+Machine.planningMachineBtn,Machine.planningMachineBtn,de
+Machines,Maschinen,de
+Main bill of materials generated,Erstellte Hauptstückliste,de
+Main configurations,Wichtigste Konfigurationen,de
+Maintenance cost,Wartungskosten,de
+Make it applicable,Mach es anwendbar,de
+Make it obsolete,Überflüssig machen,de
+Manage Master Production Scheduling Charge,Verwalten der Master Production Scheduling Charge,de
+Manage bill of materials versions,Verwalten von Stücklistenversionen,de
+Manage business production,Verwalten der Unternehmensproduktion,de
+Manage consumed products on operations,Verwaltung der verbrauchten Produkte im Betrieb,de
+Manage consumed products on phases,Verwaltung der verbrauchten Produkte nach Phasen,de
+Manage cost sheet group,Kostenblattgruppe verwalten,de
+Manage outsourcing,Outsourcing verwalten,de
+Manage production process versions,Verwalten von Versionen des Produktionsprozesses,de
+Manage residual products on BOM,Verwalten von Restprodukten in der Stückliste,de
+Manage work center group,Arbeitsplatzgruppe verwalten,de
+Manage workshop,Workshop leiten,de
+Manual mo seq,Handbuch mo seq,de
+Manuf order list,Manufaktur-Auftragsliste,de
+Manuf. date,Herstellungsdatum,de
+Manuf. reference,Herstellermarke,de
+ManufOrder,ManufOrder,de
+ManufOrder.billOfMaterial,ManufOrder.billOfMaterial,de
+ManufOrder.company,ManufOrder.company,de
+ManufOrder.costPrice,ManufOrder.costPrice,de
+ManufOrder.editionDate,ManufOrder.editionDate,de
+ManufOrder.effective,ManufOrder.effective,de
+ManufOrder.endDate,ManufOrder.endDate,de
+ManufOrder.forecast,ManufOrder.forecast,de
+ManufOrder.from,ManufOrder.from,de
+ManufOrder.inProgress,ManufOrder.inProgress,de
+ManufOrder.machine,ManufOrder.machine,de
+ManufOrder.moCommentFromSaleOrder,ManufOrder.moCommentFromSaleOrder,de
+ManufOrder.noLocation,ManufOrder.noLocation,de
+ManufOrder.num,ManufOrder.num,de
+ManufOrder.operation,ManufOrder.operation,de
+ManufOrder.operationDetails,ManufOrder.operationDetails,de
+ManufOrder.operations,ManufOrder.operations,de
+ManufOrder.origin,ManufOrder.origin,de
+ManufOrder.plannedEndDate,ManufOrder.plannedEndDate,de
+ManufOrder.plannedStartDate,ManufOrder.plannedStartDate,de
+ManufOrder.product,ManufOrder.product,de
+ManufOrder.productBarcode,ManufOrder.productBarcode,de
+ManufOrder.productCode,ManufOrder.productCode,de
+ManufOrder.productName,ManufOrder.productName,de
+ManufOrder.productionProcess,ManufOrder.productionProcess,de
+ManufOrder.productsToPrepare,ManufOrder.productsToPrepare,de
+ManufOrder.quantity,ManufOrder.quantity,de
+ManufOrder.rack,ManufOrder.rack,de
+ManufOrder.seq,ManufOrder.seq,de
+ManufOrder.serial,ManufOrder.serial,de
+ManufOrder.standBy,ManufOrder.standBy,de
+ManufOrder.startDate,ManufOrder.startDate,de
+ManufOrder.status,ManufOrder.status,de
+ManufOrder.stockLocation,ManufOrder.stockLocation,de
+ManufOrder.title,ManufOrder.title,de
+ManufOrder.to,ManufOrder.to,de
+ManufOrder.total,ManufOrder.total,de
+ManufOrder.trackingNumber,ManufOrder.trackingNumber,de
+ManufOrder.workCenter,ManufOrder.workCenter,de
+Manufacturer,Hersteller,de
+Manufacturing,Herstellung,de
+Manufacturing Dashboard,Dashboard Fertigung,de
+Manufacturing Operation,Fertigungsbetrieb,de
+Manufacturing Operation Duration,Herstellungsvorgang Dauer,de
+Manufacturing Operation Durations,Dauer des Herstellungsvorgangs,de
+Manufacturing Order,Fertigungsauftrag,de
+Manufacturing Order (StockMove In),Produktionsauftrag (StockMove In),de
+Manufacturing Order (StockMove Out),Produktionsauftrag (StockMove Out),de
+Manufacturing operation,Herstellungsvorgang,de
+Manufacturing operation status successfully updated.,Status des Fertigungsvorgangs erfolgreich aktualisiert.,de
+Manufacturing operations,Fertigungsverfahren,de
+Manufacturing operations maximum priority,Höchste Priorität für die Produktion,de
+Manufacturing order,Fertigungsauftrag,de
+Manufacturing order filters,Filter für Fertigungsaufträge,de
+Manufacturing order merge result,Ergebnis der Zusammenführung von Produktionsaufträgen,de
+Manufacturing order sequence,Reihenfolge der Fertigungsaufträge,de
+Manufacturing order successfully updated.,Produktionsauftrag erfolgreich aktualisiert.,de
+Manufacturing orders,Fertigungsaufträge,de
+Manufacturing orders have been added to the existent production order.,Die Produktionsaufträge wurden dem bestehenden Produktionsauftrag hinzugefügt.,de
+Manufacturing orders on StandBy,Fertigungsaufträge in Bereitschaft,de
+Manufacturing period,Herstellungszeitraum,de
+Manufacturing periods,Herstellungszeiträume,de
+Manufacturing proposal,Vorschlag zur Herstellung,de
+Margin,Marge,de
+Margin coefficient,Koeffizient der Gewinnspanne,de
+Mark,Mark,de
+Master Production Scheduling Charge,Master Production Scheduling Charge,de
+Max call reached when trying to find a time slot for operation %s.,Bei der Suche nach einem Zeitfenster für die Operation %s wurde die maximale Anrufdauer erreicht.,de
+Max depth reached when copying BOM.,Maximale Tiefe beim Kopieren von Stücklisten erreicht.,de
+Max loop call reached when trying to compute end date.,"Maximaler Schleifenaufruf erreicht, wenn versucht wird, das Enddatum zu berechnen.",de
+Max loop call reached when trying to compute start date.,"Maximaler Schleifenaufruf erreicht, wenn versucht wird, das Startdatum zu berechnen.",de
+Max. capacity / cycle,Max. Kapazität / Zyklus,de
+Maximum level,Maximales Niveau,de
+Merge,Zusammenführen,de
+Merged,Zusammengeführt,de
+Merged MO,Zusammengelegte MO,de
+Merged manuf orders,Zusammengefasste Fertigungsaufträge,de
+Message template,Nachrichtenvorlage,de
+Min. capacity / cycle,Min. Kapazität / Zyklus,de
+Missing quantity,Fehlende Menge,de
+Monday hours,Montag Stunden,de
+Move types,Bewegungsarten,de
+Moves In/Out,Bewegt sich ein/aus,de
+Mps Charge,Mps-Gebühr,de
+MpsCharge.code,MpsCharge.code,de
+MpsCharge.endMonth,MpsCharge.endMonth,de
+MpsCharge.startMonth,MpsCharge.startMonth,de
+MpsCharge.title,MpsCharge.title,de
+Multi Level MO tree,Multi Level MO Baum,de
+Multi level MO,Mehrstufige MO,de
+Multi-level planning,Planung auf mehreren Ebenen,de
+Multiple same product selected in the list.,Mehrere gleiche Produkte in der Liste ausgewählt.,de
+My RFQs,Meine RFQs,de
+My Sales,Meine Verkäufe,de
+Name,Name,de
+Name cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.,"Der Name kann nicht null sein, um eine Prozesslinie zu erzeugen. Bitte korrigieren Sie auf prod process line configurator id : %s.",de
+Name cannot be null for prod process to generate. Please correct on prod process configurator id : %s.,"Der Name kann nicht null sein, um einen Prozess zu erzeugen. Bitte korrigieren Sie die Konfigurator-ID für den Produktprozess: %s.",de
+Nb of digits for BOM quantities,Nb von Stellen für Stücklistenmengen,de
+Need / MPS,Bedarf / MPS,de
+Need / Manufacturing order,Bedarf / Fertigungsauftrag,de
+Need / Manufacturing proposal,Bedarf / Produktionsvorschlag,de
+New production order(s) have been created for selected lines.,Es wurden neue Produktionsaufträge für die ausgewählten Linien erstellt.,de
+New production order(s) have been created.,Neue(r) Produktionsauftrag(e) wurde(n) erstellt.,de
+Next overhaul date,Nächster Überholungstermin,de
+No continuity,Keine Kontinuität,de
+No period has been found in the weekly planning for the manufacturing operation %s,Es wurde kein Zeitraum in der Wochenplanung für den Fertigungsvorgang %s gefunden,de
+No product has been found with these filters. Please check your filters,Es wurde kein Produkt mit diesen Filtern gefunden. Bitte überprüfen Sie Ihre Filter,de
+No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it.,"Es konnte kein Produktionsauftrag erstellt werden. Stellen Sie sicher, dass alles korrekt konfiguriert wurde. Zur Erinnerung: Prüfen Sie, ob die Liefermethode für die zu produzierenden Auftragszeilen auf ""produzieren"" eingestellt ist und ob der gewählten BoM ein Produktionsprozess zugeordnet ist.",de
+Normal,Normal,de
+Not enough quantity in products to consume for: %s,"Die Menge der Produkte reicht nicht aus, um sie zu verbrauchen: %s",de
+Not manage stock,Bestand nicht verwalten,de
+Note,Hinweis,de
+Number of components,Anzahl der Komponenten,de
+Number of phases,Anzahl der Phasen,de
+Number of stations,Anzahl der Stationen,de
+OK,OK,de
+Obsolete,Veraltet,de
+On Finish,Am Ende,de
+On Start,Beim Start,de
+On operations start,Bei Betriebsbeginn,de
+On order start,Start bei Bestellung,de
+One production order per sale order,Ein Produktionsauftrag pro Verkaufsauftrag,de
+Open MO tree,MO-Baum öffnen,de
+Open tree,Baum öffnen,de
+Operating duration,Betriebsdauer,de
+Operation,Operation,de
+Operation Continuity,Kontinuität des Betriebs,de
+Operation name,Name der Operation,de
+OperationOrder.associatedBOM,OperationOrder.associatedBOM,de
+OperationOrder.cycleDuration,OperationOrder.cycleDuration,de
+OperationOrder.dates,OperationOrder.dates,de
+OperationOrder.delayBtwCycle,OperationOrder.delayBtwCycle,de
+OperationOrder.machine,OperationOrder.machine,de
+OperationOrder.num,OperationOrder.num,de
+OperationOrder.operationDetails,OperationOrder.operationDetails,de
+OperationOrder.operationName,OperationOrder.operationName,de
+OperationOrder.operationRequirement,OperationOrder.operationRequirement,de
+OperationOrder.plannedEndDate,OperationOrder.plannedEndDate,de
+OperationOrder.plannedStartDate,OperationOrder.plannedStartDate,de
+OperationOrder.productBarcode,OperationOrder.productBarcode,de
+OperationOrder.productName,OperationOrder.productName,de
+OperationOrder.productToPrepare,OperationOrder.productToPrepare,de
+OperationOrder.qty,OperationOrder.qty,de
+OperationOrder.realEndDate,OperationOrder.realEndDate,de
+OperationOrder.realStartDate,OperationOrder.realStartDate,de
+OperationOrder.relatedToProduct,OperationOrder.relatedToProduct,de
+OperationOrder.startTime,OperationOrder.startTime,de
+OperationOrder.stopTime,OperationOrder.stopTime,de
+OperationOrder.title,OperationOrder.title,de
+OperationOrder.trackingNumber,OperationOrder.trackingNumber,de
+Operations,Betrieb,de
+Operations Finished late,Verspätet beendete Operationen,de
+Operations In Progress,Laufende Arbeiten,de
+Operations In Standby,Betrieb im Standby-Modus,de
+Operations to invoice,Vorgänge zur Rechnungsstellung,de
+Operations with difference,Operationen mit Unterschied,de
+Optional,Optional,de
+Optional continuity,Optionale Kontinuität,de
+Options,Optionen,de
+Order Lines,Zeilen bestellen,de
+Origin,Herkunft,de
+Origin manuf order,Ursprung Herstellungsauftrag,de
+Original bill of materials,Original-Stückliste,de
+Original production process,Ursprüngliches Herstellungsverfahren,de
+Out manuf order,Außer Haus Bestellung,de
+Outgoing moves,Ausgehende Umzüge,de
+Outgoing outsource stock move,Ausgehender Outsourcing-Umzug,de
+Outsourcable,Auslagerungsfähig,de
+Outsource declaration,Auslagerungserklärung,de
+Outsourced,Ausgelagert,de
+Outsourcing,Outsourcing,de
+Outsourcing duration,Dauer des Outsourcing,de
+Outsourcing location,Outsourcing-Standort,de
+Outsourcing manuf order,Outsourcing von Fertigungsaufträgen,de
+Outsourcing order,Outsourcing-Auftrag,de
+Outsourcing purchase order cannot be generated. Please fill hours unit in your base configuration.,Eine Outsourcing-Bestellung kann nicht erstellt werden. Bitte füllen Sie die Stundeneinheit in Ihrer Basiskonfiguration aus.,de
+Outsourcing purchase orders,Outsourcing von Bestellungen,de
+Outsourcing purchases,Outsourcing von Einkäufen,de
+Outsourcing stock location,Outsourcing der Lagerhaltung,de
+Outsourcing stock moves,Outsourcing von Lagerbewegungen,de
+Parent,Elternteil,de
+Parent BOM,Übergeordnete Stückliste,de
+Parent Configurator BOM,Parent Configurator Stückliste,de
+Parent MO,Elternteil MO,de
+Parents are not set properly in input file.,Die Eltern sind in der Eingabedatei nicht richtig eingestellt.,de
+Partial Finish,Teilweiser Abschluss,de
+Partial end of production,Teilweises Ende der Produktion,de
+Partner,Partner,de
+Pause,Pause,de
+Per Cycle,Pro Zyklus,de
+Per hour,Pro Stunde,de
+Per piece,Pro Stück,de
+Period,Zeitraum,de
+Periods generation assistant,Assistent zur Generierung von Zeiträumen,de
+Permanent,Dauerhaft,de
+Permanent manufacturing orders,Dauerhafte Fertigungsaufträge,de
+Personalized,Personalisierte,de
+Personalized BoM,Personalisierte BoM,de
+Personalized production processes,Personalisierte Produktionsprozesse,de
+Phase,Phase,de
+Phases,Phasen,de
+Picture,Bild,de
+Plan,Plan,de
+Plan only product with missing quantities,Nur Produkt mit Fehlmengen planen,de
+Plan selected orders and discard others,Ausgewählte Aufträge planen und andere verwerfen,de
+Planification,Planifizierung,de
+Planned,Geplant,de
+Planned MOs,Geplante MOs,de
+Planned Operations,Geplante Operationen,de
+Planned Qty,Geplante Menge,de
+Planned dates,Geplante Termine,de
+Planned end,Geplantes Ende,de
+Planned end date,Geplantes Enddatum,de
+Planned end with waiting date t,Geplantes Ende mit Wartedatum t,de
+Planned human duration (hhh:mm:ss),Planned human duration (hhh:mm:ss),de
+Planned machine duration (hhh:mm:ss),Planned machine duration (hhh:mm:ss),de
+Planned operations,Geplante Maßnahmen,de
+Planned outsourced operations,Geplante ausgelagerte Tätigkeiten,de
+Planned start,Geplanter Start,de
+Planned start date,Geplanter Starttermin,de
+Planning and performances,Planung und Durchführung,de
+Planning duration (hhh:mm:ss),Planning duration (hhh:mm:ss),de
+Please enter valid forecast date,Bitte gültiges Prognosedatum eingeben,de
+Please fill the machine in the workcenter %s.,Bitte füllen Sie die Maschine im Workcenter %s.,de
+Please fill the work center group with at least one work center.,Bitte füllen Sie die Arbeitsplatzgruppe mit mindestens einem Arbeitsplatz.,de
+Please fill unit for product %s.,Bitte geben Sie die Einheit für das Produkt %s ein.,de
+"Please select an element (a product, a product category or a product family) to run calculation","Bitte wählen Sie ein Element (ein Produkt, eine Produktkategorie oder eine Produktfamilie) aus, um die Berechnung durchzuführen",de
+Please select at least one MO,Bitte wählen Sie mindestens eine MO,de
+Please select at least one product in the list.,Bitte wählen Sie mindestens ein Produkt aus der Liste aus.,de
+Please select more than one manufacturing order.,Bitte wählen Sie mehr als einen Fertigungsauftrag aus.,de
+Please select something to merge,Bitte wählen Sie etwas zum Zusammenführen aus,de
+Please take the following comment into account:,Bitte berücksichtigen Sie die folgende Anmerkung:,de
+Pre-fill operations,Vorfüllvorgänge,de
+Previous cost,Frühere Kosten,de
+Previous_cost,Vorherige_Kosten,de
+Previsional charge per machine (% per day),Vorläufige Gebühr pro Maschine (% pro Tag),de
+Previsional charge rate (% per day),Vorgesehener Gebührensatz (% pro Tag),de
+Previsional charge rate (% per hour),Vorgesehener Ladungssatz (% pro Stunde),de
+Previsional charge rate by machine (% per day),Vorgesehener Ladungssatz pro Maschine (% pro Tag),de
+Previsional charge rate by machine (% per hour),Vorgesehener Ladungssatz pro Maschine (% pro Stunde),de
+Print,Drucken,de
+Print Production Process,Prozess der Druckproduktion,de
+Print planned date on manuf order ?,Plandatum auf Fertigungsauftrag drucken?,de
+Print the cost sheet line detail,Drucken Sie die Details der Kostenblattzeile,de
+Printings,Drucksachen,de
+Priority,Priorität,de
+Prod process,Produktionsprozess,de
+Prod process currently has no status,Prozess hat derzeit keinen Status,de
+Prod process filters,Produktionsprozessfilter,de
+Prod process is already on draft status,Prozess ist bereits im Entwurfsstadium,de
+Prod process line,Prod Prozess Linie,de
+Prod process template,Prozessvorlage,de
+ProdProcess.company,ProdProcess.company,de
+ProdProcess.consumeProduct,ProdProcess.consumeProduct,de
+ProdProcess.description,ProdProcess.description,de
+ProdProcess.isOperation,ProdProcess.isOperation,de
+ProdProcess.isOutsourcing,ProdProcess.isOutsourcing,de
+ProdProcess.label,ProdProcess.label,de
+ProdProcess.name,ProdProcess.name,de
+ProdProcess.outsourcing,ProdProcess.outsourcing,de
+ProdProcess.phases,ProdProcess.phases,de
+ProdProcess.priority,ProdProcess.priority,de
+ProdProcess.producedProductStockLocation,ProdProcess.producedProductStockLocation,de
+ProdProcess.product,ProdProcess.product,de
+ProdProcess.qty,ProdProcess.qty,de
+ProdProcess.stockLocation,ProdProcess.stockLocation,de
+ProdProcess.unit,ProdProcess.unit,de
+ProdProcess.workcenter,ProdProcess.workcenter,de
+Produced product,Hergestelltes Produkt,de
+Produced products,Produzierte Produkte,de
+Produced quantity,Produzierte Menge,de
+Produced ratio,Produziertes Verhältnis,de
+Producible qty,Produzierbare Menge,de
+Product,Produkt,de
+Product approval,Produktzulassung,de
+Product approvals,Produktzulassungen,de
+Product cannot be null for prod product to generate. Please correct on prod product configurator id : %s.,"Das Produkt kann nicht null sein, um ein Produkt zu erzeugen. Bitte korrigieren Sie auf prod product configurator id : %s.",de
+Product categories,Produktkategorien,de
+Product families,Produktfamilien,de
+Product sub-types,Untertypen von Produkten,de
+Product_code,Produkt_code,de
+Product_name,Produkt_name,de
+Production,Produktion,de
+Production & manufacturing Orders,Produktion & Fertigung Aufträge,de
+Production Batch,Produktionscharge,de
+Production and cost settings,Produktions- und Kosteneinstellungen,de
+Production batch,Produktionscharge,de
+Production batch filters,Filter für Produktionschargen,de
+Production batches,Produktionschargen,de
+Production blocking,Blockierung der Produktion,de
+Production blocking done by,Blockierung der Produktion durch,de
+Production config,Produktionskonfiguration,de
+Production config (${ name }),Produktionskonfiguration (${ Name }),de
+Production configuration,Konfiguration der Produktion,de
+Production configurations,Konfigurationen für die Produktion,de
+Production note,Anmerkung zur Produktion,de
+Production order,Produktionsauftrag,de
+Production order filters,Filter für Produktionsaufträge,de
+Production order generated,Produktionsauftrag generiert,de
+Production order management from sale order,Verwaltung von Produktionsaufträgen aus Verkaufsaufträgen,de
+Production order wizard,Assistent für Fertigungsaufträge,de
+Production orders,Produktionsaufträge,de
+Production orders closed,Produktionsaufträge abgeschlossen,de
+Production process,Produktionsprozess,de
+Production process configurator,Produktionsprozess-Konfigurator,de
+Production processes,Produktionsverfahren,de
+Production stock location,Lagerort der Produktion,de
+Production stock locations,Produktionslagerorte,de
+Production virtual stock location,Virtueller Lagerort der Produktion,de
+Production waste,Produktionsabfälle,de
+Production's order created,Auftrag der Produktion erstellt,de
+Production.productStandard,Production.productStandard,de
+Productions orders,Aufträge für Produktionen,de
+Products,Produkte,de
+Products Wastes,Produkte Abfälle,de
+Products for generated purchase order,Produkte für die generierte Bestellung,de
+Products to consume,Zu verbrauchende Produkte,de
+Products to produce,Zu produzierende Produkte,de
+Public Holiday Planning,Feiertagsplanung,de
+"Purchase currency is missing for product %s, please configure it.","Die Kaufwährung für das Produkt %s fehlt, bitte konfigurieren Sie sie.",de
+Purchase orders,Kaufaufträge,de
+Purchases Order filters,Käufe Bestellfilter,de
+Qty,Menge,de
+Qty cannot be null for prod product to generate. Please correct on prod product configurator id : %s.,"Die Menge kann nicht null sein, um ein Produkt zu erzeugen. Bitte korrigieren Sie auf prod product configurator id : %s.",de
+Quantity,Menge,de
+Quantity Wasted per Product,Verschwendete Menge pro Produkt,de
+Quantity produced,Produzierte Menge,de
+Quantity successfully updated.,Menge erfolgreich aktualisiert.,de
+Quantity to produce,Zu produzierende Menge,de
+Rate,Bewerten Sie,de
+Rate type,Typ der Rate,de
+Ratio,Ratio,de
+Raw material requirement,Bedarf an Rohstoffen,de
+Raw material requirement filters,Rohmaterialbedarf Filter,de
+RawMaterialRequirement.available,RawMaterialRequirement.available,de
+RawMaterialRequirement.company,RawMaterialRequirement.company,de
+RawMaterialRequirement.from,RawMaterialRequirement.from,de
+RawMaterialRequirement.manufOrder,RawMaterialRequirement.manufOrder,de
+RawMaterialRequirement.missingQuantity,RawMaterialRequirement.missingQuantity,de
+RawMaterialRequirement.neededQuantity,RawMaterialRequirement.neededQuantity,de
+RawMaterialRequirement.product,RawMaterialRequirement.product,de
+RawMaterialRequirement.stockLocation,RawMaterialRequirement.stockLocation,de
+RawMaterialRequirement.stockLocations,RawMaterialRequirement.stockLocations,de
+RawMaterialRequirement.title,RawMaterialRequirement.title,de
+RawMaterialRequirement.to,RawMaterialRequirement.to,de
+Real,Real,de
+Real Qty,Echte Menge,de
+Real dates,Echte Daten,de
+Real duration (hh:mm:ss),Real duration (hh:mm:ss),de
+Real end,Echtes Ende,de
+Real end date,Tatsächliches Enddatum,de
+Real operations,Echte Operationen,de
+Real production,Reale Produktion,de
+Real sales,Echte Verkäufe,de
+Real start,Echter Start,de
+Real start date,Tatsächlicher Starttermin,de
+Real stock,Echte Aktien,de
+Real/Current Quantity,Reale/aktuelle Menge,de
+Reportings,Berichte,de
+Reports,Berichte,de
+Request reservation,Reservierung anfordern,de
+Request successfully completed,Anfrage erfolgreich abgeschlossen,de
+Reserve all,Alle reservieren,de
+Residual product,Restliches Produkt,de
+Residual products,Verbleibende Produkte,de
+Residual products default stock location,Standardlagerort für Restprodukte,de
+Resources,Ressourcen,de
+Result,Ergebnis,de
+Result Tree,Ergebnisbaum,de
+Result grid,Ergebnisgitter,de
+Results,Ergebnisse,de
+Resume,Lebenslauf,de
+Return to draft status,Rückkehr zum Entwurfsstatus,de
+Revaluation at actual prices,Neubewertung zu aktuellen Preisen,de
+Run calculation,Berechnung durchführen,de
+S&OP,S&OP,de
+S&OP/MPS,S&OP/MPS,de
+SO line,SO-Linie,de
+SO lines,SO-Linien,de
+SOP Real Values Batch,SOP Echte Werte Batch,de
+Sale order,Verkaufsauftrag,de
+Sale order line,Verkaufsauftragszeile,de
+Sale order line details,Details der Verkaufsauftragszeile,de
+Sale order line details list,Liste der Details der Verkaufsauftragszeile,de
+Sale order lines details,Details zu den Auftragszeilen,de
+Sale orders,Verkaufsaufträge,de
+Sales and Operations Planning,Vertriebs- und Betriebsplanung,de
+Sales and Operations Planning Line,Vertriebs- und Betriebsplanungslinie,de
+Sales and Operations Planning Lines,Vertriebs- und Betriebsplanungszeilen,de
+Sales and Operations Planning Lines generation,Vertrieb und operative Planung Liniengenerierung,de
+Sales forecast,Umsatzprognose,de
+Saturday hours,Öffnungszeiten Samstag,de
+Scheduling,Terminplanung,de
+Send email when manufacturing order finished,"E-Mail senden, wenn Fertigungsauftrag abgeschlossen",de
+Send email when manufacturing order partially finished,"E-Mail senden, wenn Fertigungsauftrag teilweise abgeschlossen",de
+Sequence,Sequenz,de
+Sequence by workshop,Sequenz nach Workshop,de
+Serial Nbr,Seriennummer,de
+Serial Number,Seriennummer,de
+Set to zero,Auf Null setzen,de
+Show all requirements ?,Alle Anforderungen anzeigen ?,de
+Show requirements by MO,Anforderungen nach MO anzeigen,de
+Sop,Sop,de
+Split by tracking numbers,Aufteilung nach Kontrollnummern,de
+Standard purchases,Standard-Käufe,de
+Standby,Bereitschaft,de
+Start,Start,de
+Start Month,Start Monat,de
+Start and End Month should not be more than 12 months apart,Anfangs- und Endmonat sollten nicht mehr als 12 Monate auseinander liegen,de
+Start date,Datum des Beginns,de
+Started,Gestartet,de
+Started by,Gestartet von,de
+Starting Date,Datum des Beginns,de
+Starting duration (hhh:mm:ss),Starting duration (hhh:mm:ss),de
+Status,Status,de
+Status considered to filter a manuf order,Status als Filter für einen Herstellerauftrag,de
+Status select,Status auswählen,de
+Stock Location,Lagerort,de
+Stock location,Lagerort,de
+Stock location for produced product,Lagerort für das hergestellte Produkt,de
+Stock location for residual products,Lagerort für Restprodukte,de
+Stock location is missing from the prod process and in the component default stock location in stock configuration.,Der Lagerort fehlt im Produktentwicklungsprozess und in der Komponente Standardlagerort in der Lagerkonfiguration.,de
+Stock move,Lagerbewegung,de
+Stock move in,Einzug der Aktien,de
+Stock move line,Bewegungslinie der Aktie,de
+Stock move lines,Bewegungslinien für Aktien,de
+Stock move realize order select,Lagerbewegung realisieren Auftrag auswählen,de
+Stock moves,Aktienbewegungen,de
+Stock moves in,Bestand bewegt sich nach innen,de
+Stock moves out,Lagerbestände verlagern sich,de
+Stopped by,Vorbeigekommen,de
+Stopping Date,Datum der Beendigung,de
+Sub Total gross profit,Sub Total Bruttogewinn,de
+Sub Total markup,Sub Total Aufschlag,de
+Sub margin rate,Untermargensatz,de
+Sub total cost price,Teilgesamtselbstkostenpreis,de
+Subcontracting,Unterauftragsvergabe,de
+Subcontracting service,Untervergabe von Dienstleistungen,de
+Subcontractor,Unterauftragnehmer,de
+Subcontractors,Unterauftragnehmer,de
+Subcontractors arrivals,Eingänge von Subunternehmern,de
+Subcontractors deliveries,Lieferungen von Unterauftragnehmern,de
+Subtract the product residuals cost on Cost sheet,Subtrahieren Sie die Produktrestkosten auf dem Kostenblatt,de
+Sunday hours,Sonntagsstunden,de
+Supplier,Anbieter,de
+Supplier RFQ/PO,Lieferant RFQ/PO,de
+Supply method for manufacturing orders,Lieferverfahren für Fertigungsaufträge,de
+Surcharge,Aufpreis,de
+The bill of materials %s has been generated,Die Stückliste %s ist erstellt worden,de
+The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s.,Die Konditionsformel zur Erstellung der Stückliste liefert einen Nullwert oder ist nicht konsistent. Bitte korrigieren Sie im Konfigurator Stücklistennummer: %s.,de
+The condition formula to generate the prod process line returns null value or is not consistent. Please correct on prod process line configurator id : %s.,Die Bedingungsformel für die Erstellung der Prozesslinie liefert einen Nullwert oder ist nicht konsistent. Bitte korrigieren Sie auf prod process line configurator id : %s.,de
+The condition formula to generate the prod product returns null value or is not consistent. Please correct on prod product configurator id : %s.,Die Bedingungsformel für die Erstellung des Produktkonfigurators gibt einen Nullwert zurück oder ist nicht konsistent. Bitte korrigieren Sie auf prod product configurator id : %s.,de
+The formula script to fill the checkbox manage consumed products on phases returns null value or is not consistent. Please correct on prod process configurator id : %s.,"Das Formel-Skript zum Ausfüllen des Kontrollkästchens ""Verbrauchte Produkte in Phasen verwalten"" gibt einen Nullwert zurück oder ist nicht konsistent. Bitte korrigieren Sie auf prod process configurator id : %s.",de
+The formula script to fill the name returns null value. Please correct on prod process configurator id : %s.,Das Formelskript zum Ausfüllen des Namens gibt den Wert Null zurück. Bitte korrigieren Sie auf prod process configurator id : %s.,de
+The formula script to fill the name returns null value. Please correct on prod process line configurator id : %s.,Das Formel-Skript zum Ausfüllen des Namens gibt den Wert Null zurück. Bitte korrigieren Sie in der Prozesszeile Konfigurator-ID: %s.,de
+The formula script to fill the product returns null value. Please correct on prod product configurator id : %s.,Das Formel-Skript zum Befüllen des Produkts gibt den Wert Null zurück. Bitte korrigieren Sie auf prod product configurator id : %s.,de
+The formula script to fill the qty returns null value. Please correct on prod product configurator id : %s.,Das Formel-Skript zum Ausfüllen der Menge gibt den Wert Null zurück. Bitte korrigieren Sie auf prod product configurator id : %s.,de
+The formula script to fill the unit returns null value. Please correct on prod product configurator id : %s.,Das Formel-Skript zum Füllen der Einheit gibt den Wert Null zurück. Bitte korrigieren Sie auf prod product configurator id : %s.,de
+The formula script to fill the work center returns null value. Please correct on prod process line configurator id : %s.,Das Formelskript zum Füllen des Arbeitsplatzes gibt den Wert Null zurück. Bitte korrigieren Sie auf prod process line configurator id : %s.,de
+"The last manufacturing operation planned end date will overflow beyond the manuf order planned end date, do you wish to continue?",Das geplante Enddatum des letzten Fertigungsvorgangs wird über das geplante Enddatum des Fertigungsauftrags hinausgehen.,de
+The line with the product %s can not be deleted as it is referenced in manufacturing order(s): <br> %s,"Die Zeile mit dem Produkt %s kann nicht gelöscht werden, da es in Produktionsaufträgen referenziert wird: <br> %s",de
+The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s,"Die Zeile mit dem Produkt %s kann nicht gelöscht werden, da es in einem oder mehreren Verkaufsaufträgen referenziert wird: <br> %s",de
+The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more,"Die Zeile mit dem Produkt %s kann nicht gelöscht werden, da es in Verkaufsaufträgen referenziert wird: <br> %s und %s mehr",de
+The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM.,Der Fertigungsauftrag konnte für das Produkt %s nicht erstellt werden. Bitte geben Sie eine Firma für die verknüpfte Stückliste an.,de
+The manufacturing operation is already finished and cannot be moved.,Der Fertigungsvorgang ist bereits abgeschlossen und kann nicht mehr verschoben werden.,de
+The manufacturing order for %s could not be generated because the bill of material has no production process.,"Der Produktionsauftrag für %s konnte nicht erzeugt werden, da die Stückliste keinen Produktionsprozess hat.",de
+The manufacturing order planned for %s can not be planned before today's date. Please adjust it. (Used date time %s),Der für %s geplante Produktionsauftrag kann nicht vor dem heutigen Datum geplant werden. Bitte passen Sie ihn an. (Verwendete Datumszeit %s),de
+The manufacturing order was canceled.,Der Fertigungsauftrag wurde storniert.,de
+"The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles.","Die Zusammenführung darf nur Produktionsaufträge mit dem Status ""Entwurf"" oder ""Geplant"", mit denselben Produkten und demselben Werkstattlagerort und mit allen Stücklistenkompatibilitäten betreffen.",de
+"The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles.","Die Zusammenführung darf nur Produktionsaufträge mit dem Status ""Entwurf"" oder ""Geplant"", mit denselben Produkten und mit allen stücklistenkompatiblen Produkten betreffen.",de
+The outsourcing receipt stock location is missing from the stock config,Der Lagerort des Auslagerungsbelegs fehlt in der Bestandskonfiguration,de
+The period cannot exceed 20 days,Der Zeitraum darf 20 Tage nicht überschreiten.,de
+The planned end date is inferior to the actual date,Das geplante Enddatum ist niedriger als das tatsächliche Datum,de
+The produced product stock location is missing in the prod process,Der Lagerort des produzierten Produkts fehlt im Produktionsprozess,de
+The product %s is not in the bill of materials related to this production process,Das Produkt %s ist nicht in der Stückliste für diesen Produktionsprozess enthalten,de
+The product cost cannot be changed because the product cost type is not manual,"Die Produktkosten können nicht geändert werden, da der Produktkostentyp nicht manuell ist.",de
+The product will not be manufactured in time for its corresponding need.,Das Produkt wird nicht rechtzeitig für den entsprechenden Bedarf hergestellt werden.,de
+The production process and the bill of material must be applicable,Der Produktionsprozess und die Stückliste müssen anwendbar sein,de
+The quantity of the bill of material %s is equal to zero.,Die Menge der Stückliste %s ist gleich Null.,de
+"The result formula of '%s' in configurator prod process '%s' could not be converted in a Stock location, please verify the formula.","Die Ergebnisformel von '%s' im Konfigurator prod process '%s' konnte nicht in einen Lagerort konvertiert werden, bitte überprüfen Sie die Formel.",de
+"The system found a loop in your bill of materials, please correct concerned data","Das System hat eine Schleife in Ihrer Stückliste gefunden, bitte korrigieren Sie die betroffenen Daten",de
+The template to send message for manufacturing order is missing.,Die Vorlage zum Versenden der Nachricht für den Produktionsauftrag fehlt.,de
+The time the machine starts before it can be used.,"Die Zeit, die die Maschine startet, bevor sie benutzt werden kann.",de
+The unit of the bill of material %s is missing. Please correct it.,Die Einheit der Stückliste %s fehlt. Bitte korrigieren Sie sie.,de
+There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&OP forecast. Proceed?,Zwischen Ihrer Gesamtprognose und der S&OP-Prognose besteht derzeit eine Differenz von ${difference} ${currency?.symbol?:currency?.name}. Fortfahren?,de
+There is no applicable bill of materials for %s,Es gibt keine passende Stückliste für %s,de
+There is no production or manufacturing order to generate for one of the selected lines.,Für eine der ausgewählten Linien ist kein Produktions- oder Fertigungsauftrag zu generieren.,de
+There no's defined nomenclature for product %s (%s),Es gibt keine definierte Nomenklatur für das Produkt %s (%s),de
+There's no configured sequence for fabrication's orders,Es gibt keine konfigurierte Reihenfolge für Fabrikationsaufträge,de
+There's no configured sequence for production's orders,Es gibt keine konfigurierte Reihenfolge für die Produktionsaufträge,de
+This bill of material is used in a sale order. Generate a new version if you need to edit it.,"Diese Stückliste wird in einem Verkaufsauftrag verwendet. Erzeugen Sie eine neue Version, wenn Sie sie bearbeiten müssen.",de
+This bill of materials already has the following versions : <br/>%s And these versions may also have ones. Do you still wish to create a new one ?,Diese Stückliste hat bereits die folgenden Versionen: <br/>%s Und diese Versionen können auch eine haben. Möchten Sie trotzdem eine neue erstellen?,de
+This config allows to automatically fill the deliveries from the finished products of the manufacturing orders.,Diese Konfiguration ermöglicht die automatische Befüllung der Lieferungen aus den Fertigprodukten der Fertigungsaufträge.,de
+This production process already has the following versions : <br/> %s And these versions may also have ones. Do you still wish to create a new one ?,Dieser Produktionsprozess hat bereits die folgenden Versionen : <br/> %s Und diese Versionen können auch eine haben. Möchten Sie trotzdem eine neue Version erstellen?,de
+This stock move is linked to a manufacturing order and can't be canceled.,Diese Lagerbewegung ist mit einem Produktionsauftrag verbunden und kann nicht storniert werden.,de
+This workflow is not supported for manufacturing operation status.,Dieser Workflow wird für den Status des Fertigungsvorgangs nicht unterstützt.,de
+Thursday hours,Donnerstag Stunden,de
+Time before next operation,Zeit bis zur nächsten Operation,de
+Time before the next operation of the same manufacturing order.,Zeit vor dem nächsten Vorgang desselben Produktionsauftrags.,de
+Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle.,"Zeit zwischen zwei Zyklen. Dies ist die Zeit, die bis zum Ende eines Zyklus gewartet werden muss, um einen neuen Zyklus zu starten.",de
+Time between two operations (hhh:mm:ss),Time between two operations (hhh:mm:ss),de
+Time between two operations. This is the time to wait until the end of a operation to start a new one within the work center.,"Zeit zwischen zwei Vorgängen. Dies ist die Zeit, die bis zum Ende eines Vorgangs gewartet werden muss, um einen neuen Vorgang innerhalb des Arbeitsplatzes zu starten.",de
+Time difference (Minutes),Zeitunterschied (Minuten),de
+Time difference per manufacturing order,Zeitunterschied pro Fertigungsauftrag,de
+Title,Titel,de
+To,An,de
+To Date,Bis heute,de
+To consume manuf order,Zum Konsumieren von Manufakturaufträgen,de
+To consume operation order,So verbrauchen Sie Vorgangsaufträge,de
+To consume prod process line,So verbrauchen Sie prod process line,de
+To consume products,Produkte zu verbrauchen,de
+To produce manuf order,Zur Herstellung von Fertigungsaufträgen,de
+Too many days,Zu viele Tage,de
+Too many iterations when searching for children bills of materials. Please check for bill of materials being in its own component list.,"Zu viele Iterationen bei der Suche nach Kinder-Stücklisten. Bitte prüfen Sie, ob eine Stückliste in einer eigenen Komponentenliste enthalten ist.",de
+Too many recursive calls to create the bill of materials.,Zu viele rekursive Aufrufe zur Erstellung der Stückliste.,de
+Too many recursive calls to import the bill of material configurator.,Zu viele rekursive Aufrufe zum Importieren des Stücklistenkonfigurators.,de
+Tool,Werkzeug,de
+Tool Information,Informationen zum Werkzeug,de
+Tools,Werkzeuge,de
+Total Planned Duration,Geplante Gesamtdauer,de
+Total Real Duration,Reale Gesamtdauer,de
+Total duration in hours,Gesamtdauer in Stunden,de
+Total forecast,Prognose insgesamt,de
+Total hours,Stunden insgesamt,de
+Total lead time duration,Gesamtdauer der Vorlaufzeit,de
+Total price,Gesamtpreis,de
+Tracking number,Verfolgungsnummer,de
+Tracking number search,Suche nach Tracking-Nummern,de
+Trading name,Handelsname,de
+Tuesday hours,Dienstagsstunden,de
+Type,Typ,de
+Type select,Typ auswählen,de
+Type select icon,Typ wählen Symbol,de
+Undo manual changes,Manuelle Änderungen rückgängig machen,de
+Unit,Einheit,de
+Unit cannot be null for prod product to generate. Please correct on prod product configurator id : %s.,"Einheit kann nicht null sein, um ein Produkt zu erzeugen. Bitte korrigieren Sie die Produktkonfigurator-ID: %s.",de
+Unit cost price,Selbstkostenpreis pro Einheit,de
+Unit price,Preis pro Einheit,de
+Unknown parent context class.,Unbekannte übergeordnete Kontextklasse.,de
+Unrecognized capacity for company %s production configuration,Nicht anerkannte Kapazität für Unternehmen %s Produktionskonfiguration,de
+Update costs,Kosten aktualisieren,de
+Update costs date,Kosten aktualisieren Datum,de
+Update planned quantities (Components and FP),Aktualisierung der geplanten Mengen (Komponenten und FP),de
+Update product cost price,Aktualisierung des Selbstkostenpreises des Produkts,de
+Update real quantities (Components and FP),Aktualisierung der realen Mengen (Komponenten und FP),de
+Uploaded file is not a CSV file,Hochgeladene Datei ist keine CSV-Datei,de
+Urgent,Dringend,de
+Usable on production,Verwendbar in der Produktion,de
+Use generated product,Verwendung des erzeugten Produkts,de
+User,Benutzer,de
+User Dashboard,Benutzer Dashboard,de
+Validate,Validieren Sie,de
+Validated,Validiert,de
+Valuation Batch,Bewertungscharge,de
+Valuation date,Datum der Bewertung,de
+Version management,Versionsverwaltung,de
+Version number,Versionsnummer,de
+Warn delay from manufacturing,Warnung vor Verzögerungen bei der Herstellung,de
+Warning: The current product exists in produced products of the manuf order.,Warnung: Das aktuelle Produkt existiert in den produzierten Produkten des Herstellerauftrags.,de
+Waste,Abfall,de
+Waste description,Beschreibung des Abfalls,de
+Waste rate (%),Abfallquote (%),de
+Waste stock location,Standort des Abfallbestands,de
+Waste stock move,Umlagerung von Abfallbeständen,de
+Wasted product quantity successfully updated.,Verschwendete Produktmenge erfolgreich aktualisiert.,de
+Wednesday hours,Mittwoch Stunden,de
+"When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00).","When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00).",de
+"When enabled, new prod process and prod process line will have their option to generate purchase order set to true.","Wenn diese Option aktiviert ist, wird die Option zum Erzeugen von Bestellungen für neue Produktionsprozesse und Produktionsprozesslinien auf ""true"" gesetzt.",de
+Where-used list,Verwendungsnachweis,de
+Work center,Arbeitsplatz,de
+Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.,"Der Arbeitsplatz kann nicht null sein, um eine Prozesslinie zu erzeugen. Bitte korrigieren Sie auf prod process line configurator id : %s.",de
+Work center filters,Filter für den Arbeitsplatz,de
+Work center group,Arbeitsplatzgruppe,de
+Work center group cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.,"Die Arbeitsplatzgruppe kann nicht null sein, um eine Prozesslinie zu erzeugen. Bitte korrigieren Sie auf prod process line configurator id : %s.",de
+Work center group planning,Planung von Arbeitsplatzgruppen,de
+Work center groups,Arbeitsplatzgruppen,de
+Work center is missing from prod process line %s-%s.,Der Arbeitsplatz fehlt in der Produktprozesslinie %s-%s.,de
+Work center type,Typ des Arbeitsplatzes,de
+Work centers,Arbeitsplätze,de
+Work in progress,Laufende Arbeiten,de
+Work in progress valuation,Bewertung der unfertigen Erzeugnisse,de
+WorkCenter,Arbeitszentrum,de
+WorkInProgressValuation.title,WorkInProgressValuation.title,de
+Workshop,Workshop,de
+Workshops,Werkstätten,de
+Year,Jahr,de
+You can not merge manufacturing orders without unit.,Sie können keine Produktionsaufträge ohne Einheit zusammenführen.,de
+You can't manage the consumed products on phases because this production process is related to several bills of material,"Sie können die verbrauchten Produkte nicht nach Phasen verwalten, da dieser Produktionsprozess mit mehreren Stücklisten verbunden ist.",de
+You can't remove this record,Sie können diesen Datensatz nicht entfernen,de
+You cannot delete realized stock move lines.,Sie können realisierte Bewegungszeilen nicht löschen.,de
+You must add a positive quantity,Sie müssen eine positive Menge hinzufügen,de
+You must configure a component default stock location for company %s.,Sie müssen einen Komponenten-Standardlagerort für die Gesellschaft %s konfigurieren.,de
+You must configure a finished products default stock location for company %s.,Sie müssen einen Standardlagerort für Fertigerzeugnisse für die Firma %s konfigurieren.,de
+You must configure a production for company %s,Sie müssen eine Produktion für das Unternehmen %s konfigurieren,de
+You must configure a production virtual stock location for company %s,Sie müssen einen virtuellen Produktionslagerort für die Firma %s konfigurieren.,de
+You must configure a residual products default stock location for company %s.,Sie müssen einen Standardlagerort für Restprodukte für die Firma %s konfigurieren.,de
+You must configure a sequence for manufacturing order for company %s,Sie müssen eine Reihenfolge für den Produktionsauftrag für die Firma %s konfigurieren,de
+You must configure a waste stock location for company %s.,Sie müssen einen Abfalllagerort für die Firma %s konfigurieren.,de
+You must select a nomenclature,Sie müssen eine Nomenklatur auswählen,de
+Your production process is empty.,Ihr Produktionsprozess ist leer.,de
+Your production virtual stock location is not an outsourcing location.,Ihr virtueller Produktionslagerort ist kein Auslagerungsort.,de
+Your scheduling configuration is at the latest. you need to fill the estimated shipping date to be able to plan your manufacturing orders.,"Sie müssen das voraussichtliche Versanddatum angeben, um Ihre Fertigungsaufträge planen zu können.",de
+Your scheduling configuration is at the latest. you need to fill the planned end date to be able to plan your manufacturing orders.,"Ihre Terminierungskonfiguration ist spätestens. Sie müssen das geplante Enddatum angeben, um Ihre Produktionsaufträge planen zu können.",de
+Your time on this operation is paused. The status of the operation has not been updated as someone is still working on it.,"Ihre Zeit für diesen Vorgang ist pausiert. Der Status des Vorgangs wurde nicht aktualisiert, da noch jemand an ihm arbeitet.",de
+Your time on this operation is paused. This operation cannot be stopped because other operators are still working on it. You can go to the web instance to force stop the operation.,"Ihre Zeit für diesen Vorgang ist pausiert. Dieser Vorgang kann nicht gestoppt werden, weil andere Operatoren noch daran arbeiten. Sie können zur Webinstanz gehen, um das Anhalten des Vorgangs zu erzwingen.",de
+import.name,import.name,de
+import.verb,import.verb,de
+inOrOut is invalid,inOrOut ist ungültig,de
+name,Name,de
+status,Status,de
+value:Manufacturing,value:Manufacturing,de

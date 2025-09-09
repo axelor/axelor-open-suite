@@ -1,0 +1,871 @@
+key,message,language
+"%d bank statement couldn't be deleted, please check the logs.","%d Kontoauszug konnte nicht gelöscht werden, bitte prüfen Sie die Protokolle.",de
+%d errors occurred. Please check tracebacks for details.,%d Fehler sind aufgetreten. Bitte prüfen Sie Tracebacks für Details.,de
+%d line successfully rejected,%d Zeile erfolgreich abgelehnt,de
+%d lines successfully rejected,%d Zeilen erfolgreich abgelehnt,de
+%s : Bank statement line %s amount can't be null,%s : Der Betrag der Kontoauszugszeile %s kann nicht Null sein,de
+%s : Computed balance and Ending Balance must be equal,%s : Berechneter Saldo und Endsaldo müssen gleich sein,de
+%s : MoveLine amount is not equals with bank statement line %s,%s : MoveLine Betrag stimmt nicht mit Kontoauszugszeile %s überein,de
+%s : Please configure an ICS number for the company %s.,%s : Bitte konfigurieren Sie eine ICS-Nummer für die Firma %s.,de
+"%s : Please, configure a default signer for the company %s",%s : Bitte konfigurieren Sie einen Standard-Unterzeichner für die Firma %s,de
+"%s : Please, configure a sequence for the Bill of exchange and the company %s",%s : Bitte konfigurieren Sie eine Sequenz für den Wechsel und die Firma %s,de
+"%s : Please, configure a sequence for the International Credit Transfers and the company %s",%s : Bitte konfigurieren Sie eine Reihenfolge für die internationalen Überweisungen und das Unternehmen %s,de
+"%s : Please, configure a sequence for the International Direct Debits and the company %s",%s : Bitte konfigurieren Sie eine Reihenfolge für die internationalen Lastschriften und das Unternehmen %s,de
+"%s : Please, configure a sequence for the International Treasury Transfers and the company %s",%s : Bitte konfigurieren Sie eine Sequenz für die internationalen Finanztransfers und das Unternehmen %s,de
+"%s : Please, configure a sequence for the National Treasury Transfers and the company %s",%s : Bitte konfigurieren Sie eine Sequenz für die National Treasury Transfers und das Unternehmen %s,de
+"%s : Please, configure a sequence for the Other Bank Orders and the company %s",%s : Bitte konfigurieren Sie eine Reihenfolge für die Other Bank Orders und die Firma %s,de
+"%s : Please, configure a sequence for the SEPA Credit Transfers and the company %s",%s : Bitte konfigurieren Sie eine Reihenfolge für die SEPA-Überweisungen und die Firma %s,de
+"%s : Please, configure a sequence for the SEPA Direct Debits and the company %s",%s : Bitte konfigurieren Sie eine Reihenfolge für die SEPA-Lastschriften und die Firma %s,de
+"%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s",%s : Bitte konfigurieren Sie ein Konto für den Bankauftrag für die externe Bank zur Überweisung für die Firma %s,de
+"%s : Please, configure an account for the bank order for the internal bank to bank transfer for the company %s",%s : Bitte konfigurieren Sie ein Konto für den Bankauftrag für die interne Banküberweisung für die Firma %s,de
+%s : You must configure bank payment's information for the company %s,%s : Sie müssen die Bankzahlungsinformationen für die Firma %s konfigurieren,de
+10 - Bank details IBAN,10 - Bankverbindung IBAN,de
+10 - Sender bank details type,10 - Art der Bankverbindung des Absenders,de
+10 - Sequence,10 - Sequenz,de
+11 - Bank details code,11 - Code der Bankverbindung,de
+11 - Sender bank details IBAN,11 - Bankverbindung des Absenders IBAN,de
+12 - Bank order currency,12 - Bankauftragswährung,de
+13 - Total,13 - Gesamt,de
+14 - Sender bank details type,14 - Art der Bankverbindung des Absenders,de
+15 - Sender bank details IBAN,15 - Bankverbindung des Absenders IBAN,de
+16 - Bank order currency,16 - Bankauftragswährung,de
+16 - Economic reason code,16 - Code für wirtschaftlichen Grund,de
+17-3 - File format qualifying date,17-3 - Dateiformat Qualifizierungsdatum,de
+18 - Order debit type index,18 - Index der Belastungsart bestellen,de
+18 - Payment mode select,18 - Auswahl des Zahlungsmodus,de
+19 - Fees imputation mode,19 - Anrechnungsmodus für die Gebühren,de
+19 - Order index type,19 - Indexart bestellen,de
+20 - Bank order date,20 - Datum des Bankauftrags,de
+21 - Currency,21 - Währung,de
+24-1 - Qualifying of date,24-1 - Qualifizierung des Datums,de
+24-2 - Date,24-2 - Datum,de
+25 - Currency,25 - Währung,de
+4 - Bank details type,4 - Art der Bankverbindung,de
+4 - Bank name,4 - Name der Bank,de
+4 - Generation date,4 - Datum der Erzeugung,de
+4-1 - Payment Reason 1,4-1 - Zahlungsgrund 1,de
+4-2 - Payment Reason 2,4-2 - Zahlungsgrund 2,de
+4-3 - Payment Reason 3,4-3 - Zahlungsgrund 3,de
+4-4 - Payment Reason 4,4-4 - Zahlungsgrund 4,de
+5 - Bank address,5 - Anschrift der Bank,de
+5 - Bank details IBAN,5 - Bankverbindung IBAN,de
+5 - Sender company,5 - Absenderunternehmen,de
+6 - Bank code,6 - Bankleitzahl,de
+6 - Bank details owner name,6 - Bankverbindung Name des Eigentümers,de
+6 - Registration code,6 - Registrierungscode,de
+6 - Sender address,6 - Absenderadresse,de
+7 - Country code,7 - Ländercode,de
+7 - Registration code,7 - Registrierungscode,de
+7 - Sequence,7 - Sequenz,de
+8 - Sequence,8 - Sequenz,de
+9 - Bank details type,9 - Art der Bankverbindung,de
+9 - Country code,9 - Ländercode,de
+9-1 - Special instructions 1,9-1 - Besondere Anweisungen 1,de
+9-2 - Special instructions 2,9-2 - Besondere Hinweise 2,de
+9-3 - Special instructions 3,9-3 - Besondere Hinweise 3,de
+A - Register code,A - Code registrieren,de
+A bank order %s already exist for the invoice %s.,Es existiert bereits ein Bankauftrag %s für die Rechnung %s.,de
+Acceptance code per recipient line,Akzeptanzcode pro Empfängerzeile,de
+Accepted Bank Details Identifiers,Akzeptierte Bankdaten Identifikatoren,de
+Accepted LCR,Angenommene LCR,de
+Account balance,Kontostand,de
+Account management is missing.,Es fehlt eine Kontoverwaltung.,de
+Account management list,Liste der Kontoverwaltung,de
+Accounting,Buchhaltung,de
+Accounting Dashboard,Dashboard Buchhaltung,de
+Accounting Dashboard with invoice terms,Buchhaltung Dashboard mit Rechnungsbedingungen,de
+Accounting Move Line(s) to reconcile,Buchhaltung Abzustimmende Zeile(n) verschieben,de
+Accounting auto,Buchhaltung auto,de
+Accounting details,Details zur Buchhaltung,de
+Accounting information,Informationen zur Buchhaltung,de
+Accounting move trigger select,Auslöser der Buchhaltungsbewegung auswählen,de
+Accounting settings,Einstellungen für die Buchhaltung,de
+Accounting.Account,Accounting.Account,de
+Action,Aktion,de
+Active,Aktiv,de
+Additional information,Zusätzliche Informationen,de
+Allow orders with a transfer currency different from bank details currency,Aufträge mit einer anderen Überweisungswährung als der Währung der Bankverbindung zulassen,de
+Already accounted,Bereits verbucht,de
+Already reconciled,Bereits versöhnt,de
+Amount Rejected,Abgelehnter Betrag,de
+Amount in transfer's currency,Betrag in der Währung der Überweisung,de
+Amount of the semi-interval of confidence for the amounts,Höhe des Halbintervalls des Vertrauens für die Beträge,de
+Amount remaining to reconcile,Noch abzustimmender Betrag,de
+Amount value of a bank order line is not valid,Betragswert einer Bankauftragszeile ist nicht gültig,de
+Amount value of the bank order is not valid,Betragswert der Bankanweisung ist nicht gültig,de
+Analytic,Analytisch,de
+Analytic distribution template,Vorlage für die analytische Verteilung,de
+Anomaly has been detected during file generation for bank order %s,Bei der Dateierstellung für den Bankauftrag %s wurde eine Anomalie festgestellt,de
+Anomaly has been detected during file generation for the additional detail record of the bank order line %s,Bei der Dateierstellung für den zusätzlichen Detailsatz der Bankauftragszeile %s wurde eine Anomalie festgestellt,de
+Anomaly has been detected during file generation for the beneficiary bank detail record of the bank order line %s,Bei der Erstellung der Datei für den Bankdatensatz des Begünstigten der Bankauftragszeile %s wurde eine Anomalie festgestellt.,de
+Anomaly has been detected during file generation for the detail record of the bank order line %s,Bei der Dateierstellung für den Detailsatz der Bankauftragszeile %s wurde eine Anomalie festgestellt,de
+Anomaly has been detected during file generation for the endorsed detail record of the bank order line %s,Bei der Dateierstellung für den indossierten Einzeldatensatz der Bankauftragszeile %s wurde eine Anomalie festgestellt.,de
+Anomaly has been detected during file generation for the further information detail record of the bank order line %s,Bei der Erstellung der Datei für den Datensatz mit weiteren Informationen für die Bankauftragszeile %s wurde eine Anomalie festgestellt.,de
+Anomaly has been detected during file generation for the sender record of the bank order %s,Bei der Dateierstellung für den Absenderdatensatz des Bankauftrags %s wurde eine Anomalie festgestellt,de
+Anomaly has been detected during file generation for the total record of the bank order %s,Bei der Dateierstellung wurde eine Anomalie für den Gesamtsatz des Bankauftrags %s festgestellt,de
+App,App,de
+App bank payment,App Bankzahlung,de
+Are you sure you want merge the selected bank orders ?,"Sind Sie sicher, dass Sie die ausgewählten Bankaufträge zusammenführen wollen?",de
+Arithmetic total,Arithmetische Summe,de
+"As the date of your order is in the past, it will be updated to today.","Da das Datum Ihrer Bestellung in der Vergangenheit liegt, wird es auf heute aktualisiert.",de
+Assignment or pledge outside Dailly agreement,Abtretung oder Verpfändung außerhalb der Dailly-Vereinbarung,de
+Associated MoveLine,Zugehörige MoveLine,de
+Auto accounting,Auto-Buchhaltung,de
+Auto reconcile,Automatischer Abgleich,de
+Automatic,Automatisch,de
+Automatic accounting ?,Automatische Abrechnung ?,de
+Automatic pointing,Automatisches Zeigen,de
+Available,Verfügbar,de
+Awaiting signature,Zur Unterzeichnung anstehend,de
+B1 - Operation code,B1 - Betriebscode,de
+B2 - Numbering record,B2 - Nummerierungssatz,de
+B3 - Sender number,B3 - Absendernummer,de
+BOR,BOR,de
+Balance,Bilanz,de
+Balance btn,Balance btn,de
+Balance updated date,Datum der Aktualisierung der Bilanz,de
+Bank Account,Bankkonto,de
+Bank Balance,Bankguthaben,de
+Bank Order,Bankauftrag,de
+Bank Order Details,Bankauftragsdaten,de
+Bank Order Lines,Bankauftragszeilen,de
+Bank Order Status,Status des Bankauftrags,de
+Bank Order date can't be in the past,Das Datum des Bankauftrags darf nicht in der Vergangenheit liegen.,de
+Bank Order line,Bankauftragszeile,de
+Bank Order lines,Bankauftragszeilen,de
+Bank Orders,Bankbestellungen,de
+Bank Orders economic reason,Bank ordnet wirtschaftliche Gründe an,de
+Bank Orders economic reasons,Bank Bestellt aus wirtschaftlichen Gründen,de
+Bank Orders file format,Dateiformat von Bankaufträgen,de
+Bank Orders file formats,Dateiformate von Bankaufträgen,de
+Bank Reconciliation,Bankabstimmung,de
+Bank Reconciliation Lines,Linien für die Bankabstimmung,de
+Bank Reconciliations,Bankkontenabgleiche,de
+Bank Statement,Kontoauszug,de
+Bank Statement / Reconciliations,Kontoauszug / Abstimmungen,de
+Bank Statement detail,Kontoauszug Detail,de
+Bank Statement line,Zeile Kontoauszug,de
+Bank Statement line print wizard,Assistent für den Druck von Kontoauszugszeilen,de
+Bank Statement lines,Kontoauszugszeilen,de
+Bank Statements,Kontoauszüge,de
+Bank Statements file format,Dateiformat für Kontoauszüge,de
+Bank Statements file formats,Dateiformate für Kontoauszüge,de
+Bank accounting / reconciliation rule,Bankbuchhaltung / Abstimmungsregel,de
+Bank details,Bankverbindung,de
+Bank details are inactive.,Die Bankverbindung ist inaktiv.,de
+Bank details in account management is missing.,Die Bankverbindung in der Kontoverwaltung fehlt.,de
+Bank details is missing on invoice %s.,Auf der Rechnung %s fehlt die Bankverbindung.,de
+Bank details not validated,Bankverbindung nicht validiert,de
+Bank details tree,Baum der Bankverbindung,de
+Bank order,Bankauftrag,de
+Bank order Date,Bankauftrag Datum,de
+Bank order amount,Betrag der Bankanweisung,de
+Bank order config.,Bankauftrag konfigurieren.,de
+Bank order confirmation,Auftragsbestätigung der Bank,de
+Bank order currency,Bankauftragswährung,de
+Bank order due Date,Bankauftrag Fälligkeit,de
+Bank order export folder does not exist: %s,Der Exportordner für Bankaufträge existiert nicht: %s,de
+Bank order export folder path,Pfad des Exportordners für Bankaufträge,de
+Bank order file format,Format der Bankauftragsdatei,de
+Bank order file formats,Dateiformate für Bankaufträge,de
+Bank order generation,Generierung von Bankaufträgen,de
+Bank order line,Bankauftragszeile,de
+Bank order realization,Realisierung von Bankaufträgen,de
+Bank orders,Bankaufträge,de
+Bank orders can only be deleted at draft or canceled status.,"Bankaufträge können nur im Status ""Entwurf"" oder ""Storno"" gelöscht werden.",de
+Bank payment batch,Stapel von Bankzahlungen,de
+Bank payment config (${ name }),Konfiguration der Bankzahlung (${ Name }),de
+Bank payment configuration,Konfiguration von Bankzahlungen,de
+Bank payment configurations,Konfigurationen für Bankzahlungen,de
+Bank reconcile amount must be inferior or equal to credit or debit.,Der Betrag des Bankabgleichs muss kleiner oder gleich der Gutschrift oder Belastung sein.,de
+Bank reconciled amount,Abgestimmter Bankbetrag,de
+Bank reconciliation,Bankabstimmung,de
+Bank reconciliation Line,Bankabstimmung Linie,de
+Bank reconciliation Lines,Bankabstimmung Linien,de
+Bank reconciliation filters,Filter für die Bankabstimmung,de
+Bank reconciliation statement,Bankabstimmungserklärung,de
+Bank reconciliation statement template,Vorlage für einen Bankabstimmungsbericht,de
+Bank reconciliations,Bankabstimmungen,de
+Bank statement,Kontoauszug,de
+Bank statement already imported. Aborted.,Kontoauszug wurde bereits importiert. Abgebrochen.,de
+Bank statement details,Angaben zum Kontoauszug,de
+Bank statement line AFK120 filters,Kontoauszugszeile AFK120 Filter,de
+Bank statement line print wizard,Assistent für den Druck von Kontoauszugszeilen,de
+Bank statement lines,Kontoauszugszeilen,de
+Bank statement lines template,Kontoauszug Zeilen Vorlage,de
+Bank statement queries,Abfragen von Kontoauszügen,de
+Bank statement query,Abfrage von Kontoauszügen,de
+Bank statement rule,Regel für Kontoauszüge,de
+Bank statement rules,Regeln für Kontoauszüge,de
+Bank statement(s) has been removed successfully,Kontoauszug(e) wurde(n) erfolgreich entfernt,de
+Bank statements file formats,Dateiformate für Kontoauszüge,de
+Bank to Bank Transfers,Überweisungen von Bank zu Bank,de
+Bank to bank account for external order (multiple company),Bank an Bankkonto für externen Auftrag (mehrere Unternehmen),de
+Bank to bank account for internal order (unique company),Bank an Bankkonto für Innenauftrag (eindeutige Firma),de
+BankDetails/Payment Mode/Interbank code configuration,Bankverbindung/Zahlungsmodus/Interbankcode-Konfiguration,de
+BankOrder.partnerTypeSelect,BankOrder.partnerTypeSelect,de
+BankReconciliation.account,BankReconciliation.account,de
+BankReconciliation.amount,BankReconciliation.amount,de
+BankReconciliation.cash_account,BankReconciliation.cash_account,de
+BankReconciliation.code,BankReconciliation.code,de
+BankReconciliation.company,BankReconciliation.company,de
+BankReconciliation.credit,BankReconciliation.credit,de
+BankReconciliation.currency,BankReconciliation.currency,de
+BankReconciliation.debit,BankReconciliation.debit,de
+BankReconciliation.journal,BankReconciliation.journal,de
+BankReconciliation.moves_unaccounted,BankReconciliation.moves_unaccounted,de
+BankReconciliation.name,BankReconciliation.name,de
+BankReconciliation.ongoing,BankReconciliation.ongoing,de
+BankReconciliation.page1Title,BankReconciliation.page1Title,de
+BankReconciliation.page2Title,BankReconciliation.page2Title,de
+BankReconciliation.reference,BankReconciliation.reference,de
+BankReconciliation.report_date,BankReconciliation.report_date,de
+BankReconciliation.report_edition_date,BankReconciliation.report_edition_date,de
+BankReconciliation.to_date,BankReconciliation.to_date,de
+BankReconciliation.type,BankReconciliation.type,de
+BankReconciliation.unreconciled_move_lines,BankReconciliation.unreconciled_move_lines,de
+BankReconciliationStatement.SummaryTitle,BankReconciliationStatement.SummaryTitle,de
+BankReconciliationStatement.account,BankReconciliationStatement.account,de
+BankReconciliationStatement.accountBalance,BankReconciliationStatement.accountBalance,de
+BankReconciliationStatement.accountBankGap,BankReconciliationStatement.accountBankGap,de
+BankReconciliationStatement.accountCode,BankReconciliationStatement.accountCode,de
+BankReconciliationStatement.actualBalance,BankReconciliationStatement.actualBalance,de
+BankReconciliationStatement.amountRemaining,BankReconciliationStatement.amountRemaining,de
+BankReconciliationStatement.amountToReconcile,BankReconciliationStatement.amountToReconcile,de
+BankReconciliationStatement.bankBalance,BankReconciliationStatement.bankBalance,de
+BankReconciliationStatement.bankDetails,BankReconciliationStatement.bankDetails,de
+BankReconciliationStatement.code,BankReconciliationStatement.code,de
+BankReconciliationStatement.company,BankReconciliationStatement.company,de
+BankReconciliationStatement.credit,BankReconciliationStatement.credit,de
+BankReconciliationStatement.currency,BankReconciliationStatement.currency,de
+BankReconciliationStatement.date,BankReconciliationStatement.date,de
+BankReconciliationStatement.debit,BankReconciliationStatement.debit,de
+BankReconciliationStatement.description,BankReconciliationStatement.description,de
+BankReconciliationStatement.journal,BankReconciliationStatement.journal,de
+BankReconciliationStatement.journalCode,BankReconciliationStatement.journalCode,de
+BankReconciliationStatement.line,BankReconciliationStatement.line,de
+BankReconciliationStatement.mainTitle,BankReconciliationStatement.mainTitle,de
+BankReconciliationStatement.name,BankReconciliationStatement.name,de
+BankReconciliationStatement.noLineFoundMessage,BankReconciliationStatement.noLineFoundMessage,de
+BankReconciliationStatement.page1Title,BankReconciliationStatement.page1Title,de
+BankReconciliationStatement.page2Title,BankReconciliationStatement.page2Title,de
+BankReconciliationStatement.reconciliationGap,BankReconciliationStatement.reconciliationGap,de
+BankReconciliationStatement.reference,BankReconciliationStatement.reference,de
+BankReconciliationStatement.unreconileAccountBalance,BankReconciliationStatement.unreconileAccountBalance,de
+BankReconciliationStatementNew.accountingBalanceOn,BankReconciliationStatementNew.accountingBalanceOn,de
+BankReconciliationStatementNew.accountingExtract,BankReconciliationStatementNew.accountingExtract,de
+BankReconciliationStatementNew.balanceAfterReconcilation,BankReconciliationStatementNew.balanceAfterReconcilation,de
+BankReconciliationStatementNew.balanceExtractOn,BankReconciliationStatementNew.balanceExtractOn,de
+BankReconciliationStatementNew.bank,BankReconciliationStatementNew.bank,de
+BankReconciliationStatementNew.bankStatementExtract,BankReconciliationStatementNew.bankStatementExtract,de
+BankReconciliationStatementNew.comment,BankReconciliationStatementNew.comment,de
+BankReconciliationStatementNew.correctedDateTimeLabel,BankReconciliationStatementNew.correctedDateTimeLabel,de
+BankReconciliationStatementNew.correctedUserLabel,BankReconciliationStatementNew.correctedUserLabel,de
+BankReconciliationStatementNew.from,BankReconciliationStatementNew.from,de
+BankReconciliationStatementNew.iban,BankReconciliationStatementNew.iban,de
+BankReconciliationStatementNew.label,BankReconciliationStatementNew.label,de
+BankReconciliationStatementNew.mainTitle,BankReconciliationStatementNew.mainTitle,de
+BankReconciliationStatementNew.moveDate,BankReconciliationStatementNew.moveDate,de
+BankReconciliationStatementNew.nonPostedMoveStatement,BankReconciliationStatementNew.nonPostedMoveStatement,de
+BankReconciliationStatementNew.operationDate,BankReconciliationStatementNew.operationDate,de
+BankReconciliationStatementNew.originDate,BankReconciliationStatementNew.originDate,de
+BankReconciliationStatementNew.postedNbr,BankReconciliationStatementNew.postedNbr,de
+BankReconciliationStatementNew.to,BankReconciliationStatementNew.to,de
+BankReconciliationStatementNew.toBeConfirmed,BankReconciliationStatementNew.toBeConfirmed,de
+BankReconciliationStatementNew.totalGeneralBalance,BankReconciliationStatementNew.totalGeneralBalance,de
+BankReconciliationStatementNew.valueDate,BankReconciliationStatementNew.valueDate,de
+BankStatement.Import,BankStatement.Import,de
+BankStatement.accountCurrency,BankStatement.accountCurrency,de
+BankStatement.bankAccount,BankStatement.bankAccount,de
+BankStatement.creationDateFrom,BankStatement.creationDateFrom,de
+BankStatement.creationDateTo,BankStatement.creationDateTo,de
+BankStatement.credit,BankStatement.credit,de
+BankStatement.debit,BankStatement.debit,de
+BankStatement.exempt,BankStatement.exempt,de
+BankStatement.finalBalance,BankStatement.finalBalance,de
+BankStatement.headerText,BankStatement.headerText,de
+BankStatement.iban,BankStatement.iban,de
+BankStatement.initialBalance,BankStatement.initialBalance,de
+BankStatement.label,BankStatement.label,de
+BankStatement.movement,BankStatement.movement,de
+BankStatement.operationDate,BankStatement.operationDate,de
+BankStatement.origin,BankStatement.origin,de
+BankStatement.reference,BankStatement.reference,de
+BankStatement.title,BankStatement.title,de
+BankStatement.totalOfOperations,BankStatement.totalOfOperations,de
+BankStatement.unavailable,BankStatement.unavailable,de
+BankStatement.valueDate,BankStatement.valueDate,de
+BankStatement.yes,BankStatement.yes,de
+Batch,Stapel,de
+Batch step,Batch-Schritt,de
+Bill of exchange bank orders sequences,Sequenzen von Bankaufträgen in Wechseln,de
+Bill of exchange data type,Datentyp des Wechsels,de
+Bill of exchange generation,Erstellung von Wechseln,de
+Bill of exchange receivable account,Forderungswechselkonto,de
+Bill of exchanges,Wechselkopien,de
+Binding file,Verbindliche Datei,de
+"By filling in this field, the selected tax will be applied to the move lines for which the tax is mandatory instead of the one filled in the configuration of the account","Wenn Sie dieses Feld ausfüllen, wird die gewählte Steuer auf die Bewegungszeilen angewandt, für die die Steuer obligatorisch ist, anstelle der Steuer, die in der Konfiguration des Kontos eingegeben wurde.",de
+C1 - Convention type,C1 - Art des Übereinkommens,de
+C1 - Receiver address: Number and name lane,C1 - Adresse des Empfängers: Nummer und Name Fahrspur,de
+C1 - Sequence,C1 - Sequenz,de
+C1-2 - Receiver reference,C1-2 - Referenz des Empfängers,de
+C2 - Company name,C2 - Name des Unternehmens,de
+C2 - Deposit date,C2 - Einzahlungsdatum,de
+C2 - Receiver address: City,C2 - Adresse des Empfängers: Stadt,de
+C2 - Receiver company name,C2 - Name des empfangenden Unternehmens,de
+C2 - Receiver name,C2 - Name des Empfängers,de
+C2 - Sender company name,C2 - Firmenname des Absenders,de
+C3 - Receiver address: ZIP code,C3 - Adresse des Empfängers: Postleitzahl,de
+C3 - Sender company name,C3 - Firmenname des Absenders,de
+Can't load while another reconciliation is open,"Kann nicht geladen werden, wenn ein anderer Abgleich geöffnet ist",de
+Cancel,Abbrechen,de
+Cancel bill of exchange,Wechsel stornieren,de
+Canceled,Abgesagt,de
+Cancellation of Bill of Exchange for invoice %s,Stornierung des Wechsels für die Rechnung %s,de
+Carried out,Durchgeführt,de
+Carry out,Durchführen,de
+Cash account,Kassenkonto,de
+Cash out after expiration of unpaid bill's return period,Barauszahlung nach Ablauf der Rückgabefrist für unbezahlte Rechnungen,de
+Cheque,Scheck,de
+Code,Code,de
+Collection and credit lump sum after maturity,Inkasso und Kreditpauschale nach Fälligkeit,de
+Comment,Kommentar,de
+Commission exemption index,Index für die Befreiung von der Kommission,de
+Company,Unternehmen,de
+Company bank details is missing in batch.,Die Bankverbindung des Unternehmens fehlt im Stapel.,de
+Company currency,Währung des Unternehmens,de
+Company currency amount,Betrag in Gesellschaftswährung,de
+Company is missing.,Das Unternehmen fehlt.,de
+Compute balances,Salden berechnen,de
+Computed Balance,Berechneter Saldo,de
+Computed balance in accounting and Ending Balance of the statement should be equal to validate the Statement,"Der berechnete Saldo in der Buchhaltung und der Endsaldo der Erklärung sollten gleich sein, um die Erklärung zu validieren.",de
+Confidence index,Vertrauensindex,de
+Config. per country,Konfig. pro Land,de
+Confirm,Bestätigen Sie,de
+Confirm auto. the bank orders,Bestätigen Sie automatisch die Bankaufträge.,de
+Confirmed,Bestätigt,de
+Consolidate bank order lines per partner,Bankauftragszeilen pro Partner konsolidieren,de
+Correct,Richtig,de
+Corrected,Korrigiert,de
+Corrected date time,Korrigiertes Datum Uhrzeit,de
+Corrected user,Korrigierter Benutzer,de
+Correction,Berichtigung,de
+Counter,Zähler,de
+Counterpart account,Gegenkonto,de
+Country,Land,de
+Credit,Kredit,de
+Credit Transfers,Kreditüberweisungen,de
+Credit transfer bank orders sequences,Sequenzen von Überweisungsaufträgen,de
+CreditTransferPartnerReimbursement (batch),ÜberweisungPartnerRückerstattung (Batch),de
+Currency,Währung,de
+Currency in company bank details is missing.,Es fehlt die Währung in der Bankverbindung des Unternehmens.,de
+Current bank statement doesn't contain a final line,Der aktuelle Kontoauszug enthält keine Schlusszeile,de
+Current bank statement doesn't contain an initial line,Der aktuelle Kontoauszug enthält keine Anfangszeile,de
+Current bank statement's initial balance does not match previous bank statement's final balance,Der Anfangssaldo des aktuellen Kontoauszugs stimmt nicht mit dem Endsaldo des vorherigen Kontoauszugs überein,de
+Customer,Kunde,de
+Customer invoices,Kundenrechnungen,de
+D1 - Bank address,D1 - Anschrift der Bank,de
+D1 - Bank domiciliation,D1 - Domizilierung der Bank,de
+D1 - Sender bank address,D1 - Adresse der Absenderbank,de
+D1-1 - Bank order sequence,D1-1 - Reihenfolge der Bankaufträge,de
+D2-1 - Acceptation,D2-1 - Akzeptanz,de
+D2-1 - Entry code,D2-1 - Zugangscode,de
+D2-2 - Daily code,D2-2 - Täglicher Code,de
+D2-3 - Currency code,D2-3 - Währungscode,de
+D3 - Receiver bank code,D3 - Bankleitzahl des Empfängers,de
+D3 - Sender bank code,D3 - Bankleitzahl des Absenders,de
+D3 - Sort code,D3 - Bankleitzahl,de
+D4 - Account number,D4 - Kontonummer,de
+D4 - Receiver bank sort code,D4 - Bankleitzahl des Empfängers,de
+D4 - Sender bank sort code,D4 - Bankleitzahl des Absenders,de
+D5 - Receiver bank account number,D5 - Kontonummer des Empfängers,de
+D5 - Sender bank account number,D5 - Bankkontonummer des Absenders,de
+Dailly code,Täglicher Code,de
+Date,Datum,de
+Debit,Lastschrift,de
+Decrypt and download file,Datei entschlüsseln und herunterladen,de
+Decrypt file,Datei entschlüsseln,de
+Decrypt file password,Dateipasswort entschlüsseln,de
+Decrypt file to send,Entschlüsseln der zu sendenden Datei,de
+Decrypt generated file,Entschlüsselung der erzeugten Datei,de
+Default Currency,Standardwährung,de
+Default additional information,Standardmäßige Zusatzinformationen,de
+Default economic reason,Standardmäßige wirtschaftliche Gründe,de
+Default fees imputation,Anrechnung von Ausfallgebühren,de
+Default payment Mode,Standard-Zahlungsmodus,de
+Default receiver country,Standard-Empfängerland,de
+Default signatory,Standard-Unterzeichner,de
+Delete,Löschen,de
+Description,Beschreibung,de
+Description label,Beschreibung Etikett,de
+Direct Debits,Lastschriften,de
+Direct debit,Lastschriftverfahren,de
+Direct debit bank orders sequences,Abfolge der Bankeinzugsaufträge,de
+Direct debit data type,Datentyp des Lastschriftverfahrens,de
+Discounted transfer under a Dailly agreement,Abgezinste Übertragung im Rahmen einer Dailly-Vereinbarung,de
+Display additional information,Zusätzliche Informationen anzeigen,de
+Display economic reason,Wirtschaftliche Vernunft anzeigen,de
+Display fees imputation,Anrechnung von Gebühren anzeigen,de
+Display further information,Weitere Informationen anzeigen,de
+Display payment mode,Zahlungsmodus anzeigen,de
+Display receiver address,Empfängeradresse anzeigen,de
+Display receiver country,Empfängerland anzeigen,de
+Display the invoice,Anzeige der Rechnung,de
+Draft,Entwurf,de
+Due date,Fälligkeitsdatum,de
+Duration (days) of the semi-interval of convidence for the dates,Dauer (Tage) des Halbintervalls der Überzeugung für die Daten,de
+E - Bank order amount,E - Betrag der Bankanweisung,de
+E - Mandatory area,E - Obligatorischer Bereich,de
+E1 - Amount,E1 - Betrag,de
+E1 - Total amount,E1 - Gesamtbetrag,de
+E2 - Mandatory area,E2 - Obligatorischer Bereich,de
+Each (un)reconciliation with the status 'Under correction' updates immediately the reconciled amount of the relevant line,"Jede (Un-)Abstimmung mit dem Status ""In Korrektur"" aktualisiert sofort den abgestimmten Betrag der betreffenden Zeile",de
+Economic reason,Wirtschaftliche Gründe,de
+Effect Date,Datum des Inkrafttretens,de
+Email adress is missing for partner %s,E-Mail Adresse fehlt für Partner %s,de
+Employee,Mitarbeiter,de
+Enable bank order file encryption,Verschlüsselung der Bankauftragsdatei einschalten,de
+Encrypt bank order file according to properties file settings. Enable this option will not encrypt old bank order files.,"Verschlüsseln Sie die Bankauftragsdatei gemäß den Einstellungen der Eigenschaftsdatei. Wenn Sie diese Option aktivieren, werden alte Bankauftragsdateien nicht verschlüsselt.",de
+Ending Balance,Endsaldo,de
+Ent. Credit,Ent. Kredit,de
+Ent. Currency,Ent. Währung,de
+Ent. Debit,Ent. Lastschrift,de
+Entry,Eintrag,de
+Entry code,Zugangscode,de
+Equivalent amount in sender bank details' currency,Gleichwertiger Betrag in der Währung der Absenderbankverbindung,de
+Error during file decryption.,Fehler bei der Entschlüsselung der Datei.,de
+Error while reading the csv file. Make sure that decimal values use a dot and not a comma.,"Fehler beim Lesen der csv-Datei. Stellen Sie sicher, dass Dezimalwerte einen Punkt und kein Komma verwenden.",de
+Exempt,Befreit,de
+Expense,Ausgaben,de
+Export file,Datei exportieren,de
+F - Receiver label,F - Etikett des Empfängers,de
+F1 - Due date,F1 - Fälligkeitsdatum,de
+F1 - Value's date,F1 - Datum des Wertes,de
+F2-1 - Creation date,F2-1 - Erstellungsdatum,de
+F3 - Sender bank siren number,F3 - Nummer der Absenderbank-Sirene,de
+F3 - Sender company siren number,F3 - Sirenennummer der Senderfirma,de
+F3-4 - SIREN number,F3-4 - SIREN-Nummer,de
+Failed to create a move for the invoice payment.,"Es ist nicht gelungen, eine Bewegung für die Rechnungszahlung zu erstellen.",de
+Failed to create bank order from invoice payment,Bankauftrag aus Rechnungszahlung konnte nicht erstellt werden,de
+Fees imputation,Anrechnung von Gebühren,de
+Field allowing to enable automatic pointing during reconciliation. Pointing can still be done manually when incomplete,Feld zum Aktivieren der automatischen Ausrichtung während des Abgleichs. Bei Unvollständigkeit kann der Abgleich immer noch manuell durchgeführt werden.,de
+"Field indicating the confidence index for automatic reconcile. Green dot means 'Equal amount and date in range', orange dot means 'Equal amount and date out of range', red dot means 'Amount and date in range'","Feld, das den Konfidenzindex für den automatischen Abgleich angibt. Grüner Punkt bedeutet ""Gleicher Betrag und Datum im Bereich"", oranger Punkt bedeutet ""Gleicher Betrag und Datum außerhalb des Bereichs"", roter Punkt bedeutet ""Betrag und Datum im Bereich"".",de
+File,Datei,de
+File format,Dateiformat,de
+File generation date,Datum der Dateierstellung,de
+File generation supported,Unterstützte Dateierstellung,de
+File to send,Zu sendende Datei,de
+Files,Dateien,de
+Final balance,Endgültige Bilanz,de
+Final balance btn,Endsaldo btn,de
+Financial Discount,Finanzieller Rabatt,de
+Financial Discount in value,Finanzielle Abschläge im Wert,de
+"For the rules of type 'Move line's fetching', the 'Payment account management' record selected is only used to select the right bank account and company on which the rule applies and doesn't take into account the payment mode.","Bei den Regeln des Typs ""Abholen von Zeilen verschieben"" wird der ausgewählte Datensatz ""Zahlungskontoverwaltung"" nur verwendet, um das richtige Bankkonto und die richtige Firma auszuwählen, für die die Regel gilt, und berücksichtigt nicht den Zahlungsmodus.",de
+From,Von,de
+From Date,Von Datum,de
+From accounting entry,Aus Buchungseintrag,de
+Fully reconciled ?,Vollständig versöhnt?,de
+Functional Origin,Funktionaler Ursprung,de
+Further information,Weitere Informationen,de
+G - Deposit reference,G - Einzahlungsreferenz,de
+G - Sender reference,G - Absenderreferenz,de
+G1 - Bank code,G1 - Bankleitzahl,de
+G1 - Bank establisment code,G1 - Code der Bankniederlassung,de
+General,Allgemein,de
+Generate Bank order,Bankauftrag generieren,de
+Generate bank payment configurations,Bankzahlungskonfigurationen generieren,de
+Generated entry customized labels,Erstellte kundenspezifische Eingangsetiketten,de
+Generated file,Erstellte Datei,de
+Get date,Datum erhalten,de
+Global attributes,Globale Attribute,de
+Green,Grün,de
+ICS Number,ICS-Nummer,de
+"If actived, on the bankReconciliation form, once the button Load Statement will be clicked, accounting of entries will be executed","Wenn aktiviert, wird im Formular ""Bankabstimmung"" nach dem Anklicken der Schaltfläche ""Auszug laden"" die Verbuchung der Buchungen durchgeführt.",de
+"If checked, the bank order form view will use an editor widget, which will make adding new lines easier but will cause performance issues if the bank order has too many lines.","Wenn dieses Kontrollkästchen aktiviert ist, wird in der Ansicht des Bankauftragsformulars ein Editor-Widget verwendet, was das Hinzufügen neuer Zeilen erleichtert, aber zu Leistungsproblemen führt, wenn der Bankauftrag zu viele Zeilen hat.",de
+Import,Importieren,de
+Imported,Eingeführt,de
+Include other bank statements,Andere Kontoauszüge beifügen,de
+Initial balance,Anfangsbestand,de
+Interbank code/Payment mode,Interbankcode/Zahlungsmodus,de
+Interbank payment order,Interbank-Zahlungsauftrag,de
+International Bank to Bank Transfers,Internationale Bank-zu-Bank-Überweisungen,de
+International Credit Transfer,Internationale Überweisung,de
+International Credit Transfers,Internationale Überweisungen,de
+International Direct Debit,Internationales Lastschriftverfahren,de
+International Direct Debits,Internationale Lastschriften,de
+International Treasury transfer,Internationale Überweisung des Schatzamtes,de
+International credit transfers,Internationale Überweisungen,de
+International direct debits,Internationale Lastschriftverfahren,de
+International treasury transfers,Internationale Geldtransfers,de
+Invoice,Rechnung,de
+Invoice term,Laufzeit der Rechnung,de
+Invoices to be processed,Zu bearbeitende Rechnungen,de
+Is posted,Wird gebucht,de
+Is selected bank reconciliation,Ist ausgewählt Bankabstimmung,de
+Journal,Zeitschrift,de
+Journals,Zeitschriften,de
+LCR,LCR,de
+LCR Bank orders,LCR Bankaufträge,de
+LCR bank orders,LCR-Bankaufträge,de
+Label,Etikett,de
+"Legend for dynamic parameter manage in bank payment config : %amt+ for a tolerance of +X% on amount, %amt- for -X%, %date for a tolerance of + or - X days","Legende für die Verwaltung dynamischer Parameter in der Bankzahlungskonfiguration: %amt+ für eine Toleranz von +X% auf den Betrag, %amt- für -X%, %date für eine Toleranz von + oder - X Tagen",de
+Lettering to invoice,Beschriftung der Rechnung,de
+Line type,Leitungstyp,de
+Load bank statements,Kontoauszüge laden,de
+Load other bank statements,Andere Kontoauszüge laden,de
+Manage bank to bank transfer payment,Verwalten von Bank-zu-Bank-Zahlungen,de
+Manage bill of exchange,Verwalten von Wechseln,de
+Manage credit transfer payment,Verwalten von Überweisungszahlungen,de
+Manage direct debit payment,Lastschriftzahlung verwalten,de
+Manual,Handbuch,de
+Merge bank orders,Bankaufträge zusammenführen,de
+Missing bank statement file,Fehlende Kontoauszugsdatei,de
+Missing bank statement file format,Fehlendes Dateiformat für Kontoauszüge,de
+Missing journal while creating a move from a bank reconciliation.,Fehlendes Journal beim Erstellen eines Umzugs aus einer Bankabstimmung.,de
+Monthly payment schedules,Monatliche Zahlungspläne,de
+MonthlyPaymentScheduleLines (batch),MonthlyPaymentScheduleLines (Batch),de
+Move,Verschieben,de
+Move Line,Linie verschieben,de
+Move line,Linie verschieben,de
+Move line's fetch query,Die Abfrage der Zeile verschieben,de
+Move line's fetching,Abruf der Linie verschieben,de
+Move line's query formula has not been evaluated to a Move line,Die Abfrageformel der Move-Zeile wurde nicht zu einer Move-Zeile ausgewertet,de
+Move lines,Linien verschieben,de
+Movement,Bewegung,de
+Moves amount remaining to reconcile,Verschiebt den verbleibenden Betrag zum Abgleich,de
+Moves generated,Erstellte Bewegungen,de
+Moves ongoing reconciled balance,"Verschiebt den laufenden, abgestimmten Saldo",de
+Moves reconciled line balance,Verschiebt den abgestimmten Zeilensaldo,de
+Moves theoretical balance,Verschiebt das theoretische Gleichgewicht,de
+Moves unreconciled line balance,Verschiebt den nicht abgestimmten Zeilensaldo,de
+Multicurrency,Mehrere Währungen,de
+Multidate,Multidate,de
+Multiple reconcile,Mehrere Abstimmungen,de
+Multiple reconciles,Mehrere Abgleiche,de
+Name,Name,de
+National Bank to Bank Transfers,Nationale Bank zu Bank Überweisungen,de
+National Treasury transfer,Überweisung des Schatzamtes,de
+National treasury transfer,Überweisung der Staatskasse,de
+New theoretical balance,Neues theoretisches Gleichgewicht,de
+No address has been defined in the receiver %s,Es wurde keine Adresse im Empfänger %s definiert,de
+No address has been defined in the sender company %s,In der Absenderfirma %s ist keine Adresse definiert worden,de
+No bank orders found,Keine Bankaufträge gefunden,de
+No folder path has been defined in the payment mode %s,Im Zahlungsmodus %s ist kein Ordnerpfad definiert worden,de
+No indication,Keine Angabe,de
+No processed payment schedule lines,Keine bearbeiteten Zahlungseinteilungen,de
+None,Keine,de
+Not accepted LCR,Nicht akzeptiert LCR,de
+Not exempt,Nicht freigestellt,de
+Not reconciled and onGoing,Nicht abgestimmt und fortlaufend,de
+Not rejected,Nicht abgelehnt,de
+Number of lines,Anzahl der Zeilen,de
+Number of retrieved bank statements: %d.,Anzahl der abgerufenen Kontoauszüge: %d.,de
+Only validated payment schedule lines can be rejected.,Nur bestätigte Zahlungseinteilungen können abgelehnt werden.,de
+Opening and closing balance don't match with the sum of movements.,Der Anfangs- und der Endsaldo stimmen nicht mit der Summe der Bewegungen überein.,de
+Operation Code,Operation Code,de
+Operation date,Datum der Operation,de
+Orange,Orange,de
+Order Type,Art der Bestellung,de
+Order debit type,Art der Abbuchung bestellen,de
+Order overall debit,Gesamtlastschrift bestellen,de
+Origin,Herkunft,de
+Origin label,Herkunftsbezeichnung,de
+Origins,Ursprünge,de
+Other,Andere,de
+Other bank order types,Andere Arten von Bankaufträgen,de
+Overall debit by transfer currency,Gesamtbelastung nach Überweisungswährung,de
+Parent payment schedule cannot be null.,Der Zahlungsplan der Eltern kann nicht null sein.,de
+Partially reconciled bank statement line,Teilweise abgestimmte Kontoauszugszeile,de
+Partially rejected,Teilweise abgelehnt,de
+Partner,Partner,de
+Partner active UMR is missing.,Es fehlt ein aktiver UMR-Partner.,de
+Partner fetch's method,Die Methode von Partner fetch,de
+Partner is missing.,Der Partner wird vermisst.,de
+Partner's fetch query,Abfrage des Partners,de
+Partner's fetching,Der Partner holt,de
+Partner's query formula has not been evaluated to a Partner,Die Abfrageformel des Partners wurde nicht für einen Partner ausgewertet,de
+Password,Passwort,de
+Payment Mode,Zahlungsweise,de
+Payment Reason,Grund der Zahlung,de
+Payment account management,Verwaltung des Zahlungskontos,de
+Payment method is missing.,Es fehlt eine Zahlungsmethode.,de
+Payment mode is missing on the invoice %s,Der Zahlungsmodus fehlt auf der Rechnung %s,de
+Payment reason line1,Zahlungsgrund Zeile1,de
+Payment reason line2,Zahlungsgrund Zeile2,de
+Payment reason line3,Zahlungsgrund Zeile3,de
+Payment reason line4,Zahlungsgrund Zeile4,de
+Payment schedule line,Zahlungsplanzeile,de
+Payment schedule line cannot be null.,Die Zahlungseinteilung kann nicht null sein.,de
+Payment schedule line rejection,Ablehnung der Zahlungseinteilung,de
+Payment schedule line rejection filters,Filter für die Ablehnung von Zahlungseinteilungen,de
+Payment schedule lines,Zahlungseinteilungen,de
+Payment schedule lines to reject,Abzulehnende Zahlungseinteilungen,de
+Payment schedules,Zahlungsfristen,de
+Payment session,Sitzung zur Bezahlung,de
+Piece dates,Daten zum Stück,de
+Piece due dates,Fälligkeitsdaten der Stücke,de
+Piece references,Referenzen zum Stück,de
+Please add an Active UMR to the partner %s for the bank details %s.,Bitte fügen Sie dem Partner %s eine aktive UMR für die Bankverbindung %s hinzu.,de
+Please fill bank order date,Bitte füllen Sie das Auftragsdatum der Bank aus,de
+Please fill bank order type,Bitte Bankauftragsart angeben,de
+Please fill currency for the bank order,Bitte geben Sie die Währung für den Bankauftrag an,de
+Please fill partner type for the bank order,Bitte geben Sie die Partnerart für den Bankauftrag an,de
+Please fill the address in %s's partner details.,Bitte geben Sie die Adresse in den Partnerdaten von %s ein.,de
+Please fill the bank address in the receiver bank details.,Bitte geben Sie die Bankadresse in der Empfängerbankverbindung an.,de
+Please fill the bank details,Bitte füllen Sie die Bankverbindung aus,de
+Please fill the bank in the receiver bank details.,Bitte geben Sie die Bankdaten des Empfängers an.,de
+Please fill the city in %s's partner details.,Bitte geben Sie die Stadt in %s' Partnerdaten ein.,de
+Please fill the receiver bank details,Bitte geben Sie die Bankverbindung des Empfängers an,de
+Please fill the sender bank details currency.,Bitte geben Sie die Währung der Bankverbindung des Absenders an.,de
+Please fill the sender company,Bitte geben Sie die Absenderfirma an,de
+Please fill the zip in %s's partner details.,Bitte füllen Sie die Postleitzahl in den Partnerdaten von %s aus.,de
+"Please input here the expected text to be filled into the description field for the accounting entry to be generated by this rule. Label can be a simple text or computed through a groovy formula with starting point the bank reconciliation line. If no custom label input, then the system will use by default the description field of the bank reconciliation line. As a reminder, description label must be 255 char. max.","Bitte geben Sie hier den erwarteten Text ein, der in das Beschreibungsfeld für den Buchungseintrag, der durch diese Regel erzeugt werden soll, eingegeben werden soll. Die Bezeichnung kann ein einfacher Text sein oder durch eine Groovy-Formel berechnet werden, deren Ausgangspunkt die Bankabstimmungszeile ist. Wenn keine benutzerdefinierte Bezeichnung eingegeben wird, verwendet das System standardmäßig das Beschreibungsfeld der Bankabstimmungszeile. Zur Erinnerung: Die Beschriftung darf maximal 255 Zeichen lang sein.",de
+"Please input here the expected text to be filled into the origin field for the accounting entry to be generated by this rule. Label can be a simple text or computed through a groovy formula with starting point the bank reconciliation line. If no custom label input, then the system will use by default the reference field of the bank reconciliation line. As a reminder, label must be 255 char. max.","Geben Sie hier den erwarteten Text ein, der in das Herkunftsfeld für den Buchungseintrag, der durch diese Regel erzeugt werden soll, eingegeben werden soll. Die Beschriftung kann ein einfacher Text sein oder durch eine Groovy-Formel berechnet werden, deren Ausgangspunkt die Bankabstimmungszeile ist. Wenn keine benutzerdefinierte Bezeichnung eingegeben wird, verwendet das System standardmäßig das Referenzfeld der Bankabstimmungszeile. Zur Erinnerung: Die Bezeichnung darf maximal 255 Zeichen lang sein.",de
+Please select a cash account in the bank statement rule %s,Bitte wählen Sie ein Geldkonto in der Kontoauszugsregel %s,de
+Please select a company for the bank order lines inserted,Bitte wählen Sie eine Firma für die eingefügten Bankauftragszeilen,de
+Please select a counterpart account in the bank statement rule %s,Bitte wählen Sie ein Gegenkonto in der Kontoauszugsregel %s,de
+Please select a partner for the bank order lines inserted,Bitte wählen Sie einen Partner für die eingefügten Bankauftragszeilen,de
+Please select a payment mode,Bitte wählen Sie eine Zahlungsart,de
+Please select a reconciliation line,Bitte wählen Sie eine Versöhnungslinie,de
+Please select a signatory,Bitte wählen Sie einen Unterzeichner,de
+Please select at least one bank reconciliation line (button on right side of table).,Bitte wählen Sie mindestens eine Bankabstimmungszeile aus (Schaltfläche auf der rechten Seite der Tabelle).,de
+Please select at least one bank reconciliation line for multiple reconciles,Bitte wählen Sie mindestens eine Bankabstimmungszeile für Mehrfachabstimmungen,de
+Please select at least two bank orders,Bitte wählen Sie mindestens zwei Bankaufträge aus,de
+Please select draft bank orders only,Bitte wählen Sie nur Bankanweisungen,de
+Please select one bank reconciliation line,Bitte wählen Sie eine Bankabstimmungszeile aus,de
+Please select one bank reconciliation line and one move line,Bitte wählen Sie eine Bankabstimmungszeile und eine Umzugszeile aus,de
+Please select one move line,Bitte wählen Sie eine Bewegungslinie,de
+Please select some bank orders that have the same currency,"Bitte wählen Sie einige Bankaufträge aus, die die gleiche Währung haben",de
+Please select some bank orders that have the same partner type,"Bitte wählen Sie einige Bankaufträge aus, die die gleiche Partnerart haben",de
+Please select some bank orders that have the same payment mode,"Bitte wählen Sie einige Bankaufträge aus, die den gleichen Zahlungsmodus haben",de
+Please select some bank orders that have the same sender bank details,"Bitte wählen Sie einige Bankaufträge aus, die die gleiche Absenderbankverbindung haben",de
+Please select some bank orders that have the same sender company,"Bitte wählen Sie einige Bankaufträge aus, die die gleiche Absenderfirma haben",de
+Please select some bank orders that have the same status,"Bitte wählen Sie einige Bankaufträge aus, die den gleichen Status haben",de
+Please select statements,Bitte wählen Sie Aussagen,de
+Please set a currency in the sender bank details : %s.,Bitte geben Sie in der Absenderbankverbindung eine Währung an: %s.,de
+Pledge of receivables under a Dailly agreement,Verpfändung von Forderungen im Rahmen einer Dailly-Vereinbarung,de
+Posted number,Gebuchte Nummer,de
+Print,Drucken,de
+Print bank statement lines,Kontoauszugszeilen drucken,de
+Printings,Drucksachen,de
+Qualifying of amount,Qualifizierung des Betrags,de
+Qualifying of date,Qualifizierung des Datums,de
+Query,Abfrage,de
+Received,Empfangen,de
+Receiver,Empfänger,de
+Receiver Info.,Empfänger-Infos.,de
+Receiver address,Adresse des Empfängers,de
+Receiver address required,Adresse des Empfängers erforderlich,de
+Receiver country,Land des Empfängers,de
+Receiver move,Bewegung des Empfängers,de
+Reconcile selected,Ausgewählte abstimmen,de
+Reconciled bank statement line,Abgestimmte Kontoauszugszeile,de
+Reconciled move lines,Abgestimmte Umzugslinien,de
+Reconciliation auto,Abstimmungsautomatik,de
+Reconciliation corrected at,Überleitung korrigiert am,de
+Red,Rot,de
+Reference,Referenz,de
+Reimbursement,Rückerstattung,de
+Reject,Ablehnen,de
+Reject Move,Bewegung ablehnen,de
+Reject Reason,Grund der Ablehnung,de
+Reject information,Informationen ablehnen,de
+Reject selected lines,Ausgewählte Zeilen ablehnen,de
+Rejected,Abgelehnt,de
+Rejection Status,Status der Ablehnung,de
+Rejection date,Datum der Ablehnung,de
+Rejection reason,Grund der Ablehnung,de
+Rejects/Return Reason Code,Ablehnungen/Rückgabegrund Code,de
+Related to,Verwandt mit,de
+Related to select,Verwandt mit wählen,de
+Remains to be reconciled,Bleibt zu versöhnen,de
+Represent,Vertreten Sie,de
+Reveiver and sender,Überbringer und Absender,de
+Rule type,Regel-Typ,de
+Run bank reconciliation,Bankabstimmung durchführen,de
+SEPA Bank to Bank Transfers,SEPA Bank zu Bank Überweisungen,de
+SEPA Credit Transfer,SEPA-Überweisung,de
+SEPA Credit Transfers,SEPA-Überweisungen,de
+SEPA Direct Debit,SEPA-Lastschriftverfahren,de
+SEPA Direct Debits,SEPA-Lastschriften,de
+SEPA credit transfers,SEPA-Überweisungen,de
+SEPA direct debits,SEPA-Lastschriften,de
+Search and accounting rule Config.,Such- und Abrechnungsregeln Config.,de
+Searched label,Gesuchte Bezeichnung,de
+See Bank Order Lines,Siehe Bankauftragszeilen,de
+See bank statement lines,Siehe Kontoauszugszeilen,de
+Select,Wählen Sie,de
+Select / Unselect,Auswählen/Abwählen,de
+Select move lines to reconciles,"Wählen Sie Zeilen verschieben, um abzustimmen",de
+Selected bank reconciliation is under correction and can not be deleted,Ausgewählte Bankabstimmung ist in Korrektur und kann nicht gelöscht werden,de
+Selected bank reconciliation is validated and can not be deleted,Die ausgewählte Bankabstimmung wird validiert und kann nicht gelöscht werden.,de
+Selection total for bank reconciliation lines,Selektionssumme für Bankabstimmungszeilen,de
+Selection total for unreconciliated move lines,Selektionssumme für unabgestimmte Umzugslinien,de
+Send a Bank Order,Eine Bankanweisung senden,de
+Send a bank order,Bankanweisung senden,de
+Send bank order,Bankanweisung senden,de
+Send note bills,Rechnungen versenden,de
+Sender,Sender,de
+Sender Bank details,Absender Bankverbindung,de
+Sender Company,Absender Unternehmen,de
+Sender Info.,Absender-Informationen.,de
+Sending date,Datum der Absendung,de
+Sent to bank,An die Bank geschickt,de
+Seq.,Seq.,de
+Sequence,Sequenz,de
+Sequence is already used,Sequenz wird bereits verwendet,de
+Show reconciled move lines,Abgestimmte Bewegungslinien anzeigen,de
+Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries.,"Einige Einträge aus der Abstimmung haben eine leere MoveLine und ein gefülltes Konto. Das Kassenkonto wird benötigt, um automatisch die entsprechenden Bewegungszeilen für diese Einträge zu erzeugen.",de
+Some entries from the reconciliation have an empty moveLine and an account filled. The journal is required to generate automatically the Move/Move Lines for those entries.,"Einige Buchungen aus dem Abgleich haben eine leere Bewegungszeile und ein gefülltes Konto. Das Journal wird benötigt, um automatisch die Verschiebe-/Bewegungszeilen für diese Einträge zu erstellen.",de
+Special instructions,Besondere Anweisungen,de
+Special instructions line1,Besondere Anweisungen Zeile1,de
+Special instructions line2,Besondere Anweisungen Zeile2,de
+Special instructions line3,Besondere Anweisungen Zeile3,de
+Specific attributes,Spezifische Attribute,de
+Specific tax,Spezifische Steuer,de
+Starting Balance,Startguthaben,de
+Statement amount remaining to reconcile,Noch abzustimmender Betrag,de
+Statement ongoing reconciled balance,"Ausweis des laufenden, abgestimmten Saldos",de
+Statement reconciled line balance,Abgestimmter Zeilensaldo,de
+Statement theoretical balance,Erklärung theoretisches Gleichgewicht,de
+Statement unrereconciled line balance,Ausweis unabgestimmter Zeilensaldo,de
+Status,Status,de
+Stm. Credit,Stm. Kredit,de
+Stm. Debit,Stm. Lastschrift,de
+Supplier,Anbieter,de
+Technical Origin,Technischer Ursprung,de
+Template,Vorlage,de
+Test function,Testfunktion,de
+"The Iban is mandatory for the partner %s, bank order %s","Die Iban ist obligatorisch für den Partner %s, Bankauftrag %s",de
+The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration,"Die analytische Verteilung ist in den Umzugszeilen für das Konto %s erforderlich, aber in der Kontokonfiguration wurde keine Vorlage festgelegt",de
+The bank details %s attached to the invoice/ invoice term %s and to the partner %s is inactive. Only invoices with active bank details can be processed.,"Die Bankverbindung %s, die der Rechnung/Rechnungslaufzeit %s und dem Partner %s zugeordnet ist, ist inaktiv. Nur Rechnungen mit aktiver Bankverbindung können bearbeitet werden.",de
+The bank details type is not compatible with the accepted types in file format.,Der Typ der Bankverbindung ist nicht mit den akzeptierten Typen im Dateiformat kompatibel.,de
+The bank order %s has been generated successfully.,Der Bankauftrag %s wurde erfolgreich erstellt.,de
+The bank order is not properly signed. Please correct it and sign it again.,Der Bankauftrag ist nicht ordnungsgemäß unterzeichnet. Bitte korrigieren Sie ihn und unterschreiben Sie ihn erneut.,de
+The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency.,"Die Währung des Bankabgleichs unterscheidet sich von der Währung der Bankverbindung, so dass der Abgleich nicht eingeleitet werden kann. Bitte wählen Sie eine Währung, die mit der Währung des Kontoauszugs übereinstimmt.",de
+The company %s does not have bank order sequence,Die Firma %s hat keine Bankauftragsreihenfolge,de
+The field encryption.bankorder.password in config file must be filled.,The field encryption.bankorder.password in config file must be filled.,de
+The move %s can't be reversed because it is linked to a bank reconciliation with status validated,"Die Bewegung %s kann nicht rückgängig gemacht werden, da sie mit einer Bankabstimmung mit Status validiert verknüpft ist",de
+The movelines %s are already reconciled with another bank statement line. Multiple bank statement lines can't be reconciled with the same move line.,Die Bewegungszeilen %s sind bereits mit einer anderen Kontoauszugszeile abgeglichen. Mehrere Kontoauszugszeilen können nicht mit derselben Umzugszeile abgeglichen werden.,de
+The moves %s couldn't be reversed because these are linked to a bank reconciliation with status validated,"Die Bewegungen %s konnten nicht rückgängig gemacht werden, da sie mit einer Bankabstimmung mit Status validiert verbunden sind.",de
+The password is incorrect.,Das Passwort ist falsch.,de
+The payment status will not update.,Der Zahlungsstatus wird nicht aktualisiert.,de
+The receiver bank details currency is not compatible with the currency in bank order.,Die Währung der Empfängerbankverbindung ist nicht mit der Währung im Bankauftrag kompatibel.,de
+The receiver bank details for the line %s is inactive.,Die Empfängerbankverbindung für die Zeile %s ist inaktiv.,de
+The receiver bank details type is not compatible with the accepted types in file format.,Der Typ der Empfängerbankverbindung ist nicht mit den akzeptierten Typen im Dateiformat kompatibel.,de
+"The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching.","Der ausgewählte Kontoauszug enthält auf Zeilenebene keine Informationen, aus denen hervorgeht, um welche Bankverbindung es sich handelt. Bitte überprüfen Sie das Format der Datenquelle oder die Konfiguration der Bankverbindung in der Software und stellen Sie sicher, dass beides übereinstimmt.",de
+The sender bank details currency is not compatible with the currency in bank order.,Die Währung der Absenderbankverbindung stimmt nicht mit der Währung im Bankauftrag überein.,de
+The sender bank details is inactive.,Die Bankverbindung des Absenders ist inaktiv.,de
+The validation of this payment session is supposed to generate a bank order with multiple execution dates while the file format associated with the payment mode does not support the multidate. Please select an adequate file format within the payment mode settings or change the parameter for the accounting date selection.,"Die Validierung dieser Zahlungsverkehrssitzung soll einen Bankauftrag mit mehreren Ausführungsdaten generieren, obwohl das mit dem Zahlungsmodus verbundene Dateiformat die Datumsvielfalt nicht unterstützt. Bitte wählen Sie in den Einstellungen des Zahlungsmodus ein geeignetes Dateiformat oder ändern Sie den Parameter für die Auswahl des Buchungsdatums.",de
+There is at least one incomplete bank reconciliation. Are you sure you want to continue?,"Es gibt mindestens eine unvollständige Bankabstimmung. Sind Sie sicher, dass Sie fortfahren möchten?",de
+There is no file linked to this origin.,"Es gibt keine Datei, die mit diesem Ursprung verbunden ist.",de
+"This action is irreversible, do you want to continue ?","Diese Aktion ist unumkehrbar, wollen Sie fortfahren?",de
+This move line %s can not be archived because its bank reconciliation amount is superior to 0.,"Diese Bewegungszeile %s kann nicht archiviert werden, da ihr Bankabstimmungsbetrag größer als 0 ist.",de
+To,An,de
+To Date,Bis heute,de
+"To use the generated move in the formula, you can use the variable 'generatedMove'","Um den generierten Zug in der Formel zu verwenden, können Sie die Variable 'generatedMove' verwenden",de
+"To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Account, Third party). A move line will be generated automatically on the account and journal associated with the reconciliation session.","Um die Abstimmung zu validieren, muss jede Zeile mit einer oder mehreren Verschiebungszeilen versehen werden, die entweder vorhanden oder konfiguriert sind (Konto, Dritte). Für das Konto und das Journal, die mit der Abstimmungssitzung verbunden sind, wird automatisch eine Verschiebezeile erstellt.",de
+Total amount,Gesamtbetrag,de
+Total amount in company currency,Gesamtbetrag in Firmenwährung,de
+Total amount of bank order lines must be equal to the bank order amount,Der Gesamtbetrag der Bankauftragszeilen muss mit dem Betrag des Bankauftrags übereinstimmen.,de
+Total cashed,Insgesamt eingelöst,de
+Total of selected move lines,Summe der ausgewählten Bewegungslinien,de
+Total paid,Insgesamt bezahlt,de
+Totally rejected,Völlig abgelehnt,de
+Transfer or other,Übertragung oder andere,de
+Treasury transfer Bank orders sequences,Überweisung Bankaufträge Sequenzen,de
+Type,Typ,de
+Unavailability index,Index der Nichtverfügbarkeit,de
+Unavailable,Nicht verfügbar,de
+Under correction,Unter Korrektur,de
+Unit debit by operation,Belastung der Einheit durch den Vorgang,de
+Unknown SEPA type for file generation,Unbekannter SEPA-Typ für die Dateierstellung,de
+Unknown direct debit data type,Unbekannter Datentyp für Lastschriftverfahren,de
+Unknown format for file generation,Unbekanntes Format für die Dateierstellung,de
+Unknown format for file import process,Unbekanntes Format für den Datei-Importprozess,de
+Unreconcile selected,Unconcile ausgewählt,de
+Unreconciled and On-going Reconciliation MoveLines,Unabgestimmte und laufende Abstimmungszeilen,de
+Unreconciled bank statement line,Nicht übereinstimmende Kontoauszugszeile,de
+Use editor in bank order form,Editor im Bankauftragsformular verwenden,de
+Use iban only,Nur iban verwenden,de
+Validate,Validieren Sie,de
+Validate reconciliation,Abgleich validieren,de
+Validated,Validiert,de
+Validated By,Bestätigt durch,de
+Validated On,Bestätigt am,de
+Validation date,Datum der Validierung,de
+Value date,Datum der Wertstellung,de
+With formula,Mit Formel,de
+You can't validate this bank order. you need to fill at least one bank order line,Sie können diesen Bankauftrag nicht validieren. Sie müssen mindestens eine Bankauftragszeile ausfüllen,de
+Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement.,"Das Bankkonto Ihrer Bankverbindung für die Bankverbindung %s (%s) unterscheidet sich von dem Geldkonto der Konto-Konfigurationsregel für den Kontoauszug von %s (%s). Bitte korrigieren Sie dies, bevor Sie den Kontoauszug automatisch verbuchen.",de
+and,und,de
+bankorder.invoicePayment,bankorder.invoicePayment,de
+by,von,de
+camt.053.001.02.stm,camt.053.001.02.stm,de
+camt.054.001.02.abb,camt.054.001.02.abb,de
+camt.054.001.02.act,camt.054.001.02.act,de
+camt.054.001.02.add,camt.054.001.02.add,de
+camt.fin.mt940.stm,camt.fin.mt940.stm,de
+camt.fin.mt942.rep,camt.fin.mt942.rep,de
+camt.xxx.cfonb120.rep,camt.xxx.cfonb120.rep,de
+camt.xxx.cfonb120.stm,camt.xxx.cfonb120.stm,de
+camt.xxx.cfonb240.ach,camt.xxx.cfonb240.ach,de
+camt.xxx.cfonb240.act,camt.xxx.cfonb240.act,de
+camt.xxx.cfonb240.ard,camt.xxx.cfonb240.ard,de
+camt.xxx.cfonb240.atg,camt.xxx.cfonb240.atg,de
+camt.xxx.cfonb240.ati,camt.xxx.cfonb240.ati,de
+camt.xxx.cfonb240.cai,camt.xxx.cfonb240.cai,de
+camt.xxx.cfonb240.dri,camt.xxx.cfonb240.dri,de
+camt.xxx.cfonb240.pco,camt.xxx.cfonb240.pco,de
+camt.xxx.cfonb240.rch,camt.xxx.cfonb240.rch,de
+camt.xxx.cfonb240.rco,camt.xxx.cfonb240.rco,de
+camt.xxx.cfonb240.rct,camt.xxx.cfonb240.rct,de
+camt.xxx.cfonb240.rep,camt.xxx.cfonb240.rep,de
+camt.xxx.cfonb240.rsd,camt.xxx.cfonb240.rsd,de
+camt.xxx.cfonb240.rtg,camt.xxx.cfonb240.rtg,de
+camt.xxx.cfonb240.rti,camt.xxx.cfonb240.rti,de
+camt.xxx.cfonb560.ara,camt.xxx.cfonb560.ara,de
+csv.jma.dot,csv.jma.dot,de
+csv.ymd.dot,csv.ymd.dot,de
+pain.001.001.02.ict,pain.001.001.02.ict,de
+pain.001.001.02.mct,pain.001.001.02.mct,de
+pain.001.001.02.rft,pain.001.001.02.rft,de
+pain.001.001.02.sct,pain.001.001.02.sct,de
+pain.001.001.02.xct,pain.001.001.02.xct,de
+pain.001.001.03.ict,pain.001.001.03.ict,de
+pain.001.001.03.sct,pain.001.001.03.sct,de
+pain.001.001.03.xct,pain.001.001.03.xct,de
+pain.002.001.01.ara,pain.002.001.01.ara,de
+pain.002.001.02.ack,pain.002.001.02.ack,de
+pain.002.001.02.ara,pain.002.001.02.ara,de
+pain.008.001.01.sbb,pain.008.001.01.sbb,de
+pain.008.001.01.sdd,pain.008.001.01.sdd,de
+pain.008.001.02.sbb,pain.008.001.02.sbb,de
+pain.008.001.02.sdd,pain.008.001.02.sdd,de
+pain.fin.mt101.dct,pain.fin.mt101.dct,de
+pain.fin.mt101.mct,pain.fin.mt101.mct,de
+pain.fin.mt101.xct,pain.fin.mt101.xct,de
+pain.xxx.cfonb160.dco,pain.xxx.cfonb160.dco,de
+pain.xxx.cfonb160.dct,pain.xxx.cfonb160.dct,de
+pain.xxx.cfonb160.dda,pain.xxx.cfonb160.dda,de
+pain.xxx.cfonb160.ddd,pain.xxx.cfonb160.ddd,de
+pain.xxx.cfonb160.dtg,pain.xxx.cfonb160.dtg,de
+pain.xxx.cfonb160.dvd,pain.xxx.cfonb160.dvd,de
+pain.xxx.cfonb160.ict,pain.xxx.cfonb160.ict,de
+pain.xxx.cfonb240.bco,pain.xxx.cfonb240.bco,de
+pain.xxx.cfonb240.tch,pain.xxx.cfonb240.tch,de
+pain.xxx.cfonb320.dct,pain.xxx.cfonb320.dct,de
+pain.xxx.cfonb320.rft,pain.xxx.cfonb320.rft,de
+pain.xxx.cfonb320.sct,pain.xxx.cfonb320.sct,de
+pain.xxx.cfonb320.xct,pain.xxx.cfonb320.xct,de
+pain.xxx.fff.ech,pain.xxx.fff.ech,de
+pain.xxx.fff.lch,pain.xxx.fff.lch,de
+pain.xxx.payext912.vct,pain.xxx.payext912.vct,de
+pain.xxx.payext96a.vct,pain.xxx.payext96a.vct,de
+pain.xxx.payord912.ict,pain.xxx.payord912.ict,de
+pain.xxx.payord912.xct,pain.xxx.payord912.xct,de
+pain.xxx.vcom400.vct,pain.xxx.vcom400.vct,de
+value:Bank payment,value:Bank payment,de
+■,■,de
+▲,▲,de
+◉,◉,de
