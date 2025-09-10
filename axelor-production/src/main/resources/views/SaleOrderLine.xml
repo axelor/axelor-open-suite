@@ -55,7 +55,8 @@
     </extend>
     <extend target="//field[@name='isDeliveryBlocking']">
       <insert position="after">
-        <field name="isProductionBlocking" colSpan="3"/>
+        <field name="isProductionBlocking" colSpan="3"
+          onChange="action-sale-order-line-record-set-production-blocking-user"/>
       </insert>
     </extend>
     <extend target="//panel[@name='deliveryBlockingGroupPanel']">
@@ -63,7 +64,7 @@
         <panel name="productionBlockingGroupPanel" title="Production blocking"
           showIf="isProductionBlocking" colSpan="12">
           <field name="productionBlockingByUser" canNew="false" canEdit="false"
-            canView="false" form-view="user-form" grid-view="user-grid"/>
+            canView="false" form-view="user-form" grid-view="user-grid" readonly="true"/>
           <field name="productionBlockingToDate"/>
           <field name="productionBlockingReason" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
@@ -141,5 +142,10 @@
     <call class="com.axelor.apps.production.web.SaleOrderLineController"
       method="prodProcessOnChange"/>
   </action-method>
+
+  <action-record name="action-sale-order-line-record-set-production-blocking-user"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="productionBlockingByUser" expr="eval: isProductionBlocking ? __user__ : null"/>
+  </action-record>
 
 </object-views>
