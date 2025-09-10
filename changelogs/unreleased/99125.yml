@@ -1,3 +1,6 @@
 ---
 title: "Business project: fixed the closing rule condition"
 module: axelor-business-project
+developer : 
+  Replace SaleOrderRepository by SaleOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor
+  Replace PurchaseOrderRepository by PurchaseOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor
