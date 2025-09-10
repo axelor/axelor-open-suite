@@ -18,14 +18,12 @@
  */
 package com.axelor.apps.project.service;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.inject.Inject;
 import java.util.Optional;
 
@@ -34,8 +32,7 @@ public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
   protected AppBaseService appBaseService;
 
   @Inject
-  public ProjectTaskAttrsServiceImpl(
-      AppBaseService appBaseService) {
+  public ProjectTaskAttrsServiceImpl(AppBaseService appBaseService) {
     this.appBaseService = appBaseService;
   }
 

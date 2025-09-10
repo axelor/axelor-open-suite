@@ -344,7 +344,7 @@
 
   <action-attrs name="action-expense-line-attrs-domain-project">
     <attribute name="domain" for="project"
-      expr="eval: &quot; self.projectStatus = 2 AND ${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id} &quot;"/>
+      expr="eval: &quot; self.projectStatus.id = 2 AND ${__parent__?.employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__parent__?.employee?.user?.id} &quot;"/>
   </action-attrs>
 
   <action-method name="action-expense-line-method-compute-project-task-domain">

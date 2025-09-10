@@ -290,7 +290,15 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     response.setAttr(
-        "tagSet", "domain", Beans.get(TagService.class).getTagDomain("ProjectTask", Optional.of(projectTask).map(ProjectTask::getProject).map(Project::getCompany).orElse(null)));
+        "tagSet",
+        "domain",
+        Beans.get(TagService.class)
+            .getTagDomain(
+                "ProjectTask",
+                Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getCompany)
+                    .orElse(null)));
   }
 
   @ErrorException
