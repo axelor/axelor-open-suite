@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
@@ -33,12 +34,14 @@ import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.service.EmployeeComputeDaysLeaveLunchVoucherService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 
@@ -177,26 +180,34 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 
   @Override
   public int computeRestaurant(Employee employee) {
-    return (int)
-        expenseLineRepository
-            .all()
-            .filter(
-                "self.expenseProduct.deductLunchVoucher = true AND self.expense.employee = :employee AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
-            .bind("employee", employee)
-            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
-            .count();
+    return countExpenseLinesForEmployee(employee, "self.expense.employee = :employee", null);
   }
 
   @Override
   public int computeInvitation(Employee employee) {
-    return (int)
-        expenseLineRepository
-            .all()
-            .filter(
-                "self.expenseProduct.deductLunchVoucher = true AND :employee MEMBER OF self.invitedCollaboratorSet AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
-            .bind("employee", employee)
-            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
-            .count();
+    return countExpenseLinesForEmployee(
+        employee, ":employee MEMBER OF self.invitedCollaboratorSet", null);
+  }
+
+  protected int countExpenseLinesForEmployee(
+      Employee employee, String extraFilter, Map<String, Object> extraBindings) {
+    String filter =
+        "self.expenseProduct.deductLunchVoucher = true "
+            + "AND (self.expense.statusSelect IN :statusSelects OR self.expense.ventilated IS TRUE) "
+            + "AND "
+            + extraFilter;
+    List<Integer> statusSelects =
+        List.of(ExpenseRepository.STATUS_VALIDATED, ExpenseRepository.STATUS_REIMBURSED);
+    Query<ExpenseLine> query = expenseLineRepository.all().filter(filter);
+
+    query.bind("employee", employee);
+    query.bind("statusSelects", statusSelects);
+
+    if (extraBindings != null) {
+      extraBindings.forEach(query::bind);
+    }
+
+    return (int) query.count();
   }
 
   @Override
