@@ -52,8 +52,8 @@
           <![CDATA[
             <>
                   {_t('Depending on the chosen configuration, the user get an alert or an error message if:')}<br/>
-                  {_t('- a linked sale order is not totally invoiced')} <br/>
-                  {_t('- a linked purchase order is not totally invoiced or is not totally delivered')}<br/>
+                  {_t('- a linked sale order line is not totally invoiced')} <br/>
+                  {_t('- a linked purchase order line is not totally invoiced or is not totally delivered')}<br/>
                   {_t('- a linked contract is not at finished status')}<br/>
                   {_t('- a linked timesheet line that must be invoiced has not been invoiced')}<br/>
                   {_t('- a linked expense line is not invoiced')}

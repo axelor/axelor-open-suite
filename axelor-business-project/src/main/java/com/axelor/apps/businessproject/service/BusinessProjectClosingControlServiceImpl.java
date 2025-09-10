@@ -28,8 +28,8 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Inject;
@@ -42,8 +42,8 @@ public class BusinessProjectClosingControlServiceImpl
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
-  protected SaleOrderRepository saleOrderRepository;
-  protected PurchaseOrderRepository purchaseOrderRepository;
+  protected SaleOrderLineRepository saleOrderLineRepository;
+  protected PurchaseOrderLineRepository purchaseOrderLineRepository;
   protected ContractRepository contractRepository;
   protected TimesheetLineRepository timesheetLineRepository;
   protected ExpenseLineRepository expenseLineRepository;
@@ -54,8 +54,8 @@ public class BusinessProjectClosingControlServiceImpl
       AppBusinessProjectService appBusinessProjectService,
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      SaleOrderRepository saleOrderRepository,
-      PurchaseOrderRepository purchaseOrderRepository,
+      SaleOrderLineRepository saleOrderLineRepository,
+      PurchaseOrderLineRepository purchaseOrderLineRepository,
       ContractRepository contractRepository,
       TimesheetLineRepository timesheetLineRepository,
       ExpenseLineRepository expenseLineRepository) {
@@ -63,8 +63,8 @@ public class BusinessProjectClosingControlServiceImpl
     this.appBusinessProjectService = appBusinessProjectService;
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
-    this.saleOrderRepository = saleOrderRepository;
-    this.purchaseOrderRepository = purchaseOrderRepository;
+    this.saleOrderLineRepository = saleOrderLineRepository;
+    this.purchaseOrderLineRepository = purchaseOrderLineRepository;
     this.contractRepository = contractRepository;
     this.timesheetLineRepository = timesheetLineRepository;
     this.expenseLineRepository = expenseLineRepository;
@@ -81,26 +81,29 @@ public class BusinessProjectClosingControlServiceImpl
       return errorMessage.toString();
     }
 
-    if (!areSaleOrdersFinished(project)) {
+    if (!areSaleOrderLinesFinished(project)) {
       errorMessage
           .append("<br/>")
           .append(
-              I18n.get(BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_NOT_INVOICED));
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CLOSING_SALE_ORDER_LINE_NOT_INVOICED));
     }
 
-    if (!arePurchaseOrdersInvoiced(project)) {
+    if (!arePurchaseOrderLinesInvoiced(project)) {
       errorMessage
           .append("<br/>")
           .append(
               I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_INVOICED));
+                  BusinessProjectExceptionMessage
+                      .PROJECT_CLOSING_PURCHASE_ORDER_LINE_NOT_INVOICED));
     }
-    if (!arePurchaseOrdersReceived(project)) {
+    if (!arePurchaseOrderLinesReceived(project)) {
       errorMessage
           .append("<br/>")
           .append(
               I18n.get(
-                  BusinessProjectExceptionMessage.PROJECT_CLOSING_PURCHASE_ORDER_NOT_RECEIVED));
+                  BusinessProjectExceptionMessage
+                      .PROJECT_CLOSING_PURCHASE_ORDER_LINE_NOT_RECEIVED));
     }
 
     if (!areContractsFinished(project)) {
@@ -142,8 +145,8 @@ public class BusinessProjectClosingControlServiceImpl
     }
   }
 
-  protected boolean areSaleOrdersFinished(Project project) {
-    return saleOrderRepository
+  protected boolean areSaleOrderLinesFinished(Project project) {
+    return saleOrderLineRepository
             .all()
             .filter("self.project.id = :projectId AND self.amountInvoiced != self.exTaxTotal")
             .bind("projectId", project.getId())
@@ -151,8 +154,8 @@ public class BusinessProjectClosingControlServiceImpl
         == 0;
   }
 
-  protected boolean arePurchaseOrdersInvoiced(Project project) {
-    return purchaseOrderRepository
+  protected boolean arePurchaseOrderLinesInvoiced(Project project) {
+    return purchaseOrderLineRepository
             .all()
             .filter("self.project.id = :projectId AND self.amountInvoiced != self.exTaxTotal")
             .bind("projectId", project.getId())
@@ -160,12 +163,12 @@ public class BusinessProjectClosingControlServiceImpl
         == 0;
   }
 
-  protected boolean arePurchaseOrdersReceived(Project project) {
-    return purchaseOrderRepository
+  protected boolean arePurchaseOrderLinesReceived(Project project) {
+    return purchaseOrderLineRepository
             .all()
             .filter("self.project.id = :projectId AND self.receiptState != :receiptState")
             .bind("projectId", project.getId())
-            .bind("receiptState", PurchaseOrderRepository.STATE_RECEIVED)
+            .bind("receiptState", PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
             .count()
         == 0;
   }
