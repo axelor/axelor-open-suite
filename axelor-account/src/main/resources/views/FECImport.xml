@@ -34,7 +34,7 @@
         <field name="description" colSpan="12" showTitle="false" widget="html"/>
       </panel>
       <panel-dashlet action="action-view-account-fec-import-moves-panel-dashlet"
-        title="Generated moves" canSearch="true" showIf="id"/>
+        title="Generated moves" canSearch="true" showIf="id" x-show-bars="true"/>
       <panel-dashlet action="action-view-account-fec-import-anomalies-panel-dashlet"
         title="Anomalies" canSearch="true" showIf="id"/>
     </panel-tabs>
@@ -76,11 +76,11 @@
 
   <action-view name="action-view-account-fec-import-moves-panel-dashlet"
     title="Generated moves" model="com.axelor.apps.account.db.Move">
-    <view type="grid" name="move-grid"/>
+    <view type="grid" name="move-fec-grid" if="!fecImportId"/>
+    <view type="grid" name="move-grid" if="fecImportId"/>
     <view type="form" name="move-form"/>
-    <domain>self.fecImport = :fecImport</domain>
-    <context name="fecImport" expr="eval: __this__"/>
-
+    <domain>self.fecImport.id = :fecImportId</domain>
+    <context name="fecImportId" expr="eval: fecImportId ? fecImportId : __this__.id"/>
   </action-view>
 
   <action-record name="action-fec-import-record-set-valid-generated-move-on-change"
