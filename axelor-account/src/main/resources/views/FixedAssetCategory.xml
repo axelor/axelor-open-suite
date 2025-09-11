@@ -46,7 +46,7 @@
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="numberOfDepreciation"
             onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"
-            min="1"/>
+            min="0"/>
           <field name="periodicityTypeSelect"/>
           <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1"
             onChange="action-fixed-asset-category-record-compute-duration"/>
