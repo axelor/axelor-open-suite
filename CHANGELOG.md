@@ -1,3 +1,62 @@
+## [8.2.24] (2025-09-11)
+
+### Fixes
+#### Base
+
+* Partner: fixed accounting situations when merging partners.
+* Databackup: fixed a potential security breach when restoring a backup.
+
+#### Account
+
+* Account: removed export button as it has no action linked.
+* Fixed asset: fixed an issue where periodicity type was not copied if fiscal plan was not selected.
+* Accounting report: fixed detailed customers balance report to exclude suppliers and supplier invoices.
+* Accounting report type: fixed domain filter on accounting report and correct demo data for custom type.
+
+#### Budget
+
+* Budget app: fixed an issue on app installation.
+
+#### Business Project
+
+* Business project: added a closing control on 'Finished paid' status
+* Business project: fixed the closing rule condition
+* ProjectTask: fixed time unit conversion issue after computing project totals.
+
+#### Human Resource
+
+* Expense : disable the multi currency management until 8.5
+* Lunch voucher: fixed an issue where computation did not deduct ventilated or reimbursed expenses.
+
+#### Sale
+
+* Sale order: fixed price recomputation when editable tree is enabled.
+
+
+### Developer
+
+#### Business Project
+
+Replace SaleOrderRepository by SaleOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor Replace PurchaseOrderRepository by PurchaseOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor Change BusinessProjectClosingControlServiceImpl.areSaleOrdersFinished to BusinessProjectClosingControlServiceImpl.areSaleOrderLinesFinished Change BusinessProjectClosingControlServiceImpl.arePurchaseOrdersInvoiced to BusinessProjectClosingControlServiceImpl.arePurchaseOrderLinesInvoiced Change BusinessProjectClosingControlServiceImpl.arePurchaseOrdersReceived to BusinessProjectClosingControlServiceImpl.arePurchaseOrderLinesReceived
+
+---
+
+Added UnitConversionForProjectService in ProjectTaskBusinessProjectServiceImpl constructor
+Added UnitConversionForProjectService in ProjectTaskBusinessSupportServiceImpl constructor
+
+#### Human Resource
+
+If you have some expense with another currency than the company currency, you will need a script to reset it.
+
+Script : 
+UPDATE hr_expense e SET currency = c.currency
+FROM base_company c WHERE c.id = e.company AND e.currency != c.currency;
+DELETE FROM meta_action WHERE name = 'action-expense-attrs-kilometric-panel-visibility';
+
+#### Sale
+
+Added SubSaleOrderLineComputeService to SaleOrderCreateServiceImpl constructor.
+
 ## [8.2.23] (2025-08-28)
 
 ### Fixes
@@ -1681,6 +1740,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.24]: https://github.com/axelor/axelor-open-suite/compare/v8.2.23...v8.2.24
 [8.2.23]: https://github.com/axelor/axelor-open-suite/compare/v8.2.22...v8.2.23
 [8.2.22]: https://github.com/axelor/axelor-open-suite/compare/v8.2.21...v8.2.22
 [8.2.21]: https://github.com/axelor/axelor-open-suite/compare/v8.2.20...v8.2.21
