@@ -47,6 +47,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.UnitConversionForProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -93,6 +94,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetLineRepository;
   protected AppBusinessProjectService appBusinessProjectService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -109,7 +111,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      UnitConversionForProjectService unitConversionForProjectService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -125,6 +128,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.productCompanyService = productCompanyService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.appBusinessProjectService = appBusinessProjectService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -553,10 +557,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         Optional.ofNullable(projectTask.getTimeUnit())
             .orElse(projectTask.getProject().getProjectTimeUnit());
 
-    plannedTime =
-        projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedTime)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    if (ObjectUtils.notEmpty(projectTask.getProjectPlanningTimeList())) {
+      for (ProjectPlanningTime ppt : projectTask.getProjectPlanningTimeList()) {
+        plannedTime =
+            plannedTime.add(
+                convertInProjectTaskUnit(projectTask, ppt.getTimeUnit(), ppt.getPlannedTime()));
+      }
+    }
 
     List<TimesheetLine> timeSheetLines =
         timesheetLineRepository
@@ -741,5 +748,34 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       return limit.negate();
     }
     return value;
+  }
+
+  protected BigDecimal convertInProjectTaskUnit(
+      ProjectTask projectTask, Unit startUnit, BigDecimal duration) throws AxelorException {
+    if (projectTask == null || startUnit == null || duration.signum() == 0) {
+      return BigDecimal.ZERO;
+    }
+
+    Unit projectTaskUnit = getTaskDefaultTimeUnit(projectTask, startUnit);
+
+    return unitConversionForProjectService.convert(
+        startUnit,
+        projectTaskUnit,
+        duration,
+        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+        projectTask.getProject());
+  }
+
+  protected Unit getTaskDefaultTimeUnit(ProjectTask task, Unit defaultUnit) {
+    Unit timeUnit = task.getTimeUnit();
+    if (timeUnit == null) {
+      timeUnit =
+          Optional.of(task)
+              .map(ProjectTask::getProject)
+              .map(Project::getProjectTimeUnit)
+              .orElse(defaultUnit);
+    }
+
+    return timeUnit;
   }
 }
