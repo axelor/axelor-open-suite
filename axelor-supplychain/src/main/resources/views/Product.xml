@@ -76,6 +76,20 @@
     </panel>
   </form>
 
+  <form id="supplychain-product-form" name="product-form" title="Product"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//panel[@name='packagingPanel']">
+      <insert position="after">
+        <panel name="adrPanel" title="ADR" colSpan="12">
+          <field name="isAdr"/>
+          <field name="limitedQty"/>
+          <field name="unCode"/>
+          <field name="packagingGroupSelect" requiredIf="isAdr"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
   <action-group name="action-group-supplychain-update-indicators">
     <action name="action-method-find-all-sublocation" if="product"/>
     <action name="action-method-update-indicators" if="product"/>
