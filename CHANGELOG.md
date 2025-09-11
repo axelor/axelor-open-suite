@@ -1,3 +1,38 @@
+## [7.2.48] (2025-09-11)
+
+### Fixes
+#### Base
+
+* Partner: fixed accounting situations when merging partners.
+* Databackup: fixed a potential security breach when restoring a backup.
+
+#### Account
+
+* Account: removed export button as it has no action linked.
+* Fixed asset: fixed an issue where periodicity type was not copied if fiscal plan was not selected.
+* Accounting report: fixed detailed customers balance report to exclude suppliers and supplier invoices.
+
+#### Budget
+
+* Budget app: fixed an issue on app installation.
+
+#### Human Resource
+
+* Expense : disable the multi currency management until 8.5
+* Lunch voucher: fixed an issue where computation did not deduct ventilated or reimbursed expenses.
+
+
+### Developer
+
+#### Human Resource
+
+If you have some expense with another currency than the company currency, you will need a script to reset it.
+
+Script : 
+UPDATE hr_expense e SET currency = c.currency
+FROM base_company c WHERE c.id = e.company AND e.currency != c.currency;
+DELETE FROM meta_action WHERE name = 'action-expense-attrs-kilometric-panel-visibility';
+
 ## [7.2.47] (2025-08-28)
 
 ### Fixes
@@ -2033,6 +2068,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.48]: https://github.com/axelor/axelor-open-suite/compare/v7.2.47...v7.2.48
 [7.2.47]: https://github.com/axelor/axelor-open-suite/compare/v7.2.46...v7.2.47
 [7.2.46]: https://github.com/axelor/axelor-open-suite/compare/v7.2.45...v7.2.46
 [7.2.45]: https://github.com/axelor/axelor-open-suite/compare/v7.2.44...v7.2.45
