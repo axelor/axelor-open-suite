@@ -91,10 +91,10 @@ public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
             TraceBackService.trace(e, null, batch.getId());
           }
         }
-        offset += getFetchLimit();
-        JPA.clear();
-        findBatch();
       }
+      offset += getFetchLimit();
+      JPA.clear();
+      findBatch();
     }
   }
 
