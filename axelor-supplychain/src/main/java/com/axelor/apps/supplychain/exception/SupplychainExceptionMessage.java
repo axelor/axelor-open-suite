@@ -430,4 +430,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_ESTIMATED_SHIPPING_DATE_NOT_UPDATED = /*$$(*/
       "Warning : Estimated shipping date isn't updated due to pricing set on sale order." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_CALL_TENDER_NEEDED = /*$$(*/
+      "No call for tender can be generated from these lines." /*)*/;
 }

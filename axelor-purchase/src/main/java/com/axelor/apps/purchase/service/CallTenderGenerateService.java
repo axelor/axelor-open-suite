@@ -18,9 +18,15 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.CallTender;
+import com.axelor.apps.purchase.db.CallTenderNeed;
+import java.util.List;
 
 public interface CallTenderGenerateService {
 
   void generateCallTenderOffers(CallTender callTender);
+
+  CallTender generateCallTender(
+      String name, Company company, List<CallTenderNeed> callTenderNeedList);
 }

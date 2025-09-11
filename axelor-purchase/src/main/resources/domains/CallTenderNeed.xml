@@ -18,6 +18,15 @@
     <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
 
 
+    <extra-code><![CDATA[
+
+
+	   	// TYPE SELECT
+	   	public static final int MANUAL_TYPE = 1;
+
+
+	]]></extra-code>
+
     <track on="UPDATE">
       <field name="requestedQty"/>
       <field name="requestedDate"/>
