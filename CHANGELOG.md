@@ -1,3 +1,58 @@
+## [8.4.6] (2025-09-11)
+
+### Fixes
+#### Base
+
+* Partner: fixed accounting situations when merging partners.
+* Databackup: fixed a potential security breach when restoring a backup.
+* Product: will now always display procurement method.
+
+#### Account
+
+* Account: removed export button as it has no action linked.
+* Fixed asset: fixed an issue where periodicity type was not copied if fiscal plan was not selected.
+* Accounting report: fixed detailed customers balance report to exclude suppliers and supplier invoices.
+* Accounting report type: fixed domain filter on accounting report and correct demo data for custom type.
+
+#### Budget
+
+* Budget app: fixed an issue on app installation.
+
+#### Business Project
+
+* Business project: added a closing control on 'Finished paid' status
+* ProjectTask: fixed time unit conversion issue after computing project totals.
+* Business project: fixed the closing rule condition
+
+#### Contract
+
+* Contract: fixed an issue on contract history opening.
+
+#### Human Resource
+
+* Expense : disable the multi currency management until 8.5
+* Lunch voucher: fixed an issue where computation did not deduct ventilated or reimbursed expenses.
+
+
+### Developer
+
+#### Business Project
+
+Added UnitConversionForProjectService in ProjectTimeUnitServiceImpl constructor
+
+---
+
+Replace SaleOrderRepository by SaleOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor Replace PurchaseOrderRepository by PurchaseOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor Change BusinessProjectClosingControlServiceImpl.areSaleOrdersFinished to BusinessProjectClosingControlServiceImpl.areSaleOrderLinesFinished Change BusinessProjectClosingControlServiceImpl.arePurchaseOrdersInvoiced to BusinessProjectClosingControlServiceImpl.arePurchaseOrderLinesInvoiced Change BusinessProjectClosingControlServiceImpl.arePurchaseOrdersReceived to BusinessProjectClosingControlServiceImpl.arePurchaseOrderLinesReceived
+
+#### Human Resource
+
+If you have some expense with another currency than the company currency, you will need a script to reset it.
+
+Script : 
+UPDATE hr_expense e SET currency = c.currency
+FROM base_company c WHERE c.id = e.company AND e.currency != c.currency;
+DELETE FROM meta_action WHERE name = 'action-expense-attrs-kilometric-panel-visibility';
+
 ## [8.4.5] (2025-08-28)
 
 ### Fixes
@@ -627,6 +682,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.6]: https://github.com/axelor/axelor-open-suite/compare/v8.4.5...v8.4.6
 [8.4.5]: https://github.com/axelor/axelor-open-suite/compare/v8.4.4...v8.4.5
 [8.4.4]: https://github.com/axelor/axelor-open-suite/compare/v8.4.3...v8.4.4
 [8.4.3]: https://github.com/axelor/axelor-open-suite/compare/v8.4.2...v8.4.3
