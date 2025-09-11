@@ -1,3 +1,29 @@
+## [8.1.30] (2025-09-11)
+
+### Fixes
+#### Base
+
+* Partner: fixed accounting situations when merging partners.
+* Databackup: fixed a potential security breach when restoring a backup.
+
+#### Account
+
+* MoveLine: fixed invoice term due date when we update move line's due date with free payment condition.
+
+#### Human Resource
+
+* Lunch voucher: fixed an issue where computation did not deduct ventilated or reimbursed expenses.
+
+
+### Developer
+
+#### Account
+
+Changed the InvoiceTermService.checkIfCustomizedInvoiceTerms parameter. Now using a list of invoice terms instead of an invoice.
+New method in InvoiceTermService, called computeInvoiceTermsDueDates used to recompute the invoice terms due dates when 
+changing the move line's due date on a free payment condition.
+New method in InvoiceTermService, called recomputeFreeDueDates used to recompute the invoice terms due dates.
+
 ## [8.1.29] (2025-08-28)
 
 ### Fixes
@@ -1674,6 +1700,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.30]: https://github.com/axelor/axelor-open-suite/compare/v8.1.29...v8.1.30
 [8.1.29]: https://github.com/axelor/axelor-open-suite/compare/v8.1.28...v8.1.29
 [8.1.28]: https://github.com/axelor/axelor-open-suite/compare/v8.1.27...v8.1.28
 [8.1.27]: https://github.com/axelor/axelor-open-suite/compare/v8.1.26...v8.1.27
