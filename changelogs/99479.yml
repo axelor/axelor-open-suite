@@ -1,3 +1,0 @@
----
-title: "Lunch voucher: fixed an issue where computation did not deduct ventilated or reimbursed expenses."
-module: axelor-human-resource

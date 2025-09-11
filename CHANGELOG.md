@@ -1,3 +1,53 @@
+## [8.3.15] (2025-09-11)
+
+### Fixes
+#### Base
+
+* Partner: fixed accounting situations when merging partners.
+* Databackup: fixed a potential security breach when restoring a backup.
+
+#### Account
+
+* Account: removed export button as it has no action linked.
+* Fixed asset: fixed an issue where periodicity type was not copied if fiscal plan was not selected.
+* Accounting report: fixed detailed customers balance report to exclude suppliers and supplier invoices.
+* Accounting report type: fixed domain filter on accounting report and correct demo data for custom type.
+
+#### Budget
+
+* Budget app: fixed an issue on app installation.
+
+#### Business Project
+
+* Business project: added a closing control on 'Finished paid' status
+* ProjectTask: fixed time unit conversion issue after computing project totals.
+* Business project: fixed the closing rule condition
+
+#### Human Resource
+
+* Expense : disable the multi currency management until 8.5
+* Lunch voucher: fixed an issue where computation did not deduct ventilated or reimbursed expenses.
+
+
+### Developer
+
+#### Business Project
+
+Added UnitConversionForProjectService in ProjectTimeUnitServiceImpl constructor
+
+---
+
+Replace SaleOrderRepository by SaleOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor Replace PurchaseOrderRepository by PurchaseOrderLineRepository in BusinessProjectClosingControlServiceImpl constructor Change BusinessProjectClosingControlServiceImpl.areSaleOrdersFinished to BusinessProjectClosingControlServiceImpl.areSaleOrderLinesFinished Change BusinessProjectClosingControlServiceImpl.arePurchaseOrdersInvoiced to BusinessProjectClosingControlServiceImpl.arePurchaseOrderLinesInvoiced Change BusinessProjectClosingControlServiceImpl.arePurchaseOrdersReceived to BusinessProjectClosingControlServiceImpl.arePurchaseOrderLinesReceived
+
+#### Human Resource
+
+If you have some expense with another currency than the company currency, you will need a script to reset it.
+
+Script : 
+UPDATE hr_expense e SET currency = c.currency
+FROM base_company c WHERE c.id = e.company AND e.currency != c.currency;
+DELETE FROM meta_action WHERE name = 'action-expense-attrs-kilometric-panel-visibility';
+
 ## [8.3.14] (2025-08-28)
 
 ### Fixes
@@ -1304,6 +1354,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.15]: https://github.com/axelor/axelor-open-suite/compare/v8.3.14...v8.3.15
 [8.3.14]: https://github.com/axelor/axelor-open-suite/compare/v8.3.13...v8.3.14
 [8.3.13]: https://github.com/axelor/axelor-open-suite/compare/v8.3.12...v8.3.13
 [8.3.12]: https://github.com/axelor/axelor-open-suite/compare/v8.3.11...v8.3.12
