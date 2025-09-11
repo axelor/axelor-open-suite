@@ -351,7 +351,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setAnalyticDistributionTemplate(
         fixedAssetCategory.getAnalyticDistributionTemplate());
     fixedAsset.setFiscalPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
-    fixedAsset.setPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
   }
 
   protected void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
