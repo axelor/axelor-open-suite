@@ -2,23 +2,26 @@ import { Popup } from "react-leaflet";
 
 import { openAxelorView, type MarkerPoint } from "../../utils";
 
-const MarkerPopup = ({ marker }: { marker: MarkerPoint }) => {
+interface MarkerPopup extends MarkerPoint {
+  model: string;
+}
+
+const MarkerPopup = ({
+  model,
+  recordId,
+  viewName,
+  cardContent,
+}: MarkerPopup) => {
   return (
     <Popup>
       <div
         onDoubleClick={
-          marker.view != null ? () => openAxelorView(marker.view) : undefined
+          viewName != null
+            ? () => openAxelorView(viewName, recordId, model)
+            : undefined
         }
-      >
-        <strong>{marker.title}</strong>
-        <br />
-        {Object.entries(marker.fields).map(([key, value]) => (
-          <div key={key}>
-            <strong>{key.charAt(0).toUpperCase() + key.slice(1)}: </strong>
-            {value ?? "N/A"}
-          </div>
-        ))}
-      </div>
+        dangerouslySetInnerHTML={{ __html: cardContent }}
+      />
     </Popup>
   );
 };

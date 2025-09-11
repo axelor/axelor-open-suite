@@ -1,18 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { useState, useEffect } from "react";
+import { LayersControl, MapContainer, TileLayer } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-import {
-  getUserGeolocalisation,
-  type MarkerPoint,
-  type Position,
-} from "../../utils";
-import { markers } from "../../demo/data";
+import { getUserGeolocalisation, type Position } from "../../utils";
 import { MarkerGroup } from "../../components";
+import { fetchMapView } from "../../api/map-view";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -21,21 +17,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-const MapView = () => {
+const MapView = ({ id }: { id: number }) => {
   const [position, setPosition] = useState<Position>([48.8566, 2.3522]);
-  const [apiMarkers, setApiMarkers] = useState<MarkerPoint[]>([]);
+  const [mapView, setMapView] = useState<any>();
 
   useEffect(() => {
     getUserGeolocalisation(setPosition);
   }, []);
 
-  const fetchMapData = useCallback(() => {
-    setApiMarkers(markers);
-  }, []);
-
   useEffect(() => {
-    fetchMapData();
-  }, [fetchMapData]);
+    if (!isNaN(id)) {
+      fetchMapView(id)
+        .then(({ data }) => setMapView(data?.[0]))
+        .catch(() => setMapView(null));
+    }
+  }, [id]);
 
   useEffect(() => {
     const container = L.DomUtil.get("map") as any;
@@ -43,6 +39,8 @@ const MapView = () => {
       container._leaflet_id = null;
     }
   }, []);
+
+  if (!mapView) return null;
 
   return (
     <MapContainer
@@ -55,7 +53,11 @@ const MapView = () => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       />
-      <MarkerGroup markers={apiMarkers} />
+      <LayersControl position="topright">
+        {mapView?.mapGroupList?.map((_m: any, idx: number) => (
+          <MarkerGroup key={idx} id={_m.id} name={_m.name} />
+        ))}
+      </LayersControl>
     </MapContainer>
   );
 };

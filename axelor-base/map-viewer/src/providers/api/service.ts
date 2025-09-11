@@ -8,7 +8,7 @@ export class Service {
 
   constructor() {
     this.baseURL = import.meta.env.PROD
-      ? "./../"
+      ? "./../../"
       : import.meta.env.VITE_PROXY_CONTEXT;
 
     this.headers = {

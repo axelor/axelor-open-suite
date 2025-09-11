@@ -1,9 +1,9 @@
 export interface MarkerPoint {
+  recordId: number;
   latitude: number;
   longitude: number;
-  title: string;
-  view?: any;
-  fields: { [key: string]: string | number };
+  viewName?: string;
+  cardContent: string;
 }
 
 export interface Filter {
