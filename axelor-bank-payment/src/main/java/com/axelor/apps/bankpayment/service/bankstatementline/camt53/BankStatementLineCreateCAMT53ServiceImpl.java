@@ -169,10 +169,6 @@ public class BankStatementLineCreateCAMT53ServiceImpl
                 sequence,
                 balanceType,
                 currencyCodeFromStmt);
-        if (sequence % 10 == 0) {
-          JPA.clear();
-          findBankStatement();
-        }
       }
     }
 
@@ -187,10 +183,6 @@ public class BankStatementLineCreateCAMT53ServiceImpl
         sequence =
             bankStatementLineCreationCAMT53Service.createEntryLine(
                 bankStatement, bankDetails, ntry, sequence, currencyCodeFromStmt);
-        if (sequence % 10 == 0) {
-          JPA.clear();
-          findBankStatement();
-        }
       }
     }
 
