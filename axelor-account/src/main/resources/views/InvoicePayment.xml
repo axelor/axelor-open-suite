@@ -99,10 +99,6 @@
       <field name="statusSelect" widget="single-select"
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
-      <button name="unlinkPaymentBtn" title="Remove this payment"
-        readonlyIf="statusSelect == 2 || move.statusSelect == 3"
-        hideIf="!move || move.statusSelect == 3" icon="fa-times-circle"
-        onClick="action-invoice-payment-group-unlink-payment"/>
       <button name="cancelBtn" title="Remove this payment" icon="fa-times-circle"
         showIf="statusSelect != 2" onClick="action-invoice-payment-group-cancel"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>

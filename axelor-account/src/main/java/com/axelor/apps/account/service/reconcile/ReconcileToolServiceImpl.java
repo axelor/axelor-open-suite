@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
-import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -39,7 +38,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -169,45 +167,5 @@ public class ReconcileToolServiceImpl implements ReconcileToolService {
             .orElse(BigDecimal.ZERO);
 
     return moveLineAmountRemaining.compareTo(invoiceTermAmountRemaining) == 0;
-  }
-
-  @Override
-  public List<Reconcile> getConfirmedReconcileList(List<MoveLine> moveLineList) {
-    List<Reconcile> reconcileList = new ArrayList<>();
-    if (ObjectUtils.isEmpty(moveLineList)) {
-      return reconcileList;
-    }
-
-    for (MoveLine moveLine : moveLineList) {
-      reconcileList.addAll(getConfirmedReconcileList(moveLine));
-    }
-
-    return reconcileList;
-  }
-
-  protected List<Reconcile> getConfirmedReconcileList(MoveLine moveLine) {
-    List<Reconcile> reconcileList = new ArrayList<>();
-    if (moveLine == null) {
-      return reconcileList;
-    }
-
-    if (moveToolService.isDebitMoveLine(moveLine)
-        && ObjectUtils.notEmpty(moveLine.getDebitReconcileList())) {
-      for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-        if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
-            && !reconcileList.contains(reconcile)) {
-          reconcileList.add(reconcile);
-        }
-      }
-    } else if (ObjectUtils.notEmpty(moveLine.getCreditReconcileList())) {
-      for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-        if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
-            && !reconcileList.contains(reconcile)) {
-          reconcileList.add(reconcile);
-        }
-      }
-    }
-
-    return reconcileList;
   }
 }

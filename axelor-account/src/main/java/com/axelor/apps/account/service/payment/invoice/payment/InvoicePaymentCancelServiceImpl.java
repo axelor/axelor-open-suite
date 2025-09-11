@@ -21,7 +21,6 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -80,7 +79,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     Move paymentMove = invoicePayment.getMove();
 
     if (paymentMove != null) {
-      unlinkPaymentMoveLine(paymentMove);
+      unlinkPaymentMoveLine(invoicePayment);
     } else {
       cancelImputedInvoicePayment(invoicePayment);
     }
@@ -96,20 +95,14 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     moveCancelService.checkBeforeCancel(invoicePayment.getMove());
   }
 
-  protected void unlinkPaymentMoveLine(Move move) throws AxelorException {
-    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())) {
+  protected void unlinkPaymentMoveLine(InvoicePayment invoicePayment) throws AxelorException {
+    if (invoicePayment == null
+        || invoicePayment.getReconcile() == null
+        || invoicePayment.getMove() == null) {
       return;
     }
 
-    List<Reconcile> reconcileList =
-        reconcileToolService.getConfirmedReconcileList(move.getMoveLineList());
-    if (ObjectUtils.isEmpty(reconcileList)) {
-      return;
-    }
-
-    for (Reconcile reconcile : reconcileList) {
-      unreconcileService.unreconcile(reconcile);
-    }
+    unreconcileService.unreconcile(invoicePayment.getReconcile());
   }
 
   @Transactional(rollbackOn = {Exception.class})
