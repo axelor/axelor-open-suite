@@ -1,0 +1,3 @@
+---
+title: "Fixed asset: fixed an issue where periodicity type was not copied if fiscal plan was not selected."
+module: axelor-account
