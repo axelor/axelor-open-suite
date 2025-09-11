@@ -22,12 +22,14 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.MassStockMoveNeed;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.MassStockMoveNeedRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,32 +58,37 @@ public class MassStockMoveNeedServiceImpl implements MassStockMoveNeedService {
     Objects.requireNonNull(massStockMove);
     Objects.requireNonNull(stockMoveLinesToAdd);
 
-    Map<Product, BigDecimal> mapStockMoveNeed =
+    Map<AbstractMap.SimpleEntry<Product, TrackingNumber>, BigDecimal> mapStockMoveNeed =
         stockMoveLinesToAdd.stream()
             .map(stockMoveLineRepository::find)
             .filter(Objects::nonNull)
             .collect(
                 Collectors.toMap(
-                    StockMoveLine::getProduct, StockMoveLine::getRealQty, BigDecimal::add));
+                    line ->
+                        new AbstractMap.SimpleEntry<>(line.getProduct(), line.getTrackingNumber()),
+                    StockMoveLine::getRealQty,
+                    BigDecimal::add));
 
     mapStockMoveNeed.forEach(
-        (product, qty) -> {
-          this.merge(massStockMove, product, qty);
-        });
+        (line, qty) -> this.merge(massStockMove, line.getKey(), qty, line.getValue()));
   }
 
-  protected void merge(MassStockMove massStockMove, Product product, BigDecimal qty) {
+  protected void merge(
+      MassStockMove massStockMove, Product product, BigDecimal qty, TrackingNumber trackingNumber) {
     if (massStockMove.getMassStockMoveNeedList() != null) {
       var moveNeedWithSameProductOpt =
           massStockMove.getMassStockMoveNeedList().stream()
-              .filter(moveNeed -> moveNeed.getProductToMove().equals(product))
+              .filter(
+                  moveNeed ->
+                      moveNeed.getProductToMove().equals(product)
+                          && Objects.equals(moveNeed.getTrackingNumber(), trackingNumber))
               .findAny();
       if (moveNeedWithSameProductOpt.isPresent()) {
         var moveNeedWithSameProduct = moveNeedWithSameProductOpt.get();
         moveNeedWithSameProduct.setQtyToMove(moveNeedWithSameProduct.getQtyToMove().add(qty));
       } else {
         massStockMove.addMassStockMoveNeedListItem(
-            this.createMassStockMoveNeed(massStockMove, product, qty));
+            this.createMassStockMoveNeed(massStockMove, product, qty, trackingNumber));
       }
     }
   }
@@ -89,7 +96,10 @@ public class MassStockMoveNeedServiceImpl implements MassStockMoveNeedService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public MassStockMoveNeed createMassStockMoveNeed(
-      MassStockMove massStockMove, Product product, BigDecimal qtyToMove) {
+      MassStockMove massStockMove,
+      Product product,
+      BigDecimal qtyToMove,
+      TrackingNumber trackingNumber) {
     Objects.requireNonNull(massStockMove);
     Objects.requireNonNull(product);
     Objects.requireNonNull(qtyToMove);
@@ -98,6 +108,7 @@ public class MassStockMoveNeedServiceImpl implements MassStockMoveNeedService {
     massStockMoveNeed.setProductToMove(product);
     massStockMoveNeed.setQtyToMove(qtyToMove);
     massStockMoveNeed.setMassStockMove(massStockMove);
+    massStockMoveNeed.setTrackingNumber(trackingNumber);
 
     return massStockMoveNeedRepository.save(massStockMoveNeed);
   }

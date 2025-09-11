@@ -7,6 +7,7 @@
     model="com.axelor.apps.stock.db.MassStockMoveNeed" onNew="action-mass-stock-move-method-on-new">
     <field name="productToMove" domain="self.productTypeSelect = 'storable'"/>
     <field name="qtyToMove"/>
+    <field name="trackingNumber"/>
   </grid>
 
   <form title="Mass stock move need" name="mass-stock-move-need-form"
@@ -14,6 +15,8 @@
     <panel name="mainPanel">
       <field name="productToMove" domain="self.productTypeSelect = 'storable'"/>
       <field name="qtyToMove"/>
+      <field name="trackingNumber" grid-view="tracking-number-grid"
+        form-view="tracking-number-form" domain="self.product = :productToMove"/>
     </panel>
   </form>
 
