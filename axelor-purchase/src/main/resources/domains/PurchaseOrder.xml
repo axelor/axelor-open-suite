@@ -100,6 +100,8 @@
     <integer name="typeSelect" title="Type" selection="purchase.purchase.order.type.select"
       default="1"/>
 
+    <boolean name="orderBeingEdited" title="Order being edited"/>
+
     <unique-constraint columns="purchaseOrderSeq,company"/>
 
     <extra-code>

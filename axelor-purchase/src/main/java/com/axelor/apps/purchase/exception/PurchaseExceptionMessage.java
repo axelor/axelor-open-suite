@@ -105,5 +105,7 @@ public final class PurchaseExceptionMessage {
       "A message template is needed to send a mail" /*)*/;
   public static final String CALL_FOR_TENDER_NO_SEQ = /*$$(*/
       "The company %s doesn't have any configured sequence for the call for tenders" /*)*/;
-  ;
+
+  public static final String PURCHASE_ORDER_FINISHED = /*$$(*/
+      "This purchase order is finished." /*)*/;
 }
