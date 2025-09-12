@@ -9,7 +9,7 @@
   </grid>
 
   <form name="map-view-form" title="Map view" model="com.axelor.apps.base.db.MapView"
-    width="large">
+    width="large" onSave="action-map-view-group-on-save">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="metaMenu" grid-view="meta-menu-grid" form-view="meta-menu-form"
@@ -32,5 +32,14 @@
     <panel-related name="mapGroupPanel" field="mapGroupList"
       grid-view="map-group-grid" form-view="map-group-form" colSpan="12"/>
   </form>
+
+  <action-method name="action-method-map-view-compute-view">
+    <call class="com.axelor.apps.base.web.MapViewController" method="computeActionView"/>
+  </action-method>
+
+  <action-group name="action-map-view-group-on-save">
+    <action name="save"/>
+    <action name="action-method-map-view-compute-view"/>
+  </action-group>
 
 </object-views>
