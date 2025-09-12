@@ -430,4 +430,24 @@ public class PurchaseOrderController {
             .context("_showRecord", copiePO.getId())
             .map());
   }
+
+  public void enableEditOrder(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          Beans.get(PurchaseOrderRepository.class)
+              .find(request.getContext().asType(PurchaseOrder.class).getId());
+      Beans.get(PurchaseOrderService.class).enableEditOrder(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateChanges(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder =
+        Beans.get(PurchaseOrderRepository.class)
+            .find(request.getContext().asType(PurchaseOrder.class).getId());
+    Beans.get(PurchaseOrderService.class).validateChanges(purchaseOrder);
+    response.setReload(true);
+  }
 }

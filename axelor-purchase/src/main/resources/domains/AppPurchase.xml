@@ -22,6 +22,8 @@
     <many-to-one name="purchaseUnit" title="Default unit"
       ref="com.axelor.apps.base.db.Unit"/>
     <boolean name="manageCallForTender" title="Manage call for tender"/>
+    <boolean name="allowValidatedOrderModification"
+      title="Allow validated order modification"/>
 
     <track>
       <field name="managePurchaseOrderVersion" on="UPDATE"/>
@@ -33,6 +35,7 @@
       <field name="enablePurchasesProductByTradName" on="UPDATE"/>
       <field name="purchaseUnit" on="UPDATE"/>
       <field name="manageCallForTender" on="UPDATE"/>
+      <field name="allowValidatedOrderModification" on="UPDATE"/>
     </track>
 
   </entity>
