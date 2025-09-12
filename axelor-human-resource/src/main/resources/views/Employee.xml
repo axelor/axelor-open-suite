@@ -153,9 +153,9 @@
       <field name="profitSharingBeneficiary" colSpan="3"/>
 
       <field name="weeklyWorkHours" colSpan="3"/>
-      <field name="dailyWorkHours" colSpan="3"/>
-      <field name="hourlyRate" colSpan="3"/>
-      <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
+      <field name="dailyWorkHours" colSpan="3" onChange="action-employee-record-set-daily-salary-cost"/>
+      <field name="hourlyRate" colSpan="3" onChange="action-employee-record-set-daily-salary-cost"/>
+      <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
         x-bind="{{hourlyRate * dailyWorkHours}}"/>
     </panel>
 
@@ -418,10 +418,9 @@
           <field name="profitSharingBeneficiary" colSpan="6"/>
 
           <field name="weeklyWorkHours" colSpan="3"/>
-          <field name="dailyWorkHours" colSpan="3"/>
-          <field name="hourlyRate" colSpan="3"/>
-          <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
-            x-bind="{{hourlyRate * dailyWorkHours}}"/>
+          <field name="dailyWorkHours" colSpan="3" onChange="action-employee-record-set-daily-salary-cost"/>
+          <field name="hourlyRate" colSpan="3" onChange="action-employee-record-set-daily-salary-cost"/>
+          <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"/>
 
           <panel name="planningPanel" title="Plannings" colSpan="12" canCollapse="true"
             collapseIf="true">
@@ -741,6 +740,7 @@
     <action name="action-employee-method-set-social-network-url"/>
     <action name="action-attrs-employee-step-by-step-select-selection-in"/>
     <action name="action-employee-attrs-timesheet-imputation-select-selection-in"/>
+    <action name="action-employee-record-set-daily-salary-cost"/>
   </action-group>
 
   <action-group name="action-group-employee-on-new">
@@ -844,6 +844,10 @@
     <call class="com.axelor.apps.hr.web.EmployeeController"
       method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
+
+  <action-record name="action-employee-record-set-daily-salary-cost" model="com.axelor.apps.hr.db.Employee">
+    <field name="dailySalaryCost" expr="eval: dailyWorkHours * hourlyRate"/>
+  </action-record>
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
     title="Employee filters">
