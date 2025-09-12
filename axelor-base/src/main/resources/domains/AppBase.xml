@@ -200,6 +200,8 @@
     <string name="sireneSecret" title="Consumer secret" encrypted="true"/>
     <string name="sireneAccessToken" title="Access token" encrypted="true"/>
 
+    <string name="importErrorPath" title="Import error directory path"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
