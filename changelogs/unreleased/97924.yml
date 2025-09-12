@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed Aged balance report to use invoice payments instead of invoice terms for accurate balance."
+module: axelor-account
